@@ -34,6 +34,7 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedMod
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
 import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
@@ -1072,7 +1073,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             return false;
         }
 
-        if (!nodeName.equals(threadMigration.getOldNodeName())) {
+        NodeMigrationPlanModel nodeMigration = threadMigration.getNodeMigrations().get(nodeName);
+        if (nodeMigration == null) {
             return false;
         }
 
@@ -1083,7 +1085,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         try {
-            migrateThread(plan, threadMigration, isActive);
+            migrateThread(plan, threadMigration, nodeMigration, isActive);
             return true;
         } catch (NodeFailureException exn) {
             respondToNodeFailure(exn);
@@ -1133,7 +1135,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return wfMigrationPlan.getThreadMigrations().containsKey(threadSpecName);
     }
 
-    private void migrateThread(WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration, boolean isActive)
+    private void migrateThread(WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration,
+            NodeMigrationPlanModel nodeMigration, boolean isActive)
             throws NodeFailureException {
         WfSpecModel curSpec = executionContext.metadataManager().get(this.getWfSpecId());
         String oldThreadName = threadSpecName;
@@ -1165,7 +1168,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         WfSpecModel newWfSpec = executionContext.service().getWfSpec(wfSpecId);
         NodeModel newNode =
-                newWfSpec.threadSpecs.get(threadSpecName).nodes.get(threadMigration.getNewNodeName());
+                newWfSpec.threadSpecs.get(threadSpecName).nodes.get(nodeMigration.getNewNodeName());
 
         activateNode(newNode);
 

@@ -41,16 +41,24 @@ export interface ThreadMigrationPlan {
    * to migrate to
    */
   newThreadName: string;
-  /** Name of node in old thread to migrate from */
-  fromNode: string;
-  /** name of node to migrate to within new spec */
-  toNode: string;
+  /** Map of old node name -> how to migrate that node in the new wfSpec */
+  nodeMigrations: { [key: string]: NodeMigrationPlan };
   /**
    * list of required variables that muse either be
    * updated or inserted at runtime when migration is called
    */
   requiredVariables: string[];
   dependencies: string[];
+}
+
+export interface ThreadMigrationPlan_NodeMigrationsEntry {
+  key: string;
+  value: NodeMigrationPlan | undefined;
+}
+
+export interface NodeMigrationPlan {
+  /** Name of node in the new wfSpec to migrate to */
+  newNodeName: string;
 }
 
 export interface MigrationVars {
@@ -313,7 +321,7 @@ export const WorkflowMigrationPlan_ThreadMigrationsEntry = {
 };
 
 function createBaseThreadMigrationPlan(): ThreadMigrationPlan {
-  return { newThreadName: "", fromNode: "", toNode: "", requiredVariables: [], dependencies: [] };
+  return { newThreadName: "", nodeMigrations: {}, requiredVariables: [], dependencies: [] };
 }
 
 export const ThreadMigrationPlan = {
@@ -321,12 +329,9 @@ export const ThreadMigrationPlan = {
     if (message.newThreadName !== "") {
       writer.uint32(10).string(message.newThreadName);
     }
-    if (message.fromNode !== "") {
-      writer.uint32(18).string(message.fromNode);
-    }
-    if (message.toNode !== "") {
-      writer.uint32(26).string(message.toNode);
-    }
+    Object.entries(message.nodeMigrations).forEach(([key, value]) => {
+      ThreadMigrationPlan_NodeMigrationsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
+    });
     for (const v of message.requiredVariables) {
       writer.uint32(34).string(v!);
     }
@@ -355,14 +360,10 @@ export const ThreadMigrationPlan = {
             break;
           }
 
-          message.fromNode = reader.string();
-          continue;
-        case 3:
-          if (tag !== 26) {
-            break;
+          const entry2 = ThreadMigrationPlan_NodeMigrationsEntry.decode(reader, reader.uint32());
+          if (entry2.value !== undefined) {
+            message.nodeMigrations[entry2.key] = entry2.value;
           }
-
-          message.toNode = reader.string();
           continue;
         case 4:
           if (tag !== 34) {
@@ -390,8 +391,12 @@ export const ThreadMigrationPlan = {
   fromJSON(object: any): ThreadMigrationPlan {
     return {
       newThreadName: isSet(object.newThreadName) ? globalThis.String(object.newThreadName) : "",
-      fromNode: isSet(object.fromNode) ? globalThis.String(object.fromNode) : "",
-      toNode: isSet(object.toNode) ? globalThis.String(object.toNode) : "",
+      nodeMigrations: isObject(object.nodeMigrations)
+        ? Object.entries(object.nodeMigrations).reduce<{ [key: string]: NodeMigrationPlan }>((acc, [key, value]) => {
+          acc[key] = NodeMigrationPlan.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
       requiredVariables: globalThis.Array.isArray(object?.requiredVariables)
         ? object.requiredVariables.map((e: any) => globalThis.String(e))
         : [],
@@ -406,11 +411,14 @@ export const ThreadMigrationPlan = {
     if (message.newThreadName !== "") {
       obj.newThreadName = message.newThreadName;
     }
-    if (message.fromNode !== "") {
-      obj.fromNode = message.fromNode;
-    }
-    if (message.toNode !== "") {
-      obj.toNode = message.toNode;
+    if (message.nodeMigrations) {
+      const entries = Object.entries(message.nodeMigrations);
+      if (entries.length > 0) {
+        obj.nodeMigrations = {};
+        entries.forEach(([k, v]) => {
+          obj.nodeMigrations[k] = NodeMigrationPlan.toJSON(v);
+        });
+      }
     }
     if (message.requiredVariables?.length) {
       obj.requiredVariables = message.requiredVariables;
@@ -427,10 +435,150 @@ export const ThreadMigrationPlan = {
   fromPartial(object: DeepPartial<ThreadMigrationPlan>): ThreadMigrationPlan {
     const message = createBaseThreadMigrationPlan();
     message.newThreadName = object.newThreadName ?? "";
-    message.fromNode = object.fromNode ?? "";
-    message.toNode = object.toNode ?? "";
+    message.nodeMigrations = Object.entries(object.nodeMigrations ?? {}).reduce<{ [key: string]: NodeMigrationPlan }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = NodeMigrationPlan.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
     message.requiredVariables = object.requiredVariables?.map((e) => e) || [];
     message.dependencies = object.dependencies?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseThreadMigrationPlan_NodeMigrationsEntry(): ThreadMigrationPlan_NodeMigrationsEntry {
+  return { key: "", value: undefined };
+}
+
+export const ThreadMigrationPlan_NodeMigrationsEntry = {
+  encode(message: ThreadMigrationPlan_NodeMigrationsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      NodeMigrationPlan.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ThreadMigrationPlan_NodeMigrationsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseThreadMigrationPlan_NodeMigrationsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = NodeMigrationPlan.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ThreadMigrationPlan_NodeMigrationsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? NodeMigrationPlan.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: ThreadMigrationPlan_NodeMigrationsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = NodeMigrationPlan.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ThreadMigrationPlan_NodeMigrationsEntry>): ThreadMigrationPlan_NodeMigrationsEntry {
+    return ThreadMigrationPlan_NodeMigrationsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ThreadMigrationPlan_NodeMigrationsEntry>): ThreadMigrationPlan_NodeMigrationsEntry {
+    const message = createBaseThreadMigrationPlan_NodeMigrationsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? NodeMigrationPlan.fromPartial(object.value)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseNodeMigrationPlan(): NodeMigrationPlan {
+  return { newNodeName: "" };
+}
+
+export const NodeMigrationPlan = {
+  encode(message: NodeMigrationPlan, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.newNodeName !== "") {
+      writer.uint32(10).string(message.newNodeName);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): NodeMigrationPlan {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNodeMigrationPlan();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.newNodeName = reader.string();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): NodeMigrationPlan {
+    return { newNodeName: isSet(object.newNodeName) ? globalThis.String(object.newNodeName) : "" };
+  },
+
+  toJSON(message: NodeMigrationPlan): unknown {
+    const obj: any = {};
+    if (message.newNodeName !== "") {
+      obj.newNodeName = message.newNodeName;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<NodeMigrationPlan>): NodeMigrationPlan {
+    return NodeMigrationPlan.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<NodeMigrationPlan>): NodeMigrationPlan {
+    const message = createBaseNodeMigrationPlan();
+    message.newNodeName = object.newNodeName ?? "";
     return message;
   },
 };

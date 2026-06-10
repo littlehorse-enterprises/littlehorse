@@ -29,8 +29,6 @@ private static final long serialVersionUID = 0L;
   }
   private ThreadMigrationPlan() {
     newThreadName_ = "";
-    fromNode_ = "";
-    toNode_ = "";
     requiredVariables_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
     dependencies_ =
@@ -42,6 +40,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+      int number) {
+    switch (number) {
+      case 2:
+        return internalGetNodeMigrations();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -99,98 +109,99 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int FROM_NODE_FIELD_NUMBER = 2;
+  public static final int NODE_MIGRATIONS_FIELD_NUMBER = 2;
+  private static final class NodeMigrationsDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.NodeMigrationPlan.getDefaultInstance());
+  }
   @SuppressWarnings("serial")
-  private volatile java.lang.Object fromNode_ = "";
-  /**
-   * <pre>
-   * Name of node in old thread to migrate from
-   * </pre>
-   *
-   * <code>string from_node = 2;</code>
-   * @return The fromNode.
-   */
-  @java.lang.Override
-  public java.lang.String getFromNode() {
-    java.lang.Object ref = fromNode_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      fromNode_ = s;
-      return s;
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> nodeMigrations_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+  internalGetNodeMigrations() {
+    if (nodeMigrations_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          NodeMigrationsDefaultEntryHolder.defaultEntry);
     }
+    return nodeMigrations_;
+  }
+  public int getNodeMigrationsCount() {
+    return internalGetNodeMigrations().getMap().size();
   }
   /**
    * <pre>
-   * Name of node in old thread to migrate from
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string from_node = 2;</code>
-   * @return The bytes for fromNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getFromNodeBytes() {
-    java.lang.Object ref = fromNode_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      fromNode_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public boolean containsNodeMigrations(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetNodeMigrations().getMap().containsKey(key);
   }
-
-  public static final int TO_NODE_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object toNode_ = "";
   /**
-   * <pre>
-   * name of node to migrate to within new spec
-   * </pre>
-   *
-   * <code>string to_node = 3;</code>
-   * @return The toNode.
+   * Use {@link #getNodeMigrationsMap()} instead.
    */
   @java.lang.Override
-  public java.lang.String getToNode() {
-    java.lang.Object ref = toNode_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      toNode_ = s;
-      return s;
-    }
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> getNodeMigrations() {
+    return getNodeMigrationsMap();
   }
   /**
    * <pre>
-   * name of node to migrate to within new spec
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string to_node = 3;</code>
-   * @return The bytes for toNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getToNodeBytes() {
-    java.lang.Object ref = toNode_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      toNode_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> getNodeMigrationsMap() {
+    return internalGetNodeMigrations().getMap();
+  }
+  /**
+   * <pre>
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> map =
+        internalGetNodeMigrations().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <pre>
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> map =
+        internalGetNodeMigrations().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
     }
+    return map.get(key);
   }
 
   public static final int REQUIRED_VARIABLES_FIELD_NUMBER = 4;
@@ -304,12 +315,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newThreadName_)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 1, newThreadName_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromNode_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, fromNode_);
-    }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toNode_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, toNode_);
-    }
+    com.google.protobuf.GeneratedMessage
+      .serializeStringMapTo(
+        output,
+        internalGetNodeMigrations(),
+        NodeMigrationsDefaultEntryHolder.defaultEntry,
+        2);
     for (int i = 0; i < requiredVariables_.size(); i++) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, requiredVariables_.getRaw(i));
     }
@@ -328,11 +339,15 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newThreadName_)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(1, newThreadName_);
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fromNode_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fromNode_);
-    }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(toNode_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, toNode_);
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> entry
+         : internalGetNodeMigrations().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+      nodeMigrations__ = NodeMigrationsDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, nodeMigrations__);
     }
     {
       int dataSize = 0;
@@ -367,10 +382,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getNewThreadName()
         .equals(other.getNewThreadName())) return false;
-    if (!getFromNode()
-        .equals(other.getFromNode())) return false;
-    if (!getToNode()
-        .equals(other.getToNode())) return false;
+    if (!internalGetNodeMigrations().equals(
+        other.internalGetNodeMigrations())) return false;
     if (!getRequiredVariablesList()
         .equals(other.getRequiredVariablesList())) return false;
     if (!getDependenciesList()
@@ -388,10 +401,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NEW_THREAD_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getNewThreadName().hashCode();
-    hash = (37 * hash) + FROM_NODE_FIELD_NUMBER;
-    hash = (53 * hash) + getFromNode().hashCode();
-    hash = (37 * hash) + TO_NODE_FIELD_NUMBER;
-    hash = (53 * hash) + getToNode().hashCode();
+    if (!internalGetNodeMigrations().getMap().isEmpty()) {
+      hash = (37 * hash) + NODE_MIGRATIONS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetNodeMigrations().hashCode();
+    }
     if (getRequiredVariablesCount() > 0) {
       hash = (37 * hash) + REQUIRED_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + getRequiredVariablesList().hashCode();
@@ -509,6 +522,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetNodeMigrations();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 2:
+          return internalGetMutableNodeMigrations();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -532,8 +567,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       newThreadName_ = "";
-      fromNode_ = "";
-      toNode_ = "";
+      internalGetMutableNodeMigrations().clear();
       requiredVariables_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       dependencies_ =
@@ -575,16 +609,13 @@ private static final long serialVersionUID = 0L;
         result.newThreadName_ = newThreadName_;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.fromNode_ = fromNode_;
+        result.nodeMigrations_ = internalGetNodeMigrations().build(NodeMigrationsDefaultEntryHolder.defaultEntry);
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.toNode_ = toNode_;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
         requiredVariables_.makeImmutable();
         result.requiredVariables_ = requiredVariables_;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         dependencies_.makeImmutable();
         result.dependencies_ = dependencies_;
       }
@@ -607,20 +638,13 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (!other.getFromNode().isEmpty()) {
-        fromNode_ = other.fromNode_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (!other.getToNode().isEmpty()) {
-        toNode_ = other.toNode_;
-        bitField0_ |= 0x00000004;
-        onChanged();
-      }
+      internalGetMutableNodeMigrations().mergeFrom(
+          other.internalGetNodeMigrations());
+      bitField0_ |= 0x00000002;
       if (!other.requiredVariables_.isEmpty()) {
         if (requiredVariables_.isEmpty()) {
           requiredVariables_ = other.requiredVariables_;
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
         } else {
           ensureRequiredVariablesIsMutable();
           requiredVariables_.addAll(other.requiredVariables_);
@@ -630,7 +654,7 @@ private static final long serialVersionUID = 0L;
       if (!other.dependencies_.isEmpty()) {
         if (dependencies_.isEmpty()) {
           dependencies_ = other.dependencies_;
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000008;
         } else {
           ensureDependenciesIsMutable();
           dependencies_.addAll(other.dependencies_);
@@ -669,15 +693,14 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 18: {
-              fromNode_ = input.readStringRequireUtf8();
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+              nodeMigrations__ = input.readMessage(
+                  NodeMigrationsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableNodeMigrations().ensureBuilderMap().put(
+                  nodeMigrations__.getKey(), nodeMigrations__.getValue());
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 26: {
-              toNode_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 26
             case 34: {
               java.lang.String s = input.readStringRequireUtf8();
               ensureRequiredVariablesIsMutable();
@@ -804,188 +827,191 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object fromNode_ = "";
-    /**
-     * <pre>
-     * Name of node in old thread to migrate from
-     * </pre>
-     *
-     * <code>string from_node = 2;</code>
-     * @return The fromNode.
-     */
-    public java.lang.String getFromNode() {
-      java.lang.Object ref = fromNode_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        fromNode_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
+    private static final class NodeMigrationsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.NodeMigrationPlan> {
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.NodeMigrationPlan build(io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.NodeMigrationPlan) { return (io.littlehorse.sdk.common.proto.NodeMigrationPlan) val; }
+        return ((io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) val).build();
       }
-    }
-    /**
-     * <pre>
-     * Name of node in old thread to migrate from
-     * </pre>
-     *
-     * <code>string from_node = 2;</code>
-     * @return The bytes for fromNode.
-     */
-    public com.google.protobuf.ByteString
-        getFromNodeBytes() {
-      java.lang.Object ref = fromNode_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        fromNode_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <pre>
-     * Name of node in old thread to migrate from
-     * </pre>
-     *
-     * <code>string from_node = 2;</code>
-     * @param value The fromNode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFromNode(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      fromNode_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Name of node in old thread to migrate from
-     * </pre>
-     *
-     * <code>string from_node = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearFromNode() {
-      fromNode_ = getDefaultInstance().getFromNode();
-      bitField0_ = (bitField0_ & ~0x00000002);
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Name of node in old thread to migrate from
-     * </pre>
-     *
-     * <code>string from_node = 2;</code>
-     * @param value The bytes for fromNode to set.
-     * @return This builder for chaining.
-     */
-    public Builder setFromNodeBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      fromNode_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
 
-    private java.lang.Object toNode_ = "";
-    /**
-     * <pre>
-     * name of node to migrate to within new spec
-     * </pre>
-     *
-     * <code>string to_node = 3;</code>
-     * @return The toNode.
-     */
-    public java.lang.String getToNode() {
-      java.lang.Object ref = toNode_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        toNode_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
+      @java.lang.Override
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> defaultEntry() {
+        return NodeMigrationsDefaultEntryHolder.defaultEntry;
       }
-    }
-    /**
-     * <pre>
-     * name of node to migrate to within new spec
-     * </pre>
-     *
-     * <code>string to_node = 3;</code>
-     * @return The bytes for toNode.
-     */
-    public com.google.protobuf.ByteString
-        getToNodeBytes() {
-      java.lang.Object ref = toNode_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        toNode_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    };
+    private static final NodeMigrationsConverter nodeMigrationsConverter = new NodeMigrationsConverter();
+
+    private com.google.protobuf.MapFieldBuilder<
+        java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.NodeMigrationPlan, io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder> nodeMigrations_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.NodeMigrationPlan, io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder>
+        internalGetNodeMigrations() {
+      if (nodeMigrations_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(nodeMigrationsConverter);
       }
+      return nodeMigrations_;
+    }
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.NodeMigrationPlan, io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder>
+        internalGetMutableNodeMigrations() {
+      if (nodeMigrations_ == null) {
+        nodeMigrations_ = new com.google.protobuf.MapFieldBuilder<>(nodeMigrationsConverter);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return nodeMigrations_;
+    }
+    public int getNodeMigrationsCount() {
+      return internalGetNodeMigrations().ensureBuilderMap().size();
     }
     /**
      * <pre>
-     * name of node to migrate to within new spec
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
      * </pre>
      *
-     * <code>string to_node = 3;</code>
-     * @param value The toNode to set.
-     * @return This builder for chaining.
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
      */
-    public Builder setToNode(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      toNode_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
+    @java.lang.Override
+    public boolean containsNodeMigrations(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetNodeMigrations().ensureBuilderMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getNodeMigrationsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> getNodeMigrations() {
+      return getNodeMigrationsMap();
+    }
+    /**
+     * <pre>
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> getNodeMigrationsMap() {
+      return internalGetNodeMigrations().getImmutableMap();
+    }
+    /**
+     * <pre>
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder> map = internalGetMutableNodeMigrations().ensureBuilderMap();
+      return map.containsKey(key) ? nodeMigrationsConverter.build(map.get(key)) : defaultValue;
+    }
+    /**
+     * <pre>
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder> map = internalGetMutableNodeMigrations().ensureBuilderMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return nodeMigrationsConverter.build(map.get(key));
+    }
+    public Builder clearNodeMigrations() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      internalGetMutableNodeMigrations().clear();
       return this;
     }
     /**
      * <pre>
-     * name of node to migrate to within new spec
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
      * </pre>
      *
-     * <code>string to_node = 3;</code>
-     * @return This builder for chaining.
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
      */
-    public Builder clearToNode() {
-      toNode_ = getDefaultInstance().getToNode();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
+    public Builder removeNodeMigrations(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableNodeMigrations().ensureBuilderMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+        getMutableNodeMigrations() {
+      bitField0_ |= 0x00000002;
+      return internalGetMutableNodeMigrations().ensureMessageMap();
+    }
+    /**
+     * <pre>
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+     */
+    public Builder putNodeMigrations(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.NodeMigrationPlan value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableNodeMigrations().ensureBuilderMap()
+          .put(key, value);
+      bitField0_ |= 0x00000002;
       return this;
     }
     /**
      * <pre>
-     * name of node to migrate to within new spec
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
      * </pre>
      *
-     * <code>string to_node = 3;</code>
-     * @param value The bytes for toNode to set.
-     * @return This builder for chaining.
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
      */
-    public Builder setToNodeBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      toNode_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
+    public Builder putAllNodeMigrations(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> e : values.entrySet()) {
+        if (e.getKey() == null || e.getValue() == null) {
+          throw new NullPointerException();
+        }
+      }
+      internalGetMutableNodeMigrations().ensureBuilderMap()
+          .putAll(values);
+      bitField0_ |= 0x00000002;
       return this;
+    }
+    /**
+     * <pre>
+     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder putNodeMigrationsBuilderIfAbsent(
+        java.lang.String key) {
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder> builderMap = internalGetMutableNodeMigrations().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.NodeMigrationPlanOrBuilder entry = builderMap.get(key);
+      if (entry == null) {
+        entry = io.littlehorse.sdk.common.proto.NodeMigrationPlan.newBuilder();
+        builderMap.put(key, entry);
+      }
+      if (entry instanceof io.littlehorse.sdk.common.proto.NodeMigrationPlan) {
+        entry = ((io.littlehorse.sdk.common.proto.NodeMigrationPlan) entry).toBuilder();
+        builderMap.put(key, entry);
+      }
+      return (io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) entry;
     }
 
     private com.google.protobuf.LazyStringArrayList requiredVariables_ =
@@ -994,7 +1020,7 @@ private static final long serialVersionUID = 0L;
       if (!requiredVariables_.isModifiable()) {
         requiredVariables_ = new com.google.protobuf.LazyStringArrayList(requiredVariables_);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
     }
     /**
      * <pre>
@@ -1065,7 +1091,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureRequiredVariablesIsMutable();
       requiredVariables_.set(index, value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1084,7 +1110,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureRequiredVariablesIsMutable();
       requiredVariables_.add(value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1103,7 +1129,7 @@ private static final long serialVersionUID = 0L;
       ensureRequiredVariablesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
           values, requiredVariables_);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1119,7 +1145,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearRequiredVariables() {
       requiredVariables_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000008);;
+      bitField0_ = (bitField0_ & ~0x00000004);;
       onChanged();
       return this;
     }
@@ -1139,7 +1165,7 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       ensureRequiredVariablesIsMutable();
       requiredVariables_.add(value);
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -1150,7 +1176,7 @@ private static final long serialVersionUID = 0L;
       if (!dependencies_.isModifiable()) {
         dependencies_ = new com.google.protobuf.LazyStringArrayList(dependencies_);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
     }
     /**
      * <code>repeated string dependencies = 5;</code>
@@ -1196,7 +1222,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureDependenciesIsMutable();
       dependencies_.set(index, value);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1210,7 +1236,7 @@ private static final long serialVersionUID = 0L;
       if (value == null) { throw new NullPointerException(); }
       ensureDependenciesIsMutable();
       dependencies_.add(value);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1224,7 +1250,7 @@ private static final long serialVersionUID = 0L;
       ensureDependenciesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
           values, dependencies_);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -1235,7 +1261,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearDependencies() {
       dependencies_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000010);;
+      bitField0_ = (bitField0_ & ~0x00000008);;
       onChanged();
       return this;
     }
@@ -1250,7 +1276,7 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       ensureDependenciesIsMutable();
       dependencies_.add(value);
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }

@@ -34,43 +34,57 @@ public interface ThreadMigrationPlanOrBuilder extends
 
   /**
    * <pre>
-   * Name of node in old thread to migrate from
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string from_node = 2;</code>
-   * @return The fromNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
-  java.lang.String getFromNode();
+  int getNodeMigrationsCount();
   /**
    * <pre>
-   * Name of node in old thread to migrate from
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string from_node = 2;</code>
-   * @return The bytes for fromNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
-  com.google.protobuf.ByteString
-      getFromNodeBytes();
-
+  boolean containsNodeMigrations(
+      java.lang.String key);
+  /**
+   * Use {@link #getNodeMigrationsMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+  getNodeMigrations();
   /**
    * <pre>
-   * name of node to migrate to within new spec
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string to_node = 3;</code>
-   * @return The toNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
-  java.lang.String getToNode();
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>
+  getNodeMigrationsMap();
   /**
    * <pre>
-   * name of node to migrate to within new spec
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
    * </pre>
    *
-   * <code>string to_node = 3;</code>
-   * @return The bytes for toNode.
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
    */
-  com.google.protobuf.ByteString
-      getToNodeBytes();
+  /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue);
+  /**
+   * <pre>
+   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrThrow(
+      java.lang.String key);
 
   /**
    * <pre>

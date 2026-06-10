@@ -18,6 +18,7 @@ import io.littlehorse.common.model.getable.core.wfrun.ThreadRunIterator;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -98,25 +99,45 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
             NodeModel currentNode = threadRun.getCurrentNode();
             ThreadMigrationPlanModel threadMigrationPlan = wfMigrationPlan.getThreadMigrations().get(threadRun.getThreadSpecName());
 
-            if (threadMigrationPlan.getOldNodeName().equals(currentNode.getName())) {
-                // Thread is at the migration node — it must be long-running to be migratable
-                if (!currentNode.isLongRunning()) {
-                    throw new LHApiException(Status.FAILED_PRECONDITION,
-                            "Thread " + threadRun.getThreadSpecName() + " can not migrate from node "
-                                    + currentNode.getName() + " since the nodeRun was already activated");
+            // A thread migrates as soon as it reaches any one of its migration nodes, so the
+            // migration is valid as long as at least one migration node is still a viable
+            // migration point. A migration node is viable if either:
+            //   - the thread is currently sitting at it and it is long-running (so it can be
+            //     halted and redirected), or
+            //   - the thread has not yet executed it (it is still ahead on the thread's path).
+            // The migration is only rejected when every migration node has already been
+            // activated or completed, leaving no node to migrate from.
+            boolean anyNodeViable = false;
+            for (Map.Entry<String, NodeMigrationPlanModel> nodeEntry :
+                    threadMigrationPlan.getNodeMigrations().entrySet()) {
+                String oldNodeName = nodeEntry.getKey();
+
+                if (oldNodeName.equals(currentNode.getName())) {
+                    // Thread is at this migration node — it is viable only if it is long-running.
+                    if (currentNode.isLongRunning()) {
+                        anyNodeViable = true;
+                        break;
+                    }
+                } else {
+                    // Thread is not at this migration node — it is viable as long as the node
+                    // has not already been executed.
+                    // Note: this only covers paths that lead through the migration node; if the
+                    // thread hasn't reached it yet via a different path, we still could miss it.
+                    try {
+                        threadRun.getMostRecentNodeRun(oldNodeName);
+                        // Node has already been executed — not viable via this node.
+                    } catch (LHVarSubError ex) {
+                        // Node hasn't been executed yet — it is still ahead and viable.
+                        anyNodeViable = true;
+                        break;
+                    }
                 }
-            } else {
-                // Thread is not yet at the migration node — check the migration node hasn't already been executed.
-                // Note: this validation only covers paths that lead through the migration node; if the thread
-                // hasn't reached it yet via a different path, we still could miss it.
-                try {
-                    threadRun.getMostRecentNodeRun(threadMigrationPlan.getOldNodeName());
-                    throw new LHApiException(Status.FAILED_PRECONDITION,
-                            "The node " + threadMigrationPlan.getOldNodeName() + " in thread "
-                                    + threadRun.getThreadSpecName() + " can not be migrated since it has already been completed");
-                } catch (LHVarSubError ex) {
-                    // Node hasn't been executed yet — this is expected
-                }
+            }
+
+            if (!anyNodeViable) {
+                throw new LHApiException(Status.FAILED_PRECONDITION,
+                        "Thread " + threadRun.getThreadSpecName() + " can not be migrated since all of its "
+                                + "migration nodes have already been activated or completed");
             }
         }
     }

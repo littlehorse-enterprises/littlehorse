@@ -10,10 +10,10 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
@@ -32,6 +32,10 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
     private int majorVersion;
     private int revision;
     private Map<String, ThreadMigrationPlanModel> threadMigrations;
+
+    public Map<String, ThreadMigrationPlanModel> getThreadMigrations() {
+        return threadMigrations;
+    }
 
     @Override
     public Message process(MetadataProcessorContext executionContext) {
@@ -82,16 +86,6 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
                         "Source WfSpec has no threadSpec %s".formatted(oldThreadName));
             }
 
-            // Validate old from_node exists
-            NodeModel fromNode = oldThread.nodes.get(migration.getOldNodeName());
-            if (fromNode == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "ThreadSpec %s on source WfSpec does not have node %s"
-                                .formatted(oldThreadName, migration.getOldNodeName()));
-            }
-
-
             // Validate new thread exists
             ThreadSpecModel newThread = newWfSpec.threadSpecs.get(migration.getNewThreadName());
             if (newThread == null) {
@@ -117,12 +111,25 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
                                 .formatted(oldThreadName, migration.getNewThreadName()));
             }
 
-            // Validate new to_node exists
-            if (newThread.nodes.get(migration.getNewNodeName()) == null) {
-                throw new LHApiException(
-                        Status.INVALID_ARGUMENT,
-                        "ThreadSpec %s on destination WfSpec does not have node %s"
-                                .formatted(migration.getNewThreadName(), migration.getNewNodeName()));
+            // Validate each node migration: the old node (key) must exist on the source
+            // thread, and the new node it maps to must exist on the destination thread.
+            for (Map.Entry<String, NodeMigrationPlanModel> nodeEntry : migration.getNodeMigrations().entrySet()) {
+                String oldNodeName = nodeEntry.getKey();
+                NodeMigrationPlanModel nodeMigration = nodeEntry.getValue();
+
+                if (oldThread.nodes.get(oldNodeName) == null) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "ThreadSpec %s on source WfSpec does not have node %s"
+                                    .formatted(oldThreadName, oldNodeName));
+                }
+
+                if (newThread.nodes.get(nodeMigration.getNewNodeName()) == null) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "ThreadSpec %s on destination WfSpec does not have node %s"
+                                    .formatted(migration.getNewThreadName(), nodeMigration.getNewNodeName()));
+                }
             }
 
         }
