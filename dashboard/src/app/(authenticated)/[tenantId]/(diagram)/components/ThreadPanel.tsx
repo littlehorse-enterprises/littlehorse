@@ -211,7 +211,7 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
             </div>
             <div className="flex h-full w-full touch-pan-y items-center text-nowrap" ref={containerRef}>
               <div
-                className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex h-full gap-2 overflow-x-auto will-change-transform"
+                className="duration-15 ease-thread-scroll flex h-full gap-2 overflow-x-auto will-change-transform"
                 style={{ transform: `translateX(${scroll}px)` }}
                 ref={itemsRef}
               >

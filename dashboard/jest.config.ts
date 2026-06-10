@@ -20,6 +20,7 @@ const config: Config = {
   transformIgnorePatterns: [
     'node_modules/(?!(jose|@panva|oidc-token-hash|oauth4webapi|preact-render-to-string|nanoid)/)',
   ],
+  modulePathIgnorePatterns: ['<rootDir>/.next/standalone'],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

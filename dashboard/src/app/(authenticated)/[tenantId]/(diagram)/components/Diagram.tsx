@@ -83,7 +83,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     const threadSpec = spec.threadSpecs[thread.name]
     getCycleNodes(threadSpec)
     return threadSpec
-  }, [spec, thread.name])
+  }, [spec, thread])
 
   const [edges, setEdges] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes] = useNodesState(extractNodes(threadSpec))
@@ -98,7 +98,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
     const edges = extractEdges(threadSpec)
     setNodes(nodes)
     setEdges(edges)
-  }, [thread.name, setNodes, setEdges])
+  }, [threadSpec, setNodes, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)

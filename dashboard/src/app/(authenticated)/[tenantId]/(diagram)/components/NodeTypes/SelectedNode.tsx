@@ -28,10 +28,6 @@ export const SelectedNode: FC = () => {
     }
   }, [nodes, selectedNode, setNodes])
 
-  useEffect(() => {
-    updateEdges()
-  }, [selectedNode])
-
   const updateEdges = useCallback(() => {
     setEdges(
       edges.map(edge => {
@@ -47,6 +43,10 @@ export const SelectedNode: FC = () => {
       })
     )
   }, [setEdges, edges, selectedNode])
+
+  useEffect(() => {
+    updateEdges()
+  }, [updateEdges])
 
   const zIndex: number = Math.max(...nodes.map(node => (node[internalsSymbol]?.z || 1) + 10))
   if (!selectedNode) {

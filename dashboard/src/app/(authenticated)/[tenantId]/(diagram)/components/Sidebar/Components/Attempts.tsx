@@ -24,31 +24,31 @@ export const Attempts = ({
     <div className="mb-4 mt-4 rounded-lg border border-gray-200 bg-gray-50">
       <Accordion type="single" collapsible defaultValue="attempts">
         <AccordionItem value="attempts" className="border-0">
-          <AccordionTrigger className="px-4 py-3 text-sm font-semibold text-gray-700 hover:no-underline">
-            <div className="flex w-full items-center justify-between pr-2">
-              <span>Attempts</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild onClick={e => e.stopPropagation()}>
-                  <Button variant="outline" className="h-8 gap-1.5 px-3 text-sm" onClick={e => e.stopPropagation()}>
-                    <span>Attempt {attemptIndex + 1}</span>
-                    <span className="text-xs text-gray-500">of {attemptLength}</span>
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
-                  {Array.from({ length: attemptLength }).map((_, nodeIndex) => (
-                    <DropdownMenuItem
-                      key={nodeIndex}
-                      className="cursor-pointer"
-                      onClick={() => setAttemptIndex(nodeIndex)}
-                    >
-                      Attempt {nodeIndex + 1}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </AccordionTrigger>
+          <div className="flex items-center gap-2 px-4 py-3">
+            <AccordionTrigger className="flex-1 px-0 py-0 text-sm font-semibold text-gray-700 hover:no-underline">
+              Attempts
+            </AccordionTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-8 gap-1.5 px-3 text-sm">
+                  <span>Attempt {attemptIndex + 1}</span>
+                  <span className="text-xs text-gray-500">of {attemptLength}</span>
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="max-h-[300px] overflow-y-auto">
+                {Array.from({ length: attemptLength }).map((_, nodeIndex) => (
+                  <DropdownMenuItem
+                    key={nodeIndex}
+                    className="cursor-pointer"
+                    onClick={() => setAttemptIndex(nodeIndex)}
+                  >
+                    Attempt {nodeIndex + 1}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <AccordionContent className="px-4 pb-4 pt-0">
             {attempt.status && <NodeStatus status={attempt.status} type="task" />}
             <div className="mt-3">
