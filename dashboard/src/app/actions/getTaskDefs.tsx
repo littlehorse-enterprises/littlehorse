@@ -2,9 +2,14 @@
 
 import { uniqueInOrder } from '@/app/utils'
 import { TaskDefData } from '@/types'
-import { LittleHorseClient, TaskDefId, TaskStatus } from 'littlehorse-client/proto'
+import { LittleHorseClient, TaskStatus } from 'littlehorse-client/proto'
 import { ClientError, Status } from 'nice-grpc-common'
 import { lhClient } from '../lhClient'
+
+export type TaskDefStats = {
+  connectedWorkers: number | null
+  queueDepth: number | null
+}
 
 async function fetchConnectedWorkers(client: LittleHorseClient, name: string): Promise<number | null> {
   try {
@@ -37,19 +42,14 @@ async function fetchTaskDefRow(client: LittleHorseClient, name: string): Promise
   const taskDef = await client.getTaskDef({ name })
   if (!taskDef) return null
 
-  const [connectedWorkers, queueDepth] = await Promise.all([
-    fetchConnectedWorkers(client, name),
-    fetchQueueDepth(client, name),
-  ])
-
   return {
     name,
     createdAt: taskDef.createdAt ? new Date(taskDef.createdAt) : undefined,
     description: taskDef.description,
     inputVarCount: taskDef.inputVars.length,
     returnType: taskDef.returnType?.returnType?.definedType,
-    connectedWorkers,
-    queueDepth,
+    connectedWorkers: null,
+    queueDepth: null,
   }
 }
 
@@ -66,4 +66,24 @@ export async function getTaskDefs(tenantId: string, taskDefNames: string[]): Pro
   )
 
   return uniqueOrdered.map(name => taskDefMap.get(name)).filter((row): row is TaskDefData => row != null)
+}
+
+export async function getTaskDefStats(
+  tenantId: string,
+  taskDefNames: string[]
+): Promise<Record<string, TaskDefStats>> {
+  const client = await lhClient({ tenantId })
+  const uniqueOrdered = uniqueInOrder(taskDefNames)
+
+  const statsEntries = await Promise.all(
+    uniqueOrdered.map(async name => {
+      const [connectedWorkers, queueDepth] = await Promise.all([
+        fetchConnectedWorkers(client, name),
+        fetchQueueDepth(client, name),
+      ])
+      return [name, { connectedWorkers, queueDepth }] as const
+    })
+  )
+
+  return Object.fromEntries(statsEntries)
 }

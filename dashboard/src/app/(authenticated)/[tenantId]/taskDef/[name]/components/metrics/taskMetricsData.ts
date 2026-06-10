@@ -25,8 +25,6 @@ export function mergeTaskMetricsGroup(tasks: TaskMetrics[]): TaskMetrics {
   }
 }
 
-const DAY_MS = 86_400_000
-
 export const EMPTY_TASK_METRICS: TaskMetrics = mergeTaskMetricsGroup([])
 
 export function parseTaskWindows(windows: MetricWindow[]): { ts: number; task: TaskMetrics }[] {

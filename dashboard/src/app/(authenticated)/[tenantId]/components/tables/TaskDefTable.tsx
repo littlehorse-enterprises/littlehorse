@@ -1,4 +1,4 @@
-import { getTaskDefs } from '@/app/actions/getTaskDefs'
+import { getTaskDefStats, getTaskDefs } from '@/app/actions/getTaskDefs'
 import { TypeDisplay } from '@/app/(authenticated)/[tenantId]/components/TypeDisplay'
 import { routes } from '@/app/routes'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -6,7 +6,7 @@ import { TaskDefData } from '@/types'
 import { TaskDefId } from 'littlehorse-client/proto'
 import { Calendar, LayersIcon, RefreshCwIcon, UsersIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { SearchResultProps } from '.'
 import LinkWithTenant from '../LinkWithTenant'
 import { SortBy, SortOrder } from '../SearchHeader'
@@ -34,18 +34,57 @@ export const TaskDefTable: FC<TaskDefTableProps> = ({
   const tenantId = useParams().tenantId as string
   const [taskDefs, setTaskDefs] = useState<TaskDefData[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const loadedStatsRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     const taskDefNames = pages.flatMap(page => page.results).map((taskDef: TaskDefId) => taskDef.name)
     if (taskDefNames.length === 0) {
       setTaskDefs([])
+      loadedStatsRef.current = new Set()
       return
     }
 
     setIsLoading(true)
     getTaskDefs(tenantId, taskDefNames)
-      .then(setTaskDefs)
+      .then(rows => {
+        setTaskDefs(prev => {
+          const statsByName = new Map(prev.map(row => [row.name, row]))
+          return rows.map(row => {
+            const existing = statsByName.get(row.name)
+            if (!existing) return row
+            return {
+              ...row,
+              connectedWorkers: existing.connectedWorkers,
+              queueDepth: existing.queueDepth,
+            }
+          })
+        })
+      })
       .finally(() => setIsLoading(false))
+  }, [pages, tenantId])
+
+  useEffect(() => {
+    const taskDefNames = pages.flatMap(page => page.results).map((taskDef: TaskDefId) => taskDef.name)
+    const namesNeedingStats = taskDefNames.filter(name => !loadedStatsRef.current.has(name))
+    if (namesNeedingStats.length === 0) return
+
+    let cancelled = false
+    getTaskDefStats(tenantId, namesNeedingStats).then(statsByName => {
+      if (cancelled) return
+
+      namesNeedingStats.forEach(name => loadedStatsRef.current.add(name))
+      setTaskDefs(prev =>
+        prev.map(row => {
+          const stats = statsByName[row.name]
+          if (!stats) return row
+          return { ...row, ...stats }
+        })
+      )
+    })
+
+    return () => {
+      cancelled = true
+    }
   }, [pages, tenantId])
 
   const sortedTaskDefs = useMemo(() => {
