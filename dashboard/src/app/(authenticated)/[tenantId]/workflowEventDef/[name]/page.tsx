@@ -4,9 +4,11 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { WorkflowEventDef } from './components/WorkflowEventDef'
 import { getWorkflowEventDef } from './getWorkflowEventDef'
 
-type Props = { params: { name: string; tenantId: string } }
+type Props = { params: Promise<{ name: string; tenantId: string }> }
 
-export default async function Page({ params: { name, tenantId } }: Props) {
+export default async function Page({ params }: Props) {
+  const { name, tenantId } = await params
+
   try {
     const spec = await getWorkflowEventDef(tenantId, { name })
     return <WorkflowEventDef spec={spec} />
@@ -16,7 +18,9 @@ export default async function Page({ params: { name, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { name } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { name } = await params
+
   return {
     title: `WorkflowEventDef ${name} | Littlehorse`,
   }
