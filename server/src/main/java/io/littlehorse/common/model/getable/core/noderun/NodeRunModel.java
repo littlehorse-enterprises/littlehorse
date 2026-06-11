@@ -183,15 +183,37 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        GetableIndex<? extends AbstractGetable<?>> allNodeRunsIndex =
+                new GetableIndex<>(List.of(Pair.of("all", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
+        GetableIndex<? extends AbstractGetable<?>> specNameIndex = new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
+        GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionIndex = new GetableIndex<>(
+                List.of(
+                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
+                TagStorageType.COUNTED);
+
+        GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionAndRevisionIndex = new GetableIndex<>(
+                List.of(
+                        Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                        Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                        Pair.of("revision", GetableIndex.ValueType.SINGLE)),
+                TagStorageType.COUNTED);
         if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
             GetableIndex<? extends AbstractGetable<?>> externalEventIndex = new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
-                    Optional.of(TagStorageType.LOCAL));
-            return List.of(externalEventIndex);
+                    TagStorageType.LOCAL);
+            return List.of(
+                    externalEventIndex,
+                    allNodeRunsIndex,
+                    specNameIndex,
+                    specNameAndMajorVersionIndex,
+                    specNameAndMajorVersionAndRevisionIndex);
         }
-        return List.of();
+        return List.of(
+                allNodeRunsIndex, specNameIndex, specNameAndMajorVersionIndex, specNameAndMajorVersionAndRevisionIndex);
     }
 
     @Override
@@ -206,6 +228,18 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                             externalEventRun.getExternalEventDefId().toString();
                     return List.of(new IndexedField(key, externalEventName, TagStorageType.LOCAL));
                 }
+            }
+            case "wfSpecName" -> {
+                return List.of(new IndexedField(key, wfSpecId.getName(), TagStorageType.COUNTED));
+            }
+            case "majorVersion" -> {
+                return List.of(new IndexedField(key, wfSpecId.getMajorVersion(), TagStorageType.COUNTED));
+            }
+            case "revision" -> {
+                return List.of(new IndexedField(key, wfSpecId.getRevision(), TagStorageType.COUNTED));
+            }
+            case "all" -> {
+                return List.of(new IndexedField(key, "all", TagStorageType.COUNTED));
             }
         }
         log.warn("Tried to get value for unknown index field {}", key);

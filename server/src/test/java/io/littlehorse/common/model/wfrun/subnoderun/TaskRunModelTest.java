@@ -26,15 +26,17 @@ import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
+import io.littlehorse.server.streams.storeinternals.PartitionMetricsCollector;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
+import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 
@@ -42,7 +44,19 @@ public class TaskRunModelTest {
 
     private final String tenantId = "myTenantId";
     private final ExecutionContext executionContext = mock();
-    private final CoreProcessorContext processorContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final CoreProcessorContext processorContext = mock();
+    private final KeyValueStore<String, Bytes> mockStore = mock();
+    private final LHTaskManager taskManager = mock();
+
+    @BeforeEach
+    public void setup() {
+        when(processorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
+        when(processorContext.authorization().tenantId()).thenReturn(new TenantIdModel(tenantId));
+        when(processorContext.metricsCollector()).thenReturn(mock(PartitionMetricsCollector.class));
+        when(processorContext.nativeCoreStore()).thenReturn(mockStore);
+        when(processorContext.getTaskManager()).thenReturn(taskManager);
+        when(processorContext.getableUpdates()).thenReturn(mock(GetableUpdates.class));
+    }
 
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() {
@@ -100,7 +114,7 @@ public class TaskRunModelTest {
         when(taskProcessorContext.getableUpdates()).thenReturn(getableUpdates);
         when(taskProcessorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
         when(taskProcessorContext.authorization().tenantId()).thenReturn(new TenantIdModel("tenant-a"));
-        when(taskProcessorContext.getPartitionMetricsMemoryStore()).thenReturn(new PartitionMetricsMemoryStore());
+        when(taskProcessorContext.metricsCollector()).thenReturn(mock(PartitionMetricsCollector.class));
         when(taskProcessorContext.nativeCoreStore()).thenReturn(mockStore);
         taskRun.setProcessorContext(taskProcessorContext);
 

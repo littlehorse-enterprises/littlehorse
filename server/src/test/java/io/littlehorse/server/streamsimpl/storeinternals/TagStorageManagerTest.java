@@ -15,7 +15,7 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.storeinternals.index.TagsCache;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.List;
 import java.util.Set;
 import org.apache.kafka.common.serialization.Serdes;
@@ -27,7 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Answers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -45,10 +44,9 @@ public class TagStorageManagerTest {
             .build();
 
     @Mock
-    private LHServerConfig lhConfig;
+    private final LHServerConfig lhConfig = mock();
 
-    @Mock
-    private LHServer server;
+    private final LHServer server = mock();
 
     private String tenantId = "myTenant";
 
@@ -57,7 +55,6 @@ public class TagStorageManagerTest {
 
     final MockProcessorContext<String, CommandProcessorOutput> mockProcessorContext = new MockProcessorContext<>();
 
-    @InjectMocks
     private TagStorageManager tagStorageManager;
 
     private Tag tag1 = TestUtil.tag();
@@ -66,17 +63,17 @@ public class TagStorageManagerTest {
 
     private List<Tag> tags;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private ExecutionContext executionContext;
+    private final CoreProcessorContext executionContext = mock();
 
-    private Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
-    private Attribute statusAttribute = new Attribute("status", "running");
+    private final Attribute wfSpecNameAttribute = new Attribute("wfSpecName", "test-name");
+    private final Attribute statusAttribute = new Attribute("status", "running");
 
     @BeforeEach
     void setup() {
         store.init(mockProcessorContext.getStateStoreContext(), store);
+        when(executionContext.nativeCoreStore()).thenReturn(store);
         globalMetadaataStore.init(mockProcessorContext.getStateStoreContext(), globalMetadaataStore);
-        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, lhConfig, mock());
+        tagStorageManager = new TagStorageManager(localStore, mockProcessorContext, executionContext);
         tag1.setAttributes(List.of(wfSpecNameAttribute));
         tag2.setAttributes(List.of(wfSpecNameAttribute, statusAttribute));
         tags = List.of(tag1, tag2);

@@ -2988,6 +2988,68 @@ public final class LittleHorseGrpc {
     return getGetServerVersionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CountNodeRun",
+      requestType = io.littlehorse.sdk.common.proto.CountNodeRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.Count.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.Count> getCountNodeRunMethod;
+    if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getCountNodeRunMethod = LittleHorseGrpc.getCountNodeRunMethod) == null) {
+          LittleHorseGrpc.getCountNodeRunMethod = getCountNodeRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountNodeRunRequest, io.littlehorse.sdk.common.proto.Count>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountNodeRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CountNodeRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Count.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountNodeRun"))
+              .build();
+        }
+      }
+    }
+    return getCountNodeRunMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "CountTaskRun",
+      requestType = io.littlehorse.sdk.common.proto.CountTaskRunRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.Count.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest,
+      io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.CountTaskRunRequest, io.littlehorse.sdk.common.proto.Count> getCountTaskRunMethod;
+    if ((getCountTaskRunMethod = LittleHorseGrpc.getCountTaskRunMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getCountTaskRunMethod = LittleHorseGrpc.getCountTaskRunMethod) == null) {
+          LittleHorseGrpc.getCountTaskRunMethod = getCountTaskRunMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.CountTaskRunRequest, io.littlehorse.sdk.common.proto.Count>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "CountTaskRun"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.CountTaskRunRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.Count.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("CountTaskRun"))
+              .build();
+        }
+      }
+    }
+    return getCountTaskRunMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -4069,6 +4131,29 @@ public final class LittleHorseGrpc {
     default void getServerVersion(com.google.protobuf.Empty request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetServerVersionMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    default void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountNodeRunMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    default void countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getCountTaskRunMethod(), responseObserver);
     }
   }
 
@@ -5214,6 +5299,31 @@ public final class LittleHorseGrpc {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public void countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public void countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getCountTaskRunMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -6253,6 +6363,29 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Count countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getCountTaskRunMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -7278,6 +7411,29 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.LittleHorseVersion getServerVersion(com.google.protobuf.Empty request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getGetServerVersionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Count countNodeRun(io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCountNodeRunMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.Count countTaskRun(io.littlehorse.sdk.common.proto.CountTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getCountTaskRunMethod(), getCallOptions(), request);
     }
   }
 
@@ -8400,6 +8556,31 @@ public final class LittleHorseGrpc {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getGetServerVersionMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * Counts the number of NodeRun's matching the given criteria. This is an eventually
+     * consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countNodeRun(
+        io.littlehorse.sdk.common.proto.CountNodeRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCountNodeRunMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Counts the number of TaskRun's matching the given criteria for a specific TaskDef.
+     * Useful for monitoring task queue depth and detecting backpressure on workers. This is
+     * an eventually consistent count maintained via pre-aggregated counters.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.Count> countTaskRun(
+        io.littlehorse.sdk.common.proto.CountTaskRunRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getCountTaskRunMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PUT_TASK_DEF = 0;
@@ -8497,7 +8678,9 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_PRINCIPAL = 92;
   private static final int METHODID_WHOAMI = 93;
   private static final int METHODID_GET_SERVER_VERSION = 94;
-  private static final int METHODID_POLL_TASK = 95;
+  private static final int METHODID_COUNT_NODE_RUN = 95;
+  private static final int METHODID_COUNT_TASK_RUN = 96;
+  private static final int METHODID_POLL_TASK = 97;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -8895,6 +9078,14 @@ public final class LittleHorseGrpc {
         case METHODID_GET_SERVER_VERSION:
           serviceImpl.getServerVersion((com.google.protobuf.Empty) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.LittleHorseVersion>) responseObserver);
+          break;
+        case METHODID_COUNT_NODE_RUN:
+          serviceImpl.countNodeRun((io.littlehorse.sdk.common.proto.CountNodeRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count>) responseObserver);
+          break;
+        case METHODID_COUNT_TASK_RUN:
+          serviceImpl.countTaskRun((io.littlehorse.sdk.common.proto.CountTaskRunRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.Count>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -9589,6 +9780,20 @@ public final class LittleHorseGrpc {
               com.google.protobuf.Empty,
               io.littlehorse.sdk.common.proto.LittleHorseVersion>(
                 service, METHODID_GET_SERVER_VERSION)))
+        .addMethod(
+          getCountNodeRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CountNodeRunRequest,
+              io.littlehorse.sdk.common.proto.Count>(
+                service, METHODID_COUNT_NODE_RUN)))
+        .addMethod(
+          getCountTaskRunMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.CountTaskRunRequest,
+              io.littlehorse.sdk.common.proto.Count>(
+                service, METHODID_COUNT_TASK_RUN)))
         .build();
   }
 
@@ -9733,6 +9938,8 @@ public final class LittleHorseGrpc {
               .addMethod(getGetPrincipalMethod())
               .addMethod(getWhoamiMethod())
               .addMethod(getGetServerVersionMethod())
+              .addMethod(getCountNodeRunMethod())
+              .addMethod(getCountTaskRunMethod())
               .build();
         }
       }

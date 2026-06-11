@@ -57,8 +57,8 @@ The LittleHorse repository contains the following components:
 This repository requires the following system dependencies:
 
 - `java`
-    - [sdk-java](sdk-java): Java 11
-    - [server](server): Java 21
+    - [sdk-java](sdk-java): Java 17
+    - [server](server): Java 25
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
 - `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
