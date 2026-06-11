@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,29 +27,32 @@ public class WaitForOneOfExample {
 
     private static final Logger log = LoggerFactory.getLogger(WaitForOneOfExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-wait-for-one-of", wf -> {
-            // Spawn two child threads that wait for different external events
-            SpawnedThread childThread1 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("child-1-event");
-                    },
-                    "child-1",
-                    Map.of());
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-wait-for-one-of",
+                wf -> {
+                    // Spawn two child threads that wait for different external events
+                    SpawnedThread childThread1 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("child-1-event");
+                            },
+                            "child-1",
+                            Map.of());
 
-            SpawnedThread childThread2 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("child-2-event");
-                    },
-                    "child-2",
-                    Map.of());
+                    SpawnedThread childThread2 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("child-2-event");
+                            },
+                            "child-2",
+                            Map.of());
 
-            // Wait for any one of the child threads to complete
-            wf.waitForAnyOf(SpawnedThreads.of(childThread1, childThread2));
+                    // Wait for any one of the child threads to complete
+                    wf.waitForAnyOf(SpawnedThreads.of(childThread1, childThread2));
 
-            // Execute a task after one child completes
-            wf.execute("child-completed");
-        });
+                    // Execute a task after one child completes
+                    wf.execute("child-completed");
+                },
+                config);
     }
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
@@ -83,7 +85,7 @@ public class WaitForOneOfExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);

@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
@@ -21,12 +20,15 @@ public class TypeAdapterExample {
 
     private static final Logger log = LoggerFactory.getLogger(TypeAdapterExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-type-adapter", wf -> {
-            WfRunVariable uuidVar = wf.declareStr("uuid").searchable();
-            uuidVar.assign(wf.execute("get-uuid"));
-            wf.execute("echo-uuid", uuidVar);
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-type-adapter",
+                wf -> {
+                    WfRunVariable uuidVar = wf.declareStr("uuid").searchable();
+                    uuidVar.assign(wf.execute("get-uuid"));
+                    wf.execute("echo-uuid", uuidVar);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -68,7 +70,7 @@ public class TypeAdapterExample {
                 .addTypeAdapter(new UUIDTypeAdapter())
                 .build();
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         for (LHTaskWorker worker : workers) {

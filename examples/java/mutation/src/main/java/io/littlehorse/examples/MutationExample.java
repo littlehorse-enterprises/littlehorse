@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,15 +17,18 @@ import java.util.Properties;
  */
 public class MutationExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-mutation", wf -> {
-            WfRunVariable theName = wf.declareStr("name");
-            // We pass the name of the person and receive if it is spider-man or not
-            NodeOutput output = wf.execute("spider-bite", theName);
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-mutation",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("name");
+                    // We pass the name of the person and receive if it is spider-man or not
+                    NodeOutput output = wf.execute("spider-bite", theName);
 
-            // We save the output in the variable
-            theName.assign(output);
-        });
+                    // We save the output in the variable
+                    theName.assign(output);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -55,7 +57,7 @@ public class MutationExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

@@ -159,14 +159,29 @@ public abstract class Workflow {
     }
 
     /**
+     * DEPRECATED: Use {@link Workflow#newWorkflow(String, ThreadFunc, LHConfig)} instead to ensure LHConfig configurations are applied to the Workflow.
+     *
      * Creates a new Workflow with the provided name and entrypoint thread function.
      *
      * @param name is the name of the `WfSpec`.
      * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
      * @return a Workflow.
      */
+    @Deprecated(since = "1.2.0", forRemoval = false)
     public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc) {
         return new WorkflowImpl(name, entrypointThreadFunc);
+    }
+
+    /**
+     * Creates a new Workflow with the provided name and entrypoint thread function, applying type adapters from the provided config.
+     *
+     * @param name is the name of the `WfSpec`.
+     * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
+     * @param lhConfig is an LHConfig whose configuration will be applied to the Workflow, including any Type Adapters in its TypeAdapterRegistry.
+     * @return a Workflow.
+     */
+    public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc, LHConfig lhConfig) {
+        return new WorkflowImpl(name, entrypointThreadFunc, lhConfig);
     }
 
     /**

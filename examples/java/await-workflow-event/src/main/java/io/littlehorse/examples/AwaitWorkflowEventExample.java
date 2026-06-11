@@ -10,7 +10,6 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,12 +25,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class AwaitWorkflowEventExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("await-wf-event", wf -> {
-            WfRunVariable sleepTime = wf.declareInt("sleep-time").required();
-            wf.sleepSeconds(sleepTime);
-            wf.throwEvent("sleep-done", "hello there!");
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "await-wf-event",
+                wf -> {
+                    WfRunVariable sleepTime = wf.declareInt("sleep-time").required();
+                    wf.sleepSeconds(sleepTime);
+                    wf.throwEvent("sleep-done", "hello there!");
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -51,7 +53,7 @@ public class AwaitWorkflowEventExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         client.putWorkflowEventDef(
                 PutWorkflowEventDefRequest.newBuilder().setName("sleep-done").build());
