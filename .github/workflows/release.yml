@@ -233,8 +233,6 @@ jobs:
 
       - name: Publish
         working-directory: ${{env.working-directory}}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: pnpm publish --access public --no-git-checks
 
   publish-sdk-dotnet:
