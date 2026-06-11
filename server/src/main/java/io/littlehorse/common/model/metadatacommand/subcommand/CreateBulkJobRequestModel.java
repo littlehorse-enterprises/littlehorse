@@ -2,13 +2,13 @@ package io.littlehorse.common.model.metadatacommand.subcommand;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkDeleteWfRunModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.BulkDeleteWfRun;
 import io.littlehorse.sdk.common.proto.BulkJob;
 import io.littlehorse.sdk.common.proto.CreateBulkJobRequest;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
@@ -68,7 +68,12 @@ public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobR
         BulkJobModel bulkJob = new BulkJobModel(idModel, bulkDeleteWfRun);
         metadataManager.put(bulkJob);
 
+        // Create the cluster-scoped ActiveBulkJob registry entry so the punctuator
+        // can discover this job without iterating per-tenant.
+        ActiveBulkJobModel activeBulkJob =
+                new ActiveBulkJobModel(idModel, context.authorization().tenantId());
+        metadataManager.put(activeBulkJob);
+
         return bulkJob.toProto().build();
     }
 }
-

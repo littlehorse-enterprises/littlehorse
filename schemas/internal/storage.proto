@@ -70,6 +70,7 @@ enum GetableClassEnum {
     METRIC_WINDOW = 22;
     QUOTA = 23;
     BULK_JOB = 24;
+    ACTIVE_BULK_JOB = 25;
 }
 
 message AttributePb {

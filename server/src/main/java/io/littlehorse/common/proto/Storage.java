@@ -158,7 +158,7 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "T\020\014\022\027\n\023TIMER_ITERATOR_HINT\020\r\022\020\n\014METRICS_" +
       "HINT\020\016\022\017\n\013COUNTED_TAG\020\017\022\031\n\025PARTITION_COU" +
       "NTED_TAG\020\020\022\031\n\025BULK_JOB_SHARD_CURSOR\020\021\"\004\010" +
-      "\007\020\007*\317\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000\022\026" +
+      "\007\020\007*\344\003\n\020GetableClassEnum\022\014\n\010TASK_DEF\020\000\022\026" +
       "\n\022EXTERNAL_EVENT_DEF\020\001\022\013\n\007WF_SPEC\020\002\022\n\n\006W" +
       "F_RUN\020\003\022\014\n\010NODE_RUN\020\004\022\014\n\010VARIABLE\020\005\022\022\n\016E" +
       "XTERNAL_EVENT\020\006\022\024\n\020TASK_DEF_METRICS\020\007\022\023\n" +
@@ -169,9 +169,10 @@ public final class Storage extends com.google.protobuf.GeneratedFile {
       "NT\020\020\022\024\n\020SCHEDULED_WF_RUN\020\021\022\016\n\nSTRUCT_DEF" +
       "\020\022\022\024\n\020CORRELATED_EVENT\020\023\022\016\n\nCHECKPOINT\020\024" +
       "\022\027\n\023INACTIVE_THREAD_RUN\020\025\022\021\n\rMETRIC_WIND" +
-      "OW\020\026\022\t\n\005QUOTA\020\027\022\014\n\010BULK_JOB\020\030*(\n\016TagStor" +
-      "ageType\022\t\n\005LOCAL\020\000\022\013\n\007COUNTED\020\001B\037\n\033io.li" +
-      "ttlehorse.common.protoP\001b\006proto3"
+      "OW\020\026\022\t\n\005QUOTA\020\027\022\014\n\010BULK_JOB\020\030\022\023\n\017ACTIVE_" +
+      "BULK_JOB\020\031*(\n\016TagStorageType\022\t\n\005LOCAL\020\000\022" +
+      "\013\n\007COUNTED\020\001B\037\n\033io.littlehorse.common.pr" +
+      "otoP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

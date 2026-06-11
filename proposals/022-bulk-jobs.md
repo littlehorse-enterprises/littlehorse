@@ -165,9 +165,9 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 ### Flow
 
-1. **Job Creation:** The `rpc CreateBulkJob` stores a new `BulkJob` metadata object in the Core Store. This object contains all the information needed to execute the operation (e.g., `wf_spec_name`, time range, optional status filter). The `BulkJob` is created with status `BULK_JOB_RUNNING`.
+1. **Job Creation:** The `rpc CreateBulkJob` stores a new `BulkJob` metadata object (tenant-scoped) in the Global Metadata Store. This object contains all the information needed to execute the operation (e.g., `wf_spec_name`, time range, optional status filter). The `BulkJob` is created with status `BULK_JOB_RUNNING`. Additionally, a cluster-scoped **`ActiveBulkJob`** registry entry is stored (containing only the `BulkJobId` and `tenantId`). This allows the punctuator to discover active jobs with a single prefix scan without needing to iterate over all tenants.
 
-2. **Punctuator Detection & Shard Spawning:** Each `CommandProcessor` runs a punctuator that periodically scans for `BulkJob` metadata objects in the store. The punctuator **only considers jobs with status `BULK_JOB_RUNNING`** — it skips `COMPLETED` and `FAILED` jobs entirely. For each eligible job, the punctuator checks whether a **`BulkJobShard`** already exists for that `BulkJobId` in the local partition store. If one exists, the job is skipped (this partition has already spawned a shard for it).
+2. **Punctuator Detection & Shard Spawning:** Each `CommandProcessor` runs a punctuator that periodically scans the cluster-scoped `ActiveBulkJob` registry entries in the global store. For each entry, the punctuator resolves the tenant context and checks whether a **`BulkJobShard`** already exists for that `BulkJobId` in the local partition store. If one exists, the job is skipped (this partition has already spawned a shard for it).
 
 3. **Spawning a Shard:** If no shard exists, the punctuator creates a **`BulkJobShard`** in the partition's local store, keyed by the `BulkJobId`, along with a **`BulkJobShardCursor`** to track scan progress internally. The `BulkJobShard` represents this partition's share of the work and prevents duplicate processing on subsequent punctuator ticks.
 
@@ -181,7 +181,7 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 6. **Shard Completion:** Once a partition's scan finds no more matching `WfRun`s (range scan exhausted), its `BulkJobShard` is marked `COMPLETED` and removed from the store.
 
-7. **Job Completion:** The overall `BulkJob` transitions to `BULK_JOB_COMPLETED` once all shards across all partitions have completed. If an unrecoverable error occurs on any shard, it transitions to `BULK_JOB_FAILED`.
+7. **Job Completion:** The overall `BulkJob` transitions to `BULK_JOB_COMPLETED` once all shards across all partitions have completed. The cluster-scoped `ActiveBulkJob` registry entry is deleted at this point. If an unrecoverable error occurs on any shard, it transitions to `BULK_JOB_FAILED` and the registry entry is also deleted.
 
 ### Why Key Each DeleteWfRunRequest by Its Own WfRunId?
 

@@ -7,17 +7,16 @@ package io.littlehorse.common.proto;
 
 /**
  * <pre>
- * Internal storeable that tracks the range scan cursor for a BulkJobShard.
- * Not exposed via the public API.
+ * ID for an ActiveBulkJob registry entry.
  * </pre>
  *
- * Protobuf type {@code littlehorse.BulkJobShardCursor}
+ * Protobuf type {@code littlehorse.ActiveBulkJobId}
  */
 @com.google.protobuf.Generated
-public final class BulkJobShardCursor extends
+public final class ActiveBulkJobId extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.BulkJobShardCursor)
-    BulkJobShardCursorOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ActiveBulkJobId)
+    ActiveBulkJobIdOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -26,38 +25,37 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      BulkJobShardCursor.class.getName());
+      ActiveBulkJobId.class.getName());
   }
-  // Use BulkJobShardCursor.newBuilder() to construct.
-  private BulkJobShardCursor(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use ActiveBulkJobId.newBuilder() to construct.
+  private ActiveBulkJobId(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private BulkJobShardCursor() {
-    lastKey_ = "";
+  private ActiveBulkJobId() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+    return io.littlehorse.common.proto.Job.internal_static_littlehorse_ActiveBulkJobId_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable
+    return io.littlehorse.common.proto.Job.internal_static_littlehorse_ActiveBulkJobId_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.BulkJobShardCursor.class, io.littlehorse.common.proto.BulkJobShardCursor.Builder.class);
+            io.littlehorse.common.proto.ActiveBulkJobId.class, io.littlehorse.common.proto.ActiveBulkJobId.Builder.class);
   }
 
   private int bitField0_;
-  public static final int BULK_JOB_ID_FIELD_NUMBER = 1;
+  public static final int BULK_JOB_ID_FIELD_NUMBER = 2;
   private io.littlehorse.sdk.common.proto.BulkJobId bulkJobId_;
   /**
    * <pre>
-   * The BulkJob this cursor belongs to.
+   * The BulkJob this entry references.
    * </pre>
    *
-   * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+   * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
    * @return Whether the bulkJobId field is set.
    */
   @java.lang.Override
@@ -66,10 +64,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The BulkJob this cursor belongs to.
+   * The BulkJob this entry references.
    * </pre>
    *
-   * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+   * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
    * @return The bulkJobId.
    */
   @java.lang.Override
@@ -78,76 +76,52 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The BulkJob this cursor belongs to.
+   * The BulkJob this entry references.
    * </pre>
    *
-   * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+   * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder getBulkJobIdOrBuilder() {
     return bulkJobId_ == null ? io.littlehorse.sdk.common.proto.BulkJobId.getDefaultInstance() : bulkJobId_;
   }
 
-  public static final int LAST_KEY_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object lastKey_ = "";
+  public static final int TENANT_ID_FIELD_NUMBER = 3;
+  private io.littlehorse.sdk.common.proto.TenantId tenantId_;
   /**
    * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
+   * The tenant that owns this BulkJob.
    * </pre>
    *
-   * <code>string last_key = 2;</code>
-   * @return The lastKey.
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
+   * @return Whether the tenantId field is set.
    */
   @java.lang.Override
-  public java.lang.String getLastKey() {
-    java.lang.Object ref = lastKey_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      lastKey_ = s;
-      return s;
-    }
+  public boolean hasTenantId() {
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
+   * The tenant that owns this BulkJob.
    * </pre>
    *
-   * <code>string last_key = 2;</code>
-   * @return The bytes for lastKey.
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
+   * @return The tenantId.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString
-      getLastKeyBytes() {
-    java.lang.Object ref = lastKey_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      lastKey_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
-
-  public static final int SCAN_COMPLETED_FIELD_NUMBER = 3;
-  private boolean scanCompleted_ = false;
   /**
    * <pre>
-   * Whether the scan has completed for this shard.
+   * The tenant that owns this BulkJob.
    * </pre>
    *
-   * <code>bool scan_completed = 3;</code>
-   * @return The scanCompleted.
+   * <code>.littlehorse.TenantId tenant_id = 3;</code>
    */
   @java.lang.Override
-  public boolean getScanCompleted() {
-    return scanCompleted_;
+  public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+    return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -165,13 +139,10 @@ private static final long serialVersionUID = 0L;
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeMessage(1, getBulkJobId());
+      output.writeMessage(2, getBulkJobId());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastKey_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, lastKey_);
-    }
-    if (scanCompleted_ != false) {
-      output.writeBool(3, scanCompleted_);
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(3, getTenantId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -184,14 +155,11 @@ private static final long serialVersionUID = 0L;
     size = 0;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, getBulkJobId());
+        .computeMessageSize(2, getBulkJobId());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastKey_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, lastKey_);
-    }
-    if (scanCompleted_ != false) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, scanCompleted_);
+        .computeMessageSize(3, getTenantId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -203,20 +171,21 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.BulkJobShardCursor)) {
+    if (!(obj instanceof io.littlehorse.common.proto.ActiveBulkJobId)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.BulkJobShardCursor other = (io.littlehorse.common.proto.BulkJobShardCursor) obj;
+    io.littlehorse.common.proto.ActiveBulkJobId other = (io.littlehorse.common.proto.ActiveBulkJobId) obj;
 
     if (hasBulkJobId() != other.hasBulkJobId()) return false;
     if (hasBulkJobId()) {
       if (!getBulkJobId()
           .equals(other.getBulkJobId())) return false;
     }
-    if (!getLastKey()
-        .equals(other.getLastKey())) return false;
-    if (getScanCompleted()
-        != other.getScanCompleted()) return false;
+    if (hasTenantId() != other.hasTenantId()) return false;
+    if (hasTenantId()) {
+      if (!getTenantId()
+          .equals(other.getTenantId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -232,54 +201,53 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + BULK_JOB_ID_FIELD_NUMBER;
       hash = (53 * hash) + getBulkJobId().hashCode();
     }
-    hash = (37 * hash) + LAST_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getLastKey().hashCode();
-    hash = (37 * hash) + SCAN_COMPLETED_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getScanCompleted());
+    if (hasTenantId()) {
+      hash = (37 * hash) + TENANT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTenantId().hashCode();
+    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -287,26 +255,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseDelimitedFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.ActiveBulkJobId parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -319,7 +287,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.BulkJobShardCursor prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.ActiveBulkJobId prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -336,30 +304,29 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Internal storeable that tracks the range scan cursor for a BulkJobShard.
-   * Not exposed via the public API.
+   * ID for an ActiveBulkJob registry entry.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.BulkJobShardCursor}
+   * Protobuf type {@code littlehorse.ActiveBulkJobId}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.BulkJobShardCursor)
-      io.littlehorse.common.proto.BulkJobShardCursorOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ActiveBulkJobId)
+      io.littlehorse.common.proto.ActiveBulkJobIdOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_ActiveBulkJobId_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_ActiveBulkJobId_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.BulkJobShardCursor.class, io.littlehorse.common.proto.BulkJobShardCursor.Builder.class);
+              io.littlehorse.common.proto.ActiveBulkJobId.class, io.littlehorse.common.proto.ActiveBulkJobId.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.BulkJobShardCursor.newBuilder()
+    // Construct using io.littlehorse.common.proto.ActiveBulkJobId.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -373,6 +340,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         internalGetBulkJobIdFieldBuilder();
+        internalGetTenantIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -384,25 +352,28 @@ private static final long serialVersionUID = 0L;
         bulkJobIdBuilder_.dispose();
         bulkJobIdBuilder_ = null;
       }
-      lastKey_ = "";
-      scanCompleted_ = false;
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_ActiveBulkJobId_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.BulkJobShardCursor.getDefaultInstance();
+    public io.littlehorse.common.proto.ActiveBulkJobId getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.ActiveBulkJobId.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor build() {
-      io.littlehorse.common.proto.BulkJobShardCursor result = buildPartial();
+    public io.littlehorse.common.proto.ActiveBulkJobId build() {
+      io.littlehorse.common.proto.ActiveBulkJobId result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -410,14 +381,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor buildPartial() {
-      io.littlehorse.common.proto.BulkJobShardCursor result = new io.littlehorse.common.proto.BulkJobShardCursor(this);
+    public io.littlehorse.common.proto.ActiveBulkJobId buildPartial() {
+      io.littlehorse.common.proto.ActiveBulkJobId result = new io.littlehorse.common.proto.ActiveBulkJobId(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.common.proto.BulkJobShardCursor result) {
+    private void buildPartial0(io.littlehorse.common.proto.ActiveBulkJobId result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -427,36 +398,31 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.lastKey_ = lastKey_;
-      }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.scanCompleted_ = scanCompleted_;
+        result.tenantId_ = tenantIdBuilder_ == null
+            ? tenantId_
+            : tenantIdBuilder_.build();
+        to_bitField0_ |= 0x00000002;
       }
       result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.BulkJobShardCursor) {
-        return mergeFrom((io.littlehorse.common.proto.BulkJobShardCursor)other);
+      if (other instanceof io.littlehorse.common.proto.ActiveBulkJobId) {
+        return mergeFrom((io.littlehorse.common.proto.ActiveBulkJobId)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.BulkJobShardCursor other) {
-      if (other == io.littlehorse.common.proto.BulkJobShardCursor.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.ActiveBulkJobId other) {
+      if (other == io.littlehorse.common.proto.ActiveBulkJobId.getDefaultInstance()) return this;
       if (other.hasBulkJobId()) {
         mergeBulkJobId(other.getBulkJobId());
       }
-      if (!other.getLastKey().isEmpty()) {
-        lastKey_ = other.lastKey_;
-        bitField0_ |= 0x00000002;
-        onChanged();
-      }
-      if (other.getScanCompleted() != false) {
-        setScanCompleted(other.getScanCompleted());
+      if (other.hasTenantId()) {
+        mergeTenantId(other.getTenantId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -484,23 +450,20 @@ private static final long serialVersionUID = 0L;
             case 0:
               done = true;
               break;
-            case 10: {
+            case 18: {
               input.readMessage(
                   internalGetBulkJobIdFieldBuilder().getBuilder(),
                   extensionRegistry);
               bitField0_ |= 0x00000001;
               break;
-            } // case 10
-            case 18: {
-              lastKey_ = input.readStringRequireUtf8();
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetTenantIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
               bitField0_ |= 0x00000002;
               break;
-            } // case 18
-            case 24: {
-              scanCompleted_ = input.readBool();
-              bitField0_ |= 0x00000004;
-              break;
-            } // case 24
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -523,10 +486,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.BulkJobId, io.littlehorse.sdk.common.proto.BulkJobId.Builder, io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder> bulkJobIdBuilder_;
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      * @return Whether the bulkJobId field is set.
      */
     public boolean hasBulkJobId() {
@@ -534,10 +497,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      * @return The bulkJobId.
      */
     public io.littlehorse.sdk.common.proto.BulkJobId getBulkJobId() {
@@ -549,10 +512,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public Builder setBulkJobId(io.littlehorse.sdk.common.proto.BulkJobId value) {
       if (bulkJobIdBuilder_ == null) {
@@ -569,10 +532,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public Builder setBulkJobId(
         io.littlehorse.sdk.common.proto.BulkJobId.Builder builderForValue) {
@@ -587,10 +550,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public Builder mergeBulkJobId(io.littlehorse.sdk.common.proto.BulkJobId value) {
       if (bulkJobIdBuilder_ == null) {
@@ -612,10 +575,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public Builder clearBulkJobId() {
       bitField0_ = (bitField0_ & ~0x00000001);
@@ -629,10 +592,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.BulkJobId.Builder getBulkJobIdBuilder() {
       bitField0_ |= 0x00000001;
@@ -641,10 +604,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder getBulkJobIdOrBuilder() {
       if (bulkJobIdBuilder_ != null) {
@@ -656,10 +619,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The BulkJob this cursor belongs to.
+     * The BulkJob this entry references.
      * </pre>
      *
-     * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
+     * <code>.littlehorse.BulkJobId bulk_job_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.BulkJobId, io.littlehorse.sdk.common.proto.BulkJobId.Builder, io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder> 
@@ -675,159 +638,180 @@ private static final long serialVersionUID = 0L;
       return bulkJobIdBuilder_;
     }
 
-    private java.lang.Object lastKey_ = "";
+    private io.littlehorse.sdk.common.proto.TenantId tenantId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
     /**
      * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>string last_key = 2;</code>
-     * @return The lastKey.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
+     * @return Whether the tenantId field is set.
      */
-    public java.lang.String getLastKey() {
-      java.lang.Object ref = lastKey_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        lastKey_ = s;
-        return s;
+    public boolean hasTenantId() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * The tenant that owns this BulkJob.
+     * </pre>
+     *
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
+     * @return The tenantId.
+     */
+    public io.littlehorse.sdk.common.proto.TenantId getTenantId() {
+      if (tenantIdBuilder_ == null) {
+        return tenantId_ == null ? io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
       } else {
-        return (java.lang.String) ref;
+        return tenantIdBuilder_.getMessage();
       }
     }
     /**
      * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>string last_key = 2;</code>
-     * @return The bytes for lastKey.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
      */
-    public com.google.protobuf.ByteString
-        getLastKeyBytes() {
-      java.lang.Object ref = lastKey_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        lastKey_ = b;
-        return b;
+    public Builder setTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        tenantId_ = value;
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        tenantIdBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
-     * @param value The lastKey to set.
-     * @return This builder for chaining.
-     */
-    public Builder setLastKey(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      lastKey_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>string last_key = 2;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
      */
-    public Builder clearLastKey() {
-      lastKey_ = getDefaultInstance().getLastKey();
+    public Builder setTenantId(
+        io.littlehorse.sdk.common.proto.TenantId.Builder builderForValue) {
+      if (tenantIdBuilder_ == null) {
+        tenantId_ = builderForValue.build();
+      } else {
+        tenantIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The tenant that owns this BulkJob.
+     * </pre>
+     *
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
+     */
+    public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
+      if (tenantIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          tenantId_ != null &&
+          tenantId_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
+          getTenantIdBuilder().mergeFrom(value);
+        } else {
+          tenantId_ = value;
+        }
+      } else {
+        tenantIdBuilder_.mergeFrom(value);
+      }
+      if (tenantId_ != null) {
+        bitField0_ |= 0x00000002;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The tenant that owns this BulkJob.
+     * </pre>
+     *
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
+     */
+    public Builder clearTenantId() {
       bitField0_ = (bitField0_ & ~0x00000002);
+      tenantId_ = null;
+      if (tenantIdBuilder_ != null) {
+        tenantIdBuilder_.dispose();
+        tenantIdBuilder_ = null;
+      }
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>string last_key = 2;</code>
-     * @param value The bytes for lastKey to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
      */
-    public Builder setLastKeyBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      lastKey_ = value;
+    public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
       bitField0_ |= 0x00000002;
       onChanged();
-      return this;
-    }
-
-    private boolean scanCompleted_ ;
-    /**
-     * <pre>
-     * Whether the scan has completed for this shard.
-     * </pre>
-     *
-     * <code>bool scan_completed = 3;</code>
-     * @return The scanCompleted.
-     */
-    @java.lang.Override
-    public boolean getScanCompleted() {
-      return scanCompleted_;
+      return internalGetTenantIdFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * Whether the scan has completed for this shard.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>bool scan_completed = 3;</code>
-     * @param value The scanCompleted to set.
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
      */
-    public Builder setScanCompleted(boolean value) {
-
-      scanCompleted_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
+    public io.littlehorse.sdk.common.proto.TenantIdOrBuilder getTenantIdOrBuilder() {
+      if (tenantIdBuilder_ != null) {
+        return tenantIdBuilder_.getMessageOrBuilder();
+      } else {
+        return tenantId_ == null ?
+            io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance() : tenantId_;
+      }
     }
     /**
      * <pre>
-     * Whether the scan has completed for this shard.
+     * The tenant that owns this BulkJob.
      * </pre>
      *
-     * <code>bool scan_completed = 3;</code>
-     * @return This builder for chaining.
+     * <code>.littlehorse.TenantId tenant_id = 3;</code>
      */
-    public Builder clearScanCompleted() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      scanCompleted_ = false;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> 
+        internalGetTenantIdFieldBuilder() {
+      if (tenantIdBuilder_ == null) {
+        tenantIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder>(
+                getTenantId(),
+                getParentForChildren(),
+                isClean());
+        tenantId_ = null;
+      }
+      return tenantIdBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.BulkJobShardCursor)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ActiveBulkJobId)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.BulkJobShardCursor)
-  private static final io.littlehorse.common.proto.BulkJobShardCursor DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ActiveBulkJobId)
+  private static final io.littlehorse.common.proto.ActiveBulkJobId DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.BulkJobShardCursor();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.ActiveBulkJobId();
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstance() {
+  public static io.littlehorse.common.proto.ActiveBulkJobId getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<BulkJobShardCursor>
-      PARSER = new com.google.protobuf.AbstractParser<BulkJobShardCursor>() {
+  private static final com.google.protobuf.Parser<ActiveBulkJobId>
+      PARSER = new com.google.protobuf.AbstractParser<ActiveBulkJobId>() {
     @java.lang.Override
-    public BulkJobShardCursor parsePartialFrom(
+    public ActiveBulkJobId parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -846,17 +830,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<BulkJobShardCursor> parser() {
+  public static com.google.protobuf.Parser<ActiveBulkJobId> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<BulkJobShardCursor> getParserForType() {
+  public com.google.protobuf.Parser<ActiveBulkJobId> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.ActiveBulkJobId getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

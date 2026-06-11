@@ -39,20 +39,10 @@ public interface BulkJobShardCursorOrBuilder extends
 
   /**
    * <pre>
-   * The partition this cursor is operating on.
-   * </pre>
-   *
-   * <code>int32 partition = 2;</code>
-   * @return The partition.
-   */
-  int getPartition();
-
-  /**
-   * <pre>
    * The last iterated key in the range scan. Empty means scan hasn't started yet.
    * </pre>
    *
-   * <code>string last_key = 3;</code>
+   * <code>string last_key = 2;</code>
    * @return The lastKey.
    */
   java.lang.String getLastKey();
@@ -61,7 +51,7 @@ public interface BulkJobShardCursorOrBuilder extends
    * The last iterated key in the range scan. Empty means scan hasn't started yet.
    * </pre>
    *
-   * <code>string last_key = 3;</code>
+   * <code>string last_key = 2;</code>
    * @return The bytes for lastKey.
    */
   com.google.protobuf.ByteString
@@ -72,7 +62,7 @@ public interface BulkJobShardCursorOrBuilder extends
    * Whether the scan has completed for this shard.
    * </pre>
    *
-   * <code>bool scan_completed = 4;</code>
+   * <code>bool scan_completed = 3;</code>
    * @return The scanCompleted.
    */
   boolean getScanCompleted();

@@ -111,6 +111,10 @@ public enum GetableClassEnum
    * <code>BULK_JOB = 24;</code>
    */
   BULK_JOB(24),
+  /**
+   * <code>ACTIVE_BULK_JOB = 25;</code>
+   */
+  ACTIVE_BULK_JOB(25),
   UNRECOGNIZED(-1),
   ;
 
@@ -223,6 +227,10 @@ public enum GetableClassEnum
    * <code>BULK_JOB = 24;</code>
    */
   public static final int BULK_JOB_VALUE = 24;
+  /**
+   * <code>ACTIVE_BULK_JOB = 25;</code>
+   */
+  public static final int ACTIVE_BULK_JOB_VALUE = 25;
 
 
   public final int getNumber() {
@@ -274,6 +282,7 @@ public enum GetableClassEnum
       case 22: return METRIC_WINDOW;
       case 23: return QUOTA;
       case 24: return BULK_JOB;
+      case 25: return ACTIVE_BULK_JOB;
       default: return null;
     }
   }

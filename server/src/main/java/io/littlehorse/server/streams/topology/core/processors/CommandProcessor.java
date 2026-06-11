@@ -94,11 +94,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 PunctuationType.WALL_CLOCK_TIME,
                 this::collectPartitionMetrics);
 
-        this.bulkJobPunctuator = new BulkJobPunctuator(ctx, config);
+        this.bulkJobPunctuator = new BulkJobPunctuator(ctx, config, metadataCache);
         ctx.schedule(
                 Duration.ofSeconds(10),
                 PunctuationType.WALL_CLOCK_TIME,
-                bulkJobPunctuator::punctuate);
+                timestamp -> bulkJobPunctuator.punctuate(timestamp));
 
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }

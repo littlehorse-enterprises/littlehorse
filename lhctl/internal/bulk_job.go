@@ -76,7 +76,7 @@ Optional flags:
 				log.Fatalf("Invalid status: %s. Valid values: STARTING, RUNNING, COMPLETED, HALTING, HALTED, ERROR, EXCEPTION", statusStr)
 			}
 			status := lhproto.LHStatus(statusVal)
-			bulkDelete.Status = &status
+			bulkDelete.WfRunStatus = &status
 		}
 
 		req := &lhproto.CreateBulkJobRequest{
@@ -108,4 +108,3 @@ func init() {
 	bulkDeleteWfRunCmd.Flags().String("status", "", "Only delete WfRun's with this status (e.g., COMPLETED, ERROR)")
 	bulkDeleteWfRunCmd.Flags().String("id", "", "Client-provided ID for idempotency")
 }
-

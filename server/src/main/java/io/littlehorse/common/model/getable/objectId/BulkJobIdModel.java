@@ -60,4 +60,3 @@ public class BulkJobIdModel extends MetadataId<BulkJobId, BulkJob, BulkJobModel>
         return id;
     }
 }
-

@@ -48,8 +48,8 @@ public class BulkUpdateJobModel extends CoreSubCommand<BulkUpdateJob> {
                 yield noOpJob;
             }
             case BULK_DELETE_WF_RUN -> {
-                this.bulkDeleteWfRunJob = LHSerializable.fromProto(
-                        jobProto.getBulkDeleteWfRun(), BulkDeleteWfRunJobModel.class, context);
+                this.bulkDeleteWfRunJob =
+                        LHSerializable.fromProto(jobProto.getBulkDeleteWfRun(), BulkDeleteWfRunJobModel.class, context);
                 yield bulkDeleteWfRunJob;
             }
             default -> throw new IllegalArgumentException("%s not supported yet".formatted(jobProto.getJobCase()));

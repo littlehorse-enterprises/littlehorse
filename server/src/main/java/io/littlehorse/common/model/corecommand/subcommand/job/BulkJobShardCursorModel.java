@@ -20,15 +20,13 @@ import lombok.Setter;
 public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
 
     private BulkJobIdModel bulkJobId;
-    private int partition;
     private String lastKey;
     private boolean scanCompleted;
 
     public BulkJobShardCursorModel() {}
 
-    public BulkJobShardCursorModel(BulkJobIdModel bulkJobId, int partition) {
+    public BulkJobShardCursorModel(BulkJobIdModel bulkJobId) {
         this.bulkJobId = bulkJobId;
-        this.partition = partition;
         this.lastKey = "";
         this.scanCompleted = false;
     }
@@ -37,7 +35,6 @@ public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         BulkJobShardCursor p = (BulkJobShardCursor) proto;
         this.bulkJobId = LHSerializable.fromProto(p.getBulkJobId(), BulkJobIdModel.class, context);
-        this.partition = p.getPartition();
         this.lastKey = p.getLastKey();
         this.scanCompleted = p.getScanCompleted();
     }
@@ -46,7 +43,6 @@ public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
     public BulkJobShardCursor.Builder toProto() {
         return BulkJobShardCursor.newBuilder()
                 .setBulkJobId(bulkJobId.toProto())
-                .setPartition(partition)
                 .setLastKey(lastKey)
                 .setScanCompleted(scanCompleted);
     }
@@ -63,7 +59,6 @@ public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
 
     @Override
     public String getStoreKey() {
-        return bulkJobId.toString() + "/" + partition;
+        return bulkJobId.getStoreableKey();
     }
 }
-

@@ -7,7 +7,6 @@ import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.proto.BulkDeleteWfRunJob;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.BulkDeleteWfRun;
-import io.littlehorse.sdk.common.proto.BulkJobId;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
@@ -38,9 +37,7 @@ public class BulkDeleteWfRunJobModel extends LHSerializable<BulkDeleteWfRunJob> 
 
     @Override
     public BulkDeleteWfRunJob.Builder toProto() {
-        return BulkDeleteWfRunJob.newBuilder()
-                .setBulkJobId(bulkJobId.toProto())
-                .setCriteria(criteria);
+        return BulkDeleteWfRunJob.newBuilder().setBulkJobId(bulkJobId.toProto()).setCriteria(criteria);
     }
 
     @Override
@@ -53,4 +50,3 @@ public class BulkDeleteWfRunJobModel extends LHSerializable<BulkDeleteWfRunJob> 
         processorContext.getableManager().delete(record.getId());
     }
 }
-

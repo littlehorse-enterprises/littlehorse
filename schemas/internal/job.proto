@@ -6,6 +6,7 @@ option java_package = "io.littlehorse.common.proto";
 
 import "object_id.proto";
 import "bulk_job.proto";
+import "google/protobuf/timestamp.proto";
 
 message BulkUpdateJob {
   int32 partition = 1;
@@ -39,12 +40,30 @@ message BulkJobShardCursor {
   // The BulkJob this cursor belongs to.
   BulkJobId bulk_job_id = 1;
 
-  // The partition this cursor is operating on.
-  int32 partition = 2;
-
   // The last iterated key in the range scan. Empty means scan hasn't started yet.
-  string last_key = 3;
+  string last_key = 2;
 
   // Whether the scan has completed for this shard.
-  bool scan_completed = 4;
+  bool scan_completed = 3;
 }
+
+// ID for an ActiveBulkJob registry entry.
+message ActiveBulkJobId {
+  // The BulkJob this entry references.
+  BulkJobId bulk_job_id = 2;
+  // The tenant that owns this BulkJob.
+  TenantId tenant_id = 3;
+
+}
+
+// Cluster-scoped internal registry entry that signals a BulkJob is currently active.
+// Created when a BulkJob starts; deleted when it completes or fails.
+// The punctuator iterates these to discover work without needing to scan per-tenant.
+message ActiveBulkJob {
+  // The ID of this registry entry (same as the BulkJob ID).
+  ActiveBulkJobId id = 1;
+
+  // When this entry was created.
+  google.protobuf.Timestamp created_at = 2;
+}
+

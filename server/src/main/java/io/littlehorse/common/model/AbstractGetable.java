@@ -19,6 +19,7 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
@@ -26,8 +27,9 @@ import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
-import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
+import io.littlehorse.common.model.getable.objectId.ActiveBulkJobIdModel;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
+import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -129,6 +131,9 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.INACTIVE_THREAD_RUN;
         } else if (cls.equals(BulkJobModel.class)) {
             return GetableClassEnum.BULK_JOB;
+        } else if (cls.equals(ActiveBulkJobModel.class)) {
+            return GetableClassEnum.ACTIVE_BULK_JOB;
+
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -186,6 +191,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return InactiveThreadRunModel.class;
             case BULK_JOB:
                 return BulkJobModel.class;
+            case ACTIVE_BULK_JOB:
+                return ActiveBulkJobModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -244,6 +251,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return InactiveThreadRunIdModel.class;
             case BULK_JOB:
                 return BulkJobIdModel.class;
+            case ACTIVE_BULK_JOB:
+                return ActiveBulkJobIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");
