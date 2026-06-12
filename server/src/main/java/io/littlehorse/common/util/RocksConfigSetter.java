@@ -1,6 +1,8 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
+
+import java.time.Duration;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
@@ -55,9 +57,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             default:
                 options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
         }
-        // Keep no more than 100MB of logs per instance. Note that 100MB is a LOT of logs
-        options.setMaxLogFileSize(MB * 10);
-        options.setKeepLogFileNum(10);
+        // Keep 14 days of logs, rolling into a new file every day.
+        options.setLogFileTimeToRoll(Duration.ofDays(1).toSeconds());
+        options.setKeepLogFileNum(14);
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
