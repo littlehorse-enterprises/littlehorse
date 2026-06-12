@@ -42,6 +42,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setMaxBackgroundJobs(threads); // Rocksdb tuning guide recommendation
         options.setMaxSubcompactions(3);
 
+        // Info LOG file configurations
         switch (serverConfig.getServerMetricLevel()) {
             case "TRACE":
                 // Trace is the lowest level available in LH Server, so we map
@@ -54,6 +55,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             default:
                 options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
         }
+        // Keep no more than 100MB of logs per instance. Note that 100MB is a LOT of logs
+        options.setMaxLogFileSize(MB * 10);
+        options.setKeepLogFileNum(10);
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
