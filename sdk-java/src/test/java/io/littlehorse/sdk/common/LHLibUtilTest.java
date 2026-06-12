@@ -466,4 +466,69 @@ public class LHLibUtilTest {
 
         assertThat(pojo.getNullableField()).isNull();
     }
+
+    @Test
+    void shouldSerializeAndDeserializeRecordStruct() {
+        PersonRecordStruct original = new PersonRecordStruct("Leia", "Alderaan");
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original, LHTypeAdapterRegistry.empty());
+        PersonRecordStruct deserialized =
+                (PersonRecordStruct) LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
+
+        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @Test
+    void shouldUseTypeAdapterInsideRecordStructFields() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        UUID uuid = UUID.randomUUID();
+        AdapterRecordStruct original = new AdapterRecordStruct(uuid, "test-name");
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original, typeAdapterRegistry);
+        AdapterRecordStruct deserialized =
+                (AdapterRecordStruct) LHLibUtil.varValToObj(serialized, AdapterRecordStruct.class, typeAdapterRegistry);
+
+        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getValueCase())
+                .isEqualTo(VariableValue.ValueCase.STR);
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getStr())
+                .isEqualTo(uuid.toString());
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @LHStructDef("person-record-struct")
+    public record PersonRecordStruct(String name, String address) {}
+
+    @LHStructDef("adapter-record-struct")
+    public record AdapterRecordStruct(UUID id, String name) {}
 }
