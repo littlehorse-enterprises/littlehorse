@@ -1,0 +1,17 @@
+{
+  "name": "example-js-json",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "run-wf": "tsx src/run-wf.ts"
+  },
+  "dependencies": {
+    "littlehorse-client": "file:../../../sdk-js",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

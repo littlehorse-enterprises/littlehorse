@@ -31,7 +31,7 @@ import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
 import { TypeDefinition } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
 import { VariableValue, StructField } from '../proto/variable'
-import { toVariableValue } from './variableMapping'
+import { toVariableValue } from '../utils/variableValueConvert'
 
 // ── Field definitions ────────────────────────────────────────────────
 
