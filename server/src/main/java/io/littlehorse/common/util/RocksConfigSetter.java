@@ -1,7 +1,6 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
-
 import java.time.Duration;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
