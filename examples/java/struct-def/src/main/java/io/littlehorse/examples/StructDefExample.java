@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -28,16 +27,19 @@ public class StructDefExample {
 
     private static final Logger log = LoggerFactory.getLogger(StructDefExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("issue-parking-ticket", wf -> {
-            WfRunVariable ticketReport =
-                    wf.declareStruct("ticket-report", ParkingTicketReport.class).required();
-            WfRunVariable carOwner = wf.declareStruct("car-owner", Person.class);
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "issue-parking-ticket",
+                wf -> {
+                    WfRunVariable ticketReport = wf.declareStruct("ticket-report", ParkingTicketReport.class)
+                            .required();
+                    WfRunVariable carOwner = wf.declareStruct("car-owner", Person.class);
 
-            carOwner.assign(wf.execute("get-car-owner", ticketReport));
+                    carOwner.assign(wf.execute("get-car-owner", ticketReport));
 
-            wf.execute("mail-ticket", carOwner);
-        });
+                    wf.execute("mail-ticket", carOwner);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -103,7 +105,7 @@ public class StructDefExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

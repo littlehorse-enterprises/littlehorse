@@ -159,14 +159,29 @@ public abstract class Workflow {
     }
 
     /**
+     * DEPRECATED: Use {@link Workflow#newWorkflow(String, ThreadFunc, LHConfig)} instead to ensure LHConfig configurations are applied to the Workflow.
+     *
      * Creates a new Workflow with the provided name and entrypoint thread function.
      *
      * @param name is the name of the `WfSpec`.
      * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
      * @return a Workflow.
      */
+    @Deprecated(since = "1.2.0", forRemoval = false)
     public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc) {
         return new WorkflowImpl(name, entrypointThreadFunc);
+    }
+
+    /**
+     * Creates a new Workflow with the provided name and entrypoint thread function, applying type adapters from the provided config.
+     *
+     * @param name is the name of the `WfSpec`.
+     * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
+     * @param lhConfig is an LHConfig whose configuration will be applied to the Workflow, including any Type Adapters in its TypeAdapterRegistry.
+     * @return a Workflow.
+     */
+    public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc, LHConfig lhConfig) {
+        return new WorkflowImpl(name, entrypointThreadFunc, lhConfig);
     }
 
     /**
@@ -190,13 +205,14 @@ public abstract class Workflow {
     public abstract PutWfSpecRequest compileWorkflow();
 
     /**
-     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
+     * DEPRECATED: Pass your LHConfig into {@link Workflow#newWorkflow(String, ThreadFunc, LHConfig)} and use the {@link Workflow#compileWorkflow()} method that applies the LHConfig to ensure that any type adapters configured in your LHConfig are applied to the Workflow before compilation.
      *
-     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
      *
      * @param config source for dynamically configured type adapters
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
+    @Deprecated(since = "1.2.0", forRemoval = false)
     public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
 
     /**

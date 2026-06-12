@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 public class HundredTasks {
 
-    public static Workflow getWorkflow() {
+    public static Workflow getWorkflow(LHConfig config) {
         return new WorkflowImpl("hundred-tasks", wf -> {
             for (int i = 0; i < 25; i++) {
                 wf.execute("task-1");
@@ -66,7 +66,7 @@ public class HundredTasks {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

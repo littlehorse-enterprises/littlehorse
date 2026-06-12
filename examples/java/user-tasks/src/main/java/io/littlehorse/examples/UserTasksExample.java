@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.usertask.UserTaskSchema;
 import io.littlehorse.sdk.wfsdk.*;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,8 +19,8 @@ public class UserTasksExample {
     private static final String IT_REQUEST_FORM = "it-request";
     public static final String APPROVAL_FORM = "approve-it-request";
 
-    public Workflow getWorkflow() {
-        return new WorkflowImpl(WF_NAME, this::wf);
+    public Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(WF_NAME, this::wf, config);
     }
 
     public void wf(WorkflowThread wf) {
@@ -104,7 +103,7 @@ public class UserTasksExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

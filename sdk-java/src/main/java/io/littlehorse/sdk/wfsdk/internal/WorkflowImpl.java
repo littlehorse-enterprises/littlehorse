@@ -46,6 +46,11 @@ public class WorkflowImpl extends Workflow {
         this.externalEventsToRegister = new HashSet<>();
     }
 
+    public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc, LHConfig lhConfig) {
+        this(name, entrypointThreadFunc);
+        this.lhTypeAdapterRegistry = lhConfig.getTypeAdapterRegistry();
+    }
+
     @Override
     public void registerWfSpec(LHConfig config) {
         lhTypeAdapterRegistry = config.getTypeAdapterRegistry();

@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,18 +23,21 @@ public class InterruptHandlerExample {
 
     private static final Logger log = LoggerFactory.getLogger(InterruptHandlerExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-interrupt-handler", wf -> {
-            // Register an interrupt handler
-            wf.registerInterruptHandler("interruption-event", handler -> {
-                        handler.execute("some-task");
-                    })
-                    .withEventType(String.class);
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-interrupt-handler",
+                wf -> {
+                    // Register an interrupt handler
+                    wf.registerInterruptHandler("interruption-event", handler -> {
+                                handler.execute("some-task");
+                            })
+                            .withEventType(String.class);
 
-            // Do some work that takes a while
-            wf.sleepSeconds(30);
-            wf.execute("my-task");
-        });
+                    // Do some work that takes a while
+                    wf.sleepSeconds(30);
+                    wf.execute("my-task");
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -69,7 +71,7 @@ public class InterruptHandlerExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);
