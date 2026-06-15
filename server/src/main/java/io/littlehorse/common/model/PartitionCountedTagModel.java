@@ -45,7 +45,7 @@ public class PartitionCountedTagModel extends Storeable<PartitionCountedTag> {
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PartitionCountedTag p = (PartitionCountedTag) proto;
-        this.tenantId = new TenantIdModel(p.getTenantId().getId());
+        this.tenantId = TenantIdModel.fromProto(p.getTenantId(), TenantIdModel.class, context);
         this.attributeString = p.getAttributeString();
         this.count = p.getCount();
     }
