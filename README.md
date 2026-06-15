@@ -161,10 +161,11 @@ npm install
 npm start
 ```
 
-Then in another terminal, register the `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
+Then in another terminal, register the `ExternalEventDef` and `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
 
 ```sh
 cd examples/js/quickstart
+lhctl deploy externalEventDef identity-verified-external-event-def.json
 lhctl deploy wfSpec quickstart-wfspec.json
 ```
 

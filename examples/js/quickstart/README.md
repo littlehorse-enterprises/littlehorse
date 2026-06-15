@@ -34,9 +34,10 @@ This will:
 
 ## Register the WfSpec
 
-The JS SDK does not yet support creating WfSpecs programmatically. Once the workers are running (and the TaskDefs are registered), deploy the WfSpec with `lhctl` in another terminal:
+The JS SDK does not yet support creating WfSpecs programmatically. Once the workers are running (and the TaskDefs are registered), deploy the `ExternalEventDef` and then the `WfSpec` with `lhctl` in another terminal:
 
 ```bash
+lhctl deploy externalEventDef identity-verified-external-event-def.json
 lhctl deploy wfSpec quickstart-wfspec.json
 ```
 
