@@ -93,7 +93,6 @@ brew install littlehorse-enterprises/lh/lhctl
 
 Alternatively, you can install it from our [GitHub Releases page](https://github.com/littlehorse-enterprises/littlehorse/releases)
 
-
 Once you have `lhctl` ready, let's use the `whoami` command to verify that the LittleHorse Server is up and running:
 
 ```sh
@@ -122,48 +121,33 @@ lhctl whoami
 }
 ```
 
-### Register a `TaskDef` and `WfSpec`
+### Start a Quickstart
 
-Start an example in a language of your choice. This will do three things:
-
-1. Register a `TaskDef` (Task Definition) in the LittleHorse Server.
-2. Start a [Task Worker](https://littlehorse.io/docs/server/concepts/tasks) which polls the LittleHorse Server, waiting to be told to execute a `TaskRun`.
-3. Register a `WfSpec` (Workflow Specification) which simply invokes a the above task worker.
-
-The `WfSpec` has a single input variable (`input-name`), and that name is passed into the `greet` task worker.
+Start a quickstart in a language of your choice. Each command registers the workflow metadata and starts the task workers.
 
 #### Java
 
 ```
-./gradlew example-basic:run
+./gradlew quickstart:run
 ```
 
 #### Python
 
 ```
-cd examples/python/basic
-poetry shell
-python -m example_basic
+cd examples/python
+poetry run python -m quickstart.quickstart
 ```
 
 #### GoLang
 
-In one terminal, start the task worker (leave it running):
-
 ```
-go run ./examples/go/basic/worker
-```
-
-Then in another terminal, register the `WfSpec`:
-
-```
-go run ./examples/go/basic/deploy
+go run ./examples/go/quickstart
 ```
 
 #### C#
 
 ```sh
-cd examples/dotnet/BasicExample
+cd examples/dotnet/QuickstartExample
 dotnet run
 ```
 
@@ -186,13 +170,26 @@ lhctl deploy wfSpec example-basic-wfspec.json
 
 ### Run a `WfRun` (Workflow Run)
 
-Now let's run your first `WfRun` with `lhctl`, setting the value of the `input-name` variable to `"Obi-Wan"`:
+In another terminal, run the quickstart workflow:
 
 ```sh
-lhctl run example-basic input-name Obi-Wan
+lhctl run quickstart full-name 'Obi-Wan Kenobi' email obiwan@jedi.temple ssn 123456789
 ```
 
-Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`!
+Then post the correlated event that unblocks the workflow:
+
+```sh
+lhctl put correlatedEvent obiwan@jedi.temple identity-verified BOOL true
+```
+
+See the per-language quickstarts for the full walkthrough:
+
+- [Java quickstart](./examples/java/quickstart/README.md)
+- [Go quickstart](./examples/go/quickstart/README.md)
+- [Python quickstart](./examples/python/quickstart/README.md)
+- [C# quickstart](./examples/dotnet/QuickstartExample/README.md)
+
+Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`.
 
 You can also use `lhctl` to investigate! For starters:
 
@@ -219,7 +216,7 @@ To run a workflow with LittleHorse, you need to:
 <img src="./img/architecture.png" width="75%">
 </p>
 
-To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/java), [Go](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/go), [Python](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/python), and [C#](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/csharp). For more detailed examples, you can check out:
+To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), and [C#](./examples/dotnet/QuickstartExample/README.md). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
