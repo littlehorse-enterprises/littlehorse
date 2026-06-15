@@ -7,8 +7,9 @@ import { CopyButton } from '../../../components/CopyButton'
 import type { EdgeData } from './Default'
 import {
   formatNodeOutputSourceLabel,
+  getEdgeOperandDisplayText,
   getNodeOutputNodeName,
-  getOperandDisplayText,
+  getTruthyConditionDisplayText,
   hasResolvedNodeOutput,
   parseEdgeCondition,
 } from './edgeConditionDisplay'
@@ -19,7 +20,7 @@ const OperandDetail: FC<{
   displayContext?: VariableDisplayContext
 }> = ({ label, assignment, displayContext }) => {
   const nodeName = getNodeOutputNodeName(assignment)
-  const displayText = getOperandDisplayText(assignment, displayContext)
+  const displayText = getEdgeOperandDisplayText(assignment, displayContext)
   const resolved = hasResolvedNodeOutput(assignment, displayContext)
   const sourceLabel = nodeName ? formatNodeOutputSourceLabel(nodeName) : undefined
 
@@ -51,12 +52,11 @@ export const EdgeConditionDetail: FC<{ edge: EdgeData }> = ({ edge }) => {
   )
 
   const parsed = parseEdgeCondition(edge.edgeCondition)
-  if (!parsed) {
-    const { edgeCondition } = edge
-    if (edgeCondition?.$case === 'condition' && edgeCondition.value) {
-      return <OperandDetail label="Condition" assignment={edgeCondition.value} displayContext={displayContext} />
-    }
-    return null
+  if (!parsed) return null
+
+  if (parsed.isTruthyCheck && parsed.leftOperand) {
+    const label = getTruthyConditionDisplayText(parsed.leftOperand, displayContext)
+    return <OperandDetail label={`When ${label} is true`} assignment={parsed.leftOperand} displayContext={displayContext} />
   }
 
   const { leftOperand, rightOperand, comparator, operatorSymbol } = parsed

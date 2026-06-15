@@ -1,5 +1,5 @@
 import { Comparator, VariableAssignment } from 'littlehorse-client/proto'
-import { formatNodeOutputSourceLabel, getOperandDisplayText, hasResolvedNodeOutput, isBranchEdgeReached, isNopConditionalBranch, parseEdgeCondition } from './edgeConditionDisplay'
+import { formatNodeOutputSourceLabel, getEdgeOperandDisplayText, getOperandDisplayText, getTruthyConditionDisplayText, hasResolvedNodeOutput, isBranchEdgeReached, isNopConditionalBranch, parseEdgeCondition } from './edgeConditionDisplay'
 
 describe('formatNodeOutputSourceLabel', () => {
   it('extracts task name from TASK node ids', () => {
@@ -62,6 +62,26 @@ describe('parseEdgeCondition', () => {
     })
     expect(parsed?.leftOperand).toEqual(assignment)
     expect(parsed?.operatorSymbol).toBe('==')
+  })
+
+  it('parses BOOL variable truthiness conditions', () => {
+    const assignment: VariableAssignment = {
+      source: { $case: 'variableName', value: 'enabled' },
+    }
+    const parsed = parseEdgeCondition({
+      $case: 'condition',
+      value: assignment,
+    })
+    expect(parsed?.isTruthyCheck).toBe(true)
+    expect(parsed?.leftOperand).toEqual(assignment)
+    expect(getTruthyConditionDisplayText(assignment)).toBe('enabled')
+  })
+
+  it('formats variable comparisons without WfSpec braces', () => {
+    const assignment: VariableAssignment = {
+      source: { $case: 'variableName', value: 'tier' },
+    }
+    expect(getEdgeOperandDisplayText(assignment)).toBe('tier')
   })
 })
 

@@ -44,6 +44,46 @@ export type ParsedEdgeCondition = {
   rightOperand?: VariableAssignment
   comparator?: Comparator
   operatorSymbol: string
+  /** Bare variable/output/literal used as a truthiness check, e.g. doIf(enabled). */
+  isTruthyCheck?: boolean
+}
+
+/** Human-readable label for truthiness conditions (no WfSpec `{var}` braces). */
+export const getTruthyConditionDisplayText = (
+  assignment: VariableAssignment,
+  displayContext?: VariableDisplayContext
+): string => {
+  if (assignment.source?.$case === 'variableName' && assignment.source.value) {
+    const name = assignment.source.value
+    if (assignment.path?.$case === 'jsonPath') {
+      return `${name}${assignment.path.value.replace('$.', '.')}`
+    }
+    if (assignment.path?.$case === 'lhPath') {
+      return getVariable(assignment, 0, displayContext).replace(/^\{|\}$/g, '')
+    }
+    return name
+  }
+
+  const nodeName = getNodeOutputNodeName(assignment)
+  if (assignment.source?.$case === 'nodeOutput' && nodeName) {
+    if (hasResolvedNodeOutput(assignment, displayContext)) {
+      return getOperandDisplayText(assignment, displayContext)
+    }
+    return formatNodeOutputSourceLabel(nodeName)
+  }
+
+  return getOperandDisplayText(assignment, displayContext)
+}
+
+export const getEdgeOperandDisplayText = (
+  assignment: VariableAssignment,
+  displayContext?: VariableDisplayContext,
+  options?: { preferSourceLabel?: boolean }
+): string => {
+  if (assignment.source?.$case === 'variableName') {
+    return getTruthyConditionDisplayText(assignment, displayContext)
+  }
+  return getOperandDisplayText(assignment, displayContext, options)
 }
 
 export const parseEdgeCondition = (edgeCondition: EdgeProto['edgeCondition']): ParsedEdgeCondition | null => {
@@ -74,6 +114,12 @@ export const parseEdgeCondition = (edgeCondition: EdgeProto['edgeCondition']): P
         comparator,
         operatorSymbol: getComparatorSymbol(comparator),
       }
+    }
+
+    return {
+      leftOperand: variableAssignment,
+      operatorSymbol: '',
+      isTruthyCheck: true,
     }
   }
 
