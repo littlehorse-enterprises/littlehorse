@@ -25,7 +25,7 @@ dependencies = [
     # other utilities
     "jproperties>=2.1,<2.2",
     "authlib==1.6.12",
-    "requests>=2.32,<2.34"
+    "requests>=2.33,<2.34"
 ]
 
 [project.urls]
