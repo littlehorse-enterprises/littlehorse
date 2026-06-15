@@ -1,14 +1,16 @@
+import { getVariable } from '@/app/utils'
 import { TaskNode } from 'littlehorse-client/proto'
 import { SettingsIcon } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
+import { DiagramNodeCard, DiagramNodeShell } from '../DiagramNodeChrome'
+import { orangeNodeTheme } from '../nodeThemes'
 import { Fade } from '../Fade'
 import { SelectedNode } from '../SelectedNode'
-import { getVariable } from '@/app/utils'
 
-const Node: FC<NodeProps<'task', TaskNode>> = node => {
-  const { fade, nodeRunsList, taskToExecute } = node.data
+const Node: FC<NodeProps<'task', TaskNode>> = ({ id, data, selected }) => {
+  const { fade, nodeRunsList, taskToExecute } = data
   if (!taskToExecute) return null
   const nodeRun = nodeRunsList?.[0]
 
@@ -16,17 +18,15 @@ const Node: FC<NodeProps<'task', TaskNode>> = node => {
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div
-          className={
-            'flex cursor-pointer flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-xs' +
-            (node.selected ? ' bg-orange-300' : '')
-          }
-        >
-          <SettingsIcon className="h-4 w-4 fill-orange-500" />
-          {getTaskName(taskToExecute)}
-          <Handle type="source" position={Position.Right} className="bg-transparent" />
-          <Handle type="target" position={Position.Left} className="bg-transparent" />
-        </div>
+        <DiagramNodeShell id={id} label="Task" icon={SettingsIcon} theme={orangeNodeTheme}>
+          <div className="relative">
+            <DiagramNodeCard selected={selected} theme={orangeNodeTheme}>
+              {getTaskName(taskToExecute)}
+            </DiagramNodeCard>
+            <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
+            <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          </div>
+        </DiagramNodeShell>
       </Fade>
     </>
   )

@@ -1,55 +1,41 @@
 import { StartThreadNode } from 'littlehorse-client/proto'
 import { Spool, TrendingUpDown } from 'lucide-react'
 import { FC, memo } from 'react'
-import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
+import { DiagramNodeDiamond, DiagramNodeShell } from './DiagramNodeChrome'
+import { DiagramNodeHandles } from './DiagramNodeHandles'
+import { emeraldNodeTheme } from './nodeThemes'
 import { Fade } from './Fade'
 import { SelectedNode } from './SelectedNode'
 
-const MINT_BG = '#a7f3d0'
-const MINT_BORDER = '#6ee7b7'
-const MINT_DARK = '#34d399'
-
-const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
-  const { fade, nodeRunsList } = data
+const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ id, data, selected }) => {
+  const { fade, nodeRunsList, threadSpecName, sourceHandleCount, targetHandleCount } = data
   const nodeRun = nodeRunsList?.[0]
 
   return (
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="flex cursor-pointer items-center">
-          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-          <div className="flex flex-col items-center">
-            <div className="relative grid h-10 w-10 place-items-center">
-              <div
-                className="absolute inset-0"
-                style={{
-                  clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)',
-                  background: MINT_DARK,
-                }}
-              />
-              <div
-                className="absolute inset-[2px]"
-                style={{
-                  clipPath: 'polygon(50% 0, 100% 50%, 50% 100%, 0 50%)',
-                  background: `linear-gradient(135deg, ${MINT_BG}, ${MINT_BORDER})`,
-                }}
-              />
-              <TrendingUpDown className="relative z-10 h-5 w-5 shrink-0 stroke-black" strokeWidth={1.5} />
-              <div
-                className="absolute -bottom-1 -right-1 z-10 grid h-4 w-4 place-items-center rounded"
-                style={{
-                  background: MINT_BG,
-                  border: `1px solid ${MINT_DARK}`,
-                }}
-              >
-                <Spool className="h-2.5 w-2.5 stroke-black" strokeWidth={1.5} />
+        <DiagramNodeShell
+          id={id}
+          label="Start Thread"
+          icon={TrendingUpDown}
+          theme={emeraldNodeTheme}
+          subtitle={threadSpecName}
+        >
+          <div className="relative flex cursor-pointer items-center">
+            <DiagramNodeDiamond selected={selected} theme={emeraldNodeTheme}>
+              <TrendingUpDown className="h-5 w-5 shrink-0 stroke-emerald-950" strokeWidth={1.5} />
+              <div className="absolute -bottom-1 -right-1 grid h-4 w-4 place-items-center rounded border border-emerald-500 bg-emerald-200">
+                <Spool className="h-2.5 w-2.5 stroke-emerald-950" strokeWidth={1.5} />
               </div>
-            </div>
+            </DiagramNodeDiamond>
+            <DiagramNodeHandles
+              sourceCount={sourceHandleCount ?? 1}
+              targetCount={targetHandleCount ?? 1}
+            />
           </div>
-          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
-        </div>
+        </DiagramNodeShell>
       </Fade>
     </>
   )
