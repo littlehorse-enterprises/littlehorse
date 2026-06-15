@@ -148,7 +148,7 @@ go run ./examples/go/quickstart
 
 ```sh
 cd examples/dotnet/QuickstartExample
-dotnet run
+DOTNET_ROLL_FORWARD=Major dotnet run
 ```
 
 #### JavaScript
