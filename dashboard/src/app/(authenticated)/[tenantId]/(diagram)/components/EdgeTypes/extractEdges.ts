@@ -6,8 +6,7 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
   const targetMap = new Map<string, number>()
   const sourceMap = new Map<string, number>()
   return Object.entries(spec.nodes).flatMap(([source, node]) => {
-    const conditionOnSourceNode =
-      node.node?.$case === 'nop' && isNopConditionalBranch(node.outgoingEdges)
+    const isNopBranch = node.node?.$case === 'nop' && isNopConditionalBranch(node.outgoingEdges)
 
     return node.outgoingEdges.map(edge => {
       const sourceIndex = sourceMap.get(source) ?? 0
@@ -22,20 +21,14 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
 
       const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
       const isElseEdge = hasMultipleOutgoingEdges && !edge.edgeCondition
-      const branchLabel = conditionOnSourceNode
-        ? edge.edgeCondition
-          ? ('true' as const)
-          : isElseEdge
-            ? ('false' as const)
-            : undefined
-        : undefined
+      const isConditionalBranchEdge = isNopBranch && (edge.edgeCondition != null || isElseEdge)
 
       return {
         id,
         source,
         type: 'custom',
         target: edge.sinkNodeName,
-        data: { ...edge, isElseEdge, conditionOnSourceNode, branchLabel },
+        data: { ...edge, isElseEdge, isConditionalBranchEdge },
         targetHandle: `target-${targetIndex}`,
         sourceHandle: `source-${sourceIndex}`,
         markerEnd: {

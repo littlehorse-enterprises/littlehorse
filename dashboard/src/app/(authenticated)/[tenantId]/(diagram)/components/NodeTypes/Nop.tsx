@@ -1,8 +1,6 @@
-import { Node, VariableValue } from 'littlehorse-client/proto'
+import { Node } from 'littlehorse-client/proto'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
-import { NopConditionCard } from '../EdgeTypes/EdgeConditionLabel'
-import { isNopConditionalBranch } from '../EdgeTypes/edgeConditionDisplay'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { SelectedNode } from './SelectedNode'
@@ -13,17 +11,10 @@ type HandleConfig = {
   style?: React.CSSProperties
 }
 
-type NopNodeData = Node & {
-  fade?: boolean
-  nodeOutputValues?: Record<string, VariableValue>
-}
-
-const NopNode: FC<NodeProps<'entrypoint', NopNodeData>> = props => {
+const NopNode: FC<NodeProps<'entrypoint', Node>> = props => {
   const { data } = props
-  const { fade, nodeRunsList, outgoingEdges, nodeOutputValues } = data
+  const { fade, nodeRunsList } = data
   const nodeRun = nodeRunsList?.[0]
-  const isConditionalBranch = isNopConditionalBranch(outgoingEdges ?? [])
-  const conditionEdge = outgoingEdges?.find(edge => edge.edgeCondition)
 
   const createHandle = (config: HandleConfig, type: 'source' | 'target') => (
     <Handle
@@ -50,7 +41,7 @@ const NopNode: FC<NodeProps<'entrypoint', NopNodeData>> = props => {
   }
 
   const generateSourceHandles = () => {
-    const edges = outgoingEdges || []
+    const edges = data.outgoingEdges || []
     const cycleEdges = edges.filter(edge => edge.sinkNodeName.startsWith('cycle-'))
     const regularEdges = edges.filter(edge => !edge.sinkNodeName.startsWith('cycle-'))
     const hasCycle = cycleEdges.length > 0
@@ -129,22 +120,14 @@ const NopNode: FC<NodeProps<'entrypoint', NopNodeData>> = props => {
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        {isConditionalBranch && conditionEdge ? (
-          <div className="relative">
-            <NopConditionCard edge={conditionEdge} nodeOutputValues={nodeOutputValues} />
-            <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-            {generateSourceHandles()}
+        <div className="flex">
+          <div className="cursor-pointer1 relative grid h-8 w-8 place-items-center">
+            <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
+            <div className="absolute inset-[1px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
           </div>
-        ) : (
-          <div className="flex">
-            <div className="cursor-pointer1 relative grid h-8 w-8 place-items-center">
-              <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
-              <div className="absolute inset-[1px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
-            </div>
-            <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-            {generateSourceHandles()}
-          </div>
-        )}
+          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          {generateSourceHandles()}
+        </div>
       </Fade>
     </>
   )

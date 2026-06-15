@@ -3,15 +3,17 @@ import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Positio
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto, VariableValue } from 'littlehorse-client/proto'
-import { EdgeBranchLabel, EdgeConditionLabel } from './EdgeConditionLabel'
+import { EdgeConditionLabel } from './EdgeConditionLabel'
 
 export type EdgeData = EdgeProto & {
   isElseEdge?: boolean
-  conditionOnSourceNode?: boolean
-  branchLabel?: 'true' | 'false'
+  isConditionalBranchEdge?: boolean
   fade?: boolean
   nodeOutputValues?: Record<string, VariableValue>
 }
+
+const edgeLabelWrapperClass =
+  'inline-flex w-max max-w-xs rounded-md bg-slate-100/90 px-1 py-0.5 ring-1 ring-slate-200/80'
 
 const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
@@ -38,9 +40,11 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
-    setModal({ type: 'edge', data: data as EdgeProto })
+    setModal({ type: 'edge', data })
     setShowModal(true)
   }, [data, setModal, setShowModal])
+
+  const labelOpacity = data?.fade ? 'opacity-25' : 'opacity-100'
 
   return (
     <>
@@ -55,15 +59,14 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {data?.branchLabel ? (
-              <EdgeBranchLabel branch={data.branchLabel} fade={data.fade} />
+            {data?.edgeCondition ? (
+              <div className={`${edgeLabelWrapperClass} ${labelOpacity}`}>
+                <EdgeConditionLabel edge={data} />
+              </div>
             ) : (
-              data?.edgeCondition && (
-                <div
-                  className="inline-flex w-max max-w-xs"
-                  style={{ transform: 'scale(0.88)', transformOrigin: 'center' }}
-                >
-                  <EdgeConditionLabel edge={data} />
+              data?.isElseEdge && (
+                <div className={`${edgeLabelWrapperClass} ${labelOpacity}`}>
+                  <span className="px-1 text-[9px] font-semibold uppercase tracking-wide text-slate-600">else</span>
                 </div>
               )
             )}

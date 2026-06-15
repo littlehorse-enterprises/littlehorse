@@ -109,7 +109,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
           currentEdges.map(current => {
             const layoutEdge = edges.find(edge => edge.id === current.id)
             const branchFade =
-              current.data?.branchLabel != null
+              current.data?.isConditionalBranchEdge
                 ? !isBranchEdgeReached(current.target, nodeRuns)
                 : current.data?.fade
             const data = {
@@ -117,9 +117,8 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
               ...current.data,
               fade: branchFade,
               nodeOutputValues: current.data?.nodeOutputValues ?? layoutEdge?.data?.nodeOutputValues,
-              branchLabel: current.data?.branchLabel ?? layoutEdge?.data?.branchLabel,
-              conditionOnSourceNode:
-                current.data?.conditionOnSourceNode ?? layoutEdge?.data?.conditionOnSourceNode,
+              isConditionalBranchEdge:
+                current.data?.isConditionalBranchEdge ?? layoutEdge?.data?.isConditionalBranchEdge,
             }
             return layoutEdge ? { ...layoutEdge, data } : { ...current, data }
           })

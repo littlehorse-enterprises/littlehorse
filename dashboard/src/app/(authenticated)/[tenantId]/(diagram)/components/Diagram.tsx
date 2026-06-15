@@ -104,7 +104,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange }) => {
           ...edge.data,
           nodeOutputValues,
           fade:
-            edge.data?.branchLabel != null
+            edge.data?.isConditionalBranchEdge
               ? !isBranchEdgeReached(edge.target, threadNodeRuns)
               : undefined,
         },
