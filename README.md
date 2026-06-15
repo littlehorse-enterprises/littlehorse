@@ -153,19 +153,19 @@ dotnet run
 
 #### JavaScript
 
-First, install dependencies and register the `WfSpec`:
+First, install dependencies and start the task workers (this registers the required `TaskDef`s):
 
 ```sh
-cd examples/js/simple-worker
+cd examples/js/quickstart
 npm install
 npm start
 ```
 
-Then in another terminal, register the `WfSpec` (note that our JS sdk does not yet support creation of `WfSpec`s, so we use `lhctl` here)
+Then in another terminal, register the `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
 
 ```sh
-cd examples/js/simple-worker
-lhctl deploy wfSpec example-basic-wfspec.json
+cd examples/js/quickstart
+lhctl deploy wfSpec quickstart-wfspec.json
 ```
 
 ### Run a `WfRun` (Workflow Run)
@@ -175,6 +175,7 @@ In another terminal, run the quickstart workflow:
 ```sh
 lhctl run quickstart full-name 'Obi-Wan Kenobi' email obiwan@jedi.temple ssn 123456789
 ```
+Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`. You'll notice that it's blocked by the 
 
 Then post the correlated event that unblocks the workflow:
 
@@ -188,8 +189,7 @@ See the per-language quickstarts for the full walkthrough:
 - [Go quickstart](./examples/go/quickstart/README.md)
 - [Python quickstart](./examples/python/quickstart/README.md)
 - [C# quickstart](./examples/dotnet/QuickstartExample/README.md)
-
-Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`.
+- [JavaScript quickstart](./examples/js/quickstart/README.md)
 
 You can also use `lhctl` to investigate! For starters:
 
@@ -216,7 +216,7 @@ To run a workflow with LittleHorse, you need to:
 <img src="./img/architecture.png" width="75%">
 </p>
 
-To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), and [C#](./examples/dotnet/QuickstartExample/README.md). For more detailed examples, you can check out:
+To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), [C#](./examples/dotnet/QuickstartExample/README.md), and [JavaScript](./examples/js/quickstart/README.md). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 

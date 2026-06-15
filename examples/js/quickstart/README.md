@@ -20,17 +20,9 @@ The workflow:
 npm install
 ```
 
-## Register the WfSpec
-
-The JS SDK does not yet support creating WfSpecs programmatically, so register it with `lhctl`:
-
-```bash
-lhctl deploy wfSpec quickstart-wfspec.json
-```
-
 ## Start the Task Workers
 
-In one terminal, start the task workers:
+In one terminal, start the task workers (this also registers the required `TaskDef`s):
 
 ```bash
 npm start
@@ -39,6 +31,14 @@ npm start
 This will:
 1. Register the `verify-identity`, `notify-customer-verified`, and `notify-customer-not-verified` TaskDefs if they don't exist.
 2. Start polling for tasks from the LH Server.
+
+## Register the WfSpec
+
+The JS SDK does not yet support creating WfSpecs programmatically. Once the workers are running (and the TaskDefs are registered), deploy the WfSpec with `lhctl` in another terminal:
+
+```bash
+lhctl deploy wfSpec quickstart-wfspec.json
+```
 
 ## Run a Workflow
 
