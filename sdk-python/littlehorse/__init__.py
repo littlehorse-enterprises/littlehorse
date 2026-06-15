@@ -7,7 +7,6 @@ from littlehorse.workflow import create_struct_def as _create_struct_def
 from littlehorse.worker import start as _start
 from littlehorse.worker import shutdown_hook as _shutdown_hook
 
-
 start = _start
 create_workflow_spec = _create_workflow_spec
 create_task_def = _create_task_def
