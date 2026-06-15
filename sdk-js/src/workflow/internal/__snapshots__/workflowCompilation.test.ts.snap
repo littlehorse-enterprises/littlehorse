@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WorkflowCompilation example-order-flow PutWfSpecRequest JSON snapshot 1`] = `
+{
+  "entrypointThreadName": "entrypoint",
+  "name": "example-order-flow",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "entrypoint": {},
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-fetch-order-TASK",
+            },
+          ],
+        },
+        "1-fetch-order-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-charge-card-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "total",
+                  "rhsAssignment": {
+                    "jsonPath": "$.total",
+                    "nodeOutput": {
+                      "nodeName": "1-fetch-order-TASK",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "fetch-order",
+            },
+            "variables": [
+              {
+                "variableName": "order-id",
+              },
+            ],
+          },
+        },
+        "2-charge-card-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-complete-EXIT",
+            },
+          ],
+          "task": {
+            "retries": 3,
+            "taskDefId": {
+              "name": "charge-card",
+            },
+            "variables": [
+              {
+                "expression": {
+                  "lhs": {
+                    "variableName": "total",
+                  },
+                  "mutationType": "ADD",
+                  "rhs": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "total",
+                      },
+                      "mutationType": "MULTIPLY",
+                      "rhs": {
+                        "variableName": "tax-rate",
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                "variableName": "order-id",
+              },
+            ],
+          },
+        },
+        "3-complete-EXIT": {
+          "exit": {
+            "returnContent": {
+              "nodeOutput": {
+                "nodeName": "2-charge-card-TASK",
+              },
+            },
+          },
+        },
+      },
+      "variableDefs": [
+        {
+          "accessLevel": "PRIVATE_VAR",
+          "varDef": {
+            "name": "order-id",
+            "typeDef": {
+              "primitiveType": "STR",
+            },
+          },
+        },
+        {
+          "accessLevel": "PRIVATE_VAR",
+          "varDef": {
+            "defaultValue": {
+              "double": 0,
+            },
+            "name": "total",
+            "typeDef": {
+              "primitiveType": "DOUBLE",
+            },
+          },
+        },
+        {
+          "accessLevel": "PRIVATE_VAR",
+          "varDef": {
+            "defaultValue": {
+              "double": 0.08,
+            },
+            "name": "tax-rate",
+            "typeDef": {
+              "primitiveType": "DOUBLE",
+            },
+          },
+        },
+      ],
+    },
+  },
+}
+`;

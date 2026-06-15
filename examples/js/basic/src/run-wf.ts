@@ -1,12 +1,6 @@
 import { LHConfig } from 'littlehorse-client'
 import { VariableValue } from 'littlehorse-client/proto'
 
-/**
- * Runs the "example-basic-js" workflow with an optional "input-name" argument.
- *
- * Usage:
- *   npx tsx src/run-wf.ts [name]
- */
 async function main() {
   const config = LHConfig.from({})
   const client = config.getClient()

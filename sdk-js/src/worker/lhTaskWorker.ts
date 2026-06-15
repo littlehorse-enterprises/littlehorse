@@ -12,9 +12,9 @@ import { VariableDef } from '../proto/common_wfspec'
 import { TaskDefId } from '../proto/object_id'
 import { TaskStatus, LHErrorType } from '../proto/common_enums'
 import { LHConfig } from '../LHConfig'
-import { WorkerContext } from './WorkerContext'
-import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
+import { WorkerContext } from './workerContext'
+import { extractTaskArgs, toVariableValue } from '../utils/variableValueConvert'
+import { toStructVariableValue, getStructName, zodToTypeDef, zodToVariableDefs } from './zodSchema'
 import { randomBytes } from 'crypto'
 import { type ZodTypeAny } from 'zod'
 
@@ -261,7 +261,8 @@ export interface LHTaskWorkerOptions {
   /**
    * When the task function returns a struct, provide the Zod schema
    * (created with `lhStruct()`) here so the worker can serialize the
-   * return value as a Struct-typed VariableValue.
+   * return value as a Struct-typed VariableValue. The schema also defines
+   * the TaskDef return type registered with the server.
    *
    * ```ts
    * const worker = createTaskWorker(myFn, 'my-task', config, {
@@ -276,6 +277,20 @@ export interface LHTaskWorkerOptions {
    * Optional version string for the task worker (recorded for debugging).
    */
   taskWorkerVersion?: string
+}
+
+/**
+ * A task function bundled with the metadata needed to register its TaskDef.
+ */
+export interface LHTaskMethod<T extends TaskFunction = TaskFunction> extends LHTaskWorkerOptions {
+  taskFunction: T
+}
+
+/**
+ * Defines a task function together with its LittleHorse TaskDef metadata.
+ */
+export function defineTask<T extends TaskFunction>(taskFunction: T, options: LHTaskWorkerOptions): LHTaskMethod<T> {
+  return { taskFunction, ...options }
 }
 
 /**
@@ -308,13 +323,13 @@ export interface LHTaskWorker {
  * Usage:
  * ```ts
  * const config = LHConfig.from({ apiHost: 'localhost', apiPort: '2023' })
- * const worker = createTaskWorker(myTaskFunction, 'my-task', config, {
- *   inputVars: { name: z.string() },
- * })
+ * const task = defineTask(myTaskFunction, { inputVars: { name: z.string() } })
+ * const worker = createTaskWorker(task, 'my-task', config)
  * await worker.start()
  * ```
  *
- * @param taskFunction - The function to execute when a task is scheduled.
+ * @param taskMethod - The function to execute when a task is scheduled, or a
+ *   task method created with `defineTask()`.
  *   It receives the task's input variables as positional arguments, and
  *   optionally a `WorkerContext` as the last argument.
  * @param taskDefName - The name of the TaskDef to poll for.
@@ -327,12 +342,27 @@ export function createTaskWorker(
   taskDefName: string,
   config: LHConfig,
   options: LHTaskWorkerOptions
+): LHTaskWorker
+export function createTaskWorker(taskMethod: LHTaskMethod, taskDefName: string, config: LHConfig): LHTaskWorker
+export function createTaskWorker(
+  taskMethod: TaskFunction | LHTaskMethod,
+  taskDefName: string,
+  config: LHConfig,
+  options?: LHTaskWorkerOptions
 ): LHTaskWorker {
+  const taskFunction = typeof taskMethod === 'function' ? taskMethod : taskMethod.taskFunction
+  const taskOptions = typeof taskMethod === 'function' ? options : taskMethod
+
+  if (!taskOptions) {
+    throw new Error('Task worker options are required when creating a worker from a task function.')
+  }
+
   const taskWorkerId = `worker-${taskDefName}-${randomBytes(8).toString('hex')}`
   const bootstrapClient = config.getClient()
-  const inputVars = zodToVariableDefs(options.inputVars)
-  const outputSchema = options.outputSchema
-  const taskWorkerVersion = options.taskWorkerVersion
+  const inputVars = zodToVariableDefs(taskOptions.inputVars)
+  const outputSchema = taskOptions.outputSchema
+  const returnType = outputSchema ? { returnType: zodToTypeDef(outputSchema) } : undefined
+  const taskWorkerVersion = taskOptions.taskWorkerVersion
   const connections = new Map<string, ServerConnection>()
   let running = false
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined
@@ -410,6 +440,7 @@ export function createTaskWorker(
         const result = await bootstrapClient.putTaskDef({
           name: taskDefName,
           inputVars,
+          returnType,
         })
         console.log(`[LHTaskWorker] Registered TaskDef: ${result.id?.name}`)
       } catch (err: any) {
