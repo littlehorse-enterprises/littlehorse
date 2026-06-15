@@ -68,12 +68,11 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
       const transformedObj = Object.keys(primitiveValues).reduce((acc: RunWfRequest['variables'], key) => {
         if (primitiveValues[key] === undefined) return acc
 
-        // Only send primitive variables the user actually changed away from
-        // the WfSpec default. Otherwise the server applies its own default and
-        // we avoid overwriting it (see issue #2205).
-        if (!dirtyFields[key]) return acc
-
         const transformedKey = key.split(DOT_REPLACEMENT_PATTERN).join('.')
+        const variableDef = wfSpecVariables.find(variable => variable.varDef?.name === key)
+        const isRequired = variableDef?.required ?? false
+
+        if (!dirtyFields[key] && !isRequired) return acc
 
         if (
           wfSpecVariables.some(
