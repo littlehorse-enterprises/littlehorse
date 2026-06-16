@@ -1,6 +1,7 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.LHServerConfig;
+import java.time.Duration;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.state.RocksDBConfigSetter;
@@ -42,6 +43,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setMaxBackgroundJobs(threads); // Rocksdb tuning guide recommendation
         options.setMaxSubcompactions(3);
 
+        // Info LOG file configurations
         switch (serverConfig.getServerMetricLevel()) {
             case "TRACE":
                 // Trace is the lowest level available in LH Server, so we map
@@ -54,6 +56,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             default:
                 options.setInfoLogLevel(InfoLogLevel.INFO_LEVEL);
         }
+        // Keep 14 days of logs, rolling into a new file every day.
+        options.setLogFileTimeToRoll(Duration.ofDays(1).toSeconds());
+        options.setKeepLogFileNum(14);
 
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();

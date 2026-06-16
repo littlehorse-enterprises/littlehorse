@@ -43,6 +43,7 @@ Use another terminal for `lhctl run ...` commands.
 - [`InterruptHandlerExample/`](./InterruptHandlerExample/README.md): Interrupt handling.
 - [`MaskedFieldsExample/`](./MaskedFieldsExample/README.md): Masked variable fields.
 - [`MutationExample/`](./MutationExample/README.md): Variable mutation behavior.
+- [`QuickstartExample/`](./QuickstartExample/README.md): KYC-style getting-started workflow.
 - `RunChildWorkflow/`: Run-child-workflow example source (no README yet).
 - [`StructDefExample/`](./StructDefExample/README.md): Struct definition and usage.
 - [`UserTasksExample/`](./UserTasksExample/README.md): Human `UserTask` flows.
