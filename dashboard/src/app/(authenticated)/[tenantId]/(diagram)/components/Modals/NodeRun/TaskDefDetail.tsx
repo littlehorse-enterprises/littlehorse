@@ -5,6 +5,7 @@ import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
 import { FC, Fragment } from 'react'
 
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { IdentifierBadge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -58,7 +59,9 @@ export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
             <ClipboardIcon
               className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
               onClick={() => {
-                navigator.clipboard.writeText(taskRunId?.taskGuid ?? '')
+                void copyToClipboard(taskRunId?.taskGuid ?? '').catch(err =>
+                  console.error('Failed to copy text: ', err)
+                )
               }}
             />
           </span>
