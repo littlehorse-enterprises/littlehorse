@@ -1,4 +1,5 @@
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { cn } from '@/components/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
@@ -39,7 +40,9 @@ export const ExternalEventDefDetail: FC<AccordionNode<'externalEvent'>> = ({ nod
             <ClipboardIcon
               className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
               onClick={() => {
-                navigator.clipboard.writeText(externalEventId!.guid ?? '')
+                void copyToClipboard(externalEventId!.guid ?? '').catch(err =>
+                  console.error('Failed to copy text: ', err)
+                )
               }}
             />
           </span>

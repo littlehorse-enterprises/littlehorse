@@ -1,4 +1,5 @@
 import { getVariable, getVariableValue, hasEventCase, utcToLocalDateTime } from '@/app/utils'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { Badge } from '@/components/ui/badge'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { useQuery } from '@tanstack/react-query'
@@ -56,7 +57,9 @@ export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, user
               <ClipboardIcon
                 className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
                 onClick={() => {
-                  navigator.clipboard.writeText(lhUserTaskRun.id?.userTaskGuid ?? '')
+                  void copyToClipboard(lhUserTaskRun.id?.userTaskGuid ?? '').catch(err =>
+                    console.error('Failed to copy text: ', err)
+                  )
                 }}
               />
             </span>

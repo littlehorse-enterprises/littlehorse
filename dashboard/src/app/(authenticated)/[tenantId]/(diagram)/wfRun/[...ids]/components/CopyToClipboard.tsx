@@ -1,4 +1,5 @@
 'use client'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Check, Copy } from 'lucide-react'
 import { FC, useState } from 'react'
@@ -18,7 +19,7 @@ export const CopyToClipboard: FC<CopyToClipboardProps> = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(textToCopy)
+      await copyToClipboard(textToCopy)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
     } catch (err) {

@@ -1,4 +1,5 @@
 import { getVariableValue, utcToLocalDateTime } from '@/app/utils'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { cn } from '@/components/utils'
 import { useQuery } from '@tanstack/react-query'
 import { ClipboardIcon, RefreshCwIcon } from 'lucide-react'
@@ -39,7 +40,9 @@ export const WorkflowEventDefDetail: FC<AccordionNode<'throwEvent'>> = ({ nodeRu
           <ClipboardIcon
             className="h-4 w-4 cursor-pointer fill-transparent stroke-blue-500"
             onClick={() => {
-              navigator.clipboard.writeText(data?.id?.workflowEventDefId?.name ?? '')
+              void copyToClipboard(data?.id?.workflowEventDefId?.name ?? '').catch(err =>
+                console.error('Failed to copy text: ', err)
+              )
             }}
           />
         </span>
