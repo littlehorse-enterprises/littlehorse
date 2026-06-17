@@ -16,7 +16,7 @@ lhctl whoami
 
 ## Running Go examples
 
-Most Go examples have separate worker and deploy programs.
+Most Go examples have separate worker and deploy programs. `quickstart` is the exception and runs as a single long-lived process.
 
 ```bash
 # Terminal 1 (keep running)
@@ -39,6 +39,7 @@ lhctl run basic-workflow name Obi-Wan
 - [`interrupt/`](./interrupt/README.md): Interrupt handling.
 - [`jsonarray/`](./jsonarray/README.md): JSON array variables.
 - [`jsonobj/`](./jsonobj/README.md): JSON object variables.
+- [`quickstart/`](./quickstart/README.md): KYC-style getting-started workflow.
 - [`structdef/`](./structdef/README.md): Struct definition and usage.
 - [`taskmetadata/`](./taskmetadata/README.md): Task metadata usage.
 - [`wait-for-condition/`](./wait-for-condition/README.md): Wait-for-condition pattern.

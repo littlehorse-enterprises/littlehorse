@@ -195,6 +195,7 @@ class PartitionDrainScheduler {
         CommandModel command = new CommandModel(updateCountedTag);
         LHTimer timer = new LHTimer(command, true);
         timer.topic = config.getCoreCmdTopicName();
+        timer.setTenantId(tag.getTenantId());
 
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = timer.getPartitionKey();
