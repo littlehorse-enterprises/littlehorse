@@ -12,8 +12,7 @@ export type EdgeData = EdgeProto & {
   nodeOutputValues?: Record<string, VariableValue>
 }
 
-const edgeLabelWrapperClass =
-  'inline-flex w-max max-w-xs rounded-md bg-slate-100/90 px-1 py-0.5 ring-1 ring-slate-200/80'
+const edgeLabelWrapperClass = 'inline-flex w-max max-w-xs rounded-md border border-slate-200 bg-slate-50 px-1 py-0.5'
 
 const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
@@ -60,7 +59,7 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
             {data?.edgeCondition ? (
-              <div className={`${edgeLabelWrapperClass} ${labelOpacity}`}>
+              <div className={labelOpacity}>
                 <EdgeConditionLabel edge={data} />
               </div>
             ) : (

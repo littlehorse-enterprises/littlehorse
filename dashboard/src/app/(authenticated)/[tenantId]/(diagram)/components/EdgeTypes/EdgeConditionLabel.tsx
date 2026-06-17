@@ -13,8 +13,7 @@ import {
   parseEdgeCondition,
 } from './edgeConditionDisplay'
 
-const compactCardClass =
-  'w-fit max-w-[176px] rounded-md border border-violet-200/90 bg-white px-1.5 py-1 shadow-sm ring-1 ring-violet-100/80'
+const compactCardClass = 'w-fit max-w-[176px] rounded-md border border-violet-200 bg-white px-1.5 py-1'
 
 const operandChipClass = {
   source: 'rounded bg-fuchsia-50 px-1 py-px font-mono text-[9px] leading-tight text-fuchsia-800 ring-1 ring-fuchsia-200/80',

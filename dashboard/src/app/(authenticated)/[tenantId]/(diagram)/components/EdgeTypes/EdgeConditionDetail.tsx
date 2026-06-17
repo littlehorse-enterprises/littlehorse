@@ -9,7 +9,6 @@ import {
   formatNodeOutputSourceLabel,
   getEdgeOperandDisplayText,
   getNodeOutputNodeName,
-  getTruthyConditionDisplayText,
   hasResolvedNodeOutput,
   parseEdgeCondition,
 } from './edgeConditionDisplay'
@@ -27,10 +26,8 @@ const OperandDetail: FC<{
   return (
     <div className="flex flex-col gap-2">
       <small className="text-[0.75em] text-slate-400">{label}</small>
-      <div className="flex flex-col border border-slate-200 bg-slate-50 p-2">
-        <div className="flex w-full justify-end">
-          <CopyButton className="h-4 w-4 text-slate-400" value={displayText} />
-        </div>
+      <div className="relative border border-slate-200 bg-slate-50 p-2 pr-8">
+        <CopyButton className="absolute right-2 top-2 h-4 w-4 text-slate-400" value={displayText} />
         <p className="break-all font-mono text-sm">{tryFormatAsJson(displayText)}</p>
         {nodeName ? (
           <p className="mt-1 text-xs text-slate-500">
@@ -55,8 +52,15 @@ export const EdgeConditionDetail: FC<{ edge: EdgeData }> = ({ edge }) => {
   if (!parsed) return null
 
   if (parsed.isTruthyCheck && parsed.leftOperand) {
-    const label = getTruthyConditionDisplayText(parsed.leftOperand, displayContext)
-    return <OperandDetail label={`When ${label} is true`} assignment={parsed.leftOperand} displayContext={displayContext} />
+    return (
+      <div className="flex flex-col gap-4">
+        <OperandDetail label="Left operand" assignment={parsed.leftOperand} displayContext={displayContext} />
+        <div className="flex flex-col gap-1">
+          <small className="text-[0.75em] text-slate-400">Comparator</small>
+          <p className="font-medium">is true</p>
+        </div>
+      </div>
+    )
   }
 
   const { leftOperand, rightOperand, comparator, operatorSymbol } = parsed
