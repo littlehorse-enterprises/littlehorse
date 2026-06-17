@@ -243,7 +243,9 @@ class TestLHConfig(unittest.TestCase):
         grpc_package_mock.intercept_channel.assert_called_once_with(ANY, ANY, ANY)
 
     @patch("littlehorse.config.grpc")
-    def test_establish_insecure_channel_without_retry_interceptor(self, grpc_package_mock):
+    def test_establish_insecure_channel_without_retry_interceptor(
+        self, grpc_package_mock
+    ):
         os.environ["LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"] = "false"
         config = LHConfig()
         config.establish_channel()
