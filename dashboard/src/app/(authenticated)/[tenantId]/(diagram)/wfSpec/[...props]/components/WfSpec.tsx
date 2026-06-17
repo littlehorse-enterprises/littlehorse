@@ -2,6 +2,7 @@
 import { Breadcrumb } from '@/app/(authenticated)/[tenantId]/components/Breadcrumb'
 import { DiagramProvider, NodeInContext } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { routes } from '@/app/routes'
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { WfSpec as Spec } from 'littlehorse-client/proto'
@@ -29,25 +30,21 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
     setShowModal(true)
   }, [spec, setModal, setShowModal])
 
+  const breadcrumbItems = [
+    { label: 'WfSpecs', href: routes.appRoot() },
+    { label: spec.id?.name ?? '' },
+  ]
+
   const executeButton = (
-    <button
-      type="button"
-      className="flex items-center gap-1 rounded-sm bg-blue-500 p-2 px-4 text-white hover:bg-blue-600"
-      onClick={onClick}
-    >
+    <Button type="button" className="gap-1" onClick={onClick}>
       <LucidePlayCircle size={18} />
       Execute
-    </button>
+    </Button>
   )
 
   return (
     <>
-      <Breadcrumb
-        items={[
-          { label: 'WfSpecs', href: routes.appRoot() },
-          { label: spec.id?.name ?? '' },
-        ]}
-      />
+      <Breadcrumb items={breadcrumbItems} />
       <WfSpecMetadata spec={spec} actions={executeButton} />
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
         <Diagram spec={spec} />

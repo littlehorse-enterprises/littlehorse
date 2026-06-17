@@ -161,6 +161,18 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
         : wfRun?.status === LHStatus.ERROR
           ? 'Rescue'
           : ''
+
+  const handleConfirmWfRunAction = useCallback(async () => {
+    if (!wfRun) return
+    if (wfRun.status === LHStatus.RUNNING) {
+      await stopWfRun(tenantId, wfRun.id!)
+    } else if (wfRun.status === LHStatus.HALTED) {
+      await resumeWfRun(tenantId, wfRun.id!)
+    } else if (wfRun.status === LHStatus.ERROR) {
+      await rescueWfRun(tenantId, wfRun.id!)
+    }
+  }, [tenantId, wfRun])
+
   return (
     <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, wfRun }}>
       <div className="mb-2 flex items-center justify-between gap-3">
@@ -174,7 +186,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
               <AlertDialog>
                 {wfRun.status === LHStatus.RUNNING && (
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="flex items-center gap-2 font-bold">
+                    <Button variant="destructive" className="flex items-center gap-2 font-bold hover:bg-destructive/90">
                       STOP <StopCircleIcon />
                     </Button>
                   </AlertDialogTrigger>
@@ -202,17 +214,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={async () => {
-                        if (wfRun.status === LHStatus.RUNNING) {
-                          await stopWfRun(tenantId, wfRun.id!)
-                        } else if (wfRun.status === LHStatus.HALTED) {
-                          await resumeWfRun(tenantId, wfRun.id!)
-                        } else if (wfRun.status === LHStatus.ERROR) {
-                          await rescueWfRun(tenantId, wfRun.id!)
-                        }
-                      }}
-                    >
+                    <AlertDialogAction onClick={handleConfirmWfRunAction}>
                       Confirm
                     </AlertDialogAction>
                   </AlertDialogFooter>

@@ -5,12 +5,14 @@ import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport 
 
 const elk = new ELK()
 
-export const LayoutManager: FC<{
+type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
   viewportKey: string
   setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
   onLayoutComplete?: (nodes: Node[]) => void
-}> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
+}
+
+export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const setEdges = useStore(store => store.setEdges)

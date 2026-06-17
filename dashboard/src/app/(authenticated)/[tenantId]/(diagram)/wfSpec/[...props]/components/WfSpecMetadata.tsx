@@ -20,11 +20,9 @@ type Props = {
 const MetadataField: FC<{ label: string; children: ReactNode }> = ({ label, children }) => (
   <div className="rounded-md border border-gray-200 bg-white px-4 py-2.5">
     <p className="text-xs text-muted-foreground">{label}</p>
-    <p className="mt-1 text-sm font-medium leading-snug">{children}</p>
+    <div className="mt-1 text-sm font-medium leading-snug">{children}</div>
   </div>
 )
-
-const formatCount = (value: number) => value.toLocaleString()
 
 const formatRetention = (seconds: number) => {
   if (seconds < 60) return `${seconds}s after termination`
@@ -40,7 +38,7 @@ const getRetentionSeconds = (spec: WfSpec) =>
     : undefined
 
 export const WfSpecMetadata: FC<Props> = ({ spec, actions }) => {
-  const tenantId = useParams().tenantId as string
+  const { tenantId } = useParams<{ tenantId: string }>()
   const retentionSeconds = getRetentionSeconds(spec)
   const { backgroundColor, textColor, Icon, animate } = WF_SPEC_STATUS[spec.status]
 
@@ -89,7 +87,7 @@ export const WfSpecMetadata: FC<Props> = ({ spec, actions }) => {
           {isPending ? (
             <RefreshCwIcon className="h-4 w-4 animate-spin text-muted-foreground" />
           ) : data?.status === 'ok' ? (
-            <span className="tabular-nums">{formatCount(data.count)} NodeRuns</span>
+            <span className="tabular-nums">{data.count.toLocaleString()} NodeRuns</span>
           ) : (
             <span className="text-muted-foreground">{data?.message ?? 'Unavailable'}</span>
           )}
