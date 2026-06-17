@@ -33,6 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private BulkJob() {
     status_ = 0;
+    subprocesses_ = java.util.Collections.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -48,6 +49,599 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.BulkJob.class, io.littlehorse.sdk.common.proto.BulkJob.Builder.class);
   }
 
+  public interface SubprocessOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.BulkJob.Subprocess)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * The ID of this subprocess, from 1 to total_subprocesses.
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    int getId();
+
+    /**
+     * <pre>
+     * Current status of this subprocess.
+     * </pre>
+     *
+     * <code>.littlehorse.BulkJobStatus status = 2;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    int getStatusValue();
+    /**
+     * <pre>
+     * Current status of this subprocess.
+     * </pre>
+     *
+     * <code>.littlehorse.BulkJobStatus status = 2;</code>
+     * @return The status.
+     */
+    io.littlehorse.sdk.common.proto.BulkJobStatus getStatus();
+  }
+  /**
+   * Protobuf type {@code littlehorse.BulkJob.Subprocess}
+   */
+  public static final class Subprocess extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:littlehorse.BulkJob.Subprocess)
+      SubprocessOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        Subprocess.class.getName());
+    }
+    // Use Subprocess.newBuilder() to construct.
+    private Subprocess(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private Subprocess() {
+      status_ = 0;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.BulkJobOuterClass.internal_static_littlehorse_BulkJob_Subprocess_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.BulkJobOuterClass.internal_static_littlehorse_BulkJob_Subprocess_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.BulkJob.Subprocess.class, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder.class);
+    }
+
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_ = 0;
+    /**
+     * <pre>
+     * The ID of this subprocess, from 1 to total_subprocesses.
+     * </pre>
+     *
+     * <code>int32 id = 1;</code>
+     * @return The id.
+     */
+    @java.lang.Override
+    public int getId() {
+      return id_;
+    }
+
+    public static final int STATUS_FIELD_NUMBER = 2;
+    private int status_ = 0;
+    /**
+     * <pre>
+     * Current status of this subprocess.
+     * </pre>
+     *
+     * <code>.littlehorse.BulkJobStatus status = 2;</code>
+     * @return The enum numeric value on the wire for status.
+     */
+    @java.lang.Override public int getStatusValue() {
+      return status_;
+    }
+    /**
+     * <pre>
+     * Current status of this subprocess.
+     * </pre>
+     *
+     * <code>.littlehorse.BulkJobStatus status = 2;</code>
+     * @return The status.
+     */
+    @java.lang.Override public io.littlehorse.sdk.common.proto.BulkJobStatus getStatus() {
+      io.littlehorse.sdk.common.proto.BulkJobStatus result = io.littlehorse.sdk.common.proto.BulkJobStatus.forNumber(status_);
+      return result == null ? io.littlehorse.sdk.common.proto.BulkJobStatus.UNRECOGNIZED : result;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (id_ != 0) {
+        output.writeInt32(1, id_);
+      }
+      if (status_ != io.littlehorse.sdk.common.proto.BulkJobStatus.BULK_JOB_RUNNING.getNumber()) {
+        output.writeEnum(2, status_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (id_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (status_ != io.littlehorse.sdk.common.proto.BulkJobStatus.BULK_JOB_RUNNING.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, status_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.BulkJob.Subprocess)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.BulkJob.Subprocess other = (io.littlehorse.sdk.common.proto.BulkJob.Subprocess) obj;
+
+      if (getId()
+          != other.getId()) return false;
+      if (status_ != other.status_) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + status_;
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.BulkJob.Subprocess prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code littlehorse.BulkJob.Subprocess}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.BulkJob.Subprocess)
+        io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.BulkJobOuterClass.internal_static_littlehorse_BulkJob_Subprocess_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.BulkJobOuterClass.internal_static_littlehorse_BulkJob_Subprocess_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.BulkJob.Subprocess.class, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.BulkJob.Subprocess.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        id_ = 0;
+        status_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.BulkJobOuterClass.internal_static_littlehorse_BulkJob_Subprocess_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.BulkJob.Subprocess getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.BulkJob.Subprocess.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.BulkJob.Subprocess build() {
+        io.littlehorse.sdk.common.proto.BulkJob.Subprocess result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.BulkJob.Subprocess buildPartial() {
+        io.littlehorse.sdk.common.proto.BulkJob.Subprocess result = new io.littlehorse.sdk.common.proto.BulkJob.Subprocess(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.BulkJob.Subprocess result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.id_ = id_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.status_ = status_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.BulkJob.Subprocess) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.BulkJob.Subprocess)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.BulkJob.Subprocess other) {
+        if (other == io.littlehorse.sdk.common.proto.BulkJob.Subprocess.getDefaultInstance()) return this;
+        if (other.getId() != 0) {
+          setId(other.getId());
+        }
+        if (other.status_ != 0) {
+          setStatusValue(other.getStatusValue());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                id_ = input.readInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                status_ = input.readEnum();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <pre>
+       * The ID of this subprocess, from 1 to total_subprocesses.
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return The id.
+       */
+      @java.lang.Override
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <pre>
+       * The ID of this subprocess, from 1 to total_subprocesses.
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @param value The id to set.
+       * @return This builder for chaining.
+       */
+      public Builder setId(int value) {
+
+        id_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The ID of this subprocess, from 1 to total_subprocesses.
+       * </pre>
+       *
+       * <code>int32 id = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int status_ = 0;
+      /**
+       * <pre>
+       * Current status of this subprocess.
+       * </pre>
+       *
+       * <code>.littlehorse.BulkJobStatus status = 2;</code>
+       * @return The enum numeric value on the wire for status.
+       */
+      @java.lang.Override public int getStatusValue() {
+        return status_;
+      }
+      /**
+       * <pre>
+       * Current status of this subprocess.
+       * </pre>
+       *
+       * <code>.littlehorse.BulkJobStatus status = 2;</code>
+       * @param value The enum numeric value on the wire for status to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStatusValue(int value) {
+        status_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Current status of this subprocess.
+       * </pre>
+       *
+       * <code>.littlehorse.BulkJobStatus status = 2;</code>
+       * @return The status.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.BulkJobStatus getStatus() {
+        io.littlehorse.sdk.common.proto.BulkJobStatus result = io.littlehorse.sdk.common.proto.BulkJobStatus.forNumber(status_);
+        return result == null ? io.littlehorse.sdk.common.proto.BulkJobStatus.UNRECOGNIZED : result;
+      }
+      /**
+       * <pre>
+       * Current status of this subprocess.
+       * </pre>
+       *
+       * <code>.littlehorse.BulkJobStatus status = 2;</code>
+       * @param value The status to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStatus(io.littlehorse.sdk.common.proto.BulkJobStatus value) {
+        if (value == null) { throw new NullPointerException(); }
+        bitField0_ |= 0x00000002;
+        status_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Current status of this subprocess.
+       * </pre>
+       *
+       * <code>.littlehorse.BulkJobStatus status = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        status_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.BulkJob.Subprocess)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.BulkJob.Subprocess)
+    private static final io.littlehorse.sdk.common.proto.BulkJob.Subprocess DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.BulkJob.Subprocess();
+    }
+
+    public static io.littlehorse.sdk.common.proto.BulkJob.Subprocess getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Subprocess>
+        PARSER = new com.google.protobuf.AbstractParser<Subprocess>() {
+      @java.lang.Override
+      public Subprocess parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<Subprocess> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Subprocess> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.BulkJob.Subprocess getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private int bitField0_;
   private int operationCase_ = 0;
   @SuppressWarnings("serial")
@@ -55,7 +649,7 @@ private static final long serialVersionUID = 0L;
   public enum OperationCase
       implements com.google.protobuf.Internal.EnumLite,
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
-    BULK_DELETE_WF_RUN(10),
+    BULK_DELETE_WF_RUN(4),
     OPERATION_NOT_SET(0);
     private final int value;
     private OperationCase(int value) {
@@ -73,7 +667,7 @@ private static final long serialVersionUID = 0L;
 
     public static OperationCase forNumber(int value) {
       switch (value) {
-        case 10: return BULK_DELETE_WF_RUN;
+        case 4: return BULK_DELETE_WF_RUN;
         case 0: return OPERATION_NOT_SET;
         default: return null;
       }
@@ -191,65 +785,91 @@ private static final long serialVersionUID = 0L;
     return result == null ? io.littlehorse.sdk.common.proto.BulkJobStatus.UNRECOGNIZED : result;
   }
 
-  public static final int BULK_DELETE_WF_RUN_FIELD_NUMBER = 10;
+  public static final int BULK_DELETE_WF_RUN_FIELD_NUMBER = 4;
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    * @return Whether the bulkDeleteWfRun field is set.
    */
   @java.lang.Override
   public boolean hasBulkDeleteWfRun() {
-    return operationCase_ == 10;
+    return operationCase_ == 4;
   }
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    * @return The bulkDeleteWfRun.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.BulkDeleteWfRun getBulkDeleteWfRun() {
-    if (operationCase_ == 10) {
+    if (operationCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_;
     }
     return io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.BulkDeleteWfRunOrBuilder getBulkDeleteWfRunOrBuilder() {
-    if (operationCase_ == 10) {
+    if (operationCase_ == 4) {
        return (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_;
     }
     return io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
   }
 
-  public static final int TOTAL_ITEMS_FIELD_NUMBER = 20;
-  private long totalItems_ = 0L;
+  public static final int SUBPROCESSES_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess> subprocesses_;
   /**
-   * <pre>
-   * Progress information: total number of items to process.
-   * </pre>
-   *
-   * <code>int64 total_items = 20;</code>
-   * @return The totalItems.
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
    */
   @java.lang.Override
-  public long getTotalItems() {
-    return totalItems_;
+  public java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess> getSubprocessesList() {
+    return subprocesses_;
+  }
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  @java.lang.Override
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder> 
+      getSubprocessesOrBuilderList() {
+    return subprocesses_;
+  }
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  @java.lang.Override
+  public int getSubprocessesCount() {
+    return subprocesses_.size();
+  }
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.BulkJob.Subprocess getSubprocesses(int index) {
+    return subprocesses_.get(index);
+  }
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder getSubprocessesOrBuilder(
+      int index) {
+    return subprocesses_.get(index);
   }
 
-  public static final int PROCESSED_ITEMS_FIELD_NUMBER = 21;
-  private long processedItems_ = 0L;
+  public static final int TOTAL_SUBPROCESSES_FIELD_NUMBER = 6;
+  private int totalSubprocesses_ = 0;
   /**
    * <pre>
-   * Progress information: number of items processed so far.
+   * Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
    * </pre>
    *
-   * <code>int64 processed_items = 21;</code>
-   * @return The processedItems.
+   * <code>int32 total_subprocesses = 6;</code>
+   * @return The totalSubprocesses.
    */
   @java.lang.Override
-  public long getProcessedItems() {
-    return processedItems_;
+  public int getTotalSubprocesses() {
+    return totalSubprocesses_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -275,14 +895,14 @@ private static final long serialVersionUID = 0L;
     if (status_ != io.littlehorse.sdk.common.proto.BulkJobStatus.BULK_JOB_RUNNING.getNumber()) {
       output.writeEnum(3, status_);
     }
-    if (operationCase_ == 10) {
-      output.writeMessage(10, (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_);
+    if (operationCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_);
     }
-    if (totalItems_ != 0L) {
-      output.writeInt64(20, totalItems_);
+    for (int i = 0; i < subprocesses_.size(); i++) {
+      output.writeMessage(5, subprocesses_.get(i));
     }
-    if (processedItems_ != 0L) {
-      output.writeInt64(21, processedItems_);
+    if (totalSubprocesses_ != 0) {
+      output.writeInt32(6, totalSubprocesses_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -305,17 +925,17 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeEnumSize(3, status_);
     }
-    if (operationCase_ == 10) {
+    if (operationCase_ == 4) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(10, (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_);
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_);
     }
-    if (totalItems_ != 0L) {
+    for (int i = 0; i < subprocesses_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(20, totalItems_);
+        .computeMessageSize(5, subprocesses_.get(i));
     }
-    if (processedItems_ != 0L) {
+    if (totalSubprocesses_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(21, processedItems_);
+        .computeInt32Size(6, totalSubprocesses_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -343,13 +963,13 @@ private static final long serialVersionUID = 0L;
           .equals(other.getCreatedAt())) return false;
     }
     if (status_ != other.status_) return false;
-    if (getTotalItems()
-        != other.getTotalItems()) return false;
-    if (getProcessedItems()
-        != other.getProcessedItems()) return false;
+    if (!getSubprocessesList()
+        .equals(other.getSubprocessesList())) return false;
+    if (getTotalSubprocesses()
+        != other.getTotalSubprocesses()) return false;
     if (!getOperationCase().equals(other.getOperationCase())) return false;
     switch (operationCase_) {
-      case 10:
+      case 4:
         if (!getBulkDeleteWfRun()
             .equals(other.getBulkDeleteWfRun())) return false;
         break;
@@ -377,14 +997,14 @@ private static final long serialVersionUID = 0L;
     }
     hash = (37 * hash) + STATUS_FIELD_NUMBER;
     hash = (53 * hash) + status_;
-    hash = (37 * hash) + TOTAL_ITEMS_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getTotalItems());
-    hash = (37 * hash) + PROCESSED_ITEMS_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-        getProcessedItems());
+    if (getSubprocessesCount() > 0) {
+      hash = (37 * hash) + SUBPROCESSES_FIELD_NUMBER;
+      hash = (53 * hash) + getSubprocessesList().hashCode();
+    }
+    hash = (37 * hash) + TOTAL_SUBPROCESSES_FIELD_NUMBER;
+    hash = (53 * hash) + getTotalSubprocesses();
     switch (operationCase_) {
-      case 10:
+      case 4:
         hash = (37 * hash) + BULK_DELETE_WF_RUN_FIELD_NUMBER;
         hash = (53 * hash) + getBulkDeleteWfRun().hashCode();
         break;
@@ -527,6 +1147,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         internalGetIdFieldBuilder();
         internalGetCreatedAtFieldBuilder();
+        internalGetSubprocessesFieldBuilder();
       }
     }
     @java.lang.Override
@@ -547,8 +1168,14 @@ private static final long serialVersionUID = 0L;
       if (bulkDeleteWfRunBuilder_ != null) {
         bulkDeleteWfRunBuilder_.clear();
       }
-      totalItems_ = 0L;
-      processedItems_ = 0L;
+      if (subprocessesBuilder_ == null) {
+        subprocesses_ = java.util.Collections.emptyList();
+      } else {
+        subprocesses_ = null;
+        subprocessesBuilder_.clear();
+      }
+      bitField0_ = (bitField0_ & ~0x00000010);
+      totalSubprocesses_ = 0;
       operationCase_ = 0;
       operation_ = null;
       return this;
@@ -577,10 +1204,23 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.BulkJob buildPartial() {
       io.littlehorse.sdk.common.proto.BulkJob result = new io.littlehorse.sdk.common.proto.BulkJob(this);
+      buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
       buildPartialOneofs(result);
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.BulkJob result) {
+      if (subprocessesBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0)) {
+          subprocesses_ = java.util.Collections.unmodifiableList(subprocesses_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.subprocesses_ = subprocesses_;
+      } else {
+        result.subprocesses_ = subprocessesBuilder_.build();
+      }
     }
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.BulkJob result) {
@@ -601,11 +1241,8 @@ private static final long serialVersionUID = 0L;
       if (((from_bitField0_ & 0x00000004) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
-        result.totalItems_ = totalItems_;
-      }
       if (((from_bitField0_ & 0x00000020) != 0)) {
-        result.processedItems_ = processedItems_;
+        result.totalSubprocesses_ = totalSubprocesses_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -613,7 +1250,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.BulkJob result) {
       result.operationCase_ = operationCase_;
       result.operation_ = this.operation_;
-      if (operationCase_ == 10 &&
+      if (operationCase_ == 4 &&
           bulkDeleteWfRunBuilder_ != null) {
         result.operation_ = bulkDeleteWfRunBuilder_.build();
       }
@@ -640,11 +1277,34 @@ private static final long serialVersionUID = 0L;
       if (other.status_ != 0) {
         setStatusValue(other.getStatusValue());
       }
-      if (other.getTotalItems() != 0L) {
-        setTotalItems(other.getTotalItems());
+      if (subprocessesBuilder_ == null) {
+        if (!other.subprocesses_.isEmpty()) {
+          if (subprocesses_.isEmpty()) {
+            subprocesses_ = other.subprocesses_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensureSubprocessesIsMutable();
+            subprocesses_.addAll(other.subprocesses_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.subprocesses_.isEmpty()) {
+          if (subprocessesBuilder_.isEmpty()) {
+            subprocessesBuilder_.dispose();
+            subprocessesBuilder_ = null;
+            subprocesses_ = other.subprocesses_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+            subprocessesBuilder_ = 
+              com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                 internalGetSubprocessesFieldBuilder() : null;
+          } else {
+            subprocessesBuilder_.addAllMessages(other.subprocesses_);
+          }
+        }
       }
-      if (other.getProcessedItems() != 0L) {
-        setProcessedItems(other.getProcessedItems());
+      if (other.getTotalSubprocesses() != 0) {
+        setTotalSubprocesses(other.getTotalSubprocesses());
       }
       switch (other.getOperationCase()) {
         case BULK_DELETE_WF_RUN: {
@@ -700,23 +1360,31 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 24
-            case 82: {
+            case 34: {
               input.readMessage(
                   internalGetBulkDeleteWfRunFieldBuilder().getBuilder(),
                   extensionRegistry);
-              operationCase_ = 10;
+              operationCase_ = 4;
               break;
-            } // case 82
-            case 160: {
-              totalItems_ = input.readInt64();
-              bitField0_ |= 0x00000010;
+            } // case 34
+            case 42: {
+              io.littlehorse.sdk.common.proto.BulkJob.Subprocess m =
+                  input.readMessage(
+                      io.littlehorse.sdk.common.proto.BulkJob.Subprocess.parser(),
+                      extensionRegistry);
+              if (subprocessesBuilder_ == null) {
+                ensureSubprocessesIsMutable();
+                subprocesses_.add(m);
+              } else {
+                subprocessesBuilder_.addMessage(m);
+              }
               break;
-            } // case 160
-            case 168: {
-              processedItems_ = input.readInt64();
+            } // case 42
+            case 48: {
+              totalSubprocesses_ = input.readInt32();
               bitField0_ |= 0x00000020;
               break;
-            } // case 168
+            } // case 48
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1137,33 +1805,33 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.BulkDeleteWfRun, io.littlehorse.sdk.common.proto.BulkDeleteWfRun.Builder, io.littlehorse.sdk.common.proto.BulkDeleteWfRunOrBuilder> bulkDeleteWfRunBuilder_;
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      * @return Whether the bulkDeleteWfRun field is set.
      */
     @java.lang.Override
     public boolean hasBulkDeleteWfRun() {
-      return operationCase_ == 10;
+      return operationCase_ == 4;
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      * @return The bulkDeleteWfRun.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.BulkDeleteWfRun getBulkDeleteWfRun() {
       if (bulkDeleteWfRunBuilder_ == null) {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_;
         }
         return io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
       } else {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           return bulkDeleteWfRunBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     public Builder setBulkDeleteWfRun(io.littlehorse.sdk.common.proto.BulkDeleteWfRun value) {
       if (bulkDeleteWfRunBuilder_ == null) {
@@ -1175,11 +1843,11 @@ private static final long serialVersionUID = 0L;
       } else {
         bulkDeleteWfRunBuilder_.setMessage(value);
       }
-      operationCase_ = 10;
+      operationCase_ = 4;
       return this;
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     public Builder setBulkDeleteWfRun(
         io.littlehorse.sdk.common.proto.BulkDeleteWfRun.Builder builderForValue) {
@@ -1189,15 +1857,15 @@ private static final long serialVersionUID = 0L;
       } else {
         bulkDeleteWfRunBuilder_.setMessage(builderForValue.build());
       }
-      operationCase_ = 10;
+      operationCase_ = 4;
       return this;
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     public Builder mergeBulkDeleteWfRun(io.littlehorse.sdk.common.proto.BulkDeleteWfRun value) {
       if (bulkDeleteWfRunBuilder_ == null) {
-        if (operationCase_ == 10 &&
+        if (operationCase_ == 4 &&
             operation_ != io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance()) {
           operation_ = io.littlehorse.sdk.common.proto.BulkDeleteWfRun.newBuilder((io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_)
               .mergeFrom(value).buildPartial();
@@ -1206,27 +1874,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           bulkDeleteWfRunBuilder_.mergeFrom(value);
         } else {
           bulkDeleteWfRunBuilder_.setMessage(value);
         }
       }
-      operationCase_ = 10;
+      operationCase_ = 4;
       return this;
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     public Builder clearBulkDeleteWfRun() {
       if (bulkDeleteWfRunBuilder_ == null) {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           operationCase_ = 0;
           operation_ = null;
           onChanged();
         }
       } else {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           operationCase_ = 0;
           operation_ = null;
         }
@@ -1235,33 +1903,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     public io.littlehorse.sdk.common.proto.BulkDeleteWfRun.Builder getBulkDeleteWfRunBuilder() {
       return internalGetBulkDeleteWfRunFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.BulkDeleteWfRunOrBuilder getBulkDeleteWfRunOrBuilder() {
-      if ((operationCase_ == 10) && (bulkDeleteWfRunBuilder_ != null)) {
+      if ((operationCase_ == 4) && (bulkDeleteWfRunBuilder_ != null)) {
         return bulkDeleteWfRunBuilder_.getMessageOrBuilder();
       } else {
-        if (operationCase_ == 10) {
+        if (operationCase_ == 4) {
           return (io.littlehorse.sdk.common.proto.BulkDeleteWfRun) operation_;
         }
         return io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+     * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.BulkDeleteWfRun, io.littlehorse.sdk.common.proto.BulkDeleteWfRun.Builder, io.littlehorse.sdk.common.proto.BulkDeleteWfRunOrBuilder> 
         internalGetBulkDeleteWfRunFieldBuilder() {
       if (bulkDeleteWfRunBuilder_ == null) {
-        if (!(operationCase_ == 10)) {
+        if (!(operationCase_ == 4)) {
           operation_ = io.littlehorse.sdk.common.proto.BulkDeleteWfRun.getDefaultInstance();
         }
         bulkDeleteWfRunBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1271,95 +1939,291 @@ private static final long serialVersionUID = 0L;
                 isClean());
         operation_ = null;
       }
-      operationCase_ = 10;
+      operationCase_ = 4;
       onChanged();
       return bulkDeleteWfRunBuilder_;
     }
 
-    private long totalItems_ ;
+    private java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess> subprocesses_ =
+      java.util.Collections.emptyList();
+    private void ensureSubprocessesIsMutable() {
+      if (!((bitField0_ & 0x00000010) != 0)) {
+        subprocesses_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.BulkJob.Subprocess>(subprocesses_);
+        bitField0_ |= 0x00000010;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilder<
+        io.littlehorse.sdk.common.proto.BulkJob.Subprocess, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder, io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder> subprocessesBuilder_;
+
     /**
-     * <pre>
-     * Progress information: total number of items to process.
-     * </pre>
-     *
-     * <code>int64 total_items = 20;</code>
-     * @return The totalItems.
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
      */
-    @java.lang.Override
-    public long getTotalItems() {
-      return totalItems_;
+    public java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess> getSubprocessesList() {
+      if (subprocessesBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(subprocesses_);
+      } else {
+        return subprocessesBuilder_.getMessageList();
+      }
     }
     /**
-     * <pre>
-     * Progress information: total number of items to process.
-     * </pre>
-     *
-     * <code>int64 total_items = 20;</code>
-     * @param value The totalItems to set.
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
      */
-    public Builder setTotalItems(long value) {
-
-      totalItems_ = value;
-      bitField0_ |= 0x00000010;
-      onChanged();
+    public int getSubprocessesCount() {
+      if (subprocessesBuilder_ == null) {
+        return subprocesses_.size();
+      } else {
+        return subprocessesBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob.Subprocess getSubprocesses(int index) {
+      if (subprocessesBuilder_ == null) {
+        return subprocesses_.get(index);
+      } else {
+        return subprocessesBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder setSubprocesses(
+        int index, io.littlehorse.sdk.common.proto.BulkJob.Subprocess value) {
+      if (subprocessesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubprocessesIsMutable();
+        subprocesses_.set(index, value);
+        onChanged();
+      } else {
+        subprocessesBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <pre>
-     * Progress information: total number of items to process.
-     * </pre>
-     *
-     * <code>int64 total_items = 20;</code>
-     * @return This builder for chaining.
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
      */
-    public Builder clearTotalItems() {
-      bitField0_ = (bitField0_ & ~0x00000010);
-      totalItems_ = 0L;
-      onChanged();
+    public Builder setSubprocesses(
+        int index, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder builderForValue) {
+      if (subprocessesBuilder_ == null) {
+        ensureSubprocessesIsMutable();
+        subprocesses_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        subprocessesBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
     }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder addSubprocesses(io.littlehorse.sdk.common.proto.BulkJob.Subprocess value) {
+      if (subprocessesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubprocessesIsMutable();
+        subprocesses_.add(value);
+        onChanged();
+      } else {
+        subprocessesBuilder_.addMessage(value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder addSubprocesses(
+        int index, io.littlehorse.sdk.common.proto.BulkJob.Subprocess value) {
+      if (subprocessesBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureSubprocessesIsMutable();
+        subprocesses_.add(index, value);
+        onChanged();
+      } else {
+        subprocessesBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder addSubprocesses(
+        io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder builderForValue) {
+      if (subprocessesBuilder_ == null) {
+        ensureSubprocessesIsMutable();
+        subprocesses_.add(builderForValue.build());
+        onChanged();
+      } else {
+        subprocessesBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder addSubprocesses(
+        int index, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder builderForValue) {
+      if (subprocessesBuilder_ == null) {
+        ensureSubprocessesIsMutable();
+        subprocesses_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        subprocessesBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder addAllSubprocesses(
+        java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.BulkJob.Subprocess> values) {
+      if (subprocessesBuilder_ == null) {
+        ensureSubprocessesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, subprocesses_);
+        onChanged();
+      } else {
+        subprocessesBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder clearSubprocesses() {
+      if (subprocessesBuilder_ == null) {
+        subprocesses_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+      } else {
+        subprocessesBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public Builder removeSubprocesses(int index) {
+      if (subprocessesBuilder_ == null) {
+        ensureSubprocessesIsMutable();
+        subprocesses_.remove(index);
+        onChanged();
+      } else {
+        subprocessesBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder getSubprocessesBuilder(
+        int index) {
+      return internalGetSubprocessesFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder getSubprocessesOrBuilder(
+        int index) {
+      if (subprocessesBuilder_ == null) {
+        return subprocesses_.get(index);  } else {
+        return subprocessesBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder> 
+         getSubprocessesOrBuilderList() {
+      if (subprocessesBuilder_ != null) {
+        return subprocessesBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(subprocesses_);
+      }
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder addSubprocessesBuilder() {
+      return internalGetSubprocessesFieldBuilder().addBuilder(
+          io.littlehorse.sdk.common.proto.BulkJob.Subprocess.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder addSubprocessesBuilder(
+        int index) {
+      return internalGetSubprocessesFieldBuilder().addBuilder(
+          index, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+     */
+    public java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder> 
+         getSubprocessesBuilderList() {
+      return internalGetSubprocessesFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilder<
+        io.littlehorse.sdk.common.proto.BulkJob.Subprocess, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder, io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder> 
+        internalGetSubprocessesFieldBuilder() {
+      if (subprocessesBuilder_ == null) {
+        subprocessesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+            io.littlehorse.sdk.common.proto.BulkJob.Subprocess, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder, io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder>(
+                subprocesses_,
+                ((bitField0_ & 0x00000010) != 0),
+                getParentForChildren(),
+                isClean());
+        subprocesses_ = null;
+      }
+      return subprocessesBuilder_;
+    }
 
-    private long processedItems_ ;
+    private int totalSubprocesses_ ;
     /**
      * <pre>
-     * Progress information: number of items processed so far.
+     * Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
      * </pre>
      *
-     * <code>int64 processed_items = 21;</code>
-     * @return The processedItems.
+     * <code>int32 total_subprocesses = 6;</code>
+     * @return The totalSubprocesses.
      */
     @java.lang.Override
-    public long getProcessedItems() {
-      return processedItems_;
+    public int getTotalSubprocesses() {
+      return totalSubprocesses_;
     }
     /**
      * <pre>
-     * Progress information: number of items processed so far.
+     * Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
      * </pre>
      *
-     * <code>int64 processed_items = 21;</code>
-     * @param value The processedItems to set.
+     * <code>int32 total_subprocesses = 6;</code>
+     * @param value The totalSubprocesses to set.
      * @return This builder for chaining.
      */
-    public Builder setProcessedItems(long value) {
+    public Builder setTotalSubprocesses(int value) {
 
-      processedItems_ = value;
+      totalSubprocesses_ = value;
       bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Progress information: number of items processed so far.
+     * Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
      * </pre>
      *
-     * <code>int64 processed_items = 21;</code>
+     * <code>int32 total_subprocesses = 6;</code>
      * @return This builder for chaining.
      */
-    public Builder clearProcessedItems() {
+    public Builder clearTotalSubprocesses() {
       bitField0_ = (bitField0_ & ~0x00000020);
-      processedItems_ = 0L;
+      totalSubprocesses_ = 0;
       onChanged();
       return this;
     }

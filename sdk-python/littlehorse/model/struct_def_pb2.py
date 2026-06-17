@@ -22,8 +22,8 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import littlehorse.model.common_wfspec_pb2 as common__wfspec__pb2
-import littlehorse.model.object_id_pb2 as object__id__pb2
+import common_wfspec_pb2 as common__wfspec__pb2
+import object_id_pb2 as object__id__pb2
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 

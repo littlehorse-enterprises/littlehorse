@@ -1,12 +1,13 @@
 import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
-import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.common_enums_pb2 as _common_enums_pb2
+import object_id_pb2 as _object_id_pb2
+import common_enums_pb2 as _common_enums_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from collections.abc import Mapping as _Mapping
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
@@ -21,20 +22,27 @@ BULK_JOB_COMPLETED: BulkJobStatus
 BULK_JOB_FAILED: BulkJobStatus
 
 class BulkJob(_message.Message):
-    __slots__ = ("id", "created_at", "status", "bulk_delete_wf_run", "total_items", "processed_items")
+    __slots__ = ("id", "created_at", "status", "bulk_delete_wf_run", "subprocesses", "total_subprocesses")
+    class Subprocess(_message.Message):
+        __slots__ = ("id", "status")
+        ID_FIELD_NUMBER: _ClassVar[int]
+        STATUS_FIELD_NUMBER: _ClassVar[int]
+        id: int
+        status: BulkJobStatus
+        def __init__(self, id: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     BULK_DELETE_WF_RUN_FIELD_NUMBER: _ClassVar[int]
-    TOTAL_ITEMS_FIELD_NUMBER: _ClassVar[int]
-    PROCESSED_ITEMS_FIELD_NUMBER: _ClassVar[int]
+    SUBPROCESSES_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_SUBPROCESSES_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.BulkJobId
     created_at: _timestamp_pb2.Timestamp
     status: BulkJobStatus
     bulk_delete_wf_run: BulkDeleteWfRun
-    total_items: int
-    processed_items: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., bulk_delete_wf_run: _Optional[_Union[BulkDeleteWfRun, _Mapping]] = ..., total_items: _Optional[int] = ..., processed_items: _Optional[int] = ...) -> None: ...
+    subprocesses: _containers.RepeatedCompositeFieldContainer[BulkJob.Subprocess]
+    total_subprocesses: int
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., bulk_delete_wf_run: _Optional[_Union[BulkDeleteWfRun, _Mapping]] = ..., subprocesses: _Optional[_Iterable[_Union[BulkJob.Subprocess, _Mapping]]] = ..., total_subprocesses: _Optional[int] = ...) -> None: ...
 
 class BulkJobShard(_message.Message):
     __slots__ = ("bulk_job_id", "partition", "status", "processed_items")

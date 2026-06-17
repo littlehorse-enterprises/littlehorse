@@ -36,14 +36,22 @@ message BulkJob {
 
   // The specific operation to perform.
   oneof operation {
-    BulkDeleteWfRun bulk_delete_wf_run = 10;
+    BulkDeleteWfRun bulk_delete_wf_run = 4;
   }
 
-  // Progress information: total number of items to process.
-  int64 total_items = 20;
+  message Subprocess {
+    // The ID of this subprocess, from 1 to total_subprocesses.
+    int32 id = 1;
 
-  // Progress information: number of items processed so far.
-  int64 processed_items = 21;
+    // Current status of this subprocess.
+    BulkJobStatus status = 2;
+  }
+
+  repeated Subprocess subprocesses = 5;
+
+  // Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
+  int32 total_subprocesses = 6;
+
 }
 
 // Represents a shard of a BulkJob running on a single partition.

@@ -1,11 +1,15 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
+import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
+import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.proto.BulkJobStatus;
 import io.littlehorse.server.streams.ServerTopology;
@@ -16,12 +20,14 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
+import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
+import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 /**
@@ -55,6 +61,7 @@ public class BulkJobPunctuator {
      * Called periodically by the CommandProcessor punctuator schedule.
      */
     public void punctuate(long timestamp) {
+        final int currentPartition = ctx.taskId().partition();
         final BackgroundContext context = new BackgroundContext();
         KeyValueStore<String, Bytes> metadataNativeStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         KeyValueStore<String, Bytes> coreNativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
@@ -90,9 +97,27 @@ public class BulkJobPunctuator {
             }
             PunctuationExecutionContext punctuateContext = new PunctuationExecutionContext(
                     timestamp, config, metadataNativeStore, coreNativeStore, metadataCache, tenantId);
-            // Update cursor in store after each scan iteration
-            job.tryToComplete(ctx::forward, punctuateContext, currentCursor)
-                    .ifPresentOrElse(coreStore::put, () -> coreStore.delete(new BulkJobShardCursorModel(bulkJobId)));
+            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor);
+            CommandProcessorOutput processorOutput = createBulkJobReport(job, currentPartition, currentCursor);
+            Record<String, CommandProcessorOutput> reportRecord = new Record<>(
+                    processorOutput.partitionKey,
+                    processorOutput,
+                    timestamp,
+                    HeadersUtil.metadataHeadersFor(tenantId, new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL)));
+            ctx.forward(reportRecord);
+            coreStore.put(currentCursor);
         }
+    }
+
+    private CommandProcessorOutput createBulkJobReport(
+            BulkJobModel job, int currentPartition, BulkJobShardCursorModel currentCursor) {
+        BulkJobShardReportModel report = new BulkJobShardReportModel(
+                job.getId(),
+                currentPartition,
+                currentCursor.isScanCompleted(),
+                currentCursor.getLastKey(),
+                currentCursor.getLastSeenTimestamp());
+        MetadataCommandModel command = new MetadataCommandModel(report);
+        return new CommandProcessorOutput(config.getMetadataCmdTopicName(), command, command.getPartitionKey());
     }
 }

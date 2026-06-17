@@ -73,6 +73,7 @@ private static final long serialVersionUID = 0L;
     PUT_QUOTA(19),
     DELETE_QUOTA(20),
     CREATE_BULK_JOB(21),
+    BULK_JOB_SHARD_REPORT(22),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -108,6 +109,7 @@ private static final long serialVersionUID = 0L;
         case 19: return PUT_QUOTA;
         case 20: return DELETE_QUOTA;
         case 21: return CREATE_BULK_JOB;
+        case 22: return BULK_JOB_SHARD_REPORT;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -766,6 +768,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
   }
 
+  public static final int BULK_JOB_SHARD_REPORT_FIELD_NUMBER = 22;
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return Whether the bulkJobShardReport field is set.
+   */
+  @java.lang.Override
+  public boolean hasBulkJobShardReport() {
+    return metadataCommandCase_ == 22;
+  }
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return The bulkJobShardReport.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkJobShardReport getBulkJobShardReport() {
+    if (metadataCommandCase_ == 22) {
+       return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder() {
+    if (metadataCommandCase_ == 22) {
+       return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -839,6 +872,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 21) {
       output.writeMessage(21, (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 22) {
+      output.writeMessage(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -927,6 +963,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 21) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(21, (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 22) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1027,6 +1067,10 @@ private static final long serialVersionUID = 0L;
         if (!getCreateBulkJob()
             .equals(other.getCreateBulkJob())) return false;
         break;
+      case 22:
+        if (!getBulkJobShardReport()
+            .equals(other.getBulkJobShardReport())) return false;
+        break;
       case 0:
       default:
     }
@@ -1121,6 +1165,10 @@ private static final long serialVersionUID = 0L;
       case 21:
         hash = (37 * hash) + CREATE_BULK_JOB_FIELD_NUMBER;
         hash = (53 * hash) + getCreateBulkJob().hashCode();
+        break;
+      case 22:
+        hash = (37 * hash) + BULK_JOB_SHARD_REPORT_FIELD_NUMBER;
+        hash = (53 * hash) + getBulkJobShardReport().hashCode();
         break;
       case 0:
       default:
@@ -1326,6 +1374,9 @@ private static final long serialVersionUID = 0L;
       if (createBulkJobBuilder_ != null) {
         createBulkJobBuilder_.clear();
       }
+      if (bulkJobShardReportBuilder_ != null) {
+        bulkJobShardReportBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1451,6 +1502,10 @@ private static final long serialVersionUID = 0L;
           createBulkJobBuilder_ != null) {
         result.metadataCommand_ = createBulkJobBuilder_.build();
       }
+      if (metadataCommandCase_ == 22 &&
+          bulkJobShardReportBuilder_ != null) {
+        result.metadataCommand_ = bulkJobShardReportBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1544,6 +1599,10 @@ private static final long serialVersionUID = 0L;
         }
         case CREATE_BULK_JOB: {
           mergeCreateBulkJob(other.getCreateBulkJob());
+          break;
+        }
+        case BULK_JOB_SHARD_REPORT: {
+          mergeBulkJobShardReport(other.getBulkJobShardReport());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1714,6 +1773,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 21;
               break;
             } // case 170
+            case 178: {
+              input.readMessage(
+                  internalGetBulkJobShardReportFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 22;
+              break;
+            } // case 178
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4536,6 +4602,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 21;
       onChanged();
       return createBulkJobBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder> bulkJobShardReportBuilder_;
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     * @return Whether the bulkJobShardReport field is set.
+     */
+    @java.lang.Override
+    public boolean hasBulkJobShardReport() {
+      return metadataCommandCase_ == 22;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     * @return The bulkJobShardReport.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkJobShardReport getBulkJobShardReport() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22) {
+          return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          return bulkJobShardReportBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder setBulkJobShardReport(io.littlehorse.common.proto.BulkJobShardReport value) {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        bulkJobShardReportBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder setBulkJobShardReport(
+        io.littlehorse.common.proto.BulkJobShardReport.Builder builderForValue) {
+      if (bulkJobShardReportBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        bulkJobShardReportBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder mergeBulkJobShardReport(io.littlehorse.common.proto.BulkJobShardReport value) {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22 &&
+            metadataCommand_ != io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.common.proto.BulkJobShardReport.newBuilder((io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          bulkJobShardReportBuilder_.mergeFrom(value);
+        } else {
+          bulkJobShardReportBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder clearBulkJobShardReport() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 22) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        bulkJobShardReportBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public io.littlehorse.common.proto.BulkJobShardReport.Builder getBulkJobShardReportBuilder() {
+      return internalGetBulkJobShardReportFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder() {
+      if ((metadataCommandCase_ == 22) && (bulkJobShardReportBuilder_ != null)) {
+        return bulkJobShardReportBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder> 
+        internalGetBulkJobShardReportFieldBuilder() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (!(metadataCommandCase_ == 22)) {
+          metadataCommand_ = io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+        }
+        bulkJobShardReportBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder>(
+                (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 22;
+      onChanged();
+      return bulkJobShardReportBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

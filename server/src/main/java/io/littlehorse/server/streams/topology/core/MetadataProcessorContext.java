@@ -44,13 +44,15 @@ public class MetadataProcessorContext implements ExecutionContext {
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
-        this.metadataCache = metadataCache;
+
+        // TODO: Race condition when modifying the same metadata object in different partitions.
+        this.metadataCache = new MetadataCache();
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ClusterScopedStore.newInstance(nativeMetadataStore, this),
                 TenantScopedStore.newInstance(nativeMetadataStore, tenantId, this),
-                metadataCache,
+                this.metadataCache,
                 (getable) -> {
                     maybeForwardMetadataGetableToOutputTopic(tenantId, getable);
                 });

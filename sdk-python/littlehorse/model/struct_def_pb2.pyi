@@ -1,7 +1,7 @@
 import datetime
 
-import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
-import littlehorse.model.object_id_pb2 as _object_id_pb2
+import common_wfspec_pb2 as _common_wfspec_pb2
+import object_id_pb2 as _object_id_pb2
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message

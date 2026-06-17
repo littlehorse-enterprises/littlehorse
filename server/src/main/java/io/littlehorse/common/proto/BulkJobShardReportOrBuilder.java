@@ -6,66 +6,48 @@
 package io.littlehorse.common.proto;
 
 @com.google.protobuf.Generated
-public interface BulkJobShardCursorOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.BulkJobShardCursor)
+public interface BulkJobShardReportOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.BulkJobShardReport)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    * @return Whether the bulkJobId field is set.
    */
   boolean hasBulkJobId();
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    * @return The bulkJobId.
    */
   io.littlehorse.sdk.common.proto.BulkJobId getBulkJobId();
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    */
   io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder getBulkJobIdOrBuilder();
 
   /**
-   * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
-   * </pre>
-   *
-   * <code>string last_key = 2;</code>
-   * @return The lastKey.
+   * <code>int32 partition = 2;</code>
+   * @return The partition.
    */
-  java.lang.String getLastKey();
-  /**
-   * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
-   * </pre>
-   *
-   * <code>string last_key = 2;</code>
-   * @return The bytes for lastKey.
-   */
-  com.google.protobuf.ByteString
-      getLastKeyBytes();
+  int getPartition();
 
   /**
-   * <pre>
-   * Whether the scan has completed for this shard.
-   * </pre>
-   *
-   * <code>bool scan_completed = 3;</code>
-   * @return The scanCompleted.
+   * <code>bool completed = 3;</code>
+   * @return The completed.
    */
-  boolean getScanCompleted();
+  boolean getCompleted();
+
+  /**
+   * <code>string last_seen_key = 4;</code>
+   * @return The lastSeenKey.
+   */
+  java.lang.String getLastSeenKey();
+  /**
+   * <code>string last_seen_key = 4;</code>
+   * @return The bytes for lastSeenKey.
+   */
+  com.google.protobuf.ByteString
+      getLastSeenKeyBytes();
 
   /**
    * <code>optional .google.protobuf.Timestamp last_seen_timestamp = 5;</code>

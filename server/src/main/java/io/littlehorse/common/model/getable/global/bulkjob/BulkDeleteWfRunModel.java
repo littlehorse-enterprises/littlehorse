@@ -17,7 +17,6 @@ import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
@@ -63,10 +62,12 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         return startKey() + "~";
     }
 
-    public Optional<BulkJobShardCursorModel> process(
+    public BulkJobShardCursorModel process(
             Consumer<CoreSubCommand<?>> commandForwarder,
             TenantScopedStore coreStore,
             BulkJobShardCursorModel shardCursor) {
+        String lastKey = shardCursor.getLastKey();
+        Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
         try (LHKeyValueIterator<Tag> range = coreStore.range(startKey(), endKey(), Tag.class)) {
             while (range.hasNext()) {
                 Tag tag = range.next().getValue();
@@ -77,8 +78,13 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
                         .build();
                 InternalDeleteWfRunRequestModel deleteWfRunRequestModel = new InternalDeleteWfRunRequestModel(delete);
                 commandForwarder.accept(deleteWfRunRequestModel);
+                lastKey = tag.getDescribedObjectId();
+                lastSeenTimestamp = tag.createdAt;
             }
         }
-        return Optional.empty();
+        shardCursor.setScanCompleted(true);
+        shardCursor.setLastKey(lastKey);
+        shardCursor.setLastSeenTimestamp(lastSeenTimestamp);
+        return shardCursor;
     }
 }

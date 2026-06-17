@@ -6,18 +6,13 @@
 package io.littlehorse.common.proto;
 
 /**
- * <pre>
- * Internal storeable that tracks the range scan cursor for a BulkJobShard.
- * Not exposed via the public API.
- * </pre>
- *
- * Protobuf type {@code littlehorse.BulkJobShardCursor}
+ * Protobuf type {@code littlehorse.BulkJobShardReport}
  */
 @com.google.protobuf.Generated
-public final class BulkJobShardCursor extends
+public final class BulkJobShardReport extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.BulkJobShardCursor)
-    BulkJobShardCursorOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.BulkJobShardReport)
+    BulkJobShardReportOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -26,37 +21,33 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      BulkJobShardCursor.class.getName());
+      BulkJobShardReport.class.getName());
   }
-  // Use BulkJobShardCursor.newBuilder() to construct.
-  private BulkJobShardCursor(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use BulkJobShardReport.newBuilder() to construct.
+  private BulkJobShardReport(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private BulkJobShardCursor() {
-    lastKey_ = "";
+  private BulkJobShardReport() {
+    lastSeenKey_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardReport_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable
+    return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardReport_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.common.proto.BulkJobShardCursor.class, io.littlehorse.common.proto.BulkJobShardCursor.Builder.class);
+            io.littlehorse.common.proto.BulkJobShardReport.class, io.littlehorse.common.proto.BulkJobShardReport.Builder.class);
   }
 
   private int bitField0_;
   public static final int BULK_JOB_ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.BulkJobId bulkJobId_;
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    * @return Whether the bulkJobId field is set.
    */
@@ -65,10 +56,6 @@ private static final long serialVersionUID = 0L;
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    * @return The bulkJobId.
    */
@@ -77,10 +64,6 @@ private static final long serialVersionUID = 0L;
     return bulkJobId_ == null ? io.littlehorse.sdk.common.proto.BulkJobId.getDefaultInstance() : bulkJobId_;
   }
   /**
-   * <pre>
-   * The BulkJob this cursor belongs to.
-   * </pre>
-   *
    * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
    */
   @java.lang.Override
@@ -88,66 +71,65 @@ private static final long serialVersionUID = 0L;
     return bulkJobId_ == null ? io.littlehorse.sdk.common.proto.BulkJobId.getDefaultInstance() : bulkJobId_;
   }
 
-  public static final int LAST_KEY_FIELD_NUMBER = 2;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object lastKey_ = "";
+  public static final int PARTITION_FIELD_NUMBER = 2;
+  private int partition_ = 0;
   /**
-   * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
-   * </pre>
-   *
-   * <code>string last_key = 2;</code>
-   * @return The lastKey.
+   * <code>int32 partition = 2;</code>
+   * @return The partition.
    */
   @java.lang.Override
-  public java.lang.String getLastKey() {
-    java.lang.Object ref = lastKey_;
+  public int getPartition() {
+    return partition_;
+  }
+
+  public static final int COMPLETED_FIELD_NUMBER = 3;
+  private boolean completed_ = false;
+  /**
+   * <code>bool completed = 3;</code>
+   * @return The completed.
+   */
+  @java.lang.Override
+  public boolean getCompleted() {
+    return completed_;
+  }
+
+  public static final int LAST_SEEN_KEY_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object lastSeenKey_ = "";
+  /**
+   * <code>string last_seen_key = 4;</code>
+   * @return The lastSeenKey.
+   */
+  @java.lang.Override
+  public java.lang.String getLastSeenKey() {
+    java.lang.Object ref = lastSeenKey_;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      lastKey_ = s;
+      lastSeenKey_ = s;
       return s;
     }
   }
   /**
-   * <pre>
-   * The last iterated key in the range scan. Empty means scan hasn't started yet.
-   * </pre>
-   *
-   * <code>string last_key = 2;</code>
-   * @return The bytes for lastKey.
+   * <code>string last_seen_key = 4;</code>
+   * @return The bytes for lastSeenKey.
    */
   @java.lang.Override
   public com.google.protobuf.ByteString
-      getLastKeyBytes() {
-    java.lang.Object ref = lastKey_;
+      getLastSeenKeyBytes() {
+    java.lang.Object ref = lastSeenKey_;
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      lastKey_ = b;
+      lastSeenKey_ = b;
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
     }
-  }
-
-  public static final int SCAN_COMPLETED_FIELD_NUMBER = 3;
-  private boolean scanCompleted_ = false;
-  /**
-   * <pre>
-   * Whether the scan has completed for this shard.
-   * </pre>
-   *
-   * <code>bool scan_completed = 3;</code>
-   * @return The scanCompleted.
-   */
-  @java.lang.Override
-  public boolean getScanCompleted() {
-    return scanCompleted_;
   }
 
   public static final int LAST_SEEN_TIMESTAMP_FIELD_NUMBER = 5;
@@ -193,11 +175,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getBulkJobId());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastKey_)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 2, lastKey_);
+    if (partition_ != 0) {
+      output.writeInt32(2, partition_);
     }
-    if (scanCompleted_ != false) {
-      output.writeBool(3, scanCompleted_);
+    if (completed_ != false) {
+      output.writeBool(3, completed_);
+    }
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastSeenKey_)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, lastSeenKey_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(5, getLastSeenTimestamp());
@@ -215,12 +200,16 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getBulkJobId());
     }
-    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastKey_)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(2, lastKey_);
-    }
-    if (scanCompleted_ != false) {
+    if (partition_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(3, scanCompleted_);
+        .computeInt32Size(2, partition_);
+    }
+    if (completed_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(3, completed_);
+    }
+    if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastSeenKey_)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, lastSeenKey_);
     }
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -236,20 +225,22 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.common.proto.BulkJobShardCursor)) {
+    if (!(obj instanceof io.littlehorse.common.proto.BulkJobShardReport)) {
       return super.equals(obj);
     }
-    io.littlehorse.common.proto.BulkJobShardCursor other = (io.littlehorse.common.proto.BulkJobShardCursor) obj;
+    io.littlehorse.common.proto.BulkJobShardReport other = (io.littlehorse.common.proto.BulkJobShardReport) obj;
 
     if (hasBulkJobId() != other.hasBulkJobId()) return false;
     if (hasBulkJobId()) {
       if (!getBulkJobId()
           .equals(other.getBulkJobId())) return false;
     }
-    if (!getLastKey()
-        .equals(other.getLastKey())) return false;
-    if (getScanCompleted()
-        != other.getScanCompleted()) return false;
+    if (getPartition()
+        != other.getPartition()) return false;
+    if (getCompleted()
+        != other.getCompleted()) return false;
+    if (!getLastSeenKey()
+        .equals(other.getLastSeenKey())) return false;
     if (hasLastSeenTimestamp() != other.hasLastSeenTimestamp()) return false;
     if (hasLastSeenTimestamp()) {
       if (!getLastSeenTimestamp()
@@ -270,11 +261,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + BULK_JOB_ID_FIELD_NUMBER;
       hash = (53 * hash) + getBulkJobId().hashCode();
     }
-    hash = (37 * hash) + LAST_KEY_FIELD_NUMBER;
-    hash = (53 * hash) + getLastKey().hashCode();
-    hash = (37 * hash) + SCAN_COMPLETED_FIELD_NUMBER;
+    hash = (37 * hash) + PARTITION_FIELD_NUMBER;
+    hash = (53 * hash) + getPartition();
+    hash = (37 * hash) + COMPLETED_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-        getScanCompleted());
+        getCompleted());
+    hash = (37 * hash) + LAST_SEEN_KEY_FIELD_NUMBER;
+    hash = (53 * hash) + getLastSeenKey().hashCode();
     if (hasLastSeenTimestamp()) {
       hash = (37 * hash) + LAST_SEEN_TIMESTAMP_FIELD_NUMBER;
       hash = (53 * hash) + getLastSeenTimestamp().hashCode();
@@ -284,44 +277,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(byte[] data)
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -329,26 +322,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.common.proto.BulkJobShardReport parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseDelimitedFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.common.proto.BulkJobShardCursor parseFrom(
+  public static io.littlehorse.common.proto.BulkJobShardReport parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -361,7 +354,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.common.proto.BulkJobShardCursor prototype) {
+  public static Builder newBuilder(io.littlehorse.common.proto.BulkJobShardReport prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -377,31 +370,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * <pre>
-   * Internal storeable that tracks the range scan cursor for a BulkJobShard.
-   * Not exposed via the public API.
-   * </pre>
-   *
-   * Protobuf type {@code littlehorse.BulkJobShardCursor}
+   * Protobuf type {@code littlehorse.BulkJobShardReport}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.BulkJobShardCursor)
-      io.littlehorse.common.proto.BulkJobShardCursorOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.BulkJobShardReport)
+      io.littlehorse.common.proto.BulkJobShardReportOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardReport_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_fieldAccessorTable
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardReport_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.common.proto.BulkJobShardCursor.class, io.littlehorse.common.proto.BulkJobShardCursor.Builder.class);
+              io.littlehorse.common.proto.BulkJobShardReport.class, io.littlehorse.common.proto.BulkJobShardReport.Builder.class);
     }
 
-    // Construct using io.littlehorse.common.proto.BulkJobShardCursor.newBuilder()
+    // Construct using io.littlehorse.common.proto.BulkJobShardReport.newBuilder()
     private Builder() {
       maybeForceBuilderInitialization();
     }
@@ -427,8 +415,9 @@ private static final long serialVersionUID = 0L;
         bulkJobIdBuilder_.dispose();
         bulkJobIdBuilder_ = null;
       }
-      lastKey_ = "";
-      scanCompleted_ = false;
+      partition_ = 0;
+      completed_ = false;
+      lastSeenKey_ = "";
       lastSeenTimestamp_ = null;
       if (lastSeenTimestampBuilder_ != null) {
         lastSeenTimestampBuilder_.dispose();
@@ -440,17 +429,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardCursor_descriptor;
+      return io.littlehorse.common.proto.Job.internal_static_littlehorse_BulkJobShardReport_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstanceForType() {
-      return io.littlehorse.common.proto.BulkJobShardCursor.getDefaultInstance();
+    public io.littlehorse.common.proto.BulkJobShardReport getDefaultInstanceForType() {
+      return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor build() {
-      io.littlehorse.common.proto.BulkJobShardCursor result = buildPartial();
+    public io.littlehorse.common.proto.BulkJobShardReport build() {
+      io.littlehorse.common.proto.BulkJobShardReport result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -458,14 +447,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.common.proto.BulkJobShardCursor buildPartial() {
-      io.littlehorse.common.proto.BulkJobShardCursor result = new io.littlehorse.common.proto.BulkJobShardCursor(this);
+    public io.littlehorse.common.proto.BulkJobShardReport buildPartial() {
+      io.littlehorse.common.proto.BulkJobShardReport result = new io.littlehorse.common.proto.BulkJobShardReport(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.common.proto.BulkJobShardCursor result) {
+    private void buildPartial0(io.littlehorse.common.proto.BulkJobShardReport result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -475,12 +464,15 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.lastKey_ = lastKey_;
+        result.partition_ = partition_;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.scanCompleted_ = scanCompleted_;
+        result.completed_ = completed_;
       }
       if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.lastSeenKey_ = lastSeenKey_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.lastSeenTimestamp_ = lastSeenTimestampBuilder_ == null
             ? lastSeenTimestamp_
             : lastSeenTimestampBuilder_.build();
@@ -491,26 +483,29 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.common.proto.BulkJobShardCursor) {
-        return mergeFrom((io.littlehorse.common.proto.BulkJobShardCursor)other);
+      if (other instanceof io.littlehorse.common.proto.BulkJobShardReport) {
+        return mergeFrom((io.littlehorse.common.proto.BulkJobShardReport)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.common.proto.BulkJobShardCursor other) {
-      if (other == io.littlehorse.common.proto.BulkJobShardCursor.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.common.proto.BulkJobShardReport other) {
+      if (other == io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance()) return this;
       if (other.hasBulkJobId()) {
         mergeBulkJobId(other.getBulkJobId());
       }
-      if (!other.getLastKey().isEmpty()) {
-        lastKey_ = other.lastKey_;
-        bitField0_ |= 0x00000002;
-        onChanged();
+      if (other.getPartition() != 0) {
+        setPartition(other.getPartition());
       }
-      if (other.getScanCompleted() != false) {
-        setScanCompleted(other.getScanCompleted());
+      if (other.getCompleted() != false) {
+        setCompleted(other.getCompleted());
+      }
+      if (!other.getLastSeenKey().isEmpty()) {
+        lastSeenKey_ = other.lastSeenKey_;
+        bitField0_ |= 0x00000008;
+        onChanged();
       }
       if (other.hasLastSeenTimestamp()) {
         mergeLastSeenTimestamp(other.getLastSeenTimestamp());
@@ -548,21 +543,26 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
-            case 18: {
-              lastKey_ = input.readStringRequireUtf8();
+            case 16: {
+              partition_ = input.readInt32();
               bitField0_ |= 0x00000002;
               break;
-            } // case 18
+            } // case 16
             case 24: {
-              scanCompleted_ = input.readBool();
+              completed_ = input.readBool();
               bitField0_ |= 0x00000004;
               break;
             } // case 24
+            case 34: {
+              lastSeenKey_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             case 42: {
               input.readMessage(
                   internalGetLastSeenTimestampFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 42
             default: {
@@ -586,10 +586,6 @@ private static final long serialVersionUID = 0L;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.BulkJobId, io.littlehorse.sdk.common.proto.BulkJobId.Builder, io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder> bulkJobIdBuilder_;
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      * @return Whether the bulkJobId field is set.
      */
@@ -597,10 +593,6 @@ private static final long serialVersionUID = 0L;
       return ((bitField0_ & 0x00000001) != 0);
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      * @return The bulkJobId.
      */
@@ -612,10 +604,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public Builder setBulkJobId(io.littlehorse.sdk.common.proto.BulkJobId value) {
@@ -632,10 +620,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public Builder setBulkJobId(
@@ -650,10 +634,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public Builder mergeBulkJobId(io.littlehorse.sdk.common.proto.BulkJobId value) {
@@ -675,10 +655,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public Builder clearBulkJobId() {
@@ -692,10 +668,6 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.BulkJobId.Builder getBulkJobIdBuilder() {
@@ -704,10 +676,6 @@ private static final long serialVersionUID = 0L;
       return internalGetBulkJobIdFieldBuilder().getBuilder();
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     public io.littlehorse.sdk.common.proto.BulkJobIdOrBuilder getBulkJobIdOrBuilder() {
@@ -719,10 +687,6 @@ private static final long serialVersionUID = 0L;
       }
     }
     /**
-     * <pre>
-     * The BulkJob this cursor belongs to.
-     * </pre>
-     *
      * <code>.littlehorse.BulkJobId bulk_job_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
@@ -739,138 +703,138 @@ private static final long serialVersionUID = 0L;
       return bulkJobIdBuilder_;
     }
 
-    private java.lang.Object lastKey_ = "";
+    private int partition_ ;
     /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
-     * @return The lastKey.
+     * <code>int32 partition = 2;</code>
+     * @return The partition.
      */
-    public java.lang.String getLastKey() {
-      java.lang.Object ref = lastKey_;
+    @java.lang.Override
+    public int getPartition() {
+      return partition_;
+    }
+    /**
+     * <code>int32 partition = 2;</code>
+     * @param value The partition to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPartition(int value) {
+
+      partition_ = value;
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 partition = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPartition() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      partition_ = 0;
+      onChanged();
+      return this;
+    }
+
+    private boolean completed_ ;
+    /**
+     * <code>bool completed = 3;</code>
+     * @return The completed.
+     */
+    @java.lang.Override
+    public boolean getCompleted() {
+      return completed_;
+    }
+    /**
+     * <code>bool completed = 3;</code>
+     * @param value The completed to set.
+     * @return This builder for chaining.
+     */
+    public Builder setCompleted(boolean value) {
+
+      completed_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool completed = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearCompleted() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      completed_ = false;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object lastSeenKey_ = "";
+    /**
+     * <code>string last_seen_key = 4;</code>
+     * @return The lastSeenKey.
+     */
+    public java.lang.String getLastSeenKey() {
+      java.lang.Object ref = lastSeenKey_;
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        lastKey_ = s;
+        lastSeenKey_ = s;
         return s;
       } else {
         return (java.lang.String) ref;
       }
     }
     /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
-     * @return The bytes for lastKey.
+     * <code>string last_seen_key = 4;</code>
+     * @return The bytes for lastSeenKey.
      */
     public com.google.protobuf.ByteString
-        getLastKeyBytes() {
-      java.lang.Object ref = lastKey_;
+        getLastSeenKeyBytes() {
+      java.lang.Object ref = lastSeenKey_;
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        lastKey_ = b;
+        lastSeenKey_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
     /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
-     * @param value The lastKey to set.
+     * <code>string last_seen_key = 4;</code>
+     * @param value The lastSeenKey to set.
      * @return This builder for chaining.
      */
-    public Builder setLastKey(
+    public Builder setLastSeenKey(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      lastKey_ = value;
-      bitField0_ |= 0x00000002;
+      lastSeenKey_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
+     * <code>string last_seen_key = 4;</code>
      * @return This builder for chaining.
      */
-    public Builder clearLastKey() {
-      lastKey_ = getDefaultInstance().getLastKey();
-      bitField0_ = (bitField0_ & ~0x00000002);
+    public Builder clearLastSeenKey() {
+      lastSeenKey_ = getDefaultInstance().getLastSeenKey();
+      bitField0_ = (bitField0_ & ~0x00000008);
       onChanged();
       return this;
     }
     /**
-     * <pre>
-     * The last iterated key in the range scan. Empty means scan hasn't started yet.
-     * </pre>
-     *
-     * <code>string last_key = 2;</code>
-     * @param value The bytes for lastKey to set.
+     * <code>string last_seen_key = 4;</code>
+     * @param value The bytes for lastSeenKey to set.
      * @return This builder for chaining.
      */
-    public Builder setLastKeyBytes(
+    public Builder setLastSeenKeyBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      lastKey_ = value;
-      bitField0_ |= 0x00000002;
-      onChanged();
-      return this;
-    }
-
-    private boolean scanCompleted_ ;
-    /**
-     * <pre>
-     * Whether the scan has completed for this shard.
-     * </pre>
-     *
-     * <code>bool scan_completed = 3;</code>
-     * @return The scanCompleted.
-     */
-    @java.lang.Override
-    public boolean getScanCompleted() {
-      return scanCompleted_;
-    }
-    /**
-     * <pre>
-     * Whether the scan has completed for this shard.
-     * </pre>
-     *
-     * <code>bool scan_completed = 3;</code>
-     * @param value The scanCompleted to set.
-     * @return This builder for chaining.
-     */
-    public Builder setScanCompleted(boolean value) {
-
-      scanCompleted_ = value;
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Whether the scan has completed for this shard.
-     * </pre>
-     *
-     * <code>bool scan_completed = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearScanCompleted() {
-      bitField0_ = (bitField0_ & ~0x00000004);
-      scanCompleted_ = false;
+      lastSeenKey_ = value;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -883,7 +847,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the lastSeenTimestamp field is set.
      */
     public boolean hasLastSeenTimestamp() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>optional .google.protobuf.Timestamp last_seen_timestamp = 5;</code>
@@ -908,7 +872,7 @@ private static final long serialVersionUID = 0L;
       } else {
         lastSeenTimestampBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -922,7 +886,7 @@ private static final long serialVersionUID = 0L;
       } else {
         lastSeenTimestampBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -931,7 +895,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeLastSeenTimestamp(com.google.protobuf.Timestamp value) {
       if (lastSeenTimestampBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           lastSeenTimestamp_ != null &&
           lastSeenTimestamp_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getLastSeenTimestampBuilder().mergeFrom(value);
@@ -942,7 +906,7 @@ private static final long serialVersionUID = 0L;
         lastSeenTimestampBuilder_.mergeFrom(value);
       }
       if (lastSeenTimestamp_ != null) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       return this;
@@ -951,7 +915,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp last_seen_timestamp = 5;</code>
      */
     public Builder clearLastSeenTimestamp() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       lastSeenTimestamp_ = null;
       if (lastSeenTimestampBuilder_ != null) {
         lastSeenTimestampBuilder_.dispose();
@@ -964,7 +928,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .google.protobuf.Timestamp last_seen_timestamp = 5;</code>
      */
     public com.google.protobuf.Timestamp.Builder getLastSeenTimestampBuilder() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return internalGetLastSeenTimestampFieldBuilder().getBuilder();
     }
@@ -996,23 +960,23 @@ private static final long serialVersionUID = 0L;
       return lastSeenTimestampBuilder_;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.BulkJobShardCursor)
+    // @@protoc_insertion_point(builder_scope:littlehorse.BulkJobShardReport)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.BulkJobShardCursor)
-  private static final io.littlehorse.common.proto.BulkJobShardCursor DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.BulkJobShardReport)
+  private static final io.littlehorse.common.proto.BulkJobShardReport DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.common.proto.BulkJobShardCursor();
+    DEFAULT_INSTANCE = new io.littlehorse.common.proto.BulkJobShardReport();
   }
 
-  public static io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstance() {
+  public static io.littlehorse.common.proto.BulkJobShardReport getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<BulkJobShardCursor>
-      PARSER = new com.google.protobuf.AbstractParser<BulkJobShardCursor>() {
+  private static final com.google.protobuf.Parser<BulkJobShardReport>
+      PARSER = new com.google.protobuf.AbstractParser<BulkJobShardReport>() {
     @java.lang.Override
-    public BulkJobShardCursor parsePartialFrom(
+    public BulkJobShardReport parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1031,17 +995,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<BulkJobShardCursor> parser() {
+  public static com.google.protobuf.Parser<BulkJobShardReport> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<BulkJobShardCursor> getParserForType() {
+  public com.google.protobuf.Parser<BulkJobShardReport> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.common.proto.BulkJobShardCursor getDefaultInstanceForType() {
+  public io.littlehorse.common.proto.BulkJobShardReport getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

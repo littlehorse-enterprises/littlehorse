@@ -65,7 +65,8 @@ public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobR
             return existing.toProto().build();
         }
 
-        BulkJobModel bulkJob = new BulkJobModel(idModel, bulkDeleteWfRun);
+        BulkJobModel bulkJob = new BulkJobModel(
+                idModel, bulkDeleteWfRun, context.serverConfig().getClusterPartitions());
         metadataManager.put(bulkJob);
 
         // Create the cluster-scoped ActiveBulkJob registry entry so the punctuator

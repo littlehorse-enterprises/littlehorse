@@ -45,6 +45,8 @@ message BulkJobShardCursor {
 
   // Whether the scan has completed for this shard.
   bool scan_completed = 3;
+
+  optional google.protobuf.Timestamp last_seen_timestamp = 5;
 }
 
 // ID for an ActiveBulkJob registry entry.
@@ -65,5 +67,17 @@ message ActiveBulkJob {
 
   // When this entry was created.
   google.protobuf.Timestamp created_at = 2;
+}
+
+message BulkJobShardReport {
+  BulkJobId bulk_job_id = 1;
+
+  int32 partition = 2;
+
+  bool completed = 3;
+
+  string last_seen_key = 4;
+
+  optional google.protobuf.Timestamp last_seen_timestamp = 5;
 }
 

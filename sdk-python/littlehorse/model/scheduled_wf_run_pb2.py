@@ -23,8 +23,8 @@ _sym_db = _symbol_database.Default()
 
 
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
-import littlehorse.model.object_id_pb2 as object__id__pb2
-import littlehorse.model.variable_pb2 as variable__pb2
+import object_id_pb2 as object__id__pb2
+import variable_pb2 as variable__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16scheduled_wf_run.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x0evariable.proto\"\x86\x03\n\x0eScheduledWfRun\x12)\n\x02id\x18\x01 \x01(\x0b\x32\x1d.littlehorse.ScheduledWfRunId\x12)\n\nwf_spec_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12=\n\tvariables\x18\x03 \x03(\x0b\x32*.littlehorse.ScheduledWfRun.VariablesEntry\x12\x33\n\x10parent_wf_run_id\x18\x04 \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x88\x01\x01\x12\x17\n\x0f\x63ron_expression\x18\x05 \x01(\t\x12.\n\ncreated_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x1aL\n\x0eVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\x42\x13\n\x11_parent_wf_run_idBM\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')

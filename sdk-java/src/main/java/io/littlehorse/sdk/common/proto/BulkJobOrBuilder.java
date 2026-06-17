@@ -84,39 +84,53 @@ public interface BulkJobOrBuilder extends
   io.littlehorse.sdk.common.proto.BulkJobStatus getStatus();
 
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    * @return Whether the bulkDeleteWfRun field is set.
    */
   boolean hasBulkDeleteWfRun();
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    * @return The bulkDeleteWfRun.
    */
   io.littlehorse.sdk.common.proto.BulkDeleteWfRun getBulkDeleteWfRun();
   /**
-   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 10;</code>
+   * <code>.littlehorse.BulkDeleteWfRun bulk_delete_wf_run = 4;</code>
    */
   io.littlehorse.sdk.common.proto.BulkDeleteWfRunOrBuilder getBulkDeleteWfRunOrBuilder();
 
   /**
-   * <pre>
-   * Progress information: total number of items to process.
-   * </pre>
-   *
-   * <code>int64 total_items = 20;</code>
-   * @return The totalItems.
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
    */
-  long getTotalItems();
+  java.util.List<io.littlehorse.sdk.common.proto.BulkJob.Subprocess> 
+      getSubprocessesList();
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.BulkJob.Subprocess getSubprocesses(int index);
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  int getSubprocessesCount();
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  java.util.List<? extends io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder> 
+      getSubprocessesOrBuilderList();
+  /**
+   * <code>repeated .littlehorse.BulkJob.Subprocess subprocesses = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.BulkJob.SubprocessOrBuilder getSubprocessesOrBuilder(
+      int index);
 
   /**
    * <pre>
-   * Progress information: number of items processed so far.
+   * Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
    * </pre>
    *
-   * <code>int64 processed_items = 21;</code>
-   * @return The processedItems.
+   * <code>int32 total_subprocesses = 6;</code>
+   * @return The totalSubprocesses.
    */
-  long getProcessedItems();
+  int getTotalSubprocesses();
 
   io.littlehorse.sdk.common.proto.BulkJob.OperationCase getOperationCase();
 }

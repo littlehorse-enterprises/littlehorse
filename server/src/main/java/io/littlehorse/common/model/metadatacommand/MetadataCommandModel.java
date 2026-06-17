@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
@@ -59,6 +60,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private DeleteStructDefRequestModel deleteStructDef;
     private CreateBulkJobRequestModel createBulkJob;
+    private BulkJobShardReportModel bulkJobShardReport;
 
     public MetadataCommandModel() {
         super();
@@ -140,6 +142,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case CREATE_BULK_JOB:
                 out.setCreateBulkJob(createBulkJob.toProto());
                 break;
+            case BULK_JOB_SHARD_REPORT:
+                out.setBulkJobShardReport(bulkJobShardReport.toProto());
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -220,6 +225,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 createBulkJob =
                         LHSerializable.fromProto(p.getCreateBulkJob(), CreateBulkJobRequestModel.class, context);
                 break;
+            case BULK_JOB_SHARD_REPORT:
+                bulkJobShardReport =
+                        LHSerializable.fromProto(p.getBulkJobShardReport(), BulkJobShardReportModel.class, context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -263,6 +272,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return deleteQuota;
             case CREATE_BULK_JOB:
                 return createBulkJob;
+            case BULK_JOB_SHARD_REPORT:
+                return bulkJobShardReport;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -324,6 +335,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(CreateBulkJobRequestModel.class)) {
             type = MetadataCommandCase.CREATE_BULK_JOB;
             createBulkJob = (CreateBulkJobRequestModel) cmd;
+        } else if (cls.equals(BulkJobShardReportModel.class)) {
+            type = MetadataCommandCase.BULK_JOB_SHARD_REPORT;
+            bulkJobShardReport = (BulkJobShardReportModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

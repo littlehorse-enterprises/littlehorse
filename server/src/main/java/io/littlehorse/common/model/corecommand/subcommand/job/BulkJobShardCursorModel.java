@@ -6,8 +6,10 @@ import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.proto.BulkJobShardCursor;
 import io.littlehorse.common.proto.StoreableType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,7 @@ public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
     private BulkJobIdModel bulkJobId;
     private String lastKey;
     private boolean scanCompleted;
+    private Date lastSeenTimestamp;
 
     public BulkJobShardCursorModel() {}
 
@@ -37,14 +40,21 @@ public class BulkJobShardCursorModel extends Storeable<BulkJobShardCursor> {
         this.bulkJobId = LHSerializable.fromProto(p.getBulkJobId(), BulkJobIdModel.class, context);
         this.lastKey = p.getLastKey();
         this.scanCompleted = p.getScanCompleted();
+        if (p.hasLastSeenTimestamp()) {
+            this.lastSeenTimestamp = LHUtil.fromProtoTs(p.getLastSeenTimestamp());
+        }
     }
 
     @Override
     public BulkJobShardCursor.Builder toProto() {
-        return BulkJobShardCursor.newBuilder()
+        BulkJobShardCursor.Builder out = BulkJobShardCursor.newBuilder()
                 .setBulkJobId(bulkJobId.toProto())
                 .setLastKey(lastKey)
                 .setScanCompleted(scanCompleted);
+        if (lastSeenTimestamp != null) {
+            out.setLastSeenTimestamp(LHUtil.fromDate(lastSeenTimestamp));
+        }
+        return out;
     }
 
     @Override

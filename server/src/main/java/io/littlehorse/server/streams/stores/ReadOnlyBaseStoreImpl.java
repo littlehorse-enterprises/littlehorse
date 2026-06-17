@@ -13,9 +13,6 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -156,10 +153,6 @@ abstract class ReadOnlyBaseStoreImpl implements ReadOnlyBaseStore {
     public <T extends Storeable<?>> LHKeyValueIterator<T> range(String start, String end, Class<T> cls) {
         start = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, start));
         end = maybeAddTenantPrefix(Storeable.getFullStoreKey(cls, end));
-        List<String> list = StreamSupport.stream(
-                        Spliterators.spliteratorUnknownSize(nativeStore.all(), Spliterator.ORDERED), false)
-                .map(stringBytesKeyValue -> stringBytesKeyValue.key)
-                .toList();
         KeyValueIterator<String, Bytes> iterator = nativeStore.range(start, end);
         String legacyStart = LHUtil.toLegacyFormat(start);
         if (legacyStart == null) {

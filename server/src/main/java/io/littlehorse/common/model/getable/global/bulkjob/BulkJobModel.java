@@ -10,6 +10,7 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
+import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -24,35 +25,40 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.streams.processor.api.Record;
 
 @Getter
 @Setter
+@Slf4j
 public class BulkJobModel extends MetadataGetable<BulkJob> {
 
     private BulkJobIdModel id;
     private Date createdAt;
     private BulkJobStatus status;
     private BulkDeleteWfRunModel bulkDeleteWfRun;
-    private long totalItems;
-    private long processedItems;
+    private List<SubprocessModel> subprocesses = new ArrayList<>();
+    private int totalSubprocesses;
 
     public BulkJobModel() {}
 
-    public BulkJobModel(BulkJobIdModel id, BulkDeleteWfRunModel bulkDeleteWfRun) {
+    public BulkJobModel(BulkJobIdModel id, BulkDeleteWfRunModel bulkDeleteWfRun, int totalSubprocesses) {
         this.id = id;
         this.createdAt = new Date();
         this.status = BulkJobStatus.BULK_JOB_RUNNING;
         this.bulkDeleteWfRun = bulkDeleteWfRun;
-        this.totalItems = 0;
-        this.processedItems = 0;
+        this.totalSubprocesses = totalSubprocesses;
+        for (int i = 0; i < totalSubprocesses; i++) {
+            subprocesses.add(new SubprocessModel(i, BulkJobStatus.BULK_JOB_RUNNING));
+        }
     }
 
     @Override
@@ -61,8 +67,12 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
         id = LHSerializable.fromProto(p.getId(), BulkJobIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         status = p.getStatus();
-        totalItems = p.getTotalItems();
-        processedItems = p.getProcessedItems();
+        totalSubprocesses = p.getTotalSubprocesses();
+
+        subprocesses = new ArrayList<>();
+        for (BulkJob.Subprocess sp : p.getSubprocessesList()) {
+            subprocesses.add(LHSerializable.fromProto(sp, SubprocessModel.class, context));
+        }
 
         if (p.hasBulkDeleteWfRun()) {
             bulkDeleteWfRun = LHSerializable.fromProto(p.getBulkDeleteWfRun(), BulkDeleteWfRunModel.class, context);
@@ -75,8 +85,11 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(createdAt))
                 .setStatus(status)
-                .setTotalItems(totalItems)
-                .setProcessedItems(processedItems);
+                .setTotalSubprocesses(totalSubprocesses);
+
+        for (SubprocessModel sp : subprocesses) {
+            out.addSubprocesses(sp.toProto());
+        }
 
         if (bulkDeleteWfRun != null) {
             out.setBulkDeleteWfRun(bulkDeleteWfRun.toProto());
@@ -84,7 +97,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
         return out;
     }
 
-    public Optional<BulkJobShardCursorModel> tryToComplete(
+    public BulkJobShardCursorModel tryToComplete(
             Consumer<Record> commandOutput, PunctuationExecutionContext context, BulkJobShardCursorModel shardCursor) {
         return bulkDeleteWfRun.process(
                 c -> forwardDeleteCommand(c, commandOutput, context.serverConfig()), context.coreStore(), shardCursor);
@@ -137,5 +150,57 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             }
         }
         return List.of();
+    }
+
+    public void updateShard(BulkJobShardReportModel report) {
+        SubprocessModel toUpdate = subprocesses.stream()
+                .filter(subprocessModel -> subprocessModel.getId() == report.getPartition())
+                .findFirst()
+                .orElseGet(null);
+        toUpdate.setStatus(report.isCompleted() ? BulkJobStatus.BULK_JOB_COMPLETED : BulkJobStatus.BULK_JOB_RUNNING);
+        boolean allShardsCompleted = subprocesses.stream()
+                .allMatch(subprocessModel -> subprocessModel.getStatus() == BulkJobStatus.BULK_JOB_COMPLETED);
+
+        if (allShardsCompleted) {
+            log.info("Bulk job {} completed", id);
+            status = BulkJobStatus.BULK_JOB_COMPLETED;
+        }
+    }
+
+    // Inner model for BulkJob.Subprocess
+    @Getter
+    @Setter
+    public static class SubprocessModel extends LHSerializable<BulkJob.Subprocess> {
+        private int id;
+        private BulkJobStatus status;
+
+        public SubprocessModel() {}
+
+        public SubprocessModel(int id, BulkJobStatus status) {
+            this.id = id;
+            this.status = status;
+        }
+
+        @Override
+        public BulkJob.Subprocess.Builder toProto() {
+            return BulkJob.Subprocess.newBuilder().setId(id).setStatus(status);
+        }
+
+        @Override
+        public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
+            BulkJob.Subprocess p = (BulkJob.Subprocess) proto;
+            id = p.getId();
+            status = p.getStatus();
+        }
+
+        @Override
+        public Class<BulkJob.Subprocess> getProtoBaseClass() {
+            return BulkJob.Subprocess.class;
+        }
+
+        @Override
+        public String toString() {
+            return "SubprocessModel{" + "id=" + id + ", status=" + status + '}';
+        }
     }
 }
