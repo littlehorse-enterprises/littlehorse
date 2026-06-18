@@ -1163,7 +1163,7 @@ public class LHServerConfig extends ConfigBase {
             this.globalRocksdbBlockCache = new LRUCache(cacheSize, -1, true);
         }
 
-        long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
+        long totalWriteBufferSize = getTotalWriteBufferSize();
         if (totalWriteBufferSize != -1) {
             this.globalRocksdbWriteBufferManager =
                     new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
@@ -1178,6 +1178,10 @@ public class LHServerConfig extends ConfigBase {
                     RateLimiter.DEFAULT_FAIRNESS,
                     limitReads ? RateLimiterMode.ALL_IO : RateLimiterMode.WRITES_ONLY);
         }
+    }
+
+    public long getTotalWriteBufferSize() {
+        return Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
     }
 
     private void initKafkaAdmin() {
