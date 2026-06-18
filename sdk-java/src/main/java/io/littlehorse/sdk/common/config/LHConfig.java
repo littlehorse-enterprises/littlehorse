@@ -158,9 +158,12 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Creates an LHConfig with provided config values.
+     * Creates an LHConfig with provided config values and custom gRPC client interceptors.
      *
      * @param props configuration values.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
      */
     public LHConfig(Properties props, ClientInterceptor... clientInterceptors) {
         super(props);
@@ -180,9 +183,13 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Creates an LHConfig with config props in a specified .properties file.
+     * Creates an LHConfig with config props in a specified .properties file and custom gRPC client
+     * interceptors.
      *
      * @param propLocation the location of the .properties file.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
      */
     public LHConfig(Path propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
@@ -202,9 +209,13 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Creates an LHConfig with config props in a specified .properties file.
+     * Creates an LHConfig with config props in a specified .properties file and custom gRPC client
+     * interceptors.
      *
      * @param propLocation the location of the .properties file.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
      */
     public LHConfig(String propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
@@ -321,6 +332,14 @@ public class LHConfig extends ConfigBase {
             return this;
         }
 
+        /**
+         * Registers a gRPC client interceptor to this config. Interceptors are applied to every
+         * channel created by the resulting {@link LHConfig}, in the order they are added. Useful for
+         * cross-cutting concerns such as metrics or logging.
+         *
+         * @param interceptor the gRPC {@link ClientInterceptor} to register; must not be null
+         * @return this builder
+         */
         public LHConfigBuilder addClientInterceptor(ClientInterceptor interceptor) {
             this.clientInterceptors.add(Objects.requireNonNull(interceptor, "Client interceptor cannot be null"));
             return this;
@@ -371,9 +390,12 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Creates an LHConfig with provided config values.
+     * Creates an LHConfig with provided config values and custom gRPC client interceptors.
      *
      * @param configs configuration values.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
      */
     public LHConfig(Map<String, Object> configs, ClientInterceptor... clientInterceptors) {
         super(configs);
