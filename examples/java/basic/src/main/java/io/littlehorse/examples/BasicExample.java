@@ -5,9 +5,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
-import io.micrometer.core.instrument.binder.grpc.MetricCollectingClientInterceptor;
-import io.micrometer.prometheusmetrics.PrometheusConfig;
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -50,24 +47,11 @@ public class BasicExample {
     public static void main(String[] args) throws IOException {
         // Let's prepare the configurations
         Properties props = getConfigProps();
-        PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        MetricCollectingClientInterceptor interceptor = new MetricCollectingClientInterceptor(prometheusRegistry);
-        LHConfig config = new LHConfig(props, interceptor);
-
-        Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    System.out.println(prometheusRegistry.scrape());
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    break;
-                }
-            }
-        });
-        thread.start();
+        LHConfig config = new LHConfig(props);
 
         // New workflow
         Workflow workflow = getWorkflow();
+
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
