@@ -20,10 +20,10 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
-import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
@@ -446,8 +446,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             ThreadRunModel interruptor;
             try {
-                interruptor =
-                        startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+                interruptor = startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
             } catch (NodeFailureException exn) {
                 putFailureOnThreadRun(toInterrupt, exn.getFailure(), time, processorContext);
                 continue;
@@ -567,9 +566,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                                                 + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
                                                 + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
                                         this.threadRunsUseMeCarefully.size(),
-                                        this.executionContext
-                                                .serverConfig()
-                                                .getMaxThreadRunsPerWfRun()),
+                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
