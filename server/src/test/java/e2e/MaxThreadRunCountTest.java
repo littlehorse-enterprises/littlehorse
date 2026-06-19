@@ -48,9 +48,28 @@ public class MaxThreadRunCountTest {
         verifier.prepareRun(spawnManyThreadsWf, Arg.of("json-arr", largeArr))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.HALTING);
+                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
                     Assertions.assertThat(nodeRun.getFailuresList().get(0).getMessage())
-                            .contains("You exceeded the maximum number of ThreadRuns per WfRun");
+                            .contains("exceeding the maximum number of ThreadRuns per WfRun");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldNotLeaveOrphanThreadsWhenSpawnExceedsLimit() {
+        ArrayList<Integer> largeArr = new ArrayList<>();
+        for (int i = 0; i < this.serverConfig.getMaxThreadRunsPerWfRun(); i++) {
+            largeArr.add(i);
+        }
+
+        verifier.prepareRun(spawnManyThreadsWf, Arg.of("json-arr", largeArr))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyWfRun(wfRun -> {
+                    Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(1);
+
+                    Assertions.assertThat(wfRun.getThreadRunsList())
+                            .noneMatch(threadRun -> threadRun.getStatus() == LHStatus.RUNNING
+                                    || threadRun.getStatus() == LHStatus.STARTING);
                 })
                 .start();
     }

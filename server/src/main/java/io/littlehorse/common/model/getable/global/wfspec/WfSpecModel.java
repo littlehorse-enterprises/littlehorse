@@ -11,6 +11,7 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -450,8 +451,12 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         out.startTime = currentCommand.getTime();
         out.transitionTo(LHStatus.RUNNING);
 
-        out.startThread(
-                entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        try {
+            out.startThread(
+                    entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        } catch (NodeFailureException exn) {
+            throw new IllegalStateException("Entrypoint ThreadRun should never exceed the max ThreadRun limit.", exn);
+        }
         getableManager.put(out);
         return out;
     }
