@@ -20,6 +20,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
@@ -368,11 +369,23 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             Date start,
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
-            ThreadType type) {
+            ThreadType type)
+            throws NodeFailureException {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
+        }
+
+        int maxThreadRuns = executionContext.serverConfig().getMaxThreadRunsPerWfRun();
+        if (parentThreadId != null && threadRunsUseMeCarefully.size() >= maxThreadRuns) {
+            throw new NodeFailureException(new FailureModel(
+                    String.format(
+                            "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                    + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                    + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN at the server configuration level.",
+                            threadRunsUseMeCarefully.size() + 1, maxThreadRuns),
+                    LHConstants.INTERNAL_ERROR));
         }
 
         ThreadRunModel newThread = new ThreadRunModel(processorContext);
@@ -453,8 +466,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             } else {
                 vars = new HashMap<>();
             }
-            ThreadRunModel interruptor =
-                    startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            ThreadRunModel interruptor;
+            try {
+                interruptor = startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(toInterrupt, exn.getFailure(), time, processorContext);
+                continue;
+            }
             interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
@@ -494,8 +512,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
             }
 
-            ThreadRunModel fh =
-                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            ThreadRunModel fh;
+            try {
+                fh = startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(
+                        failedThr, exn.getFailure(), time, executionContext.castOnSupport(CoreProcessorContext.class));
+                continue;
+            }
 
             failedThr.getCurrentNodeRun().getFailureHandlerIds().add(fh.number);
 
@@ -560,7 +584,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
-                                        "You exceeded the maximum number of ThreadRuns per WfRun: %s",
+                                        "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                                + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                                + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                                        this.threadRunsUseMeCarefully.size(),
                                         this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
@@ -635,6 +662,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
                 / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
+    }
+
+    /**
+     * Returns the number of active ThreadRuns held by this WfRun.
+     */
+    public int getActiveThreadRunCount() {
+        return this.threadRunsUseMeCarefully.size();
     }
 
     private void archiveCompletedThreadRuns(boolean forceArchiveCompletedThreads) {
