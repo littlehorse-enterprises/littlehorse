@@ -1,7 +1,7 @@
 <div align="center">
 <h1>LittleHorse: Command Center for Business-as-Code</h1>
 
-Define distributed processes in code, and let LittleHorse orchestrate, track, and govern them. 
+Orchestrate and govern processes across agents, microservices, and external integrations using Business-as-Code.
 
 <a href="https://littlehorse.io/"><img alt="littlehorse.io" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/site-badge.svg"/></a>
 <a href="https://littlehorse.io/docs/getting-started/quickstart"><img alt="littlehorse.io/docs/server/concepts" src="https://github.com/littlehorse-enterprises/.github/blob/master/assets/learn-badge.svg"/></a>
@@ -17,7 +17,7 @@ Define distributed processes in code, and let LittleHorse orchestrate, track, an
 
 ## About LittleHorse
 
-[LittleHorse](https://littlehorse.io) is a high-throughput, low-latency microservice orchestration engine that allows developers to build scalable, maintainable, and observable applications. LittleHorse's _Business-as-Code_ approach allows you to write code that closely mirrors your business processes, creating better alignment between product & engineering while providing a robust durable execution platform.
+[LittleHorse](https://littlehorse.io) is a high-throughput, low-latency orchestration engine that allows developers to codify processes spanning across agents, microservices, integrations, and workflows. LittleHorse's _Business-as-Code_ approach allows you to write code that closely mirrors your business processes, creating better alignment between product & engineering while providing a robust durable execution platform.
 
 Let LittleHorse take the reins and ditch the headaches of:
 
@@ -28,7 +28,7 @@ Let LittleHorse take the reins and ditch the headaches of:
 * Scheduling actions to asychronously happen in the future.
 * Backpressure and scalability.
 
-LittleHorse is built on Apache Kafka and Kafka Streams, and has [rich integrations](https://github.com/littlehorse-enterprises/lh-kafka-connect) with the Kafka Ecosystem.
+LittleHorse is built on Apache Kafka and Kafka Streams, and has two-way [rich integrations](https://github.com/littlehorse-enterprises/lh-kafka-connect) with the Kafka Ecosystem. Workflows can be *triggered by* Kafka events and *emit* state changes back to Kafka in real time, enabling tight integration with event-driven architectures.
 
 ## Business-as-Code
 
@@ -73,7 +73,7 @@ As you can see, the code above closely mirrors our example KYC business process.
 
 ## Getting Started
 
-Run your first `WfRun` in 120 seconds or less.
+In this section, we'll run the "Know-your-Customer" quickstart shown above in a language of your choice. You should be able to run your first `WfRun` in minutes!
 
 ### Start the LittleHorse Server
 
@@ -93,7 +93,6 @@ brew install littlehorse-enterprises/lh/lhctl
 
 Alternatively, you can install it from our [GitHub Releases page](https://github.com/littlehorse-enterprises/littlehorse/releases)
 
-
 Once you have `lhctl` ready, let's use the `whoami` command to verify that the LittleHorse Server is up and running:
 
 ```sh
@@ -104,95 +103,85 @@ lhctl whoami
   "id": {
     "id": "anonymous"
   },
-  "createdAt": "2026-03-05T02:51:57.229Z",
-  "perTenantAcls": {},
-  "globalAcls": {
-    "acls": [
-      {
-        "resources": [
-          "ACL_ALL_RESOURCES"
-        ],
-        "allowedActions": [
-          "ALL_ACTIONS"
-        ],
-        "name": ""
-      }
-    ]
-  }
+  // ...
 }
 ```
 
-### Register a `TaskDef` and `WfSpec`
+### Run the Quickstart App
 
-Start an example in a language of your choice. This will do three things:
+In this section, we'll start a program (in a language of your choice) which does four things:
 
-1. Register a `TaskDef` (Task Definition) in the LittleHorse Server.
-2. Start a [Task Worker](https://littlehorse.io/docs/server/concepts/tasks) which polls the LittleHorse Server, waiting to be told to execute a `TaskRun`.
-3. Register a `WfSpec` (Workflow Specification) which simply invokes a the above task worker.
-
-The `WfSpec` has a single input variable (`input-name`), and that name is passed into the `greet` task worker.
+1. Register a couple `TaskDef`s (task definitions), which we'll compose into a workflow.
+2. Register an `ExternalEventDef` to keep track of callbacks from an external system.
+3. Register a `WfSpec` (workflow specification) to model the KYC proocess.
+4. Starts a few Task Workers which poll task queues in LittleHorse, waiting to be told to exxecute their tasks.
 
 #### Java
 
 ```
-./gradlew example-basic:run
+./gradlew quickstart:run
 ```
 
 #### Python
 
 ```
-cd examples/python/basic
-poetry shell
-python -m example_basic
+cd examples/python
+poetry run python -m quickstart.quickstart
 ```
 
 #### GoLang
 
-In one terminal, start the task worker (leave it running):
-
 ```
-go run ./examples/go/basic/worker
-```
-
-Then in another terminal, register the `WfSpec`:
-
-```
-go run ./examples/go/basic/deploy
+go run ./examples/go/quickstart
 ```
 
 #### C#
 
 ```sh
-cd examples/dotnet/BasicExample
-dotnet run
+cd examples/dotnet/QuickstartExample
+DOTNET_ROLL_FORWARD=Major dotnet run
 ```
 
 #### JavaScript
 
-First, install dependencies and register the `WfSpec`:
+First, install dependencies and start the task workers (this registers the required `TaskDef`s):
 
 ```sh
-cd examples/js/simple-worker
-npm install
-npm start
+cd examples/js/quickstart
+npm install && npm start
 ```
 
-Then in another terminal, register the `WfSpec` (note that our JS sdk does not yet support creation of `WfSpec`s, so we use `lhctl` here)
+Then in another terminal, register the `ExternalEventDef` and `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
 
 ```sh
-cd examples/js/simple-worker
-lhctl deploy wfSpec example-basic-wfspec.json
+cd examples/js/quickstart
+lhctl deploy externalEventDef identity-verified-external-event-def.json
+lhctl deploy wfSpec quickstart-wfspec.json
 ```
 
 ### Run a `WfRun` (Workflow Run)
 
-Now let's run your first `WfRun` with `lhctl`, setting the value of the `input-name` variable to `"Obi-Wan"`:
+In another terminal, run the quickstart workflow:
 
 ```sh
-lhctl run example-basic input-name Obi-Wan
+lhctl run quickstart full-name 'Obi-Wan Kenobi' email obiwan@jedi.temple ssn 123456789
 ```
 
-Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`!
+Now, navigate to the dashboard at [`http://localhost:8080`](http://localhost:8080) and inspect your first `WfRun`. You'll notice that the `WfRun` is stuck waiting at the _ExternalEventNode_: this is because we're waiting for the callback from the "identity check" service that the workflow called in the first step!
+
+You can post a correlated event that unblocks the workflow, simulating a repsonse from the external service:
+
+```sh
+lhctl put correlatedEvent obiwan@jedi.temple identity-verified BOOL true
+```
+
+See the per-language quickstarts for the full walkthrough:
+
+- [Java quickstart](./examples/java/quickstart/README.md)
+- [Go quickstart](./examples/go/quickstart/README.md)
+- [Python quickstart](./examples/python/quickstart/README.md)
+- [C# quickstart](./examples/dotnet/QuickstartExample/README.md)
+- [JavaScript quickstart](./examples/js/quickstart/README.md)
 
 You can also use `lhctl` to investigate! For starters:
 
@@ -219,7 +208,7 @@ To run a workflow with LittleHorse, you need to:
 <img src="./img/architecture.png" width="75%">
 </p>
 
-To get started quickly with a basic workflow, try our quickstarts in [Java](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/java), [Go](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/go), [Python](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/python), and [C#](https://github.com/littlehorse-enterprises/lh-examples/tree/main/quickstart/csharp). For more detailed examples, you can check out:
+To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), [C#](./examples/dotnet/QuickstartExample/README.md), and [JavaScript](./examples/js/quickstart/README.md). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
