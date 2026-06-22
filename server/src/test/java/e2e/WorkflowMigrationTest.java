@@ -574,9 +574,13 @@ public class WorkflowMigrationTest {
     void shouldMigrateChildThreadRunToNewSpec() {
         // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
         // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the wait-for-condition spec would become a new major version instead. The
-        // condition is never satisfied, so the node parks in RUNNING long enough to migrate.
+        // and the child-thread spec would become a new major version instead.
+        //
+        // The child thread only spawns AFTER the entrypoint task node completes, so we wait
+        // for that task first. Reading the child-thread node directly would otherwise hit
+        // NOT_FOUND on the first poll (which fails immediately instead of retrying).
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
+                .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
@@ -664,9 +668,13 @@ public class WorkflowMigrationTest {
     void shouldRejectMigrationPlanSinceChildThreadVariableNotAvailableAtRunTime() {
         // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
         // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the wait-for-condition spec would become a new major version instead. The
-        // condition is never satisfied, so the node parks in RUNNING long enough to migrate.
+        // and the child-thread spec would become a new major version instead.
+        //
+        // The child thread only spawns AFTER the entrypoint task node completes, so we wait
+        // for that task first. Reading the child-thread node directly would otherwise hit
+        // NOT_FOUND on the first poll (which fails immediately instead of retrying).
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
+                .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
