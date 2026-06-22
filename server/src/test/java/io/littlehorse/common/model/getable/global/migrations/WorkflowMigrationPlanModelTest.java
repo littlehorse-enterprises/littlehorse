@@ -1,21 +1,20 @@
 package io.littlehorse.common.model.getable.global.migrations;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import static org.mockito.Mockito.mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.sdk.common.proto.WorkflowMigrationPlan;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkflowMigrationPlanModelTest {
@@ -33,7 +32,6 @@ public class WorkflowMigrationPlanModelTest {
         NodeMigrationPlanModel nodeMigration = new NodeMigrationPlanModel();
         nodeMigration.setNewNodeName("new-task-node");
         threadMigration.setNodeMigrations(Map.of("old-task-node", nodeMigration));
-        threadMigration.setRequiredVariables(List.of("my-variable"));
         threadMigration.setDependencies(List.of("dep-thread"));
 
         // Build the top-level migration plan model.
@@ -42,7 +40,7 @@ public class WorkflowMigrationPlanModelTest {
                 new Date(),
                 Map.of("entrypoint", threadMigration),
                 new WfSpecIdModel("my-wf", 0, 0), // oldWfSpec: name, majorVersion, revision
-                0,  // majorVersion of the new WfSpec to migrate to
+                0, // majorVersion of the new WfSpec to migrate to
                 1); // revision of the new WfSpec to migrate to
 
         // --- Act ---
@@ -65,7 +63,6 @@ public class WorkflowMigrationPlanModelTest {
         assertThat(deserializedThread.getNodeMigrations()).containsKey("old-task-node");
         assertThat(deserializedThread.getNodeMigrations().get("old-task-node").getNewNodeName())
                 .isEqualTo("new-task-node");
-        assertThat(deserializedThread.getRequiredVariables()).containsExactly("my-variable");
         assertThat(deserializedThread.getDependencies()).containsExactly("dep-thread");
     }
 }

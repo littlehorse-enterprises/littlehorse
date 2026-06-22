@@ -107,7 +107,7 @@ import {
   WorkflowRetentionPolicy,
 } from "./wf_spec";
 import { WorkflowEvent, WorkflowEventDef } from "./workflow_event";
-import { MigrationVars, ThreadMigrationPlan, WorkflowMigrationPlan } from "./workflow_migration";
+import { MigrationVars, ThreadMigrationPlanRequest, WorkflowMigrationPlan } from "./workflow_migration";
 
 /**
  * This enum controls the behavior of a PutWfSpecRequest when a WfSpec with the same
@@ -588,23 +588,26 @@ export interface ScheduleWfRequest_VariablesEntry {
   value: VariableValue | undefined;
 }
 
+/** EXPERIMENTAL: Request to register a WorkflowMigrationPlan. */
 export interface PutWorkflowMigrationPlanRequest {
   name: string;
   oldWfSpec: WfSpecId | undefined;
   majorVersion: number;
   revision: number;
-  threadMigrations: { [key: string]: ThreadMigrationPlan };
+  threadMigrations: { [key: string]: ThreadMigrationPlanRequest };
 }
 
 export interface PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
   key: string;
-  value: ThreadMigrationPlan | undefined;
+  value: ThreadMigrationPlanRequest | undefined;
 }
 
+/** EXPERIMENTAL: Request to delete a WorkflowMigrationPlan. */
 export interface DeleteWorkflowMigrationPlanRequest {
   id: WorkflowMigrationPlanId | undefined;
 }
 
+/** EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun. */
 export interface ApplyWorkflowMigrationPlanRequest {
   id: WorkflowMigrationPlanId | undefined;
   wfRunId: WfRunId | undefined;
@@ -4286,9 +4289,9 @@ export const PutWorkflowMigrationPlanRequest = {
       majorVersion: isSet(object.majorVersion) ? globalThis.Number(object.majorVersion) : 0,
       revision: isSet(object.revision) ? globalThis.Number(object.revision) : 0,
       threadMigrations: isObject(object.threadMigrations)
-        ? Object.entries(object.threadMigrations).reduce<{ [key: string]: ThreadMigrationPlan }>(
+        ? Object.entries(object.threadMigrations).reduce<{ [key: string]: ThreadMigrationPlanRequest }>(
           (acc, [key, value]) => {
-            acc[key] = ThreadMigrationPlan.fromJSON(value);
+            acc[key] = ThreadMigrationPlanRequest.fromJSON(value);
             return acc;
           },
           {},
@@ -4316,7 +4319,7 @@ export const PutWorkflowMigrationPlanRequest = {
       if (entries.length > 0) {
         obj.threadMigrations = {};
         entries.forEach(([k, v]) => {
-          obj.threadMigrations[k] = ThreadMigrationPlan.toJSON(v);
+          obj.threadMigrations[k] = ThreadMigrationPlanRequest.toJSON(v);
         });
       }
     }
@@ -4335,10 +4338,10 @@ export const PutWorkflowMigrationPlanRequest = {
     message.majorVersion = object.majorVersion ?? 0;
     message.revision = object.revision ?? 0;
     message.threadMigrations = Object.entries(object.threadMigrations ?? {}).reduce<
-      { [key: string]: ThreadMigrationPlan }
+      { [key: string]: ThreadMigrationPlanRequest }
     >((acc, [key, value]) => {
       if (value !== undefined) {
-        acc[key] = ThreadMigrationPlan.fromPartial(value);
+        acc[key] = ThreadMigrationPlanRequest.fromPartial(value);
       }
       return acc;
     }, {});
@@ -4359,7 +4362,7 @@ export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
       writer.uint32(10).string(message.key);
     }
     if (message.value !== undefined) {
-      ThreadMigrationPlan.encode(message.value, writer.uint32(18).fork()).ldelim();
+      ThreadMigrationPlanRequest.encode(message.value, writer.uint32(18).fork()).ldelim();
     }
     return writer;
   },
@@ -4383,7 +4386,7 @@ export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
             break;
           }
 
-          message.value = ThreadMigrationPlan.decode(reader, reader.uint32());
+          message.value = ThreadMigrationPlanRequest.decode(reader, reader.uint32());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -4397,7 +4400,7 @@ export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
   fromJSON(object: any): PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry {
     return {
       key: isSet(object.key) ? globalThis.String(object.key) : "",
-      value: isSet(object.value) ? ThreadMigrationPlan.fromJSON(object.value) : undefined,
+      value: isSet(object.value) ? ThreadMigrationPlanRequest.fromJSON(object.value) : undefined,
     };
   },
 
@@ -4407,7 +4410,7 @@ export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
       obj.key = message.key;
     }
     if (message.value !== undefined) {
-      obj.value = ThreadMigrationPlan.toJSON(message.value);
+      obj.value = ThreadMigrationPlanRequest.toJSON(message.value);
     }
     return obj;
   },
@@ -4423,7 +4426,7 @@ export const PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry = {
     const message = createBasePutWorkflowMigrationPlanRequest_ThreadMigrationsEntry();
     message.key = object.key ?? "";
     message.value = (object.value !== undefined && object.value !== null)
-      ? ThreadMigrationPlan.fromPartial(object.value)
+      ? ThreadMigrationPlanRequest.fromPartial(object.value)
       : undefined;
     return message;
   },
@@ -12782,7 +12785,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Register a workflow migration plan with lh server */
+    /** EXPERIMENTAL: Register a workflow migration plan with lh server */
     putWorkflowMigrationPlan: {
       name: "PutWorkflowMigrationPlan",
       requestType: PutWorkflowMigrationPlanRequest,
@@ -12791,7 +12794,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Get a workflow migration plan by ID */
+    /** EXPERIMENTAL: Get a workflow migration plan by ID */
     getWorkflowMigrationPlan: {
       name: "GetWorkflowMigrationPlan",
       requestType: WorkflowMigrationPlanId,
@@ -12800,7 +12803,7 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
-    /** Deletes Workflow Migration Plan Metadata object from the server */
+    /** EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server */
     deleteWorkflowMigrationPlan: {
       name: "DeleteWorkflowMigrationPlan",
       requestType: DeleteWorkflowMigrationPlanRequest,
@@ -12809,6 +12812,10 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /**
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     */
     applyWorkflowMigrationPlan: {
       name: "ApplyWorkflowMigrationPlan",
       requestType: ApplyWorkflowMigrationPlanRequest,
@@ -13580,21 +13587,25 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: SearchWfRunRequest, context: CallContext & CallContextExt): Promise<DeepPartial<WfRunIdList>>;
-  /** Register a workflow migration plan with lh server */
+  /** EXPERIMENTAL: Register a workflow migration plan with lh server */
   putWorkflowMigrationPlan(
     request: PutWorkflowMigrationPlanRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WorkflowMigrationPlan>>;
-  /** Get a workflow migration plan by ID */
+  /** EXPERIMENTAL: Get a workflow migration plan by ID */
   getWorkflowMigrationPlan(
     request: WorkflowMigrationPlanId,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<WorkflowMigrationPlan>>;
-  /** Deletes Workflow Migration Plan Metadata object from the server */
+  /** EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server */
   deleteWorkflowMigrationPlan(
     request: DeleteWorkflowMigrationPlanRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /**
+   * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+   * destination WfSpec.
+   */
   applyWorkflowMigrationPlan(
     request: ApplyWorkflowMigrationPlanRequest,
     context: CallContext & CallContextExt,
@@ -14081,21 +14092,25 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
    * in LittleHorse and need to find a specific WfRun based on certain indexed fields.
    */
   searchWfRun(request: DeepPartial<SearchWfRunRequest>, options?: CallOptions & CallOptionsExt): Promise<WfRunIdList>;
-  /** Register a workflow migration plan with lh server */
+  /** EXPERIMENTAL: Register a workflow migration plan with lh server */
   putWorkflowMigrationPlan(
     request: DeepPartial<PutWorkflowMigrationPlanRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WorkflowMigrationPlan>;
-  /** Get a workflow migration plan by ID */
+  /** EXPERIMENTAL: Get a workflow migration plan by ID */
   getWorkflowMigrationPlan(
     request: DeepPartial<WorkflowMigrationPlanId>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<WorkflowMigrationPlan>;
-  /** Deletes Workflow Migration Plan Metadata object from the server */
+  /** EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server */
   deleteWorkflowMigrationPlan(
     request: DeepPartial<DeleteWorkflowMigrationPlanRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /**
+   * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+   * destination WfSpec.
+   */
   applyWorkflowMigrationPlan(
     request: DeepPartial<ApplyWorkflowMigrationPlanRequest>,
     options?: CallOptions & CallOptionsExt,

@@ -1,19 +1,10 @@
 package io.littlehorse.common.model.metadatacommand.subcommand;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.grpc.Status.Code;
 import io.littlehorse.TestUtil;
@@ -24,13 +15,28 @@ import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlan
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.StartThreadNodeModel;
+import io.littlehorse.common.model.getable.global.wfspec.node.subnode.TaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
+import io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
+import io.littlehorse.sdk.common.proto.WorkflowMigrationPlan;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class PutWorkflowMigrationPlanRequestModelTest {
@@ -48,7 +54,14 @@ class PutWorkflowMigrationPlanRequestModelTest {
                 .setOldWfSpec(oldWfSpecId.toProto())
                 .setMajorVersion(majorVersion)
                 .setRevision(revision);
-        migrations.forEach((k, v) -> proto.putThreadMigrations(k, v.toProto().build()));
+        migrations.forEach((k, v) -> {
+            ThreadMigrationPlanRequest.Builder reqBuilder =
+                    ThreadMigrationPlanRequest.newBuilder().setNewThreadName(v.getNewThreadName());
+            v.getNodeMigrations()
+                    .forEach((node, nodeMig) ->
+                            reqBuilder.putNodeMigrations(node, nodeMig.toProto().build()));
+            proto.putThreadMigrations(k, reqBuilder.build());
+        });
         return LHSerializable.fromProto(proto.build(), PutWorkflowMigrationPlanRequestModel.class, mockContext);
     }
 
@@ -74,7 +87,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
 
     /**
      * Builds a ThreadMigrationPlanModel with a single node migration (fromNode -> toNode)
-     * and empty variables and dependencies lists (safe to mutate).
+     * and an empty dependencies list (safe to mutate).
      */
     private ThreadMigrationPlanModel migration(String newThread, String fromNode, String toNode) {
         ThreadMigrationPlanModel m = new ThreadMigrationPlanModel();
@@ -84,9 +97,26 @@ class PutWorkflowMigrationPlanRequestModelTest {
         Map<String, NodeMigrationPlanModel> nodeMigrations = new HashMap<>();
         nodeMigrations.put(fromNode, nodeMigration);
         m.setNodeMigrations(nodeMigrations);
-        m.setRequiredVariables(new ArrayList<>());
         m.setDependencies(new ArrayList<>());
         return m;
+    }
+
+    /**
+     * Builds a TASK node whose input references the given wfRun variable, so that the
+     * thread spec it belongs to reports {@code varName} via getNamesOfVariablesUsed().
+     */
+    private NodeModel nodeUsingVar(String varName) {
+        NodeModel node = new NodeModel();
+        TaskNodeModel taskNode = new TaskNodeModel();
+        taskNode.setTaskDefId(new TaskDefIdModel("test-task-def-name"));
+        taskNode.setTaskToExecuteType(TaskToExecuteCase.TASK_DEF_ID);
+        VariableAssignmentModel assignment = new VariableAssignmentModel();
+        assignment.setRhsSourceType(SourceCase.VARIABLE_NAME);
+        assignment.setVariableName(varName);
+        taskNode.setVariables(List.of(assignment));
+        node.setTaskNode(taskNode);
+        node.setType(NodeCase.TASK);
+        return node;
     }
 
     /**
@@ -200,9 +230,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
 
         Throwable thrown = catchThrowable(() -> request.process(mockContext));
 
-        assertThat(thrown)
-                .isInstanceOf(LHApiException.class)
-                .hasMessageContaining("does not have node bad-node");
+        assertThat(thrown).isInstanceOf(LHApiException.class).hasMessageContaining("does not have node bad-node");
         assertThat(((LHApiException) thrown).getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
     }
 
@@ -244,9 +272,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
 
         Throwable thrown = catchThrowable(() -> request.process(mockContext));
 
-        assertThat(thrown)
-                .isInstanceOf(LHApiException.class)
-                .hasMessageContaining("does not have node bad-node");
+        assertThat(thrown).isInstanceOf(LHApiException.class).hasMessageContaining("does not have node bad-node");
         assertThat(((LHApiException) thrown).getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT);
     }
 
@@ -309,58 +335,62 @@ class PutWorkflowMigrationPlanRequestModelTest {
     }
 
     @Test
-    void shouldRejectRequiredVarNotInScopeOfEither() {
-        // Neither old nor new spec defines "my-var"
+    void shouldRejectWhenUsedVarNotDefinedInNewWfSpec() {
+        // The destination thread uses "my-var", but it is not defined by any thread in the
+        // new WfSpec and is not in the source thread's scope either.
         WfSpecModel oldSpec = buildWfSpec("my-wf", 0, 0, "old-node");
         WfSpecModel newSpec = buildWfSpec("my-wf", 1, 0, "new-node");
+        newSpec.getThreadSpecs().get("entrypoint").setNodes(Map.of("new-node", nodeUsingVar("my-var")));
         stubSpecs(newSpec, oldSpec);
 
-        ThreadMigrationPlanModel m = migration("entrypoint", "old-node", "new-node");
-        m.setRequiredVariables(List.of("my-var"));
-
         PutWorkflowMigrationPlanRequestModel request = buildRequest(
-                "plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("entrypoint", m));
+                "plan",
+                new WfSpecIdModel("my-wf", 0, 0),
+                1,
+                0,
+                Map.of("entrypoint", migration("entrypoint", "old-node", "new-node")));
 
         Throwable thrown = catchThrowable(() -> request.process(mockContext));
 
         assertThat(thrown)
                 .isInstanceOf(LHApiException.class)
                 .hasMessageContaining("my-var")
-                .hasMessageContaining("is not in the scope");
+                .hasMessageContaining("is not defined by any thread");
         assertThat(((LHApiException) thrown).getStatus().getCode()).isEqualTo(Code.NOT_FOUND);
     }
 
     @Test
-    void shouldRejectRequiredVarInOldButNotNew() {
-        // "my-var" exists in old spec's entrypoint thread but not in new spec
+    void shouldSucceedWhenUsedVarAlreadyInOldScope() {
+        // The destination thread uses "my-var", which already exists in the source thread's
+        // scope, so no dependency is required.
         WfSpecModel oldSpec = buildWfSpec("my-wf", 0, 0, "old-node");
         oldSpec.getThreadSpecs()
                 .get("entrypoint")
                 .setVariableDefs(List.of(
                         TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
+
         WfSpecModel newSpec = buildWfSpec("my-wf", 1, 0, "new-node");
+        newSpec.getThreadSpecs().get("entrypoint").setNodes(Map.of("new-node", nodeUsingVar("my-var")));
+        newSpec.getThreadSpecs()
+                .get("entrypoint")
+                .setVariableDefs(List.of(
+                        TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
         stubSpecs(newSpec, oldSpec);
 
         ThreadMigrationPlanModel m = migration("entrypoint", "old-node", "new-node");
-        m.setRequiredVariables(List.of("my-var"));
+        PutWorkflowMigrationPlanRequestModel request =
+                buildRequest("plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("entrypoint", m));
 
-        PutWorkflowMigrationPlanRequestModel request = buildRequest(
-                "plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("entrypoint", m));
-
-        Throwable thrown = catchThrowable(() -> request.process(mockContext));
-
-        assertThat(thrown)
-                .isInstanceOf(LHApiException.class)
-                .hasMessageContaining("my-var")
-                .hasMessageContaining("is not accessible in destination thread");
-        assertThat(((LHApiException) thrown).getStatus().getCode()).isEqualTo(Code.FAILED_PRECONDITION);
+        WorkflowMigrationPlan result = (WorkflowMigrationPlan) request.process(mockContext);
+        assertThat(result.getThreadMigrationsMap().get("entrypoint").getDependenciesList())
+                .isEmpty();
     }
 
     @Test
     void shouldRejectWhenVarOwnerThreadNotInMigrationPlan() {
         // Scenario: "my-var" is owned by "entrypoint" in newSpec, which spawns "child-thread".
-        // "child-thread" can access "my-var" (it's a descendant of the owner).
-        // The migration targets "child-thread" but does NOT include the owner ("entrypoint") in the plan.
+        // The destination "child-thread" uses "my-var", but it is not in the source child's
+        // scope and the owner ("entrypoint") is NOT included in the migration plan.
         WfSpecModel oldSpec = new WfSpecModel();
         oldSpec.setId(new WfSpecIdModel("my-wf", 0, 0));
         oldSpec.setEntrypointThreadName("entrypoint");
@@ -368,7 +398,8 @@ class PutWorkflowMigrationPlanRequestModelTest {
         ThreadSpecModel oldChild = buildThread("old-child", oldSpec, Map.of("old-child-node", TestUtil.node()));
         oldSpec.setThreadSpecs(Map.of("entrypoint", oldEntrypoint, "old-child", oldChild));
 
-        // newSpec "entrypoint" owns "my-var" and has a START_THREAD node spawning "child-thread"
+        // newSpec "entrypoint" owns "my-var" and has a START_THREAD node spawning "child-thread".
+        // "child-thread" uses "my-var".
         WfSpecModel newSpec = new WfSpecModel();
         newSpec.setId(new WfSpecIdModel("my-wf", 1, 0));
         newSpec.setEntrypointThreadName("entrypoint");
@@ -379,20 +410,19 @@ class PutWorkflowMigrationPlanRequestModelTest {
         startNode.startThreadNode.threadSpecName = "child-thread";
 
         ThreadSpecModel newEntrypoint = buildThread("entrypoint", newSpec, Map.of("start-node", startNode));
-        newEntrypoint.setVariableDefs(List.of(
-                TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
+        newEntrypoint.setVariableDefs(
+                List.of(TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
         ThreadSpecModel newChildThread =
-                buildThread("child-thread", newSpec, Map.of("new-child-node", TestUtil.node()));
+                buildThread("child-thread", newSpec, Map.of("new-child-node", nodeUsingVar("my-var")));
         newSpec.setThreadSpecs(Map.of("entrypoint", newEntrypoint, "child-thread", newChildThread));
 
         stubSpecs(newSpec, oldSpec);
 
         // Migration only maps "old-child" → "child-thread"; the owner "entrypoint" is NOT in the plan
         ThreadMigrationPlanModel childMigration = migration("child-thread", "old-child-node", "new-child-node");
-        childMigration.setRequiredVariables(List.of("my-var"));
 
-        PutWorkflowMigrationPlanRequestModel request = buildRequest(
-                "plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("old-child", childMigration));
+        PutWorkflowMigrationPlanRequestModel request =
+                buildRequest("plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("old-child", childMigration));
 
         Throwable thrown = catchThrowable(() -> request.process(mockContext));
 
@@ -424,17 +454,16 @@ class PutWorkflowMigrationPlanRequestModelTest {
         startNode.startThreadNode.threadSpecName = "child-thread";
 
         ThreadSpecModel newEntrypoint = buildThread("entrypoint", newSpec, Map.of("start-node", startNode));
-        newEntrypoint.setVariableDefs(List.of(
-                TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
+        newEntrypoint.setVariableDefs(
+                List.of(TestUtil.threadVarDef("my-var", VariableType.STR, WfRunVariableAccessLevel.PUBLIC_VAR)));
         ThreadSpecModel newChildThread =
-                buildThread("child-thread", newSpec, Map.of("new-child-node", TestUtil.node()));
+                buildThread("child-thread", newSpec, Map.of("new-child-node", nodeUsingVar("my-var")));
         newSpec.setThreadSpecs(Map.of("entrypoint", newEntrypoint, "child-thread", newChildThread));
 
         stubSpecs(newSpec, oldSpec);
 
         ThreadMigrationPlanModel entrypointMigration = migration("entrypoint", "old-node", "start-node");
         ThreadMigrationPlanModel childMigration = migration("child-thread", "old-child-node", "new-child-node");
-        childMigration.setRequiredVariables(List.of("my-var"));
 
         PutWorkflowMigrationPlanRequestModel request = buildRequest(
                 "plan",
@@ -443,10 +472,10 @@ class PutWorkflowMigrationPlanRequestModelTest {
                 0,
                 Map.of("entrypoint", entrypointMigration, "old-child", childMigration));
 
-        // Should succeed — the owner thread IS in the plan
-        assertThat(catchThrowable(() -> request.process(mockContext))).isNull();
-        // "entrypoint" should have been auto-added to the child migration's dependencies.
-        // Note: buildRequest() round-trips through proto, so we must read the internal copy.
-        assertThat(request.getThreadMigrations().get("old-child").getDependencies()).contains("entrypoint");
+        // Should succeed — the owner thread IS in the plan, and "entrypoint" should have been
+        // auto-added to the child migration's dependencies in the resulting plan.
+        WorkflowMigrationPlan result = (WorkflowMigrationPlan) request.process(mockContext);
+        assertThat(result.getThreadMigrationsMap().get("old-child").getDependenciesList())
+                .contains("entrypoint");
     }
 }

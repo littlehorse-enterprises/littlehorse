@@ -4,32 +4,28 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.NodeMigrationPlan;
-import io.littlehorse.sdk.common.proto.ThreadMigrationPlan;
+import io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan> {
+public class ThreadMigrationPlanRequestModel extends LHSerializable<ThreadMigrationPlanRequest> {
 
     private String newThreadName;
     private Map<String, NodeMigrationPlanModel> nodeMigrations;
-    private List<String> dependencies;
 
-    public ThreadMigrationPlanModel() {
+    public ThreadMigrationPlanRequestModel() {
         nodeMigrations = new HashMap<>();
-        dependencies = new ArrayList<>();
     }
 
     @Override
-    public ThreadMigrationPlan.Builder toProto() {
-        ThreadMigrationPlan.Builder out =
-                ThreadMigrationPlan.newBuilder().setNewThreadName(newThreadName).addAllDependencies(dependencies);
+    public ThreadMigrationPlanRequest.Builder toProto() {
+        ThreadMigrationPlanRequest.Builder out =
+                ThreadMigrationPlanRequest.newBuilder().setNewThreadName(newThreadName);
 
         for (Map.Entry<String, NodeMigrationPlanModel> entry : nodeMigrations.entrySet()) {
             out.putNodeMigrations(entry.getKey(), entry.getValue().toProto().build());
@@ -40,9 +36,8 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        ThreadMigrationPlan p = (ThreadMigrationPlan) proto;
+        ThreadMigrationPlanRequest p = (ThreadMigrationPlanRequest) proto;
         newThreadName = p.getNewThreadName();
-        dependencies = new ArrayList<>(p.getDependenciesList());
         nodeMigrations = new HashMap<>();
 
         for (Map.Entry<String, NodeMigrationPlan> entry :
@@ -52,8 +47,20 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
         }
     }
 
+    /**
+     * Builds the internal {@link ThreadMigrationPlanModel} from this request. The
+     * required variables and dependencies are intentionally left empty here; they are
+     * computed internally by the server.
+     */
+    public ThreadMigrationPlanModel toThreadMigrationPlan() {
+        ThreadMigrationPlanModel out = new ThreadMigrationPlanModel();
+        out.setNewThreadName(newThreadName);
+        out.setNodeMigrations(new HashMap<>(nodeMigrations));
+        return out;
+    }
+
     @Override
-    public Class<ThreadMigrationPlan> getProtoBaseClass() {
-        return ThreadMigrationPlan.class;
+    public Class<ThreadMigrationPlanRequest> getProtoBaseClass() {
+        return ThreadMigrationPlanRequest.class;
     }
 }

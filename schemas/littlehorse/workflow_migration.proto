@@ -12,8 +12,9 @@ option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
 
-message WorkflowMigrationPlan{
-    // The id of the migration plann
+// EXPERIMENTAL: Plan describing how to migrate live WfRun's from one WfSpec version to another.
+message WorkflowMigrationPlan {
+    // The id of the migration plan
     WorkflowMigrationPlanId workflow_migration_plan_id= 1;
 
     // Time WorkflowMigrationPlan was created
@@ -31,6 +32,7 @@ message WorkflowMigrationPlan{
 }
 
 
+// EXPERIMENTAL: Plan describing how to migrate a ThreadRun to a thread in the new WfSpec.
 message ThreadMigrationPlan {
     
     // Name of thread in new wfSpec that thread wants 
@@ -40,20 +42,35 @@ message ThreadMigrationPlan {
     // Map of old node name -> how to migrate that node in the new wfSpec
     map<string, NodeMigrationPlan> node_migrations = 2;
 
-    // list of required variables that muse either be
-    // updated or inserted at runtime when migration is called
-    repeated string required_variables = 4;
-
-    repeated string dependencies = 5;
+    // Names of threads in the new wfSpec that must have already migrated
+    // before this thread can migrate (so any variables they create are available).
+    repeated string dependencies = 3;
 
 }
 
+// Request-side representation of a thread migration. 
+// Dependencies are not provided by the client; they are computed internally by
+// the server when building the WorkflowMigrationPlan.
+//
+// EXPERIMENTAL.
+message ThreadMigrationPlanRequest {
+
+    // Name of thread in new wfSpec that thread wants 
+    // to migrate to 
+    string new_thread_name = 1;
+
+    // Map of old node name -> how to migrate that node in the new wfSpec
+    map<string, NodeMigrationPlan> node_migrations = 2;
+}
+
+// EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
 message NodeMigrationPlan {
 
     // Name of node in the new wfSpec to migrate to
     string new_node_name = 1;
 }
 
+// EXPERIMENTAL: Variable assignments applied to a thread when it is migrated.
 message MigrationVars {
   map<string, VariableAssignment>  var_assignment_by_var_name = 1;
 }

@@ -3732,7 +3732,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Register a workflow migration plan with lh server
+     * EXPERIMENTAL: Register a workflow migration plan with lh server
      * </pre>
      */
     default void putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request,
@@ -3742,7 +3742,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a workflow migration plan by ID
+     * EXPERIMENTAL: Get a workflow migration plan by ID
      * </pre>
      */
     default void getWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId request,
@@ -3752,7 +3752,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes Workflow Migration Plan Metadata object from the server
+     * EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
      * </pre>
      */
     default void deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request,
@@ -3761,6 +3761,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     * </pre>
      */
     default void applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -4886,7 +4890,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Register a workflow migration plan with lh server
+     * EXPERIMENTAL: Register a workflow migration plan with lh server
      * </pre>
      */
     public void putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request,
@@ -4897,7 +4901,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a workflow migration plan by ID
+     * EXPERIMENTAL: Get a workflow migration plan by ID
      * </pre>
      */
     public void getWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId request,
@@ -4908,7 +4912,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes Workflow Migration Plan Metadata object from the server
+     * EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
      * </pre>
      */
     public void deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request,
@@ -4918,6 +4922,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     * </pre>
      */
     public void applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun> responseObserver) {
@@ -6039,7 +6047,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Register a workflow migration plan with lh server
+     * EXPERIMENTAL: Register a workflow migration plan with lh server
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
@@ -6049,7 +6057,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a workflow migration plan by ID
+     * EXPERIMENTAL: Get a workflow migration plan by ID
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan getWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId request) throws io.grpc.StatusException {
@@ -6059,7 +6067,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes Workflow Migration Plan Metadata object from the server
+     * EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
      * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
@@ -6068,6 +6076,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfRun applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
       return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
@@ -7138,7 +7150,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Register a workflow migration plan with lh server
+     * EXPERIMENTAL: Register a workflow migration plan with lh server
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan putWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest request) {
@@ -7148,7 +7160,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a workflow migration plan by ID
+     * EXPERIMENTAL: Get a workflow migration plan by ID
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.WorkflowMigrationPlan getWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId request) {
@@ -7158,7 +7170,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes Workflow Migration Plan Metadata object from the server
+     * EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
      * </pre>
      */
     public com.google.protobuf.Empty deleteWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.DeleteWorkflowMigrationPlanRequest request) {
@@ -7167,6 +7179,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     * </pre>
      */
     public io.littlehorse.sdk.common.proto.WfRun applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
@@ -8270,7 +8286,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Register a workflow migration plan with lh server
+     * EXPERIMENTAL: Register a workflow migration plan with lh server
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> putWorkflowMigrationPlan(
@@ -8281,7 +8297,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Get a workflow migration plan by ID
+     * EXPERIMENTAL: Get a workflow migration plan by ID
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowMigrationPlan> getWorkflowMigrationPlan(
@@ -8292,7 +8308,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes Workflow Migration Plan Metadata object from the server
+     * EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteWorkflowMigrationPlan(
@@ -8302,6 +8318,10 @@ public final class LittleHorseGrpc {
     }
 
     /**
+     * <pre>
+     * EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+     * destination WfSpec.
+     * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WfRun> applyWorkflowMigrationPlan(
         io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) {

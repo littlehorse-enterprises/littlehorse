@@ -7,16 +7,20 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * EXPERIMENTAL: Plan describing how to migrate a ThreadRun to a thread in the new WfSpec.
+ * Request-side representation of a thread migration. 
+ * Dependencies are not provided by the client; they are computed internally by
+ * the server when building the WorkflowMigrationPlan.
+ *
+ * EXPERIMENTAL.
  * </pre>
  *
- * Protobuf type {@code littlehorse.ThreadMigrationPlan}
+ * Protobuf type {@code littlehorse.ThreadMigrationPlanRequest}
  */
 @com.google.protobuf.Generated
-public final class ThreadMigrationPlan extends
+public final class ThreadMigrationPlanRequest extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.ThreadMigrationPlan)
-    ThreadMigrationPlanOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.ThreadMigrationPlanRequest)
+    ThreadMigrationPlanRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -25,21 +29,19 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      ThreadMigrationPlan.class.getName());
+      ThreadMigrationPlanRequest.class.getName());
   }
-  // Use ThreadMigrationPlan.newBuilder() to construct.
-  private ThreadMigrationPlan(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use ThreadMigrationPlanRequest.newBuilder() to construct.
+  private ThreadMigrationPlanRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private ThreadMigrationPlan() {
+  private ThreadMigrationPlanRequest() {
     newThreadName_ = "";
-    dependencies_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_descriptor;
+    return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_descriptor;
   }
 
   @SuppressWarnings({"rawtypes"})
@@ -57,9 +59,9 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.ThreadMigrationPlan.class, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder.class);
+            io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.class, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder.class);
   }
 
   public static final int NEW_THREAD_NAME_FIELD_NUMBER = 1;
@@ -117,7 +119,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.sdk.common.proto.NodeMigrationPlan>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor, 
+                io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_NodeMigrationsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -206,63 +208,6 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     return map.get(key);
   }
 
-  public static final int DEPENDENCIES_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringArrayList dependencies_ =
-      com.google.protobuf.LazyStringArrayList.emptyList();
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @return A list containing the dependencies.
-   */
-  public com.google.protobuf.ProtocolStringList
-      getDependenciesList() {
-    return dependencies_;
-  }
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @return The count of dependencies.
-   */
-  public int getDependenciesCount() {
-    return dependencies_.size();
-  }
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @param index The index of the element to return.
-   * @return The dependencies at the given index.
-   */
-  public java.lang.String getDependencies(int index) {
-    return dependencies_.get(index);
-  }
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the dependencies at the given index.
-   */
-  public com.google.protobuf.ByteString
-      getDependenciesBytes(int index) {
-    return dependencies_.getByteString(index);
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -286,9 +231,6 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         internalGetNodeMigrations(),
         NodeMigrationsDefaultEntryHolder.defaultEntry,
         2);
-    for (int i = 0; i < dependencies_.size(); i++) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, dependencies_.getRaw(i));
-    }
     getUnknownFields().writeTo(output);
   }
 
@@ -311,14 +253,6 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, nodeMigrations__);
     }
-    {
-      int dataSize = 0;
-      for (int i = 0; i < dependencies_.size(); i++) {
-        dataSize += computeStringSizeNoTag(dependencies_.getRaw(i));
-      }
-      size += dataSize;
-      size += 1 * getDependenciesList().size();
-    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -329,17 +263,15 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.ThreadMigrationPlan other = (io.littlehorse.sdk.common.proto.ThreadMigrationPlan) obj;
+    io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest other = (io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) obj;
 
     if (!getNewThreadName()
         .equals(other.getNewThreadName())) return false;
     if (!internalGetNodeMigrations().equals(
         other.internalGetNodeMigrations())) return false;
-    if (!getDependenciesList()
-        .equals(other.getDependenciesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -357,53 +289,49 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       hash = (37 * hash) + NODE_MIGRATIONS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodeMigrations().hashCode();
     }
-    if (getDependenciesCount() > 0) {
-      hash = (37 * hash) + DEPENDENCIES_FIELD_NUMBER;
-      hash = (53 * hash) + getDependenciesList().hashCode();
-    }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -411,26 +339,26 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan parseFrom(
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -443,7 +371,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ThreadMigrationPlan prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -460,18 +388,22 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * EXPERIMENTAL: Plan describing how to migrate a ThreadRun to a thread in the new WfSpec.
+   * Request-side representation of a thread migration. 
+   * Dependencies are not provided by the client; they are computed internally by
+   * the server when building the WorkflowMigrationPlan.
+   *
+   * EXPERIMENTAL.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.ThreadMigrationPlan}
+   * Protobuf type {@code littlehorse.ThreadMigrationPlanRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.ThreadMigrationPlan)
-      io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.ThreadMigrationPlanRequest)
+      io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_descriptor;
+      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_descriptor;
     }
 
     @SuppressWarnings({"rawtypes"})
@@ -499,12 +431,12 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.ThreadMigrationPlan.class, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder.class);
+              io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.class, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.ThreadMigrationPlan.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.newBuilder()
     private Builder() {
 
     }
@@ -520,25 +452,23 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       bitField0_ = 0;
       newThreadName_ = "";
       internalGetMutableNodeMigrations().clear();
-      dependencies_ =
-          com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
 
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlan_descriptor;
+      return io.littlehorse.sdk.common.proto.WorkflowMigration.internal_static_littlehorse_ThreadMigrationPlanRequest_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.ThreadMigrationPlan.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan build() {
-      io.littlehorse.sdk.common.proto.ThreadMigrationPlan result = buildPartial();
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest build() {
+      io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -546,14 +476,14 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan buildPartial() {
-      io.littlehorse.sdk.common.proto.ThreadMigrationPlan result = new io.littlehorse.sdk.common.proto.ThreadMigrationPlan(this);
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest buildPartial() {
+      io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest result = new io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.ThreadMigrationPlan result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.newThreadName_ = newThreadName_;
@@ -561,24 +491,20 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       if (((from_bitField0_ & 0x00000002) != 0)) {
         result.nodeMigrations_ = internalGetNodeMigrations().build(NodeMigrationsDefaultEntryHolder.defaultEntry);
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        dependencies_.makeImmutable();
-        result.dependencies_ = dependencies_;
-      }
     }
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.ThreadMigrationPlan)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ThreadMigrationPlan other) {
-      if (other == io.littlehorse.sdk.common.proto.ThreadMigrationPlan.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest other) {
+      if (other == io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.getDefaultInstance()) return this;
       if (!other.getNewThreadName().isEmpty()) {
         newThreadName_ = other.newThreadName_;
         bitField0_ |= 0x00000001;
@@ -587,16 +513,6 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       internalGetMutableNodeMigrations().mergeFrom(
           other.internalGetNodeMigrations());
       bitField0_ |= 0x00000002;
-      if (!other.dependencies_.isEmpty()) {
-        if (dependencies_.isEmpty()) {
-          dependencies_ = other.dependencies_;
-          bitField0_ |= 0x00000004;
-        } else {
-          ensureDependenciesIsMutable();
-          dependencies_.addAll(other.dependencies_);
-        }
-        onChanged();
-      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -637,12 +553,6 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
               bitField0_ |= 0x00000002;
               break;
             } // case 18
-            case 26: {
-              java.lang.String s = input.readStringRequireUtf8();
-              ensureDependenciesIsMutable();
-              dependencies_.add(s);
-              break;
-            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -944,179 +854,23 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       return (io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) entry;
     }
 
-    private com.google.protobuf.LazyStringArrayList dependencies_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-    private void ensureDependenciesIsMutable() {
-      if (!dependencies_.isModifiable()) {
-        dependencies_ = new com.google.protobuf.LazyStringArrayList(dependencies_);
-      }
-      bitField0_ |= 0x00000004;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @return A list containing the dependencies.
-     */
-    public com.google.protobuf.ProtocolStringList
-        getDependenciesList() {
-      dependencies_.makeImmutable();
-      return dependencies_;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @return The count of dependencies.
-     */
-    public int getDependenciesCount() {
-      return dependencies_.size();
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param index The index of the element to return.
-     * @return The dependencies at the given index.
-     */
-    public java.lang.String getDependencies(int index) {
-      return dependencies_.get(index);
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the dependencies at the given index.
-     */
-    public com.google.protobuf.ByteString
-        getDependenciesBytes(int index) {
-      return dependencies_.getByteString(index);
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param index The index to set the value at.
-     * @param value The dependencies to set.
-     * @return This builder for chaining.
-     */
-    public Builder setDependencies(
-        int index, java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureDependenciesIsMutable();
-      dependencies_.set(index, value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param value The dependencies to add.
-     * @return This builder for chaining.
-     */
-    public Builder addDependencies(
-        java.lang.String value) {
-      if (value == null) { throw new NullPointerException(); }
-      ensureDependenciesIsMutable();
-      dependencies_.add(value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param values The dependencies to add.
-     * @return This builder for chaining.
-     */
-    public Builder addAllDependencies(
-        java.lang.Iterable<java.lang.String> values) {
-      ensureDependenciesIsMutable();
-      com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, dependencies_);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearDependencies() {
-      dependencies_ =
-        com.google.protobuf.LazyStringArrayList.emptyList();
-      bitField0_ = (bitField0_ & ~0x00000004);;
-      onChanged();
-      return this;
-    }
-    /**
-     * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
-     * </pre>
-     *
-     * <code>repeated string dependencies = 3;</code>
-     * @param value The bytes of the dependencies to add.
-     * @return This builder for chaining.
-     */
-    public Builder addDependenciesBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) { throw new NullPointerException(); }
-      checkByteStringIsUtf8(value);
-      ensureDependenciesIsMutable();
-      dependencies_.add(value);
-      bitField0_ |= 0x00000004;
-      onChanged();
-      return this;
-    }
-
-    // @@protoc_insertion_point(builder_scope:littlehorse.ThreadMigrationPlan)
+    // @@protoc_insertion_point(builder_scope:littlehorse.ThreadMigrationPlanRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.ThreadMigrationPlan)
-  private static final io.littlehorse.sdk.common.proto.ThreadMigrationPlan DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.ThreadMigrationPlanRequest)
+  private static final io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ThreadMigrationPlan();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest();
   }
 
-  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlan getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<ThreadMigrationPlan>
-      PARSER = new com.google.protobuf.AbstractParser<ThreadMigrationPlan>() {
+  private static final com.google.protobuf.Parser<ThreadMigrationPlanRequest>
+      PARSER = new com.google.protobuf.AbstractParser<ThreadMigrationPlanRequest>() {
     @java.lang.Override
-    public ThreadMigrationPlan parsePartialFrom(
+    public ThreadMigrationPlanRequest parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1135,17 +889,17 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
   };
 
-  public static com.google.protobuf.Parser<ThreadMigrationPlan> parser() {
+  public static com.google.protobuf.Parser<ThreadMigrationPlanRequest> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<ThreadMigrationPlan> getParserForType() {
+  public com.google.protobuf.Parser<ThreadMigrationPlanRequest> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

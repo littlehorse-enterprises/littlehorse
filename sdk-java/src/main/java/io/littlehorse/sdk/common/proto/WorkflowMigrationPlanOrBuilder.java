@@ -12,7 +12,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
 
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -21,7 +21,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
   boolean hasWorkflowMigrationPlanId();
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -30,7 +30,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
   io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId();
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>

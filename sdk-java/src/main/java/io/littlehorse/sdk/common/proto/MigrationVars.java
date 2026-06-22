@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Variable assignments applied to a thread when it is migrated.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.MigrationVars}
  */
 @com.google.protobuf.Generated
@@ -303,6 +307,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Variable assignments applied to a thread when it is migrated.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.MigrationVars}
    */
   public static final class Builder extends

@@ -1,16 +1,14 @@
 package io.littlehorse.common.model.getable.global.migrations;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,7 +27,8 @@ public class MigrationVarsModel extends LHSerializable<MigrationVars> {
         MigrationVars.Builder out = MigrationVars.newBuilder();
 
         for (Map.Entry<String, VariableAssignmentModel> entry : varAssignmentByVarName.entrySet()) {
-            out.putVarAssignmentByVarName(entry.getKey(), entry.getValue().toProto().build());
+            out.putVarAssignmentByVarName(
+                    entry.getKey(), entry.getValue().toProto().build());
         }
 
         return out;
@@ -40,10 +39,10 @@ public class MigrationVarsModel extends LHSerializable<MigrationVars> {
         MigrationVars p = (MigrationVars) proto;
         varAssignmentByVarName = new HashMap<>();
 
-        for (Map.Entry<String, VariableAssignment> entry : p.getVarAssignmentByVarNameMap().entrySet()) {
+        for (Map.Entry<String, VariableAssignment> entry :
+                p.getVarAssignmentByVarNameMap().entrySet()) {
             varAssignmentByVarName.put(
-                    entry.getKey(),
-                    LHSerializable.fromProto(entry.getValue(), VariableAssignmentModel.class, context));
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), VariableAssignmentModel.class, context));
         }
     }
 

@@ -1,15 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -73,6 +64,13 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -223,7 +221,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadSpecModel getThreadSpec() {
         if (threadSpecModel == null) {
-            threadSpecModel = executionContext.service().getWfSpec(wfSpecId).threadSpecs.get(threadSpecName);
+            threadSpecModel =
+                    executionContext.service().getWfSpec(wfSpecId).threadSpecs.get(threadSpecName);
         }
         return threadSpecModel;
     }
@@ -570,7 +569,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 // then we're still waiting on the NodeRun, nothing happened.
                 return false;
             }
-            
 
             storeNodeOutput(currentNR);
 
@@ -583,10 +581,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables(processorContext);
                 // Before we activate next node
                 // check if we are migrating
-                if(wfMigrationPlanId != null){
+                if (wfMigrationPlanId != null) {
                     migrated = maybeMigrate(wfMigrationPlanId, nextNode.getName(), false);
                 }
-                if(migrated){
+                if (migrated) {
                     return true;
                 }
                 activateNode(nextNode);
@@ -1060,9 +1058,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         throw new LHVarSubError(null, "Specified node " + nodeName + " does not have any previous runs.");
     }
 
+    public boolean maybeMigrate(
+            WorkflowMigrationPlanIdModel workflowMigrationPlanId, String nodeName, boolean isActive) {
 
-    public boolean maybeMigrate(WorkflowMigrationPlanIdModel workflowMigrationPlanId, String nodeName, boolean isActive) {
-        
         WorkflowMigrationPlanModel plan = executionContext.metadataManager().get(workflowMigrationPlanId);
         if (plan == null) {
             return false;
@@ -1073,7 +1071,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             return false;
         }
 
-        NodeMigrationPlanModel nodeMigration = threadMigration.getNodeMigrations().get(nodeName);
+        NodeMigrationPlanModel nodeMigration =
+                threadMigration.getNodeMigrations().get(nodeName);
         if (nodeMigration == null) {
             return false;
         }
@@ -1098,13 +1097,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * have already migrated. Returns false if any dependency still has a ThreadRun
      * running under its old spec, meaning migration must be deferred until it catches up.
      */
-    private boolean dependentThreadsMigrated(WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration) {
+    private boolean dependentThreadsMigrated(
+            WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration) {
         if (threadMigration.getDependencies().isEmpty()) {
             return true;
         }
 
-        WfSpecIdModel newWfSpecId = new WfSpecIdModel(
-                plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
+        WfSpecIdModel newWfSpecId =
+                new WfSpecIdModel(plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
 
         for (String depNewThreadName : threadMigration.getDependencies()) {
             // Dependency is satisfied when at least one thread has already migrated to
@@ -1113,7 +1113,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             ThreadRunIterator it = wfRun.getThreadRunIterator();
             while (it.hasNext()) {
                 ThreadRunModel tr = it.next();
-                if (tr.getThreadSpecName().equals(depNewThreadName) && tr.getWfSpecId().equals(newWfSpecId)) {
+                if (tr.getThreadSpecName().equals(depNewThreadName)
+                        && tr.getWfSpecId().equals(newWfSpecId)) {
                     satisfied = true;
                     break;
                 }
@@ -1125,27 +1126,26 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return true;
     }
 
-
-
-    public boolean isMigrating(WorkflowMigrationPlanIdModel wfMigrationPlanId){
-        if(wfMigrationPlanId == null)
-            return false;
-        WorkflowMigrationPlanModel wfMigrationPlan = executionContext.metadataManager().get(wfMigrationPlanId);
+    public boolean isMigrating(WorkflowMigrationPlanIdModel wfMigrationPlanId) {
+        if (wfMigrationPlanId == null) return false;
+        WorkflowMigrationPlanModel wfMigrationPlan =
+                executionContext.metadataManager().get(wfMigrationPlanId);
         if (wfMigrationPlan == null) return false;
         return wfMigrationPlan.getThreadMigrations().containsKey(threadSpecName);
     }
 
-    private void migrateThread(WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration,
-            NodeMigrationPlanModel nodeMigration, boolean isActive)
+    private void migrateThread(
+            WorkflowMigrationPlanModel plan,
+            ThreadMigrationPlanModel threadMigration,
+            NodeMigrationPlanModel nodeMigration,
+            boolean isActive)
             throws NodeFailureException {
         WfSpecModel curSpec = executionContext.metadataManager().get(this.getWfSpecId());
         String oldThreadName = threadSpecName;
-        
 
         // Halt the current NodeRun to leave an audit trail showing it was migrated from.
-        // All three eligible migration source types (ExternalEvent, UserTask, Sleep) halt cleanly.
 
-        if(isActive){
+        if (isActive) {
             NodeRunModel oldNR = getCurrentNodeRun();
             oldNR.maybeHalt(processorContext);
             putNodeRun(oldNR);
@@ -1154,10 +1154,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = threadMigration.getNewThreadName();
         threadSpecModel = null; // invalidate cached ThreadSpec
 
-        wfSpecId = new WfSpecIdModel(
-                plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
+        wfSpecId = new WfSpecIdModel(plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
 
-        if(oldThreadName.equals(curSpec.getEntrypointThreadName())){
+        if (oldThreadName.equals(curSpec.getEntrypointThreadName())) {
             wfRun.getOldWfSpecVersions().add(wfRun.getWfSpecId());
             wfRun.setWfSpec(null);
             wfRun.setWfSpecId(wfSpecId);
@@ -1167,18 +1166,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         applyMigrationVariables();
 
         WfSpecModel newWfSpec = executionContext.service().getWfSpec(wfSpecId);
-        NodeModel newNode =
-                newWfSpec.threadSpecs.get(threadSpecName).nodes.get(nodeMigration.getNewNodeName());
+        NodeModel newNode = newWfSpec.threadSpecs.get(threadSpecName).nodes.get(nodeMigration.getNewNodeName());
 
         activateNode(newNode);
-
     }
 
     private void createVarsForMigratedThread() {
         ThreadSpecModel threadSpec = getThreadSpec();
         for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
             if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
-                // Inherited vars are resolved from parent scope and are not stored locally.
                 continue;
             }
 
@@ -1187,7 +1183,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
             VariableModel existing =
                     processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
-            
+
             if (existing != null) {
                 // Maybe check if value is null and then apply default value
                 // Preserve any pre-existing value for vars already present on this thread.

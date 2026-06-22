@@ -50,11 +50,11 @@ public interface PutWorkflowMigrationPlanRequestOrBuilder extends
   int getRevision();
 
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   int getThreadMigrationsCount();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   boolean containsThreadMigrations(
       java.lang.String key);
@@ -62,24 +62,24 @@ public interface PutWorkflowMigrationPlanRequestOrBuilder extends
    * Use {@link #getThreadMigrationsMap()} instead.
    */
   @java.lang.Deprecated
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
   getThreadMigrations();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
   getThreadMigrationsMap();
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest defaultValue);
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
-  io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrThrow(
+  io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrThrow(
       java.lang.String key);
 }

@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.NodeMigrationPlan}
  */
 @com.google.protobuf.Generated
@@ -248,6 +252,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.NodeMigrationPlan}
    */
   public static final class Builder extends

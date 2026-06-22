@@ -211,15 +211,17 @@ service LittleHorse {
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
   rpc SearchWfRun(SearchWfRunRequest) returns (WfRunIdList) {}
 
-  // Register a workflow migration plan with lh server
+  // EXPERIMENTAL: Register a workflow migration plan with lh server
   rpc PutWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlan) {}
 
-  // Get a workflow migration plan by ID
+  // EXPERIMENTAL: Get a workflow migration plan by ID
   rpc GetWorkflowMigrationPlan(WorkflowMigrationPlanId) returns (WorkflowMigrationPlan) {}
 
-  // Deletes Workflow Migration Plan Metadata object from the server
+  // EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
   rpc DeleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest) returns (google.protobuf.Empty) {}
 
+  // EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+  // destination WfSpec.
   rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
   
   // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
@@ -717,6 +719,7 @@ message ScheduleWfRequest {
   string cron_expression = 7;
 }
 
+// EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
 message PutWorkflowMigrationPlanRequest {
 
   string name = 1;
@@ -727,15 +730,17 @@ message PutWorkflowMigrationPlanRequest {
 
   int32 revision = 4;
 
-  map<string, ThreadMigrationPlan> thread_migrations = 5;
+  map<string, ThreadMigrationPlanRequest> thread_migrations = 5;
 
 }
 
+// EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
 message DeleteWorkflowMigrationPlanRequest{
   WorkflowMigrationPlanId id = 1;
 }
 
 
+// EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
 message ApplyWorkflowMigrationPlanRequest {
 
   WorkflowMigrationPlanId id = 1;

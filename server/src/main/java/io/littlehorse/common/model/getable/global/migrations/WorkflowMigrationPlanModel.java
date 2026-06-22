@@ -1,17 +1,9 @@
 package io.littlehorse.common.model.getable.global.migrations;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
-import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -22,6 +14,11 @@ import io.littlehorse.sdk.common.proto.WorkflowMigrationPlan;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,7 +66,7 @@ public class WorkflowMigrationPlanModel extends MetadataGetable<WorkflowMigratio
     }
 
     @Override
-    public ObjectIdModel<?, WorkflowMigrationPlan, ?> getObjectId() {
+    public WorkflowMigrationPlanIdModel getObjectId() {
         return id;
     }
 
@@ -105,7 +102,8 @@ public class WorkflowMigrationPlanModel extends MetadataGetable<WorkflowMigratio
         revision = p.getRevision();
         threadMigrations = new HashMap<>();
 
-        for (Map.Entry<String, ThreadMigrationPlan> entry : p.getThreadMigrationsMap().entrySet()) {
+        for (Map.Entry<String, ThreadMigrationPlan> entry :
+                p.getThreadMigrationsMap().entrySet()) {
             threadMigrations.put(
                     entry.getKey(),
                     LHSerializable.fromProto(entry.getValue(), ThreadMigrationPlanModel.class, context));
@@ -116,5 +114,4 @@ public class WorkflowMigrationPlanModel extends MetadataGetable<WorkflowMigratio
     public Class<WorkflowMigrationPlan> getProtoBaseClass() {
         return WorkflowMigrationPlan.class;
     }
-
 }

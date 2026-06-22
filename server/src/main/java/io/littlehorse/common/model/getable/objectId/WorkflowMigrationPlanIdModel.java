@@ -1,7 +1,6 @@
 package io.littlehorse.common.model.getable.objectId;
 
 import com.google.protobuf.Message;
-
 import io.littlehorse.common.model.getable.MetadataId;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -55,5 +54,4 @@ public class WorkflowMigrationPlanIdModel
     public GetableClassEnum getType() {
         return GetableClassEnum.WORKFLOW_MIGRATION_PLAN;
     }
-
 }

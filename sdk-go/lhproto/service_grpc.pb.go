@@ -260,12 +260,14 @@ type LittleHorseClient interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
-	// Register a workflow migration plan with lh server
+	// EXPERIMENTAL: Register a workflow migration plan with lh server
 	PutWorkflowMigrationPlan(ctx context.Context, in *PutWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
-	// Get a workflow migration plan by ID
+	// EXPERIMENTAL: Get a workflow migration plan by ID
 	GetWorkflowMigrationPlan(ctx context.Context, in *WorkflowMigrationPlanId, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
-	// Deletes Workflow Migration Plan Metadata object from the server
+	// EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
 	DeleteWorkflowMigrationPlan(ctx context.Context, in *DeleteWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
@@ -1490,12 +1492,14 @@ type LittleHorseServer interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
-	// Register a workflow migration plan with lh server
+	// EXPERIMENTAL: Register a workflow migration plan with lh server
 	PutWorkflowMigrationPlan(context.Context, *PutWorkflowMigrationPlanRequest) (*WorkflowMigrationPlan, error)
-	// Get a workflow migration plan by ID
+	// EXPERIMENTAL: Get a workflow migration plan by ID
 	GetWorkflowMigrationPlan(context.Context, *WorkflowMigrationPlanId) (*WorkflowMigrationPlan, error)
-	// Deletes Workflow Migration Plan Metadata object from the server
+	// EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
 	DeleteWorkflowMigrationPlan(context.Context, *DeleteWorkflowMigrationPlanRequest) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.

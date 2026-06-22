@@ -1,34 +1,34 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
+import com.google.protobuf.Message;
+import io.grpc.Status;
+import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.corecommand.CoreSubCommand;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
+import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
+import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MigrationVars;
+import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.protobuf.Message;
-
-import io.grpc.Status;
-import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.LHVarSubError;
-import io.littlehorse.common.model.corecommand.CoreSubCommand;
-import io.littlehorse.common.model.getable.core.wfrun.ThreadRunIterator;
-import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
-import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
-import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
-import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
-import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
-import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
-import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
-import io.littlehorse.sdk.common.exception.LHSerdeException;
-import io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest;
-import io.littlehorse.sdk.common.proto.MigrationVars;
-import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,97 +51,104 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find WfRun %s".formatted(wfRunId));
         }
 
-        WorkflowMigrationPlanModel migrationPlan = executionContext.metadataManager().get(id);
+        if (wfRun.getStatus() == LHStatus.COMPLETED
+                || wfRun.getStatus() == LHStatus.ERROR
+                || wfRun.getStatus() == LHStatus.EXCEPTION) {
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION,
+                    "WfRun %s has status %s and cannot be migrated".formatted(wfRunId, wfRun.getStatus()));
+        }
+
+        // A WfRun holds a single in-flight migration plan. Until that plan clears (the WfRun is
+        // fully on the new WfSpec), it cannot be overridden: stacking a second
+        // migration would break the closed (oldWfSpec -> newWfSpec) assumption that the plan's
+        // validation depends on.
+        if (wfRun.getWorkflowMigrationPlanId() != null) {
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION, "A migration is already in progress for WfRun %s".formatted(wfRunId));
+        }
+
+        WorkflowMigrationPlanModel migrationPlan =
+                executionContext.metadataManager().get(id);
         if (migrationPlan == null) {
             throw new LHApiException(Status.NOT_FOUND, "Couldn't find WorkflowMigrationPlan %s".formatted(id));
         }
 
-        validateSourceThreadsAreMigratable(wfRun, migrationPlan);
-        validateMigrationNodes(wfRun, migrationPlan);
+        validateMigrationVars(executionContext, migrationPlan);
+
         wfRun.setMigrationVarsByThread(migrationVarsByThread);
         wfRun.setWorkflowMigrationPlanId(id);
         wfRun.advance(new Date());
         return wfRun.toProto().build();
     }
 
-
- 
-
-    private void validateSourceThreadsAreMigratable(WfRunModel wfRun, WorkflowMigrationPlanModel migrationPlan) {
-        Set<String> sourceThreadSpecs = migrationPlan.getThreadMigrations().keySet();
-        Set<String> terminatedSourceThreads = new HashSet<>();
-
-        ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
-        while (threadRunIterator.hasNext()) {
-            ThreadRunModel threadRun = threadRunIterator.next();
-            if (threadRun.isTerminated() && sourceThreadSpecs.contains(threadRun.getThreadSpecName())) {
-                terminatedSourceThreads.add(threadRun.getThreadSpecName());
-            }
+    // The client supplies migrationVarsByThread to seed/override variables on the destination
+    // threads at apply time. We validate the decidable properties here so a bad request fails
+    // synchronously instead of failing a thread mid-migration with a runtime VAR_SUB_ERROR:
+    // Non-literal assignments (references, format strings, expressions, ...) resolve at runtime,
+    // so their type cannot be checked here and is left to the runtime var-sub.
+    private void validateMigrationVars(
+            CoreProcessorContext executionContext, WorkflowMigrationPlanModel migrationPlan) {
+        if (migrationVarsByThread.isEmpty()) {
+            return;
         }
 
-        if (!terminatedSourceThreads.isEmpty()) {
+        // migrationVarsByThread is keyed by the destination (new) thread name, so resolve the
+        // new WfSpec to check the supplied values against each destination thread's scope.
+        WfSpecIdModel newWfSpecId = new WfSpecIdModel(
+                migrationPlan.getOldWfSpecId().getName(), migrationPlan.getMajorVersion(), migrationPlan.getRevision());
+        WfSpecModel newWfSpec = executionContext.service().getWfSpec(newWfSpecId);
+        if (newWfSpec == null) {
             throw new LHApiException(
-                    Status.INVALID_ARGUMENT,
-                    "Cannot apply migration; source thread specs have terminated runs: %s"
-                            .formatted(String.join(", ", terminatedSourceThreads)));
+                    Status.FAILED_PRECONDITION,
+                    "Destination WfSpec %s for migration plan %s no longer exists".formatted(newWfSpecId, id));
         }
-    }
 
-    private void validateMigrationNodes(WfRunModel wfRun, WorkflowMigrationPlanModel wfMigrationPlan) {
-        ThreadRunIterator threadRunIterator = wfRun.getThreadRunIterator();
-        while (threadRunIterator.hasNext()) {
-            ThreadRunModel threadRun = threadRunIterator.next();
+        Set<String> destinationThreadNames = new HashSet<>();
+        for (ThreadMigrationPlanModel threadMigration :
+                migrationPlan.getThreadMigrations().values()) {
+            destinationThreadNames.add(threadMigration.getNewThreadName());
+        }
 
-            // Skip inactive/terminated threads and threads not covered by this migration
-            if (threadRun.isInactive() || threadRun.isTerminated()) continue;
-            if (!wfMigrationPlan.getThreadMigrations().containsKey(threadRun.getThreadSpecName())) continue;
+        for (Map.Entry<String, MigrationVarsModel> threadEntry : migrationVarsByThread.entrySet()) {
+            String threadName = threadEntry.getKey();
 
-            NodeModel currentNode = threadRun.getCurrentNode();
-            ThreadMigrationPlanModel threadMigrationPlan = wfMigrationPlan.getThreadMigrations().get(threadRun.getThreadSpecName());
+            if (!destinationThreadNames.contains(threadName)) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Migration variables provided for thread '%s', which is not a destination thread in "
+                                        .formatted(threadName)
+                                + "migration plan %s".formatted(id));
+            }
 
-            // A thread migrates as soon as it reaches any one of its migration nodes, so the
-            // migration is valid as long as at least one migration node is still a viable
-            // migration point. A migration node is viable if either:
-            //   - the thread is currently sitting at it and it is long-running (so it can be
-            //     halted and redirected), or
-            //   - the thread has not yet executed it (it is still ahead on the thread's path).
-            // The migration is only rejected when every migration node has already been
-            // activated or completed, leaving no node to migrate from.
-            boolean anyNodeViable = false;
-            for (Map.Entry<String, NodeMigrationPlanModel> nodeEntry :
-                    threadMigrationPlan.getNodeMigrations().entrySet()) {
-                String oldNodeName = nodeEntry.getKey();
+            ThreadSpecModel destThreadSpec = newWfSpec.threadSpecs.get(threadName);
 
-                if (oldNodeName.equals(currentNode.getName())) {
-                    // Thread is at this migration node — it is viable only if it is long-running.
-                    if (currentNode.isLongRunning()) {
-                        anyNodeViable = true;
-                        break;
-                    }
-                } else {
-                    // Thread is not at this migration node — it is viable as long as the node
-                    // has not already been executed.
-                    // Note: this only covers paths that lead through the migration node; if the
-                    // thread hasn't reached it yet via a different path, we still could miss it.
-                    try {
-                        threadRun.getMostRecentNodeRun(oldNodeName);
-                        // Node has already been executed — not viable via this node.
-                    } catch (LHVarSubError ex) {
-                        // Node hasn't been executed yet — it is still ahead and viable.
-                        anyNodeViable = true;
-                        break;
-                    }
+            for (Map.Entry<String, VariableAssignmentModel> varEntry :
+                    threadEntry.getValue().getVarAssignmentByVarName().entrySet()) {
+                String varName = varEntry.getKey();
+                VariableAssignmentModel assn = varEntry.getValue();
+
+                ThreadVarDefModel varDef = destThreadSpec.getVarDef(varName);
+                if (varDef == null) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "Migration variable '%s' is not in scope of destination thread '%s'"
+                                    .formatted(varName, threadName));
+                }
+
+                if (assn.getRhsSourceType() == SourceCase.LITERAL_VALUE
+                        && !assn.canBeType(varDef.getVarDef().getTypeDef(), destThreadSpec)) {
+                    throw new LHApiException(
+                            Status.INVALID_ARGUMENT,
+                            "Migration variable '%s' on thread '%s' has a value incompatible with its declared type %s"
+                                    .formatted(
+                                            varName,
+                                            threadName,
+                                            varDef.getVarDef().getTypeDef()));
                 }
             }
-
-            if (!anyNodeViable) {
-                throw new LHApiException(Status.FAILED_PRECONDITION,
-                        "Thread " + threadRun.getThreadSpecName() + " can not be migrated since all of its "
-                                + "migration nodes have already been activated or completed");
-            }
         }
     }
-
 
     @Override
     public String getPartitionKey() {
@@ -155,7 +162,8 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
                 .setWfRunId(wfRunId.toProto());
 
         for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
-            out.putMigrationVarsByThread(entry.getKey(), entry.getValue().toProto().build());
+            out.putMigrationVarsByThread(
+                    entry.getKey(), entry.getValue().toProto().build());
         }
 
         return out;
@@ -168,10 +176,10 @@ public class ApplyWorkflowMigrationRequestModel extends CoreSubCommand<ApplyWork
         wfRunId = LHSerializable.fromProto(p.getWfRunId(), WfRunIdModel.class, context);
         migrationVarsByThread = new HashMap<>();
 
-        for (Map.Entry<String, MigrationVars> entry : p.getMigrationVarsByThreadMap().entrySet()) {
+        for (Map.Entry<String, MigrationVars> entry :
+                p.getMigrationVarsByThreadMap().entrySet()) {
             migrationVarsByThread.put(
-                    entry.getKey(),
-                    LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
         }
     }
 

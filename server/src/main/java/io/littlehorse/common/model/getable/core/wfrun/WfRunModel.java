@@ -1,20 +1,6 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.google.protobuf.Message;
-
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -41,7 +27,6 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
 import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
-import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
@@ -73,10 +58,21 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
@@ -282,10 +278,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                     proto.getWorkflowMigrationPlanId(), WorkflowMigrationPlanIdModel.class, context);
         }
         migrationVarsByThread = new HashMap<>();
-        for (Map.Entry<String, MigrationVars> entry : proto.getMigrationVariablesMap().entrySet()) {
+        for (Map.Entry<String, MigrationVars> entry :
+                proto.getMigrationVariablesMap().entrySet()) {
             migrationVarsByThread.put(
-                    entry.getKey(),
-                    LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
         }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
@@ -577,39 +573,55 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                if(workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)){
+                if (workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)) {
                     statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
-                    maybeDoneMigration();
-                }else{
+                } else {
                     statusChanged = thread.advance(time, null) || statusChanged;
                 }
+            }
+
+            // Check for migration completion once, after all threads have advanced. A thread can
+            // leave the old spec either by migrating or by terminating, and the last thread on the
+            // old spec may not be one in the migration plan, so this must run regardless of which
+            // branch each thread took above.
+            if (workflowMigrationPlanId != null) {
+                maybeDoneMigration();
             }
         }
 
         archiveCompletedThreadRuns(false);
     }
 
-    
-
-    // Migration is complete when each ThreadMigrationPlan destination thread has materialized at least once.
+    // Migration is complete once no live ThreadRun is still operating on the old WfSpec. We cannot
+    // key off the plan's threadMigrations: a threadSpec that has no migration plan can still spawn a
+    // child thread whose threadSpec does, so the plan must stay active as long as any live thread is
+    // on the old spec. Clearing earlier would strand such threads (and any children they spawn) on
+    // the old spec forever.
     private void maybeDoneMigration() {
         if (workflowMigrationPlanId == null) {
             return;
         }
 
-        WorkflowMigrationPlanModel workflowMigrationPlan = executionContext.metadataManager().get(workflowMigrationPlanId);
+        WorkflowMigrationPlanModel workflowMigrationPlan =
+                executionContext.metadataManager().get(workflowMigrationPlanId);
         if (workflowMigrationPlan == null) {
             return;
         }
 
-        WfSpecIdModel newWfSpecId = new WfSpecIdModel(
-                workflowMigrationPlan.getOldWfSpecId().getName(),
-                workflowMigrationPlan.getMajorVersion(),
-                workflowMigrationPlan.getRevision());
+        WfSpecIdModel oldWfSpecId = workflowMigrationPlan.getOldWfSpecId();
 
-        // Check if every newThreadSpec has a threadRun that has actually migrated to the new WfSpec
-        for (ThreadMigrationPlanModel threadMigrationPlan : workflowMigrationPlan.getThreadMigrations().values()) {
-            if (!hasDestinationThreadSpec(threadMigrationPlan.getNewThreadName(), newWfSpecId)) {
+        ThreadRunIterator iterator = getThreadRunIterator();
+        while (iterator.hasNext()) {
+            ThreadRunModel threadRun = iterator.next();
+
+            // Terminated threads will never advance again, so they can never migrate.
+            if (threadRun.isTerminated()) {
+                continue;
+            }
+
+            // A live thread still on the old spec can still reach a migration node, so the
+            // migration is not complete yet.
+            if (oldWfSpecId.equals(threadRun.getWfSpecId())) {
                 return;
             }
         }
@@ -617,19 +629,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         workflowMigrationPlanId = null;
         migrationVarsByThread.clear();
     }
-
-    private boolean hasDestinationThreadSpec(String destinationThreadSpecName, WfSpecIdModel newWfSpecId) {
-        ThreadRunIterator iterator = getThreadRunIterator();
-        while (iterator.hasNext()) {
-            ThreadRunModel threadRun = iterator.next();
-            if (destinationThreadSpecName.equals(threadRun.getThreadSpecName())
-                    && newWfSpecId.equals(threadRun.getWfSpecId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
         int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()

@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.PutWorkflowMigrationPlanRequest}
  */
 @com.google.protobuf.Generated
@@ -147,19 +151,19 @@ private static final long serialVersionUID = 0L;
   public static final int THREAD_MIGRATIONS_FIELD_NUMBER = 5;
   private static final class ThreadMigrationsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
-        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> defaultEntry =
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> defaultEntry =
             com.google.protobuf.MapEntry
-            .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>newDefaultInstance(
+            .<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>newDefaultInstance(
                 io.littlehorse.sdk.common.proto.Service.internal_static_littlehorse_PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
-                io.littlehorse.sdk.common.proto.ThreadMigrationPlan.getDefaultInstance());
+                io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.getDefaultInstance());
   }
   @SuppressWarnings("serial")
   private com.google.protobuf.MapField<
-      java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> threadMigrations_;
-  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+      java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> threadMigrations_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
   internalGetThreadMigrations() {
     if (threadMigrations_ == null) {
       return com.google.protobuf.MapField.emptyMapField(
@@ -171,7 +175,7 @@ private static final long serialVersionUID = 0L;
     return internalGetThreadMigrations().getMap().size();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   @java.lang.Override
   public boolean containsThreadMigrations(
@@ -184,38 +188,38 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   @java.lang.Deprecated
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getThreadMigrations() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> getThreadMigrations() {
     return getThreadMigrationsMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   @java.lang.Override
-  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getThreadMigrationsMap() {
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> getThreadMigrationsMap() {
     return internalGetThreadMigrations().getMap();
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   @java.lang.Override
   public /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrDefault(
       java.lang.String key,
       /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest defaultValue) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> map =
         internalGetThreadMigrations().getMap();
     return map.containsKey(key) ? map.get(key) : defaultValue;
   }
   /**
-   * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+   * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrThrow(
+  public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrThrow(
       java.lang.String key) {
     if (key == null) { throw new NullPointerException("map key"); }
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> map =
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> map =
         internalGetThreadMigrations().getMap();
     if (!map.containsKey(key)) {
       throw new java.lang.IllegalArgumentException();
@@ -279,9 +283,9 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(4, revision_);
     }
-    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> entry
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> entry
          : internalGetThreadMigrations().getMap().entrySet()) {
-      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
       threadMigrations__ = ThreadMigrationsDefaultEntryHolder.defaultEntry.newBuilderForType()
           .setKey(entry.getKey())
           .setValue(entry.getValue())
@@ -440,6 +444,10 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.PutWorkflowMigrationPlanRequest}
    */
   public static final class Builder extends
@@ -643,7 +651,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
               break;
             } // case 32
             case 42: {
-              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
               threadMigrations__ = input.readMessage(
                   ThreadMigrationsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableThreadMigrations().ensureBuilderMap().put(
@@ -925,30 +933,30 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       return this;
     }
 
-    private static final class ThreadMigrationsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> {
+    private static final class ThreadMigrationsConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> {
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.ThreadMigrationPlan build(io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder val) {
-        if (val instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan) { return (io.littlehorse.sdk.common.proto.ThreadMigrationPlan) val; }
-        return ((io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder) val).build();
+      public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest build(io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) { return (io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) val; }
+        return ((io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder) val).build();
       }
 
       @java.lang.Override
-      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> defaultEntry() {
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> defaultEntry() {
         return ThreadMigrationsDefaultEntryHolder.defaultEntry;
       }
     };
     private static final ThreadMigrationsConverter threadMigrationsConverter = new ThreadMigrationsConverter();
 
     private com.google.protobuf.MapFieldBuilder<
-        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder> threadMigrations_;
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder>
+        java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder> threadMigrations_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder>
         internalGetThreadMigrations() {
       if (threadMigrations_ == null) {
         return new com.google.protobuf.MapFieldBuilder<>(threadMigrationsConverter);
       }
       return threadMigrations_;
     }
-    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlan, io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder>
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder>
         internalGetMutableThreadMigrations() {
       if (threadMigrations_ == null) {
         threadMigrations_ = new com.google.protobuf.MapFieldBuilder<>(threadMigrationsConverter);
@@ -961,7 +969,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       return internalGetThreadMigrations().ensureBuilderMap().size();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     @java.lang.Override
     public boolean containsThreadMigrations(
@@ -974,37 +982,37 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
      */
     @java.lang.Override
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getThreadMigrations() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> getThreadMigrations() {
       return getThreadMigrationsMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> getThreadMigrationsMap() {
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> getThreadMigrationsMap() {
       return internalGetThreadMigrations().getImmutableMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     @java.lang.Override
     public /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrDefault(
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrDefault(
         java.lang.String key,
         /* nullable */
-io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
+io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest defaultValue) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> map = internalGetMutableThreadMigrations().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder> map = internalGetMutableThreadMigrations().ensureBuilderMap();
       return map.containsKey(key) ? threadMigrationsConverter.build(map.get(key)) : defaultValue;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrThrow(
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest getThreadMigrationsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> map = internalGetMutableThreadMigrations().ensureBuilderMap();
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder> map = internalGetMutableThreadMigrations().ensureBuilderMap();
       if (!map.containsKey(key)) {
         throw new java.lang.IllegalArgumentException();
       }
@@ -1016,7 +1024,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     public Builder removeThreadMigrations(
         java.lang.String key) {
@@ -1029,17 +1037,17 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
      * Use alternate mutation accessors instead.
      */
     @java.lang.Deprecated
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan>
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest>
         getMutableThreadMigrations() {
       bitField0_ |= 0x00000010;
       return internalGetMutableThreadMigrations().ensureMessageMap();
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     public Builder putThreadMigrations(
         java.lang.String key,
-        io.littlehorse.sdk.common.proto.ThreadMigrationPlan value) {
+        io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest value) {
       if (key == null) { throw new NullPointerException("map key"); }
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableThreadMigrations().ensureBuilderMap()
@@ -1048,11 +1056,11 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
     public Builder putAllThreadMigrations(
-        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> values) {
-      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlan> e : values.entrySet()) {
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest> e : values.entrySet()) {
         if (e.getKey() == null || e.getValue() == null) {
           throw new NullPointerException();
         }
@@ -1063,21 +1071,21 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
       return this;
     }
     /**
-     * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 5;</code>
+     * <code>map&lt;string, .littlehorse.ThreadMigrationPlanRequest&gt; thread_migrations = 5;</code>
      */
-    public io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder putThreadMigrationsBuilderIfAbsent(
+    public io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder putThreadMigrationsBuilderIfAbsent(
         java.lang.String key) {
-      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder> builderMap = internalGetMutableThreadMigrations().ensureBuilderMap();
-      io.littlehorse.sdk.common.proto.ThreadMigrationPlanOrBuilder entry = builderMap.get(key);
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder> builderMap = internalGetMutableThreadMigrations().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequestOrBuilder entry = builderMap.get(key);
       if (entry == null) {
-        entry = io.littlehorse.sdk.common.proto.ThreadMigrationPlan.newBuilder();
+        entry = io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.newBuilder();
         builderMap.put(key, entry);
       }
-      if (entry instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlan) {
-        entry = ((io.littlehorse.sdk.common.proto.ThreadMigrationPlan) entry).toBuilder();
+      if (entry instanceof io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) {
+        entry = ((io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest) entry).toBuilder();
         builderMap.put(key, entry);
       }
-      return (io.littlehorse.sdk.common.proto.ThreadMigrationPlan.Builder) entry;
+      return (io.littlehorse.sdk.common.proto.ThreadMigrationPlanRequest.Builder) entry;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.PutWorkflowMigrationPlanRequest)

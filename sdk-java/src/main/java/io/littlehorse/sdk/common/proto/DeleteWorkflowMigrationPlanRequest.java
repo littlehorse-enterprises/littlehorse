@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.DeleteWorkflowMigrationPlanRequest}
  */
 @com.google.protobuf.Generated
@@ -233,6 +237,10 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.DeleteWorkflowMigrationPlanRequest}
    */
   public static final class Builder extends

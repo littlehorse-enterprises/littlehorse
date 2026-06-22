@@ -344,17 +344,16 @@ public class NodeModel extends LHSerializable<Node> {
         return getSubNode().getOutputType(manager);
     }
 
-    public boolean isLongRunning(){
+    public boolean isLongRunning() {
         switch (type) {
             case EXTERNAL_EVENT:
             case USER_TASK:
-            case WAIT_FOR_CHILD_WF:
             case WAIT_FOR_CONDITION:
             case WAIT_FOR_THREADS:
             case SLEEP:
                 return true;
             default:
                 return false;
-       } 
+        }
     }
 }

@@ -285,8 +285,8 @@ class PutWorkflowMigrationPlanRequest(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _workflow_migration_pb2.ThreadMigrationPlan
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_workflow_migration_pb2.ThreadMigrationPlan, _Mapping]] = ...) -> None: ...
+        value: _workflow_migration_pb2.ThreadMigrationPlanRequest
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_workflow_migration_pb2.ThreadMigrationPlanRequest, _Mapping]] = ...) -> None: ...
     NAME_FIELD_NUMBER: _ClassVar[int]
     OLD_WFSPEC_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
@@ -296,8 +296,8 @@ class PutWorkflowMigrationPlanRequest(_message.Message):
     old_wfSpec: _object_id_pb2.WfSpecId
     major_version: int
     revision: int
-    thread_migrations: _containers.MessageMap[str, _workflow_migration_pb2.ThreadMigrationPlan]
-    def __init__(self, name: _Optional[str] = ..., old_wfSpec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., thread_migrations: _Optional[_Mapping[str, _workflow_migration_pb2.ThreadMigrationPlan]] = ...) -> None: ...
+    thread_migrations: _containers.MessageMap[str, _workflow_migration_pb2.ThreadMigrationPlanRequest]
+    def __init__(self, name: _Optional[str] = ..., old_wfSpec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., thread_migrations: _Optional[_Mapping[str, _workflow_migration_pb2.ThreadMigrationPlanRequest]] = ...) -> None: ...
 
 class DeleteWorkflowMigrationPlanRequest(_message.Message):
     __slots__ = ("id",)

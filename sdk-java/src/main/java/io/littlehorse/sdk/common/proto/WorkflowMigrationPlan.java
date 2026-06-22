@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Plan describing how to migrate live WfRun's from one WfSpec version to another.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.WorkflowMigrationPlan}
  */
 @com.google.protobuf.Generated
@@ -60,7 +64,7 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId workflowMigrationPlanId_;
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -72,7 +76,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -84,7 +88,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The id of the migration plann
+   * The id of the migration plan
    * </pre>
    *
    * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -530,6 +534,10 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Plan describing how to migrate live WfRun's from one WfSpec version to another.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.WorkflowMigrationPlan}
    */
   public static final class Builder extends
@@ -793,7 +801,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
         io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder> workflowMigrationPlanIdBuilder_;
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -804,7 +812,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -819,7 +827,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -839,7 +847,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -857,7 +865,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -882,7 +890,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -899,7 +907,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -911,7 +919,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>
@@ -926,7 +934,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * The id of the migration plann
+     * The id of the migration plan
      * </pre>
      *
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 1;</code>

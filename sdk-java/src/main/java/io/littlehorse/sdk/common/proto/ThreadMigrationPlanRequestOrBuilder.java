@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface ThreadMigrationPlanOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.ThreadMigrationPlan)
+public interface ThreadMigrationPlanRequestOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.ThreadMigrationPlanRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**
@@ -85,49 +85,4 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue);
    */
   io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrThrow(
       java.lang.String key);
-
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @return A list containing the dependencies.
-   */
-  java.util.List<java.lang.String>
-      getDependenciesList();
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @return The count of dependencies.
-   */
-  int getDependenciesCount();
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @param index The index of the element to return.
-   * @return The dependencies at the given index.
-   */
-  java.lang.String getDependencies(int index);
-  /**
-   * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
-   * </pre>
-   *
-   * <code>repeated string dependencies = 3;</code>
-   * @param index The index of the value to return.
-   * @return The bytes of the dependencies at the given index.
-   */
-  com.google.protobuf.ByteString
-      getDependenciesBytes(int index);
 }

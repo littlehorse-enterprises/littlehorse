@@ -6,6 +6,10 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
+ * <pre>
+ * EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
+ * </pre>
+ *
  * Protobuf type {@code littlehorse.ApplyWorkflowMigrationPlanRequest}
  */
 @com.google.protobuf.Generated
@@ -388,6 +392,10 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     return builder;
   }
   /**
+   * <pre>
+   * EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
+   * </pre>
+   *
    * Protobuf type {@code littlehorse.ApplyWorkflowMigrationPlanRequest}
    */
   public static final class Builder extends

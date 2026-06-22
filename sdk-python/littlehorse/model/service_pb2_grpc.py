@@ -929,28 +929,30 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def PutWorkflowMigrationPlan(self, request, context):
-        """Register a workflow migration plan with lh server
+        """EXPERIMENTAL: Register a workflow migration plan with lh server
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWorkflowMigrationPlan(self, request, context):
-        """Get a workflow migration plan by ID
+        """EXPERIMENTAL: Get a workflow migration plan by ID
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteWorkflowMigrationPlan(self, request, context):
-        """Deletes Workflow Migration Plan Metadata object from the server
+        """EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ApplyWorkflowMigrationPlan(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+        destination WfSpec.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
