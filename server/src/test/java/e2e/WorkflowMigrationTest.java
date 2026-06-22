@@ -64,14 +64,12 @@ public class WorkflowMigrationTest {
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
-
     private void awaitMigrationPlanVisible(WorkflowMigrationPlan plan) {
         Awaitility.await()
                 .atMost(Duration.ofSeconds(10))
                 .ignoreExceptionsInstanceOf(StatusRuntimeException.class)
                 .until(() -> client.getWorkflowMigrationPlan(plan.getWorkflowMigrationPlanId()) != null);
     }
-
 
     @LHWorkflow("migration-test-wf")
     private Workflow migrationWf;
@@ -93,7 +91,6 @@ public class WorkflowMigrationTest {
         });
     }
 
-
     public static final String MIGRATION_USER_TASK_DEF_NAME = "migration-user-task";
 
     @LHUserTaskForm(MIGRATION_USER_TASK_DEF_NAME)
@@ -108,7 +105,6 @@ public class WorkflowMigrationTest {
             wf.assignUserTask(MIGRATION_USER_TASK_DEF_NAME, "test-user-id", null);
         });
     }
-
 
     @LHWorkflow("migration-from-wait-for-condition")
     private Workflow migrateFromWaitForConditionWf;
@@ -192,7 +188,6 @@ public class WorkflowMigrationTest {
     public String migrationTask() {
         return "migrated";
     }
-
 
     @Test
     void shouldMigrateWfRunFromExternalEventToTask() {
