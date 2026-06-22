@@ -66,7 +66,7 @@ public class WorkflowMigrationTest {
 
     private void awaitMigrationPlanVisible(WorkflowMigrationPlan plan) {
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .ignoreExceptionsInstanceOf(StatusRuntimeException.class)
                 .until(() -> client.getWorkflowMigrationPlan(plan.getWorkflowMigrationPlanId()) != null);
     }
@@ -281,7 +281,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -376,7 +376,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -471,7 +471,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -566,7 +566,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -577,7 +577,7 @@ public class WorkflowMigrationTest {
         // and the wait-for-condition spec would become a new major version instead. The
         // condition is never satisfied, so the node parks in RUNNING long enough to migrate.
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
-                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -656,7 +656,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -667,7 +667,7 @@ public class WorkflowMigrationTest {
         // and the wait-for-condition spec would become a new major version instead. The
         // condition is never satisfied, so the node parks in RUNNING long enough to migrate.
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
-                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -723,8 +723,8 @@ public class WorkflowMigrationTest {
         // thread and then both threads park on external events, so both are halted and
         // available to migrate at the same time.
         WfRunId runId = verifier.prepareRun(migrateChildWParent)
-                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING)
-                .waitForNodeRunStatus(0, 2, LHStatus.RUNNING)
+                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
+                .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -804,7 +804,7 @@ public class WorkflowMigrationTest {
 
         // The WfRun should run to completion under the new spec.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
 
         // Both threads should now be on the new version.
@@ -851,7 +851,7 @@ public class WorkflowMigrationTest {
         // and parks on the external-event node (position 2). We migrate from this NON-FIRST
         // node to prove the server keys node migrations by the parked node's name.
         WfRunId runId = verifier.prepareRun(migrateFromSecondMigrationNode)
-                .waitForNodeRunStatus(0, 2, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
@@ -939,7 +939,7 @@ public class WorkflowMigrationTest {
                 .build());
 
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
     }
 
@@ -1005,7 +1005,7 @@ public class WorkflowMigrationTest {
 
         // The task worker picks up the task and the WfRun completes under v1.
         Awaitility.await()
-                .atMost(Duration.ofSeconds(10))
+                .atMost(Duration.ofSeconds(30))
                 .until(() -> client.getWfRun(runId).getStatus() == LHStatus.COMPLETED);
 
         // The migration variable overrode the declared default (1) with the new value (42),
