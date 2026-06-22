@@ -132,7 +132,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             // options.setNumLevels(10);
         }
         options.setTargetFileSizeBase(128 * MB);
-        options.setMaxWriteBufferNumber(3);
+        options.setMaxWriteBufferNumber(6);
+        options.setMinWriteBufferNumberToMerge(3);
 
         // I/O Configurations
         options.setAdviseRandomOnOpen(true);
