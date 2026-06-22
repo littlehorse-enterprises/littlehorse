@@ -1,0 +1,245 @@
+{
+  "name": "quickstart",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-verify-identity-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "entrypoint": {}
+        },
+        "1-verify-identity-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-identity-verified-EXTERNAL_EVENT",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "verify-identity"
+            },
+            "timeoutSeconds": 60,
+            "retries": 3,
+            "variables": [
+              { "variableName": "full-name" },
+              { "variableName": "email" },
+              { "variableName": "ssn" }
+            ]
+          }
+        },
+        "2-identity-verified-EXTERNAL_EVENT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "identity-verified",
+                  "operation": "ASSIGN",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "2-identity-verified-EXTERNAL_EVENT"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-2-identity-verified-EXTERNAL_EVENT-TIMEOUT",
+              "specificFailure": "TIMEOUT"
+            }
+          ],
+          "externalEvent": {
+            "externalEventDefId": {
+              "name": "identity-verified"
+            },
+            "timeoutSeconds": {
+              "literalValue": {
+                "int": "300"
+              }
+            },
+            "correlationKey": {
+              "variableName": "email"
+            },
+            "maskCorrelationKey": false
+          }
+        },
+        "3-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-notify-customer-verified-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": { "variableName": "identity-verified" },
+                  "comparator": "EQUALS",
+                  "rhs": { "literalValue": { "bool": true } }
+                }
+              },
+              "variableMutations": []
+            },
+            {
+              "sinkNodeName": "6-notify-customer-not-verified-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "nop": {}
+        },
+        "4-notify-customer-verified-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-nop-NOP",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "notify-customer-verified"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": [
+              { "variableName": "full-name" },
+              { "variableName": "email" }
+            ]
+          }
+        },
+        "5-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "7-exit-EXIT",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "nop": {}
+        },
+        "6-notify-customer-not-verified-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-nop-NOP",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "notify-customer-not-verified"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": [
+              { "variableName": "full-name" },
+              { "variableName": "email" }
+            ]
+          }
+        },
+        "7-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "full-name",
+            "typeDef": { "primitiveType": "STR", "masked": false }
+          },
+          "required": true,
+          "searchable": true,
+          "jsonIndexes": [],
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "email",
+            "typeDef": { "primitiveType": "STR", "masked": false }
+          },
+          "required": true,
+          "searchable": true,
+          "jsonIndexes": [],
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "ssn",
+            "typeDef": { "primitiveType": "INT", "masked": true }
+          },
+          "required": true,
+          "searchable": false,
+          "jsonIndexes": [],
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "identity-verified",
+            "typeDef": { "primitiveType": "BOOL", "masked": false }
+          },
+          "required": false,
+          "searchable": true,
+          "jsonIndexes": [],
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ],
+      "interruptDefs": []
+    },
+    "exn-handler-2-identity-verified-EXTERNAL_EVENT-TIMEOUT": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-notify-customer-not-verified-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "entrypoint": {}
+        },
+        "1-notify-customer-not-verified-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-customer-not-verified-EXIT",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "notify-customer-not-verified"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": [
+              { "variableName": "full-name" },
+              { "variableName": "email" }
+            ]
+          }
+        },
+        "2-customer-not-verified-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+            "failureDef": {
+              "failureName": "customer-not-verified",
+              "message": "Unable to verify customer identity in time."
+            }
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

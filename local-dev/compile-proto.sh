@@ -18,7 +18,7 @@ ENV PROTOC_VERSION           32.1
 ENV PROTO_GEN_JAVA           1.75.0
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
-ENV PROTO_GEN_PYTHON         1.69.0
+ENV PROTO_GEN_PYTHON         1.75.1
 ENV PROTO_GEN_JS             2.11.1
 
 ENV GO_VERSION                1.24.2

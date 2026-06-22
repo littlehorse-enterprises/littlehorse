@@ -1,0 +1,13 @@
+{
+  "name": "identity-verified",
+  "retentionPolicy": {},
+  "contentType": {
+    "returnType": {
+      "primitiveType": "BOOL",
+      "masked": false
+    }
+  },
+  "correlatedEventConfig": {
+    "deleteAfterFirstCorrelation": false
+  }
+}
