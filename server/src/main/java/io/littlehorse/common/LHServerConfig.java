@@ -1181,7 +1181,7 @@ public class LHServerConfig extends ConfigBase {
     }
 
     public long getTotalWriteBufferSize() {
-        return Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
+        return Long.parseLong(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
     }
 
     private void initKafkaAdmin() {
