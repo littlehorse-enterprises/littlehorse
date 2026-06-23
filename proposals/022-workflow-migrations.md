@@ -1,80 +1,87 @@
-## Workflow Migrations
+# Workflow Migrations
+
+**Author:** Jake Rose
 
 ### Motivation
-Littlehorse gives a wfRun instance the ability to last days, weeks, or even months.
-Business proccesses may change overtime (wfSpec versioning), but an existing wfRun may still operate on old business logic respresented by a threadSpec. In order to keep active workflows up to date with the current business processes, as well as avoid as handle or avoid technical errors wfRuns need the ability to migrate threadRuns to execute under new threadSpecs created in newly versioned wfSpecs
-
-### Goals
-- Allow a wfRun's threadRun to change the threadSpec it is operating on
-- Minimize possible runtime errors when apply migrations.
+LittleHorse gives a `wfRun` instance the ability to last for days, weeks, or even months.
+Business processes may change over time (WfSpec versioning), but an existing `wfRun` may still operate on old business logic represented by a `threadSpec`. In order to keep active workflows up to date with the current business processes, as well as handle or avoid technical errors, `wfRun`s need the ability to migrate `threadRun`s to new `WfSpec` versions.
 
 ## Proto
 
+```proto
+message WorkflowMigrationPlan {
+  // The id of the migration plan
+  WorkflowMigrationPlanId workflow_migration_plan_id = 1;
 
-Message names up for debate I was more so focused on impl
+  // Time WorkflowMigrationPlan was created
+  google.protobuf.Timestamp created_at = 2;
 
-```proto 
-
-
-message WorkflowMigrationPlan{
-    // The id of the migration plann
-    WorkflowMigrationPlanId workflow_migration_plan_id= 1;
-
-    // Time WorkflowMigrationPlan was created
-    google.protobuf.Timestamp created_at = 2;
-
-    // Map that represent old threadSpec name -> How to migrate that threadspec
-    map<string, ThreadMigrationPlan> thread_migrations = 3;
+  // Map from old threadSpec name to ThreadMigrationPlan
+  map<string, ThreadMigrationPlan> thread_migrations = 3;
         
-    // Source wfSpec
-    WfSpecId old_wfSpec = 4;
+  // Source wfSpec
+  WfSpecId old_wfSpec = 4;
 
-    // major_version and revision of the destination specs 
-    int32 major_version = 5;
-    int32 revision = 6;
+  // major_version and revision of the destination specs 
+  int32 major_version = 5;
+  int32 revision = 6;
 }
 
 
+// EXPERIMENTAL: Plan describing how to migrate a ThreadRun to a threadSpec in the new WfSpec.
 message ThreadMigrationPlan {
     
-    // Name of thread in new wfSpec that thread wants 
-    // to migrate to 
-    string new_thread_name = 1;
+  // Name of threadSpec in new WfSpec that threadRun will migrate to
+  string new_thread_name = 1;
 
-    // Name of node in old thread to migrate from
-    string from_node = 2;
+  // Map of old node name -> how to migrate that node in the new WfSpec
+  map<string, NodeMigrationPlan> node_migrations = 2;
 
-    // name of node to migrate to within new spec
-    string to_node = 3;
-
-    // List of variables that threadRun MUST have access to when migrating to new_thread_name
-    // useful when new_thread_spec uses a variable that is not in old_thread_spec
-    repeated string required_variables = 4;
-
-    // List of threads threads that must migrate first
-    // used in server logic to make sure variables 
-    repeated string dependencies = 5;
+  // Names of threadSpecs in the new WfSpec that must have already migrated to
+  // before this thread can migrate (so any variables they create are available).
+  // This list is created internally by the server.
+  repeated string dependencies = 3;
 
 }
 
-// varName -> variableAssignment
-// used to insert values at runtime
+// Request-side representation of a ThreadMigrationPlan. Dependencies are not provided by the client; they are computed internally by
+// the server when building the WorkflowMigrationPlan.
+// EXPERIMENTAL.
+message ThreadMigrationPlanRequest {
+
+  // Name of thread in new WfSpec that the thread will migrate to
+  string new_thread_name = 1;
+
+  // Map of old node name -> how to migrate that node in the new WfSpec
+  map<string, NodeMigrationPlan> node_migrations = 2;
+}
+
+// EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
+message NodeMigrationPlan {
+
+  // Name of node in the new WfSpec to migrate to
+  string new_node_name = 1;
+}
+
+// EXPERIMENTAL: Variable assignments applied to a thread when it is migrated.
 message MigrationVars {
   map<string, VariableAssignment>  var_assignment_by_var_name = 1;
+}
+
+```
 
 ```proto
+message WfRun {
 
-message WfRUn {
-
-    // .... 
+  // .... 
 
 
-    // reference to WorkflowMigrationPlanId
-    WorkflowMigrationPlanId workflow_migration_plan_id = 12;
+  // reference to WorkflowMigrationPlanId
+  WorkflowMigrationPlanId workflow_migration_plan_id = 12;
 
-    // Map to determine how to reassign variable values during Migration
-    // newThreadName -> MigrationVar
-    map<string, MigrationVars> migration_variables = 13;
+  // Map to determine how to reassign variable values during migration
+  // newThreadName -> MigrationVars
+  map<string, MigrationVars> migration_variables = 13;
 }
 ```
 
@@ -87,8 +94,8 @@ message WfRUn {
   // Get a workflow migration plan by ID
   rpc GetWorkflowMigrationPlan(WorkflowMigrationPlanId) returns (WorkflowMigrationPlan) {}
 
-  // Deletes Workflow Migration Plan Metadata object from the server
-  // Maybe this is not a good idea since wfRun hold migrationPlanId
+  // Deletes Workflow Migration Plan metadata object from the server
+  // Maybe this is not a good idea since a `wfRun` holds the migration plan id
   rpc DeleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest) returns (google.protobuf.Empty) {}
 
   rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
@@ -108,11 +115,12 @@ message PutWorkflowMigrationPlanRequest {
 
   int32 revision = 4;
 
-  map<string, ThreadMigrationPlan> thread_migrations = 5;
+  // ThreadMigrationPlanRequest object
+  map<string, ThreadMigrationPlanRequest> thread_migrations = 5;
 
 }
 
-message DeleteWorkflowMigrationPlanRequest{
+message DeleteWorkflowMigrationPlanRequest {
   WorkflowMigrationPlanId id = 1;
 }
 
@@ -129,108 +137,48 @@ message ApplyWorkflowMigrationPlanRequest {
 ```
 
 
-## Implemention details
 
+## `putWorkflowMigrationPlan` validations
 
 ### Thread Migration Rules 
-- Entrypoint threads can only migrate to entrypoint threads
-- Child threads, interupt, and failure handlers can migrate between
-eachother as of current draft pr. This is not advised though when an engineer
-is making a workflowMigrationPlan then should migrate interupt->interupt and so forth.
+- Entrypoint threads can only migrate to entrypoint threads.
 
-- The wfRun wfSpec only updates when entrypoint migrates, then wfSpec updates and prior wfSpec is added to oldWfSpec
-This means that a wfRun will allow threadRuns to have threadSpecs on different version, so dashboard will have ot update
-### MigrationNodes
-- You have the ability to migrate from and to any node type unless the worklowMigrationPlan
-is applied and a threadRun is currently at a migration node. If the migration node is not a waiting node then the applyMigrationRequest will be rejected
+- Child threads, interrupt handlers, and failure handlers can migrate between each other, but engineers will be strongly advised to carefully create `WorkflowMigrationPlan`s where `threadRun`s migrate to semantically equivalent `threadSpec`s.
+  
+- Any `newThreadSpec` that uses a variable that is not in the scope of the `oldThreadSpec` will result in an invalid request unless the parent `newThreadSpec` that defines the variable is migrating as well.
 
-- In the case of which we migrate from an activeNode then the nodeRun
-is put into a halted status when migrated from, but maybe this could be changed to a MIGRATED status.
+
+### Migration Nodes Rules
+- You can migrate to and from any working node type within LittleHorse.
+
+## `applyWorkflowMigrationPlan` validations
+
+`ApplyWorkflowMigrationPlan` stamps a `workflowMigrationPlanId` onto a `wfRun`, allowing migration to happen lazily. The only validation is to check if any `migrationVar`'s `varAssignment` is provided as a literal value. If so, the server will ensure that the literal value is compatible with the type of the variable it is trying to update.
+
+
+## Migration
+
+### Migrating `threadRun`s
+
+Migration occurs lazily: the `wfRun` is stamped with the `workflowMigrationPlanId`. On each advance, the server checks if the thread is migrating and whether it is ready to migrate. There are two types of migrations that can occur. The first is migrating from an active node. Migrating from an active node occurs when the apply request comes in and a `threadRun` is at a migration node that is long-running (external event, user task, sleep, waitForCondition). The active long-running node will be safely halted and then migration will take place. This example is helpful when a `wfRun`/`threadRun` is stuck at some long-running node and needs to be moved to a new `threadSpec`. The other type of migration occurs when the next node is the migration node. If the current node completes and the next node is a migration node, migration will take place before the migration node is activated. This implementation allows `wfRun`s to migrate from any type of working node.
+
+The actual mechanism for migration updates the `threadRun`'s name to the new `threadSpec` and the `threadRun`'s `wfSpec` to the new `WfSpec`. After that, the new node is activated and the `threadRun` continues operating under the new `threadSpec`.
 
 ### Migration Lifecycle
-    - MigrationPlanId will stay stamped on a wfRun
-    till each threadMigration has been satisfied 
-#### .advance() with migrationPlan
-    wfRun.advance()
-    Calls thread.advance with planId if thread Migrates and has migrationPlan
-    ```java
-          if(workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)){
-                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
-                    maybeDoneMigration();
-                }else{
-                    statusChanged = thread.advance(time, null) || statusChanged;
-                }
-    ```
-    thread.advance()
-    This action takes places on active nodes b
-    ```java
-       boolean migrated = false;
-            // Try to migrate from a long-running active node even if it hasn't completed yet.
-            // This must happen before the canAdvance gate so that a waiting ExternalEvent/UserTask/Sleep
-            // node can be migrated away without waiting for the event to arrive.
-            if (wfMigrationPlanId != null && currentNR.getNode().isLongRunning()) {
-                migrated = maybeMigrate(wfMigrationPlanId, currentNR.getNodeName(), true);
-            }
-            if (migrated) return true;
-    ```
 
+The `workflowMigrationPlanId` will stay stamped onto a `wfRun` until every `threadRun`'s `wfSpec` is on the new `WfSpec` version. This condition ensures that every child `threadRun` spawned that uses the old `WfSpec` will be checked for migration. Once the `workflowMigrationPlanId` is cleared, the previous `wfSpec` version will be added to `oldWfSpecVersions` on the `wfRun`.
 
-    If we are moving to the next node and thread is migrating check if next node is the migration node
-    this allows us to migrate from any node (depending on when migration is applied) 
-    
-    ```java
+When an entrypoint `threadRun` migrates to a new `WfSpec`, the `workflowMigrationPlanId` will eventually be removed from the `wfRun`. This is due to the nature of the entrypoint `threadRun`'s status: the entrypoint `threadRun` will not complete until all child `threadRun`s have been settled, allowing migration to complete either when all child `threadRun`s are completed or when all `threadRun`s are operating under the new `WfSpec`.
 
-    } else {
-                NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables(processorContext);
-                // Before we activate next node
-                // check if we are migrating
-                if(wfMigrationPlanId != null){
-                    migrated = maybeMigrate(wfMigrationPlanId, nextNode.getName(), false);
-                }
-                if(migrated){
-                    return true;
-                }
-                activateNode(nextNode);
-            }
-    ```
-
-### Variables 
-- required variables are currently determined by the engineer
-creating the workflowMigrationPlan
-
-   ```proto 
-message ThreadMigrationPlan {
-    
-    // List of variables that threadRun MUST have access to when migrating to new_thread_name
-    // useful when new_thread_spec uses a variable that is not in old_thread_spec
-    repeated string required_variables = 4; 
-
-}
-```
-- required_variables represents variables that must exist within the wfRun when migrating to a new threadSpec 
-    
-- if the variable is new, meaning created in the new Spec the following logic will take place
-1) check if newThreadSpec owns VarDef, if so the variable will be created when this thread migrates
-2) if newSpec does not own the variable find which thread has the varDef.
-3) From the thread that owns the varDef check if the newThreadSpec is a descendent.
-4) If it is a descendent then the variable is within the scope
-5) Now check if thread has the varDef is migrating, if not reject request becuase var will never exist
-6) If the thread that owns the varDef is migrating add its name to the current threadMigration list of dependency threads
+In the case where only child `threadRun`s are migrated to a new `WfSpec`, the `workflowMigrationPlanId` will remain stamped onto the `wfRun` because the above condition will never be met. While the `workflowMigrationPlanId` is stamped on the `wfRun`, any other `ApplyWorkflowMigrationPlanRequest` will be rejected.
 
 #### Dependency Threads
-Naturally migration occur in no particular order, if a thread can migrate it will
-that is where dependencies come into action.
+Naturally, thread migrations occur in no particular order. Threads will migrate immediately when `.advance()` is called and the `threadRun` is at a migration node. In the situation where the new `threadSpec` uses a variable defined in a parent thread, this behavior could cause runtime errors. To handle this, we internally build a list of thread `dependencies` that must exist at runtime for the new `threadSpec` to be migrated to.
 
-When a thread has a dependency it will make sure that the dependency thread migrates first.
-This can help with avoiding run time errors when trying to access variables that would not exist.
-If a threadMigrationPlan has a required_var that variable is guranteed to exist at runtime or the migration will be 
-rejected.
 
-##TODO 
-- spawn_Threads
-- ciruclar dependencies
     
-
+## Future work
+- bulk migrations
 
 
 
