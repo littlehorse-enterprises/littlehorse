@@ -42,6 +42,7 @@ Use another terminal for `lhctl run ...` when needed.
 - [`json/`](./json/README.md): JSON variable examples.
 - [`mutation/`](./mutation/README.md): Variable mutation behavior.
 - [`parallel_approvals/`](./parallel_approvals/README.md): Parallel approval flow.
+- [`quickstart/`](./quickstart/README.md): KYC-style getting-started workflow.
 - [`retries/`](./retries/README.md): Retry policies and behavior.
 - `run_child_wf/`: Run-child-workflow example source (no README yet).
 - [`structdef/`](./structdef/README.md): Struct definition and usage.

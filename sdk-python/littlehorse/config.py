@@ -328,9 +328,7 @@ class LHConfig:
             ("grpc.http2.max_pings_without_data", 0),
         ]
 
-        def create_channel(
-            target: str, options: Any, secure_channel: bool
-        ) -> Channel:
+        def create_channel(target: str, options: Any, secure_channel: bool) -> Channel:
             credentials: Optional[ChannelCredentials] = None
             if not self.is_secure():
                 self._log.warning("Establishing insecure channel at %s", server)
