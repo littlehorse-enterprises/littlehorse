@@ -18,12 +18,13 @@ public class MetronomeWorkflow {
 
     public MetronomeWorkflow(final LHClient lhClient, final String workflowName, final Duration workflowRetention) {
         this.lhClient = lhClient;
-        this.workflow = Workflow.newWorkflow(
-                        workflowName,
-                        thread -> thread.execute(
-                                TASK_NAME,
-                                thread.addVariable(START_TIME_VARIABLE, VariableType.INT),
-                                thread.addVariable(SAMPLE_ITERATION_VARIABLE, VariableType.BOOL)))
+        this.workflow = Workflow.newWorkflow(workflowName, thread -> {
+                    thread.execute(
+                            TASK_NAME,
+                            thread.addVariable(START_TIME_VARIABLE, VariableType.INT),
+                            thread.addVariable(SAMPLE_ITERATION_VARIABLE, VariableType.BOOL));
+                    thread.throwEvent("aworkflowevent", "hello").registeredAs(String.class);
+                })
                 .withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
                         .setSecondsAfterWfTermination(workflowRetention.getSeconds())
                         .build());
