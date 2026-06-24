@@ -29,7 +29,12 @@ public class CompositeKeyValueIterator implements KeyValueIterator<String, Bytes
     @Override
     public boolean hasNext() {
         while (current != null) {
-            if (current.hasNext()) return true;
+            if (current.hasNext()) {
+                return true;
+            }
+            // The `close()` method below won't take care of this because the `current` is already
+            // consumed out of the iteratorList.
+            current.close();
             if (iteratorList.hasNext()) {
                 current = iteratorList.next();
             } else {
@@ -59,7 +64,10 @@ public class CompositeKeyValueIterator implements KeyValueIterator<String, Bytes
     @Override
     public String peekNextKey() {
         while (current != null) {
-            if (current.hasNext()) return current.peekNextKey();
+            if (current.hasNext()) {
+                return current.peekNextKey();
+            }
+            current.close();
             if (iteratorList.hasNext()) {
                 current = iteratorList.next();
             } else {

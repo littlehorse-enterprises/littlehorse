@@ -9,7 +9,6 @@ import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
 import io.littlehorse.common.model.LHTimer;
-import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.failure.LHTaskErrorModel;
@@ -284,24 +283,23 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setStartTime(se.getTime());
         attempt.setStatus(TaskStatus.TASK_RUNNING);
 
-        PartitionMetricWindowModel.trackTaskAttempt(
-                processorContext,
-                taskDefId,
-                TaskStatus.TASK_SCHEDULED,
-                TaskStatus.TASK_RUNNING,
-                scheduleTime,
-                se.getTime());
+        processorContext
+                .metricsCollector()
+                .trackTaskAttempt(
+                        taskDefId, TaskStatus.TASK_SCHEDULED, TaskStatus.TASK_RUNNING, scheduleTime, se.getTime());
     }
 
     public void sendUpdatedTimeoutTimerCommand(CoreProcessorContext context) {
         ReportTaskRunModel taskResult = new ReportTaskRunModel();
+        int latestAttemptNumber = attempts.size() - 1;
+        taskResult.setAttemptNumber(Math.max(latestAttemptNumber, 0));
         taskResult.setTaskRunId(id);
         taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         taskResult.setTotalCheckpoints(totalCheckpoints);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
         LHTimer timer = new LHTimer(timerCommand);
-        processorContext.getTaskManager().scheduleTimer(timer);
+        context.getTaskManager().scheduleTimer(timer);
     }
 
     public void observeNewCheckpointAndUpdateTimeouts(CoreProcessorContext context) {
@@ -387,13 +385,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             }
         }
 
-        PartitionMetricWindowModel.trackTaskAttempt(
-                processorContext,
-                taskDefId,
-                TaskStatus.TASK_RUNNING,
-                attempt.getStatus(),
-                attempt.getStartTime(),
-                attempt.getEndTime());
+        processorContext
+                .metricsCollector()
+                .trackTaskAttempt(
+                        taskDefId,
+                        TaskStatus.TASK_RUNNING,
+                        attempt.getStatus(),
+                        attempt.getStartTime(),
+                        attempt.getEndTime());
 
         // The WfRun may need to advance.
         processorContext.getableManager().get(getWfRunId()).advance(taskRunReport.getTime());
@@ -422,13 +421,14 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         attempt.setStatus(TaskStatus.TASK_SCHEDULED);
         attempt.setScheduleTime(new Date());
 
-        PartitionMetricWindowModel.trackTaskAttempt(
-                processorContext,
-                taskDefId,
-                TaskStatus.TASK_PENDING,
-                TaskStatus.TASK_SCHEDULED,
-                attempt.getPendingTime(),
-                attempt.getScheduleTime());
+        processorContext
+                .metricsCollector()
+                .trackTaskAttempt(
+                        taskDefId,
+                        TaskStatus.TASK_PENDING,
+                        TaskStatus.TASK_SCHEDULED,
+                        attempt.getPendingTime(),
+                        attempt.getScheduleTime());
 
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel();
         scheduledTask.setVariables(inputVariables);
@@ -484,7 +484,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
 
         if (isTerminalStatus(newStatus)) {
             Date endTime = getLatestAttempt() != null ? getLatestAttempt().getEndTime() : null;
-            PartitionMetricWindowModel.trackTaskRun(processorContext, taskDefId, newStatus, scheduledAt, endTime);
+            processorContext.metricsCollector().trackTaskRun(taskDefId, newStatus, scheduledAt, endTime);
         }
     }
 
