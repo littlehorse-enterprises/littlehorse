@@ -157,6 +157,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
+    // Allow stalls or not on rocksdb
+    public static final String X_ALLOW_WRITE_BUFFER_MANAGER_STALLS_KEY = "LHS_X_ALLOW_WRITE_BUFFER_MANAGER_STALLS";
 
     // Maximum number of thread runs per workflow run.
     public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
@@ -775,6 +777,10 @@ public class LHServerConfig extends ConfigBase {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
     }
 
+    public boolean getAllowWriteBufferManagerStalls() {
+        return Boolean.valueOf(getOrSetDefault(X_ALLOW_WRITE_BUFFER_MANAGER_STALLS_KEY, "true"));
+    }
+
     public long getCoreMemtableSize() {
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
@@ -1163,10 +1169,10 @@ public class LHServerConfig extends ConfigBase {
             this.globalRocksdbBlockCache = new LRUCache(cacheSize, -1, true);
         }
 
-        long totalWriteBufferSize = Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
+        long totalWriteBufferSize = getTotalWriteBufferSize();
         if (totalWriteBufferSize != -1) {
-            this.globalRocksdbWriteBufferManager =
-                    new WriteBufferManager(totalWriteBufferSize, globalRocksdbBlockCache, true);
+            this.globalRocksdbWriteBufferManager = new WriteBufferManager(
+                    totalWriteBufferSize, globalRocksdbBlockCache, getAllowWriteBufferManagerStalls());
         }
 
         long rateLimit = Long.valueOf(getOrSetDefault(ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
@@ -1178,6 +1184,10 @@ public class LHServerConfig extends ConfigBase {
                     RateLimiter.DEFAULT_FAIRNESS,
                     limitReads ? RateLimiterMode.ALL_IO : RateLimiterMode.WRITES_ONLY);
         }
+    }
+
+    public long getTotalWriteBufferSize() {
+        return Long.valueOf(getOrSetDefault(ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY, "-1"));
     }
 
     private void initKafkaAdmin() {
