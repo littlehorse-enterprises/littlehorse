@@ -1,5 +1,6 @@
 import { LHStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
 import {
+  ArchiveIcon,
   BugIcon,
   CheckIcon,
   CirclePauseIcon,
@@ -7,6 +8,7 @@ import {
   CircleSlashIcon,
   CircleXIcon,
   EllipsisIcon,
+  LoaderCircleIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
 export type Pin = {
@@ -23,6 +25,36 @@ export const WF_SPEC_STATUS_COLOR: { [key in WfSpec['status']]: string } = {
   ACTIVE: 'bg-blue-200',
   TERMINATING: 'bg-yellow-200',
   UNRECOGNIZED: 'bg-red-200',
+}
+
+type WfSpecStatusProp = Record<WfSpec['status'], { backgroundColor: string; textColor: string; animate?: boolean } & Pin>
+
+export const WF_SPEC_STATUS: WfSpecStatusProp = {
+  ACTIVE: {
+    color: 'blue',
+    textColor: 'text-blue-800',
+    backgroundColor: 'bg-blue-200',
+    Icon: CirclePlayIcon,
+    animate: true,
+  },
+  ARCHIVED: {
+    color: 'gray',
+    textColor: 'text-gray-700',
+    backgroundColor: 'bg-gray-200',
+    Icon: ArchiveIcon,
+  },
+  TERMINATING: {
+    color: 'yellow',
+    textColor: 'text-yellow-800',
+    backgroundColor: 'bg-yellow-200',
+    Icon: LoaderCircleIcon,
+  },
+  UNRECOGNIZED: {
+    color: 'red',
+    textColor: 'text-red-800',
+    backgroundColor: 'bg-red-200',
+    Icon: BugIcon,
+  },
 }
 type WFRunStatusProp = Record<LHStatus, { backgroundColor: string; textColor: string } & Pin>
 type TaskStatusProp = Record<TaskStatus, { backgroundColor: string; textColor: string } & Pin>
