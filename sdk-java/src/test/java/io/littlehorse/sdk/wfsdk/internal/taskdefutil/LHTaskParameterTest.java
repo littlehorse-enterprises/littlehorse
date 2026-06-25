@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -65,6 +66,12 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("invalid-native-arr-adapter-json")
         public void invalidNativeArrayAdapterJson(@LHType(name = "param1", isLHArray = true) UUID[] param1) {}
+
+        @LHTaskMethod("test-native-map")
+        public void nativeMapParamTask(@LHType(name = "param1", isLHMap = true) Map<String, Long> param1) {}
+
+        @LHTaskMethod("non-map-lh-map-invalid-task")
+        public void nonMapLhMapInvalidTask(@LHType(isLHMap = true) String customer) {}
     }
 
     @Test
@@ -279,5 +286,40 @@ public class LHTaskParameterTest {
                 })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_ARR");
+    }
+
+    @Test
+    public void shouldHandleNativeMapTaskParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "test-native-map");
+        Parameter parameter = taskMethod.getParameters()[0];
+        LHTaskParameter taskParameter = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+
+        VariableDef actualVariableDef = taskParameter.getVariableDef();
+        VariableDef expectedVariableDef = VariableDef.newBuilder()
+                .setName("param1")
+                .setTypeDef(TypeDefinition.newBuilder()
+                        .setInlineMapDef(InlineMapDef.newBuilder()
+                                .setKeyType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .setValueType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.INT)
+                                        .build()))
+                        .build())
+                .build();
+
+        assertThat(actualVariableDef).isEqualTo(expectedVariableDef);
+    }
+
+    @Test
+    void shouldFailWhenIsLHMapUsedOnNonMapParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "non-map-lh-map-invalid-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> {
+                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map parameters");
     }
 }

@@ -5,8 +5,11 @@ import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
@@ -38,11 +41,15 @@ public class LHTaskParameter {
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateLHArrayUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateLHMapUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         LHClassType variableClassType;
 
         if (metadata.isLHArray()) {
             variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
+        } else if (metadata.isLHMap()) {
+            variableClassType = resolveMapType(parameter, typeAdapterRegistry);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
             variableClassType = new LHStructDefId(structDefName.get());
         } else {
@@ -69,5 +76,21 @@ public class LHTaskParameter {
 
     public Class<?> getParameterType() {
         return parameter.getType();
+    }
+
+    private static LHMapType resolveMapType(Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry) {
+        Type genericType = parameter.getParameterizedType();
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArgs = paramType.getActualTypeArguments();
+            if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
+                return new LHMapType((Class<?>) typeArgs[0], (Class<?>) typeArgs[1], typeAdapterRegistry);
+            }
+        }
+
+        throw new IllegalArgumentException("Map parameter '" + parameter.getName()
+                + "' annotated with @LHType(isLHMap = true) must declare generic type parameters "
+                + "(e.g. Map<String, Integer>). Raw or wildcard Map types are not supported.");
     }
 }
