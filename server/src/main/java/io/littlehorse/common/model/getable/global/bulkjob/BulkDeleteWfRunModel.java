@@ -13,13 +13,13 @@ import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.BulkDeleteWfRun;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import java.time.Instant;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -91,8 +91,9 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         String lastKey = shardCursor.getLastKey();
         Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
         InternalScanPb.TagScanPb tagScan = buildScan();
+        String startKey = lastKey.isBlank() ? startKey(tagScan) : lastKey;
 
-        try (LHKeyValueIterator<Tag> range = coreStore.range(startKey(tagScan), endKey(tagScan), Tag.class)) {
+        try (LHKeyValueIterator<Tag> range = coreStore.range(startKey, endKey(tagScan), Tag.class)) {
             while (range.hasNext()) {
                 if (Instant.now().isAfter(deadline)) {
                     // Budget exhausted — save progress and resume on next tick
