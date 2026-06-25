@@ -78,7 +78,7 @@ export const VARIABLE_CASE_LABELS: Record<VariableValueCase, string> = {
  * @returns The formatted string representation of the variable value.
  */
 export const getVariable = (variable: VariableAssignment, depth = 0): string => {
-  if (!variable || !variable.source) return ''
+  if (!variable || variable.source?.oneofKind === undefined) return ''
 
   switch (variable.source.oneofKind) {
     case 'expression':

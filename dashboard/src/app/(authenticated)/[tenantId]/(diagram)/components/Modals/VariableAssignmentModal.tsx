@@ -9,7 +9,7 @@ import { useModal } from '../../hooks/useModal'
 
 export const VariableAssignmentModal: FC<Modal<VariableAssignment>> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
-  if (!data.source) return null
+  if (data.source?.oneofKind === undefined) return null
   const variable = getVariable(data)
 
   return (

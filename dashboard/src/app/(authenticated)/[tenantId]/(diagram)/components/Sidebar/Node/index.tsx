@@ -15,7 +15,7 @@ import { WaitForChildWfNode } from './WaitForChildWfNode'
 export const Node: FC = () => {
   const { selectedNode } = useDiagram()
 
-  if (!selectedNode || !selectedNode.data.node) return
+  if (!selectedNode || selectedNode.data.node?.oneofKind === undefined) return
   const node = selectedNode.data.node
 
   if (node.oneofKind === 'task') return <TaskNode node={node.task} />
