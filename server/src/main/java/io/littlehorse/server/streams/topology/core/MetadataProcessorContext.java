@@ -106,10 +106,13 @@ public class MetadataProcessorContext implements ExecutionContext {
     private void maybeForwardMetadataGetableToOutputTopic(TenantIdModel tenantId, MetadataGetable<?> getable) {
         TenantModel tenant = metadataManager.get(tenantId);
         if (tenant.getOutputTopicConfig() == null) return;
-
+        MetadataOutputTopicRecordModel output = new MetadataOutputTopicRecordModel(getable);
+        if (output.getSubrecord() == null) {
+            return; // This means that the getable is not a type that we want to forward to the output topic
+        }
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
-        cpo.payload = new MetadataOutputTopicRecordModel(getable);
+        cpo.payload = output;
         cpo.partitionKey =
                 getable.getObjectId().getType() + "/" + getable.getObjectId().toString();
 

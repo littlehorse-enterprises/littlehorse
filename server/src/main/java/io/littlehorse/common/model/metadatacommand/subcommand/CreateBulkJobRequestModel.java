@@ -64,7 +64,7 @@ public class CreateBulkJobRequestModel extends MetadataSubCommand<CreateBulkJobR
         if (existing != null) {
             return existing.toProto().build();
         }
-
+        bulkDeleteWfRun.validate();
         BulkJobModel bulkJob = new BulkJobModel(
                 idModel, bulkDeleteWfRun, context.serverConfig().getClusterPartitions());
         metadataManager.put(bulkJob);

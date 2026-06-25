@@ -1,7 +1,9 @@
 package io.littlehorse.common.model.getable.global.bulkjob;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
@@ -92,7 +94,6 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
         InternalScanPb.TagScanPb tagScan = buildScan();
         String startKey = lastKey.isBlank() ? startKey(tagScan) : lastKey;
-
         try (LHKeyValueIterator<Tag> range = coreStore.range(startKey, endKey(tagScan), Tag.class)) {
             while (range.hasNext()) {
                 if (Instant.now().isAfter(deadline)) {
@@ -117,5 +118,14 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         shardCursor.setLastKey(lastKey);
         shardCursor.setLastSeenTimestamp(lastSeenTimestamp);
         return shardCursor;
+    }
+
+    public void validate() {
+        if (wfSpecName == null || wfSpecName.isBlank()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "wfSpecName must be provided");
+        }
+        if (earliestStart != null && latestStart != null && earliestStart.after(latestStart)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "earliestStart must be before or equal to latestStart");
+        }
     }
 }
