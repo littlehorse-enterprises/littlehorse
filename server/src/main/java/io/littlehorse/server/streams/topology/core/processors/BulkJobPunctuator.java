@@ -22,6 +22,8 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +52,12 @@ public class BulkJobPunctuator {
     private final LHServerConfig config;
     private final MetadataCache metadataCache;
 
+    /**
+     * Maximum time the punctuator is allowed to run before yielding back to Kafka Streams.
+     * This prevents transaction timeouts when there are many active BulkJobs or large scans.
+     */
+    private static final Duration PUNCTUATION_BUDGET = Duration.ofMillis(500);
+
     public BulkJobPunctuator(
             ProcessorContext<String, CommandProcessorOutput> ctx, LHServerConfig config, MetadataCache metadataCache) {
         this.ctx = ctx;
@@ -61,6 +69,7 @@ public class BulkJobPunctuator {
      * Called periodically by the CommandProcessor punctuator schedule.
      */
     public void punctuate(long timestamp) {
+        final Instant deadline = Instant.now().plus(PUNCTUATION_BUDGET);
         final int currentPartition = ctx.taskId().partition();
         final BackgroundContext context = new BackgroundContext();
         KeyValueStore<String, Bytes> metadataNativeStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
@@ -78,6 +87,11 @@ public class BulkJobPunctuator {
             });
         }
         for (ActiveBulkJobModel runningJob : runningJobs) {
+            // Check deadline before processing each job
+            if (Instant.now().isAfter(deadline)) {
+                log.debug("Punctuation budget exhausted, will resume remaining jobs on next tick");
+                break;
+            }
             BulkJobIdModel bulkJobId = runningJob.getId().getBulkJobId();
             TenantIdModel tenantId = runningJob.getId().getTenantId();
             TenantScopedStore metadataStore = TenantScopedStore.newInstance(metadataNativeStore, tenantId, context);
@@ -97,7 +111,7 @@ public class BulkJobPunctuator {
             }
             PunctuationExecutionContext punctuateContext = new PunctuationExecutionContext(
                     timestamp, config, metadataNativeStore, coreNativeStore, metadataCache, tenantId);
-            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor);
+            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor, deadline);
             CommandProcessorOutput processorOutput = createBulkJobReport(job, currentPartition, currentCursor);
             Record<String, CommandProcessorOutput> reportRecord = new Record<>(
                     processorOutput.partitionKey,

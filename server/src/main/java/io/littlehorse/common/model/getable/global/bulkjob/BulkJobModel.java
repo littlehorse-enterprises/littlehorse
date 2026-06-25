@@ -27,6 +27,7 @@ import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -98,9 +99,15 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
     }
 
     public BulkJobShardCursorModel tryToComplete(
-            Consumer<Record> commandOutput, PunctuationExecutionContext context, BulkJobShardCursorModel shardCursor) {
+            Consumer<Record> commandOutput,
+            PunctuationExecutionContext context,
+            BulkJobShardCursorModel shardCursor,
+            Instant deadline) {
         return bulkDeleteWfRun.process(
-                c -> forwardDeleteCommand(c, commandOutput, context.serverConfig()), context.coreStore(), shardCursor);
+                c -> forwardDeleteCommand(c, commandOutput, context.serverConfig()),
+                context.coreStore(),
+                shardCursor,
+                deadline);
     }
 
     private void forwardDeleteCommand(
