@@ -91,6 +91,17 @@ public class ThrowEventNodeRunModel extends SubNodeRun<ThrowEventNodeRun> {
                 }
             }
 
+            if (wed != null
+                    && wed.getContentType() != null
+                    && content != null
+                    && content.getValueType() == VariableValue.ValueCase.MAP) {
+                Optional<TypeDefinitionModel> out = wed.getContentType().getOutputType();
+                if (out.isPresent()
+                        && out.get().getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.INLINE_MAP_DEF) {
+                    content.getMap().setMapType(out.get().getInlineMapDef());
+                }
+            }
+
             WorkflowEventModel event = new WorkflowEventModel(workflowEventId, content, nodeRun);
             processorContext.getableManager().put(event);
 
