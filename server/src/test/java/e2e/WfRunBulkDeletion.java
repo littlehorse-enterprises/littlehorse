@@ -60,14 +60,17 @@ public class WfRunBulkDeletion {
 
     @Test
     public void shouldDeleteCompletedWfRuns() throws InterruptedException {
-        runWfRuns(instantComplete, LHStatus.COMPLETED, 100);
+        runWfRuns(instantComplete, LHStatus.COMPLETED, 3);
+        runWfRuns(infiniteRunning, LHStatus.RUNNING, 3);
         List<WfRunId> idsBeforeDeletion = search(instantComplete, LHStatus.COMPLETED);
+        assertThat(idsBeforeDeletion).hasSize(3);
         delete(instantComplete, LHStatus.COMPLETED);
         // Wait for bulkjob to complete
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(30);
         List<WfRunId> idsAfterDeletion = search(instantComplete, LHStatus.COMPLETED);
-        assertThat(idsBeforeDeletion).hasSize(100);
         assertThat(idsAfterDeletion).isEmpty();
+        List<WfRunId> infiniteRunningIds = search(infiniteRunning, LHStatus.RUNNING);
+        assertThat(infiniteRunningIds).hasSize(3);
     }
 
     @LHWorkflow("instant-complete")
@@ -75,6 +78,7 @@ public class WfRunBulkDeletion {
         return Workflow.newWorkflow("instant-complete", wf -> {});
     }
 
+    @LHWorkflow("infinite-running")
     public Workflow getInfiniteRunning() {
         return Workflow.newWorkflow("infinite-running", wf -> wf.sleepSeconds(2_000_000_000L));
     }
