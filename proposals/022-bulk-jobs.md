@@ -15,13 +15,7 @@ Today, LittleHorse only supports deleting (or operating on) a single `WfRun` at 
 ### Protobuf
 
 ```proto
-// Identifies a BulkJob.
-message BulkJobId {
-  // The unique identifier of the BulkJob.
-  string id = 1;
-}
-
-// The status of a BulkJob.
+// The status of a BulkJob or BulkJobShard.
 enum BulkJobStatus {
   // The job is actively being processed. This is the initial state.
   BULK_JOB_RUNNING = 0;
@@ -46,32 +40,22 @@ message BulkJob {
 
   // The specific operation to perform.
   oneof operation {
-    BulkDeleteWfRun bulk_delete_wf_run = 10;
+    BulkDeleteWfRun bulk_delete_wf_run = 4;
   }
 
-  // Progress information: total number of items to process.
-  int64 total_items = 20;
+  message Subprocess {
+    // The ID of this subprocess, from 1 to total_subprocesses.
+    int32 id = 1;
 
-  // Progress information: number of items processed so far.
-  int64 processed_items = 21;
-}
+    // Current status of this subprocess.
+    BulkJobStatus status = 2;
+  }
 
-// Represents a shard of a BulkJob running on a single partition.
-// This is stored in the per-partition Core Store (not on the BulkJob metadata object)
-// since each partition independently manages its own shard.
-// Users can query shards via a dedicated RPC to get per-partition progress.
-message BulkJobShard {
-  // The BulkJob this shard belongs to.
-  BulkJobId bulk_job_id = 1;
+  // Per-partition subprocesses tracking progress.
+  repeated Subprocess subprocesses = 5;
 
-  // The partition this shard is operating on.
-  int32 partition = 2;
-
-  // Current status of this shard.
-  BulkJobStatus status = 3;
-
-  // Number of items processed by this shard so far.
-  int64 processed_items = 4;
+  // The BulkJob is divided into this many subprocesses that run in parallel.
+  int32 total_subprocesses = 6;
 }
 
 // Describes a bulk deletion of WfRun's matching certain criteria.
@@ -86,7 +70,7 @@ message BulkDeleteWfRun {
   google.protobuf.Timestamp latest_start = 3;
 
   // If set, only delete WfRun's with this status.
-  optional LHStatus status = 4;
+  optional LHStatus wf_run_status = 4;
 }
 
 // Request to create a BulkJob.
@@ -111,12 +95,48 @@ message GetBulkJobRequest {
 // rpc GetBulkJob(GetBulkJobRequest) returns (BulkJob) {}
 ```
 
+### Internal Protobuf
+
+```proto
+// Internal storeable that tracks the range scan cursor for a BulkJobShard.
+// Not exposed via the public API.
+message BulkJobShardCursor {
+  BulkJobId bulk_job_id = 1;
+  string last_key = 2;
+  bool scan_completed = 3;
+  optional google.protobuf.Timestamp last_seen_timestamp = 5;
+}
+
+// Cluster-scoped internal registry entry that signals a BulkJob is currently active.
+// Created when a BulkJob starts; deleted when it completes or fails.
+// The punctuator iterates these to discover work without needing to scan per-tenant.
+message ActiveBulkJob {
+  ActiveBulkJobId id = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+message ActiveBulkJobId {
+  BulkJobId bulk_job_id = 2;
+  TenantId tenant_id = 3;
+}
+
+// Report sent from the punctuator (core topology) back to the metadata topology
+// to update the BulkJob's subprocess status.
+message BulkJobShardReport {
+  BulkJobId bulk_job_id = 1;
+  int32 partition = 2;
+  bool completed = 3;
+  string last_seen_key = 4;
+  optional google.protobuf.Timestamp last_seen_timestamp = 5;
+}
+```
+
 ## `lhctl` Command
 
-The CLI will expose bulk deletion of `WfRun`s via the existing `delete` subcommand:
+The CLI exposes bulk deletion of `WfRun`s via the `delete` subcommand:
 
 ```
-lhctl delete wfRun <wfSpecName> --from <dateFrom> --to <dateTo> [--status <status>]
+lhctl delete wfRunBulk <wfSpecName> --from <dateFrom> --to <dateTo> [--status <status>] [--id <id>]
 ```
 
 ### Arguments
@@ -127,21 +147,25 @@ lhctl delete wfRun <wfSpecName> --from <dateFrom> --to <dateTo> [--status <statu
 | `--from` | Yes | Start of the time range (inclusive). ISO 8601 format (e.g., `2025-01-01T00:00:00Z`). |
 | `--to` | Yes | End of the time range (inclusive). ISO 8601 format (e.g., `2025-06-01T00:00:00Z`). |
 | `--status` | No | If provided, only delete `WfRun`s with this status (e.g., `COMPLETED`, `ERROR`). |
+| `--id` | No | Client-provided ID for idempotency. |
 
 ### Example Usage
 
 ```bash
 # Delete all WfRuns of "my-workflow" between Jan 1 and Jun 1, 2025
-lhctl delete wfRun my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z
+lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z
 
 # Delete only COMPLETED WfRuns of "my-workflow" in that range
-lhctl delete wfRun my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --status COMPLETED
+lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --status COMPLETED
+
+# With a custom ID for idempotency
+lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --id my-bulk-job-123
 ```
 
 ### Behavior
 
 1. The CLI constructs a `CreateBulkJobRequest` with a `BulkDeleteWfRun` operation.
-2. The server creates a `BulkJob` and returns its ID immediately.
+2. The server creates a `BulkJob` and returns it immediately.
 3. The CLI prints the `BulkJobId` so users can check progress via `lhctl get bulkJob <id>`.
 4. The deletion proceeds in the background within the server.
 
@@ -151,7 +175,7 @@ lhctl delete wfRun my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00
 lhctl get bulkJob <bulkJobId>
 ```
 
-This returns the `BulkJob` object showing `status`, `total_items`, and `processed_items`.
+This returns the `BulkJob` object showing `status`, `subprocesses`, and `total_subprocesses`.
 
 ## Architecture
 
@@ -163,77 +187,49 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 2. **Step 2 — Deletion (DeleteWfRunRequest command):** Each `DeleteWfRunRequest` is processed as a standard command, deleting a single `WfRun` per Kafka Streams transaction. This reuses the existing deletion logic and guarantees that the processor is never stuck deleting many `WfRun`s in one go.
 
+### Key Objects
+
+| Object | Scope | Store | Description |
+|--------|-------|-------|-------------|
+| `BulkJob` | Tenant-scoped | Global Metadata Store | User-facing metadata object. Tracks overall status and per-subprocess progress. |
+| `ActiveBulkJob` | Cluster-scoped | Global Metadata Store | Internal registry entry. Exists only while the BulkJob is RUNNING. Allows the punctuator to discover active jobs with a single prefix scan without iterating tenants. |
+| `BulkJobShardCursor` | Partition-local | Core Store | Internal storeable. Tracks the range scan cursor (last iterated key) for this partition. Not exposed to users. |
+| `BulkJobShard` | Partition-local | Core Store | User-facing per-partition shard tracking progress (processed items, status). |
+
 ### Flow
 
-1. **Job Creation:** The `rpc CreateBulkJob` stores a new `BulkJob` metadata object (tenant-scoped) in the Global Metadata Store. This object contains all the information needed to execute the operation (e.g., `wf_spec_name`, time range, optional status filter). The `BulkJob` is created with status `BULK_JOB_RUNNING`. Additionally, a cluster-scoped **`ActiveBulkJob`** registry entry is stored (containing only the `BulkJobId` and `tenantId`). This allows the punctuator to discover active jobs with a single prefix scan without needing to iterate over all tenants.
+1. **Job Creation (`CreateBulkJobRequest`):** The `MetadataProcessor` stores:
+   - A **`BulkJob`** (tenant-scoped) in the Global Metadata Store with status `BULK_JOB_RUNNING`. Contains the operation details and a `subprocesses` list (one entry per partition, initially all `BULK_JOB_RUNNING`).
+   - An **`ActiveBulkJob`** (cluster-scoped) registry entry containing only the `BulkJobId` and `tenantId`. This enables the punctuator to discover active jobs via a single prefix scan.
 
-2. **Punctuator Detection & Shard Spawning:** Each `CommandProcessor` runs a punctuator that periodically scans the cluster-scoped `ActiveBulkJob` registry entries in the global store. For each entry, the punctuator resolves the tenant context and checks whether a **`BulkJobShard`** already exists for that `BulkJobId` in the local partition store. If one exists, the job is skipped (this partition has already spawned a shard for it).
+2. **Punctuator Discovery:** Each `CommandProcessor` runs a `BulkJobPunctuator` that periodically:
+   - Computes a **deadline** (`Instant.now() + PUNCTUATION_BUDGET`) to prevent exceeding Kafka Streams transaction timeouts.
+   - Scans `ActiveBulkJob` registry entries via a cluster-scoped prefix range scan.
+   - For each entry, resolves the `tenantId` and `BulkJobId`.
+   - Checks the deadline before processing each job — if exceeded, breaks the loop (remaining jobs will be processed on the next tick).
 
-3. **Spawning a Shard:** If no shard exists, the punctuator creates a **`BulkJobShard`** in the partition's local store, keyed by the `BulkJobId`, along with a **`BulkJobShardCursor`** to track scan progress internally. The `BulkJobShard` represents this partition's share of the work and prevents duplicate processing on subsequent punctuator ticks.
+3. **Shard Cursor Check:** For each active job, the punctuator checks the partition's Core Store for a `BulkJobShardCursor`:
+   - If no cursor exists, a new one is created (this is the first time this partition processes this job).
+   - If a cursor exists and `scan_completed == true`, this partition's work is done — skip.
+   - Otherwise, resume from the cursor's `last_key`.
 
-4. **Time-Budgeted Tag Range Scan (Punctuator):** The punctuator performs a range scan over the relevant `Tag` index to discover `WfRunId`s matching the job's criteria. The scan operates with a **time budget**: it processes as many tags as it can within the budget, forwarding a **`DeleteWfRunRequest`** command for each discovered `WfRunId` to the repartition topic (keyed by that `WfRunId`, so it routes back to the same partition). If the budget is exhausted before the scan completes:
-   - It **saves a bookmark/cursor** on a **`BulkJobShardCursor`** (an internal storeable, not exposed via the public API) indicating where the range scan left off.
-   - On the next punctuator tick, it **resumes from the cursor** and continues forwarding.
+4. **Time-Budgeted Tag Range Scan:** The punctuator delegates to `BulkJobModel.tryToComplete()`, which calls `BulkDeleteWfRunModel.process()`. This method:
+   - Builds a `TagScan` from the job criteria (`wf_spec_name`, time range, optional status).
+   - Performs a range scan over matching `Tag`s in the Core Store.
+   - For each tag, forwards a **`DeleteWfRunRequest`** command (wrapped in an `LHTimer`) to the repartition topic, keyed by the target `WfRunId`.
+   - Checks the **deadline** inside the iteration loop. If exceeded, saves the current cursor position and returns without marking `scan_completed = true`. The next tick resumes from the saved position.
 
-   The `BulkJobShardCursor` is a separate internal storeable keyed by `BulkJobId` + partition. It holds implementation details (e.g., the last iterated key) that users don't need to see. The `BulkJobShard` itself remains a clean, user-facing object.
+5. **Shard Report:** After each iteration (whether the scan completed or was interrupted by the deadline), the punctuator:
+   - Saves the updated `BulkJobShardCursor` to the Core Store.
+   - Forwards a **`BulkJobShardReport`** as a `MetadataCommand` to the metadata topic, reporting the partition's progress (completed flag, last seen key, timestamp).
 
-5. **Deletion (per WfRun):** Each forwarded `DeleteWfRunRequest` is processed by the `CommandProcessor` as a normal command — deleting a single `WfRun` and its associated data (e.g., `NodeRun`s, `Variable`s, `TaskRun`s) in its own Kafka Streams transaction. This ensures the processor is never blocked by a large batch of deletions.
+6. **Deletion (per WfRun):** Each forwarded `DeleteWfRunRequest` is processed by the `CommandProcessor` as a normal command — deleting a single `WfRun` and its associated data in its own Kafka Streams transaction.
 
-6. **Shard Completion:** Once a partition's scan finds no more matching `WfRun`s (range scan exhausted), its `BulkJobShard` is marked `COMPLETED` and removed from the store.
+7. **Job Completion:** The `MetadataProcessor` receives `BulkJobShardReport`s and updates the corresponding `Subprocess` entry in the `BulkJob`. Once all subprocesses report `completed = true`, the `BulkJob` transitions to `BULK_JOB_COMPLETED` and the `ActiveBulkJob` registry entry is deleted. If an unrecoverable error occurs, the job transitions to `BULK_JOB_FAILED` and the registry entry is also deleted.
 
-7. **Job Completion:** The overall `BulkJob` transitions to `BULK_JOB_COMPLETED` once all shards across all partitions have completed. The cluster-scoped `ActiveBulkJob` registry entry is deleted at this point. If an unrecoverable error occurs on any shard, it transitions to `BULK_JOB_FAILED` and the registry entry is also deleted.
+### Time Budget
 
-### Why Key Each DeleteWfRunRequest by Its Own WfRunId?
+The punctuator operates with a **time budget** (currently 500ms) to prevent Kafka Streams transaction timeouts. The budget is enforced at two levels:
 
-Since `WfRun`s are partitioned by their ID, keying each `DeleteWfRunRequest` by the target `WfRunId` guarantees the command lands on the partition that owns that `WfRun`. In the context of a `BulkJob`, the punctuator only scans its own local store, so all discovered IDs already belong to the current partition — the forwarded commands route back to the same partition.
-
-### Key Design Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| `BulkJob` stored as a metadata object in the Core Store | Leverages existing persistence and replication; survives rebalances. |
-| Two-step split: scan vs. deletion | The punctuator handles discovery (read-only scan), and each deletion is its own command/transaction. This prevents Kafka Streams from being blocked by a large batch of writes in a single transaction. |
-| Sub-process per partition | Each partition independently spawns a `BulkJobShard` that tracks its own progress. This exposes per-partition status to users and prevents duplicate work. |
-| Punctuator-driven discovery (only `RUNNING` jobs) | Each partition independently detects and processes jobs. Ignoring terminal states avoids unnecessary work. |
-| Time-budgeted punctuator with bookmark/resume | Keeps punctuator execution bounded; avoids blocking regular command processing or causing Kafka Streams timeouts. |
-| Reuse of `DeleteWfRunRequest` | Each `WfRun` deletion is a single, small Kafka Streams transaction — no risk of oversized transactions or blocking. |
-
-### Diagram
-
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                   Core Topology (per partition)                            │
-│                                                                           │
-│  ┌─────────────────────────────────────────────┐                          │
-│  │         CommandProcessor                    │                          │
-│  │                                             │                          │
-│  │  ┌───────────────────────────────────────┐  │                          │
-│  │  │  Punctuator (time-budgeted)           │  │                          │
-│  │  │  1. Scans for BulkJob metadata        │  │                          │
-│  │  │  2. Spawns BulkJobShard              │  │                          │
-│  │  │  3. Range-scans Tags for WfRunIds     │  │                          │
-│  │  │  4. Forwards DeleteWfRunRequest per ID │  │                          │
-│  │  │  5. Saves bookmark if budget exhausted │  │                          │
-│  │  └────────────────┬──────────────────────┘  │                          │
-│  │                   │                         │                          │
-│  └───────────────────┼─────────────────────────┘                          │
-│                      │ forward DeleteWfRunRequest (key = wfRunId)          │
-│                      ▼                                                    │
-│            ┌──────────────────┐                                           │
-│            │ Repartition Topic│                                           │
-│            └────────┬─────────┘                                           │
-│                     │ routes back to same partition                        │
-│                     ▼                                                      │
-│  ┌─────────────────────────────────────────────┐                          │
-│  │         CommandProcessor                    │                          │
-│  │  (processes DeleteWfRunRequest)             │                          │
-│  │  - deletes single WfRun + associated data   │                          │
-│  │  - one Kafka Streams transaction per WfRun  │                          │
-│  └─────────────────────────────────────────────┘                          │
-│                                                                           │
-│                    ┌──────────┐                                            │
-│                    │CoreStore │                                            │
-│                    │(RocksDB) │                                            │
-│                    └──────────┘                                            │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+1. **Inter-job:** Before processing each `ActiveBulkJob`, the punctuator checks whether the deadline has passed. If so, it breaks the loop and defers remaining jobs to the next tick.
+2. **Intra-job:** Inside the Tag range scan loop, each iteration checks the deadline. If exceeded, the scan saves its cursor position and returns early. The next tick resumes from the saved position.

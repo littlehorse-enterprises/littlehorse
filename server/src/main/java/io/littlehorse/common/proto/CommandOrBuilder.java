@@ -283,21 +283,6 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
 
   /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return Whether the bulkJob field is set.
-   */
-  boolean hasBulkJob();
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return The bulkJob.
-   */
-  io.littlehorse.common.proto.BulkUpdateJob getBulkJob();
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   */
-  io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
-
-  /**
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return Whether the taskAttemptRetryReady field is set.
    */

@@ -54,22 +54,6 @@ message BulkJob {
 
 }
 
-// Represents a shard of a BulkJob running on a single partition.
-// This is stored in the per-partition Core Store since each partition independently
-// manages its own shard.
-message BulkJobShard {
-  // The BulkJob this shard belongs to.
-  BulkJobId bulk_job_id = 1;
-
-  // The partition this shard is operating on.
-  int32 partition = 2;
-
-  // Current status of this shard.
-  BulkJobStatus status = 3;
-
-  // Number of items processed by this shard so far.
-  int64 processed_items = 4;
-}
 
 // Describes a bulk deletion of WfRun's matching certain criteria.
 message BulkDeleteWfRun {

@@ -37,11 +37,6 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_BulkJob_Subprocess_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_littlehorse_BulkJobShard_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_littlehorse_BulkJobShard_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_BulkDeleteWfRun_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -76,25 +71,21 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
       "\0132\037.littlehorse.BulkJob.Subprocess\022\032\n\022to" +
       "tal_subprocesses\030\006 \001(\005\032D\n\nSubprocess\022\n\n\002" +
       "id\030\001 \001(\005\022*\n\006status\030\002 \001(\0162\032.littlehorse.B" +
-      "ulkJobStatusB\013\n\toperation\"\223\001\n\014BulkJobSha" +
-      "rd\022+\n\013bulk_job_id\030\001 \001(\0132\026.littlehorse.Bu" +
-      "lkJobId\022\021\n\tpartition\030\002 \001(\005\022*\n\006status\030\003 \001" +
-      "(\0162\032.littlehorse.BulkJobStatus\022\027\n\017proces" +
-      "sed_items\030\004 \001(\003\"\322\001\n\017BulkDeleteWfRun\022\024\n\014w" +
-      "f_spec_name\030\001 \001(\t\0222\n\016earliest_start\030\002 \001(" +
-      "\0132\032.google.protobuf.Timestamp\0220\n\014latest_" +
-      "start\030\003 \001(\0132\032.google.protobuf.Timestamp\022" +
-      "1\n\rwf_run_status\030\004 \001(\0162\025.littlehorse.LHS" +
-      "tatusH\000\210\001\001B\020\n\016_wf_run_status\"w\n\024CreateBu" +
-      "lkJobRequest\022\017\n\002id\030\001 \001(\tH\001\210\001\001\022:\n\022bulk_de" +
-      "lete_wf_run\030\n \001(\0132\034.littlehorse.BulkDele" +
-      "teWfRunH\000B\013\n\toperationB\005\n\003_id\"7\n\021GetBulk" +
-      "JobRequest\022\"\n\002id\030\001 \001(\0132\026.littlehorse.Bul" +
-      "kJobId*R\n\rBulkJobStatus\022\024\n\020BULK_JOB_RUNN" +
-      "ING\020\000\022\026\n\022BULK_JOB_COMPLETED\020\001\022\023\n\017BULK_JO" +
-      "B_FAILED\020\002BM\n\037io.littlehorse.sdk.common." +
-      "protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Com" +
-      "mon.Protob\006proto3"
+      "ulkJobStatusB\013\n\toperation\"\322\001\n\017BulkDelete" +
+      "WfRun\022\024\n\014wf_spec_name\030\001 \001(\t\0222\n\016earliest_" +
+      "start\030\002 \001(\0132\032.google.protobuf.Timestamp\022" +
+      "0\n\014latest_start\030\003 \001(\0132\032.google.protobuf." +
+      "Timestamp\0221\n\rwf_run_status\030\004 \001(\0162\025.littl" +
+      "ehorse.LHStatusH\000\210\001\001B\020\n\016_wf_run_status\"w" +
+      "\n\024CreateBulkJobRequest\022\017\n\002id\030\001 \001(\tH\001\210\001\001\022" +
+      ":\n\022bulk_delete_wf_run\030\n \001(\0132\034.littlehors" +
+      "e.BulkDeleteWfRunH\000B\013\n\toperationB\005\n\003_id\"" +
+      "7\n\021GetBulkJobRequest\022\"\n\002id\030\001 \001(\0132\026.littl" +
+      "ehorse.BulkJobId*R\n\rBulkJobStatus\022\024\n\020BUL" +
+      "K_JOB_RUNNING\020\000\022\026\n\022BULK_JOB_COMPLETED\020\001\022" +
+      "\023\n\017BULK_JOB_FAILED\020\002BM\n\037io.littlehorse.s" +
+      "dk.common.protoP\001Z\t.;lhproto\252\002\034LittleHor" +
+      "se.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -115,26 +106,20 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_BulkJob_Subprocess_descriptor,
         new java.lang.String[] { "Id", "Status", });
-    internal_static_littlehorse_BulkJobShard_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_littlehorse_BulkJobShard_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_littlehorse_BulkJobShard_descriptor,
-        new java.lang.String[] { "BulkJobId", "Partition", "Status", "ProcessedItems", });
     internal_static_littlehorse_BulkDeleteWfRun_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_BulkDeleteWfRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_BulkDeleteWfRun_descriptor,
         new java.lang.String[] { "WfSpecName", "EarliestStart", "LatestStart", "WfRunStatus", });
     internal_static_littlehorse_CreateBulkJobRequest_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_CreateBulkJobRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_CreateBulkJobRequest_descriptor,
         new java.lang.String[] { "Id", "BulkDeleteWfRun", "Operation", });
     internal_static_littlehorse_GetBulkJobRequest_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_GetBulkJobRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_GetBulkJobRequest_descriptor,

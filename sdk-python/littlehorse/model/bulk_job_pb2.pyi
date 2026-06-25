@@ -44,18 +44,6 @@ class BulkJob(_message.Message):
     total_subprocesses: int
     def __init__(self, id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., bulk_delete_wf_run: _Optional[_Union[BulkDeleteWfRun, _Mapping]] = ..., subprocesses: _Optional[_Iterable[_Union[BulkJob.Subprocess, _Mapping]]] = ..., total_subprocesses: _Optional[int] = ...) -> None: ...
 
-class BulkJobShard(_message.Message):
-    __slots__ = ("bulk_job_id", "partition", "status", "processed_items")
-    BULK_JOB_ID_FIELD_NUMBER: _ClassVar[int]
-    PARTITION_FIELD_NUMBER: _ClassVar[int]
-    STATUS_FIELD_NUMBER: _ClassVar[int]
-    PROCESSED_ITEMS_FIELD_NUMBER: _ClassVar[int]
-    bulk_job_id: _object_id_pb2.BulkJobId
-    partition: int
-    status: BulkJobStatus
-    processed_items: int
-    def __init__(self, bulk_job_id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ..., partition: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., processed_items: _Optional[int] = ...) -> None: ...
-
 class BulkDeleteWfRun(_message.Message):
     __slots__ = ("wf_spec_name", "earliest_start", "latest_start", "wf_run_status")
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
