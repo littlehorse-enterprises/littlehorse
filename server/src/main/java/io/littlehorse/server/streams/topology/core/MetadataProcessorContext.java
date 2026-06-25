@@ -45,8 +45,7 @@ public class MetadataProcessorContext implements ExecutionContext {
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
 
-        // TODO: Race condition when modifying the same metadata object in different partitions.
-        this.metadataCache = new MetadataCache();
+        this.metadataCache = metadataCache;
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(

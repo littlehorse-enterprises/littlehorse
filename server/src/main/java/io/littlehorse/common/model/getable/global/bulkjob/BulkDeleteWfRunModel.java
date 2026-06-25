@@ -7,18 +7,26 @@ import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunReq
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.BulkDeleteWfRun;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
 
     private String wfSpecName;
@@ -54,12 +62,24 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         return BulkDeleteWfRun.class;
     }
 
-    public String startKey() {
-        return GetableClassEnum.WF_RUN.getNumber() + "/";
+    private InternalScanPb.TagScanPb buildScan() {
+        List<Attribute> attributes = new ArrayList<>();
+        attributes.add(new Attribute("wfSpecName", wfSpecName));
+        if (wfRunStatus != null) {
+            attributes.add(new Attribute("status", wfRunStatus.toString()));
+        }
+        String attributeString = Tag.getAttributeString(GetableClassEnum.WF_RUN, attributes);
+        TagScanBoundaryStrategy strategy = new TagScanBoundaryStrategy(
+                attributeString, Optional.ofNullable(earliestStart), Optional.ofNullable(latestStart));
+        return strategy.buildScanProto();
     }
 
-    public String endKey() {
-        return startKey() + "~";
+    private String startKey(InternalScanPb.TagScanPb tagScan) {
+        return tagScan.getKeyPrefix() + "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagScan.getEarliestCreateTime()));
+    }
+
+    private String endKey(InternalScanPb.TagScanPb tagScan) {
+        return tagScan.getKeyPrefix() + "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagScan.getLatestCreateTime()));
     }
 
     public BulkJobShardCursorModel process(
@@ -68,7 +88,9 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
             BulkJobShardCursorModel shardCursor) {
         String lastKey = shardCursor.getLastKey();
         Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
-        try (LHKeyValueIterator<Tag> range = coreStore.range(startKey(), endKey(), Tag.class)) {
+        InternalScanPb.TagScanPb tagScan = buildScan();
+
+        try (LHKeyValueIterator<Tag> range = coreStore.range(startKey(tagScan), endKey(tagScan), Tag.class)) {
             while (range.hasNext()) {
                 Tag tag = range.next().getValue();
                 WfRunIdModel wfRunIdToDelete =

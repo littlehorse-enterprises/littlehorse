@@ -162,7 +162,6 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
                 .allMatch(subprocessModel -> subprocessModel.getStatus() == BulkJobStatus.BULK_JOB_COMPLETED);
 
         if (allShardsCompleted) {
-            log.info("Bulk job {} completed", id);
             status = BulkJobStatus.BULK_JOB_COMPLETED;
         }
     }
