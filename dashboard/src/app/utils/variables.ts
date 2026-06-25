@@ -1,5 +1,6 @@
 import {
   Array as LHArray,
+  Map as LHMap,
   Struct,
   TypeDefinition,
   VariableAssignment,
@@ -39,6 +40,10 @@ export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['
       const nested = definedType.value.arrayType
       return `Array<${formatTypeDefinition(nested)}>`
     }
+    case 'inlineMapDef': {
+      const { keyType, valueType } = definedType.value
+      return `Map<${formatTypeDefinition(keyType)},${formatTypeDefinition(valueType)}>`
+    }
     default:
       throw new Error('Unknown variable type.')
   }
@@ -60,6 +65,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
+  map: 'Map',
 }
 
 /**
@@ -109,6 +115,8 @@ export const getVariableValue = ({ value }: VariableValue): string => {
     case 'struct':
       return JSON.stringify(variableValueToJSON({ value }))
     case 'array':
+      return JSON.stringify(variableValueToJSON({ value }))
+    case 'map':
       return JSON.stringify(variableValueToJSON({ value }))
     default:
       return value.value.toString()
@@ -176,6 +184,20 @@ const arrayToJSONObject = (array: LHArray): unknown[] => {
   return arrayObject
 }
 
+const mapToJSONObject = (map: LHMap): Record<string, unknown> => {
+  const mapObject: Record<string, unknown> = {}
+  if (map == null) return mapObject
+
+  for (const entry of map.entries) {
+    if (!entry.key) continue
+    const key = variableValueToJSON(entry.key)
+    const keyString = typeof key === 'string' ? key : JSON.stringify(key)
+    mapObject[keyString] = entry.value ? variableValueToJSON(entry.value) : null
+  }
+
+  return mapObject
+}
+
 export const variableValueToJSON = (variableValue: VariableValue): unknown => {
   const value = variableValue.value
   if (!value) return null
@@ -189,6 +211,8 @@ export const variableValueToJSON = (variableValue: VariableValue): unknown => {
       return structToJSONObject(value.value)
     case 'array':
       return arrayToJSONObject(value.value)
+    case 'map':
+      return mapToJSONObject(value.value)
     case 'int':
       return toNumberIfPossible(value.value)
     case 'double':
@@ -242,6 +266,9 @@ export const getTypedVariableValue = (
     case 'array': {
       return VariableValue.fromJSON({ array: LHArray.fromJSON(value) })
     }
+    case 'map': {
+      return VariableValue.fromJSON({ map: LHMap.fromJSON(value) })
+    }
     default:
       throw new Error(`Unknown variable value type: ${type}`)
   }
@@ -291,6 +318,8 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
         return 'struct'
       case 'inlineArrayDef':
         return 'array'
+      case 'inlineMapDef':
+        return 'map'
       default:
         throw new Error('Unknown variable type.')
     }

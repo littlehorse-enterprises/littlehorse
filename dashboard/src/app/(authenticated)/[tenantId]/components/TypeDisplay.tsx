@@ -17,6 +17,8 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
   switch (definedType.$case) {
     case 'inlineArrayDef':
       return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
+    case 'inlineMapDef':
+      return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
     case 'primitiveType':
       return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
     case 'structDefId':

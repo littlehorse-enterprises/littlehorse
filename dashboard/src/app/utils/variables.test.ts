@@ -511,6 +511,68 @@ describe('formatTypeDefinition', () => {
     expect(formatTypeDefinition(typeDef)).toEqual('Array<Array<Integer>>')
   })
 
+  it('should format map type with key and value types', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineMapDef',
+        value: {
+          keyType: {
+            definedType: {
+              $case: 'primitiveType',
+              value: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              $case: 'primitiveType',
+              value: VariableType.INT,
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Integer>')
+  })
+
+  it('should format nested map value types recursively', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        $case: 'inlineMapDef',
+        value: {
+          keyType: {
+            definedType: {
+              $case: 'primitiveType',
+              value: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              $case: 'inlineArrayDef',
+              value: {
+                arrayType: {
+                  definedType: {
+                    $case: 'primitiveType',
+                    value: VariableType.INT,
+                  },
+                  masked: false,
+                },
+              },
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Array<Integer>>')
+  })
+
   it('should format struct type', () => {
     const typeDef: TypeDefinition = {
       definedType: {
@@ -540,5 +602,18 @@ describe('getVariableValue', () => {
     })
 
     expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
+  })
+
+  it('should render native map as JSON object keyed by entry keys', () => {
+    const variableValue = VariableValue.fromJSON({
+      map: {
+        entries: [
+          { key: { str: 'one' }, value: { int: 1 } },
+          { key: { str: 'two' }, value: { int: 2 } },
+        ],
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual('{"one":1,"two":2}')
   })
 })
