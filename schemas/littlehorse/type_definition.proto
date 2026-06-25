@@ -26,6 +26,9 @@ message TypeDefinition {
 
     // An inline Array definition.
     InlineArrayDef inline_array_def = 6;
+
+    // An inline Map definition.
+    InlineMapDef inline_map_def = 7;
   }
 
   // For compatibility purposes.
@@ -39,6 +42,15 @@ message TypeDefinition {
 message InlineArrayDef {
   // Type definition for each element in the array.
   TypeDefinition array_type = 1;
+}
+
+// Inline schema definition for a native LittleHorse Map.
+message InlineMapDef {
+  // Type definition for each key in the map. Must resolve to a primitive type.
+  TypeDefinition key_type = 1;
+
+  // Type definition for each value in the map.
+  TypeDefinition value_type = 2;
 }
 
 // Utility used among metadata objects to define their output type. For example, used in

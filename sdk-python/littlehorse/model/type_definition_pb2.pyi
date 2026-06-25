@@ -28,22 +28,32 @@ IN: Comparator
 NOT_IN: Comparator
 
 class TypeDefinition(_message.Message):
-    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "masked")
+    __slots__ = ("primitive_type", "struct_def_id", "inline_array_def", "inline_map_def", "masked")
     PRIMITIVE_TYPE_FIELD_NUMBER: _ClassVar[int]
     STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     INLINE_ARRAY_DEF_FIELD_NUMBER: _ClassVar[int]
+    INLINE_MAP_DEF_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     primitive_type: _common_enums_pb2.VariableType
     struct_def_id: _object_id_pb2.StructDefId
     inline_array_def: InlineArrayDef
+    inline_map_def: InlineMapDef
     masked: bool
-    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
+    def __init__(self, primitive_type: _Optional[_Union[_common_enums_pb2.VariableType, str]] = ..., struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., inline_array_def: _Optional[_Union[InlineArrayDef, _Mapping]] = ..., inline_map_def: _Optional[_Union[InlineMapDef, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class InlineArrayDef(_message.Message):
     __slots__ = ("array_type",)
     ARRAY_TYPE_FIELD_NUMBER: _ClassVar[int]
     array_type: TypeDefinition
     def __init__(self, array_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
+
+class InlineMapDef(_message.Message):
+    __slots__ = ("key_type", "value_type")
+    KEY_TYPE_FIELD_NUMBER: _ClassVar[int]
+    VALUE_TYPE_FIELD_NUMBER: _ClassVar[int]
+    key_type: TypeDefinition
+    value_type: TypeDefinition
+    def __init__(self, key_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., value_type: _Optional[_Union[TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class ReturnType(_message.Message):
     __slots__ = ("return_type",)

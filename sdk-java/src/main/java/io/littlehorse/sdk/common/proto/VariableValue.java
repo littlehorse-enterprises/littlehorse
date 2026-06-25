@@ -66,6 +66,7 @@ private static final long serialVersionUID = 0L;
     UTC_TIMESTAMP(10),
     STRUCT(11),
     ARRAY(12),
+    MAP(13),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -94,6 +95,7 @@ private static final long serialVersionUID = 0L;
         case 10: return UTC_TIMESTAMP;
         case 11: return STRUCT;
         case 12: return ARRAY;
+        case 13: return MAP;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -591,6 +593,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Array.getDefaultInstance();
   }
 
+  public static final int MAP_FIELD_NUMBER = 13;
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   * @return Whether the map field is set.
+   */
+  @java.lang.Override
+  public boolean hasMap() {
+    return valueCase_ == 13;
+  }
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   * @return The map.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.Map getMap() {
+    if (valueCase_ == 13) {
+       return (io.littlehorse.sdk.common.proto.Map) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MapOrBuilder getMapOrBuilder() {
+    if (valueCase_ == 13) {
+       return (io.littlehorse.sdk.common.proto.Map) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -641,6 +686,9 @@ private static final long serialVersionUID = 0L;
     }
     if (valueCase_ == 12) {
       output.writeMessage(12, (io.littlehorse.sdk.common.proto.Array) value_);
+    }
+    if (valueCase_ == 13) {
+      output.writeMessage(13, (io.littlehorse.sdk.common.proto.Map) value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -695,6 +743,10 @@ private static final long serialVersionUID = 0L;
     if (valueCase_ == 12) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(12, (io.littlehorse.sdk.common.proto.Array) value_);
+    }
+    if (valueCase_ == 13) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(13, (io.littlehorse.sdk.common.proto.Map) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -758,6 +810,10 @@ private static final long serialVersionUID = 0L;
         if (!getArray()
             .equals(other.getArray())) return false;
         break;
+      case 13:
+        if (!getMap()
+            .equals(other.getMap())) return false;
+        break;
       case 0:
       default:
     }
@@ -819,6 +875,10 @@ private static final long serialVersionUID = 0L;
       case 12:
         hash = (37 * hash) + ARRAY_FIELD_NUMBER;
         hash = (53 * hash) + getArray().hashCode();
+        break;
+      case 13:
+        hash = (37 * hash) + MAP_FIELD_NUMBER;
+        hash = (53 * hash) + getMap().hashCode();
         break;
       case 0:
       default:
@@ -972,6 +1032,9 @@ private static final long serialVersionUID = 0L;
       if (arrayBuilder_ != null) {
         arrayBuilder_.clear();
       }
+      if (mapBuilder_ != null) {
+        mapBuilder_.clear();
+      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -1028,6 +1091,10 @@ private static final long serialVersionUID = 0L;
       if (valueCase_ == 12 &&
           arrayBuilder_ != null) {
         result.value_ = arrayBuilder_.build();
+      }
+      if (valueCase_ == 13 &&
+          mapBuilder_ != null) {
+        result.value_ = mapBuilder_.build();
       }
     }
 
@@ -1092,6 +1159,10 @@ private static final long serialVersionUID = 0L;
         }
         case ARRAY: {
           mergeArray(other.getArray());
+          break;
+        }
+        case MAP: {
+          mergeMap(other.getMap());
           break;
         }
         case VALUE_NOT_SET: {
@@ -1190,6 +1261,13 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 12;
               break;
             } // case 98
+            case 106: {
+              input.readMessage(
+                  internalGetMapFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 13;
+              break;
+            } // case 106
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2519,6 +2597,184 @@ private static final long serialVersionUID = 0L;
       valueCase_ = 12;
       onChanged();
       return arrayBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Map, io.littlehorse.sdk.common.proto.Map.Builder, io.littlehorse.sdk.common.proto.MapOrBuilder> mapBuilder_;
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     * @return Whether the map field is set.
+     */
+    @java.lang.Override
+    public boolean hasMap() {
+      return valueCase_ == 13;
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     * @return The map.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.Map getMap() {
+      if (mapBuilder_ == null) {
+        if (valueCase_ == 13) {
+          return (io.littlehorse.sdk.common.proto.Map) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+      } else {
+        if (valueCase_ == 13) {
+          return mapBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    public Builder setMap(io.littlehorse.sdk.common.proto.Map value) {
+      if (mapBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        mapBuilder_.setMessage(value);
+      }
+      valueCase_ = 13;
+      return this;
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    public Builder setMap(
+        io.littlehorse.sdk.common.proto.Map.Builder builderForValue) {
+      if (mapBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        mapBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 13;
+      return this;
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    public Builder mergeMap(io.littlehorse.sdk.common.proto.Map value) {
+      if (mapBuilder_ == null) {
+        if (valueCase_ == 13 &&
+            value_ != io.littlehorse.sdk.common.proto.Map.getDefaultInstance()) {
+          value_ = io.littlehorse.sdk.common.proto.Map.newBuilder((io.littlehorse.sdk.common.proto.Map) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 13) {
+          mapBuilder_.mergeFrom(value);
+        } else {
+          mapBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 13;
+      return this;
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    public Builder clearMap() {
+      if (mapBuilder_ == null) {
+        if (valueCase_ == 13) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 13) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        mapBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    public io.littlehorse.sdk.common.proto.Map.Builder getMapBuilder() {
+      return internalGetMapFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MapOrBuilder getMapOrBuilder() {
+      if ((valueCase_ == 13) && (mapBuilder_ != null)) {
+        return mapBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 13) {
+          return (io.littlehorse.sdk.common.proto.Map) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A Map object.
+     * </pre>
+     *
+     * <code>.littlehorse.Map map = 13;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Map, io.littlehorse.sdk.common.proto.Map.Builder, io.littlehorse.sdk.common.proto.MapOrBuilder> 
+        internalGetMapFieldBuilder() {
+      if (mapBuilder_ == null) {
+        if (!(valueCase_ == 13)) {
+          value_ = io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
+        }
+        mapBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.Map, io.littlehorse.sdk.common.proto.Map.Builder, io.littlehorse.sdk.common.proto.MapOrBuilder>(
+                (io.littlehorse.sdk.common.proto.Map) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 13;
+      onChanged();
+      return mapBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.VariableValue)

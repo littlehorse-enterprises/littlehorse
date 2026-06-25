@@ -37,6 +37,11 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_InlineArrayDef_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineMapDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_InlineMapDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_ReturnType_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -51,22 +56,26 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
   static {
     java.lang.String[] descriptorData = {
       "\n\025type_definition.proto\022\013littlehorse\032\017ob" +
-      "ject_id.proto\032\022common_enums.proto\"\335\001\n\016Ty" +
+      "ject_id.proto\032\022common_enums.proto\"\222\002\n\016Ty" +
       "peDefinition\0223\n\016primitive_type\030\001 \001(\0162\031.l" +
       "ittlehorse.VariableTypeH\000\0221\n\rstruct_def_" +
       "id\030\005 \001(\0132\030.littlehorse.StructDefIdH\000\0227\n\020" +
       "inline_array_def\030\006 \001(\0132\033.littlehorse.Inl" +
-      "ineArrayDefH\000\022\016\n\006masked\030\004 \001(\010B\016\n\014defined" +
-      "_typeJ\004\010\002\020\003J\004\010\003\020\004\"A\n\016InlineArrayDef\022/\n\na" +
-      "rray_type\030\001 \001(\0132\033.littlehorse.TypeDefini" +
-      "tion\"S\n\nReturnType\0225\n\013return_type\030\001 \001(\0132" +
-      "\033.littlehorse.TypeDefinitionH\000\210\001\001B\016\n\014_re" +
-      "turn_type*\204\001\n\nComparator\022\r\n\tLESS_THAN\020\000\022" +
-      "\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017G" +
-      "REATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUA" +
-      "LS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.littlehor" +
-      "se.sdk.common.protoP\001Z\t.;lhproto\252\002\034Littl" +
-      "eHorse.Sdk.Common.Protob\006proto3"
+      "ineArrayDefH\000\0223\n\016inline_map_def\030\007 \001(\0132\031." +
+      "littlehorse.InlineMapDefH\000\022\016\n\006masked\030\004 \001" +
+      "(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004\010\003\020\004\"A\n\016Inline" +
+      "ArrayDef\022/\n\narray_type\030\001 \001(\0132\033.littlehor" +
+      "se.TypeDefinition\"n\n\014InlineMapDef\022-\n\010key" +
+      "_type\030\001 \001(\0132\033.littlehorse.TypeDefinition" +
+      "\022/\n\nvalue_type\030\002 \001(\0132\033.littlehorse.TypeD" +
+      "efinition\"S\n\nReturnType\0225\n\013return_type\030\001" +
+      " \001(\0132\033.littlehorse.TypeDefinitionH\000\210\001\001B\016" +
+      "\n\014_return_type*\204\001\n\nComparator\022\r\n\tLESS_TH" +
+      "AN\020\000\022\020\n\014GREATER_THAN\020\001\022\020\n\014LESS_THAN_EQ\020\002" +
+      "\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n\006EQUALS\020\004\022\016\n\nNOT" +
+      "_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT_IN\020\007BM\n\037io.litt" +
+      "lehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034" +
+      "LittleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -79,15 +88,21 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TypeDefinition_descriptor,
-        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineArrayDef", "Masked", "DefinedType", });
+        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineArrayDef", "InlineMapDef", "Masked", "DefinedType", });
     internal_static_littlehorse_InlineArrayDef_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_InlineArrayDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InlineArrayDef_descriptor,
         new java.lang.String[] { "ArrayType", });
-    internal_static_littlehorse_ReturnType_descriptor =
+    internal_static_littlehorse_InlineMapDef_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_InlineMapDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_InlineMapDef_descriptor,
+        new java.lang.String[] { "KeyType", "ValueType", });
+    internal_static_littlehorse_ReturnType_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_ReturnType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ReturnType_descriptor,
