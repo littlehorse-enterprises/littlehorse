@@ -1,6 +1,6 @@
 'use server'
 
-import { uniqueInOrder } from '@/app/utils'
+import { toDate, uniqueInOrder } from '@/app/utils'
 import { TaskDefData } from '@/types'
 import { lhClient } from '../lhClient'
 
@@ -16,7 +16,7 @@ export async function getTaskDefs(tenantId: string, taskDefNames: string[]): Pro
 
       taskDefMap.set(name, {
         name,
-        createdAt: taskDef.createdAt ? new Date(taskDef.createdAt) : undefined,
+        createdAt: toDate(taskDef.createdAt),
       })
     })
   )

@@ -147,8 +147,8 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
 
   const defaultStructFieldValues = useMemo<Record<string, StructField>>(() => {
     const union = defaultValue?.value
-    if (!union || union.$case !== 'struct' || !union.value.struct?.fields) return {}
-    return union.value.struct.fields
+    if (!union || union.oneofKind !== 'struct' || !union.struct.struct?.fields) return {}
+    return union.struct.struct.fields
   }, [defaultValue])
 
   const { data: structDef } = useSWR(`structDef/${tenantId}/${structDefId.name}/${structDefId.version}`, async () => {
@@ -184,9 +184,9 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
             const effectiveDefaultValue = inheritedDefaultValue ?? structFieldDefault
             const hasDefaultValue = Boolean(effectiveDefaultValue)
 
-            if (definedType.$case === 'primitiveType') {
-              const variableType = definedType.value
-              if (!variableType) return
+            if (definedType.oneofKind === 'primitiveType') {
+              const variableType = definedType.primitiveType
+              if (variableType === undefined || variableType === null) return
 
               const { type, component } = VariableTypeToFieldComponent[variableType]
               const variableCase = getVariableCaseFromType(variableType)
@@ -209,17 +209,17 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
                   defaultValue={effectiveDefaultValue}
                 />
               )
-            } else if (definedType.$case === 'structDefId') {
+            } else if (definedType.oneofKind === 'structDefId') {
               return (
                 <StructDefParentContext.Provider
-                  key={definedType.value.name}
+                  key={definedType.structDefId.name}
                   value={{
                     parentDisabled: parentDisabled || isDisabled,
                     nestedStructPath: currentStructPath,
                   }}
                 >
                   <StructDefGroup
-                    structDefId={definedType.value}
+                    structDefId={definedType.structDefId}
                     name={name}
                     required={!hasDefaultValue}
                     masked={fieldType?.masked}

@@ -15,8 +15,8 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
       <small className="node-title">Task</small>
       <div className="mb-2 flex items-center">
         <p className="flex-grow truncate text-lg font-medium">{getTaskName(node.taskToExecute)}</p>
-        {taskToExecute?.$case === 'taskDefId' && (
-          <LinkWithTenant href={routes.taskDef.detail(taskToExecute.value.name)}>
+        {taskToExecute?.oneofKind === 'taskDefId' && (
+          <LinkWithTenant href={routes.taskDef.detail(taskToExecute.taskDefId.name)}>
             <LinkIcon className="ml-1 h-4 w-4 cursor-pointer hover:text-slate-600" />
           </LinkWithTenant>
         )}

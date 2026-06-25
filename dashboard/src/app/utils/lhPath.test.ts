@@ -7,8 +7,8 @@ describe('lhPathToString', () => {
       path: [
         {
           selectorType: {
-            $case: 'index',
-            value: 0,
+            oneofKind: 'index',
+            index: 0,
           },
         },
       ],
@@ -21,8 +21,8 @@ describe('lhPathToString', () => {
       path: [
         {
           selectorType: {
-            $case: 'key',
-            value: 'car',
+            oneofKind: 'key',
+            key: 'car',
           },
         },
       ],
@@ -35,14 +35,14 @@ describe('lhPathToString', () => {
       path: [
         {
           selectorType: {
-            $case: 'key',
-            value: 'car',
+            oneofKind: 'key',
+            key: 'car',
           },
         },
         {
           selectorType: {
-            $case: 'index',
-            value: 10,
+            oneofKind: 'index',
+            index: 10,
           },
         },
       ],

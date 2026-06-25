@@ -24,6 +24,6 @@ export const searchWfSpecs = async ({
   })
   return {
     ...wfSpecs,
-    bookmarkAsString: wfSpecs.bookmark?.toString('base64'),
+    bookmarkAsString: wfSpecs.bookmark ? Buffer.from(wfSpecs.bookmark).toString('base64') : undefined,
   }
 }

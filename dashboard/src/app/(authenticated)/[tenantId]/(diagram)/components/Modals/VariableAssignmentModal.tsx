@@ -22,7 +22,7 @@ export const VariableAssignmentModal: FC<Modal<VariableAssignment>> = ({ data })
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Source</small>
-            {data.source.$case}
+            {data.source.oneofKind}
           </div>
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Value</small>

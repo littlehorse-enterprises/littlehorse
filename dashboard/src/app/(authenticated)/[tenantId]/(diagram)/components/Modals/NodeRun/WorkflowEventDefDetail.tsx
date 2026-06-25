@@ -9,7 +9,7 @@ import { AccordionNode } from './AccordionContent'
 
 export const WorkflowEventDefDetail: FC<AccordionNode<'throwEvent'>> = ({ nodeRun }) => {
   const tenantId = useParams().tenantId as string
-  const { workflowEventId } = nodeRun.nodeType.value
+  const { workflowEventId } = nodeRun.nodeType.throwEvent
   const { data, isLoading } = useQuery({
     queryKey: ['taskRun', workflowEventId, tenantId],
     queryFn: async () => {

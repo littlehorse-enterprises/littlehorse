@@ -1,4 +1,5 @@
 import { ScheduledTask } from '../proto/service'
+import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { WfRunId, TaskRunId, NodeRunId } from '../proto/object_id'
 
 /**
@@ -39,15 +40,15 @@ export class WorkerContext {
    * Returns the time at which this TaskRun was scheduled.
    */
   getScheduledTime(): string | undefined {
-    return this.task.createdAt
+    return this.task.createdAt ? Timestamp.toDate(this.task.createdAt).toISOString() : undefined
   }
 
   /**
    * Returns the NodeRunId if this task was triggered by a TASK node.
    */
   getNodeRunId(): NodeRunId | undefined {
-    if (this.task.source?.taskRunSource?.$case === 'taskNode') {
-      return this.task.source.taskRunSource.value.nodeRunId
+    if (this.task.source?.taskRunSource?.oneofKind === 'taskNode') {
+      return this.task.source.taskRunSource.taskNode.nodeRunId
     }
     return undefined
   }

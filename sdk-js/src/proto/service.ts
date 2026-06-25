@@ -2855,13 +2855,35 @@ export interface LittleHorseVersion {
     preReleaseIdentifier?: string;
 }
 /**
- * Request to count NodeRun's matching specified criteria.
+ * Request to count NodeRun's matching specified criteria. If no filter is set,
+ * the total count of all NodeRun's in the tenant is returned.
  *
  * @generated from protobuf message littlehorse.CountNodeRunRequest
  */
 export interface CountNodeRunRequest {
     /**
-     * Filter by WfSpec name. If set, only NodeRun's belonging to this WfSpec are counted.
+     * @generated from protobuf oneof: filter
+     */
+    filter: {
+        oneofKind: "wfSpecFilter";
+        /**
+         * Filter by WfSpec attributes.
+         *
+         * @generated from protobuf field: littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1
+         */
+        wfSpecFilter: CountNodeRunRequest_WfSpecFilter;
+    } | {
+        oneofKind: undefined;
+    };
+}
+/**
+ * Filter NodeRun counts by WfSpec name, and optionally by major version and revision.
+ *
+ * @generated from protobuf message littlehorse.CountNodeRunRequest.WfSpecFilter
+ */
+export interface CountNodeRunRequest_WfSpecFilter {
+    /**
+     * Filter by WfSpec name. Only NodeRun's belonging to this WfSpec are counted.
      *
      * @generated from protobuf field: string wf_spec_name = 1
      */
@@ -9072,19 +9094,69 @@ export const LittleHorseVersion = new LittleHorseVersion$Type();
 class CountNodeRunRequest$Type extends MessageType<CountNodeRunRequest> {
     constructor() {
         super("littlehorse.CountNodeRunRequest", [
-            { no: 1, name: "wf_spec_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "wf_spec_major_version", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "wf_spec_revision", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+            { no: 1, name: "wf_spec_filter", kind: "message", oneof: "filter", T: () => CountNodeRunRequest_WfSpecFilter }
         ]);
     }
     create(value?: PartialMessage<CountNodeRunRequest>): CountNodeRunRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.wfSpecName = "";
+        message.filter = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial<CountNodeRunRequest>(this, message, value);
         return message;
     }
     internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CountNodeRunRequest): CountNodeRunRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter */ 1:
+                    message.filter = {
+                        oneofKind: "wfSpecFilter",
+                        wfSpecFilter: CountNodeRunRequest_WfSpecFilter.internalBinaryRead(reader, reader.uint32(), options, (message.filter as any).wfSpecFilter)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: CountNodeRunRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.CountNodeRunRequest.WfSpecFilter wf_spec_filter = 1; */
+        if (message.filter.oneofKind === "wfSpecFilter")
+            CountNodeRunRequest_WfSpecFilter.internalBinaryWrite(message.filter.wfSpecFilter, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.CountNodeRunRequest
+ */
+export const CountNodeRunRequest = new CountNodeRunRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class CountNodeRunRequest_WfSpecFilter$Type extends MessageType<CountNodeRunRequest_WfSpecFilter> {
+    constructor() {
+        super("littlehorse.CountNodeRunRequest.WfSpecFilter", [
+            { no: 1, name: "wf_spec_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "wf_spec_major_version", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "wf_spec_revision", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<CountNodeRunRequest_WfSpecFilter>): CountNodeRunRequest_WfSpecFilter {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.wfSpecName = "";
+        if (value !== undefined)
+            reflectionMergePartial<CountNodeRunRequest_WfSpecFilter>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: CountNodeRunRequest_WfSpecFilter): CountNodeRunRequest_WfSpecFilter {
         let message = target ?? this.create(), end = reader.pos + length;
         while (reader.pos < end) {
             let [fieldNo, wireType] = reader.tag();
@@ -9109,7 +9181,7 @@ class CountNodeRunRequest$Type extends MessageType<CountNodeRunRequest> {
         }
         return message;
     }
-    internalBinaryWrite(message: CountNodeRunRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+    internalBinaryWrite(message: CountNodeRunRequest_WfSpecFilter, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string wf_spec_name = 1; */
         if (message.wfSpecName !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.wfSpecName);
@@ -9126,9 +9198,9 @@ class CountNodeRunRequest$Type extends MessageType<CountNodeRunRequest> {
     }
 }
 /**
- * @generated MessageType for protobuf message littlehorse.CountNodeRunRequest
+ * @generated MessageType for protobuf message littlehorse.CountNodeRunRequest.WfSpecFilter
  */
-export const CountNodeRunRequest = new CountNodeRunRequest$Type();
+export const CountNodeRunRequest_WfSpecFilter = new CountNodeRunRequest_WfSpecFilter$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class CountTaskRunRequest$Type extends MessageType<CountTaskRunRequest> {
     constructor() {

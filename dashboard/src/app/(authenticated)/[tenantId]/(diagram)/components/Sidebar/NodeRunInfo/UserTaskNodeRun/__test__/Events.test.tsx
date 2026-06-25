@@ -3,6 +3,7 @@ import { Events } from '../Events'
 import { TimelineItemProps } from '../TimeLineEvent'
 import { render, screen } from '@testing-library/react'
 import {
+  Timestamp,
   UserTaskEvent,
   UserTaskEvent_UTEAssigned,
   UserTaskEvent_UTECancelled,
@@ -14,31 +15,31 @@ import {
 } from 'littlehorse-client/proto'
 
 jest.mock('@/app/utils', () => ({
-  getEventTime: (evt: UserTaskEvent) => evt.time,
+  getEventTime: (evt: UserTaskEvent) => Number(evt.time?.seconds ?? 0),
 }))
 jest.mock('../AssignEvent', () => ({
-  AssignEvent: ({ time }: { time: string }) => <div data-testid="AssignEvent">{time}</div>,
+  AssignEvent: () => <div data-testid="AssignEvent" />,
 }))
 jest.mock('../TaskExecutedEvent', () => ({
-  TaskExecutedEvent: ({ time }: { time: string }) => <div data-testid="TaskExecutedEvent">{time}</div>,
+  TaskExecutedEvent: () => <div data-testid="TaskExecutedEvent" />,
 }))
 jest.mock('../CancelledEvent', () => ({
-  CancelledEvent: ({ time }: { time: string }) => <div data-testid="CancelledEvent">{time}</div>,
+  CancelledEvent: () => <div data-testid="CancelledEvent" />,
 }))
 jest.mock('../SavedEvent', () => ({
-  SavedEvent: ({ time }: { time: string }) => <div data-testid="SavedEvent">{time}</div>,
+  SavedEvent: () => <div data-testid="SavedEvent" />,
 }))
 jest.mock('../CommentAddedEvent', () => ({
-  CommentAddedEvent: ({ time }: { time: string }) => <div data-testid="CommentAddedEvent">{time}</div>,
+  CommentAddedEvent: () => <div data-testid="CommentAddedEvent" />,
 }))
 jest.mock('../CommentEditedEvent', () => ({
-  CommentEditedEvent: ({ time }: { time: string }) => <div data-testid="CommentEditedEvent">{time}</div>,
+  CommentEditedEvent: () => <div data-testid="CommentEditedEvent" />,
 }))
 jest.mock('../CommentDeletedEvent', () => ({
-  CommentDeletedEvent: ({ time }: { time: string }) => <div data-testid="CommentDeletedEvent">{time}</div>,
+  CommentDeletedEvent: () => <div data-testid="CommentDeletedEvent" />,
 }))
 jest.mock('../DoneEvent', () => ({
-  DoneEvent: ({ time }: { time: string }) => <div data-testid="DoneEvent">{time}</div>,
+  DoneEvent: () => <div data-testid="DoneEvent" />,
 }))
 
 jest.mock('../TimeLineEvent', () => ({
@@ -73,14 +74,14 @@ describe('Events component', () => {
       results: {
         requestedItem: {
           value: {
-            $case: 'str',
-            value: 'testing',
+            oneofKind: 'str',
+            str: 'testing',
           },
         },
         justification: {
           value: {
-            $case: 'str',
-            value: 'as',
+            oneofKind: 'str',
+            str: 'as',
           },
         },
       },
@@ -101,14 +102,17 @@ describe('Events component', () => {
     }
     const completeEvent: UserTaskEvent_UTECompleted = {}
     const sampleEvents: UserTaskEvent[] = [
-      { event: { $case: 'taskExecuted', value: executeEvent }, time: new Date().toDateString() },
-      { event: { $case: 'assigned', value: assignEvent }, time: new Date().toDateString() },
-      { event: { $case: 'cancelled', value: cancelledEvent }, time: new Date().toDateString() },
-      { event: { $case: 'saved', value: savedEvent }, time: new Date().toDateString() },
-      { event: { $case: 'commentAdded', value: addedCommentEvent }, time: new Date().toDateString() },
-      { event: { $case: 'commentEdited', value: editCommentEvent }, time: new Date().toDateString() },
-      { event: { $case: 'commentDeleted', value: deleteCommentEvent }, time: new Date().toDateString() },
-      { event: { $case: 'completed', value: completeEvent }, time: new Date().toDateString() },
+      { event: { oneofKind: 'taskExecuted', taskExecuted: executeEvent }, time: Timestamp.fromDate(new Date()) },
+      { event: { oneofKind: 'assigned', assigned: assignEvent }, time: Timestamp.fromDate(new Date()) },
+      { event: { oneofKind: 'cancelled', cancelled: cancelledEvent }, time: Timestamp.fromDate(new Date()) },
+      { event: { oneofKind: 'saved', saved: savedEvent }, time: Timestamp.fromDate(new Date()) },
+      { event: { oneofKind: 'commentAdded', commentAdded: addedCommentEvent }, time: Timestamp.fromDate(new Date()) },
+      { event: { oneofKind: 'commentEdited', commentEdited: editCommentEvent }, time: Timestamp.fromDate(new Date()) },
+      {
+        event: { oneofKind: 'commentDeleted', commentDeleted: deleteCommentEvent },
+        time: Timestamp.fromDate(new Date()),
+      },
+      { event: { oneofKind: 'completed', completed: completeEvent }, time: Timestamp.fromDate(new Date()) },
     ]
 
     render(<Events events={sampleEvents} />)

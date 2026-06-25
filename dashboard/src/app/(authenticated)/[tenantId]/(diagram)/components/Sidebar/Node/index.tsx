@@ -16,19 +16,19 @@ export const Node: FC = () => {
   const { selectedNode } = useDiagram()
 
   if (!selectedNode || !selectedNode.data.node) return
-  const { $case, value } = selectedNode.data.node
+  const node = selectedNode.data.node
 
-  if ($case === 'task') return <TaskNode node={value} />
-  if ($case === 'exit') return <ExitNode node={value} />
-  if ($case === 'externalEvent') return <ExternalEventNode node={value} />
-  if ($case === 'startThread') return <StartThreadNode node={value} />
-  if ($case === 'waitForThreads') return <WaitForThreadsNode node={value} />
-  if ($case === 'throwEvent') return <ThrowEventNode node={value} />
-  if ($case === 'sleep') return <SleepNode node={value} />
-  if ($case === 'waitForCondition') return <WaitForCondition node={value} />
-  if ($case === 'userTask') return <UserTaskNode node={value} />
-  if ($case === 'runChildWf') return <ChildWFNode node={value} />
-  if ($case === 'waitForChildWf') return <WaitForChildWfNode node={value} />
+  if (node.oneofKind === 'task') return <TaskNode node={node.task} />
+  if (node.oneofKind === 'exit') return <ExitNode node={node.exit} />
+  if (node.oneofKind === 'externalEvent') return <ExternalEventNode node={node.externalEvent} />
+  if (node.oneofKind === 'startThread') return <StartThreadNode node={node.startThread} />
+  if (node.oneofKind === 'waitForThreads') return <WaitForThreadsNode node={node.waitForThreads} />
+  if (node.oneofKind === 'throwEvent') return <ThrowEventNode node={node.throwEvent} />
+  if (node.oneofKind === 'sleep') return <SleepNode node={node.sleep} />
+  if (node.oneofKind === 'waitForCondition') return <WaitForCondition node={node.waitForCondition} />
+  if (node.oneofKind === 'userTask') return <UserTaskNode node={node.userTask} />
+  if (node.oneofKind === 'runChildWf') return <ChildWFNode node={node.runChildWf} />
+  if (node.oneofKind === 'waitForChildWf') return <WaitForChildWfNode node={node.waitForChildWf} />
 
   return <></>
 }
