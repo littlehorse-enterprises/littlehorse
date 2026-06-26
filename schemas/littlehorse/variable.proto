@@ -53,6 +53,9 @@ message VariableValue {
 
     // An Array object.
     Array array = 12;
+
+    // A Map object.
+    Map map = 13;
   }
 }
 
@@ -83,6 +86,30 @@ message Array {
   // Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
   // If absent, element type may be unknown and must be derived from items or treated as wildcard.
   optional TypeDefinition element_type = 2;
+}
+
+// A Map is a strongly-typed mapping from key values to value values.
+message Map {
+  // A single key/value entry in the Map.
+  message Entry {
+    // The key of this entry.
+    VariableValue key = 1;
+
+    // The value of this entry.
+    VariableValue value = 2;
+  }
+
+  // The entries of the map.
+  //
+  // Note: We use a repeated list of entries rather than a protobuf `map<...>` because
+  // protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
+  // `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
+  repeated Entry entries = 1;
+
+  // Optional, authoritative key/value types for this map.
+  // Stored alongside the entries for ease of access, mirroring `Array.element_type`.
+  // If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+  optional InlineMapDef map_type = 2;
 }
 
 // A Struct is a strongly-typed structure containing fields. The Struct is defined

@@ -13,6 +13,7 @@ import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
@@ -53,6 +54,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     private StructModel struct;
     private Timestamp utcTimestampVal;
     private ArrayModel array;
+    private MapModel map;
 
     private ExecutionContext context;
 
@@ -127,6 +129,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case ARRAY:
                 array = ArrayModel.fromProto(p.getArray(), ArrayModel.class, context);
                 break;
+            case MAP:
+                map = MapModel.fromProto(p.getMap(), MapModel.class, context);
+                break;
             case VALUE_NOT_SET:
                 // it's a null variable! Nothing to do.
                 break;
@@ -152,6 +157,22 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             InlineArrayDefModel inlineArrayDefOfItemType = new InlineArrayDefModel(firstItemType);
 
             return new TypeDefinitionModel(inlineArrayDefOfItemType);
+        } else if (this.valueType == ValueCase.MAP) {
+            if (this.map.getMapType() != null) {
+                return new TypeDefinitionModel(this.map.getMapType());
+            }
+
+            if (this.map.getEntries().isEmpty()) {
+                return new TypeDefinitionModel(
+                        new InlineMapDefModel(new TypeDefinitionModel(), new TypeDefinitionModel()));
+            }
+
+            MapModel.MapEntryModel firstEntry = this.map.getEntries().get(0);
+            TypeDefinitionModel keyType =
+                    new TypeDefinitionModel(firstEntry.getKey().getTypeDefinition());
+            TypeDefinitionModel valueType =
+                    new TypeDefinitionModel(firstEntry.getValue().getTypeDefinition());
+            return new TypeDefinitionModel(new InlineMapDefModel(keyType, valueType));
         }
 
         VariableType primitiveType = fromValueCase(valueType);
@@ -274,6 +295,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     out.setArray(array.toProto());
                 }
                 break;
+            case MAP:
+                if (map != null) {
+                    out.setMap(map.toProto());
+                }
+                break;
             case VALUE_NOT_SET:
                 // nothing to do
                 break;
@@ -378,6 +404,18 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     }
                     val = val.getArray().getItems().get(currentSelector.getIndex());
                     selectors.remove(0);
+                    break;
+                case MAP:
+                    for (MapModel.MapEntryModel entry : val.getMap().getEntries()) {
+                        if (entry.getKey().equals(new VariableValueModel(currentSelector.getKey()))) {
+                            val = entry.getValue();
+                            selectors.remove(0);
+                            break;
+                        }
+                    }
+                    if (!selectors.isEmpty() && selectors.get(0) == currentSelector) {
+                        throw new LHVarSubError(null, "Key not found in Map: " + currentSelector.getKey());
+                    }
                     break;
                 case JSON_ARR:
                     // Once we find a JSON_ARR, we can use JSONPath for the rest of our queries
@@ -623,6 +661,41 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 } catch (Exception exn) {
                     throw new LHVarSubError(exn, "Failed extending ARRAY");
                 }
+            case MAP:
+                MapModel thisMap = this.map;
+                if (rhs.getValueType() != ValueCase.MAP) {
+                    throw new LHVarSubError(null, "Cannot extend MAP with non-MAP value");
+                }
+                MapModel rhsMap = rhs.getMap();
+                if (rhsMap.getEntries().size() != 1) {
+                    throw new LHVarSubError(null, "EXTEND on MAP requires exactly one entry in rhs");
+                }
+                MapModel.MapEntryModel newEntry = rhsMap.getEntries().get(0);
+
+                List<MapModel.MapEntryModel> newEntries = new ArrayList<>();
+                boolean replaced = false;
+                if (thisMap.getEntries() != null) {
+                    for (MapModel.MapEntryModel e : thisMap.getEntries()) {
+                        if (e.getKey().equals(newEntry.getKey())) {
+                            newEntries.add(new MapModel.MapEntryModel(
+                                    newEntry.getKey().getCopy(),
+                                    newEntry.getValue().getCopy()));
+                            replaced = true;
+                        } else {
+                            newEntries.add(new MapModel.MapEntryModel(
+                                    e.getKey().getCopy(), e.getValue().getCopy()));
+                        }
+                    }
+                }
+                if (!replaced) {
+                    newEntries.add(new MapModel.MapEntryModel(
+                            newEntry.getKey().getCopy(), newEntry.getValue().getCopy()));
+                }
+
+                MapModel resultMap = new MapModel();
+                resultMap.getEntries().addAll(newEntries);
+                resultMap.setMapType(thisMap.getMapType());
+                return new VariableValueModel(resultMap);
             default:
         }
         throw new LHVarSubError(null, "Cannot extend var of type " + valueType);
@@ -726,6 +799,22 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel removeKey(VariableValueModel other) throws LHVarSubError {
+        if (getValueType() == ValueCase.MAP) {
+            MapModel thisMap = this.map;
+            List<MapModel.MapEntryModel> newEntries = new ArrayList<>();
+            if (thisMap.getEntries() != null) {
+                for (MapModel.MapEntryModel e : thisMap.getEntries()) {
+                    if (!e.getKey().equals(other)) {
+                        newEntries.add(new MapModel.MapEntryModel(
+                                e.getKey().getCopy(), e.getValue().getCopy()));
+                    }
+                }
+            }
+            MapModel resultMap = new MapModel();
+            resultMap.getEntries().addAll(newEntries);
+            resultMap.setMapType(thisMap.getMapType());
+            return new VariableValueModel(resultMap);
+        }
         Map<String, Object> m = asObj().jsonObjVal;
         m.remove(other.asStr().strVal);
         return new VariableValueModel(m);
@@ -748,6 +837,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     throw new LHVarSubError(null, "Cannot get size of null array");
                 }
                 return new VariableValueModel(array.getItems().size());
+            case MAP:
+                if (map == null || map.getEntries() == null) {
+                    throw new LHVarSubError(null, "Cannot get size of null map");
+                }
+                return new VariableValueModel(map.getEntries().size());
             default:
                 throw new LHVarSubError(null, "Cannot resolve size() for var of type " + valueType);
         }
@@ -777,6 +871,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 return this.array == null
                         ? null
                         : LHSerializable.fromProto(this.array.toProto().build(), ArrayModel.class, context);
+            case MAP:
+                return this.map == null
+                        ? null
+                        : LHSerializable.fromProto(this.map.toProto().build(), MapModel.class, context);
             case UTC_TIMESTAMP:
                 return this.utcTimestampVal;
             case VALUE_NOT_SET:
@@ -850,6 +948,27 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
                 if (thisArrayItemType.equals(otherArrayItemType)) {
                     return asArray();
+                }
+                break;
+            case INLINE_MAP_DEF:
+                TypeDefinitionModel thisMapKeyType =
+                        getTypeDefinition().getInlineMapDef().getKeyType();
+                TypeDefinitionModel thisMapValueType =
+                        getTypeDefinition().getInlineMapDef().getValueType();
+
+                if ((thisMapKeyType == null || thisMapKeyType.isNull())
+                        && (thisMapValueType == null || thisMapValueType.isNull())) {
+                    return asMap();
+                }
+
+                TypeDefinitionModel otherMapKeyType =
+                        otherType.getInlineMapDef().getKeyType();
+                TypeDefinitionModel otherMapValueType =
+                        otherType.getInlineMapDef().getValueType();
+
+                if (Objects.equals(thisMapKeyType, otherMapKeyType)
+                        && Objects.equals(thisMapValueType, otherMapValueType)) {
+                    return asMap();
                 }
                 break;
             case DEFINEDTYPE_NOT_SET:
@@ -937,6 +1056,14 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel(array);
         } else {
             throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to INLINE_ARRAY");
+        }
+    }
+
+    public VariableValueModel asMap() throws LHVarSubError {
+        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
+            return new VariableValueModel(map);
+        } else {
+            throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to INLINE_MAP");
         }
     }
 
@@ -1056,6 +1183,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         this.array = new ArrayModel(array);
     }
 
+    public VariableValueModel(MapModel map) {
+        valueType = ValueCase.MAP;
+        this.map = new MapModel(map);
+    }
+
     /*
      * Returns a pair of String, String that can be used to find the Variable via
      * a Tag Search. If not supported, returns null.
@@ -1093,6 +1225,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case WF_RUN_ID:
             case STRUCT:
             case ARRAY:
+            case MAP:
             case VALUE_NOT_SET:
                 valuePair = null;
         }

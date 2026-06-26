@@ -393,6 +393,10 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             return true;
         }
 
+        if (operandType.getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
+            return true;
+        }
+
         return operandType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                 && (operandType.getPrimitiveType() == VariableType.JSON_ARR
                         || operandType.getPrimitiveType() == VariableType.STR);

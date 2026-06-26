@@ -57,6 +57,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import java.io.Serializable;
@@ -536,6 +537,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    private WfRunVariableImpl addMapVariable(String name, LHMapType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
@@ -595,6 +604,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public WfRunVariable declareArray(String name, Class<?> elementType) {
         Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
         return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+    }
+
+    @Override
+    public WfRunVariable declareMap(String name, Class<?> keyType, Class<?> valueType) {
+        return addMapVariable(name, new LHMapType(keyType, valueType, parent.getTypeAdapterRegistry()));
     }
 
     @Override

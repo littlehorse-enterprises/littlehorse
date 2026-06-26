@@ -250,6 +250,15 @@ public interface WorkflowThread {
     WfRunVariable declareArray(String name, Class<?> elementType);
 
     /**
+     * Creates a Map variable based on your keyType and valueType parameters.
+     * @param name is the name of the variable.
+     * @param keyType is the class type of the keys in the map.
+     * @param valueType is the class type of the values in the map.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareMap(String name, Class<?> keyType, Class<?> valueType);
+
+    /**
      * Defines a Variable in the `ThreadSpec` and returns a handle to it.
      *
      * @param name the name of the variable.

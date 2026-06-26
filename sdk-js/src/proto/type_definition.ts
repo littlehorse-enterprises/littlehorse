@@ -132,6 +132,7 @@ export interface TypeDefinition {
     | { $case: "primitiveType"; value: VariableType }
     | { $case: "structDefId"; value: StructDefId }
     | { $case: "inlineArrayDef"; value: InlineArrayDef }
+    | { $case: "inlineMapDef"; value: InlineMapDef }
     | undefined;
   /** Set to true if values of this type contain sensitive information and must be masked. */
   masked: boolean;
@@ -141,6 +142,16 @@ export interface TypeDefinition {
 export interface InlineArrayDef {
   /** Type definition for each element in the array. */
   arrayType: TypeDefinition | undefined;
+}
+
+/** Inline schema definition for a native LittleHorse Map. */
+export interface InlineMapDef {
+  /** Type definition for each key in the map. Must resolve to a primitive type. */
+  keyType:
+    | TypeDefinition
+    | undefined;
+  /** Type definition for each value in the map. */
+  valueType: TypeDefinition | undefined;
 }
 
 /**
@@ -170,6 +181,9 @@ export const TypeDefinition = {
         break;
       case "inlineArrayDef":
         InlineArrayDef.encode(message.definedType.value, writer.uint32(50).fork()).ldelim();
+        break;
+      case "inlineMapDef":
+        InlineMapDef.encode(message.definedType.value, writer.uint32(58).fork()).ldelim();
         break;
     }
     if (message.masked !== false) {
@@ -206,6 +220,13 @@ export const TypeDefinition = {
 
           message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.decode(reader, reader.uint32()) };
           continue;
+        case 7:
+          if (tag !== 58) {
+            break;
+          }
+
+          message.definedType = { $case: "inlineMapDef", value: InlineMapDef.decode(reader, reader.uint32()) };
+          continue;
         case 4:
           if (tag !== 32) {
             break;
@@ -230,6 +251,8 @@ export const TypeDefinition = {
         ? { $case: "structDefId", value: StructDefId.fromJSON(object.structDefId) }
         : isSet(object.inlineArrayDef)
         ? { $case: "inlineArrayDef", value: InlineArrayDef.fromJSON(object.inlineArrayDef) }
+        : isSet(object.inlineMapDef)
+        ? { $case: "inlineMapDef", value: InlineMapDef.fromJSON(object.inlineMapDef) }
         : undefined,
       masked: isSet(object.masked) ? globalThis.Boolean(object.masked) : false,
     };
@@ -245,6 +268,9 @@ export const TypeDefinition = {
     }
     if (message.definedType?.$case === "inlineArrayDef") {
       obj.inlineArrayDef = InlineArrayDef.toJSON(message.definedType.value);
+    }
+    if (message.definedType?.$case === "inlineMapDef") {
+      obj.inlineMapDef = InlineMapDef.toJSON(message.definedType.value);
     }
     if (message.masked !== false) {
       obj.masked = message.masked;
@@ -277,6 +303,13 @@ export const TypeDefinition = {
       object.definedType?.value !== null
     ) {
       message.definedType = { $case: "inlineArrayDef", value: InlineArrayDef.fromPartial(object.definedType.value) };
+    }
+    if (
+      object.definedType?.$case === "inlineMapDef" &&
+      object.definedType?.value !== undefined &&
+      object.definedType?.value !== null
+    ) {
+      message.definedType = { $case: "inlineMapDef", value: InlineMapDef.fromPartial(object.definedType.value) };
     }
     message.masked = object.masked ?? false;
     return message;
@@ -337,6 +370,84 @@ export const InlineArrayDef = {
     const message = createBaseInlineArrayDef();
     message.arrayType = (object.arrayType !== undefined && object.arrayType !== null)
       ? TypeDefinition.fromPartial(object.arrayType)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInlineMapDef(): InlineMapDef {
+  return { keyType: undefined, valueType: undefined };
+}
+
+export const InlineMapDef = {
+  encode(message: InlineMapDef, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.keyType !== undefined) {
+      TypeDefinition.encode(message.keyType, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.valueType !== undefined) {
+      TypeDefinition.encode(message.valueType, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): InlineMapDef {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInlineMapDef();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.keyType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.valueType = TypeDefinition.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InlineMapDef {
+    return {
+      keyType: isSet(object.keyType) ? TypeDefinition.fromJSON(object.keyType) : undefined,
+      valueType: isSet(object.valueType) ? TypeDefinition.fromJSON(object.valueType) : undefined,
+    };
+  },
+
+  toJSON(message: InlineMapDef): unknown {
+    const obj: any = {};
+    if (message.keyType !== undefined) {
+      obj.keyType = TypeDefinition.toJSON(message.keyType);
+    }
+    if (message.valueType !== undefined) {
+      obj.valueType = TypeDefinition.toJSON(message.valueType);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InlineMapDef>): InlineMapDef {
+    return InlineMapDef.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InlineMapDef>): InlineMapDef {
+    const message = createBaseInlineMapDef();
+    message.keyType = (object.keyType !== undefined && object.keyType !== null)
+      ? TypeDefinition.fromPartial(object.keyType)
+      : undefined;
+    message.valueType = (object.valueType !== undefined && object.valueType !== null)
+      ? TypeDefinition.fromPartial(object.valueType)
       : undefined;
     return message;
   },

@@ -9,7 +9,7 @@ import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId, VariableId, WfRunId, WfSpecId } from "./object_id";
-import { TypeDefinition } from "./type_definition";
+import { InlineMapDef, TypeDefinition } from "./type_definition";
 
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -29,6 +29,7 @@ export interface VariableValue {
     | { $case: "utcTimestamp"; value: string }
     | { $case: "struct"; value: Struct }
     | { $case: "array"; value: Array }
+    | { $case: "map"; value: Map }
     | undefined;
 }
 
@@ -66,6 +67,34 @@ export interface Array {
    * If absent, element type may be unknown and must be derived from items or treated as wildcard.
    */
   elementType?: TypeDefinition | undefined;
+}
+
+/** A Map is a strongly-typed mapping from key values to value values. */
+export interface Map {
+  /**
+   * The entries of the map.
+   *
+   * Note: We use a repeated list of entries rather than a protobuf `map<...>` because
+   * protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
+   * `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
+   */
+  entries: Map_Entry[];
+  /**
+   * Optional, authoritative key/value types for this map.
+   * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
+   * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+   */
+  mapType?: InlineMapDef | undefined;
+}
+
+/** A single key/value entry in the Map. */
+export interface Map_Entry {
+  /** The key of this entry. */
+  key:
+    | VariableValue
+    | undefined;
+  /** The value of this entry. */
+  value: VariableValue | undefined;
 }
 
 /**
@@ -144,6 +173,9 @@ export const VariableValue = {
         break;
       case "array":
         Array.encode(message.value.value, writer.uint32(98).fork()).ldelim();
+        break;
+      case "map":
+        Map.encode(message.value.value, writer.uint32(106).fork()).ldelim();
         break;
     }
     return writer;
@@ -233,6 +265,13 @@ export const VariableValue = {
 
           message.value = { $case: "array", value: Array.decode(reader, reader.uint32()) };
           continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          message.value = { $case: "map", value: Map.decode(reader, reader.uint32()) };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -266,6 +305,8 @@ export const VariableValue = {
         ? { $case: "struct", value: Struct.fromJSON(object.struct) }
         : isSet(object.array)
         ? { $case: "array", value: Array.fromJSON(object.array) }
+        : isSet(object.map)
+        ? { $case: "map", value: Map.fromJSON(object.map) }
         : undefined,
     };
   },
@@ -304,6 +345,9 @@ export const VariableValue = {
     }
     if (message.value?.$case === "array") {
       obj.array = Array.toJSON(message.value.value);
+    }
+    if (message.value?.$case === "map") {
+      obj.map = Map.toJSON(message.value.value);
     }
     return obj;
   },
@@ -345,6 +389,9 @@ export const VariableValue = {
     }
     if (object.value?.$case === "array" && object.value?.value !== undefined && object.value?.value !== null) {
       message.value = { $case: "array", value: Array.fromPartial(object.value.value) };
+    }
+    if (object.value?.$case === "map" && object.value?.value !== undefined && object.value?.value !== null) {
+      message.value = { $case: "map", value: Map.fromPartial(object.value.value) };
     }
     return message;
   },
@@ -544,6 +591,158 @@ export const Array = {
     message.items = object.items?.map((e) => VariableValue.fromPartial(e)) || [];
     message.elementType = (object.elementType !== undefined && object.elementType !== null)
       ? TypeDefinition.fromPartial(object.elementType)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMap(): Map {
+  return { entries: [], mapType: undefined };
+}
+
+export const Map = {
+  encode(message: Map, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.entries) {
+      Map_Entry.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.mapType !== undefined) {
+      InlineMapDef.encode(message.mapType, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Map {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMap();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.entries.push(Map_Entry.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.mapType = InlineMapDef.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Map {
+    return {
+      entries: globalThis.Array.isArray(object?.entries) ? object.entries.map((e: any) => Map_Entry.fromJSON(e)) : [],
+      mapType: isSet(object.mapType) ? InlineMapDef.fromJSON(object.mapType) : undefined,
+    };
+  },
+
+  toJSON(message: Map): unknown {
+    const obj: any = {};
+    if (message.entries?.length) {
+      obj.entries = message.entries.map((e) => Map_Entry.toJSON(e));
+    }
+    if (message.mapType !== undefined) {
+      obj.mapType = InlineMapDef.toJSON(message.mapType);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Map>): Map {
+    return Map.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Map>): Map {
+    const message = createBaseMap();
+    message.entries = object.entries?.map((e) => Map_Entry.fromPartial(e)) || [];
+    message.mapType = (object.mapType !== undefined && object.mapType !== null)
+      ? InlineMapDef.fromPartial(object.mapType)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMap_Entry(): Map_Entry {
+  return { key: undefined, value: undefined };
+}
+
+export const Map_Entry = {
+  encode(message: Map_Entry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== undefined) {
+      VariableValue.encode(message.key, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): Map_Entry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMap_Entry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = VariableValue.decode(reader, reader.uint32());
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): Map_Entry {
+    return {
+      key: isSet(object.key) ? VariableValue.fromJSON(object.key) : undefined,
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: Map_Entry): unknown {
+    const obj: any = {};
+    if (message.key !== undefined) {
+      obj.key = VariableValue.toJSON(message.key);
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<Map_Entry>): Map_Entry {
+    return Map_Entry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<Map_Entry>): Map_Entry {
+    const message = createBaseMap_Entry();
+    message.key = (object.key !== undefined && object.key !== null) ? VariableValue.fromPartial(object.key) : undefined;
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
       : undefined;
     return message;
   },

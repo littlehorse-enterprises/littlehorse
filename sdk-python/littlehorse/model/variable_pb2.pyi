@@ -12,7 +12,7 @@ from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class VariableValue(_message.Message):
-    __slots__ = ("json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp", "struct", "array")
+    __slots__ = ("json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp", "struct", "array", "map")
     JSON_OBJ_FIELD_NUMBER: _ClassVar[int]
     JSON_ARR_FIELD_NUMBER: _ClassVar[int]
     DOUBLE_FIELD_NUMBER: _ClassVar[int]
@@ -24,6 +24,7 @@ class VariableValue(_message.Message):
     UTC_TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     STRUCT_FIELD_NUMBER: _ClassVar[int]
     ARRAY_FIELD_NUMBER: _ClassVar[int]
+    MAP_FIELD_NUMBER: _ClassVar[int]
     json_obj: str
     json_arr: str
     double: float
@@ -35,7 +36,8 @@ class VariableValue(_message.Message):
     utc_timestamp: _timestamp_pb2.Timestamp
     struct: Struct
     array: Array
-    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: _Optional[bool] = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., utc_timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., struct: _Optional[_Union[Struct, _Mapping]] = ..., array: _Optional[_Union[Array, _Mapping]] = ...) -> None: ...
+    map: Map
+    def __init__(self, json_obj: _Optional[str] = ..., json_arr: _Optional[str] = ..., double: _Optional[float] = ..., bool: _Optional[bool] = ..., str: _Optional[str] = ..., int: _Optional[int] = ..., bytes: _Optional[bytes] = ..., wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., utc_timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., struct: _Optional[_Union[Struct, _Mapping]] = ..., array: _Optional[_Union[Array, _Mapping]] = ..., map: _Optional[_Union[Map, _Mapping]] = ...) -> None: ...
 
 class Variable(_message.Message):
     __slots__ = ("id", "value", "created_at", "wf_spec_id", "masked")
@@ -58,6 +60,21 @@ class Array(_message.Message):
     items: _containers.RepeatedCompositeFieldContainer[VariableValue]
     element_type: _type_definition_pb2.TypeDefinition
     def __init__(self, items: _Optional[_Iterable[_Union[VariableValue, _Mapping]]] = ..., element_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+
+class Map(_message.Message):
+    __slots__ = ("entries", "map_type")
+    class Entry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: VariableValue
+        value: VariableValue
+        def __init__(self, key: _Optional[_Union[VariableValue, _Mapping]] = ..., value: _Optional[_Union[VariableValue, _Mapping]] = ...) -> None: ...
+    ENTRIES_FIELD_NUMBER: _ClassVar[int]
+    MAP_TYPE_FIELD_NUMBER: _ClassVar[int]
+    entries: _containers.RepeatedCompositeFieldContainer[Map.Entry]
+    map_type: _type_definition_pb2.InlineMapDef
+    def __init__(self, entries: _Optional[_Iterable[_Union[Map.Entry, _Mapping]]] = ..., map_type: _Optional[_Union[_type_definition_pb2.InlineMapDef, _Mapping]] = ...) -> None: ...
 
 class Struct(_message.Message):
     __slots__ = ("struct_def_id", "struct")

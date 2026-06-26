@@ -15,6 +15,7 @@ export const FormComponent: Record<keyof typeof VARIABLE_TYPES, FC<React.Compone
   utcTimestamp: FormTimestamp,
   struct: FormTextarea,
   array: FormTextarea,
+  map: FormTextarea,
 } as const
 
 export type FormFieldType = keyof typeof FormComponent
