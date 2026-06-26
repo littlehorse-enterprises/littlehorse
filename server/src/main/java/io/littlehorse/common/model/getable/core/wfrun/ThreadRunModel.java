@@ -1,6 +1,15 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.google.protobuf.Message;
+
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.exceptions.LHVarSubError;
@@ -64,13 +73,6 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -1131,6 +1133,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         WorkflowMigrationPlanModel wfMigrationPlan =
                 executionContext.metadataManager().get(wfMigrationPlanId);
         if (wfMigrationPlan == null) return false;
+        if (!wfMigrationPlan.getOldWfSpecId().equals(getWfSpecId())) return false;
+
         return wfMigrationPlan.getThreadMigrations().containsKey(threadSpecName);
     }
 
