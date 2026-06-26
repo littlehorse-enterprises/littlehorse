@@ -17,7 +17,7 @@ export const extractEdges = (spec: ThreadSpec): Edge[] => {
       sourceMap.set(source, sourceIndex + 1)
 
       const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
-      const isElseEdge = hasMultipleOutgoingEdges && !edge.edgeCondition
+      const isElseEdge = hasMultipleOutgoingEdges && edge.edgeCondition?.oneofKind === undefined
       return {
         id,
         source,

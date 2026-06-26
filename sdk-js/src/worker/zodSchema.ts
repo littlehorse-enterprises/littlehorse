@@ -128,8 +128,8 @@ export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
   if (structName) {
     return {
       definedType: {
-        $case: 'structDefId',
-        value: { name: structName, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name: structName, version: 0 },
       },
       masked,
     }
@@ -245,8 +245,8 @@ export function buildStructVariableDef(paramName: string, schema: ZodTypeAny): V
     name: paramName,
     typeDef: {
       definedType: {
-        $case: 'structDefId',
-        value: { name, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name, version: 0 },
       },
       masked: false,
     },
@@ -334,8 +334,8 @@ export function toStructVariableValue(
 
   return {
     value: {
-      $case: 'struct',
-      value: {
+      oneofKind: 'struct',
+      struct: {
         structDefId: { name, version: structDefVersion },
         struct: { fields },
       },
@@ -347,7 +347,7 @@ export function toStructVariableValue(
 
 function primitiveDef(type: VariableType, masked: boolean = false): TypeDefinition {
   return {
-    definedType: { $case: 'primitiveType', value: type },
+    definedType: { oneofKind: 'primitiveType', primitiveType: type },
     masked,
   }
 }
