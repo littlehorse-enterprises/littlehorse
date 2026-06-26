@@ -22,8 +22,8 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
-import object_id_pb2 as object__id__pb2
-import common_enums_pb2 as common__enums__pb2
+import littlehorse.model.object_id_pb2 as object__id__pb2
+import littlehorse.model.common_enums_pb2 as common__enums__pb2
 
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15type_definition.proto\x12\x0blittlehorse\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\xdd\x01\n\x0eTypeDefinition\x12\x33\n\x0eprimitive_type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x12\x31\n\rstruct_def_id\x18\x05 \x01(\x0b\x32\x18.littlehorse.StructDefIdH\x00\x12\x37\n\x10inline_array_def\x18\x06 \x01(\x0b\x32\x1b.littlehorse.InlineArrayDefH\x00\x12\x0e\n\x06masked\x18\x04 \x01(\x08\x42\x0e\n\x0c\x64\x65\x66ined_typeJ\x04\x08\x02\x10\x03J\x04\x08\x03\x10\x04\"A\n\x0eInlineArrayDef\x12/\n\narray_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\"S\n\nReturnType\x12\x35\n\x0breturn_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x00\x88\x01\x01\x42\x0e\n\x0c_return_type*\x84\x01\n\nComparator\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')

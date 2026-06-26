@@ -5,7 +5,6 @@
 // source: bulk_job.proto
 
 /* eslint-disable */
-import Long from "long";
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
@@ -80,31 +79,17 @@ export interface BulkJob {
     | undefined;
   /** Current status of the BulkJob. */
   status: BulkJobStatus;
-  operation?:
-    | { $case: "bulkDeleteWfRun"; value: BulkDeleteWfRun }
-    | undefined;
-  /** Progress information: total number of items to process. */
-  totalItems: number;
-  /** Progress information: number of items processed so far. */
-  processedItems: number;
+  operation?: { $case: "bulkDeleteWfRun"; value: BulkDeleteWfRun } | undefined;
+  subprocesses: BulkJob_Subprocess[];
+  /** Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel. */
+  totalSubprocesses: number;
 }
 
-/**
- * Represents a shard of a BulkJob running on a single partition.
- * This is stored in the per-partition Core Store since each partition independently
- * manages its own shard.
- */
-export interface BulkJobShard {
-  /** The BulkJob this shard belongs to. */
-  bulkJobId:
-    | BulkJobId
-    | undefined;
-  /** The partition this shard is operating on. */
-  partition: number;
-  /** Current status of this shard. */
+export interface BulkJob_Subprocess {
+  /** The ID of this subprocess, from 1 to total_subprocesses. */
+  id: number;
+  /** Current status of this subprocess. */
   status: BulkJobStatus;
-  /** Number of items processed by this shard so far. */
-  processedItems: number;
 }
 
 /** Describes a bulk deletion of WfRun's matching certain criteria. */
@@ -142,8 +127,8 @@ function createBaseBulkJob(): BulkJob {
     createdAt: undefined,
     status: BulkJobStatus.BULK_JOB_RUNNING,
     operation: undefined,
-    totalItems: 0,
-    processedItems: 0,
+    subprocesses: [],
+    totalSubprocesses: 0,
   };
 }
 
@@ -160,14 +145,14 @@ export const BulkJob = {
     }
     switch (message.operation?.$case) {
       case "bulkDeleteWfRun":
-        BulkDeleteWfRun.encode(message.operation.value, writer.uint32(82).fork()).ldelim();
+        BulkDeleteWfRun.encode(message.operation.value, writer.uint32(34).fork()).ldelim();
         break;
     }
-    if (message.totalItems !== 0) {
-      writer.uint32(160).int64(message.totalItems);
+    for (const v of message.subprocesses) {
+      BulkJob_Subprocess.encode(v!, writer.uint32(42).fork()).ldelim();
     }
-    if (message.processedItems !== 0) {
-      writer.uint32(168).int64(message.processedItems);
+    if (message.totalSubprocesses !== 0) {
+      writer.uint32(48).int32(message.totalSubprocesses);
     }
     return writer;
   },
@@ -200,26 +185,26 @@ export const BulkJob = {
 
           message.status = bulkJobStatusFromJSON(reader.int32());
           continue;
-        case 10:
-          if (tag !== 82) {
+        case 4:
+          if (tag !== 34) {
             break;
           }
 
           message.operation = { $case: "bulkDeleteWfRun", value: BulkDeleteWfRun.decode(reader, reader.uint32()) };
           continue;
-        case 20:
-          if (tag !== 160) {
+        case 5:
+          if (tag !== 42) {
             break;
           }
 
-          message.totalItems = longToNumber(reader.int64() as Long);
+          message.subprocesses.push(BulkJob_Subprocess.decode(reader, reader.uint32()));
           continue;
-        case 21:
-          if (tag !== 168) {
+        case 6:
+          if (tag !== 48) {
             break;
           }
 
-          message.processedItems = longToNumber(reader.int64() as Long);
+          message.totalSubprocesses = reader.int32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -238,8 +223,10 @@ export const BulkJob = {
       operation: isSet(object.bulkDeleteWfRun)
         ? { $case: "bulkDeleteWfRun", value: BulkDeleteWfRun.fromJSON(object.bulkDeleteWfRun) }
         : undefined,
-      totalItems: isSet(object.totalItems) ? globalThis.Number(object.totalItems) : 0,
-      processedItems: isSet(object.processedItems) ? globalThis.Number(object.processedItems) : 0,
+      subprocesses: globalThis.Array.isArray(object?.subprocesses)
+        ? object.subprocesses.map((e: any) => BulkJob_Subprocess.fromJSON(e))
+        : [],
+      totalSubprocesses: isSet(object.totalSubprocesses) ? globalThis.Number(object.totalSubprocesses) : 0,
     };
   },
 
@@ -257,11 +244,11 @@ export const BulkJob = {
     if (message.operation?.$case === "bulkDeleteWfRun") {
       obj.bulkDeleteWfRun = BulkDeleteWfRun.toJSON(message.operation.value);
     }
-    if (message.totalItems !== 0) {
-      obj.totalItems = Math.round(message.totalItems);
+    if (message.subprocesses?.length) {
+      obj.subprocesses = message.subprocesses.map((e) => BulkJob_Subprocess.toJSON(e));
     }
-    if (message.processedItems !== 0) {
-      obj.processedItems = Math.round(message.processedItems);
+    if (message.totalSubprocesses !== 0) {
+      obj.totalSubprocesses = Math.round(message.totalSubprocesses);
     }
     return obj;
   },
@@ -281,67 +268,47 @@ export const BulkJob = {
     ) {
       message.operation = { $case: "bulkDeleteWfRun", value: BulkDeleteWfRun.fromPartial(object.operation.value) };
     }
-    message.totalItems = object.totalItems ?? 0;
-    message.processedItems = object.processedItems ?? 0;
+    message.subprocesses = object.subprocesses?.map((e) => BulkJob_Subprocess.fromPartial(e)) || [];
+    message.totalSubprocesses = object.totalSubprocesses ?? 0;
     return message;
   },
 };
 
-function createBaseBulkJobShard(): BulkJobShard {
-  return { bulkJobId: undefined, partition: 0, status: BulkJobStatus.BULK_JOB_RUNNING, processedItems: 0 };
+function createBaseBulkJob_Subprocess(): BulkJob_Subprocess {
+  return { id: 0, status: BulkJobStatus.BULK_JOB_RUNNING };
 }
 
-export const BulkJobShard = {
-  encode(message: BulkJobShard, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.bulkJobId !== undefined) {
-      BulkJobId.encode(message.bulkJobId, writer.uint32(10).fork()).ldelim();
-    }
-    if (message.partition !== 0) {
-      writer.uint32(16).int32(message.partition);
+export const BulkJob_Subprocess = {
+  encode(message: BulkJob_Subprocess, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== 0) {
+      writer.uint32(8).int32(message.id);
     }
     if (message.status !== BulkJobStatus.BULK_JOB_RUNNING) {
-      writer.uint32(24).int32(bulkJobStatusToNumber(message.status));
-    }
-    if (message.processedItems !== 0) {
-      writer.uint32(32).int64(message.processedItems);
+      writer.uint32(16).int32(bulkJobStatusToNumber(message.status));
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): BulkJobShard {
+  decode(input: _m0.Reader | Uint8Array, length?: number): BulkJob_Subprocess {
     const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseBulkJobShard();
+    const message = createBaseBulkJob_Subprocess();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.bulkJobId = BulkJobId.decode(reader, reader.uint32());
+          message.id = reader.int32();
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.partition = reader.int32();
-          continue;
-        case 3:
-          if (tag !== 24) {
-            break;
-          }
-
           message.status = bulkJobStatusFromJSON(reader.int32());
-          continue;
-        case 4:
-          if (tag !== 32) {
-            break;
-          }
-
-          message.processedItems = longToNumber(reader.int64() as Long);
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -352,43 +319,31 @@ export const BulkJobShard = {
     return message;
   },
 
-  fromJSON(object: any): BulkJobShard {
+  fromJSON(object: any): BulkJob_Subprocess {
     return {
-      bulkJobId: isSet(object.bulkJobId) ? BulkJobId.fromJSON(object.bulkJobId) : undefined,
-      partition: isSet(object.partition) ? globalThis.Number(object.partition) : 0,
+      id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       status: isSet(object.status) ? bulkJobStatusFromJSON(object.status) : BulkJobStatus.BULK_JOB_RUNNING,
-      processedItems: isSet(object.processedItems) ? globalThis.Number(object.processedItems) : 0,
     };
   },
 
-  toJSON(message: BulkJobShard): unknown {
+  toJSON(message: BulkJob_Subprocess): unknown {
     const obj: any = {};
-    if (message.bulkJobId !== undefined) {
-      obj.bulkJobId = BulkJobId.toJSON(message.bulkJobId);
-    }
-    if (message.partition !== 0) {
-      obj.partition = Math.round(message.partition);
+    if (message.id !== 0) {
+      obj.id = Math.round(message.id);
     }
     if (message.status !== BulkJobStatus.BULK_JOB_RUNNING) {
       obj.status = bulkJobStatusToJSON(message.status);
     }
-    if (message.processedItems !== 0) {
-      obj.processedItems = Math.round(message.processedItems);
-    }
     return obj;
   },
 
-  create(base?: DeepPartial<BulkJobShard>): BulkJobShard {
-    return BulkJobShard.fromPartial(base ?? {});
+  create(base?: DeepPartial<BulkJob_Subprocess>): BulkJob_Subprocess {
+    return BulkJob_Subprocess.fromPartial(base ?? {});
   },
-  fromPartial(object: DeepPartial<BulkJobShard>): BulkJobShard {
-    const message = createBaseBulkJobShard();
-    message.bulkJobId = (object.bulkJobId !== undefined && object.bulkJobId !== null)
-      ? BulkJobId.fromPartial(object.bulkJobId)
-      : undefined;
-    message.partition = object.partition ?? 0;
+  fromPartial(object: DeepPartial<BulkJob_Subprocess>): BulkJob_Subprocess {
+    const message = createBaseBulkJob_Subprocess();
+    message.id = object.id ?? 0;
     message.status = object.status ?? BulkJobStatus.BULK_JOB_RUNNING;
-    message.processedItems = object.processedItems ?? 0;
     return message;
   },
 };
@@ -658,21 +613,6 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
-}
-
-function longToNumber(long: Long): number {
-  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  if (long.lt(globalThis.Number.MIN_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
-
-if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any;
-  _m0.configure();
 }
 
 function isSet(value: any): boolean {
