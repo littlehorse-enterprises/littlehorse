@@ -19,6 +19,7 @@ import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 import littlehorse.model.workflow_event_pb2 as workflow__event__pb2
+import littlehorse.model.workflow_migration_pb2 as workflow__migration__pb2
 
 GRPC_GENERATED_VERSION = '1.75.1'
 GRPC_VERSION = grpc.__version__
@@ -278,6 +279,26 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/SearchWfRun',
                 request_serializer=service__pb2.SearchWfRunRequest.SerializeToString,
                 response_deserializer=service__pb2.WfRunIdList.FromString,
+                _registered_method=True)
+        self.PutWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutWorkflowMigrationPlan',
+                request_serializer=service__pb2.PutWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+                _registered_method=True)
+        self.GetWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetWorkflowMigrationPlan',
+                request_serializer=object__id__pb2.WorkflowMigrationPlanId.SerializeToString,
+                response_deserializer=workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+                _registered_method=True)
+        self.DeleteWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan',
+                request_serializer=service__pb2.DeleteWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.ApplyWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
+                request_serializer=service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
                 _registered_method=True)
         self.SearchCorrelatedEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchCorrelatedEvent',
@@ -902,6 +923,35 @@ class LittleHorseServicer(object):
     def SearchWfRun(self, request, context):
         """Search for WfRun's. This RPC is highly useful for applications that store data
         in LittleHorse and need to find a specific WfRun based on certain indexed fields.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Register a workflow migration plan with lh server
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Get a workflow migration plan by ID
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ApplyWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+        destination WfSpec.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1536,6 +1586,26 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchWfRun,
                     request_deserializer=service__pb2.SearchWfRunRequest.FromString,
                     response_serializer=service__pb2.WfRunIdList.SerializeToString,
+            ),
+            'PutWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.PutWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=workflow__migration__pb2.WorkflowMigrationPlan.SerializeToString,
+            ),
+            'GetWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWorkflowMigrationPlan,
+                    request_deserializer=object__id__pb2.WorkflowMigrationPlanId.FromString,
+                    response_serializer=workflow__migration__pb2.WorkflowMigrationPlan.SerializeToString,
+            ),
+            'DeleteWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.DeleteWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'ApplyWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.ApplyWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.ApplyWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
             'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchCorrelatedEvent,
@@ -3040,6 +3110,114 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/SearchWfRun',
             service__pb2.SearchWfRunRequest.SerializeToString,
             service__pb2.WfRunIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutWorkflowMigrationPlan',
+            service__pb2.PutWorkflowMigrationPlanRequest.SerializeToString,
+            workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetWorkflowMigrationPlan',
+            object__id__pb2.WorkflowMigrationPlanId.SerializeToString,
+            workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan',
+            service__pb2.DeleteWorkflowMigrationPlanRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ApplyWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
+            service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
             options,
             channel_credentials,
             insecure,

@@ -56,6 +56,7 @@ message Command {
         AggregateWindowMetrics aggregate_window_metrics = 35;
         DeleteMetricWindow delete_metric_window = 36;
         UpdateCountedTag update_counted_tag = 37;
+        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;
     }
 }
 
@@ -110,6 +111,7 @@ message MetadataCommand {
         DeleteStructDefRequest delete_struct_def = 18;
         PutQuotaRequest put_quota = 19;
         DeleteQuotaRequest delete_quota = 20;
+        PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;
     }
 }
 

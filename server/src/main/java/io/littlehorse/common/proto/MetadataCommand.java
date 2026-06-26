@@ -72,6 +72,7 @@ private static final long serialVersionUID = 0L;
     DELETE_STRUCT_DEF(18),
     PUT_QUOTA(19),
     DELETE_QUOTA(20),
+    PUT_WORKFLOW_MIGRATION_PLAN(21),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -106,6 +107,7 @@ private static final long serialVersionUID = 0L;
         case 18: return DELETE_STRUCT_DEF;
         case 19: return PUT_QUOTA;
         case 20: return DELETE_QUOTA;
+        case 21: return PUT_WORKFLOW_MIGRATION_PLAN;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -733,6 +735,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
   }
 
+  public static final int PUT_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER = 21;
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * @return Whether the putWorkflowMigrationPlan field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutWorkflowMigrationPlan() {
+    return metadataCommandCase_ == 21;
+  }
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * @return The putWorkflowMigrationPlan.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -803,6 +836,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 20) {
       output.writeMessage(20, (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 21) {
+      output.writeMessage(21, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -887,6 +923,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 20) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(20, (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 21) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -983,6 +1023,10 @@ private static final long serialVersionUID = 0L;
         if (!getDeleteQuota()
             .equals(other.getDeleteQuota())) return false;
         break;
+      case 21:
+        if (!getPutWorkflowMigrationPlan()
+            .equals(other.getPutWorkflowMigrationPlan())) return false;
+        break;
       case 0:
       default:
     }
@@ -1073,6 +1117,10 @@ private static final long serialVersionUID = 0L;
       case 20:
         hash = (37 * hash) + DELETE_QUOTA_FIELD_NUMBER;
         hash = (53 * hash) + getDeleteQuota().hashCode();
+        break;
+      case 21:
+        hash = (37 * hash) + PUT_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER;
+        hash = (53 * hash) + getPutWorkflowMigrationPlan().hashCode();
         break;
       case 0:
       default:
@@ -1275,6 +1323,9 @@ private static final long serialVersionUID = 0L;
       if (deleteQuotaBuilder_ != null) {
         deleteQuotaBuilder_.clear();
       }
+      if (putWorkflowMigrationPlanBuilder_ != null) {
+        putWorkflowMigrationPlanBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1396,6 +1447,10 @@ private static final long serialVersionUID = 0L;
           deleteQuotaBuilder_ != null) {
         result.metadataCommand_ = deleteQuotaBuilder_.build();
       }
+      if (metadataCommandCase_ == 21 &&
+          putWorkflowMigrationPlanBuilder_ != null) {
+        result.metadataCommand_ = putWorkflowMigrationPlanBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1485,6 +1540,10 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_QUOTA: {
           mergeDeleteQuota(other.getDeleteQuota());
+          break;
+        }
+        case PUT_WORKFLOW_MIGRATION_PLAN: {
+          mergePutWorkflowMigrationPlan(other.getPutWorkflowMigrationPlan());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1648,6 +1707,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 20;
               break;
             } // case 162
+            case 170: {
+              input.readMessage(
+                  internalGetPutWorkflowMigrationPlanFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 21;
+              break;
+            } // case 170
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4328,6 +4394,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 20;
       onChanged();
       return deleteQuotaBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder> putWorkflowMigrationPlanBuilder_;
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * @return Whether the putWorkflowMigrationPlan field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutWorkflowMigrationPlan() {
+      return metadataCommandCase_ == 21;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * @return The putWorkflowMigrationPlan.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan() {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return putWorkflowMigrationPlanBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    public Builder setPutWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest value) {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        putWorkflowMigrationPlanBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    public Builder setPutWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder builderForValue) {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        putWorkflowMigrationPlanBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    public Builder mergePutWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest value) {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 21 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.newBuilder((io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          putWorkflowMigrationPlanBuilder_.mergeFrom(value);
+        } else {
+          putWorkflowMigrationPlanBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    public Builder clearPutWorkflowMigrationPlan() {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        putWorkflowMigrationPlanBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder getPutWorkflowMigrationPlanBuilder() {
+      return internalGetPutWorkflowMigrationPlanFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder() {
+      if ((metadataCommandCase_ == 21) && (putWorkflowMigrationPlanBuilder_ != null)) {
+        return putWorkflowMigrationPlanBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder> 
+        internalGetPutWorkflowMigrationPlanFieldBuilder() {
+      if (putWorkflowMigrationPlanBuilder_ == null) {
+        if (!(metadataCommandCase_ == 21)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
+        }
+        putWorkflowMigrationPlanBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 21;
+      onChanged();
+      return putWorkflowMigrationPlanBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

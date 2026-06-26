@@ -8,8 +8,9 @@
 import _m0 from "protobufjs/minimal";
 import { LHStatus, lHStatusFromJSON, lHStatusToJSON, lHStatusToNumber } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { ExternalEventId, NodeRunId, WfRunId, WfSpecId } from "./object_id";
+import { ExternalEventId, NodeRunId, WfRunId, WfSpecId, WorkflowMigrationPlanId } from "./object_id";
 import { VariableValue } from "./variable";
+import { MigrationVars } from "./workflow_migration";
 
 /** The type of a ThreadRUn. */
 export enum ThreadType {
@@ -136,7 +137,18 @@ export interface WfRun {
    *
    * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
    */
-  parentTrigger?: WfRun_ParentTriggerReference | undefined;
+  parentTrigger?:
+    | WfRun_ParentTriggerReference
+    | undefined;
+  /** reference to WorkflowMigrationPlanId */
+  workflowMigrationPlanId:
+    | WorkflowMigrationPlanId
+    | undefined;
+  /**
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -> MigrationVar
+   */
+  migrationVariables: { [key: string]: MigrationVars };
 }
 
 /** Information about a parent `WfRun` which triggers a child. */
@@ -150,6 +162,11 @@ export interface WfRun_ParentTriggerReference {
    * Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
    */
   waitingNodeRun?: NodeRunId | undefined;
+}
+
+export interface WfRun_MigrationVariablesEntry {
+  key: string;
+  value: MigrationVars | undefined;
 }
 
 /** A ThreadRun is a running thread of execution within a WfRun. */
@@ -356,6 +373,8 @@ function createBaseWfRun(): WfRun {
     pendingInterrupts: [],
     pendingFailures: [],
     parentTrigger: undefined,
+    workflowMigrationPlanId: undefined,
+    migrationVariables: {},
   };
 }
 
@@ -394,6 +413,12 @@ export const WfRun = {
     if (message.parentTrigger !== undefined) {
       WfRun_ParentTriggerReference.encode(message.parentTrigger, writer.uint32(90).fork()).ldelim();
     }
+    if (message.workflowMigrationPlanId !== undefined) {
+      WorkflowMigrationPlanId.encode(message.workflowMigrationPlanId, writer.uint32(98).fork()).ldelim();
+    }
+    Object.entries(message.migrationVariables).forEach(([key, value]) => {
+      WfRun_MigrationVariablesEntry.encode({ key: key as any, value }, writer.uint32(106).fork()).ldelim();
+    });
     return writer;
   },
 
@@ -481,6 +506,23 @@ export const WfRun = {
 
           message.parentTrigger = WfRun_ParentTriggerReference.decode(reader, reader.uint32());
           continue;
+        case 12:
+          if (tag !== 98) {
+            break;
+          }
+
+          message.workflowMigrationPlanId = WorkflowMigrationPlanId.decode(reader, reader.uint32());
+          continue;
+        case 13:
+          if (tag !== 106) {
+            break;
+          }
+
+          const entry13 = WfRun_MigrationVariablesEntry.decode(reader, reader.uint32());
+          if (entry13.value !== undefined) {
+            message.migrationVariables[entry13.key] = entry13.value;
+          }
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -515,6 +557,15 @@ export const WfRun = {
       parentTrigger: isSet(object.parentTrigger)
         ? WfRun_ParentTriggerReference.fromJSON(object.parentTrigger)
         : undefined,
+      workflowMigrationPlanId: isSet(object.workflowMigrationPlanId)
+        ? WorkflowMigrationPlanId.fromJSON(object.workflowMigrationPlanId)
+        : undefined,
+      migrationVariables: isObject(object.migrationVariables)
+        ? Object.entries(object.migrationVariables).reduce<{ [key: string]: MigrationVars }>((acc, [key, value]) => {
+          acc[key] = MigrationVars.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
     };
   },
 
@@ -553,6 +604,18 @@ export const WfRun = {
     if (message.parentTrigger !== undefined) {
       obj.parentTrigger = WfRun_ParentTriggerReference.toJSON(message.parentTrigger);
     }
+    if (message.workflowMigrationPlanId !== undefined) {
+      obj.workflowMigrationPlanId = WorkflowMigrationPlanId.toJSON(message.workflowMigrationPlanId);
+    }
+    if (message.migrationVariables) {
+      const entries = Object.entries(message.migrationVariables);
+      if (entries.length > 0) {
+        obj.migrationVariables = {};
+        entries.forEach(([k, v]) => {
+          obj.migrationVariables[k] = MigrationVars.toJSON(v);
+        });
+      }
+    }
     return obj;
   },
 
@@ -576,6 +639,18 @@ export const WfRun = {
     message.parentTrigger = (object.parentTrigger !== undefined && object.parentTrigger !== null)
       ? WfRun_ParentTriggerReference.fromPartial(object.parentTrigger)
       : undefined;
+    message.workflowMigrationPlanId =
+      (object.workflowMigrationPlanId !== undefined && object.workflowMigrationPlanId !== null)
+        ? WorkflowMigrationPlanId.fromPartial(object.workflowMigrationPlanId)
+        : undefined;
+    message.migrationVariables = Object.entries(object.migrationVariables ?? {}).reduce<
+      { [key: string]: MigrationVars }
+    >((acc, [key, value]) => {
+      if (value !== undefined) {
+        acc[key] = MigrationVars.fromPartial(value);
+      }
+      return acc;
+    }, {});
     return message;
   },
 };
@@ -653,6 +728,82 @@ export const WfRun_ParentTriggerReference = {
       : undefined;
     message.waitingNodeRun = (object.waitingNodeRun !== undefined && object.waitingNodeRun !== null)
       ? NodeRunId.fromPartial(object.waitingNodeRun)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseWfRun_MigrationVariablesEntry(): WfRun_MigrationVariablesEntry {
+  return { key: "", value: undefined };
+}
+
+export const WfRun_MigrationVariablesEntry = {
+  encode(message: WfRun_MigrationVariablesEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      MigrationVars.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): WfRun_MigrationVariablesEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWfRun_MigrationVariablesEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = MigrationVars.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WfRun_MigrationVariablesEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? MigrationVars.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: WfRun_MigrationVariablesEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = MigrationVars.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WfRun_MigrationVariablesEntry>): WfRun_MigrationVariablesEntry {
+    return WfRun_MigrationVariablesEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WfRun_MigrationVariablesEntry>): WfRun_MigrationVariablesEntry {
+    const message = createBaseWfRun_MigrationVariablesEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? MigrationVars.fromPartial(object.value)
       : undefined;
     return message;
   },
@@ -1960,6 +2111,10 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

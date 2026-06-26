@@ -27,17 +27,21 @@ import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandle
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
@@ -100,6 +104,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ParentTriggerReferenceModel parentTrigger;
     private ExecutionContext executionContext;
+    private WorkflowMigrationPlanIdModel workflowMigrationPlanId;
+    private Map<String, MigrationVarsModel> migrationVarsByThread = new HashMap<>();
 
     // Not in proto
     private int numAdvancesInThisCommand = 0;
@@ -268,6 +274,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (proto.hasParentTrigger()) {
             parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
         }
+        if (proto.hasWorkflowMigrationPlanId()) {
+            workflowMigrationPlanId = LHSerializable.fromProto(
+                    proto.getWorkflowMigrationPlanId(), WorkflowMigrationPlanIdModel.class, context);
+        }
+        migrationVarsByThread = new HashMap<>();
+        for (Map.Entry<String, MigrationVars> entry :
+                proto.getMigrationVariablesMap().entrySet()) {
+            migrationVarsByThread.put(
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+        }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
@@ -329,6 +345,12 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         if (parentTrigger != null) {
             out.setParentTrigger(parentTrigger.toProto());
+        }
+        if (workflowMigrationPlanId != null) {
+            out.setWorkflowMigrationPlanId(workflowMigrationPlanId.toProto().build());
+        }
+        for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
+            out.putMigrationVariables(entry.getKey(), entry.getValue().toProto().build());
         }
 
         return out;
@@ -578,11 +600,61 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                statusChanged = thread.advance(time) || statusChanged;
+                if (workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)) {
+                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
+                } else {
+                    statusChanged = thread.advance(time, null) || statusChanged;
+                }
+            }
+
+            // Check for migration completion once, after all threads have advanced. A thread can
+            // leave the old spec either by migrating or by terminating, and the last thread on the
+            // old spec may not be one in the migration plan, so this must run regardless of which
+            // branch each thread took above.
+            if (workflowMigrationPlanId != null) {
+                maybeDoneMigration();
             }
         }
 
         archiveCompletedThreadRuns(false);
+    }
+
+    // Migration is complete once no live ThreadRun is still operating on the old WfSpec. We cannot
+    // key off the plan's threadMigrations: a threadSpec that has no migration plan can still spawn a
+    // child thread whose threadSpec does, so the plan must stay active as long as any live thread is
+    // on the old spec. Clearing earlier would strand such threads (and any children they spawn) on
+    // the old spec forever.
+    private void maybeDoneMigration() {
+        if (workflowMigrationPlanId == null) {
+            return;
+        }
+
+        WorkflowMigrationPlanModel workflowMigrationPlan =
+                executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (workflowMigrationPlan == null) {
+            return;
+        }
+
+        WfSpecIdModel oldWfSpecId = workflowMigrationPlan.getOldWfSpecId();
+
+        ThreadRunIterator iterator = getThreadRunIterator();
+        while (iterator.hasNext()) {
+            ThreadRunModel threadRun = iterator.next();
+
+            // Terminated threads will never advance again, so they can never migrate.
+            if (threadRun.isTerminated()) {
+                continue;
+            }
+
+            // A live thread still on the old spec can still reach a migration node, so the
+            // migration is not complete yet.
+            if (oldWfSpecId.equals(threadRun.getWfSpecId())) {
+                return;
+            }
+        }
+
+        workflowMigrationPlanId = null;
+        migrationVarsByThread.clear();
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
