@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "common_enums.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// The status of a BulkJob or BulkJobShard.
+enum BulkJobStatus {
+  // The job is actively being processed. This is the initial state.
+  BULK_JOB_RUNNING = 0;
+
+  // The job completed successfully.
+  BULK_JOB_COMPLETED = 1;
+
+  // The job failed.
+  BULK_JOB_FAILED = 2;
+}
+
+// A BulkJob represents a long-running background operation that affects many objects.
+message BulkJob {
+  // The ID of this BulkJob.
+  BulkJobId id = 1;
+
+  // When the BulkJob was created.
+  google.protobuf.Timestamp created_at = 2;
+
+  // Current status of the BulkJob.
+  BulkJobStatus status = 3;
+
+  // The specific operation to perform.
+  oneof operation {
+    BulkDeleteWfRun bulk_delete_wf_run = 4;
+  }
+
+  message Subprocess {
+    // The ID of this subprocess, from 1 to total_subprocesses.
+    int32 id = 1;
+
+    // Current status of this subprocess.
+    BulkJobStatus status = 2;
+  }
+
+  repeated Subprocess subprocesses = 5;
+
+  // Parallel subprocesses: the BulkJob is divided into this many subprocesses that run in parallel.
+  int32 total_subprocesses = 6;
+
+}
+
+
+// Describes a bulk deletion of WfRun's matching certain criteria.
+message BulkDeleteWfRun {
+  // The name of the WfSpec whose WfRun's should be deleted. Required.
+  string wf_spec_name = 1;
+
+  // Only delete WfRun's that started at or after this time. Required.
+  google.protobuf.Timestamp earliest_start = 2;
+
+  // Only delete WfRun's that started at or before this time. Required.
+  google.protobuf.Timestamp latest_start = 3;
+
+  // If set, only delete WfRun's with this status.
+  optional LHStatus wf_run_status = 4;
+}
+
+// Request to create a BulkJob.
+message CreateBulkJobRequest {
+  // Optional client-provided ID for idempotency.
+  optional string id = 1;
+
+  // The operation to perform.
+  oneof operation {
+    BulkDeleteWfRun bulk_delete_wf_run = 10;
+  }
+}
+
+// Request to get the status of a BulkJob.
+message GetBulkJobRequest {
+  // The ID of the BulkJob to retrieve.
+  BulkJobId id = 1;
+}
+

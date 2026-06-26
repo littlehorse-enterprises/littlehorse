@@ -19,6 +19,7 @@ import {
   QuotaId,
   Tenant,
 } from "./acls";
+import { BulkJob, CreateBulkJobRequest, GetBulkJobRequest } from "./bulk_job";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -12635,6 +12636,24 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Creates a BulkJob for performing large-scale background operations. */
+    createBulkJob: {
+      name: "CreateBulkJob",
+      requestType: CreateBulkJobRequest,
+      requestStream: false,
+      responseType: BulkJob,
+      responseStream: false,
+      options: {},
+    },
+    /** Gets the status of a BulkJob. */
+    getBulkJob: {
+      name: "GetBulkJob",
+      requestType: GetBulkJobRequest,
+      requestStream: false,
+      responseType: BulkJob,
+      responseStream: false,
+      options: {},
+    },
     /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
     getTaskDefMetricsWindow: {
       name: "GetTaskDefMetricsWindow",
@@ -13212,6 +13231,10 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
     request: DeleteScheduledWfRunRequest,
     context: CallContext & CallContextExt,
   ): Promise<DeepPartial<Empty>>;
+  /** Creates a BulkJob for performing large-scale background operations. */
+  createBulkJob(request: CreateBulkJobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<BulkJob>>;
+  /** Gets the status of a BulkJob. */
+  getBulkJob(request: GetBulkJobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<BulkJob>>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: TaskDefMetricsQueryRequest,
@@ -13700,6 +13723,10 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
     request: DeepPartial<DeleteScheduledWfRunRequest>,
     options?: CallOptions & CallOptionsExt,
   ): Promise<Empty>;
+  /** Creates a BulkJob for performing large-scale background operations. */
+  createBulkJob(request: DeepPartial<CreateBulkJobRequest>, options?: CallOptions & CallOptionsExt): Promise<BulkJob>;
+  /** Gets the status of a BulkJob. */
+  getBulkJob(request: DeepPartial<GetBulkJobRequest>, options?: CallOptions & CallOptionsExt): Promise<BulkJob>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: DeepPartial<TaskDefMetricsQueryRequest>,

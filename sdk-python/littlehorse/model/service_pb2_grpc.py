@@ -4,6 +4,7 @@ import grpc
 import warnings
 
 import littlehorse.model.acls_pb2 as acls__pb2
+import littlehorse.model.bulk_job_pb2 as bulk__job__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import littlehorse.model.metrics_pb2 as metrics__pb2
@@ -458,6 +459,16 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/DeleteScheduledWfRun',
                 request_serializer=service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.CreateBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/CreateBulkJob',
+                request_serializer=bulk__job__pb2.CreateBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJob.FromString,
+                _registered_method=True)
+        self.GetBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetBulkJob',
+                request_serializer=bulk__job__pb2.GetBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJob.FromString,
                 _registered_method=True)
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
@@ -1189,6 +1200,20 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CreateBulkJob(self, request, context):
+        """Creates a BulkJob for performing large-scale background operations.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBulkJob(self, request, context):
+        """Gets the status of a BulkJob.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetTaskDefMetricsWindow(self, request, context):
         """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
         """
@@ -1716,6 +1741,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.DeleteScheduledWfRun,
                     request_deserializer=service__pb2.DeleteScheduledWfRunRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'CreateBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateBulkJob,
+                    request_deserializer=bulk__job__pb2.CreateBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJob.SerializeToString,
+            ),
+            'GetBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBulkJob,
+                    request_deserializer=bulk__job__pb2.GetBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJob.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTaskDefMetricsWindow,
@@ -4012,6 +4047,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/DeleteScheduledWfRun',
             service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/CreateBulkJob',
+            bulk__job__pb2.CreateBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJob.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetBulkJob',
+            bulk__job__pb2.GetBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJob.FromString,
             options,
             channel_credentials,
             insecure,

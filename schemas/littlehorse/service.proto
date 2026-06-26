@@ -21,6 +21,7 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 import "metrics.proto";
+import "bulk_job.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -337,6 +338,11 @@ service LittleHorse {
 
   // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
+
+  // Creates a BulkJob for performing large-scale background operations.
+  rpc CreateBulkJob(CreateBulkJobRequest) returns (BulkJob) {}
+  // Gets the status of a BulkJob.
+  rpc GetBulkJob(GetBulkJobRequest) returns (BulkJob) {}
 
   // Returns TaskDef Metrics for a specific TaskDef and a specific time window.
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}

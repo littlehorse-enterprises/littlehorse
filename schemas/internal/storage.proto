@@ -41,6 +41,7 @@ enum StoreableType {
     METRICS_HINT = 14;
     COUNTED_TAG = 15;
     PARTITION_COUNTED_TAG = 16;
+    BULK_JOB_SHARD_CURSOR = 17;
 }
 
 enum GetableClassEnum {
@@ -68,6 +69,8 @@ enum GetableClassEnum {
     INACTIVE_THREAD_RUN = 21;
     METRIC_WINDOW = 22;
     QUOTA = 23;
+    BULK_JOB = 24;
+    ACTIVE_BULK_JOB = 25;
 }
 
 message AttributePb {

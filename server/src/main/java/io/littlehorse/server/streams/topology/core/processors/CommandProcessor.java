@@ -29,6 +29,7 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -60,6 +61,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private final LHProcessingExceptionHandler exceptionHandler;
     private final CommandProcessorMetrics metrics;
+    private BulkJobPunctuator bulkJobPunctuator;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -91,6 +93,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
                 PunctuationType.WALL_CLOCK_TIME,
                 this::collectPartitionMetrics);
+
+        this.bulkJobPunctuator = new BulkJobPunctuator(ctx, config, metadataCache);
+        ctx.schedule(
+                Duration.ofSeconds(10),
+                PunctuationType.WALL_CLOCK_TIME,
+                timestamp -> bulkJobPunctuator.punctuate(timestamp));
 
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
