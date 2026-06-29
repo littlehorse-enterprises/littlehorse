@@ -1,43 +1,36 @@
-import _m0 from 'protobufjs/minimal'
+import { BinaryWriter, WireType } from '@protobuf-ts/runtime'
 import { extractRetryDelayMsFromMetadata } from './grpcRetry'
 
-function encodeStatusDetails(delaySeconds: number, delayNanos = 0): Uint8Array {
-  const durationWriter = _m0.Writer.create().uint32(8).int64(delaySeconds)
+function encodeStatusDetails(delaySeconds: number, delayNanos = 0): string {
+  const duration = new BinaryWriter().tag(1, WireType.Varint).int64(delaySeconds)
   if (delayNanos > 0) {
-    durationWriter.uint32(16).int32(delayNanos)
+    duration.tag(2, WireType.Varint).int32(delayNanos)
   }
 
-  const retryInfo = _m0.Writer.create().uint32(10).bytes(durationWriter.finish()).finish()
-  const anyMessage = _m0.Writer.create()
-    .uint32(10)
+  const retryInfo = new BinaryWriter().tag(1, WireType.LengthDelimited).bytes(duration.finish()).finish()
+
+  const anyMessage = new BinaryWriter()
+    .tag(1, WireType.LengthDelimited)
     .string('type.googleapis.com/google.rpc.RetryInfo')
-    .uint32(18)
+    .tag(2, WireType.LengthDelimited)
     .bytes(retryInfo)
     .finish()
 
-  return _m0.Writer.create().uint32(26).bytes(anyMessage).finish()
+  const status = new BinaryWriter().tag(3, WireType.LengthDelimited).bytes(anyMessage).finish()
+
+  return Buffer.from(status).toString('base64')
 }
 
 describe('grpcRetry', () => {
   it('extracts retry delay from grpc status details metadata', () => {
     const statusDetails = encodeStatusDetails(1, 500_000_000)
-    const metadata = {
-      get(key: string) {
-        return key === 'grpc-status-details-bin' ? [statusDetails] : []
-      },
-    }
-
-    const retryDelayMs = extractRetryDelayMsFromMetadata(metadata)
+    const retryDelayMs = extractRetryDelayMsFromMetadata({ 'grpc-status-details-bin': statusDetails })
 
     expect(retryDelayMs).toBe(1500)
   })
 
   it('returns undefined when retry info is missing', () => {
-    const retryDelayMs = extractRetryDelayMsFromMetadata({
-      get() {
-        return []
-      },
-    })
+    const retryDelayMs = extractRetryDelayMsFromMetadata({})
 
     expect(retryDelayMs).toBeUndefined()
   })

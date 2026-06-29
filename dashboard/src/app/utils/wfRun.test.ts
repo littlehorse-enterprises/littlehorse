@@ -1,5 +1,5 @@
 import { WfRunId } from 'littlehorse-client/proto'
-import { flattenWfRunId, wfRunIdFromFlattenedId, wfRunIdFromList, wfRunIdToPath } from '.'
+import { flattenWfRunId, parseWfRunIdInput, wfRunIdFromFlattenedId, wfRunIdFromList, wfRunIdToPath } from '.'
 
 describe('wfRunIdToPath', () => {
   it('should return reverse relationship', () => {
@@ -103,5 +103,40 @@ describe('wfRunIdFromList', () => {
       id: 'child',
       parentWfRunId: { id: 'parent', parentWfRunId: { id: 'grand-parent', parentWfRunId: undefined } },
     })
+  })
+})
+
+describe('parseWfRunIdInput', () => {
+  it('should parse a plain id', () => {
+    expect(parseWfRunIdInput('my-run-id')).toEqual({ id: 'my-run-id' })
+  })
+
+  it('should parse a slash-separated path', () => {
+    expect(parseWfRunIdInput('parent/child')).toEqual({
+      id: 'child',
+      parentWfRunId: { id: 'parent', parentWfRunId: undefined },
+    })
+  })
+
+  it('should parse a flattened id', () => {
+    expect(parseWfRunIdInput('parent_child')).toEqual({
+      id: 'child',
+      parentWfRunId: { id: 'parent', parentWfRunId: undefined },
+    })
+  })
+
+  it('should parse a dashboard URL', () => {
+    expect(parseWfRunIdInput('http://localhost:3000/default/wfRun/parent/child?threadRunNumber=0')).toEqual({
+      id: 'child',
+      parentWfRunId: { id: 'parent', parentWfRunId: undefined },
+    })
+  })
+
+  it('should trim whitespace', () => {
+    expect(parseWfRunIdInput('  my-run-id  ')).toEqual({ id: 'my-run-id' })
+  })
+
+  it('should reject empty input', () => {
+    expect(() => parseWfRunIdInput('   ')).toThrow('WfRun ID is required')
   })
 })

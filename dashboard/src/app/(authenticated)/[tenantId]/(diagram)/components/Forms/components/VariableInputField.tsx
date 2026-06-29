@@ -3,11 +3,11 @@ import { VARIABLE_CASE_LABELS } from '@/app/utils/variables'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { VariableValue } from 'littlehorse-client/proto'
+import { VariableValueCase } from '@/app/utils'
 import { TimestampPicker } from './TimestampPicker'
 
 interface VariableInputFieldProps {
-  contentType: NonNullable<VariableValue['value']>['$case']
+  contentType: VariableValueCase
   contentValue: string
   setContentValue: (value: string) => void
   validateJson?: (value: string, type: string) => void
