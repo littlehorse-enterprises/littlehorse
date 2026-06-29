@@ -1,6 +1,20 @@
 package io.littlehorse.common.model.getable.core.wfrun;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.protobuf.Message;
+
 import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
@@ -59,21 +73,10 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 
 @Slf4j
 @Setter
@@ -607,10 +610,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 }
             }
 
-            // Check for migration completion once, after all threads have advanced. A thread can
-            // leave the old spec either by migrating or by terminating, and the last thread on the
-            // old spec may not be one in the migration plan, so this must run regardless of which
-            // branch each thread took above.
+       
             if (workflowMigrationPlanId != null) {
                 maybeDoneMigration();
             }

@@ -34,7 +34,7 @@ public interface ThreadMigrationPlanOrBuilder extends
 
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -42,7 +42,7 @@ public interface ThreadMigrationPlanOrBuilder extends
   int getNodeMigrationsCount();
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -57,7 +57,7 @@ public interface ThreadMigrationPlanOrBuilder extends
   getNodeMigrations();
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -66,7 +66,7 @@ public interface ThreadMigrationPlanOrBuilder extends
   getNodeMigrationsMap();
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -78,7 +78,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan getNodeMigrationsOrDefault(
 io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue);
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -88,46 +88,54 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue);
 
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
-   * @return A list containing the dependencies.
+   * <code>repeated string thread_spec_dependencies = 3;</code>
+   * @return A list containing the threadSpecDependencies.
    */
   java.util.List<java.lang.String>
-      getDependenciesList();
+      getThreadSpecDependenciesList();
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
-   * @return The count of dependencies.
+   * <code>repeated string thread_spec_dependencies = 3;</code>
+   * @return The count of threadSpecDependencies.
    */
-  int getDependenciesCount();
+  int getThreadSpecDependenciesCount();
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
+   * <code>repeated string thread_spec_dependencies = 3;</code>
    * @param index The index of the element to return.
-   * @return The dependencies at the given index.
+   * @return The threadSpecDependencies at the given index.
    */
-  java.lang.String getDependencies(int index);
+  java.lang.String getThreadSpecDependencies(int index);
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
+   * <code>repeated string thread_spec_dependencies = 3;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the dependencies at the given index.
+   * @return The bytes of the threadSpecDependencies at the given index.
    */
   com.google.protobuf.ByteString
-      getDependenciesBytes(int index);
+      getThreadSpecDependenciesBytes(int index);
 }

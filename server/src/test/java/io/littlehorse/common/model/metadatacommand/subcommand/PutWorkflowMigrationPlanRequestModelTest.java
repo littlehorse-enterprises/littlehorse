@@ -97,7 +97,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
         Map<String, NodeMigrationPlanModel> nodeMigrations = new HashMap<>();
         nodeMigrations.put(fromNode, nodeMigration);
         m.setNodeMigrations(nodeMigrations);
-        m.setDependencies(new ArrayList<>());
+        m.setThreadSpecDependencies(new ArrayList<>());
         return m;
     }
 
@@ -382,7 +382,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
                 buildRequest("plan", new WfSpecIdModel("my-wf", 0, 0), 1, 0, Map.of("entrypoint", m));
 
         WorkflowMigrationPlan result = (WorkflowMigrationPlan) request.process(mockContext);
-        assertThat(result.getThreadMigrationsMap().get("entrypoint").getDependenciesList())
+        assertThat(result.getThreadMigrationsMap().get("entrypoint").getThreadSpecDependenciesList())
                 .isEmpty();
     }
 
@@ -475,7 +475,7 @@ class PutWorkflowMigrationPlanRequestModelTest {
         // Should succeed — the owner thread IS in the plan, and "entrypoint" should have been
         // auto-added to the child migration's dependencies in the resulting plan.
         WorkflowMigrationPlan result = (WorkflowMigrationPlan) request.process(mockContext);
-        assertThat(result.getThreadMigrationsMap().get("old-child").getDependenciesList())
+        assertThat(result.getThreadMigrationsMap().get("old-child").getThreadSpecDependenciesList())
                 .contains("entrypoint");
     }
 }

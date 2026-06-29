@@ -33,7 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private ThreadMigrationPlan() {
     newThreadName_ = "";
-    dependencies_ =
+    threadSpecDependencies_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
   }
 
@@ -139,7 +139,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -160,7 +160,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -171,7 +171,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -189,7 +189,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -206,61 +206,69 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     return map.get(key);
   }
 
-  public static final int DEPENDENCIES_FIELD_NUMBER = 3;
+  public static final int THREAD_SPEC_DEPENDENCIES_FIELD_NUMBER = 3;
   @SuppressWarnings("serial")
-  private com.google.protobuf.LazyStringArrayList dependencies_ =
+  private com.google.protobuf.LazyStringArrayList threadSpecDependencies_ =
       com.google.protobuf.LazyStringArrayList.emptyList();
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
-   * @return A list containing the dependencies.
+   * <code>repeated string thread_spec_dependencies = 3;</code>
+   * @return A list containing the threadSpecDependencies.
    */
   public com.google.protobuf.ProtocolStringList
-      getDependenciesList() {
-    return dependencies_;
+      getThreadSpecDependenciesList() {
+    return threadSpecDependencies_;
   }
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
-   * @return The count of dependencies.
+   * <code>repeated string thread_spec_dependencies = 3;</code>
+   * @return The count of threadSpecDependencies.
    */
-  public int getDependenciesCount() {
-    return dependencies_.size();
+  public int getThreadSpecDependenciesCount() {
+    return threadSpecDependencies_.size();
   }
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
+   * <code>repeated string thread_spec_dependencies = 3;</code>
    * @param index The index of the element to return.
-   * @return The dependencies at the given index.
+   * @return The threadSpecDependencies at the given index.
    */
-  public java.lang.String getDependencies(int index) {
-    return dependencies_.get(index);
+  public java.lang.String getThreadSpecDependencies(int index) {
+    return threadSpecDependencies_.get(index);
   }
   /**
    * <pre>
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    * </pre>
    *
-   * <code>repeated string dependencies = 3;</code>
+   * <code>repeated string thread_spec_dependencies = 3;</code>
    * @param index The index of the value to return.
-   * @return The bytes of the dependencies at the given index.
+   * @return The bytes of the threadSpecDependencies at the given index.
    */
   public com.google.protobuf.ByteString
-      getDependenciesBytes(int index) {
-    return dependencies_.getByteString(index);
+      getThreadSpecDependenciesBytes(int index) {
+    return threadSpecDependencies_.getByteString(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -286,8 +294,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         internalGetNodeMigrations(),
         NodeMigrationsDefaultEntryHolder.defaultEntry,
         2);
-    for (int i = 0; i < dependencies_.size(); i++) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, dependencies_.getRaw(i));
+    for (int i = 0; i < threadSpecDependencies_.size(); i++) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, threadSpecDependencies_.getRaw(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -313,11 +321,11 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     {
       int dataSize = 0;
-      for (int i = 0; i < dependencies_.size(); i++) {
-        dataSize += computeStringSizeNoTag(dependencies_.getRaw(i));
+      for (int i = 0; i < threadSpecDependencies_.size(); i++) {
+        dataSize += computeStringSizeNoTag(threadSpecDependencies_.getRaw(i));
       }
       size += dataSize;
-      size += 1 * getDependenciesList().size();
+      size += 1 * getThreadSpecDependenciesList().size();
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -338,8 +346,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         .equals(other.getNewThreadName())) return false;
     if (!internalGetNodeMigrations().equals(
         other.internalGetNodeMigrations())) return false;
-    if (!getDependenciesList()
-        .equals(other.getDependenciesList())) return false;
+    if (!getThreadSpecDependenciesList()
+        .equals(other.getThreadSpecDependenciesList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -357,9 +365,9 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       hash = (37 * hash) + NODE_MIGRATIONS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetNodeMigrations().hashCode();
     }
-    if (getDependenciesCount() > 0) {
-      hash = (37 * hash) + DEPENDENCIES_FIELD_NUMBER;
-      hash = (53 * hash) + getDependenciesList().hashCode();
+    if (getThreadSpecDependenciesCount() > 0) {
+      hash = (37 * hash) + THREAD_SPEC_DEPENDENCIES_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadSpecDependenciesList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -520,7 +528,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       bitField0_ = 0;
       newThreadName_ = "";
       internalGetMutableNodeMigrations().clear();
-      dependencies_ =
+      threadSpecDependencies_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       return this;
     }
@@ -562,8 +570,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
         result.nodeMigrations_ = internalGetNodeMigrations().build(NodeMigrationsDefaultEntryHolder.defaultEntry);
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
-        dependencies_.makeImmutable();
-        result.dependencies_ = dependencies_;
+        threadSpecDependencies_.makeImmutable();
+        result.threadSpecDependencies_ = threadSpecDependencies_;
       }
     }
 
@@ -587,13 +595,13 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       internalGetMutableNodeMigrations().mergeFrom(
           other.internalGetNodeMigrations());
       bitField0_ |= 0x00000002;
-      if (!other.dependencies_.isEmpty()) {
-        if (dependencies_.isEmpty()) {
-          dependencies_ = other.dependencies_;
+      if (!other.threadSpecDependencies_.isEmpty()) {
+        if (threadSpecDependencies_.isEmpty()) {
+          threadSpecDependencies_ = other.threadSpecDependencies_;
           bitField0_ |= 0x00000004;
         } else {
-          ensureDependenciesIsMutable();
-          dependencies_.addAll(other.dependencies_);
+          ensureThreadSpecDependenciesIsMutable();
+          threadSpecDependencies_.addAll(other.threadSpecDependencies_);
         }
         onChanged();
       }
@@ -639,8 +647,8 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
             } // case 18
             case 26: {
               java.lang.String s = input.readStringRequireUtf8();
-              ensureDependenciesIsMutable();
-              dependencies_.add(s);
+              ensureThreadSpecDependenciesIsMutable();
+              threadSpecDependencies_.add(s);
               break;
             } // case 26
             default: {
@@ -794,7 +802,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -815,7 +823,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -826,7 +834,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -843,7 +851,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -865,7 +873,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -888,7 +896,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -905,7 +913,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -924,7 +932,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -944,136 +952,152 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
       return (io.littlehorse.sdk.common.proto.NodeMigrationPlan.Builder) entry;
     }
 
-    private com.google.protobuf.LazyStringArrayList dependencies_ =
+    private com.google.protobuf.LazyStringArrayList threadSpecDependencies_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
-    private void ensureDependenciesIsMutable() {
-      if (!dependencies_.isModifiable()) {
-        dependencies_ = new com.google.protobuf.LazyStringArrayList(dependencies_);
+    private void ensureThreadSpecDependenciesIsMutable() {
+      if (!threadSpecDependencies_.isModifiable()) {
+        threadSpecDependencies_ = new com.google.protobuf.LazyStringArrayList(threadSpecDependencies_);
       }
       bitField0_ |= 0x00000004;
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
-     * @return A list containing the dependencies.
+     * <code>repeated string thread_spec_dependencies = 3;</code>
+     * @return A list containing the threadSpecDependencies.
      */
     public com.google.protobuf.ProtocolStringList
-        getDependenciesList() {
-      dependencies_.makeImmutable();
-      return dependencies_;
+        getThreadSpecDependenciesList() {
+      threadSpecDependencies_.makeImmutable();
+      return threadSpecDependencies_;
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
-     * @return The count of dependencies.
+     * <code>repeated string thread_spec_dependencies = 3;</code>
+     * @return The count of threadSpecDependencies.
      */
-    public int getDependenciesCount() {
-      return dependencies_.size();
+    public int getThreadSpecDependenciesCount() {
+      return threadSpecDependencies_.size();
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
+     * <code>repeated string thread_spec_dependencies = 3;</code>
      * @param index The index of the element to return.
-     * @return The dependencies at the given index.
+     * @return The threadSpecDependencies at the given index.
      */
-    public java.lang.String getDependencies(int index) {
-      return dependencies_.get(index);
+    public java.lang.String getThreadSpecDependencies(int index) {
+      return threadSpecDependencies_.get(index);
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
+     * <code>repeated string thread_spec_dependencies = 3;</code>
      * @param index The index of the value to return.
-     * @return The bytes of the dependencies at the given index.
+     * @return The bytes of the threadSpecDependencies at the given index.
      */
     public com.google.protobuf.ByteString
-        getDependenciesBytes(int index) {
-      return dependencies_.getByteString(index);
+        getThreadSpecDependenciesBytes(int index) {
+      return threadSpecDependencies_.getByteString(index);
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
+     * <code>repeated string thread_spec_dependencies = 3;</code>
      * @param index The index to set the value at.
-     * @param value The dependencies to set.
+     * @param value The threadSpecDependencies to set.
      * @return This builder for chaining.
      */
-    public Builder setDependencies(
+    public Builder setThreadSpecDependencies(
         int index, java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      ensureDependenciesIsMutable();
-      dependencies_.set(index, value);
+      ensureThreadSpecDependenciesIsMutable();
+      threadSpecDependencies_.set(index, value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
-     * @param value The dependencies to add.
+     * <code>repeated string thread_spec_dependencies = 3;</code>
+     * @param value The threadSpecDependencies to add.
      * @return This builder for chaining.
      */
-    public Builder addDependencies(
+    public Builder addThreadSpecDependencies(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      ensureDependenciesIsMutable();
-      dependencies_.add(value);
+      ensureThreadSpecDependenciesIsMutable();
+      threadSpecDependencies_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
-     * @param values The dependencies to add.
+     * <code>repeated string thread_spec_dependencies = 3;</code>
+     * @param values The threadSpecDependencies to add.
      * @return This builder for chaining.
      */
-    public Builder addAllDependencies(
+    public Builder addAllThreadSpecDependencies(
         java.lang.Iterable<java.lang.String> values) {
-      ensureDependenciesIsMutable();
+      ensureThreadSpecDependenciesIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
-          values, dependencies_);
+          values, threadSpecDependencies_);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
+     * <code>repeated string thread_spec_dependencies = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearDependencies() {
-      dependencies_ =
+    public Builder clearThreadSpecDependencies() {
+      threadSpecDependencies_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
       bitField0_ = (bitField0_ & ~0x00000004);;
       onChanged();
@@ -1081,20 +1105,22 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Names of threads in the new wfSpec that must have already migrated
-     * before this thread can migrate (so any variables they create are available).
+     * An internally built list of threadSpec names that must exist at runtime for the given
+     * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+     * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+     * owns the threadVarDef will be added to the thread_spec_dependencies list.
      * </pre>
      *
-     * <code>repeated string dependencies = 3;</code>
-     * @param value The bytes of the dependencies to add.
+     * <code>repeated string thread_spec_dependencies = 3;</code>
+     * @param value The bytes of the threadSpecDependencies to add.
      * @return This builder for chaining.
      */
-    public Builder addDependenciesBytes(
+    public Builder addThreadSpecDependenciesBytes(
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      ensureDependenciesIsMutable();
-      dependencies_.add(value);
+      ensureThreadSpecDependenciesIsMutable();
+      threadSpecDependencies_.add(value);
       bitField0_ |= 0x00000004;
       onChanged();
       return this;

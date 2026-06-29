@@ -20,10 +20,10 @@ message WorkflowMigrationPlan {
     // Time WorkflowMigrationPlan was created
     google.protobuf.Timestamp created_at = 2;
 
-    // Map that represent old threadSpec name -> How to migrate that threadspec
+    // How to migrate an oldThreadSpec to the new threadSpecVersion
     map<string, ThreadMigrationPlan> thread_migrations = 3;
         
-    // Source wfSpec
+    // Source wfSpec 
     WfSpecId old_wfSpec = 4;
 
     // major_version and revision of the destination specs 
@@ -39,12 +39,14 @@ message ThreadMigrationPlan {
     // to migrate to 
     string new_thread_name = 1;
 
-    // Map of old node name -> how to migrate that node in the new wfSpec
+    // How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
     map<string, NodeMigrationPlan> node_migrations = 2;
 
-    // Names of threads in the new wfSpec that must have already migrated
-    // before this thread can migrate (so any variables they create are available).
-    repeated string dependencies = 3;
+    // An internally built list of threadSpec names that must exist at runtime for the given
+    // thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+    // not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+    // owns the threadVarDef will be added to the thread_spec_dependencies list.
+    repeated string thread_spec_dependencies = 3;
 
 }
 
@@ -59,14 +61,14 @@ message ThreadMigrationPlanRequest {
     // to migrate to 
     string new_thread_name = 1;
 
-    // Map of old node name -> how to migrate that node in the new wfSpec
+    // How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
     map<string, NodeMigrationPlan> node_migrations = 2;
 }
 
 // EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
 message NodeMigrationPlan {
 
-    // Name of node in the new wfSpec to migrate to
+    // Name of node in the new wfSpec's threadSpec to migrate to
     string new_node_name = 1;
 }
 

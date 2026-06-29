@@ -66,7 +66,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
 
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -74,7 +74,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
   int getThreadMigrationsCount();
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -89,7 +89,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
   getThreadMigrations();
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -98,7 +98,7 @@ public interface WorkflowMigrationPlanOrBuilder extends
   getThreadMigrationsMap();
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -110,7 +110,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan getThreadMigrationsOrDefault
 io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -120,7 +120,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
 
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -129,7 +129,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
   boolean hasOldWfSpec();
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -138,7 +138,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue);
   io.littlehorse.sdk.common.proto.WfSpecId getOldWfSpec();
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>

@@ -20,7 +20,7 @@ export interface WorkflowMigrationPlan {
   createdAt:
     | string
     | undefined;
-  /** Map that represent old threadSpec name -> How to migrate that threadspec */
+  /** How to migrate an oldThreadSpec to the new threadSpecVersion */
   threadMigrations: { [key: string]: ThreadMigrationPlan };
   /** Source wfSpec */
   oldWfSpec:
@@ -43,13 +43,15 @@ export interface ThreadMigrationPlan {
    * to migrate to
    */
   newThreadName: string;
-  /** Map of old node name -> how to migrate that node in the new wfSpec */
+  /** How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec */
   nodeMigrations: { [key: string]: NodeMigrationPlan };
   /**
-   * Names of threads in the new wfSpec that must have already migrated
-   * before this thread can migrate (so any variables they create are available).
+   * An internally built list of threadSpec names that must exist at runtime for the given
+   * thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+   * not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that
+   * owns the threadVarDef will be added to the thread_spec_dependencies list.
    */
-  dependencies: string[];
+  threadSpecDependencies: string[];
 }
 
 export interface ThreadMigrationPlan_NodeMigrationsEntry {
@@ -70,7 +72,7 @@ export interface ThreadMigrationPlanRequest {
    * to migrate to
    */
   newThreadName: string;
-  /** Map of old node name -> how to migrate that node in the new wfSpec */
+  /** How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec */
   nodeMigrations: { [key: string]: NodeMigrationPlan };
 }
 
@@ -81,7 +83,7 @@ export interface ThreadMigrationPlanRequest_NodeMigrationsEntry {
 
 /** EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on. */
 export interface NodeMigrationPlan {
-  /** Name of node in the new wfSpec to migrate to */
+  /** Name of node in the new wfSpec's threadSpec to migrate to */
   newNodeName: string;
 }
 
@@ -346,7 +348,7 @@ export const WorkflowMigrationPlan_ThreadMigrationsEntry = {
 };
 
 function createBaseThreadMigrationPlan(): ThreadMigrationPlan {
-  return { newThreadName: "", nodeMigrations: {}, dependencies: [] };
+  return { newThreadName: "", nodeMigrations: {}, threadSpecDependencies: [] };
 }
 
 export const ThreadMigrationPlan = {
@@ -357,7 +359,7 @@ export const ThreadMigrationPlan = {
     Object.entries(message.nodeMigrations).forEach(([key, value]) => {
       ThreadMigrationPlan_NodeMigrationsEntry.encode({ key: key as any, value }, writer.uint32(18).fork()).ldelim();
     });
-    for (const v of message.dependencies) {
+    for (const v of message.threadSpecDependencies) {
       writer.uint32(26).string(v!);
     }
     return writer;
@@ -392,7 +394,7 @@ export const ThreadMigrationPlan = {
             break;
           }
 
-          message.dependencies.push(reader.string());
+          message.threadSpecDependencies.push(reader.string());
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -412,8 +414,8 @@ export const ThreadMigrationPlan = {
           return acc;
         }, {})
         : {},
-      dependencies: globalThis.Array.isArray(object?.dependencies)
-        ? object.dependencies.map((e: any) => globalThis.String(e))
+      threadSpecDependencies: globalThis.Array.isArray(object?.threadSpecDependencies)
+        ? object.threadSpecDependencies.map((e: any) => globalThis.String(e))
         : [],
     };
   },
@@ -432,8 +434,8 @@ export const ThreadMigrationPlan = {
         });
       }
     }
-    if (message.dependencies?.length) {
-      obj.dependencies = message.dependencies;
+    if (message.threadSpecDependencies?.length) {
+      obj.threadSpecDependencies = message.threadSpecDependencies;
     }
     return obj;
   },
@@ -453,7 +455,7 @@ export const ThreadMigrationPlan = {
       },
       {},
     );
-    message.dependencies = object.dependencies?.map((e) => e) || [];
+    message.threadSpecDependencies = object.threadSpecDependencies?.map((e) => e) || [];
     return message;
   },
 };

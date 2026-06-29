@@ -1,20 +1,21 @@
 package io.littlehorse.common.model.getable.global.migrations;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import static org.mockito.Mockito.mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.sdk.common.proto.WorkflowMigrationPlan;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkflowMigrationPlanModelTest {
@@ -32,7 +33,7 @@ public class WorkflowMigrationPlanModelTest {
         NodeMigrationPlanModel nodeMigration = new NodeMigrationPlanModel();
         nodeMigration.setNewNodeName("new-task-node");
         threadMigration.setNodeMigrations(Map.of("old-task-node", nodeMigration));
-        threadMigration.setDependencies(List.of("dep-thread"));
+        threadMigration.setThreadSpecDependencies(List.of("dep-thread"));
 
         // Build the top-level migration plan model.
         WorkflowMigrationPlanModel original = new WorkflowMigrationPlanModel(
@@ -63,6 +64,6 @@ public class WorkflowMigrationPlanModelTest {
         assertThat(deserializedThread.getNodeMigrations()).containsKey("old-task-node");
         assertThat(deserializedThread.getNodeMigrations().get("old-task-node").getNewNodeName())
                 .isEqualTo("new-task-node");
-        assertThat(deserializedThread.getDependencies()).containsExactly("dep-thread");
+        assertThat(deserializedThread.getThreadSpecDependencies()).containsExactly("dep-thread");
     }
 }

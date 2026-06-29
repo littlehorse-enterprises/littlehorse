@@ -141,7 +141,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -162,7 +162,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -173,7 +173,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -191,7 +191,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * Map of old node name -&gt; how to migrate that node in the new wfSpec
+   * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -704,7 +704,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -725,7 +725,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -736,7 +736,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -753,7 +753,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -775,7 +775,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -798,7 +798,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -815,7 +815,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>
@@ -834,7 +834,7 @@ io.littlehorse.sdk.common.proto.NodeMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map of old node name -&gt; how to migrate that node in the new wfSpec
+     * How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.NodeMigrationPlan&gt; node_migrations = 2;</code>

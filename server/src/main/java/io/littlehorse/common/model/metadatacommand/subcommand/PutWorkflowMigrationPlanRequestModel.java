@@ -222,8 +222,8 @@ public class PutWorkflowMigrationPlanRequestModel extends MetadataSubCommand<Put
                                     + ownerThreadName + "') is not included in this migration plan");
                 }
 
-                if (!migration.getDependencies().contains(ownerThreadName)) {
-                    migration.getDependencies().add(ownerThreadName);
+                if (!migration.getThreadSpecDependencies().contains(ownerThreadName)) {
+                    migration.getThreadSpecDependencies().add(ownerThreadName);
                 }
             }
         }

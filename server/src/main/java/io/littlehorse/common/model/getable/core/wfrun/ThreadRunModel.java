@@ -559,9 +559,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
 
             boolean migrated = false;
-            // Try to migrate from a long-running active node even if it hasn't completed yet.
-            // This must happen before the canAdvance gate so that a waiting ExternalEvent/UserTask/Sleep
-            // node can be migrated away without waiting for the event to arrive.
+
             if (wfMigrationPlanId != null && currentNR.getNode().isLongRunning()) {
                 migrated = maybeMigrate(wfMigrationPlanId, currentNR.getNodeName(), true);
             }
@@ -1079,8 +1077,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             return false;
         }
 
-        // If this thread has declared dependencies, ensure all of them have migrated
-        // first so that any variables they create are available to this thread.
+
         if (!dependentThreadsMigrated(plan, threadMigration)) {
             return false;
         }
@@ -1094,21 +1091,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
     }
 
-    /**
-     * Returns true if all threads listed in this thread's migration plan dependencies
-     * have already migrated. Returns false if any dependency still has a ThreadRun
-     * running under its old spec, meaning migration must be deferred until it catches up.
-     */
+
     private boolean dependentThreadsMigrated(
             WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration) {
-        if (threadMigration.getDependencies().isEmpty()) {
+        if (threadMigration.getThreadSpecDependencies().isEmpty()) {
             return true;
         }
 
         WfSpecIdModel newWfSpecId =
                 new WfSpecIdModel(plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
 
-        for (String depNewThreadName : threadMigration.getDependencies()) {
+        for (String depNewThreadName : threadMigration.getThreadSpecDependencies()) {
             // Dependency is satisfied when at least one thread has already migrated to
             // depNewThreadName under the new WfSpec.
             boolean satisfied = false;
@@ -1147,7 +1140,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         WfSpecModel curSpec = executionContext.metadataManager().get(this.getWfSpecId());
         String oldThreadName = threadSpecName;
 
-        // Halt the current NodeRun to leave an audit trail showing it was migrated from.
 
         if (isActive) {
             NodeRunModel oldNR = getCurrentNodeRun();
@@ -1189,8 +1181,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                     processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
 
             if (existing != null) {
-                // Maybe check if value is null and then apply default value
-                // Preserve any pre-existing value for vars already present on this thread.
                 continue;
             }
 

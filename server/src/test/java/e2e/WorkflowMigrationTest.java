@@ -141,9 +141,6 @@ public class WorkflowMigrationTest {
     @LHWorkflow("child-depends-on-parent")
     public Workflow getChildDependsOnParentWf() {
         return Workflow.newWorkflow("child-depends-on-parent", wf -> {
-            // Spawn the child first so it parks on its own external-event node, then park
-            // the entrypoint on a second external-event node. This leaves BOTH threads
-            // halted at the same time so we can migrate them together.
             wf.spawnThread(
                     thread -> {
                         thread.waitForEvent("migration-test-event");
@@ -154,10 +151,6 @@ public class WorkflowMigrationTest {
         });
     }
 
-    // ---- WfSpec v0: a task node (completes immediately) followed by an external-event node.
-    // The task advances the thread so it parks on the SECOND node, which is the node we
-    // migrate from. This lets us prove the server selects the node-migration entry by the
-    // parked node's name rather than just taking the first/only entry in the plan. ----
 
     @LHWorkflow("migrate-from-second-migration-node")
     private Workflow migrateFromSecondMigrationNode;
@@ -169,9 +162,6 @@ public class WorkflowMigrationTest {
             wf.waitForEvent("migration-test-event");
         });
     }
-
-    // ---- WfSpec v0: entrypoint waits on an external event. The v1 spec adds a variable and a
-    // task node, and the migration supplies a migration variable that overrides that variable. ----
 
     @LHWorkflow("migrate-with-variable")
     private Workflow migrateWithVariableWf;
@@ -191,9 +181,6 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldMigrateWfRunFromExternalEventToTask() {
-        // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
-        // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the external-event spec would become a new major version instead.
         WfRunId runId = verifier.prepareRun(migrationWf)
                 .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
                 .start();
@@ -201,12 +188,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the external event node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 external event node: "1-migration-test-event-EXTERNAL_EVENT"
-        //   v1 task node:           "1-migration-task-TASK"
-        // Changing from an external-event to a task is a breaking change, so the server
-        // assigns this a new major version (major=1, revision=0).
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-test-wf", wf -> {
                     wf.execute("migration-task");
                 })
@@ -232,10 +213,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Capture the current node position before migration. The migration will create
-        // a new NodeRun at position (preMigrationPosition + 1), which is the task node.
-        // We record this now so the assertion is race-free regardless of how fast the
-        // task worker picks up the work after apply.
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -257,9 +234,6 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // The next NodeRun to be executed is the task node created at migration time.
-        // We use the position captured pre-migration so this fetch is race-free even
-        // if the task worker has already completed by the time we get here.
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -298,10 +272,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the sleep node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 sleep node: "1-sleep-SLEEP"
-        //   v1 task node:  "1-migration-task-TASK"
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-sleep", wf -> {
                     wf.execute("migration-task");
                 })
@@ -327,10 +297,7 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Capture the current node position before migration. The migration will create
-        // a new NodeRun at position (preMigrationPosition + 1), which is the task node.
-        // We record this now so the assertion is race-free regardless of how fast the
-        // task worker picks up the work after apply.
+
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -352,9 +319,7 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // The next NodeRun to be executed is the task node created at migration time.
-        // We use the position captured pre-migration so this fetch is race-free even
-        // if the task worker has already completed by the time we get here.
+  
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -382,10 +347,6 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldMigrateWfRunFromUserTaskToTask() {
-        // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
-        // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the user-task spec would become a new major version instead. The user task
-        // parks the node in RUNNING (waiting on a human) long enough to migrate.
         WfRunId runId = verifier.prepareRun(migrateFromUserTaskWf)
                 .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
                 .start();
@@ -393,10 +354,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the user task node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 user task node: "1-migration-user-task-USER_TASK"
-        //   v1 task node:      "1-migration-task-TASK"
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-user-task", wf -> {
                     wf.execute("migration-task");
                 })
@@ -422,34 +379,26 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Capture the current node position before migration. The migration will create
-        // a new NodeRun at position (preMigrationPosition + 1), which is the task node.
-        // We record this now so the assertion is race-free regardless of how fast the
-        // task worker picks up the work after apply.
+     
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
-        // Apply the plan to the running WfRun.
         WfRun migratedRun = client.applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest.newBuilder()
                 .setId(plan.getWorkflowMigrationPlanId())
                 .setWfRunId(runId)
                 .build());
 
-        // The WfRun's top-level wfSpecId should reflect the new version.
         assertThat(migratedRun.getWfSpecId().getMajorVersion())
                 .isEqualTo(v1Spec.getId().getMajorVersion());
         assertThat(migratedRun.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // ThreadRun 0's own wfSpecId should also be updated to the new version.
         ThreadRun entrypointThread = migratedRun.getThreadRuns(0);
         assertThat(entrypointThread.getWfSpecId().getMajorVersion())
                 .isEqualTo(v1Spec.getId().getMajorVersion());
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // The next NodeRun to be executed is the task node created at migration time.
-        // We use the position captured pre-migration so this fetch is race-free even
-        // if the task worker has already completed by the time we get here.
+    
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -477,10 +426,6 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldMigrateWfRunFromWaitForConditionToTask() {
-        // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
-        // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the wait-for-condition spec would become a new major version instead. The
-        // condition is never satisfied, so the node parks in RUNNING long enough to migrate.
         WfRunId runId = verifier.prepareRun(migrateFromWaitForConditionWf)
                 .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
                 .start();
@@ -488,16 +433,12 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the wait-for-condition node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 wait-for-condition node: "1-wait-for-condition-WAIT_FOR_CONDITION"
-        //   v1 task node:               "1-migration-task-TASK"
+
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-wait-for-condition", wf -> {
                     wf.execute("migration-task");
                 })
                 .compileWorkflow());
 
-        // Register the migration plan: entrypoint thread, wait-for-condition node → task node.
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                 .setName(LHUtil.generateGuid())
                 .setOldWfSpec(oldSpecId)
@@ -517,10 +458,7 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Capture the current node position before migration. The migration will create
-        // a new NodeRun at position (preMigrationPosition + 1), which is the task node.
-        // We record this now so the assertion is race-free regardless of how fast the
-        // task worker picks up the work after apply.
+    
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -542,9 +480,7 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // The next NodeRun to be executed is the task node created at migration time.
-        // We use the position captured pre-migration so this fetch is race-free even
-        // if the task worker has already completed by the time we get here.
+     
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -572,13 +508,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldMigrateChildThreadRunToNewSpec() {
-        // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
-        // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the child-thread spec would become a new major version instead.
-        //
-        // The child thread only spawns AFTER the entrypoint task node completes, so we wait
-        // for that task first. Reading the child-thread node directly would otherwise hit
-        // NOT_FOUND on the first poll (which fails immediately instead of retrying).
+
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
                 .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
@@ -587,10 +517,7 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the wait-for-condition node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 wait-for-condition node: "1-wait-for-condition-WAIT_FOR_CONDITION"
-        //   v1 task node:               "1-migration-task-TASK"
+     
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-child-spec", wf -> {
                     wf.execute("migration-task");
                     wf.spawnThread(
@@ -622,10 +549,7 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Capture the current node position before migration. The migration will create
-        // a new NodeRun at position (preMigrationPosition + 1), which is the task node.
-        // We record this now so the assertion is race-free regardless of how fast the
-        // task worker picks up the work after apply.
+   
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(1).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -645,9 +569,6 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-        // The next NodeRun to be executed is the task node created at migration time.
-        // We use the position captured pre-migration so this fetch is race-free even
-        // if the task worker has already completed by the time we get here.
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(1)
@@ -666,13 +587,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldRejectMigrationPlanSinceChildThreadVariableNotAvailableAtRunTime() {
-        // Start a WfRun on v0 first so it is registered as the first (major=0, revision=0)
-        // version. We must do this before registering v1, otherwise v1 would claim major=0
-        // and the child-thread spec would become a new major version instead.
-        //
-        // The child thread only spawns AFTER the entrypoint task node completes, so we wait
-        // for that task first. Reading the child-thread node directly would otherwise hit
-        // NOT_FOUND on the first poll (which fails immediately instead of retrying).
+    
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
                 .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
@@ -681,10 +596,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: replaces the wait-for-condition node with a task node.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}", so:
-        //   v0 wait-for-condition node: "1-wait-for-condition-WAIT_FOR_CONDITION"
-        //   v1 task node:               "1-migration-task-TASK"
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-child-spec", wf -> {
                     WfRunVariable num = wf.declareInt("num").withDefault(1);
                     wf.execute("migration-task");
@@ -698,9 +609,7 @@ public class WorkflowMigrationTest {
                 })
                 .compileWorkflow());
 
-        // The destination 'child-thread' uses the variable 'num', but 'num' is owned by the
-        // 'entrypoint' thread in the new spec, and 'entrypoint' is not part of this migration
-        // plan. The server must reject the plan with FAILED_PRECONDITION.
+   
         assertThatThrownBy(() -> client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                         .setName(LHUtil.generateGuid())
                         .setOldWfSpec(oldSpecId)
@@ -727,9 +636,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldAddDependencyToThreadMigration() {
-        // Start a WfRun on v0 of "child-depends-on-parent". The entrypoint spawns a child
-        // thread and then both threads park on external events, so both are halted and
-        // available to migrate at the same time.
+ 
         WfRunId runId = verifier.prepareRun(migrateChildWParent)
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
@@ -738,14 +645,7 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: the entrypoint owns the variable 'num' (default 1) and the
-        // child thread assigns it to 32 after its task runs. Both external-event nodes are
-        // replaced with task nodes.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}":
-        //   v0 entrypoint event node: "2-migration-test-event-EXTERNAL_EVENT"
-        //   v0 child event node:      "1-migration-test-event-EXTERNAL_EVENT"
-        //   v1 entrypoint task node:  "2-migration-task-TASK"
-        //   v1 child task node:       "1-migration-task-TASK"
+ 
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("child-depends-on-parent", wf -> {
                     WfRunVariable num = wf.declareInt("num").withDefault(1);
                     wf.spawnThread(
@@ -759,9 +659,6 @@ public class WorkflowMigrationTest {
                 })
                 .compileWorkflow());
 
-        // Register a migration plan that migrates BOTH the entrypoint and the child thread.
-        // Because the child thread uses 'num' (owned by the entrypoint), the server must
-        // compute a dependency: child-thread depends on the entrypoint having migrated first.
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                 .setName(LHUtil.generateGuid())
                 .setOldWfSpec(oldSpecId)
@@ -791,13 +688,11 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // The server should have computed that 'child-thread' depends on 'entrypoint'
-        // because the child thread uses 'num', which the entrypoint owns.
-        assertThat(plan.getThreadMigrationsMap().get("child-thread").getDependenciesList())
+        assertThat(plan.getThreadMigrationsMap().get("child-thread").getThreadSpecDependenciesList())
                 .containsExactly("entrypoint");
 
         // The entrypoint thread has no dependencies (it owns its own variables).
-        assertThat(plan.getThreadMigrationsMap().get("entrypoint").getDependenciesList())
+        assertThat(plan.getThreadMigrationsMap().get("entrypoint").getThreadSpecDependenciesList())
                 .isEmpty();
 
         // Capture both task node positions before migration so the fetches are race-free.
@@ -822,8 +717,6 @@ public class WorkflowMigrationTest {
         assertThat(completedRun.getThreadRuns(1).getWfSpecId().getMajorVersion())
                 .isEqualTo(v1Spec.getId().getMajorVersion());
 
-        // The dependency forces the entrypoint to migrate before the child, so the
-        // entrypoint's migrated task node must arrive no later than the child's.
         NodeRun entrypointTaskNode = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -840,9 +733,7 @@ public class WorkflowMigrationTest {
                 LHLibUtil.fromProtoTs(childTaskNode.getArrivalTime()).getTime();
         assertThat(entrypointArrival).isLessThanOrEqualTo(childArrival);
 
-        // Finally, the child thread's task ran and assigned the entrypoint-owned variable
-        // 'num' to 32. This only works because the entrypoint migrated first and created
-        // 'num', proving the dependency ordering was honored.
+     
         assertThat(client.getVariable(VariableId.newBuilder()
                                 .setWfRunId(runId)
                                 .setThreadRunNumber(0)
@@ -855,30 +746,19 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldSelectCorrectNodeMigrationWhenMultipleNodesInThreadPlan() {
-        // Start v0. The task node (position 1) completes immediately, so the thread advances
-        // and parks on the external-event node (position 2). We migrate from this NON-FIRST
-        // node to prove the server keys node migrations by the parked node's name.
         WfRunId runId = verifier.prepareRun(migrateFromSecondMigrationNode)
                 .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec with TWO external-event nodes so the two node-migration entries
-        // map to two DISTINCT destination nodes. Node names follow "{nodesCount}-{name}-{NodeCase}":
-        //   v1 node 1: "1-migration-test-event-EXTERNAL_EVENT"
-        //   v1 node 2: "2-migration-test-event-EXTERNAL_EVENT"
+    
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-from-second-migration-node", wf -> {
                     wf.waitForEvent("migration-test-event");
                     wf.waitForEvent("migration-test-event");
                 })
                 .compileWorkflow());
 
-        // The plan carries TWO node migrations for the entrypoint thread:
-        //   old "1-migration-task-TASK" (already passed)         -> v1 node 1
-        //   old "2-migration-test-event-EXTERNAL_EVENT" (parked) -> v1 node 2
-        // Since the thread is parked on the SECOND old node, it must land on v1 node 2. If the
-        // server instead matched the first entry, it would (wrongly) land on v1 node 1.
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                 .setName(LHUtil.generateGuid())
                 .setOldWfSpec(oldSpecId)
@@ -937,9 +817,7 @@ public class WorkflowMigrationTest {
         assertThat(oldNodeRun.getStatus()).isEqualTo(LHStatus.HALTED);
         assertThat(oldNodeRun.getWfSpecId()).isEqualTo(oldSpecId);
 
-        // Behavioral cross-check: the thread landed on the LAST v1 node, so a single event
-        // completes the WfRun. Had it landed on v1 node 1, one event would only advance it to
-        // v1 node 2 and the run would still be RUNNING.
+    
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setWfRunId(runId)
                 .setContent(LHLibUtil.objToVarVal("ignored"))
@@ -953,8 +831,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldApplyMigrationVariableWhenMigratingFromExternalEventToTask() {
-        // Start v0 first so it claims (major=0, revision=0). The entrypoint parks on an
-        // external event, keeping the thread halted long enough to migrate.
+    
         WfRunId runId = verifier.prepareRun(migrateWithVariableWf)
                 .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
                 .start();
@@ -962,17 +839,13 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        // Register v1 WfSpec: declares an int variable 'num' (default 1) and runs a task.
-        // Node names follow the SDK pattern "{nodesCount}-{name}-{NodeCase}":
-        //   v0 external-event node: "1-migration-test-event-EXTERNAL_EVENT"
-        //   v1 task node:           "1-migration-task-TASK"
+
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-with-variable", wf -> {
                     wf.declareInt("num").withDefault(1);
                     wf.execute("migration-task");
                 })
                 .compileWorkflow());
 
-        // Register the migration plan: entrypoint thread, external-event node → task node.
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                 .setName(LHUtil.generateGuid())
                 .setOldWfSpec(oldSpecId)
@@ -992,9 +865,7 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Apply the plan AND supply a migration variable for the entrypoint thread that
-        // overrides 'num'. The migrated thread first creates 'num' with its declared default
-        // (1), then applyMigrationVariables() mutates it to the supplied value (42).
+ 
         client.applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest.newBuilder()
                 .setId(plan.getWorkflowMigrationPlanId())
                 .setWfRunId(runId)
@@ -1066,9 +937,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-        // Supply a STRING literal for the int variable 'num'. The apply-time validation checks
-        // literal values against the variable's declared type, so the server must reject the
-        // request synchronously with INVALID_ARGUMENT instead of failing the thread at runtime.
         assertThatThrownBy(() -> client.applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest.newBuilder()
                         .setId(plan.getWorkflowMigrationPlanId())
                         .setWfRunId(runId)

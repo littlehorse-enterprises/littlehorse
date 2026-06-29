@@ -12,7 +12,7 @@ public interface NodeMigrationPlanOrBuilder extends
 
   /**
    * <pre>
-   * Name of node in the new wfSpec to migrate to
+   * Name of node in the new wfSpec's threadSpec to migrate to
    * </pre>
    *
    * <code>string new_node_name = 1;</code>
@@ -21,7 +21,7 @@ public interface NodeMigrationPlanOrBuilder extends
   java.lang.String getNewNodeName();
   /**
    * <pre>
-   * Name of node in the new wfSpec to migrate to
+   * Name of node in the new wfSpec's threadSpec to migrate to
    * </pre>
    *
    * <code>string new_node_name = 1;</code>

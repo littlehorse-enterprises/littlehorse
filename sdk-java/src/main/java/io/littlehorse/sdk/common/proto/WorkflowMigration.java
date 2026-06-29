@@ -92,28 +92,28 @@ public final class WorkflowMigration extends com.google.protobuf.GeneratedFile {
       "\001(\0132\025.littlehorse.WfSpecId\022\025\n\rmajor_vers" +
       "ion\030\005 \001(\005\022\020\n\010revision\030\006 \001(\005\032Y\n\025ThreadMig" +
       "rationsEntry\022\013\n\003key\030\001 \001(\t\022/\n\005value\030\002 \001(\013" +
-      "2 .littlehorse.ThreadMigrationPlan:\0028\001\"\352" +
+      "2 .littlehorse.ThreadMigrationPlan:\0028\001\"\366" +
       "\001\n\023ThreadMigrationPlan\022\027\n\017new_thread_nam" +
       "e\030\001 \001(\t\022M\n\017node_migrations\030\002 \003(\01324.littl" +
       "ehorse.ThreadMigrationPlan.NodeMigration" +
-      "sEntry\022\024\n\014dependencies\030\003 \003(\t\032U\n\023NodeMigr" +
-      "ationsEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132" +
-      "\036.littlehorse.NodeMigrationPlan:\0028\001\"\342\001\n\032" +
-      "ThreadMigrationPlanRequest\022\027\n\017new_thread" +
-      "_name\030\001 \001(\t\022T\n\017node_migrations\030\002 \003(\0132;.l" +
-      "ittlehorse.ThreadMigrationPlanRequest.No" +
-      "deMigrationsEntry\032U\n\023NodeMigrationsEntry" +
-      "\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\0132\036.littlehor" +
-      "se.NodeMigrationPlan:\0028\001\"*\n\021NodeMigratio" +
-      "nPlan\022\025\n\rnew_node_name\030\001 \001(\t\"\313\001\n\rMigrati" +
-      "onVars\022Z\n\032var_assignment_by_var_name\030\001 \003" +
-      "(\01326.littlehorse.MigrationVars.VarAssign" +
-      "mentByVarNameEntry\032^\n\033VarAssignmentByVar" +
-      "NameEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037." +
-      "littlehorse.VariableAssignment:\0028\001BM\n\037io" +
-      ".littlehorse.sdk.common.protoP\001Z\t.;lhpro" +
-      "to\252\002\034LittleHorse.Sdk.Common.Protob\006proto" +
-      "3"
+      "sEntry\022 \n\030thread_spec_dependencies\030\003 \003(\t" +
+      "\032U\n\023NodeMigrationsEntry\022\013\n\003key\030\001 \001(\t\022-\n\005" +
+      "value\030\002 \001(\0132\036.littlehorse.NodeMigrationP" +
+      "lan:\0028\001\"\342\001\n\032ThreadMigrationPlanRequest\022\027" +
+      "\n\017new_thread_name\030\001 \001(\t\022T\n\017node_migratio" +
+      "ns\030\002 \003(\0132;.littlehorse.ThreadMigrationPl" +
+      "anRequest.NodeMigrationsEntry\032U\n\023NodeMig" +
+      "rationsEntry\022\013\n\003key\030\001 \001(\t\022-\n\005value\030\002 \001(\013" +
+      "2\036.littlehorse.NodeMigrationPlan:\0028\001\"*\n\021" +
+      "NodeMigrationPlan\022\025\n\rnew_node_name\030\001 \001(\t" +
+      "\"\313\001\n\rMigrationVars\022Z\n\032var_assignment_by_" +
+      "var_name\030\001 \003(\01326.littlehorse.MigrationVa" +
+      "rs.VarAssignmentByVarNameEntry\032^\n\033VarAss" +
+      "ignmentByVarNameEntry\022\013\n\003key\030\001 \001(\t\022.\n\005va" +
+      "lue\030\002 \001(\0132\037.littlehorse.VariableAssignme" +
+      "nt:\0028\001BM\n\037io.littlehorse.sdk.common.prot" +
+      "oP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common." +
+      "Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -139,7 +139,7 @@ public final class WorkflowMigration extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_ThreadMigrationPlan_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ThreadMigrationPlan_descriptor,
-        new java.lang.String[] { "NewThreadName", "NodeMigrations", "Dependencies", });
+        new java.lang.String[] { "NewThreadName", "NodeMigrations", "ThreadSpecDependencies", });
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_descriptor =
       internal_static_littlehorse_ThreadMigrationPlan_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_ThreadMigrationPlan_NodeMigrationsEntry_fieldAccessorTable = new

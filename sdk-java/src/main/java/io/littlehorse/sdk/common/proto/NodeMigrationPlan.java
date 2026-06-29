@@ -53,7 +53,7 @@ private static final long serialVersionUID = 0L;
   private volatile java.lang.Object newNodeName_ = "";
   /**
    * <pre>
-   * Name of node in the new wfSpec to migrate to
+   * Name of node in the new wfSpec's threadSpec to migrate to
    * </pre>
    *
    * <code>string new_node_name = 1;</code>
@@ -74,7 +74,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Name of node in the new wfSpec to migrate to
+   * Name of node in the new wfSpec's threadSpec to migrate to
    * </pre>
    *
    * <code>string new_node_name = 1;</code>
@@ -396,7 +396,7 @@ private static final long serialVersionUID = 0L;
     private java.lang.Object newNodeName_ = "";
     /**
      * <pre>
-     * Name of node in the new wfSpec to migrate to
+     * Name of node in the new wfSpec's threadSpec to migrate to
      * </pre>
      *
      * <code>string new_node_name = 1;</code>
@@ -416,7 +416,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Name of node in the new wfSpec to migrate to
+     * Name of node in the new wfSpec's threadSpec to migrate to
      * </pre>
      *
      * <code>string new_node_name = 1;</code>
@@ -437,7 +437,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Name of node in the new wfSpec to migrate to
+     * Name of node in the new wfSpec's threadSpec to migrate to
      * </pre>
      *
      * <code>string new_node_name = 1;</code>
@@ -454,7 +454,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Name of node in the new wfSpec to migrate to
+     * Name of node in the new wfSpec's threadSpec to migrate to
      * </pre>
      *
      * <code>string new_node_name = 1;</code>
@@ -468,7 +468,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Name of node in the new wfSpec to migrate to
+     * Name of node in the new wfSpec's threadSpec to migrate to
      * </pre>
      *
      * <code>string new_node_name = 1;</code>

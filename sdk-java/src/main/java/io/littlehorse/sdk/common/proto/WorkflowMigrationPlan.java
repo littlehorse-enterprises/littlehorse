@@ -164,7 +164,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -185,7 +185,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -196,7 +196,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -214,7 +214,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+   * How to migrate an oldThreadSpec to the new threadSpecVersion
    * </pre>
    *
    * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -235,7 +235,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
   private io.littlehorse.sdk.common.proto.WfSpecId oldWfSpec_;
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -247,7 +247,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -259,7 +259,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
   }
   /**
    * <pre>
-   * Source wfSpec
+   * Source wfSpec 
    * </pre>
    *
    * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1147,7 +1147,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1168,7 +1168,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1179,7 +1179,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1196,7 +1196,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1218,7 +1218,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1241,7 +1241,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1258,7 +1258,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1277,7 +1277,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Map that represent old threadSpec name -&gt; How to migrate that threadspec
+     * How to migrate an oldThreadSpec to the new threadSpecVersion
      * </pre>
      *
      * <code>map&lt;string, .littlehorse.ThreadMigrationPlan&gt; thread_migrations = 3;</code>
@@ -1302,7 +1302,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> oldWfSpecBuilder_;
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1313,7 +1313,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1328,7 +1328,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1348,7 +1348,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1366,7 +1366,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1391,7 +1391,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1408,7 +1408,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1420,7 +1420,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>
@@ -1435,7 +1435,7 @@ io.littlehorse.sdk.common.proto.ThreadMigrationPlan defaultValue) {
     }
     /**
      * <pre>
-     * Source wfSpec
+     * Source wfSpec 
      * </pre>
      *
      * <code>.littlehorse.WfSpecId old_wfSpec = 4;</code>

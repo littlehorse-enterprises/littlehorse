@@ -19,17 +19,18 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
 
     private String newThreadName;
     private Map<String, NodeMigrationPlanModel> nodeMigrations;
-    private List<String> dependencies;
+    private List<String> threadSpecDependencies;
 
     public ThreadMigrationPlanModel() {
         nodeMigrations = new HashMap<>();
-        dependencies = new ArrayList<>();
+        threadSpecDependencies = new ArrayList<>();
     }
 
     @Override
     public ThreadMigrationPlan.Builder toProto() {
-        ThreadMigrationPlan.Builder out =
-                ThreadMigrationPlan.newBuilder().setNewThreadName(newThreadName).addAllDependencies(dependencies);
+        ThreadMigrationPlan.Builder out = ThreadMigrationPlan.newBuilder()
+                .setNewThreadName(newThreadName)
+                .addAllThreadSpecDependencies(threadSpecDependencies);
 
         for (Map.Entry<String, NodeMigrationPlanModel> entry : nodeMigrations.entrySet()) {
             out.putNodeMigrations(entry.getKey(), entry.getValue().toProto().build());
@@ -42,7 +43,7 @@ public class ThreadMigrationPlanModel extends LHSerializable<ThreadMigrationPlan
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         ThreadMigrationPlan p = (ThreadMigrationPlan) proto;
         newThreadName = p.getNewThreadName();
-        dependencies = new ArrayList<>(p.getDependenciesList());
+        threadSpecDependencies = new ArrayList<>(p.getThreadSpecDependenciesList());
         nodeMigrations = new HashMap<>();
 
         for (Map.Entry<String, NodeMigrationPlan> entry :
