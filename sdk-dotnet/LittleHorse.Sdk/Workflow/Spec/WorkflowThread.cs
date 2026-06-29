@@ -527,6 +527,28 @@ public class WorkflowThread
     }
 
     /// <summary>
+    /// Creates a native LittleHorse ARRAY variable in the ThreadSpec.
+    /// </summary>
+    /// <param name="name">It is the name of the variable.</param>
+    /// <param name="elementType">It is the .NET type of each element in the array.</param>
+    /// <returns>The value of WfRunVariable.</returns>
+    public WfRunVariable DeclareArray(string name, Type elementType)
+    {
+        if (elementType == null)
+        {
+            throw new ArgumentNullException(nameof(elementType));
+        }
+
+        if (elementType == typeof(byte))
+        {
+            throw new ArgumentException("byte[] is BYTES in LittleHorse. Use DeclareBytes for BYTES.");
+        }
+
+        var arrayType = elementType.MakeArrayType();
+        return AddStructVariable(name, new LHArrayType(arrayType));
+    }
+
+    /// <summary>
     /// Creates a Struct variable based on a StructDef-annotated class.
     /// </summary>
     /// <param name="name">

@@ -2,13 +2,14 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { WorkflowEventDef as WorkflowEventDefProto } from 'littlehorse-client/proto'
+import { Timestamp, WorkflowEventDef as WorkflowEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -22,7 +23,7 @@ type Props = {
 export const WorkflowEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('global')
   const tenantId = useParams().tenantId as string
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
@@ -35,15 +36,19 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit,
         workflowEventDefId: { name: spec.id?.name ?? '' },
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
 
   return (
     <>
-      <Navigation href="/?type=WorkflowEventDef" title="Go back to WorkflowEventDef" />
+      <Navigation href={routes.search.homeWithType('WorkflowEventDef')} title="Go back to WorkflowEventDef" />
       <Details spec={spec} />
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
@@ -97,7 +102,7 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
                             <LinkWithTenant
                               className="py-2 text-blue-500 hover:underline"
                               target="_blank"
-                              href={`/wfRun/${wfRunIdToPath(workflowEvent.id.wfRunId)}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
+                              href={`${routes.wfRun.detail(wfRunIdToPath(workflowEvent.id.wfRunId))}?threadRunNumber=${workflowEvent.nodeRunId?.threadRunNumber}&nodeRunName=${workflowEvent.nodeRunId?.position}-throw-${spec.id?.name}-THROW_EVENT`}
                             >
                               {wfRunIdToPath(workflowEvent.id.wfRunId)}
                             </LinkWithTenant>

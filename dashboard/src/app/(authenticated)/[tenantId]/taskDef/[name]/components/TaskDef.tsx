@@ -3,13 +3,14 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
+import { TaskDef as TaskDefProto, TaskStatus, Timestamp } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -30,8 +31,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const tenantId = useParams().tenantId as string
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
-  const [wfSpecLimit, setWfSpecLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('taskdef-task-runs')
+  const [wfSpecLimit, setWfSpecLimit] = usePersistedSearchLimit('taskdef-wf-specs')
   const taskDefName = spec.id?.name || ''
 
   const {
@@ -39,7 +40,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     hasNextPage: wfSpecsHasNextPage,
     fetchNextPage: wfSpecsFetchNextPage,
   } = useInfiniteQuery({
-    queryKey: ['wfSpecs', tenantId, limit, taskDefName],
+    queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedWfSpecList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -47,7 +48,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit: wfSpecLimit,
-        wfSpecCriteria: { $case: 'taskDefName', value: taskDefName },
+        wfSpecCriteria: { oneofKind: 'taskDefName', taskDefName },
       })
     },
   })
@@ -63,15 +64,19 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName: spec.id?.name || '',
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
 
   return (
     <>
-      <Navigation href="/?type=TaskDef" title="Go back to TaskDefs" />
+      <Navigation href={routes.search.homeWithType('TaskDef')} title="Go back to TaskDefs" />
       <Details spec={spec} />
       <TaskDefSchema spec={spec} />
 
@@ -86,7 +91,9 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                 .flatMap(page => page.results)
                 .map(wfSpec => (
                   <Fragment key={wfSpec.name}>
-                    <SelectionLink href={`/wfSpec/${wfSpec.name}/${wfSpec.majorVersion}.${wfSpec.revision}`}>
+                    <SelectionLink
+                      href={routes.wfSpec.detail(wfSpec.name, `${wfSpec.majorVersion}.${wfSpec.revision}`)}
+                    >
                       <p className="group">{wfSpec.name}</p>
                       <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
                         <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
@@ -117,12 +124,13 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               <select
                 className="max-w-72 rounded border px-2 py-2"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  setSelectedStatus(e.target.value as TaskStatus)
+                  const value = e.target.value
+                  setSelectedStatus(value === 'ALL' ? 'ALL' : TaskStatus[value as keyof typeof TaskStatus])
                 }}
               >
                 <option>ALL</option>
                 {Object.keys(TaskStatus)
-                  .filter(status => status != TaskStatus.UNRECOGNIZED)
+                  .filter(status => isNaN(Number(status)))
                   .map(status => (
                     <option key={status}>{status}</option>
                   ))}
@@ -167,13 +175,20 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                         {page.resultsWithDetails.length > 0 ? (
                           page.resultsWithDetails.map(({ taskRun }) => {
                             if (!taskRun.id?.wfRunId) return
+                            const taskRunSource = taskRun.source?.taskRunSource
+                            const sourceNodeRunId =
+                              taskRunSource?.oneofKind === 'taskNode'
+                                ? taskRunSource.taskNode.nodeRunId
+                                : taskRunSource?.oneofKind === 'userTaskTrigger'
+                                  ? taskRunSource.userTaskTrigger.nodeRunId
+                                  : undefined
                             return (
                               <TableRow key={taskRun.id?.taskGuid}>
                                 <TableCell>
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(taskRun.id.wfRunId)}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${sourceNodeRunId?.threadRunNumber}`}
                                   >
                                     {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>

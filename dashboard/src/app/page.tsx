@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import { routes } from './routes'
 import getWhoAmI from './getWhoami'
 
 export default async function Home() {
@@ -12,6 +13,6 @@ export default async function Home() {
       </p>
     </div>
   ) : (
-    redirect(`/${whoAmI.tenants[0] ?? 'default'}`)
+    redirect(routes.tenant.root(whoAmI.tenants[0] ?? 'default'))
   )
 }

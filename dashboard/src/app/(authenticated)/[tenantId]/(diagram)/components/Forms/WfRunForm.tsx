@@ -37,7 +37,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
       const varDef = variable.varDef
       if (!varDef?.name) continue
       if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) continue
-      if (varDef.typeDef?.definedType?.$case !== 'primitiveType') continue
+      if (varDef.typeDef?.definedType?.oneofKind !== 'primitiveType') continue
       const defaultFormValue = getPrimitiveFormDefaultValue(varDef.defaultValue)
       if (defaultFormValue === undefined) continue
       values[varDef.name] = defaultFormValue

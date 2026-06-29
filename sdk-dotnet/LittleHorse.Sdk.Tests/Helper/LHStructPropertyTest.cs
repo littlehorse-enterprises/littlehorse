@@ -89,7 +89,8 @@ public class LHStructPropertyTest
 
         StructFieldDef fieldDef = property.ToStructFieldDef();
 
-        Assert.Equal(VariableType.JsonArr, fieldDef.FieldType.PrimitiveType);
+        Assert.Equal(TypeDefinition.DefinedTypeOneofCase.InlineArrayDef, fieldDef.FieldType.DefinedTypeCase);
+        Assert.Equal(VariableType.Str, fieldDef.FieldType.InlineArrayDef.ArrayType.PrimitiveType);
     }
 
     [Fact]

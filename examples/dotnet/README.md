@@ -28,6 +28,7 @@ Use another terminal for `lhctl run ...` commands.
 
 ## .NET Example Index
 
+- [`ArraysExample/`](./ArraysExample/README.md): Native LH Array producer/consumer workflow.
 - [`AwaitWorkflowEventExample/`](./AwaitWorkflowEventExample/README.md): Wait for workflow events.
 - [`BasicExample/`](./BasicExample/README.md): Minimal hello-world workflow.
 - [`CheckpointTasksExample/`](./CheckpointTasksExample/README.md): Checkpoint tasks.
@@ -42,6 +43,7 @@ Use another terminal for `lhctl run ...` commands.
 - [`InterruptHandlerExample/`](./InterruptHandlerExample/README.md): Interrupt handling.
 - [`MaskedFieldsExample/`](./MaskedFieldsExample/README.md): Masked variable fields.
 - [`MutationExample/`](./MutationExample/README.md): Variable mutation behavior.
+- [`QuickstartExample/`](./QuickstartExample/README.md): KYC-style getting-started workflow.
 - `RunChildWorkflow/`: Run-child-workflow example source (no README yet).
 - [`StructDefExample/`](./StructDefExample/README.md): Struct definition and usage.
 - [`UserTasksExample/`](./UserTasksExample/README.md): Human `UserTask` flows.

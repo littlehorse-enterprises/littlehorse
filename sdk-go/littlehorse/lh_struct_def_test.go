@@ -305,17 +305,10 @@ func TestGoStructToInlineStructDef_ByteSlice(t *testing.T) {
 	)
 }
 
-func TestGoStructToInlineStructDef_SliceMapsToJsonArr(t *testing.T) {
-	def, err := littlehorse.GoStructToInlineStructDef(StructWithSlice{})
-	assert.Nil(t, err)
-	assert.Equal(t,
-		lhproto.VariableType_JSON_ARR,
-		def.Fields["tags"].FieldType.GetPrimitiveType(),
-	)
-	assert.Equal(t,
-		lhproto.VariableType_JSON_ARR,
-		def.Fields["scores"].FieldType.GetPrimitiveType(),
-	)
+func TestGoStructToInlineStructDef_SliceFieldRejected(t *testing.T) {
+	_, err := littlehorse.GoStructToInlineStructDef(StructWithSlice{})
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "forbidden json type for StructDef field")
 }
 
 func TestGoStructToInlineStructDef_NestedStructWithLHStructDef(t *testing.T) {

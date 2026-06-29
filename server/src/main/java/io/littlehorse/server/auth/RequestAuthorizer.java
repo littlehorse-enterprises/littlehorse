@@ -26,10 +26,8 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -138,16 +136,15 @@ public class RequestAuthorizer implements LHServerInterceptor {
 
             Collection<ServerACLModel> acls = authContext.acls();
 
-            Set<ACLAction> clientAllowedActions = new HashSet<>();
-            Set<ACLResource> clientAllowedResources = new HashSet<>();
-            for (ServerACLModel clientAcl : acls) {
-                clientAllowedActions.addAll(clientAcl.getAllowedActions());
-                clientAllowedResources.addAll(clientAcl.getResources());
-            }
-            if (!(isActionAllowed(authMetadata, clientAllowedActions)
-                    && isResourceAllowed(authMetadata, clientAllowedResources))) {
-                throw new PermissionDeniedException("Missing permissions %s over resources %s"
-                        .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
+            for (ACLResource requiredResource : authMetadata.requiredResources()) {
+                for (ACLAction requiredAction : authMetadata.requiredActions()) {
+                    boolean granted =
+                            acls.stream().anyMatch(clientAcl -> clientAcl.allows(requiredResource, requiredAction));
+                    if (!granted) {
+                        throw new PermissionDeniedException("Missing permissions %s over resources %s"
+                                .formatted(authMetadata.requiredActions(), authMetadata.requiredResources()));
+                    }
+                }
             }
         }
 
@@ -158,16 +155,6 @@ public class RequestAuthorizer implements LHServerInterceptor {
             return authMetadata.requiredResources().contains(ACLResource.ACL_TENANT)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_PRINCIPAL)
                     || authMetadata.requiredResources().contains(ACLResource.ACL_QUOTA);
-        }
-
-        private boolean isActionAllowed(AuthMetadata metadata, Set<ACLAction> clientAllowedActions) {
-            return clientAllowedActions.contains(ServerACLModel.ADMIN_ACTION)
-                    || clientAllowedActions.containsAll(metadata.requiredActions());
-        }
-
-        private boolean isResourceAllowed(AuthMetadata metadata, Set<ACLResource> clientAllowedResources) {
-            return clientAllowedResources.contains(ServerACLModel.ADMIN_RESOURCE)
-                    || clientAllowedResources.containsAll(metadata.requiredResources());
         }
 
         private record AuthMetadata(

@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.littlehorse.sdk.common.adapter.LHJsonObjAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
@@ -21,6 +22,9 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 public class LHTaskReturnTypeTest {
+
+    static class UnannotatedArrayElement {}
+
     public class ReturnTypeTestTasks {
         @LHTaskMethod("test-void")
         public void testVoidReturnType() {}
@@ -79,6 +83,18 @@ public class LHTaskReturnTypeTest {
         @LHType(isLHArray = true)
         public String nonArrayLhArrayInvalidTask() {
             return "hello world";
+        }
+
+        @LHTaskMethod("invalid-native-arr-pojo")
+        @LHType(isLHArray = true)
+        public UnannotatedArrayElement[] invalidNativeArrayPojoReturnType() {
+            return null;
+        }
+
+        @LHTaskMethod("invalid-native-arr-adapter-json-obj")
+        @LHType(isLHArray = true)
+        public UUID[] invalidNativeArrayAdapterJsonObjReturnType() {
+            return null;
         }
     }
 
@@ -248,5 +264,46 @@ public class LHTaskReturnTypeTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("@LHType(isLHArray = true) can only be used on array return types");
+    }
+
+    @Test
+    void shouldFailWhenNativeArrayReturnElementResolvesToJsonObj() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "invalid-native-arr-pojo");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    void shouldFailWhenNativeArrayReturnElementAdapterResolvesToJsonObj() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "invalid-native-arr-adapter-json-obj");
+
+        LHTypeAdapterRegistry typeAdapterRegistry =
+                LHTypeAdapterRegistry.from(Map.of(UUID.class, new LHJsonObjAdapter<UUID>() {
+                    @Override
+                    public String toJsonObj(UUID src) {
+                        return "{}";
+                    }
+
+                    @Override
+                    public UUID fromJsonObj(String src) {
+                        return UUID.randomUUID();
+                    }
+
+                    @Override
+                    public Class<UUID> getTypeClass() {
+                        return UUID.class;
+                    }
+                }));
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, typeAdapterRegistry, Map.of());
+                })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 }

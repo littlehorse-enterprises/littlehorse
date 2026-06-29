@@ -13,7 +13,7 @@ export const Results = ({ variables, classTitle }: { variables: [string, Variabl
           <div className="ml-1 flex  w-fit flex-col gap-1 ">
             {variables.map(([key, variable], index) => {
               if (!variable) return null
-              const variableType = variable.value?.$case
+              const variableType = variable.value?.oneofKind
               return (
                 <div key={`result-${index}-${key}`} className="flex w-full items-center gap-1">
                   <IdentifierBadge name={key} />

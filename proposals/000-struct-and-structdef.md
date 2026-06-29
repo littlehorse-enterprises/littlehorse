@@ -6,6 +6,7 @@
       - [Inline Structs](#inline-structs)
       - [`StructDef` Versioning](#structdef-versioning)
     - [Existing Protobuf](#existing-protobuf)
+    - [StructDef Type Constraints](#structdef-type-constraints)
     - [`StructDef` Schema Evolution](#structdef-schema-evolution)
       - [Validating `StructDef` Schema Evolution](#validating-structdef-schema-evolution)
   - [Nullable `StructField` Values](#nullable-structfield-values)
@@ -53,6 +54,8 @@ We want schemas on the LH Server for several reasons:
 We already have strong typing for primitive types (`INT`, `STR`, `DOUBLE`, `BOOL`). However, the `JSON_OBJ` and `JSON_ARR` fields are YOLO Wild West, which has caused problems and errors for our users.
 
 This proposal proposes to introduce a new type of variable, a `Struct` (with an associated `StructDef` metadata object). The `Struct` is intended to replace the `JSON_ARR` and `JSON_OBJ` fields in the long term, and if we implement it properly (with sufficient support in the SDK-side), ideally we will have equally or even more convenient developer experience while introducing strong typing.
+
+To preserve type-safety guarantees, `JSON_OBJ` and `JSON_ARR` are not supported inside `StructDef` or `InlineArrayDef` field schemas. In `StructDef`s and `InlineArrayDef`s, object-like schemas should use nested `StructDef` references and list-like schemas should use `InlineArrayDef`.
 
 We will deprecate the `JSON_OBJ` and `JSON_ARR` variable types before the `1.0` release and we will remove them with `2.0` (which is not going to happen for at least 2-3 years).
 
@@ -249,6 +252,18 @@ The additions are the `Struct struct = 9;` and `Array array = 10;` fields.
 
 Note that the `Variable`, `VariableDef`, `ThreadVarDef`, `ReturnType`, `TaskDef`, `ExternalEventDef`, `WorkflowEventDef`, `UserTaskDef`, and other protobuf structures will **not** need to change. All of the changes will be encapsulated within the `TypeDefinition` and `VariableValue` messages.
 
+### StructDef Type Constraints
+
+To ensure strong typing, the server and SDKs will reject non-primitive schemas that contain JSON primitive types. This will apply to `StructDef`s, `InlineArrayDef`s, and `InlineStructDef`s.
+
+Specifically:
+
+* `StructFieldDef.field_type` must not resolve to `JSON_OBJ` or `JSON_ARR`.
+* This rule applies recursively to nested `InlineArrayDef.array_type` definitions.
+* `PutStructDef` and `ValidateStructDefEvolution` reject invalid schemas with a validation error.
+
+This means `InlineArrayDef` and `StructDef`/`InlineStructDef` are the canonical typed replacement for legacy `JSON_ARR` and `JSON_OBJ` usage within schema definitions.
+
 ### `StructDef` Schema Evolution
 
 At first, we will allow only Fully-Compatible schema changes:
@@ -383,6 +398,8 @@ The interaction between `is_nullable` and `default_value` follows these rules:
 3. **Nullable field with a default value** — the field may be absent (the non-null default applies) or present with either a non-null or a null value.
 
 ## Interoperability with `JSON_OBJ`
+
+`JSON_OBJ` and `JSON_ARR` remain available for backwards compatibility and boundary interoperability, but they are legacy dynamic types and are intentionally not allowed in `StructDef` schemas.
 
 Our conversion policy will be that we can convert a `Struct` to a `JSON_OBJ`, but we do not allow converting a `JSON_OBJ` to a `Struct`. For example:
 

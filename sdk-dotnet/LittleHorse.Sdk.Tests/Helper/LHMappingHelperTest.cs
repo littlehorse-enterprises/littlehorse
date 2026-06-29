@@ -428,4 +428,128 @@ public class LHMappingHelperTest
 
         Assert.Throws<LHSerdeException>(() => LHMappingHelper.VariableValueToObject(variableValue, typeof(TestStruct)));
     }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithLongArray_ShouldProduceArrayVariableValue()
+    {
+        long[] numbers = new long[] { 1L, 2L, 3L };
+
+        var val = LHMappingHelper.ObjectToVariableValueAsNativeArray(numbers, typeof(long[]));
+
+        Assert.Equal(VariableValue.ValueOneofCase.Array, val.ValueCase);
+        Assert.Equal(3, val.Array.Items.Count);
+        Assert.Equal(1L, val.Array.Items[0].Int);
+        Assert.Equal(2L, val.Array.Items[1].Int);
+        Assert.Equal(3L, val.Array.Items[2].Int);
+    }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithStringArray_ShouldProduceStrItems()
+    {
+        string[] words = new[] { "hello", "world" };
+
+        var val = LHMappingHelper.ObjectToVariableValueAsNativeArray(words, typeof(string[]));
+
+        Assert.Equal(VariableValue.ValueOneofCase.Array, val.ValueCase);
+        Assert.Equal(2, val.Array.Items.Count);
+        Assert.Equal("hello", val.Array.Items[0].Str);
+        Assert.Equal("world", val.Array.Items[1].Str);
+    }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithStringList_ShouldProduceArrayVariableValue()
+    {
+        var words = new List<string> { "foo", "bar" };
+
+        var val = LHMappingHelper.ObjectToVariableValueAsNativeArray(words, typeof(List<string>));
+
+        Assert.Equal(VariableValue.ValueOneofCase.Array, val.ValueCase);
+        Assert.Equal(2, val.Array.Items.Count);
+        Assert.Equal("foo", val.Array.Items[0].Str);
+        Assert.Equal("bar", val.Array.Items[1].Str);
+    }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithNull_ShouldReturnNullVariableValue()
+    {
+        var val = LHMappingHelper.ObjectToVariableValueAsNativeArray(null);
+
+        Assert.Equal(VariableValue.ValueOneofCase.None, val.ValueCase);
+    }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithByteArray_ShouldThrow()
+    {
+        // byte[] is BYTES in LH, never a native array
+        Assert.Throws<LHSerdeException>(
+            () => LHMappingHelper.ObjectToVariableValueAsNativeArray(new byte[] { 1, 2 }));
+    }
+
+    [Fact]
+    public void ObjectToVariableValueAsNativeArray_WithScalarValue_ShouldThrow()
+    {
+        // mirrors: shouldFailNativeArraySerializationForNonArrayDeclaredType
+        Assert.Throws<LHSerdeException>(
+            () => LHMappingHelper.ObjectToVariableValueAsNativeArray("not-an-array"));
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithNativeArray_ShouldDeserializeToTypedArray()
+    {
+        // mirrors: shouldDeserializeNativeLHArrayToJavaArray
+        var nativeArray = new VariableValue
+        {
+            Array = new LittleHorse.Sdk.Common.Proto.Array
+            {
+                Items = { new VariableValue { Int = 7L }, new VariableValue { Int = 9L } }
+            }
+        };
+
+        var result = (long[])LHMappingHelper.VariableValueToObject(nativeArray, typeof(long[]))!;
+
+        Assert.Equal(new long[] { 7L, 9L }, result);
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithNativeArray_ShouldDeserializeToList()
+    {
+        var nativeArray = new VariableValue
+        {
+            Array = new LittleHorse.Sdk.Common.Proto.Array
+            {
+                Items = { new VariableValue { Str = "a" }, new VariableValue { Str = "b" } }
+            }
+        };
+
+        var result = (List<string>)LHMappingHelper.VariableValueToObject(nativeArray, typeof(List<string>))!;
+
+        Assert.Equal(new List<string> { "a", "b" }, result);
+    }
+
+    [Fact]
+    public void VariableValueToObject_WithNativeArrayAndByteArrayTarget_ShouldThrow()
+    {
+        var nativeArray = new VariableValue
+        {
+            Array = new LittleHorse.Sdk.Common.Proto.Array
+            {
+                Items = { new VariableValue { Int = 1L } }
+            }
+        };
+
+        Assert.Throws<LHSerdeException>(
+            () => LHMappingHelper.VariableValueToObject(nativeArray, typeof(byte[])));
+    }
+
+    [Fact]
+    public void ValueCaseToVariableType_WithNativeArray_ShouldThrowNotSupported()
+    {
+        var nativeArrayValue = new VariableValue
+        {
+            Array = new LittleHorse.Sdk.Common.Proto.Array()
+        };
+
+        Assert.Throws<NotSupportedException>(
+            () => LHMappingHelper.ValueCaseToVariableType(nativeArrayValue.ValueCase));
+    }
 }

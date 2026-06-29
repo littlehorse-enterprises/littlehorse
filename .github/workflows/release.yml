@@ -8,6 +8,8 @@ on:
 permissions:
   packages: write
   contents: write
+  id-token: write
+
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -204,16 +206,20 @@ jobs:
         with:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-          cache-dependency-path: ${{env.working-directory}}
+          package-manager-cache: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
 
       - name: Install dependencies
         working-directory: ${{env.working-directory}}
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Run unit tests
         working-directory: ${{env.working-directory}}
-        run: npm test
+        run: pnpm run test
 
       - name: Use tag
         working-directory: ${{env.working-directory}}
@@ -223,13 +229,11 @@ jobs:
 
       - name: Build
         working-directory: ${{env.working-directory}}
-        run: npm run build
+        run: pnpm run build
 
       - name: Publish
         working-directory: ${{env.working-directory}}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-        run: npm publish --access public
+        run: pnpm publish --access public --no-git-checks
 
   publish-sdk-dotnet:
     runs-on: ubuntu-latest
@@ -265,7 +269,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: "1.21.3"
+          go-version: "1.24"
 
       - name: Build
         uses: goreleaser/goreleaser-action@v6

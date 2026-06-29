@@ -15,11 +15,11 @@ export const getWfSpecVersions = async (props: GetWfSpecProps): Promise<VersionL
   const client = getClient({ tenantId, accessToken: session?.accessToken })
 
   const allVersions: string[] = []
-  let bookmark: Buffer | undefined
+  let bookmark: Uint8Array | undefined
 
   do {
     const specs = await client.searchWfSpec({
-      wfSpecCriteria: { $case: 'name', value: name },
+      wfSpecCriteria: { oneofKind: 'name', name },
       bookmark,
       limit: SEARCH_DEFAULT_LIMIT,
     })

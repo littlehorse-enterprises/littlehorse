@@ -9,6 +9,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -613,6 +614,66 @@ public class StructDefLifecycleTest {
                     })
                     .isInstanceOf(StatusRuntimeException.class)
                     .hasMessageContaining("cannot include special characters");
+        }
+    }
+
+    @Nested
+    class StructDefFieldTypeValidationTest {
+        @Test
+        void shouldRejectJsonObjFieldType() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-json-obj")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "payload",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.JSON_OBJ))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        }
+
+        @Test
+        void shouldRejectJsonArrFieldType() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-json-arr")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "payload",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.JSON_ARR))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("Forbidden JSON type: JSON_ARR");
+        }
+
+        @Test
+        void shouldRejectInlineArrayContainingJsonType() {
+            assertThatThrownBy(() -> {
+                        client.putStructDef(PutStructDefRequest.newBuilder()
+                                .setName("car-inline-array-json")
+                                .setStructDef(InlineStructDef.newBuilder()
+                                        .putFields(
+                                                "payload",
+                                                StructFieldDef.newBuilder()
+                                                        .setFieldType(TypeDefinition.newBuilder()
+                                                                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                                                        .setArrayType(TypeDefinition.newBuilder()
+                                                                                .setPrimitiveType(
+                                                                                        VariableType.JSON_OBJ))))
+                                                        .build()))
+                                .build());
+                    })
+                    .isInstanceOf(StatusRuntimeException.class)
+                    .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
         }
     }
 

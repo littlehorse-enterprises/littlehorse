@@ -23,12 +23,8 @@ jobs:
           distribution: "corretto"
           java-version: 25
 
-      - name: Dump version
-        if: inputs.tag != ''
-        run: sed -i "s/version=.*/version=${{ inputs.tag }}/g" gradle.properties
-
       - name: Tests and Build
-        run: ./gradlew server:test server:shadowJar server:installDist
+        run: ./gradlew server:test server:shadowJar server:installDist -Pversion=${{ inputs.tag }}
 
       - uses: actions/upload-artifact@v7
         with:
@@ -57,8 +53,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-canary:
     runs-on: ubuntu-latest
@@ -83,8 +80,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lhctl:
     runs-on: ubuntu-latest
@@ -103,8 +101,9 @@ jobs:
             COMMIT=${{ github.sha }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-dashboard:
     runs-on: ubuntu-latest
@@ -116,6 +115,11 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
 
       - name: Update Dashboard Version
         working-directory: ./dashboard
@@ -131,8 +135,8 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
 
       - name: Build and Publish
         uses: littlehorse-enterprises/publish-image@v1
@@ -142,8 +146,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-standalone:
     runs-on: ubuntu-latest
@@ -158,6 +163,11 @@ jobs:
         with:
           node-version: 24
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
       - name: Update Dashboard Version
         working-directory: ./dashboard
         run: |
@@ -172,8 +182,8 @@ jobs:
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm ci
-          npm run build
+          pnpm install
+          pnpm run build
 
       - name: Download Server dist artifact
         uses: actions/download-artifact@v8
@@ -189,5 +199,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           tags: |
             type=raw,value=latest,enable=false
+            type=raw,value=${{ inputs.tag }},enable=${{ inputs.tag != '' }}
             type=semver,pattern={{version}}
-            type=ref,event=branch
+            type=ref,event=branch,enable=${{ github.ref_name == 'master' }}

@@ -208,12 +208,17 @@ jobs:
         with:
           node-version: 24
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
       - name: Build Dashboard
         working-directory: ./dashboard
         run: |
-          npm install --verbose
-          npm run build
-          npm run test
+          pnpm install
+          pnpm run build
+          pnpm run test
 
   tests-sdk-dotnet:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}

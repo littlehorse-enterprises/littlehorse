@@ -24,6 +24,7 @@
   "files": [
     "/dist"
   ],
+  "packageManager": "pnpm@10.19.0",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -40,11 +41,13 @@
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "ts-proto": "^1.181.2",
-    "typescript": "^5.3.3"
+    "typescript": "5.3.3"
   },
   "dependencies": {
-    "nice-grpc": "^2.1.12",
+    "@grpc/grpc-js": "^1.12.5",
+    "@protobuf-ts/grpc-transport": "^2.11.1",
+    "@protobuf-ts/runtime": "^2.11.1",
+    "@protobuf-ts/runtime-rpc": "^2.11.1",
     "zod": "^4.3.6"
   },
   "peerDependencies": {

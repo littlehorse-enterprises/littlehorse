@@ -125,7 +125,9 @@ namespace LittleHorse.Sdk.Helper
 
       foreach (LHStructProperty property in GetStructProperties())
       {
-        inlineStructDef.Fields.Add(property.FieldName, property.ToStructFieldDef());
+        StructFieldDef fieldDef = property.ToStructFieldDef();
+        LHTypeConstraintValidator.EnsureNoJsonPrimitiveTypes(fieldDef.FieldType);
+        inlineStructDef.Fields.Add(property.FieldName, fieldDef);
       }
 
       return inlineStructDef;

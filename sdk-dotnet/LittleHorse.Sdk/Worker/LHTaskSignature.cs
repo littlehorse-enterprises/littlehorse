@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Exceptions;
-using LittleHorse.Sdk.Helper;
 using Microsoft.Extensions.Logging;
 
 namespace LittleHorse.Sdk.Worker
@@ -87,71 +86,15 @@ namespace LittleHorse.Sdk.Worker
                     continue;
                 }
 
-                _variableDefs.Add(BuildVariableDef(methodParams[i], i));
+                var taskParameter = new LHTaskParameter(methodParams[i], i, _logger);
+                _variableDefs.Add(taskParameter.VariableDef);
             }
-        }
-
-        private VariableDef BuildVariableDef(ParameterInfo param, int index)
-        {
-            var paramType = param.ParameterType;
-            var lhClassType = LHClassType.FromType(paramType);
-            var typeDef = lhClassType.GetTypeDefinition();
-
-            var maskedParam = false;
-            var paramName = param.Name;
-            if (string.IsNullOrWhiteSpace(paramName))
-            {
-                _logger.LogWarning("Unable to inspect parameter names using reflection; using parameter index as name.");
-                paramName = $"param{index}";
-            }
-
-            if (param.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhTypeValue)
-            {
-                maskedParam = lhTypeValue.Masked;
-                if (!lhTypeValue.Name.Trim().Equals(string.Empty))
-                {
-                    paramName = lhTypeValue.Name;
-                }
-            }
-
-            typeDef.Masked = maskedParam;
-
-            return new VariableDef
-            {
-                Name = paramName,
-                TypeDef = typeDef
-            };
         }
         
         private ReturnType BuildReturnType()
         {
-            if (TaskMethod.ReturnType == typeof(void) || TaskMethod.ReturnType == typeof(Task))
-            {
-                return new ReturnType { };
-            }
-
-            if (!TaskMethod.ReturnType.IsGenericType
-                || TaskMethod.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
-            {
-                throw new LHTaskSchemaMismatchException("Task methods must return Task<type>, Task, or void");
-            }
-
-            var returnType = TaskMethod.ReturnType.GetGenericArguments().First();
-            var lhClassType = LHClassType.FromType(returnType);
-            var typeDef = lhClassType.GetTypeDefinition();
-            var maskedValue = false;
-
-            if (TaskMethod.GetCustomAttribute(typeof(LHTypeAttribute)) is LHTypeAttribute lhType)
-            {
-                maskedValue = lhType.Masked;
-            }
-
-            typeDef.Masked = maskedValue;
-
-            return new ReturnType
-            {
-                ReturnType_ = typeDef
-            };
+            var taskReturnType = new LHTaskReturnType(TaskMethod);
+            return taskReturnType.ReturnType;
         }
     }
 }

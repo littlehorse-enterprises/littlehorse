@@ -1,5 +1,6 @@
 'use client'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
+import { routes } from '@/app/routes'
 import { Separator } from '@/components/ui/separator'
 import { StructDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -15,7 +16,7 @@ export const StructDefClient: FC<Props> = ({ structDef }) => {
 
   return (
     <>
-      <Navigation href="/?type=StructDef" title="Go back to StructDefs" />
+      <Navigation href={routes.search.homeWithType('StructDef')} title="Go back to StructDefs" />
       <Details id={structDef.id} description={structDef.description} />
       <Fields fields={structDef.structDef.fields} />
 

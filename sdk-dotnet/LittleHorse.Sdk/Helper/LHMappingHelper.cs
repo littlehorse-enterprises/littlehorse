@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Linq;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using LittleHorse.Sdk.Common.Proto;
@@ -129,6 +130,50 @@ namespace LittleHorse.Sdk.Helper
         }
 
         /// <summary>
+        /// Serializes a .NET array/list into a native LittleHorse ARRAY VariableValue.
+        /// This mirrors the Java <c>objToVarValAsNativeArray</c> behavior as an explicit API.
+        /// </summary>
+        /// <param name="obj">The array/list object to serialize.</param>
+        /// <param name="declaredArrayType">
+        /// The declared .NET type of the array or list (e.g. <c>typeof(string[])</c> or <c>typeof(List&lt;string&gt;)</c>).
+        /// When provided, the element type is resolved from this type and used to serialize each item,
+        /// mirroring the Java SDK's type-safe element serialization via the declared component type.
+        /// </param>
+        internal static VariableValue ObjectToVariableValueAsNativeArray(object? obj, Type? declaredArrayType = null)
+        {
+            if (obj == null)
+            {
+                return new VariableValue();
+            }
+
+            if (obj is byte[])
+            {
+                throw new LHSerdeException("Cannot serialize byte[] as native ARRAY. Use BYTES instead.");
+            }
+
+            if (obj is System.Array nativeArray)
+            {
+                Type? elementType = declaredArrayType?.GetElementType();
+                return new VariableValue
+                {
+                    Array = ToNativeArray(nativeArray, elementType)
+                };
+            }
+
+            if (obj is IList list)
+            {
+                Type? elementType = declaredArrayType != null && TryGetListElementType(declaredArrayType, out Type et) ? et : null;
+                return new VariableValue
+                {
+                    Array = ToNativeArray(list, elementType)
+                };
+            }
+
+            throw new LHSerdeException(
+                $"Native array serialization requires an array or IList value, but got [{obj.GetType().Name}].");
+        }
+
+        /// <summary>
         /// Converts an LH VariableValue to a C# object
         /// </summary>
         /// <param name="val">The value</param>
@@ -165,6 +210,8 @@ namespace LittleHorse.Sdk.Helper
                     return val.Bool;
                 case VariableValue.ValueOneofCase.Struct:
                     return DeserializeStructToObject(val.Struct, type);
+                case VariableValue.ValueOneofCase.Array:
+                    return DeserializeNativeArrayToObject(val.Array, type);
                 case VariableValue.ValueOneofCase.JsonArr:
                     jsonStr = val.JsonArr;
                     return JsonHandler.DeserializeFromJson(jsonStr, type);
@@ -360,12 +407,36 @@ namespace LittleHorse.Sdk.Helper
                     return VariableType.Timestamp;
                 case VariableValue.ValueOneofCase.WfRunId:
                     return VariableType.WfRunId;
+                case VariableValue.ValueOneofCase.Array:
+                    throw new NotSupportedException(
+                        "Native LH ARRAY does not map to a single VariableType. Use TypeDefinition.InlineArrayDef instead.");
                 case VariableValue.ValueOneofCase.JsonObj:
                     return VariableType.JsonObj;
                 case VariableValue.ValueOneofCase.None:
                 default:
                     return VariableType.JsonObj;
             }
+        }
+
+        internal static bool TryGetListElementType(Type type, out Type elementType)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IList<>))
+            {
+                elementType = type.GetGenericArguments()[0];
+                return true;
+            }
+
+            Type? listInterface = type.GetInterfaces()
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
+
+            if (listInterface != null)
+            {
+                elementType = listInterface.GetGenericArguments()[0];
+                return true;
+            }
+
+            elementType = null!;
+            return false;
         }
 
         /// <summary>
@@ -472,6 +543,91 @@ namespace LittleHorse.Sdk.Helper
             }
 
             throw new ArgumentException($"Unexpected task status: {status}");;
+        }
+
+        private static Common.Proto.Array ToNativeArray(System.Array array, Type? elementType)
+        {
+            var output = new Common.Proto.Array();
+            foreach (object? item in array)
+            {
+                output.Items.Add(SerializeArrayElement(item, elementType));
+            }
+
+            return output;
+        }
+
+        private static Common.Proto.Array ToNativeArray(IList list, Type? elementType)
+        {
+            var output = new Common.Proto.Array();
+            foreach (object? item in list)
+            {
+                output.Items.Add(SerializeArrayElement(item, elementType));
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Serializes a single array element using the declared element type when available,
+        /// mirroring the Java SDK's type-aware per-element serialization.
+        /// </summary>
+        private static VariableValue SerializeArrayElement(object? item, Type? elementType)
+        {
+            if (item == null)
+            {
+                return new VariableValue();
+            }
+
+            // If the element itself is a native array/list and we have a nested element type,
+            // recurse so that multi-dimensional LH Arrays are handled correctly.
+            if (elementType != null && elementType.IsArray && elementType != typeof(byte[]) && item is System.Array nestedArray)
+            {
+                return ObjectToVariableValueAsNativeArray(nestedArray, elementType);
+            }
+
+            return ObjectToVariableValue(item);
+        }
+
+        private static object DeserializeNativeArrayToObject(Common.Proto.Array arrayValue, Type targetType)
+        {
+            if (targetType == typeof(byte[]))
+            {
+                throw new LHSerdeException("Cannot deserialize native LH ARRAY into byte[]. Use BYTES instead.");
+            }
+
+            if (targetType.IsArray)
+            {
+                Type? elementType = targetType.GetElementType();
+                if (elementType == null)
+                {
+                    throw new LHSerdeException($"Unable to resolve array element type for {targetType.FullName}.");
+                }
+
+                System.Array output = System.Array.CreateInstance(elementType, arrayValue.Items.Count);
+                for (int i = 0; i < arrayValue.Items.Count; i++)
+                {
+                    output.SetValue(VariableValueToObject(arrayValue.Items[i], elementType), i);
+                }
+
+                return output;
+            }
+
+            if (TryGetListElementType(targetType, out Type listElementType))
+            {
+                Type concreteListType = typeof(List<>).MakeGenericType(listElementType);
+                IList outputList = (IList)(Activator.CreateInstance(concreteListType)
+                    ?? throw new LHSerdeException($"Could not instantiate {concreteListType.FullName}."));
+
+                foreach (VariableValue item in arrayValue.Items)
+                {
+                    outputList.Add(VariableValueToObject(item, listElementType));
+                }
+
+                return outputList;
+            }
+
+            throw new LHSerdeException(
+                $"Cannot deserialize native LH ARRAY into target type [{targetType.FullName}]. Expected array or IList<T>.");
         }
     }
 }

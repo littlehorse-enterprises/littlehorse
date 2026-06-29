@@ -2,7 +2,8 @@
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
-import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
+import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
+import { routes } from '@/app/routes'
 import { wfRunIdToPath, getVariableValue, localDateTimeToUTCIsoString, utcToLocalDateTime } from '@/app/utils'
 import {
   AlertDialog,
@@ -24,7 +25,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { CorrelatedEventId, ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { CorrelatedEventId, ExternalEventDef as ExternalEventDefProto, Timestamp } from 'littlehorse-client/proto'
 import { RefreshCwIcon, Trash2 } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -46,12 +47,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
   const [createdAfter, setCreatedAfter] = useState('')
   const [createdBefore, setCreatedBefore] = useState('')
   const [isClaimed, setIsClaimed] = useState<boolean>(true)
-  const [limit, setLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [limit, setLimit] = usePersistedSearchLimit('eedef-external-events')
 
   // Correlated Events state
   const [correlatedCreatedAfter, setCorrelatedCreatedAfter] = useState('')
   const [correlatedCreatedBefore, setCorrelatedCreatedBefore] = useState('')
-  const [correlatedLimit, setCorrelatedLimit] = useState<number>(SEARCH_DEFAULT_LIMIT)
+  const [correlatedLimit, setCorrelatedLimit] = usePersistedSearchLimit('eedef-correlated-events')
   const [hasExternalEvents, setHasExternalEvents] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -96,8 +97,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         limit,
         externalEventDefId: { name: spec.id?.name ?? '' },
         isClaimed,
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
@@ -125,8 +130,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit: correlatedLimit,
         externalEventDefId: { name: spec.id?.name ?? '' },
-        earliestStart: correlatedCreatedAfter ? localDateTimeToUTCIsoString(correlatedCreatedAfter) : undefined,
-        latestStart: correlatedCreatedBefore ? localDateTimeToUTCIsoString(correlatedCreatedBefore) : undefined,
+        earliestStart: correlatedCreatedAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(correlatedCreatedAfter)))
+          : undefined,
+        latestStart: correlatedCreatedBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(correlatedCreatedBefore)))
+          : undefined,
         hasExternalEvents: hasExternalEvents,
       })
     },
@@ -134,7 +143,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
 
   return (
     <>
-      <Navigation href="/?type=ExternalEventDef" title="Go back to ExternalEventDef" />
+      <Navigation href={routes.search.homeWithType('ExternalEventDef')} title="Go back to ExternalEventDef" />
       <Details spec={spec} />
       <hr className="mt-6" />
       <div className="mt-6">
@@ -206,7 +215,7 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`/wfRun/${wfRunIdToPath(externalEvent.id.wfRunId)}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(externalEvent.id.wfRunId))}?threadRunNumber=${externalEvent.threadRunNumber}&nodeRunName=${externalEvent.nodeRunPosition}-${spec.id?.name}-EXTERNAL_EVENT`}
                                   >
                                     {wfRunIdToPath(externalEvent.id.wfRunId)}
                                   </LinkWithTenant>

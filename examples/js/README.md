@@ -32,5 +32,6 @@ lhctl deploy wfSpec example-basic-wfspec.json
 
 ## JavaScript Example Index
 
+- [`quickstart/`](./quickstart/README.md): KYC identity verification quickstart (matches the Java/Go/Python quickstarts).
 - [`simple-worker/`](./simple-worker/README.md): Basic task worker example.
 - [`structs/`](./structs/README.md): Struct-based worker and workflow example.

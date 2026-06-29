@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTECommentDeleted } from 'littlehorse-client/proto'
 import React from 'react'
 
-export const CommentDeletedEvent = ({ event, time }: { event: UserTaskEvent_UTECommentDeleted; time?: string }) => {
+export const CommentDeletedEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTECommentDeleted
+  time?: import('@/app/utils').DateLike
+}) => {
   const { userCommentId, userId } = event
   return (
     <>

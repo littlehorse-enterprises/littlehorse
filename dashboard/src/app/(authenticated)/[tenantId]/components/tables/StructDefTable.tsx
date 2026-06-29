@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { StructDefId } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -27,7 +28,7 @@ export const StructDefTable: FC<SearchResultProps> = ({ pages = [] }) => {
             <TableRow key={`${name}.${version}`} className="hover:bg-gray-50">
               <TableCell>
                 <LinkWithTenant
-                  href={`/structDef/${name}/${version}`}
+                  href={routes.structDef.detail(name, version)}
                   className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
                 >
                   {name}

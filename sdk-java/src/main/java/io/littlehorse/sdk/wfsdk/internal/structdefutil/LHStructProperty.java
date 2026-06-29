@@ -61,8 +61,7 @@ public class LHStructProperty {
             Object val = pd.getReadMethod().invoke(o);
             if (val == null) return null;
 
-            LHStructField structField = getAnnotation(LHStructField.class);
-            if (structField != null && structField.isLHArray() && val.getClass().isArray()) {
+            if (isNativeArray() && val.getClass().isArray()) {
                 return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
             }
 
@@ -103,10 +102,7 @@ public class LHStructProperty {
     }
 
     public StructFieldDef toStructFieldDef(LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHClassType propertyClass = this.getPropertyType(typeAdapterRegistry);
-        TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
-                .setMasked(this.isMasked())
-                .build();
+        TypeDefinition typeDef = resolveValidatedFieldType(typeAdapterRegistry);
 
         StructFieldDef.Builder fieldDef =
                 StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
@@ -117,6 +113,27 @@ public class LHStructProperty {
         }
 
         return fieldDef.build();
+    }
+
+    private TypeDefinition resolveValidatedFieldType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        LHClassType propertyClass;
+        try {
+            propertyClass = this.getPropertyType(typeAdapterRegistry);
+
+            LHTypeConstraintValidator.ensureNoJsonPrimitiveTypes(propertyClass.getTypeDefinition());
+        } catch (IllegalArgumentException | ForbiddenJsonTypeException ex) {
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Invalid StructDef field [%s] on class %s: %s",
+                            this.fieldName, this.parentStructDef.getClassType().getCanonicalName(), ex.getMessage()),
+                    ex);
+        }
+
+        TypeDefinition typeDef = propertyClass.getTypeDefinition().toBuilder()
+                .setMasked(this.isMasked())
+                .build();
+
+        return typeDef;
     }
 
     public Optional<VariableValue> getDefaultValue() {
@@ -146,12 +163,15 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHStructField structField = getAnnotation(LHStructField.class);
-        if (structField != null && structField.isLHArray()) {
+        if (isNativeArray()) {
             return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
         }
 
         return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
+    }
+
+    private boolean isNativeArray() {
+        return pd.getPropertyType().isArray() && !byte[].class.equals(pd.getPropertyType());
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or

@@ -1,9 +1,10 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { useSelectedThreadError } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useSelectedThreadError'
-import { WfRun } from 'littlehorse-client/proto'
+import { routes } from '@/app/routes'
+import { flattenWfRunId, formatDate, toDate, wfRunIdToPath } from '@/app/utils'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { Expand } from 'lucide-react'
 import { FC, useState } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
@@ -28,7 +29,7 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
       {id.parentWfRunId && (
         <div className="flex items-center gap-2">
           Parent WfRun:
-          <LinkWithTenant href={`/wfRun/${wfRunIdToPath(id.parentWfRunId)}`} linkStyle>
+          <LinkWithTenant href={routes.wfRun.detail(wfRunIdToPath(id.parentWfRunId))} linkStyle>
             <p>{id.parentWfRunId.id}</p>
           </LinkWithTenant>
         </div>
@@ -37,17 +38,18 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
         <div className="flex items-center gap-2">
           WfSpec:
           <LinkWithTenant
-            href={`/wfSpec/${wfSpecId.name}/${wfSpecId.majorVersion}/${wfSpecId.revision}`}
+            href={routes.wfSpec.detailWithRevision(wfSpecId.name, wfSpecId.majorVersion, wfSpecId.revision)}
             className="flex items-center gap-2 text-blue-500 underline"
           >
             {`${wfSpecId.name} ${wfSpecId.majorVersion}.${wfSpecId.revision}`}
           </LinkWithTenant>
         </div>
         <div className="flex items-center">
-          Status: <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[status].backgroundColor}`}>{`${status}`}</span>
+          Status:{' '}
+          <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[status].backgroundColor}`}>{LHStatus[status]}</span>
         </div>
         <div className="flex items-center">
-          Started: <span className={` ml-2`}>{`${formatDate(Date.parse(startTime || ''))}`}</span>
+          Started: <span className={` ml-2`}>{`${formatDate(toDate(startTime))}`}</span>
         </div>
       </div>
       {threadError && (
@@ -59,7 +61,7 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
           <span
             className={`shrink-0 rounded px-2 py-0.5 text-sm font-medium ${WF_RUN_STATUS[status].backgroundColor} ${WF_RUN_STATUS[status].textColor}`}
           >
-            {status}
+            {LHStatus[status]}
           </span>
           {threadError.threadName && (
             <span className="shrink-0 rounded bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800">

@@ -10,23 +10,24 @@ export function extractVariableValue(variable: VariableValue | undefined): unkno
     return undefined
   }
 
-  switch (variable.value.$case) {
+  const value = variable.value
+  switch (value.oneofKind) {
     case 'str':
-      return variable.value.value
+      return value.str
     case 'int':
-      return variable.value.value
+      return Number(value.int)
     case 'double':
-      return variable.value.value
+      return value.double
     case 'bool':
-      return variable.value.value
+      return value.bool
     case 'bytes':
-      return variable.value.value
+      return value.bytes
     case 'jsonObj':
-      return JSON.parse(variable.value.value)
+      return JSON.parse(value.jsonObj)
     case 'jsonArr':
-      return JSON.parse(variable.value.value)
+      return JSON.parse(value.jsonArr)
     case 'struct':
-      return extractStruct(variable.value.value)
+      return extractStruct(value.struct)
     default:
       return undefined
   }
@@ -44,37 +45,37 @@ export function extractTaskArgs(task: ScheduledTask): unknown[] {
  */
 export function toVariableValue(value: unknown): VariableValue {
   if (value === null || value === undefined) {
-    return { value: undefined }
+    return { value: { oneofKind: undefined } }
   }
 
   if (typeof value === 'string') {
-    return { value: { $case: 'str', value } }
+    return { value: { oneofKind: 'str', str: value } }
   }
 
   if (typeof value === 'number') {
     if (Number.isInteger(value)) {
-      return { value: { $case: 'int', value } }
+      return { value: { oneofKind: 'int', int: String(value) } }
     }
-    return { value: { $case: 'double', value } }
+    return { value: { oneofKind: 'double', double: value } }
   }
 
   if (typeof value === 'boolean') {
-    return { value: { $case: 'bool', value } }
+    return { value: { oneofKind: 'bool', bool: value } }
   }
 
   if (Buffer.isBuffer(value) || value instanceof Uint8Array) {
-    return { value: { $case: 'bytes', value: Buffer.from(value) } }
+    return { value: { oneofKind: 'bytes', bytes: Buffer.from(value) } }
   }
 
   if (Array.isArray(value)) {
-    return { value: { $case: 'jsonArr', value: JSON.stringify(value) } }
+    return { value: { oneofKind: 'jsonArr', jsonArr: JSON.stringify(value) } }
   }
 
   if (typeof value === 'object') {
-    return { value: { $case: 'jsonObj', value: JSON.stringify(value) } }
+    return { value: { oneofKind: 'jsonObj', jsonObj: JSON.stringify(value) } }
   }
 
-  return { value: { $case: 'str', value: String(value) } }
+  return { value: { oneofKind: 'str', str: String(value) } }
 }
 
 /**

@@ -1,8 +1,10 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -98,6 +100,22 @@ public class LHStructDefTypeTest {
         public boolean isAlive;
     }
 
+    class UnannotatedNestedPojo {
+        public String value;
+    }
+
+    @LHStructDef("invalid-json-obj-holder")
+    @Getter
+    class InvalidJsonObjHolder {
+        public UnannotatedNestedPojo nestedPojo;
+    }
+
+    @LHStructDef("invalid-json-arr-holder")
+    @Getter
+    class InvalidJsonArrHolder {
+        public java.util.List<String> names;
+    }
+
     @Test
     public void getEmptyInlineStructDefWhenClassDoesNotHaveGettersOrSetters() {
         LHStructDefType authorClassType = new LHStructDefType(AuthorFieldsOnly.class, LHTypeAdapterRegistry.empty());
@@ -188,7 +206,14 @@ public class LHStructDefTypeTest {
                         "books",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder()
-                                        .setPrimitiveType(VariableType.JSON_ARR)
+                                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                                .setArrayType(TypeDefinition.newBuilder()
+                                                        .setStructDefId(StructDefId.newBuilder()
+                                                                .setName("book")
+                                                                .setVersion(-1)
+                                                                .build())
+                                                        .build())
+                                                .build())
                                         .build())
                                 .build())
                 .build();
@@ -276,5 +301,19 @@ public class LHStructDefTypeTest {
                 .build();
 
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
+    }
+
+    @Test
+    public void shouldRejectStructDefFieldResolvingToJsonObj() {
+        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    public void shouldRejectStructDefFieldResolvingToJsonArr() {
+        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonArrHolder.class, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Forbidden JSON type: JSON_ARR");
     }
 }

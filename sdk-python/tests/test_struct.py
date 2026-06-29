@@ -38,7 +38,6 @@ from littlehorse.workflow import (
     to_variable_assignment,
 )
 
-
 # ---------------------------------------------------------------------------
 # Fixture struct classes
 # ---------------------------------------------------------------------------
@@ -75,8 +74,16 @@ class AllTypes:
     b: bool
     raw: bytes
     ts: datetime.datetime
-    obj: dict
-    arr: list
+
+
+@lh_struct_def(name="invalid-json-obj-holder")
+class InvalidJsonObjHolder:
+    nested_obj: dict
+
+
+@lh_struct_def(name="invalid-json-arr-holder")
+class InvalidJsonArrHolder:
+    names: list
 
 
 # Non-decorated class for negative tests
@@ -253,12 +260,14 @@ class TestClassToInlineStructDef(unittest.TestCase):
         self.assertEqual(
             inline.fields["ts"].field_type.primitive_type, VariableType.TIMESTAMP
         )
-        self.assertEqual(
-            inline.fields["obj"].field_type.primitive_type, VariableType.JSON_OBJ
-        )
-        self.assertEqual(
-            inline.fields["arr"].field_type.primitive_type, VariableType.JSON_ARR
-        )
+
+    def test_rejects_struct_def_field_resolving_to_json_obj(self):
+        with self.assertRaisesRegex(TypeError, "Forbidden JSON type: JSON_OBJ"):
+            class_to_inline_struct_def(InvalidJsonObjHolder)
+
+    def test_rejects_struct_def_field_resolving_to_json_arr(self):
+        with self.assertRaisesRegex(TypeError, "Forbidden JSON type: JSON_ARR"):
+            class_to_inline_struct_def(InvalidJsonArrHolder)
 
 
 # ---------------------------------------------------------------------------

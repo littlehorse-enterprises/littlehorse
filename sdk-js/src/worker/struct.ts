@@ -227,8 +227,8 @@ export function buildStructVariableDef(paramName: string, schema: LHStructSchema
     name: paramName,
     typeDef: {
       definedType: {
-        $case: 'structDefId',
-        value: { name: schema.name, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name: schema.name, version: 0 },
       },
       masked: false,
     },
@@ -297,8 +297,8 @@ export function toStructVariableValue(
 
   return {
     value: {
-      $case: 'struct',
-      value: {
+      oneofKind: 'struct',
+      struct: {
         structDefId: { name: schema.name, version: structDefVersion },
         struct: { fields },
       },
@@ -312,8 +312,8 @@ function fieldDefToTypeDef(field: FieldDef): TypeDefinition {
   if (field._tag === 'struct') {
     return {
       definedType: {
-        $case: 'structDefId',
-        value: { name: field.schema.name, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name: field.schema.name, version: 0 },
       },
       masked: field.masked,
     }
@@ -321,8 +321,8 @@ function fieldDefToTypeDef(field: FieldDef): TypeDefinition {
 
   return {
     definedType: {
-      $case: 'primitiveType',
-      value: field.variableType,
+      oneofKind: 'primitiveType',
+      primitiveType: field.variableType,
     },
     masked: field.masked,
   }

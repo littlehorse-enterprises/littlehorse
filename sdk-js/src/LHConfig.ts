@@ -1,9 +1,12 @@
-import { Channel, ChannelCredentials, Client, Metadata, createChannel, createClientFactory } from 'nice-grpc'
-import { LittleHorseDefinition } from './proto/service'
-import { createResourceExhaustedRetryMiddleware } from './grpcRetry'
+import { ChannelCredentials } from '@grpc/grpc-js'
+import { GrpcTransport } from '@protobuf-ts/grpc-transport'
+import type { RpcMetadata } from '@protobuf-ts/runtime-rpc'
+import { LittleHorseClient } from './proto/service.client'
 import getPropertiesFile from './utils/getPropertiesFile'
 import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
 import { readFileSync } from 'fs'
+import type { LHPublicClient } from './client'
+import { promisifyClient } from './client'
 
 export const CONFIG_NAMES = [
   'LHC_API_HOST',
@@ -41,9 +44,8 @@ export class LHConfig {
   private clientCert?: string
   private clientKey?: string
   private resourceExhaustedRetryEnabled: boolean = true
-  private channel: Channel
 
-  private channelCredentials?: ChannelCredentials
+  private channelCredentials: ChannelCredentials
 
   private constructor(config: Config) {
     const mergedConfig = { ...DEFAULT_CONFIG, ...config } as Config
@@ -54,23 +56,21 @@ export class LHConfig {
     this.caCert = mergedConfig.LHC_CA_CERT
     this.clientCert = mergedConfig.LHC_CLIENT_CERT
     this.clientKey = mergedConfig.LHC_CLIENT_KEY
-    this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(
-      mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY
-    )
+    this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY)
 
     if (this.protocol === 'TLS') {
-      const rootCa = this.caCert ? readFileSync(this.caCert) : undefined
-      const clientCert = this.clientCert ? readFileSync(this.clientCert) : undefined
-      const clientKey = this.clientKey ? readFileSync(this.clientKey) : undefined
+      const rootCa = this.caCert ? readFileSync(this.caCert) : null
+      const clientCert = this.clientCert ? readFileSync(this.clientCert) : null
+      const clientKey = this.clientKey ? readFileSync(this.clientKey) : null
 
       if (clientCert && clientKey) {
         this.channelCredentials = ChannelCredentials.createSsl(rootCa, clientKey, clientCert)
       } else {
         this.channelCredentials = ChannelCredentials.createSsl(rootCa)
       }
+    } else {
+      this.channelCredentials = ChannelCredentials.createInsecure()
     }
-
-    this.channel = this.openChannel(this.apiHost!, this.apiPort!)
   }
 
   /**
@@ -93,59 +93,57 @@ export class LHConfig {
    *
    * For more documentation about it's method please go to {@link https://littlehorse.io/docs/server}
    *
-   * @param options - An object optionally containing `accessToken` and `tenantId`
-   * @returns a gRPC client for littlehorse
+   * @param accessToken - optional bearer token added to every request
+   * @returns a Promise-based gRPC client for littlehorse
    */
-  public getClient(accessToken?: string): Client<typeof LittleHorseDefinition> {
-    return this.createClientForChannel(this.channel, accessToken)
+  public getClient(accessToken?: string): LHPublicClient {
+    return this.createClientForHost(this.apiHost!, this.apiPort!, accessToken)
   }
 
-  public openChannel(host: string, port: string | number): Channel {
-    return createChannel(`${host}:${port}`, this.channelCredentials)
+  /**
+   * Creates a transport pointing at the given host/port. Used internally by the
+   * task worker to create per-host connections.
+   */
+  public createTransport(host: string, port: string | number): GrpcTransport {
+    return new GrpcTransport({
+      host: `${host}:${port}`,
+      channelCredentials: this.channelCredentials,
+    })
   }
 
-  public createClientForChannel(
-    channel: Channel,
-    accessToken?: string
-  ): Client<typeof LittleHorseDefinition> {
-    const factory = createClientFactory()
-    if (this.resourceExhaustedRetryEnabled) {
-      factory.use(createResourceExhaustedRetryMiddleware())
-    }
+  public createClientForHost(host: string, port: string | number, accessToken?: string): LHPublicClient {
+    return this.createClientForTransport(this.createTransport(host, port), accessToken)
+  }
 
-    return factory
-      .use((call, options) =>
-        call.next(call.request, {
-          ...options,
-          metadata: this.getMetadata(options.metadata, accessToken),
-        })
-      )
-      .create(LittleHorseDefinition, channel)
+  public createClientForTransport(transport: GrpcTransport, accessToken?: string): LHPublicClient {
+    return promisifyClient(new LittleHorseClient(transport), {
+      defaultOptions: { meta: this.getMetadata(accessToken) },
+      resourceExhaustedRetryEnabled: this.resourceExhaustedRetryEnabled,
+    })
   }
 
   getResourceExhaustedRetryEnabled(): boolean {
     return this.resourceExhaustedRetryEnabled
   }
 
-  private getMetadata(metadata?: Metadata, accessToken?: string): Metadata {
-    let newMetadata = Metadata(metadata)
+  private getMetadata(accessToken?: string): RpcMetadata {
+    const metadata: RpcMetadata = {}
 
     if (this.tenantId) {
-      newMetadata = newMetadata.append('tenantId', this.tenantId)
+      metadata['tenantId'] = this.tenantId
     }
 
     if (accessToken) {
-      newMetadata = newMetadata.append('Authorization', `Bearer ${accessToken}`)
+      metadata['authorization'] = `Bearer ${accessToken}`
     }
 
-    return newMetadata
+    return metadata
   }
 
   /**
-   * Returns the channel credentials for TLS connections, or undefined for plaintext.
-   * Used internally by the task worker to create per-host connections.
+   * Returns the channel credentials for the configured protocol.
    */
-  getChannelCredentials(): ChannelCredentials | undefined {
+  getChannelCredentials(): ChannelCredentials {
     return this.channelCredentials
   }
 

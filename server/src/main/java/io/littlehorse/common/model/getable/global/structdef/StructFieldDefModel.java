@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import lombok.EqualsAndHashCode;
@@ -80,6 +81,13 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        VariableType forbiddenType = fieldType.findForbiddenJsonPrimitiveForStructDef();
+        if (forbiddenType != null) {
+            throw new StructDefValidationException(String.format(
+                    "Forbidden JSON type: %s. Within StructDefs, use native equivalents such as StructDefs for nested object types and InlineArrayDefs for native LH arrays.",
+                    forbiddenType));
+        }
+
         // A null default value on a non-nullable field is incoherent: the default would
         // immediately violate the non-null constraint every time it is applied.
         if (defaultValue != null && defaultValue.isNull() && !isNullable) {

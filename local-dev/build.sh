@@ -39,12 +39,12 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ${dashboard} = true ]]; then
-    echo "Building lh-dashboard"
-    cd dashboard
-    npm install
-    npm run build
-    cd ..
-    docker build -t littlehorse/lh-dashboard:latest -f docker/dashboard/Dockerfile .
+  echo "Building lh-dashboard"
+  cd dashboard
+  pnpm install
+  pnpm run build
+  cd ..
+  docker build -t littlehorse/lh-dashboard:latest -f docker/dashboard/Dockerfile .
 fi
 
 if [[ ${canary} = true ]]; then
@@ -60,11 +60,11 @@ if [[ ${server} = true ]]; then
 fi
 
 if [[ ${standalone} = true ]]; then
-    echo "Building lh-standalone"
-    cd dashboard
-    npm install
-    npm run build
-    cd ..
-    ./gradlew server:installDist -x test -x spotlessJavaCheck
-    docker build -t littlehorse/lh-standalone:latest -f docker/standalone/Dockerfile .
+  echo "Building lh-standalone"
+  cd dashboard
+  pnpm install
+  pnpm run build
+  cd ..
+  ./gradlew server:installDist -x test -x spotlessJavaCheck
+  docker build -t littlehorse/lh-standalone:latest -f docker/standalone/Dockerfile .
 fi

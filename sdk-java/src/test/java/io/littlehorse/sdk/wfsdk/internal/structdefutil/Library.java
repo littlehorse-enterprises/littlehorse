@@ -12,8 +12,6 @@ public class Library {
     public int ignoredField;
     public WfRunId maskedField;
     public String stringWithDefault = "hello";
-
-    @LHStructField(isLHArray = true)
     public String[] lhArrayWithDefault = new String[] {"a", "b"};
 
     public Library() {}

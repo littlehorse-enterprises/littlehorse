@@ -168,7 +168,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             try
             {
                 var result = await Invoke(scheduledTask, workerContext);
-                var serialized = LHMappingHelper.ObjectToVariableValue(result);
+                var serialized = SerializeTaskOutput(result);
                 taskResult.Output = serialized;
                 taskResult.Status = TaskStatus.TaskSuccess;
 
@@ -243,6 +243,36 @@ namespace LittleHorse.Sdk.Worker.Internal
             taskResult.Time = Timestamp.FromDateTime(DateTime.UtcNow);
 
             return taskResult;
+        }
+
+        private VariableValue SerializeTaskOutput(object? result)
+        {
+            TypeDefinition? outputType = _lhTask.TaskDef?.ReturnType?.ReturnType_;
+            bool expectNativeArray = outputType != null
+                && outputType.DefinedTypeCase == TypeDefinition.DefinedTypeOneofCase.InlineArrayDef;
+
+            if (!expectNativeArray)
+            {
+                return LHMappingHelper.ObjectToVariableValue(result);
+            }
+
+            System.Type? declaredReturnType = _lhTask.TaskMethod?.ReturnType.IsGenericType == true
+                ? _lhTask.TaskMethod.ReturnType.GetGenericArguments().FirstOrDefault()
+                : null;
+
+            if (result is System.Array && result is not byte[])
+            {
+                return LHMappingHelper.ObjectToVariableValueAsNativeArray(result, declaredReturnType);
+            }
+
+            if (result is System.Collections.IList listResult && result is not byte[])
+            {
+                return LHMappingHelper.ObjectToVariableValueAsNativeArray(listResult, declaredReturnType);
+            }
+
+            throw new LHSerdeException(
+                $"Task method is declared to return a native LH Array but the actual result type " +
+                $"[{result?.GetType().Name ?? "null"}] is not an array or IList.");
         }
 
         private async Task<object?> Invoke(ScheduledTask scheduledTask, LHWorkerContext workerContext)

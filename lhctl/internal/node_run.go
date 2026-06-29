@@ -182,11 +182,62 @@ func loadEarliestAndLatestStart(cmd *cobra.Command) (*timestamppb.Timestamp, *ti
 	return earliestStartTime, latestStartTime
 }
 
+var countNodeRunCmd = &cobra.Command{
+	Use:   "nodeRun",
+	Short: "Count NodeRun's, optionally filtered by WfSpec name and version.",
+	Long: `Count the number of NodeRun's matching the given criteria.
+
+Use --all to count all NodeRun's in the tenant, or --wfSpecName to filter by WfSpec:
+  lhctl count nodeRun --all
+  lhctl count nodeRun --wfSpecName <wfSpecName>
+  lhctl count nodeRun --wfSpecName <wfSpecName> --wfSpecMajorVersion <majorVersion>
+  lhctl count nodeRun --wfSpecName <wfSpecName> --wfSpecMajorVersion <majorVersion> --wfSpecRevision <revision>
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		allFlag, _ := cmd.Flags().GetBool("all")
+		wfSpecName, _ := cmd.Flags().GetString("wfSpecName")
+
+		if !allFlag && wfSpecName == "" {
+			log.Fatal("Must provide either --all or --wfSpecName. See 'lhctl count nodeRun --help'")
+		}
+		if allFlag && wfSpecName != "" {
+			log.Fatal("Cannot use --all and --wfSpecName together")
+		}
+
+		req := &lhproto.CountNodeRunRequest{}
+
+		if !allFlag {
+			filter := &lhproto.CountNodeRunRequest_WfSpecFilter{
+				WfSpecName: wfSpecName,
+			}
+
+			majorVersion, _ := cmd.Flags().GetInt32("wfSpecMajorVersion")
+			if cmd.Flags().Changed("wfSpecMajorVersion") {
+				filter.WfSpecMajorVersion = &majorVersion
+
+				revision, _ := cmd.Flags().GetInt32("wfSpecRevision")
+				if cmd.Flags().Changed("wfSpecRevision") {
+					filter.WfSpecRevision = &revision
+				}
+			}
+
+			req.Filter = &lhproto.CountNodeRunRequest_WfSpecFilter_{WfSpecFilter: filter}
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).CountNodeRun(requestContext(cmd), req))
+	},
+}
+
 func init() {
 	getCmd.AddCommand(getNodeRunCmd)
 	searchCmd.AddCommand(searchNodeRunCmd)
 	listCmd.AddCommand(listNodeRunCmd)
+	countCmd.AddCommand(countNodeRunCmd)
 
+	countNodeRunCmd.Flags().Bool("all", false, "Count all NodeRuns in the tenant")
+	countNodeRunCmd.Flags().String("wfSpecName", "", "Name of the WfSpec to count NodeRuns for")
+	countNodeRunCmd.Flags().Int32("wfSpecMajorVersion", 0, "Major version of the WfSpec (optional)")
+	countNodeRunCmd.Flags().Int32("wfSpecRevision", 0, "Revision of the WfSpec (optional, requires --wfSpecMajorVersion)")
 	searchNodeRunCmd.Flags().Int("earliestMinutesAgo", -1, "Search only for nodeRuns that started no more than this number of minutes ago")
 	searchNodeRunCmd.Flags().Int("latestMinutesAgo", -1, "Search only for nodeRuns that started at least this number of minutes ago")
 	listNodeRunCmd.Flags().Int32("threadRunNumber", -1, "Filter by ThreadRun Number")

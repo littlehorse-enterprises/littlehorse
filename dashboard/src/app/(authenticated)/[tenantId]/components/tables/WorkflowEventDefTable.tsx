@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes'
 import { WorkflowEventDefId } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { SearchResultProps } from '.'
@@ -13,7 +14,7 @@ export const WorkflowEventDefTable: FC<SearchResultProps> = ({ pages = [] }) => 
   return (
     <div className="py-4">
       {allResults.map(({ name }: WorkflowEventDefId) => (
-        <SelectionLink key={name} href={`/workflowEventDef/${name}`}>
+        <SelectionLink key={name} href={routes.workflowEventDef.detail(name)}>
           <p className="group">{name}</p>
         </SelectionLink>
       ))}
