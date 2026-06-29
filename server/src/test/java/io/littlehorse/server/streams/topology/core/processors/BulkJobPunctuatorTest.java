@@ -9,6 +9,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkDeleteWfRunModel;
@@ -31,8 +32,11 @@ import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -66,6 +70,7 @@ public class BulkJobPunctuatorTest {
     private ClusterScopedStore clusterStore;
     private TenantScopedStore tenantGlobalStore;
     private TenantScopedStore tenantCoreStore;
+    private Duration punctuationBudget = Duration.ofSeconds(1);
 
     private BulkJobPunctuator punctuator;
 
@@ -75,7 +80,7 @@ public class BulkJobPunctuatorTest {
         // ctx.getStateStore(name) resolve them inside the punctuator.
         globalStore.init(mockProcessorContext.getStateStoreContext(), globalStore);
         coreStore.init(mockProcessorContext.getStateStoreContext(), coreStore);
-        punctuator = new BulkJobPunctuator(mockProcessorContext, config, metadataCache);
+        punctuator = new BulkJobPunctuator(mockProcessorContext, config, metadataCache, punctuationBudget);
         when(config.getMetadataCmdTopicName()).thenReturn(METADATA_CMD_TOPIC);
         clusterStore = ClusterScopedStore.newInstance(globalStore, context);
         tenantGlobalStore = TenantScopedStore.newInstance(globalStore, tenantId, context);
@@ -114,6 +119,91 @@ public class BulkJobPunctuatorTest {
         assertThat(onlyForwardedShardReport().isCompleted()).isTrue();
     }
 
+    @Test
+    void shouldForwardOneReportPerActiveJob() {
+        String jobIdA = LHUtil.generateGuid();
+        String jobIdB = LHUtil.generateGuid();
+        seedRunningJob(jobIdA, emptyMatchDelete());
+        seedRunningJob(jobIdB, emptyMatchDelete());
+
+        punctuator.punctuate(System.currentTimeMillis());
+
+        // No Tags seeded, so each job contributes exactly one report and nothing else.
+        List<BulkJobShardReportModel> reports = forwardedShardReports();
+        assertThat(reports)
+                .extracting(report -> report.getBulkJobId().getId())
+                .containsExactlyInAnyOrder(jobIdA, jobIdB);
+        assertThat(reports).allSatisfy(report -> {
+            assertThat(report.isCompleted()).isTrue();
+            assertThat(report.getPartition())
+                    .isEqualTo(mockProcessorContext.taskId().partition());
+        });
+    }
+
+    @Test
+    void shouldDeferPendingWorkWhenPunctuationBudgetIsExhausted() {
+        String jobId = LHUtil.generateGuid();
+        seedRunningJob(jobId, emptyMatchDelete());
+        String cursorKey = new BulkJobShardCursorModel(new BulkJobIdModel(jobId)).getStoreKey();
+
+        // An already-elapsed budget makes the deadline expire before the first job is processed,
+        // so the punctuator forwards nothing and persists no cursor: all work is deferred.
+        BulkJobPunctuator exhaustedBudget =
+                new BulkJobPunctuator(mockProcessorContext, config, metadataCache, Duration.ofSeconds(-1));
+        exhaustedBudget.punctuate(System.currentTimeMillis());
+
+        assertThat(mockProcessorContext.forwarded()).isEmpty();
+        assertThat(tenantCoreStore.get(cursorKey, BulkJobShardCursorModel.class))
+                .isNull();
+
+        // A later punctuation with budget available resumes the still-pending job to completion.
+        punctuator.punctuate(System.currentTimeMillis());
+
+        BulkJobShardReportModel report = onlyForwardedShardReport();
+        assertThat(report.getBulkJobId().getId()).isEqualTo(jobId);
+        assertThat(report.isCompleted()).isTrue();
+        assertThat(tenantCoreStore.get(cursorKey, BulkJobShardCursorModel.class).isScanCompleted())
+                .isTrue();
+    }
+
+    @Test
+    void shouldResumeFromTheSameKeyOnTheNextPunctuationWhenBudgetIsExhausted() {
+        when(config.getCoreCmdTopicName()).thenReturn(CORE_CMD_TOPIC);
+        String jobId = LHUtil.generateGuid();
+        seedRunningJob(jobId, deleteForWfSpec(WF_SPEC_NAME));
+
+        // Distinct, increasing createdAt timestamps make the Tag scan order deterministic: a -> b -> c.
+        String wfRunIdA = LHUtil.generateGuid();
+        String wfRunIdB = LHUtil.generateGuid();
+        String wfRunIdC = LHUtil.generateGuid();
+        long now = System.currentTimeMillis();
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, new Date(now - 3000));
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, new Date(now - 2000));
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdC, new Date(now - 1000));
+
+        // First punctuation: the budget is exhausted as soon as two deletes have been forwarded,
+        // so the scan yields mid-way and persists its position.
+        Instant base = Instant.now();
+        Supplier<Instant> budgetExhaustedAfterTwoDeletes =
+                () -> mockProcessorContext.forwarded().size() >= 2 ? base.plus(Duration.ofHours(1)) : base;
+        BulkJobPunctuator firstPunctuation = new BulkJobPunctuator(
+                mockProcessorContext, config, metadataCache, Duration.ofMinutes(1), budgetExhaustedAfterTwoDeletes);
+        firstPunctuation.punctuate(System.currentTimeMillis());
+
+        // Exactly the first two WfRuns are deleted and the shard is reported as not yet complete.
+        assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdA, wfRunIdB);
+        assertThat(onlyForwardedShardReport().isCompleted()).isFalse();
+
+        mockProcessorContext.resetForwards();
+
+        // Second punctuation resumes exactly where the first left off: only the remaining WfRun is
+        // deleted (no re-processing of the first two), and the shard completes.
+        punctuator.punctuate(System.currentTimeMillis());
+
+        assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdC);
+        assertThat(onlyForwardedShardReport().isCompleted()).isTrue();
+    }
+
     private void seedRunningJob(String jobId, BulkDeleteWfRunModel deleteWfRun) {
         BulkJobIdModel bulkJobId = new BulkJobIdModel(jobId);
         // Cluster-scoped marker that the discovery range-scan iterates over.
@@ -132,7 +222,9 @@ public class BulkJobPunctuatorTest {
     private BulkDeleteWfRunModel deleteForWfSpec(String wfSpecName) {
         BulkDeleteWfRun proto = BulkDeleteWfRun.newBuilder()
                 .setWfSpecName(wfSpecName)
-                .setEarliestStart(LHUtil.fromDate(new Date(0)))
+                // A real past instant: LHUtil.fromProtoTs treats epoch(0) as "now", which would
+                // otherwise place the window start at "now" and exclude back-dated WfRun Tags.
+                .setEarliestStart(LHUtil.fromDate(new Date(System.currentTimeMillis() - 3_600_000)))
                 // Slightly in the future so Tags created "now" fall strictly inside the scan window.
                 .setLatestStart(LHUtil.fromDate(new Date(System.currentTimeMillis() + 60_000)))
                 .build();
@@ -165,13 +257,17 @@ public class BulkJobPunctuatorTest {
     }
 
     private BulkJobShardReportModel onlyForwardedShardReport() {
-        List<BulkJobShardReportModel> reports = mockProcessorContext.forwarded().stream()
+        List<BulkJobShardReportModel> reports = forwardedShardReports();
+        assertThat(reports).hasSize(1);
+        return reports.get(0);
+    }
+
+    private List<BulkJobShardReportModel> forwardedShardReports() {
+        return mockProcessorContext.forwarded().stream()
                 .map(forward -> forward.record().value().getPayload())
                 .filter(MetadataCommandModel.class::isInstance)
                 .map(payload -> (BulkJobShardReportModel) ((MetadataCommandModel) payload).getSubCommand())
                 .toList();
-        assertThat(reports).hasSize(1);
-        return reports.get(0);
     }
 
     private BulkJobShardReportModel getForwardedShardReport(int forwardIndex) {

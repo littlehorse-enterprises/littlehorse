@@ -26,6 +26,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -56,20 +58,42 @@ public class BulkJobPunctuator {
      * Maximum time the punctuator is allowed to run before yielding back to Kafka Streams.
      * This prevents transaction timeouts when there are many active BulkJobs or large scans.
      */
-    private static final Duration PUNCTUATION_BUDGET = Duration.ofMillis(500);
+    private final Duration punctuationBudget;
+
+    /**
+     * Source of "now" used to evaluate the punctuation budget. Injectable so tests can drive the
+     * deadline deterministically; production uses {@link Instant#now()}.
+     */
+    private final Supplier<Instant> clock;
 
     public BulkJobPunctuator(
-            ProcessorContext<String, CommandProcessorOutput> ctx, LHServerConfig config, MetadataCache metadataCache) {
+            ProcessorContext<String, CommandProcessorOutput> ctx,
+            LHServerConfig config,
+            MetadataCache metadataCache,
+            Duration punctuationBudget) {
+        this(ctx, config, metadataCache, punctuationBudget, Instant::now);
+    }
+
+    // For testing
+    BulkJobPunctuator(
+            ProcessorContext<String, CommandProcessorOutput> ctx,
+            LHServerConfig config,
+            MetadataCache metadataCache,
+            Duration punctuationBudget,
+            Supplier<Instant> clock) {
         this.ctx = ctx;
         this.config = config;
         this.metadataCache = metadataCache;
+        this.punctuationBudget = punctuationBudget;
+        this.clock = clock;
     }
 
     /**
      * Called periodically by the CommandProcessor punctuator schedule.
      */
     public void punctuate(long timestamp) {
-        final Instant deadline = Instant.now().plus(PUNCTUATION_BUDGET);
+        final Instant deadline = clock.get().plus(punctuationBudget);
+        final BooleanSupplier outOfBudget = () -> clock.get().isAfter(deadline);
         final int currentPartition = ctx.taskId().partition();
         final BackgroundContext context = new BackgroundContext();
         KeyValueStore<String, Bytes> metadataNativeStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
@@ -88,7 +112,7 @@ public class BulkJobPunctuator {
         }
         for (ActiveBulkJobModel runningJob : runningJobs) {
             // Check deadline before processing each job
-            if (Instant.now().isAfter(deadline)) {
+            if (outOfBudget.getAsBoolean()) {
                 log.debug("Punctuation budget exhausted, will resume remaining jobs on next tick");
                 break;
             }
@@ -111,7 +135,7 @@ public class BulkJobPunctuator {
             }
             PunctuationExecutionContext punctuateContext = new PunctuationExecutionContext(
                     timestamp, config, metadataNativeStore, coreNativeStore, metadataCache, tenantId);
-            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor, deadline);
+            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor, outOfBudget);
             CommandProcessorOutput processorOutput = createBulkJobReport(job, currentPartition, currentCursor);
             Record<String, CommandProcessorOutput> reportRecord = new Record<>(
                     processorOutput.partitionKey,

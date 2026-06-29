@@ -21,11 +21,11 @@ import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -89,20 +89,28 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
             Consumer<CoreSubCommand<?>> commandForwarder,
             TenantScopedStore coreStore,
             BulkJobShardCursorModel shardCursor,
-            Instant deadline) {
-        String lastKey = shardCursor.getLastKey();
+            BooleanSupplier outOfBudget) {
+        // The cursor stores the full Tag store key of the last WfRun we deleted. On resume we
+        // restart the range scan from that key (which the range includes inclusively) and skip it,
+        // so every matching WfRun is deleted exactly once across punctuations.
+        String resumeFromKey = shardCursor.getLastKey();
+        String lastKey = resumeFromKey;
         Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
         InternalScanPb.TagScanPb tagScan = buildScan();
-        String startKey = lastKey.isBlank() ? startKey(tagScan) : lastKey;
+        String startKey = resumeFromKey.isBlank() ? startKey(tagScan) : resumeFromKey;
         try (LHKeyValueIterator<Tag> range = coreStore.range(startKey, endKey(tagScan), Tag.class)) {
             while (range.hasNext()) {
-                if (Instant.now().isAfter(deadline)) {
+                if (outOfBudget.getAsBoolean()) {
                     // Budget exhausted — save progress and resume on next tick
                     shardCursor.setLastKey(lastKey);
                     shardCursor.setLastSeenTimestamp(lastSeenTimestamp);
                     return shardCursor;
                 }
                 Tag tag = range.next().getValue();
+                // The resume key is included in the range; it was already processed, so skip it.
+                if (!resumeFromKey.isBlank() && tag.getStoreKey().equals(resumeFromKey)) {
+                    continue;
+                }
                 WfRunIdModel wfRunIdToDelete =
                         (WfRunIdModel) WfRunIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
                 DeleteWfRunRequest delete = DeleteWfRunRequest.newBuilder()
@@ -110,7 +118,7 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
                         .build();
                 InternalDeleteWfRunRequestModel deleteWfRunRequestModel = new InternalDeleteWfRunRequestModel(delete);
                 commandForwarder.accept(deleteWfRunRequestModel);
-                lastKey = tag.getDescribedObjectId();
+                lastKey = tag.getStoreKey();
                 lastSeenTimestamp = tag.createdAt;
             }
         }

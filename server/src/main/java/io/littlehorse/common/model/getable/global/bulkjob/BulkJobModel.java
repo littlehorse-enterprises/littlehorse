@@ -25,11 +25,11 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.Setter;
@@ -102,12 +102,12 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             Consumer<Record> commandOutput,
             PunctuationExecutionContext context,
             BulkJobShardCursorModel shardCursor,
-            Instant deadline) {
+            BooleanSupplier outOfBudget) {
         return bulkDeleteWfRun.process(
                 c -> forwardDeleteCommand(c, commandOutput, context.serverConfig()),
                 context.coreStore(),
                 shardCursor,
-                deadline);
+                outOfBudget);
     }
 
     private void forwardDeleteCommand(
