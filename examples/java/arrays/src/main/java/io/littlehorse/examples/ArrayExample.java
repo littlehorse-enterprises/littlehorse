@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -17,20 +16,24 @@ public class ArrayExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-arrays", wf -> {
-            // declare a typed LH Array variable (elements are Long)
-            WfRunVariable arrVar = wf.declareArray("my-array", Long.class);
+            // declare a required JSON_ARR input variable
+            WfRunVariable inputArray = wf.declareJsonArr("input-array").required();
 
-            NodeOutput produced = wf.execute("produce-array");
-            arrVar.assign(produced);
+            // set an INT counter to the size of the input array using the size() operation
+            WfRunVariable counter = wf.declareInt("counter");
+            counter.assign(inputArray.size());
 
-            wf.execute("consume-array", arrVar);
+            // for-loop style while loop: run a task and decrement the counter while it is > 0
+            wf.doWhile(counter.isGreaterThan(0), loop -> {
+                loop.execute("consume-array", counter);
+                counter.assign(counter.subtract(1));
+            });
         });
     }
 
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
         ArrayWorker worker = new ArrayWorker();
-        return List.of(
-                new LHTaskWorker(worker, "produce-array", config), new LHTaskWorker(worker, "consume-array", config));
+        return List.of(new LHTaskWorker(worker, "consume-array", config));
     }
 
     public static void main(String[] args) throws Exception {
