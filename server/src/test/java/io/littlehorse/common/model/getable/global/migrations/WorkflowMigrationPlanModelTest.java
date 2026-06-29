@@ -1,21 +1,20 @@
 package io.littlehorse.common.model.getable.global.migrations;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Answers;
 import static org.mockito.Mockito.mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.sdk.common.proto.WorkflowMigrationPlan;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkflowMigrationPlanModelTest {

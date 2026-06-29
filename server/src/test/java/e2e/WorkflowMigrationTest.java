@@ -151,7 +151,6 @@ public class WorkflowMigrationTest {
         });
     }
 
-
     @LHWorkflow("migrate-from-second-migration-node")
     private Workflow migrateFromSecondMigrationNode;
 
@@ -297,7 +296,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -319,7 +317,6 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-  
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -379,7 +376,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-     
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         WfRun migratedRun = client.applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest.newBuilder()
@@ -398,7 +394,6 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-    
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -433,7 +428,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-wait-for-condition", wf -> {
                     wf.execute("migration-task");
                 })
@@ -458,7 +452,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-    
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(0).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -480,7 +473,6 @@ public class WorkflowMigrationTest {
         assertThat(entrypointThread.getWfSpecId().getRevision())
                 .isEqualTo(v1Spec.getId().getRevision());
 
-     
         NodeRun taskNodeRun = client.getNodeRun(NodeRunId.newBuilder()
                 .setWfRunId(runId)
                 .setThreadRunNumber(0)
@@ -517,7 +509,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-     
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-child-spec", wf -> {
                     wf.execute("migration-task");
                     wf.spawnThread(
@@ -549,7 +540,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
-   
         int taskNodePosition = client.getWfRun(runId).getThreadRuns(1).getCurrentNodePosition() + 1;
 
         // Apply the plan to the running WfRun.
@@ -587,7 +577,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldRejectMigrationPlanSinceChildThreadVariableNotAvailableAtRunTime() {
-    
+
         WfRunId runId = verifier.prepareRun(migrateChildSpec)
                 .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
@@ -609,7 +599,6 @@ public class WorkflowMigrationTest {
                 })
                 .compileWorkflow());
 
-   
         assertThatThrownBy(() -> client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
                         .setName(LHUtil.generateGuid())
                         .setOldWfSpec(oldSpecId)
@@ -636,7 +625,7 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldAddDependencyToThreadMigration() {
- 
+
         WfRunId runId = verifier.prepareRun(migrateChildWParent)
                 .waitForNodeRunStatus(1, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
@@ -645,7 +634,6 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
- 
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("child-depends-on-parent", wf -> {
                     WfRunVariable num = wf.declareInt("num").withDefault(1);
                     wf.spawnThread(
@@ -733,7 +721,6 @@ public class WorkflowMigrationTest {
                 LHLibUtil.fromProtoTs(childTaskNode.getArrivalTime()).getTime();
         assertThat(entrypointArrival).isLessThanOrEqualTo(childArrival);
 
-     
         assertThat(client.getVariable(VariableId.newBuilder()
                                 .setWfRunId(runId)
                                 .setThreadRunNumber(0)
@@ -752,7 +739,6 @@ public class WorkflowMigrationTest {
 
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-    
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-from-second-migration-node", wf -> {
                     wf.waitForEvent("migration-test-event");
                     wf.waitForEvent("migration-test-event");
@@ -817,7 +803,6 @@ public class WorkflowMigrationTest {
         assertThat(oldNodeRun.getStatus()).isEqualTo(LHStatus.HALTED);
         assertThat(oldNodeRun.getWfSpecId()).isEqualTo(oldSpecId);
 
-    
         client.putExternalEvent(PutExternalEventRequest.newBuilder()
                 .setWfRunId(runId)
                 .setContent(LHLibUtil.objToVarVal("ignored"))
@@ -831,14 +816,13 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldApplyMigrationVariableWhenMigratingFromExternalEventToTask() {
-    
+
         WfRunId runId = verifier.prepareRun(migrateWithVariableWf)
                 .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
-
 
         WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-with-variable", wf -> {
                     wf.declareInt("num").withDefault(1);
@@ -865,7 +849,6 @@ public class WorkflowMigrationTest {
 
         awaitMigrationPlanVisible(plan);
 
- 
         client.applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest.newBuilder()
                 .setId(plan.getWorkflowMigrationPlanId())
                 .setWfRunId(runId)
