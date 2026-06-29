@@ -501,8 +501,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 TypeDefinitionModel expectedKeyType = this.getInlineMapDef().getKeyType();
                 TypeDefinitionModel expectedValueType = this.getInlineMapDef().getValueType();
 
-                for (MapModel.MapEntryModel entry :
-                        value.getMap().getEntries()) {
+                for (MapModel.MapEntryModel entry : value.getMap().getEntries()) {
                     if (expectedKeyType != null && !expectedKeyType.isNull()) {
                         TypeDefinitionModel entryKeyType = entry.getKey().getTypeDefinition();
                         if (!expectedKeyType.isCompatibleWith(entryKeyType)) {

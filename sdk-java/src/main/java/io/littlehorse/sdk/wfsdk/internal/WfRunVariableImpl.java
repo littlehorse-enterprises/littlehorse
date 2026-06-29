@@ -133,7 +133,7 @@ class WfRunVariableImpl implements WfRunVariable {
                 break;
             case INLINE_ARRAY_DEF:
                 throw new LHMisconfigurationException(
-                            "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
+                        "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
             case INLINE_MAP_DEF:
                 // Typed inline maps (e.g. declareMap("x", String.class, Long.class)) are allowed
                 // to be accessed by key with get(String).

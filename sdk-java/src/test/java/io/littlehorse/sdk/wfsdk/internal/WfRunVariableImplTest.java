@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.Library;
-
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
