@@ -14,7 +14,7 @@ import { ReturnType } from "./type_definition";
 import { WorkflowEventDefId } from "./object_id";
 import { NodeRunId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { WorkflowEventId } from "./object_id";
 /**
  * A WorkflowEvent represents a "Thing That Happened" *INSIDE* a WfRun. It is DIFFERENT from

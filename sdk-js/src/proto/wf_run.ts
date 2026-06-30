@@ -10,7 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { ExternalEventId } from "./object_id";
 import { NodeRunId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";

@@ -1,7 +1,6 @@
 import datetime
 
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf import descriptor as _descriptor
@@ -18,10 +17,10 @@ class WorkflowEvent(_message.Message):
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     NODE_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WorkflowEventId
-    content: _variable_pb2.VariableValue
+    content: _type_definition_pb2.VariableValue
     created_at: _timestamp_pb2.Timestamp
     node_run_id: _object_id_pb2.NodeRunId
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventId, _Mapping]] = ..., content: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ...) -> None: ...
 
 class WorkflowEventDef(_message.Message):
     __slots__ = ("id", "created_at", "content_type")

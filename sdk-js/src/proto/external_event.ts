@@ -13,7 +13,7 @@ import { MessageType } from "@protobuf-ts/runtime";
 import { CorrelatedEventId } from "./object_id";
 import { ReturnType } from "./type_definition";
 import { ExternalEventDefId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { ExternalEventId } from "./object_id";
 /**

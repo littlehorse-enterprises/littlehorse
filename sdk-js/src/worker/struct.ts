@@ -27,10 +27,9 @@
  */
 
 import { VariableType } from '../proto/common_enums'
-import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
-import { TypeDefinition } from '../proto/type_definition'
+import { VariableDef } from '../proto/common_wfspec'
+import { TypeDefinition, StructFieldDef, VariableValue, StructField } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
-import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
 
 // ── Field definitions ────────────────────────────────────────────────

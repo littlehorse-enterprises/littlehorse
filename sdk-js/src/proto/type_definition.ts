@@ -10,6 +10,8 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { Timestamp } from "./google/protobuf/timestamp";
+import { WfRunId } from "./object_id";
 import { StructDefId } from "./object_id";
 import { VariableType } from "./common_enums";
 /**
@@ -52,6 +54,14 @@ export interface TypeDefinition {
          */
         inlineArrayDef: InlineArrayDef;
     } | {
+        oneofKind: "inlineStructDef";
+        /**
+         * An inline Struct definition.
+         *
+         * @generated from protobuf field: littlehorse.InlineStructDef inline_struct_def = 7
+         */
+        inlineStructDef: InlineStructDef;
+    } | {
         oneofKind: undefined;
     };
     /**
@@ -73,6 +83,228 @@ export interface InlineArrayDef {
      * @generated from protobuf field: littlehorse.TypeDefinition array_type = 1
      */
     arrayType?: TypeDefinition;
+}
+/**
+ * A map of InlineStructDef's field names to their StructFieldDef's.
+ *
+ * @generated from protobuf message littlehorse.InlineStructDef
+ */
+export interface InlineStructDef {
+    /**
+     * The fields in this schema.
+     *
+     * @generated from protobuf field: map<string, littlehorse.StructFieldDef> fields = 1
+     */
+    fields: {
+        [key: string]: StructFieldDef;
+    };
+}
+/**
+ * The definition of a field in an InlineStructDef.
+ *
+ * @generated from protobuf message littlehorse.StructFieldDef
+ */
+export interface StructFieldDef {
+    /**
+     * The type of the field.
+     *
+     * @generated from protobuf field: littlehorse.TypeDefinition field_type = 1
+     */
+    fieldType?: TypeDefinition;
+    /**
+     * The default value of the field, which should match the Field Type. If not
+     * provided, then the field is treated as required.
+     *
+     * @generated from protobuf field: optional littlehorse.VariableValue default_value = 2
+     */
+    defaultValue?: VariableValue;
+    /**
+     * If true, then the field is treated as nullable, and its value may be set to null.
+     *
+     * @generated from protobuf field: bool is_nullable = 3
+     */
+    isNullable: boolean;
+}
+/**
+ * VariableValue is a structure containing a value in LittleHorse. It can be
+ * used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
+ * from a TaskRun, as the value of a WfRun's Variable, etc.
+ *
+ * @generated from protobuf message littlehorse.VariableValue
+ */
+export interface VariableValue {
+    /**
+     * The value held in this VariableValue. If this is unset, treat it as
+     * a NULL.
+     *
+     * @generated from protobuf oneof: value
+     */
+    value: {
+        oneofKind: "jsonObj";
+        /**
+         * A String representing a serialized json object.
+         *
+         * @generated from protobuf field: string json_obj = 2
+         */
+        jsonObj: string;
+    } | {
+        oneofKind: "jsonArr";
+        /**
+         * A String representing a serialized json list.
+         *
+         * @generated from protobuf field: string json_arr = 3
+         */
+        jsonArr: string;
+    } | {
+        oneofKind: "double";
+        /**
+         * A 64-bit floating point number.
+         *
+         * @generated from protobuf field: double double = 4
+         */
+        double: number;
+    } | {
+        oneofKind: "bool";
+        /**
+         * A boolean.
+         *
+         * @generated from protobuf field: bool bool = 5
+         */
+        bool: boolean;
+    } | {
+        oneofKind: "str";
+        /**
+         * A string.
+         *
+         * @generated from protobuf field: string str = 6
+         */
+        str: string;
+    } | {
+        oneofKind: "int";
+        /**
+         * The `INT` variable type is stored as a 64-bit integer. The
+         * `INT` can be cast to a `DOUBLE`.
+         *
+         * @generated from protobuf field: int64 int = 7
+         */
+        int: string;
+    } | {
+        oneofKind: "bytes";
+        /**
+         * An arbitrary String of bytes.
+         *
+         * @generated from protobuf field: bytes bytes = 8
+         */
+        bytes: Uint8Array;
+    } | {
+        oneofKind: "wfRunId";
+        /**
+         * Reference to a WfRunId
+         *
+         * @generated from protobuf field: littlehorse.WfRunId wf_run_id = 9
+         */
+        wfRunId: WfRunId;
+    } | {
+        oneofKind: "utcTimestamp";
+        /**
+         * A timestamp (UTC)
+         *
+         * @generated from protobuf field: google.protobuf.Timestamp utc_timestamp = 10
+         */
+        utcTimestamp: Timestamp;
+    } | {
+        oneofKind: "struct";
+        /**
+         * A Struct object.
+         *
+         * @generated from protobuf field: littlehorse.Struct struct = 11
+         */
+        struct: Struct;
+    } | {
+        oneofKind: "array";
+        /**
+         * An Array object.
+         *
+         * @generated from protobuf field: littlehorse.Array array = 12
+         */
+        array: Array$;
+    } | {
+        oneofKind: undefined;
+    };
+}
+/**
+ * An Array is a strongly-typed list of values.
+ *
+ * @generated from protobuf message littlehorse.Array
+ */
+export interface Array$ {
+    /**
+     * @generated from protobuf field: repeated littlehorse.VariableValue items = 1
+     */
+    items: VariableValue[];
+    /**
+     * Optional, authoritative element type for this array.
+     * Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
+     * If absent, element type may be unknown and must be derived from items or treated as wildcard.
+     *
+     * @generated from protobuf field: optional littlehorse.TypeDefinition element_type = 2
+     */
+    elementType?: TypeDefinition;
+}
+/**
+ * A Struct is a strongly-typed structure containing fields. The Struct is defined
+ * according to the `Schema` object.
+ *
+ * @generated from protobuf message littlehorse.Struct
+ */
+export interface Struct {
+    /**
+     * The id of the schema.
+     *
+     * @generated from protobuf field: littlehorse.StructDefId struct_def_id = 1
+     */
+    structDefId?: StructDefId;
+    /**
+     * The content of the Struct
+     *
+     * @generated from protobuf field: littlehorse.InlineStruct struct = 2
+     */
+    struct?: InlineStruct;
+}
+/**
+ * An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
+ *
+ * @generated from protobuf message littlehorse.InlineStruct
+ */
+export interface InlineStruct {
+    /**
+     * The fields in the inline struct.
+     *
+     * @generated from protobuf field: map<string, littlehorse.StructField> fields = 1
+     */
+    fields: {
+        [key: string]: StructField;
+    };
+}
+/**
+ * A StructField represents the value for a single field in a struct.
+ *
+ * @generated from protobuf message littlehorse.StructField
+ */
+export interface StructField {
+    /**
+     * The `value` of the field is an untyped `VariableValue`.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue value = 1
+     */
+    value?: VariableValue;
+    /**
+     * Whether or not this StructField value is masked.
+     * Set by the server based on the StructDef's field definition for this configuration.
+     *
+     * @generated from protobuf field: bool masked = 2
+     */
+    masked: boolean;
 }
 /**
  * Utility used among metadata objects to define their output type. For example, used in
@@ -159,6 +391,7 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
             { no: 1, name: "primitive_type", kind: "enum", oneof: "definedType", T: () => ["littlehorse.VariableType", VariableType] },
             { no: 5, name: "struct_def_id", kind: "message", oneof: "definedType", T: () => StructDefId },
             { no: 6, name: "inline_array_def", kind: "message", oneof: "definedType", T: () => InlineArrayDef },
+            { no: 7, name: "inline_struct_def", kind: "message", oneof: "definedType", T: () => InlineStructDef },
             { no: 4, name: "masked", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
@@ -193,6 +426,12 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
                         inlineArrayDef: InlineArrayDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineArrayDef)
                     };
                     break;
+                case /* littlehorse.InlineStructDef inline_struct_def */ 7:
+                    message.definedType = {
+                        oneofKind: "inlineStructDef",
+                        inlineStructDef: InlineStructDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineStructDef)
+                    };
+                    break;
                 case /* bool masked */ 4:
                     message.masked = reader.bool();
                     break;
@@ -220,6 +459,9 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
         /* littlehorse.InlineArrayDef inline_array_def = 6; */
         if (message.definedType.oneofKind === "inlineArrayDef")
             InlineArrayDef.internalBinaryWrite(message.definedType.inlineArrayDef, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InlineStructDef inline_struct_def = 7; */
+        if (message.definedType.oneofKind === "inlineStructDef")
+            InlineStructDef.internalBinaryWrite(message.definedType.inlineStructDef, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -276,6 +518,512 @@ class InlineArrayDef$Type extends MessageType<InlineArrayDef> {
  * @generated MessageType for protobuf message littlehorse.InlineArrayDef
  */
 export const InlineArrayDef = new InlineArrayDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class InlineStructDef$Type extends MessageType<InlineStructDef> {
+    constructor() {
+        super("littlehorse.InlineStructDef", [
+            { no: 1, name: "fields", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => StructFieldDef } }
+        ]);
+    }
+    create(value?: PartialMessage<InlineStructDef>): InlineStructDef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.fields = {};
+        if (value !== undefined)
+            reflectionMergePartial<InlineStructDef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InlineStructDef): InlineStructDef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, littlehorse.StructFieldDef> fields */ 1:
+                    this.binaryReadMap1(message.fields, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: InlineStructDef["fields"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof InlineStructDef["fields"] | undefined, val: InlineStructDef["fields"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = StructFieldDef.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.InlineStructDef.fields");
+            }
+        }
+        map[key ?? ""] = val ?? StructFieldDef.create();
+    }
+    internalBinaryWrite(message: InlineStructDef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, littlehorse.StructFieldDef> fields = 1; */
+        for (let k of globalThis.Object.keys(message.fields)) {
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            StructFieldDef.internalBinaryWrite(message.fields[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.InlineStructDef
+ */
+export const InlineStructDef = new InlineStructDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StructFieldDef$Type extends MessageType<StructFieldDef> {
+    constructor() {
+        super("littlehorse.StructFieldDef", [
+            { no: 1, name: "field_type", kind: "message", T: () => TypeDefinition },
+            { no: 2, name: "default_value", kind: "message", T: () => VariableValue },
+            { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StructFieldDef>): StructFieldDef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.isNullable = false;
+        if (value !== undefined)
+            reflectionMergePartial<StructFieldDef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StructFieldDef): StructFieldDef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.TypeDefinition field_type */ 1:
+                    message.fieldType = TypeDefinition.internalBinaryRead(reader, reader.uint32(), options, message.fieldType);
+                    break;
+                case /* optional littlehorse.VariableValue default_value */ 2:
+                    message.defaultValue = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.defaultValue);
+                    break;
+                case /* bool is_nullable */ 3:
+                    message.isNullable = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StructFieldDef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.TypeDefinition field_type = 1; */
+        if (message.fieldType)
+            TypeDefinition.internalBinaryWrite(message.fieldType, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.VariableValue default_value = 2; */
+        if (message.defaultValue)
+            VariableValue.internalBinaryWrite(message.defaultValue, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* bool is_nullable = 3; */
+        if (message.isNullable !== false)
+            writer.tag(3, WireType.Varint).bool(message.isNullable);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.StructFieldDef
+ */
+export const StructFieldDef = new StructFieldDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class VariableValue$Type extends MessageType<VariableValue> {
+    constructor() {
+        super("littlehorse.VariableValue", [
+            { no: 2, name: "json_obj", kind: "scalar", oneof: "value", T: 9 /*ScalarType.STRING*/ },
+            { no: 3, name: "json_arr", kind: "scalar", oneof: "value", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "double", kind: "scalar", oneof: "value", T: 1 /*ScalarType.DOUBLE*/ },
+            { no: 5, name: "bool", kind: "scalar", oneof: "value", T: 8 /*ScalarType.BOOL*/ },
+            { no: 6, name: "str", kind: "scalar", oneof: "value", T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "int", kind: "scalar", oneof: "value", T: 3 /*ScalarType.INT64*/ },
+            { no: 8, name: "bytes", kind: "scalar", oneof: "value", T: 12 /*ScalarType.BYTES*/ },
+            { no: 9, name: "wf_run_id", kind: "message", oneof: "value", T: () => WfRunId },
+            { no: 10, name: "utc_timestamp", kind: "message", oneof: "value", T: () => Timestamp },
+            { no: 11, name: "struct", kind: "message", oneof: "value", T: () => Struct },
+            { no: 12, name: "array", kind: "message", oneof: "value", T: () => Array$ }
+        ]);
+    }
+    create(value?: PartialMessage<VariableValue>): VariableValue {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.value = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<VariableValue>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VariableValue): VariableValue {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string json_obj */ 2:
+                    message.value = {
+                        oneofKind: "jsonObj",
+                        jsonObj: reader.string()
+                    };
+                    break;
+                case /* string json_arr */ 3:
+                    message.value = {
+                        oneofKind: "jsonArr",
+                        jsonArr: reader.string()
+                    };
+                    break;
+                case /* double double */ 4:
+                    message.value = {
+                        oneofKind: "double",
+                        double: reader.double()
+                    };
+                    break;
+                case /* bool bool */ 5:
+                    message.value = {
+                        oneofKind: "bool",
+                        bool: reader.bool()
+                    };
+                    break;
+                case /* string str */ 6:
+                    message.value = {
+                        oneofKind: "str",
+                        str: reader.string()
+                    };
+                    break;
+                case /* int64 int */ 7:
+                    message.value = {
+                        oneofKind: "int",
+                        int: reader.int64().toString()
+                    };
+                    break;
+                case /* bytes bytes */ 8:
+                    message.value = {
+                        oneofKind: "bytes",
+                        bytes: reader.bytes()
+                    };
+                    break;
+                case /* littlehorse.WfRunId wf_run_id */ 9:
+                    message.value = {
+                        oneofKind: "wfRunId",
+                        wfRunId: WfRunId.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).wfRunId)
+                    };
+                    break;
+                case /* google.protobuf.Timestamp utc_timestamp */ 10:
+                    message.value = {
+                        oneofKind: "utcTimestamp",
+                        utcTimestamp: Timestamp.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).utcTimestamp)
+                    };
+                    break;
+                case /* littlehorse.Struct struct */ 11:
+                    message.value = {
+                        oneofKind: "struct",
+                        struct: Struct.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).struct)
+                    };
+                    break;
+                case /* littlehorse.Array array */ 12:
+                    message.value = {
+                        oneofKind: "array",
+                        array: Array$.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).array)
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: VariableValue, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string json_obj = 2; */
+        if (message.value.oneofKind === "jsonObj")
+            writer.tag(2, WireType.LengthDelimited).string(message.value.jsonObj);
+        /* string json_arr = 3; */
+        if (message.value.oneofKind === "jsonArr")
+            writer.tag(3, WireType.LengthDelimited).string(message.value.jsonArr);
+        /* double double = 4; */
+        if (message.value.oneofKind === "double")
+            writer.tag(4, WireType.Bit64).double(message.value.double);
+        /* bool bool = 5; */
+        if (message.value.oneofKind === "bool")
+            writer.tag(5, WireType.Varint).bool(message.value.bool);
+        /* string str = 6; */
+        if (message.value.oneofKind === "str")
+            writer.tag(6, WireType.LengthDelimited).string(message.value.str);
+        /* int64 int = 7; */
+        if (message.value.oneofKind === "int")
+            writer.tag(7, WireType.Varint).int64(message.value.int);
+        /* bytes bytes = 8; */
+        if (message.value.oneofKind === "bytes")
+            writer.tag(8, WireType.LengthDelimited).bytes(message.value.bytes);
+        /* littlehorse.WfRunId wf_run_id = 9; */
+        if (message.value.oneofKind === "wfRunId")
+            WfRunId.internalBinaryWrite(message.value.wfRunId, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp utc_timestamp = 10; */
+        if (message.value.oneofKind === "utcTimestamp")
+            Timestamp.internalBinaryWrite(message.value.utcTimestamp, writer.tag(10, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.Struct struct = 11; */
+        if (message.value.oneofKind === "struct")
+            Struct.internalBinaryWrite(message.value.struct, writer.tag(11, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.Array array = 12; */
+        if (message.value.oneofKind === "array")
+            Array$.internalBinaryWrite(message.value.array, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.VariableValue
+ */
+export const VariableValue = new VariableValue$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Array$$Type extends MessageType<Array$> {
+    constructor() {
+        super("littlehorse.Array", [
+            { no: 1, name: "items", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => VariableValue },
+            { no: 2, name: "element_type", kind: "message", T: () => TypeDefinition }
+        ]);
+    }
+    create(value?: PartialMessage<Array$>): Array$ {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.items = [];
+        if (value !== undefined)
+            reflectionMergePartial<Array$>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Array$): Array$ {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated littlehorse.VariableValue items */ 1:
+                    message.items.push(VariableValue.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* optional littlehorse.TypeDefinition element_type */ 2:
+                    message.elementType = TypeDefinition.internalBinaryRead(reader, reader.uint32(), options, message.elementType);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Array$, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated littlehorse.VariableValue items = 1; */
+        for (let i = 0; i < message.items.length; i++)
+            VariableValue.internalBinaryWrite(message.items[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.TypeDefinition element_type = 2; */
+        if (message.elementType)
+            TypeDefinition.internalBinaryWrite(message.elementType, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.Array
+ */
+export const Array$ = new Array$$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Struct$Type extends MessageType<Struct> {
+    constructor() {
+        super("littlehorse.Struct", [
+            { no: 1, name: "struct_def_id", kind: "message", T: () => StructDefId },
+            { no: 2, name: "struct", kind: "message", T: () => InlineStruct }
+        ]);
+    }
+    create(value?: PartialMessage<Struct>): Struct {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<Struct>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Struct): Struct {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.StructDefId struct_def_id */ 1:
+                    message.structDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.structDefId);
+                    break;
+                case /* littlehorse.InlineStruct struct */ 2:
+                    message.struct = InlineStruct.internalBinaryRead(reader, reader.uint32(), options, message.struct);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Struct, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.StructDefId struct_def_id = 1; */
+        if (message.structDefId)
+            StructDefId.internalBinaryWrite(message.structDefId, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InlineStruct struct = 2; */
+        if (message.struct)
+            InlineStruct.internalBinaryWrite(message.struct, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.Struct
+ */
+export const Struct = new Struct$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class InlineStruct$Type extends MessageType<InlineStruct> {
+    constructor() {
+        super("littlehorse.InlineStruct", [
+            { no: 1, name: "fields", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => StructField } }
+        ]);
+    }
+    create(value?: PartialMessage<InlineStruct>): InlineStruct {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.fields = {};
+        if (value !== undefined)
+            reflectionMergePartial<InlineStruct>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InlineStruct): InlineStruct {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, littlehorse.StructField> fields */ 1:
+                    this.binaryReadMap1(message.fields, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: InlineStruct["fields"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof InlineStruct["fields"] | undefined, val: InlineStruct["fields"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = StructField.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.InlineStruct.fields");
+            }
+        }
+        map[key ?? ""] = val ?? StructField.create();
+    }
+    internalBinaryWrite(message: InlineStruct, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, littlehorse.StructField> fields = 1; */
+        for (let k of globalThis.Object.keys(message.fields)) {
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            StructField.internalBinaryWrite(message.fields[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.InlineStruct
+ */
+export const InlineStruct = new InlineStruct$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class StructField$Type extends MessageType<StructField> {
+    constructor() {
+        super("littlehorse.StructField", [
+            { no: 1, name: "value", kind: "message", T: () => VariableValue },
+            { no: 2, name: "masked", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+        ]);
+    }
+    create(value?: PartialMessage<StructField>): StructField {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.masked = false;
+        if (value !== undefined)
+            reflectionMergePartial<StructField>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: StructField): StructField {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.VariableValue value */ 1:
+                    message.value = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.value);
+                    break;
+                case /* bool masked */ 2:
+                    message.masked = reader.bool();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: StructField, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.VariableValue value = 1; */
+        if (message.value)
+            VariableValue.internalBinaryWrite(message.value, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* bool masked = 2; */
+        if (message.masked !== false)
+            writer.tag(2, WireType.Varint).bool(message.masked);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.StructField
+ */
+export const StructField = new StructField$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ReturnType$Type extends MessageType<ReturnType> {
     constructor() {

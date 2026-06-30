@@ -10,7 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
-import { InlineStructDef } from "./common_wfspec";
+import { InlineStructDef } from "./type_definition";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { StructDefId } from "./object_id";
 /**

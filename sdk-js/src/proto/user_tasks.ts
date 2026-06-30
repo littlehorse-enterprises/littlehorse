@@ -12,7 +12,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { TaskRunId } from "./object_id";
 import { NodeRunId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { UserTaskDefId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { VariableType } from "./common_enums";

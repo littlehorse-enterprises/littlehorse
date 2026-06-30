@@ -12,7 +12,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { WfRunId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { WfSpecId } from "./object_id";
 import { ScheduledWfRunId } from "./object_id";
 /**

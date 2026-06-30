@@ -15,7 +15,7 @@ import { LHErrorType } from "./common_enums";
 import { NodeRunId } from "./object_id";
 import { WfSpecId } from "./object_id";
 import { UserTaskTriggerReference } from "./user_tasks";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { ExponentialBackoffRetryPolicy } from "./common_wfspec";
 import { TaskStatus } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";

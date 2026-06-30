@@ -3,7 +3,7 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -59,8 +59,8 @@ class UserTaskRun(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
@@ -76,14 +76,14 @@ class UserTaskRun(_message.Message):
     user_task_def_id: _object_id_pb2.UserTaskDefId
     user_group: str
     user_id: str
-    results: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    results: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     status: UserTaskRunStatus
     events: _containers.RepeatedCompositeFieldContainer[UserTaskEvent]
     notes: str
     scheduled_time: _timestamp_pb2.Timestamp
     node_run_id: _object_id_pb2.NodeRunId
     epoch: int
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., status: _Optional[_Union[UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[_object_id_pb2.UserTaskDefId, _Mapping]] = ..., user_group: _Optional[str] = ..., user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., status: _Optional[_Union[UserTaskRunStatus, str]] = ..., events: _Optional[_Iterable[_Union[UserTaskEvent, _Mapping]]] = ..., notes: _Optional[str] = ..., scheduled_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., node_run_id: _Optional[_Union[_object_id_pb2.NodeRunId, _Mapping]] = ..., epoch: _Optional[int] = ...) -> None: ...
 
 class AssignUserTaskRunRequest(_message.Message):
     __slots__ = ("user_task_run_id", "override_claim", "user_group", "user_id")
@@ -104,15 +104,15 @@ class CompleteUserTaskRunRequest(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
     user_task_run_id: _object_id_pb2.UserTaskRunId
-    results: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    results: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     user_id: str
-    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., user_id: _Optional[str] = ...) -> None: ...
+    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., user_id: _Optional[str] = ...) -> None: ...
 
 class SaveUserTaskRunProgressRequest(_message.Message):
     __slots__ = ("user_task_run_id", "results", "user_id", "policy")
@@ -127,17 +127,17 @@ class SaveUserTaskRunProgressRequest(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     USER_TASK_RUN_ID_FIELD_NUMBER: _ClassVar[int]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
     POLICY_FIELD_NUMBER: _ClassVar[int]
     user_task_run_id: _object_id_pb2.UserTaskRunId
-    results: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    results: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     user_id: str
     policy: SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy
-    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., user_id: _Optional[str] = ..., policy: _Optional[_Union[SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy, str]] = ...) -> None: ...
+    def __init__(self, user_task_run_id: _Optional[_Union[_object_id_pb2.UserTaskRunId, _Mapping]] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., user_id: _Optional[str] = ..., policy: _Optional[_Union[SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy, str]] = ...) -> None: ...
 
 class CancelUserTaskRunRequest(_message.Message):
     __slots__ = ("user_task_run_id",)
@@ -208,13 +208,13 @@ class UserTaskEvent(_message.Message):
             KEY_FIELD_NUMBER: _ClassVar[int]
             VALUE_FIELD_NUMBER: _ClassVar[int]
             key: str
-            value: _variable_pb2.VariableValue
-            def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+            value: _type_definition_pb2.VariableValue
+            def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
         USER_ID_FIELD_NUMBER: _ClassVar[int]
         RESULTS_FIELD_NUMBER: _ClassVar[int]
         user_id: str
-        results: _containers.MessageMap[str, _variable_pb2.VariableValue]
-        def __init__(self, user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
+        results: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
+        def __init__(self, user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ...) -> None: ...
     class UTEAssigned(_message.Message):
         __slots__ = ("old_user_id", "old_user_group", "new_user_id", "new_user_group")
         OLD_USER_ID_FIELD_NUMBER: _ClassVar[int]

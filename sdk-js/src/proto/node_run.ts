@@ -12,7 +12,7 @@ import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { ExternalEventId } from "./object_id";
 import { ExternalEventDefId } from "./object_id";
-import { VariableValue } from "./variable";
+import { VariableValue } from "./type_definition";
 import { WfRunId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { WorkflowEventId } from "./object_id";

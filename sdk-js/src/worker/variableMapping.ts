@@ -1,4 +1,4 @@
-import { VariableValue, Struct, StructField, InlineStruct } from '../proto/variable'
+import { VariableValue, Struct, StructField } from '../proto/type_definition'
 import { VarNameAndVal } from '../proto/task_run'
 import { ScheduledTask } from '../proto/service'
 
