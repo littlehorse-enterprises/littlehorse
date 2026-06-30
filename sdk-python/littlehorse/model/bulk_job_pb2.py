@@ -27,7 +27,7 @@ import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.common_enums_pb2 as common__enums__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x62ulk_job.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\xeb\x02\n\x07\x42ulkJob\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.BulkJobId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12*\n\x06status\x18\x03 \x01(\x0e\x32\x1a.littlehorse.BulkJobStatus\x12:\n\x12\x62ulk_delete_wf_run\x18\x04 \x01(\x0b\x32\x1c.littlehorse.BulkDeleteWfRunH\x00\x12\x35\n\x0csubprocesses\x18\x05 \x03(\x0b\x32\x1f.littlehorse.BulkJob.Subprocess\x12\x1a\n\x12total_subprocesses\x18\x06 \x01(\x05\x1a\x44\n\nSubprocess\x12\n\n\x02id\x18\x01 \x01(\x05\x12*\n\x06status\x18\x02 \x01(\x0e\x32\x1a.littlehorse.BulkJobStatusB\x0b\n\toperation\"\xd2\x01\n\x0f\x42ulkDeleteWfRun\x12\x14\n\x0cwf_spec_name\x18\x01 \x01(\t\x12\x32\n\x0e\x65\x61rliest_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\x0clatest_start\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rwf_run_status\x18\x04 \x01(\x0e\x32\x15.littlehorse.LHStatusH\x00\x88\x01\x01\x42\x10\n\x0e_wf_run_status\"w\n\x14\x43reateBulkJobRequest\x12\x0f\n\x02id\x18\x01 \x01(\tH\x01\x88\x01\x01\x12:\n\x12\x62ulk_delete_wf_run\x18\n \x01(\x0b\x32\x1c.littlehorse.BulkDeleteWfRunH\x00\x42\x0b\n\toperationB\x05\n\x03_id\"7\n\x11GetBulkJobRequest\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.BulkJobId*R\n\rBulkJobStatus\x12\x14\n\x10\x42ULK_JOB_RUNNING\x10\x00\x12\x16\n\x12\x42ULK_JOB_COMPLETED\x10\x01\x12\x13\n\x0f\x42ULK_JOB_FAILED\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x62ulk_job.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\x9e\x03\n\x07\x42ulkJob\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.BulkJobId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12*\n\x06status\x18\x03 \x01(\x0e\x32\x1a.littlehorse.BulkJobStatus\x12:\n\x12\x62ulk_delete_wf_run\x18\x04 \x01(\x0b\x32\x1c.littlehorse.BulkDeleteWfRunH\x00\x12\x35\n\x0csubprocesses\x18\x05 \x03(\x0b\x32\x1f.littlehorse.BulkJob.Subprocess\x12\x1a\n\x12total_subprocesses\x18\x06 \x01(\x05\x1aw\n\nSubprocess\x12\n\n\x02id\x18\x01 \x01(\x05\x12*\n\x06status\x18\x02 \x01(\x0e\x32\x1a.littlehorse.BulkJobStatus\x12\x31\n\rlast_seen_key\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x0b\n\toperation\"\xd2\x01\n\x0f\x42ulkDeleteWfRun\x12\x14\n\x0cwf_spec_name\x18\x01 \x01(\t\x12\x32\n\x0e\x65\x61rliest_start\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x30\n\x0clatest_start\x18\x03 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\rwf_run_status\x18\x04 \x01(\x0e\x32\x15.littlehorse.LHStatusH\x00\x88\x01\x01\x42\x10\n\x0e_wf_run_status\"w\n\x14\x43reateBulkJobRequest\x12\x0f\n\x02id\x18\x01 \x01(\tH\x01\x88\x01\x01\x12:\n\x12\x62ulk_delete_wf_run\x18\n \x01(\x0b\x32\x1c.littlehorse.BulkDeleteWfRunH\x00\x42\x0b\n\toperationB\x05\n\x03_id\"7\n\x11GetBulkJobRequest\x12\"\n\x02id\x18\x01 \x01(\x0b\x32\x16.littlehorse.BulkJobId*R\n\rBulkJobStatus\x12\x14\n\x10\x42ULK_JOB_RUNNING\x10\x00\x12\x16\n\x12\x42ULK_JOB_COMPLETED\x10\x01\x12\x13\n\x0f\x42ULK_JOB_FAILED\x10\x02\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,16 +35,16 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'bulk_job_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_BULKJOBSTATUS']._serialized_start=858
-  _globals['_BULKJOBSTATUS']._serialized_end=940
+  _globals['_BULKJOBSTATUS']._serialized_start=909
+  _globals['_BULKJOBSTATUS']._serialized_end=991
   _globals['_BULKJOB']._serialized_start=102
-  _globals['_BULKJOB']._serialized_end=465
+  _globals['_BULKJOB']._serialized_end=516
   _globals['_BULKJOB_SUBPROCESS']._serialized_start=384
-  _globals['_BULKJOB_SUBPROCESS']._serialized_end=452
-  _globals['_BULKDELETEWFRUN']._serialized_start=468
-  _globals['_BULKDELETEWFRUN']._serialized_end=678
-  _globals['_CREATEBULKJOBREQUEST']._serialized_start=680
-  _globals['_CREATEBULKJOBREQUEST']._serialized_end=799
-  _globals['_GETBULKJOBREQUEST']._serialized_start=801
-  _globals['_GETBULKJOBREQUEST']._serialized_end=856
+  _globals['_BULKJOB_SUBPROCESS']._serialized_end=503
+  _globals['_BULKDELETEWFRUN']._serialized_start=519
+  _globals['_BULKDELETEWFRUN']._serialized_end=729
+  _globals['_CREATEBULKJOBREQUEST']._serialized_start=731
+  _globals['_CREATEBULKJOBREQUEST']._serialized_end=850
+  _globals['_GETBULKJOBREQUEST']._serialized_start=852
+  _globals['_GETBULKJOBREQUEST']._serialized_end=907
 # @@protoc_insertion_point(module_scope)

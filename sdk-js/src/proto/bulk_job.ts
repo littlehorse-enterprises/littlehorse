@@ -90,6 +90,8 @@ export interface BulkJob_Subprocess {
   id: number;
   /** Current status of this subprocess. */
   status: BulkJobStatus;
+  /** last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress. */
+  lastSeenKey: string | undefined;
 }
 
 /** Describes a bulk deletion of WfRun's matching certain criteria. */
@@ -275,7 +277,7 @@ export const BulkJob = {
 };
 
 function createBaseBulkJob_Subprocess(): BulkJob_Subprocess {
-  return { id: 0, status: BulkJobStatus.BULK_JOB_RUNNING };
+  return { id: 0, status: BulkJobStatus.BULK_JOB_RUNNING, lastSeenKey: undefined };
 }
 
 export const BulkJob_Subprocess = {
@@ -285,6 +287,9 @@ export const BulkJob_Subprocess = {
     }
     if (message.status !== BulkJobStatus.BULK_JOB_RUNNING) {
       writer.uint32(16).int32(bulkJobStatusToNumber(message.status));
+    }
+    if (message.lastSeenKey !== undefined) {
+      Timestamp.encode(toTimestamp(message.lastSeenKey), writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -310,6 +315,13 @@ export const BulkJob_Subprocess = {
 
           message.status = bulkJobStatusFromJSON(reader.int32());
           continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.lastSeenKey = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -323,6 +335,7 @@ export const BulkJob_Subprocess = {
     return {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       status: isSet(object.status) ? bulkJobStatusFromJSON(object.status) : BulkJobStatus.BULK_JOB_RUNNING,
+      lastSeenKey: isSet(object.lastSeenKey) ? globalThis.String(object.lastSeenKey) : undefined,
     };
   },
 
@@ -334,6 +347,9 @@ export const BulkJob_Subprocess = {
     if (message.status !== BulkJobStatus.BULK_JOB_RUNNING) {
       obj.status = bulkJobStatusToJSON(message.status);
     }
+    if (message.lastSeenKey !== undefined) {
+      obj.lastSeenKey = message.lastSeenKey;
+    }
     return obj;
   },
 
@@ -344,6 +360,7 @@ export const BulkJob_Subprocess = {
     const message = createBaseBulkJob_Subprocess();
     message.id = object.id ?? 0;
     message.status = object.status ?? BulkJobStatus.BULK_JOB_RUNNING;
+    message.lastSeenKey = object.lastSeenKey ?? undefined;
     return message;
   },
 };

@@ -109,14 +109,16 @@ public class BulkJobPunctuatorTest {
 
         String wfRunIdA = LHUtil.generateGuid();
         String wfRunIdB = LHUtil.generateGuid();
-        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, new Date());
-        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, new Date());
+        Date now = new Date();
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, now);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, now);
 
         punctuator.punctuate(System.currentTimeMillis());
 
         // One delete command per matching WfRun Tag, plus the shard report.
         assertThat(forwardedDeletedWfRunIds()).containsExactlyInAnyOrder(wfRunIdA, wfRunIdB);
         assertThat(onlyForwardedShardReport().isCompleted()).isTrue();
+        assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(now);
     }
 
     @Test
@@ -177,9 +179,12 @@ public class BulkJobPunctuatorTest {
         String wfRunIdB = LHUtil.generateGuid();
         String wfRunIdC = LHUtil.generateGuid();
         long now = System.currentTimeMillis();
-        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, new Date(now - 3000));
-        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, new Date(now - 2000));
-        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdC, new Date(now - 1000));
+        Date wfRunCreatedAtA = new Date(now - 3000);
+        Date wfRunCreatedAtB = new Date(now - 2000);
+        Date wfRunCreatedAtC = new Date(now - 1000);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, wfRunCreatedAtA);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, wfRunCreatedAtB);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdC, wfRunCreatedAtC);
 
         // First punctuation: the budget is exhausted as soon as two deletes have been forwarded,
         // so the scan yields mid-way and persists its position.
@@ -193,6 +198,7 @@ public class BulkJobPunctuatorTest {
         // Exactly the first two WfRuns are deleted and the shard is reported as not yet complete.
         assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdA, wfRunIdB);
         assertThat(onlyForwardedShardReport().isCompleted()).isFalse();
+        assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(wfRunCreatedAtB);
 
         mockProcessorContext.resetForwards();
 
@@ -202,6 +208,7 @@ public class BulkJobPunctuatorTest {
 
         assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdC);
         assertThat(onlyForwardedShardReport().isCompleted()).isTrue();
+        assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(wfRunCreatedAtC);
     }
 
     private void seedRunningJob(String jobId, BulkDeleteWfRunModel deleteWfRun) {

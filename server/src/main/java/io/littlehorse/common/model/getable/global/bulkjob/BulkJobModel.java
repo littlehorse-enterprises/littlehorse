@@ -165,6 +165,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
                 .findFirst()
                 .orElseGet(null);
         toUpdate.setStatus(report.isCompleted() ? BulkJobStatus.BULK_JOB_COMPLETED : BulkJobStatus.BULK_JOB_RUNNING);
+        toUpdate.setLastSeenKey(report.getLastSeenTimestamp());
         boolean allShardsCompleted = subprocesses.stream()
                 .allMatch(subprocessModel -> subprocessModel.getStatus() == BulkJobStatus.BULK_JOB_COMPLETED);
 
@@ -179,6 +180,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
     public static class SubprocessModel extends LHSerializable<BulkJob.Subprocess> {
         private int id;
         private BulkJobStatus status;
+        private Date lastSeenKey;
 
         public SubprocessModel() {}
 
@@ -189,7 +191,12 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
 
         @Override
         public BulkJob.Subprocess.Builder toProto() {
-            return BulkJob.Subprocess.newBuilder().setId(id).setStatus(status);
+            BulkJob.Subprocess.Builder out =
+                    BulkJob.Subprocess.newBuilder().setId(id).setStatus(status);
+            if (lastSeenKey != null) {
+                out.setLastSeenKey(LHUtil.fromDate(lastSeenKey));
+            }
+            return out;
         }
 
         @Override
@@ -197,6 +204,9 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             BulkJob.Subprocess p = (BulkJob.Subprocess) proto;
             id = p.getId();
             status = p.getStatus();
+            if (p.hasLastSeenKey()) {
+                lastSeenKey = LHUtil.fromProtoTs(p.getLastSeenKey());
+            }
         }
 
         @Override
@@ -206,7 +216,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
 
         @Override
         public String toString() {
-            return "SubprocessModel{" + "id=" + id + ", status=" + status + '}';
+            return "SubprocessModel{" + "id=" + id + ", status=" + status + ", lastSeenKey=" + lastSeenKey + '}';
         }
     }
 }

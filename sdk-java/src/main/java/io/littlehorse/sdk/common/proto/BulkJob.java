@@ -81,6 +81,33 @@ private static final long serialVersionUID = 0L;
      * @return The status.
      */
     io.littlehorse.sdk.common.proto.BulkJobStatus getStatus();
+
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     * @return Whether the lastSeenKey field is set.
+     */
+    boolean hasLastSeenKey();
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     * @return The lastSeenKey.
+     */
+    com.google.protobuf.Timestamp getLastSeenKey();
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     */
+    com.google.protobuf.TimestampOrBuilder getLastSeenKeyOrBuilder();
   }
   /**
    * Protobuf type {@code littlehorse.BulkJob.Subprocess}
@@ -120,6 +147,7 @@ private static final long serialVersionUID = 0L;
               io.littlehorse.sdk.common.proto.BulkJob.Subprocess.class, io.littlehorse.sdk.common.proto.BulkJob.Subprocess.Builder.class);
     }
 
+    private int bitField0_;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_ = 0;
     /**
@@ -161,6 +189,44 @@ private static final long serialVersionUID = 0L;
       return result == null ? io.littlehorse.sdk.common.proto.BulkJobStatus.UNRECOGNIZED : result;
     }
 
+    public static final int LAST_SEEN_KEY_FIELD_NUMBER = 3;
+    private com.google.protobuf.Timestamp lastSeenKey_;
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     * @return Whether the lastSeenKey field is set.
+     */
+    @java.lang.Override
+    public boolean hasLastSeenKey() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     * @return The lastSeenKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.Timestamp getLastSeenKey() {
+      return lastSeenKey_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastSeenKey_;
+    }
+    /**
+     * <pre>
+     * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+     * </pre>
+     *
+     * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+     */
+    @java.lang.Override
+    public com.google.protobuf.TimestampOrBuilder getLastSeenKeyOrBuilder() {
+      return lastSeenKey_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastSeenKey_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -181,6 +247,9 @@ private static final long serialVersionUID = 0L;
       if (status_ != io.littlehorse.sdk.common.proto.BulkJobStatus.BULK_JOB_RUNNING.getNumber()) {
         output.writeEnum(2, status_);
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(3, getLastSeenKey());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -197,6 +266,10 @@ private static final long serialVersionUID = 0L;
       if (status_ != io.littlehorse.sdk.common.proto.BulkJobStatus.BULK_JOB_RUNNING.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(2, status_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getLastSeenKey());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -216,6 +289,11 @@ private static final long serialVersionUID = 0L;
       if (getId()
           != other.getId()) return false;
       if (status_ != other.status_) return false;
+      if (hasLastSeenKey() != other.hasLastSeenKey()) return false;
+      if (hasLastSeenKey()) {
+        if (!getLastSeenKey()
+            .equals(other.getLastSeenKey())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -231,6 +309,10 @@ private static final long serialVersionUID = 0L;
       hash = (53 * hash) + getId();
       hash = (37 * hash) + STATUS_FIELD_NUMBER;
       hash = (53 * hash) + status_;
+      if (hasLastSeenKey()) {
+        hash = (37 * hash) + LAST_SEEN_KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getLastSeenKey().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -350,13 +432,19 @@ private static final long serialVersionUID = 0L;
 
       // Construct using io.littlehorse.sdk.common.proto.BulkJob.Subprocess.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetLastSeenKeyFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -364,6 +452,11 @@ private static final long serialVersionUID = 0L;
         bitField0_ = 0;
         id_ = 0;
         status_ = 0;
+        lastSeenKey_ = null;
+        if (lastSeenKeyBuilder_ != null) {
+          lastSeenKeyBuilder_.dispose();
+          lastSeenKeyBuilder_ = null;
+        }
         return this;
       }
 
@@ -403,6 +496,14 @@ private static final long serialVersionUID = 0L;
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.status_ = status_;
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.lastSeenKey_ = lastSeenKeyBuilder_ == null
+              ? lastSeenKey_
+              : lastSeenKeyBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -422,6 +523,9 @@ private static final long serialVersionUID = 0L;
         }
         if (other.status_ != 0) {
           setStatusValue(other.getStatusValue());
+        }
+        if (other.hasLastSeenKey()) {
+          mergeLastSeenKey(other.getLastSeenKey());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -459,6 +563,13 @@ private static final long serialVersionUID = 0L;
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
+              case 26: {
+                input.readMessage(
+                    internalGetLastSeenKeyFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -589,6 +700,163 @@ private static final long serialVersionUID = 0L;
         status_ = 0;
         onChanged();
         return this;
+      }
+
+      private com.google.protobuf.Timestamp lastSeenKey_;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> lastSeenKeyBuilder_;
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       * @return Whether the lastSeenKey field is set.
+       */
+      public boolean hasLastSeenKey() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       * @return The lastSeenKey.
+       */
+      public com.google.protobuf.Timestamp getLastSeenKey() {
+        if (lastSeenKeyBuilder_ == null) {
+          return lastSeenKey_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : lastSeenKey_;
+        } else {
+          return lastSeenKeyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public Builder setLastSeenKey(com.google.protobuf.Timestamp value) {
+        if (lastSeenKeyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          lastSeenKey_ = value;
+        } else {
+          lastSeenKeyBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public Builder setLastSeenKey(
+          com.google.protobuf.Timestamp.Builder builderForValue) {
+        if (lastSeenKeyBuilder_ == null) {
+          lastSeenKey_ = builderForValue.build();
+        } else {
+          lastSeenKeyBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public Builder mergeLastSeenKey(com.google.protobuf.Timestamp value) {
+        if (lastSeenKeyBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            lastSeenKey_ != null &&
+            lastSeenKey_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
+            getLastSeenKeyBuilder().mergeFrom(value);
+          } else {
+            lastSeenKey_ = value;
+          }
+        } else {
+          lastSeenKeyBuilder_.mergeFrom(value);
+        }
+        if (lastSeenKey_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public Builder clearLastSeenKey() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        lastSeenKey_ = null;
+        if (lastSeenKeyBuilder_ != null) {
+          lastSeenKeyBuilder_.dispose();
+          lastSeenKeyBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public com.google.protobuf.Timestamp.Builder getLastSeenKeyBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return internalGetLastSeenKeyFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      public com.google.protobuf.TimestampOrBuilder getLastSeenKeyOrBuilder() {
+        if (lastSeenKeyBuilder_ != null) {
+          return lastSeenKeyBuilder_.getMessageOrBuilder();
+        } else {
+          return lastSeenKey_ == null ?
+              com.google.protobuf.Timestamp.getDefaultInstance() : lastSeenKey_;
+        }
+      }
+      /**
+       * <pre>
+       * last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+       * </pre>
+       *
+       * <code>.google.protobuf.Timestamp last_seen_key = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
+          internalGetLastSeenKeyFieldBuilder() {
+        if (lastSeenKeyBuilder_ == null) {
+          lastSeenKeyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>(
+                  getLastSeenKey(),
+                  getParentForChildren(),
+                  isClean());
+          lastSeenKey_ = null;
+        }
+        return lastSeenKeyBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:littlehorse.BulkJob.Subprocess)

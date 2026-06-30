@@ -24,12 +24,14 @@ BULK_JOB_FAILED: BulkJobStatus
 class BulkJob(_message.Message):
     __slots__ = ("id", "created_at", "status", "bulk_delete_wf_run", "subprocesses", "total_subprocesses")
     class Subprocess(_message.Message):
-        __slots__ = ("id", "status")
+        __slots__ = ("id", "status", "last_seen_key")
         ID_FIELD_NUMBER: _ClassVar[int]
         STATUS_FIELD_NUMBER: _ClassVar[int]
+        LAST_SEEN_KEY_FIELD_NUMBER: _ClassVar[int]
         id: int
         status: BulkJobStatus
-        def __init__(self, id: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ...) -> None: ...
+        last_seen_key: _timestamp_pb2.Timestamp
+        def __init__(self, id: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ..., last_seen_key: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]

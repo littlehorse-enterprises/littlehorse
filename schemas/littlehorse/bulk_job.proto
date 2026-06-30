@@ -45,6 +45,9 @@ message BulkJob {
 
     // Current status of this subprocess.
     BulkJobStatus status = 2;
+
+    // last seen key timestamp of this subprocess. This is updated periodically on each subprocess to indicate progress.
+    google.protobuf.Timestamp last_seen_key = 3;
   }
 
   repeated Subprocess subprocesses = 5;
