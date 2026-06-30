@@ -137,6 +137,7 @@ export interface WfRun {
    * Only set if the parent WfRun explicitly started this WfRun via `RunChildWfNode`.
    */
   parentTrigger?: WfRun_ParentTriggerReference | undefined;
+  threadRunQueue: number[];
 }
 
 /** Information about a parent `WfRun` which triggers a child. */
@@ -233,9 +234,25 @@ export interface ThreadRun {
   output?: VariableValue | undefined;
 }
 
-/** Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. */
+/** Represents an inactive ThreadRun, either archived or queued */
 export interface InactiveThreadRun {
   threadRun: ThreadRun | undefined;
+  inactiveThreadRunType?: { $case: "archived"; value: ArchivedThreadRunInfo } | {
+    $case: "queued";
+    value: QueuedThreadRunInfo;
+  } | undefined;
+}
+
+export interface ArchivedThreadRunInfo {
+}
+
+export interface QueuedThreadRunInfo {
+  inputVars: { [key: string]: VariableValue };
+}
+
+export interface QueuedThreadRunInfo_InputVarsEntry {
+  key: string;
+  value: VariableValue | undefined;
 }
 
 /** Points to the Failure that is currently being handled in the ThreadRun. */
@@ -356,6 +373,7 @@ function createBaseWfRun(): WfRun {
     pendingInterrupts: [],
     pendingFailures: [],
     parentTrigger: undefined,
+    threadRunQueue: [],
   };
 }
 
@@ -394,6 +412,11 @@ export const WfRun = {
     if (message.parentTrigger !== undefined) {
       WfRun_ParentTriggerReference.encode(message.parentTrigger, writer.uint32(90).fork()).ldelim();
     }
+    writer.uint32(98).fork();
+    for (const v of message.threadRunQueue) {
+      writer.int32(v);
+    }
+    writer.ldelim();
     return writer;
   },
 
@@ -481,6 +504,23 @@ export const WfRun = {
 
           message.parentTrigger = WfRun_ParentTriggerReference.decode(reader, reader.uint32());
           continue;
+        case 12:
+          if (tag === 96) {
+            message.threadRunQueue.push(reader.int32());
+
+            continue;
+          }
+
+          if (tag === 98) {
+            const end2 = reader.uint32() + reader.pos;
+            while (reader.pos < end2) {
+              message.threadRunQueue.push(reader.int32());
+            }
+
+            continue;
+          }
+
+          break;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -515,6 +555,9 @@ export const WfRun = {
       parentTrigger: isSet(object.parentTrigger)
         ? WfRun_ParentTriggerReference.fromJSON(object.parentTrigger)
         : undefined,
+      threadRunQueue: globalThis.Array.isArray(object?.threadRunQueue)
+        ? object.threadRunQueue.map((e: any) => globalThis.Number(e))
+        : [],
     };
   },
 
@@ -553,6 +596,9 @@ export const WfRun = {
     if (message.parentTrigger !== undefined) {
       obj.parentTrigger = WfRun_ParentTriggerReference.toJSON(message.parentTrigger);
     }
+    if (message.threadRunQueue?.length) {
+      obj.threadRunQueue = message.threadRunQueue.map((e) => Math.round(e));
+    }
     return obj;
   },
 
@@ -576,6 +622,7 @@ export const WfRun = {
     message.parentTrigger = (object.parentTrigger !== undefined && object.parentTrigger !== null)
       ? WfRun_ParentTriggerReference.fromPartial(object.parentTrigger)
       : undefined;
+    message.threadRunQueue = object.threadRunQueue?.map((e) => e) || [];
     return message;
   },
 };
@@ -1002,13 +1049,21 @@ export const ThreadRun = {
 };
 
 function createBaseInactiveThreadRun(): InactiveThreadRun {
-  return { threadRun: undefined };
+  return { threadRun: undefined, inactiveThreadRunType: undefined };
 }
 
 export const InactiveThreadRun = {
   encode(message: InactiveThreadRun, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.threadRun !== undefined) {
       ThreadRun.encode(message.threadRun, writer.uint32(10).fork()).ldelim();
+    }
+    switch (message.inactiveThreadRunType?.$case) {
+      case "archived":
+        ArchivedThreadRunInfo.encode(message.inactiveThreadRunType.value, writer.uint32(18).fork()).ldelim();
+        break;
+      case "queued":
+        QueuedThreadRunInfo.encode(message.inactiveThreadRunType.value, writer.uint32(26).fork()).ldelim();
+        break;
     }
     return writer;
   },
@@ -1027,6 +1082,26 @@ export const InactiveThreadRun = {
 
           message.threadRun = ThreadRun.decode(reader, reader.uint32());
           continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.inactiveThreadRunType = {
+            $case: "archived",
+            value: ArchivedThreadRunInfo.decode(reader, reader.uint32()),
+          };
+          continue;
+        case 3:
+          if (tag !== 26) {
+            break;
+          }
+
+          message.inactiveThreadRunType = {
+            $case: "queued",
+            value: QueuedThreadRunInfo.decode(reader, reader.uint32()),
+          };
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1037,13 +1112,26 @@ export const InactiveThreadRun = {
   },
 
   fromJSON(object: any): InactiveThreadRun {
-    return { threadRun: isSet(object.threadRun) ? ThreadRun.fromJSON(object.threadRun) : undefined };
+    return {
+      threadRun: isSet(object.threadRun) ? ThreadRun.fromJSON(object.threadRun) : undefined,
+      inactiveThreadRunType: isSet(object.archived)
+        ? { $case: "archived", value: ArchivedThreadRunInfo.fromJSON(object.archived) }
+        : isSet(object.queued)
+        ? { $case: "queued", value: QueuedThreadRunInfo.fromJSON(object.queued) }
+        : undefined,
+    };
   },
 
   toJSON(message: InactiveThreadRun): unknown {
     const obj: any = {};
     if (message.threadRun !== undefined) {
       obj.threadRun = ThreadRun.toJSON(message.threadRun);
+    }
+    if (message.inactiveThreadRunType?.$case === "archived") {
+      obj.archived = ArchivedThreadRunInfo.toJSON(message.inactiveThreadRunType.value);
+    }
+    if (message.inactiveThreadRunType?.$case === "queued") {
+      obj.queued = QueuedThreadRunInfo.toJSON(message.inactiveThreadRunType.value);
     }
     return obj;
   },
@@ -1055,6 +1143,226 @@ export const InactiveThreadRun = {
     const message = createBaseInactiveThreadRun();
     message.threadRun = (object.threadRun !== undefined && object.threadRun !== null)
       ? ThreadRun.fromPartial(object.threadRun)
+      : undefined;
+    if (
+      object.inactiveThreadRunType?.$case === "archived" &&
+      object.inactiveThreadRunType?.value !== undefined &&
+      object.inactiveThreadRunType?.value !== null
+    ) {
+      message.inactiveThreadRunType = {
+        $case: "archived",
+        value: ArchivedThreadRunInfo.fromPartial(object.inactiveThreadRunType.value),
+      };
+    }
+    if (
+      object.inactiveThreadRunType?.$case === "queued" &&
+      object.inactiveThreadRunType?.value !== undefined &&
+      object.inactiveThreadRunType?.value !== null
+    ) {
+      message.inactiveThreadRunType = {
+        $case: "queued",
+        value: QueuedThreadRunInfo.fromPartial(object.inactiveThreadRunType.value),
+      };
+    }
+    return message;
+  },
+};
+
+function createBaseArchivedThreadRunInfo(): ArchivedThreadRunInfo {
+  return {};
+}
+
+export const ArchivedThreadRunInfo = {
+  encode(_: ArchivedThreadRunInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): ArchivedThreadRunInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseArchivedThreadRunInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): ArchivedThreadRunInfo {
+    return {};
+  },
+
+  toJSON(_: ArchivedThreadRunInfo): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<ArchivedThreadRunInfo>): ArchivedThreadRunInfo {
+    return ArchivedThreadRunInfo.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<ArchivedThreadRunInfo>): ArchivedThreadRunInfo {
+    const message = createBaseArchivedThreadRunInfo();
+    return message;
+  },
+};
+
+function createBaseQueuedThreadRunInfo(): QueuedThreadRunInfo {
+  return { inputVars: {} };
+}
+
+export const QueuedThreadRunInfo = {
+  encode(message: QueuedThreadRunInfo, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    Object.entries(message.inputVars).forEach(([key, value]) => {
+      QueuedThreadRunInfo_InputVarsEntry.encode({ key: key as any, value }, writer.uint32(10).fork()).ldelim();
+    });
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueuedThreadRunInfo {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueuedThreadRunInfo();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          const entry1 = QueuedThreadRunInfo_InputVarsEntry.decode(reader, reader.uint32());
+          if (entry1.value !== undefined) {
+            message.inputVars[entry1.key] = entry1.value;
+          }
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueuedThreadRunInfo {
+    return {
+      inputVars: isObject(object.inputVars)
+        ? Object.entries(object.inputVars).reduce<{ [key: string]: VariableValue }>((acc, [key, value]) => {
+          acc[key] = VariableValue.fromJSON(value);
+          return acc;
+        }, {})
+        : {},
+    };
+  },
+
+  toJSON(message: QueuedThreadRunInfo): unknown {
+    const obj: any = {};
+    if (message.inputVars) {
+      const entries = Object.entries(message.inputVars);
+      if (entries.length > 0) {
+        obj.inputVars = {};
+        entries.forEach(([k, v]) => {
+          obj.inputVars[k] = VariableValue.toJSON(v);
+        });
+      }
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueuedThreadRunInfo>): QueuedThreadRunInfo {
+    return QueuedThreadRunInfo.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueuedThreadRunInfo>): QueuedThreadRunInfo {
+    const message = createBaseQueuedThreadRunInfo();
+    message.inputVars = Object.entries(object.inputVars ?? {}).reduce<{ [key: string]: VariableValue }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = VariableValue.fromPartial(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseQueuedThreadRunInfo_InputVarsEntry(): QueuedThreadRunInfo_InputVarsEntry {
+  return { key: "", value: undefined };
+}
+
+export const QueuedThreadRunInfo_InputVarsEntry = {
+  encode(message: QueuedThreadRunInfo_InputVarsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== undefined) {
+      VariableValue.encode(message.value, writer.uint32(18).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): QueuedThreadRunInfo_InputVarsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueuedThreadRunInfo_InputVarsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = VariableValue.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueuedThreadRunInfo_InputVarsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? VariableValue.fromJSON(object.value) : undefined,
+    };
+  },
+
+  toJSON(message: QueuedThreadRunInfo_InputVarsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== undefined) {
+      obj.value = VariableValue.toJSON(message.value);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueuedThreadRunInfo_InputVarsEntry>): QueuedThreadRunInfo_InputVarsEntry {
+    return QueuedThreadRunInfo_InputVarsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueuedThreadRunInfo_InputVarsEntry>): QueuedThreadRunInfo_InputVarsEntry {
+    const message = createBaseQueuedThreadRunInfo_InputVarsEntry();
+    message.key = object.key ?? "";
+    message.value = (object.value !== undefined && object.value !== null)
+      ? VariableValue.fromPartial(object.value)
       : undefined;
     return message;
   },
@@ -1960,6 +2268,10 @@ function fromTimestamp(t: Timestamp): string {
   let millis = (t.seconds || 0) * 1_000;
   millis += (t.nanos || 0) / 1_000_000;
   return new globalThis.Date(millis).toISOString();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

@@ -69,6 +69,9 @@ message WfRun {
     // Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
     optional NodeRunId waiting_node_run = 2;
   }
+
+  repeated int32 thread_run_queue = 12;
+
 }
 
 // The type of a ThreadRUn.
@@ -155,10 +158,23 @@ message ThreadRun {
   optional VariableValue output = 16;
 }
 
-// Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+// Represents an inactive ThreadRun, either archived or queued 
 message InactiveThreadRun {
   ThreadRun thread_run = 1;
+
+  oneof inactive_thread_run_type {
+    ArchivedThreadRunInfo archived = 2;
+    QueuedThreadRunInfo queued = 3;
+  }
+
 }
+
+message ArchivedThreadRunInfo {}
+
+message QueuedThreadRunInfo {
+  map<string, VariableValue> input_vars = 1;
+}
+
 
 // Points to the Failure that is currently being handled in the ThreadRun.
 message FailureBeingHandled {

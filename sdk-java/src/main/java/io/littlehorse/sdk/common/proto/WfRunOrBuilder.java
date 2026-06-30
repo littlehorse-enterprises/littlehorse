@@ -386,4 +386,21 @@ public interface WfRunOrBuilder extends
    * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
    */
   io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
+
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  java.util.List<java.lang.Integer> getThreadRunQueueList();
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @return The count of threadRunQueue.
+   */
+  int getThreadRunQueueCount();
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  int getThreadRunQueue(int index);
 }
