@@ -116,11 +116,11 @@ class QueuedThreadRunInfo(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     INPUT_VARS_FIELD_NUMBER: _ClassVar[int]
-    input_vars: _containers.MessageMap[str, _variable_pb2.VariableValue]
-    def __init__(self, input_vars: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ...) -> None: ...
+    input_vars: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
+    def __init__(self, input_vars: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ...) -> None: ...
 
 class FailureBeingHandled(_message.Message):
     __slots__ = ("thread_run_number", "node_run_position", "failure_number")
