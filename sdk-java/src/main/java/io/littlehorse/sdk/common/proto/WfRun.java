@@ -37,6 +37,7 @@ private static final long serialVersionUID = 0L;
     threadRuns_ = java.util.Collections.emptyList();
     pendingInterrupts_ = java.util.Collections.emptyList();
     pendingFailures_ = java.util.Collections.emptyList();
+    threadRunQueue_ = emptyIntList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -1478,6 +1479,36 @@ private static final long serialVersionUID = 0L;
     return parentTrigger_ == null ? io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
   }
 
+  public static final int THREAD_RUN_QUEUE_FIELD_NUMBER = 12;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.Internal.IntList threadRunQueue_ =
+      emptyIntList();
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getThreadRunQueueList() {
+    return threadRunQueue_;
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @return The count of threadRunQueue.
+   */
+  public int getThreadRunQueueCount() {
+    return threadRunQueue_.size();
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 12;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  public int getThreadRunQueue(int index) {
+    return threadRunQueue_.getInt(index);
+  }
+  private int threadRunQueueMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1492,6 +1523,7 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getId());
     }
@@ -1524,6 +1556,13 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000010) != 0)) {
       output.writeMessage(11, getParentTrigger());
+    }
+    if (getThreadRunQueueList().size() > 0) {
+      output.writeUInt32NoTag(98);
+      output.writeUInt32NoTag(threadRunQueueMemoizedSerializedSize);
+    }
+    for (int i = 0; i < threadRunQueue_.size(); i++) {
+      output.writeInt32NoTag(threadRunQueue_.getInt(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -1578,6 +1617,20 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getParentTrigger());
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < threadRunQueue_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(threadRunQueue_.getInt(i));
+      }
+      size += dataSize;
+      if (!getThreadRunQueueList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      threadRunQueueMemoizedSerializedSize = dataSize;
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1629,6 +1682,8 @@ private static final long serialVersionUID = 0L;
       if (!getParentTrigger()
           .equals(other.getParentTrigger())) return false;
     }
+    if (!getThreadRunQueueList()
+        .equals(other.getThreadRunQueueList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1679,6 +1734,10 @@ private static final long serialVersionUID = 0L;
     if (hasParentTrigger()) {
       hash = (37 * hash) + PARENT_TRIGGER_FIELD_NUMBER;
       hash = (53 * hash) + getParentTrigger().hashCode();
+    }
+    if (getThreadRunQueueCount() > 0) {
+      hash = (37 * hash) + THREAD_RUN_QUEUE_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadRunQueueList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1884,6 +1943,7 @@ private static final long serialVersionUID = 0L;
         parentTriggerBuilder_.dispose();
         parentTriggerBuilder_ = null;
       }
+      threadRunQueue_ = emptyIntList();
       return this;
     }
 
@@ -1993,6 +2053,10 @@ private static final long serialVersionUID = 0L;
             ? parentTrigger_
             : parentTriggerBuilder_.build();
         to_bitField0_ |= 0x00000010;
+      }
+      if (((from_bitField0_ & 0x00000800) != 0)) {
+        threadRunQueue_.makeImmutable();
+        result.threadRunQueue_ = threadRunQueue_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -2134,6 +2198,17 @@ private static final long serialVersionUID = 0L;
       if (other.hasParentTrigger()) {
         mergeParentTrigger(other.getParentTrigger());
       }
+      if (!other.threadRunQueue_.isEmpty()) {
+        if (threadRunQueue_.isEmpty()) {
+          threadRunQueue_ = other.threadRunQueue_;
+          threadRunQueue_.makeImmutable();
+          bitField0_ |= 0x00000800;
+        } else {
+          ensureThreadRunQueueIsMutable();
+          threadRunQueue_.addAll(other.threadRunQueue_);
+        }
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -2257,6 +2332,22 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000400;
               break;
             } // case 90
+            case 96: {
+              int v = input.readInt32();
+              ensureThreadRunQueueIsMutable();
+              threadRunQueue_.addInt(v);
+              break;
+            } // case 96
+            case 98: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureThreadRunQueueIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                threadRunQueue_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            } // case 98
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4543,6 +4634,90 @@ private static final long serialVersionUID = 0L;
         parentTrigger_ = null;
       }
       return parentTriggerBuilder_;
+    }
+
+    private com.google.protobuf.Internal.IntList threadRunQueue_ = emptyIntList();
+    private void ensureThreadRunQueueIsMutable() {
+      if (!threadRunQueue_.isModifiable()) {
+        threadRunQueue_ = makeMutableCopy(threadRunQueue_);
+      }
+      bitField0_ |= 0x00000800;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @return A list containing the threadRunQueue.
+     */
+    public java.util.List<java.lang.Integer>
+        getThreadRunQueueList() {
+      threadRunQueue_.makeImmutable();
+      return threadRunQueue_;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @return The count of threadRunQueue.
+     */
+    public int getThreadRunQueueCount() {
+      return threadRunQueue_.size();
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @param index The index of the element to return.
+     * @return The threadRunQueue at the given index.
+     */
+    public int getThreadRunQueue(int index) {
+      return threadRunQueue_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @param index The index to set the value at.
+     * @param value The threadRunQueue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setThreadRunQueue(
+        int index, int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.setInt(index, value);
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @param value The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addThreadRunQueue(int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.addInt(value);
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @param values The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllThreadRunQueue(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureThreadRunQueueIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, threadRunQueue_);
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearThreadRunQueue() {
+      threadRunQueue_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00000800);
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfRun)

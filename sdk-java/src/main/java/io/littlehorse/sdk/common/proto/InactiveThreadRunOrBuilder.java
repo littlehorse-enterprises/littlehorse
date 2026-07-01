@@ -24,4 +24,36 @@ public interface InactiveThreadRunOrBuilder extends
    * <code>.littlehorse.ThreadRun thread_run = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadRunOrBuilder getThreadRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return Whether the archived field is set.
+   */
+  boolean hasArchived();
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return The archived.
+   */
+  io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived();
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder();
+
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return Whether the queued field is set.
+   */
+  boolean hasQueued();
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return The queued.
+   */
+  io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued();
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder();
+
+  io.littlehorse.sdk.common.proto.InactiveThreadRun.InactiveThreadRunTypeCase getInactiveThreadRunTypeCase();
 }

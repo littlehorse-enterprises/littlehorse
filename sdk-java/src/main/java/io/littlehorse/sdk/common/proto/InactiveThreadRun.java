@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+ * Represents an inactive ThreadRun, either archived or queued 
  * </pre>
  *
  * Protobuf type {@code littlehorse.InactiveThreadRun}
@@ -48,6 +48,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int inactiveThreadRunTypeCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object inactiveThreadRunType_;
+  public enum InactiveThreadRunTypeCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    ARCHIVED(2),
+    QUEUED(3),
+    INACTIVETHREADRUNTYPE_NOT_SET(0);
+    private final int value;
+    private InactiveThreadRunTypeCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static InactiveThreadRunTypeCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static InactiveThreadRunTypeCase forNumber(int value) {
+      switch (value) {
+        case 2: return ARCHIVED;
+        case 3: return QUEUED;
+        case 0: return INACTIVETHREADRUNTYPE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public InactiveThreadRunTypeCase
+  getInactiveThreadRunTypeCase() {
+    return InactiveThreadRunTypeCase.forNumber(
+        inactiveThreadRunTypeCase_);
+  }
+
   public static final int THREAD_RUN_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ThreadRun threadRun_;
   /**
@@ -74,6 +116,68 @@ private static final long serialVersionUID = 0L;
     return threadRun_ == null ? io.littlehorse.sdk.common.proto.ThreadRun.getDefaultInstance() : threadRun_;
   }
 
+  public static final int ARCHIVED_FIELD_NUMBER = 2;
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return Whether the archived field is set.
+   */
+  @java.lang.Override
+  public boolean hasArchived() {
+    return inactiveThreadRunTypeCase_ == 2;
+  }
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return The archived.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived() {
+    if (inactiveThreadRunTypeCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_;
+    }
+    return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder() {
+    if (inactiveThreadRunTypeCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_;
+    }
+    return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+  }
+
+  public static final int QUEUED_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return Whether the queued field is set.
+   */
+  @java.lang.Override
+  public boolean hasQueued() {
+    return inactiveThreadRunTypeCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return The queued.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued() {
+    if (inactiveThreadRunTypeCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_;
+    }
+    return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder() {
+    if (inactiveThreadRunTypeCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_;
+    }
+    return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -91,6 +195,12 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getThreadRun());
     }
+    if (inactiveThreadRunTypeCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_);
+    }
+    if (inactiveThreadRunTypeCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -103,6 +213,14 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getThreadRun());
+    }
+    if (inactiveThreadRunTypeCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_);
+    }
+    if (inactiveThreadRunTypeCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -124,6 +242,19 @@ private static final long serialVersionUID = 0L;
       if (!getThreadRun()
           .equals(other.getThreadRun())) return false;
     }
+    if (!getInactiveThreadRunTypeCase().equals(other.getInactiveThreadRunTypeCase())) return false;
+    switch (inactiveThreadRunTypeCase_) {
+      case 2:
+        if (!getArchived()
+            .equals(other.getArchived())) return false;
+        break;
+      case 3:
+        if (!getQueued()
+            .equals(other.getQueued())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -138,6 +269,18 @@ private static final long serialVersionUID = 0L;
     if (hasThreadRun()) {
       hash = (37 * hash) + THREAD_RUN_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRun().hashCode();
+    }
+    switch (inactiveThreadRunTypeCase_) {
+      case 2:
+        hash = (37 * hash) + ARCHIVED_FIELD_NUMBER;
+        hash = (53 * hash) + getArchived().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + QUEUED_FIELD_NUMBER;
+        hash = (53 * hash) + getQueued().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -238,7 +381,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+   * Represents an inactive ThreadRun, either archived or queued 
    * </pre>
    *
    * Protobuf type {@code littlehorse.InactiveThreadRun}
@@ -285,6 +428,14 @@ private static final long serialVersionUID = 0L;
         threadRunBuilder_.dispose();
         threadRunBuilder_ = null;
       }
+      if (archivedBuilder_ != null) {
+        archivedBuilder_.clear();
+      }
+      if (queuedBuilder_ != null) {
+        queuedBuilder_.clear();
+      }
+      inactiveThreadRunTypeCase_ = 0;
+      inactiveThreadRunType_ = null;
       return this;
     }
 
@@ -312,6 +463,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.InactiveThreadRun buildPartial() {
       io.littlehorse.sdk.common.proto.InactiveThreadRun result = new io.littlehorse.sdk.common.proto.InactiveThreadRun(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -328,6 +480,19 @@ private static final long serialVersionUID = 0L;
       result.bitField0_ |= to_bitField0_;
     }
 
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.InactiveThreadRun result) {
+      result.inactiveThreadRunTypeCase_ = inactiveThreadRunTypeCase_;
+      result.inactiveThreadRunType_ = this.inactiveThreadRunType_;
+      if (inactiveThreadRunTypeCase_ == 2 &&
+          archivedBuilder_ != null) {
+        result.inactiveThreadRunType_ = archivedBuilder_.build();
+      }
+      if (inactiveThreadRunTypeCase_ == 3 &&
+          queuedBuilder_ != null) {
+        result.inactiveThreadRunType_ = queuedBuilder_.build();
+      }
+    }
+
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
       if (other instanceof io.littlehorse.sdk.common.proto.InactiveThreadRun) {
@@ -342,6 +507,19 @@ private static final long serialVersionUID = 0L;
       if (other == io.littlehorse.sdk.common.proto.InactiveThreadRun.getDefaultInstance()) return this;
       if (other.hasThreadRun()) {
         mergeThreadRun(other.getThreadRun());
+      }
+      switch (other.getInactiveThreadRunTypeCase()) {
+        case ARCHIVED: {
+          mergeArchived(other.getArchived());
+          break;
+        }
+        case QUEUED: {
+          mergeQueued(other.getQueued());
+          break;
+        }
+        case INACTIVETHREADRUNTYPE_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -376,6 +554,20 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  internalGetArchivedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              inactiveThreadRunTypeCase_ = 2;
+              break;
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetQueuedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              inactiveThreadRunTypeCase_ = 3;
+              break;
+            } // case 26
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -391,6 +583,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int inactiveThreadRunTypeCase_ = 0;
+    private java.lang.Object inactiveThreadRunType_;
+    public InactiveThreadRunTypeCase
+        getInactiveThreadRunTypeCase() {
+      return InactiveThreadRunTypeCase.forNumber(
+          inactiveThreadRunTypeCase_);
+    }
+
+    public Builder clearInactiveThreadRunType() {
+      inactiveThreadRunTypeCase_ = 0;
+      inactiveThreadRunType_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.ThreadRun threadRun_;
@@ -512,6 +719,290 @@ private static final long serialVersionUID = 0L;
         threadRun_ = null;
       }
       return threadRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder> archivedBuilder_;
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     * @return Whether the archived field is set.
+     */
+    @java.lang.Override
+    public boolean hasArchived() {
+      return inactiveThreadRunTypeCase_ == 2;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     * @return The archived.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived() {
+      if (archivedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_;
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          return archivedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder setArchived(io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo value) {
+      if (archivedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        inactiveThreadRunType_ = value;
+        onChanged();
+      } else {
+        archivedBuilder_.setMessage(value);
+      }
+      inactiveThreadRunTypeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder setArchived(
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder builderForValue) {
+      if (archivedBuilder_ == null) {
+        inactiveThreadRunType_ = builderForValue.build();
+        onChanged();
+      } else {
+        archivedBuilder_.setMessage(builderForValue.build());
+      }
+      inactiveThreadRunTypeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder mergeArchived(io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo value) {
+      if (archivedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 2 &&
+            inactiveThreadRunType_ != io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance()) {
+          inactiveThreadRunType_ = io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.newBuilder((io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          inactiveThreadRunType_ = value;
+        }
+        onChanged();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          archivedBuilder_.mergeFrom(value);
+        } else {
+          archivedBuilder_.setMessage(value);
+        }
+      }
+      inactiveThreadRunTypeCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder clearArchived() {
+      if (archivedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          inactiveThreadRunTypeCase_ = 0;
+          inactiveThreadRunType_ = null;
+          onChanged();
+        }
+      } else {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          inactiveThreadRunTypeCase_ = 0;
+          inactiveThreadRunType_ = null;
+        }
+        archivedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder getArchivedBuilder() {
+      return internalGetArchivedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder() {
+      if ((inactiveThreadRunTypeCase_ == 2) && (archivedBuilder_ != null)) {
+        return archivedBuilder_.getMessageOrBuilder();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_;
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder> 
+        internalGetArchivedFieldBuilder() {
+      if (archivedBuilder_ == null) {
+        if (!(inactiveThreadRunTypeCase_ == 2)) {
+          inactiveThreadRunType_ = io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+        }
+        archivedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveThreadRunType_,
+                getParentForChildren(),
+                isClean());
+        inactiveThreadRunType_ = null;
+      }
+      inactiveThreadRunTypeCase_ = 2;
+      onChanged();
+      return archivedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder> queuedBuilder_;
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     * @return Whether the queued field is set.
+     */
+    @java.lang.Override
+    public boolean hasQueued() {
+      return inactiveThreadRunTypeCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     * @return The queued.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued() {
+      if (queuedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_;
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          return queuedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder setQueued(io.littlehorse.sdk.common.proto.QueuedThreadRunInfo value) {
+      if (queuedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        inactiveThreadRunType_ = value;
+        onChanged();
+      } else {
+        queuedBuilder_.setMessage(value);
+      }
+      inactiveThreadRunTypeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder setQueued(
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder builderForValue) {
+      if (queuedBuilder_ == null) {
+        inactiveThreadRunType_ = builderForValue.build();
+        onChanged();
+      } else {
+        queuedBuilder_.setMessage(builderForValue.build());
+      }
+      inactiveThreadRunTypeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder mergeQueued(io.littlehorse.sdk.common.proto.QueuedThreadRunInfo value) {
+      if (queuedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 3 &&
+            inactiveThreadRunType_ != io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance()) {
+          inactiveThreadRunType_ = io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.newBuilder((io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          inactiveThreadRunType_ = value;
+        }
+        onChanged();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          queuedBuilder_.mergeFrom(value);
+        } else {
+          queuedBuilder_.setMessage(value);
+        }
+      }
+      inactiveThreadRunTypeCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder clearQueued() {
+      if (queuedBuilder_ == null) {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          inactiveThreadRunTypeCase_ = 0;
+          inactiveThreadRunType_ = null;
+          onChanged();
+        }
+      } else {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          inactiveThreadRunTypeCase_ = 0;
+          inactiveThreadRunType_ = null;
+        }
+        queuedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder getQueuedBuilder() {
+      return internalGetQueuedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder() {
+      if ((inactiveThreadRunTypeCase_ == 3) && (queuedBuilder_ != null)) {
+        return queuedBuilder_.getMessageOrBuilder();
+      } else {
+        if (inactiveThreadRunTypeCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_;
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder> 
+        internalGetQueuedFieldBuilder() {
+      if (queuedBuilder_ == null) {
+        if (!(inactiveThreadRunTypeCase_ == 3)) {
+          inactiveThreadRunType_ = io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+        }
+        queuedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder>(
+                (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveThreadRunType_,
+                getParentForChildren(),
+                isClean());
+        inactiveThreadRunType_ = null;
+      }
+      inactiveThreadRunTypeCase_ = 3;
+      onChanged();
+      return queuedBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.InactiveThreadRun)
