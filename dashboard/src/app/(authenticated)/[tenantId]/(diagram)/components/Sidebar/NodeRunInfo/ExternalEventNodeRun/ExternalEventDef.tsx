@@ -9,16 +9,23 @@ export const ExternalEventDef = ({ event }: { event: ExternalEventDefProto }) =>
     <>
       <Divider title="ExternalEventDef" />
       <NodeVariable label="ExternalEventDefId:" text={`${event?.id?.name}`} />
-      <NodeVariable label="createdAt:" text={`${event?.createdAt}`} type="date" />
+      <NodeVariable label="createdAt:" text={event?.createdAt} type="date" />
       {event.retentionPolicy && Object.keys(event.retentionPolicy).length > 0 && (
-        <NodeVariable label="retentionPolicy:" text={`${event?.retentionPolicy?.extEvtGcPolicy?.value}`} />
+        <NodeVariable
+          label="retentionPolicy:"
+          text={`${
+            event?.retentionPolicy?.extEvtGcPolicy?.oneofKind === 'secondsAfterPut'
+              ? event.retentionPolicy.extEvtGcPolicy.secondsAfterPut
+              : undefined
+          }`}
+        />
       )}
       {event?.typeInformation && (
         <div className="ml-1">
           <div className=" mb-1 text-sm font-bold"> typeInformation</div>
           <div className=" flex items-center gap-1">
-            {event.typeInformation.returnType?.definedType?.$case && (
-              <IdentifierBadge name={event.typeInformation.returnType.definedType.$case} />
+            {event.typeInformation.returnType?.definedType?.oneofKind && (
+              <IdentifierBadge name={event.typeInformation.returnType.definedType.oneofKind} />
             )}
             <TypeDisplay definedType={event.typeInformation.returnType?.definedType} />
             {event.typeInformation.returnType?.masked && <MaskedBadge />}

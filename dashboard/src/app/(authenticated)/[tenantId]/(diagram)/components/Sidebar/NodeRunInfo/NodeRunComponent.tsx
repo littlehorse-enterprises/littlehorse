@@ -26,18 +26,19 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
 
-  const { $case, value } = nodeRun.nodeType!
-  if ($case === 'task') return <TaskNodeRun node={value} />
-  if ($case === 'externalEvent') return <ExternalEventNodeRun node={value} />
-  if ($case === 'userTask') return <UserTaskNodeRun node={value} />
-  if ($case === 'sleep') return <SleepNodeRun node={value} />
-  if ($case === 'waitForThreads') return <WaitForThreadsNodeRun node={value} />
-  if ($case === 'startThread') return <StartThreadNodeRun node={value} />
-  if ($case === 'startMultipleThreads') return <StartMultipleThreadNodeRun node={value} />
-  if ($case === 'throwEvent') return <ThrowEventNodeRun node={value} />
-  if ($case === 'runChildWf') return <ChildWFNodeRun node={value} />
-  if ($case === 'waitForChildWf') return <WaitForChildWfNodeRun node={value} />
-  if ($case === 'exit') return <ExitNodeRun />
+  const nodeType = nodeRun.nodeType!
+  if (nodeType.oneofKind === 'task') return <TaskNodeRun node={nodeType.task} />
+  if (nodeType.oneofKind === 'externalEvent') return <ExternalEventNodeRun node={nodeType.externalEvent} />
+  if (nodeType.oneofKind === 'userTask') return <UserTaskNodeRun node={nodeType.userTask} />
+  if (nodeType.oneofKind === 'sleep') return <SleepNodeRun node={nodeType.sleep} />
+  if (nodeType.oneofKind === 'waitForThreads') return <WaitForThreadsNodeRun node={nodeType.waitForThreads} />
+  if (nodeType.oneofKind === 'startThread') return <StartThreadNodeRun node={nodeType.startThread} />
+  if (nodeType.oneofKind === 'startMultipleThreads')
+    return <StartMultipleThreadNodeRun node={nodeType.startMultipleThreads} />
+  if (nodeType.oneofKind === 'throwEvent') return <ThrowEventNodeRun node={nodeType.throwEvent} />
+  if (nodeType.oneofKind === 'runChildWf') return <ChildWFNodeRun node={nodeType.runChildWf} />
+  if (nodeType.oneofKind === 'waitForChildWf') return <WaitForChildWfNodeRun node={nodeType.waitForChildWf} />
+  if (nodeType.oneofKind === 'exit') return <ExitNodeRun />
 
   return (
     <div className="mt-2 flex justify-center">

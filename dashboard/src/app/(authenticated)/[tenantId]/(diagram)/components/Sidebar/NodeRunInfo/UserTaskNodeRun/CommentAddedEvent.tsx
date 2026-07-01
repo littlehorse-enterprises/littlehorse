@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTECommented } from 'littlehorse-client/proto'
 import React from 'react'
 
-export const CommentAddedEvent = ({ event, time }: { event: UserTaskEvent_UTECommented; time?: string }) => {
+export const CommentAddedEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTECommented
+  time?: import('@/app/utils').DateLike
+}) => {
   const { userCommentId, userId, comment } = event
   return (
     <>

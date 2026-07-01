@@ -10,6 +10,7 @@ import {
   ExternalEventId,
   ExternalEventIdList,
   NodeRun,
+  NodeRunId,
   PutCorrelatedEventRequest,
   SearchCorrelatedEventRequest,
   SearchExternalEventRequest,
@@ -63,7 +64,7 @@ export const searchExternalEvent = async ({
 
       let nodeRun = null
       try {
-        nodeRun = await client.getNodeRun(externalEvent.id!)
+        nodeRun = await client.getNodeRun(externalEvent.id! as unknown as NodeRunId)
       } catch {
         // nodeRun is null if the node run is not found
       }
@@ -79,7 +80,9 @@ export const searchExternalEvent = async ({
 
   return {
     ...externalEventIdList,
-    bookmarkAsString: externalEventIdList.bookmark?.toString('base64'),
+    bookmarkAsString: externalEventIdList.bookmark
+      ? Buffer.from(externalEventIdList.bookmark).toString('base64')
+      : undefined,
     resultsWithDetails: externalEventWithDetails,
   }
 }
@@ -107,7 +110,9 @@ export const searchCorrelatedEvent = async ({
 
   return {
     ...correlatedEventIdList,
-    bookmarkAsString: correlatedEventIdList.bookmark?.toString('base64'),
+    bookmarkAsString: correlatedEventIdList.bookmark
+      ? Buffer.from(correlatedEventIdList.bookmark).toString('base64')
+      : undefined,
     resultsWithDetails: correlatedEventWithDetails,
   }
 }

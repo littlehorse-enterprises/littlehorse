@@ -1,6 +1,5 @@
-import { LHStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, MetadataStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
 import {
-  BugIcon,
   CheckIcon,
   CirclePauseIcon,
   CirclePlayIcon,
@@ -19,10 +18,9 @@ export type Pin = {
   >
 }
 export const WF_SPEC_STATUS_COLOR: { [key in WfSpec['status']]: string } = {
-  ARCHIVED: 'bg-gray-200',
-  ACTIVE: 'bg-blue-200',
-  TERMINATING: 'bg-yellow-200',
-  UNRECOGNIZED: 'bg-red-200',
+  [MetadataStatus.ARCHIVED]: 'bg-gray-200',
+  [MetadataStatus.ACTIVE]: 'bg-blue-200',
+  [MetadataStatus.TERMINATING]: 'bg-yellow-200',
 }
 type WFRunStatusProp = Record<LHStatus, { backgroundColor: string; textColor: string } & Pin>
 type TaskStatusProp = Record<TaskStatus, { backgroundColor: string; textColor: string } & Pin>
@@ -68,12 +66,6 @@ export const WF_RUN_STATUS: WFRunStatusProp = {
     textColor: 'text-red-600',
     backgroundColor: 'bg-red-200',
     Icon: TriangleAlertIcon,
-  },
-  [LHStatus.UNRECOGNIZED]: {
-    color: 'gray',
-    textColor: 'text-gray-600',
-    backgroundColor: 'bg-gray-200',
-    Icon: BugIcon,
   },
 }
 export const TASK_STATUS: TaskStatusProp = {
@@ -130,11 +122,5 @@ export const TASK_STATUS: TaskStatusProp = {
     textColor: 'text-blue-600',
     backgroundColor: 'bg-blue-200',
     Icon: CirclePlayIcon,
-  },
-  [TaskStatus.UNRECOGNIZED]: {
-    color: 'teal',
-    textColor: 'text-teal-600',
-    backgroundColor: 'bg-teal-200',
-    Icon: EllipsisIcon,
   },
 }

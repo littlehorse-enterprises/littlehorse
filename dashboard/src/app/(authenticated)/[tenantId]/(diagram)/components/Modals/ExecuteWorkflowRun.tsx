@@ -84,7 +84,22 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
           return acc
         }
 
-        acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: primitiveValues[key] })
+        const caseName = matchVariableType(transformedKey)
+        // The old ts-proto `VariableValue.fromJSON({ [case]: value })` coerced JSON values
+        // to the correct runtime type (e.g. base64 string -> Uint8Array for BYTES, ISO
+        // string -> Timestamp). @protobuf-ts `fromJson` performs the same coercion, but
+        // throws on values it cannot parse (e.g. a non-object passed for WF_RUN_ID), where
+        // the old code silently produced a default. Fall back to `create` (raw assignment)
+        // to preserve that lenient, no-throw behavior.
+        try {
+          acc[transformedKey] = VariableValue.fromJson({
+            [caseName]: primitiveValues[key],
+          } as unknown as Parameters<typeof VariableValue.fromJson>[0])
+        } catch {
+          acc[transformedKey] = VariableValue.create({
+            value: { oneofKind: caseName, [caseName]: primitiveValues[key] } as unknown as VariableValue['value'],
+          })
+        }
         return acc
       }, structVariables)
 
