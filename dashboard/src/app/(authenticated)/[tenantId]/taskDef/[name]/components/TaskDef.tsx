@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
+import { TaskDef as TaskDefProto, TaskStatus, Timestamp } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -48,7 +48,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit: wfSpecLimit,
-        wfSpecCriteria: { $case: 'taskDefName', value: taskDefName },
+        wfSpecCriteria: { oneofKind: 'taskDefName', taskDefName },
       })
     },
   })
@@ -64,8 +64,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName: spec.id?.name || '',
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
@@ -120,12 +124,13 @@ export const TaskDef: FC<Props> = ({ spec }) => {
               <select
                 className="max-w-72 rounded border px-2 py-2"
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  setSelectedStatus(e.target.value as TaskStatus)
+                  const value = e.target.value
+                  setSelectedStatus(value === 'ALL' ? 'ALL' : TaskStatus[value as keyof typeof TaskStatus])
                 }}
               >
                 <option>ALL</option>
                 {Object.keys(TaskStatus)
-                  .filter(status => status != TaskStatus.UNRECOGNIZED)
+                  .filter(status => isNaN(Number(status)))
                   .map(status => (
                     <option key={status}>{status}</option>
                   ))}
@@ -170,13 +175,20 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                         {page.resultsWithDetails.length > 0 ? (
                           page.resultsWithDetails.map(({ taskRun }) => {
                             if (!taskRun.id?.wfRunId) return
+                            const taskRunSource = taskRun.source?.taskRunSource
+                            const sourceNodeRunId =
+                              taskRunSource?.oneofKind === 'taskNode'
+                                ? taskRunSource.taskNode.nodeRunId
+                                : taskRunSource?.oneofKind === 'userTaskTrigger'
+                                  ? taskRunSource.userTaskTrigger.nodeRunId
+                                  : undefined
                             return (
                               <TableRow key={taskRun.id?.taskGuid}>
                                 <TableCell>
                                   <LinkWithTenant
                                     className="py-2 text-blue-500 hover:underline"
                                     target="_blank"
-                                    href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${sourceNodeRunId?.threadRunNumber}`}
                                   >
                                     {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>

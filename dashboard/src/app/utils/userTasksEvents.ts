@@ -7,10 +7,10 @@ import { UserTaskEvent } from 'littlehorse-client/proto'
  * @returns A type guard function that checks if the UserTaskEvent has the specified event case.
  */
 export function hasEventCase<
-  C extends UserTaskEvent['event'] extends infer U ? (U extends { $case: string } ? U['$case'] : never) : never,
+  C extends UserTaskEvent['event'] extends infer U ? (U extends { oneofKind: string } ? U['oneofKind'] : never) : never,
 >(caseName: C) {
   return (
     e: UserTaskEvent
-  ): e is Omit<UserTaskEvent, 'event'> & { event: Extract<NonNullable<UserTaskEvent['event']>, { $case: C }> } =>
-    !!e.event && e.event.$case === caseName
+  ): e is Omit<UserTaskEvent, 'event'> & { event: Extract<NonNullable<UserTaskEvent['event']>, { oneofKind: C }> } =>
+    !!e.event && e.event.oneofKind === caseName
 }

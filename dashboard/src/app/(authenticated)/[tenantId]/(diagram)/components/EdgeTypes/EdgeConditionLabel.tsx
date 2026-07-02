@@ -7,10 +7,10 @@ const variableBadgeClass = 'rounded px-1 py-0.5 text-[10px] font-mono bg-gray-10
 
 export const EdgeConditionLabel: FC<{ edge: EdgeProto }> = ({ edge }) => {
   const { edgeCondition } = edge
-  if (!edgeCondition) return null
+  if (edgeCondition.oneofKind === undefined) return null
 
-  if (edgeCondition.$case === 'legacyCondition') {
-    const { left: leftOperand, right: rightOperand, comparator } = edgeCondition.value ?? {}
+  if (edgeCondition.oneofKind === 'legacyCondition') {
+    const { left: leftOperand, right: rightOperand, comparator } = edgeCondition.legacyCondition ?? {}
     const operatorSymbol = comparator != null ? getComparatorSymbol(comparator) : ''
     return (
       <span className="inline-flex items-center gap-1">
@@ -21,17 +21,17 @@ export const EdgeConditionLabel: FC<{ edge: EdgeProto }> = ({ edge }) => {
     )
   }
 
-  if (edgeCondition.$case === 'condition') {
-    const variableAssignment = edgeCondition.value
+  if (edgeCondition.oneofKind === 'condition') {
+    const variableAssignment = edgeCondition.condition
     if (!variableAssignment?.source) return null
 
-    if (variableAssignment.source.$case === 'expression') {
-      const expression = variableAssignment.source.value
+    if (variableAssignment.source.oneofKind === 'expression') {
+      const expression = variableAssignment.source.expression
       const { lhs: leftOperand, rhs: rightOperand, operation } = expression ?? {}
-      if (!operation || operation.$case !== 'comparator') {
+      if (!operation || operation.oneofKind !== 'comparator') {
         return <span className={variableBadgeClass}>{getVariable(variableAssignment)}</span>
       }
-      const operatorSymbol = getComparatorSymbol(operation.value)
+      const operatorSymbol = getComparatorSymbol(operation.comparator)
       return (
         <span className="inline-flex items-center gap-1">
           {leftOperand != null ? <span className={variableBadgeClass}>{getVariable(leftOperand)}</span> : null}

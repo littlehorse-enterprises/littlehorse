@@ -1,17 +1,10 @@
-import { Channel, Client } from 'nice-grpc'
-import {
-  LittleHorseDefinition,
-  PollTaskRequest,
-  PutTaskDefRequest,
-  ReportTaskRun,
-  ScheduledTask,
-  StructDefCompatibilityType,
-  PutStructDefRequest,
-} from '../proto/service'
-import { VariableDef } from '../proto/common_wfspec'
+import type { GrpcTransport } from '@protobuf-ts/grpc-transport'
+import { ReportTaskRun, ScheduledTask, PutStructDefRequest } from '../proto/service'
+import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { TaskDefId } from '../proto/object_id'
 import { TaskStatus, LHErrorType } from '../proto/common_enums'
 import { LHConfig } from '../LHConfig'
+import type { LHPublicClient } from '../client'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
 import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
@@ -36,8 +29,8 @@ class ServerConnection {
   private running = false
   private readonly host: string
   private readonly port: number
-  private readonly channel: Channel
-  private readonly client: Client<typeof LittleHorseDefinition>
+  private readonly transport: GrpcTransport
+  private readonly client: LHPublicClient
   private pollPromise: Promise<void> | undefined
 
   constructor(
@@ -52,8 +45,8 @@ class ServerConnection {
   ) {
     this.host = host
     this.port = port
-    this.channel = config.openChannel(host, port)
-    this.client = config.createClientForChannel(this.channel)
+    this.transport = config.createTransport(host, port)
+    this.client = config.createClientForTransport(this.transport)
   }
 
   get hostKey(): string {
@@ -79,7 +72,7 @@ class ServerConnection {
     if (this.pollPromise) {
       await this.pollPromise.catch(() => {})
     }
-    this.channel.close()
+    this.transport.close()
   }
 
   private async pollLoop(): Promise<void> {
@@ -97,39 +90,38 @@ class ServerConnection {
   }
 
   private async doPoll(): Promise<void> {
-    const self = this
-    let resolveReady: (() => void) | undefined
-    let readyPromise: Promise<void> = Promise.resolve()
+    const call = this.client.pollTask()
 
-    async function* requestGenerator(): AsyncIterable<PollTaskRequest> {
-      while (self.running) {
-        // Wait until we're ready to ask for more work
-        await readyPromise
-        if (!self.running) break
-        yield {
-          taskDefId: self.taskDefId,
-          clientId: self.clientId,
-          taskWorkerVersion: self.taskWorkerVersion,
-        }
-        // Set up flow control: we won't yield the next request until the
-        // current response is processed
-        readyPromise = new Promise<void>(resolve => {
-          resolveReady = resolve
-        })
-      }
+    const sendRequest = () => {
+      if (!this.running) return
+      // Flow control: request the next task. We only ask for more work after
+      // the previous response has been received and dispatched.
+      call.requests.send({
+        taskDefId: this.taskDefId,
+        clientId: this.clientId,
+        taskWorkerVersion: this.taskWorkerVersion,
+      }).catch(() => {})
     }
 
-    const responseStream = this.client.pollTask(requestGenerator())
+    sendRequest()
 
-    for await (const response of responseStream) {
-      if (response.result) {
-        // Execute task in the background (don't await—allow the next poll)
-        this.executeAndReport(response.result).catch(err => {
-          console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
-        })
+    try {
+      for await (const response of call.responses) {
+        if (response.result) {
+          // Execute task in the background (don't await—allow the next poll)
+          this.executeAndReport(response.result).catch(err => {
+            console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
+          })
+        }
+        if (!this.running) break
+        sendRequest()
       }
-      // Signal the generator to yield the next request
-      resolveReady?.()
+    } finally {
+      try {
+        await call.requests.complete()
+      } catch {
+        // ignore errors while closing the request stream
+      }
     }
   }
 
@@ -140,7 +132,7 @@ class ServerConnection {
 
   private async executeTask(task: ScheduledTask): Promise<ReportTaskRun> {
     const context = new WorkerContext(task)
-    const now = new Date().toISOString()
+    const now = Timestamp.now()
 
     try {
       const args = extractTaskArgs(task)
@@ -163,9 +155,9 @@ class ServerConnection {
         status: TaskStatus.TASK_SUCCESS,
         attemptNumber: task.attemptNumber,
         logOutput: context.getLogOutput()
-          ? { value: { $case: 'str' as const, value: context.getLogOutput() } }
+          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
           : undefined,
-        result: { $case: 'output', value: output },
+        result: { oneofKind: 'output', output },
         totalCheckpoints: 0,
       }
     } catch (err: any) {
@@ -177,14 +169,14 @@ class ServerConnection {
           status: TaskStatus.TASK_EXCEPTION,
           attemptNumber: task.attemptNumber,
           logOutput: context.getLogOutput()
-            ? { value: { $case: 'str' as const, value: context.getLogOutput() } }
+            ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
             : undefined,
           result: {
-            $case: 'exception',
-            value: {
+            oneofKind: 'exception',
+            exception: {
               name: err.name,
               message: err.message,
-              content: err.content ? toVariableValue(err.content) : { value: undefined },
+              content: err.content ? toVariableValue(err.content) : { value: { oneofKind: undefined } },
             },
           },
           totalCheckpoints: 0,
@@ -198,11 +190,11 @@ class ServerConnection {
         status: TaskStatus.TASK_FAILED,
         attemptNumber: task.attemptNumber,
         logOutput: context.getLogOutput()
-          ? { value: { $case: 'str' as const, value: context.getLogOutput() } }
+          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
           : undefined,
         result: {
-          $case: 'error',
-          value: {
+          oneofKind: 'error',
+          error: {
             type: LHErrorType.TASK_FAILURE,
             message: err?.message ?? String(err),
           },
@@ -398,7 +390,7 @@ export function createTaskWorker(
         await bootstrapClient.getTaskDef({ name: taskDefName })
         return true
       } catch (err: any) {
-        if (err?.code === 5 /* NOT_FOUND */) {
+        if (err?.code === 'NOT_FOUND') {
           return false
         }
         throw err
@@ -413,7 +405,7 @@ export function createTaskWorker(
         })
         console.log(`[LHTaskWorker] Registered TaskDef: ${result.id?.name}`)
       } catch (err: any) {
-        if (err?.code === 6 /* ALREADY_EXISTS */) {
+        if (err?.code === 'ALREADY_EXISTS') {
           console.log(`[LHTaskWorker] TaskDef '${taskDefName}' already exists, skipping registration.`)
         } else {
           throw err
@@ -426,7 +418,7 @@ export function createTaskWorker(
         const result = await bootstrapClient.putStructDef(request)
         console.log(`[LHTaskWorker] Registered StructDef: ${result.id?.name} v${result.id?.version}`)
       } catch (err: any) {
-        if (err?.code === 6 /* ALREADY_EXISTS */) {
+        if (err?.code === 'ALREADY_EXISTS') {
           console.log(`[LHTaskWorker] StructDef '${request.name}' already exists, skipping registration.`)
         } else {
           throw err

@@ -18,6 +18,12 @@ public class ServerACLsModel extends LHSerializable<ServerACLs> {
 
     private List<ServerACLModel> acls = new ArrayList<>();
 
+    public ServerACLsModel() {}
+
+    public ServerACLsModel(List<ServerACLModel> acls) {
+        this.acls = acls;
+    }
+
     @Override
     public Class<ServerACLs> getProtoBaseClass() {
         return ServerACLs.class;
