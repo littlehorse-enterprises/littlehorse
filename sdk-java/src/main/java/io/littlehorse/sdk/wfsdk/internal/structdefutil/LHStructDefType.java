@@ -12,6 +12,7 @@ import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -211,6 +212,13 @@ public class LHStructDefType extends LHClassType {
     }
 
     private List<LHStructProperty> buildStructProperties() throws IntrospectionException {
+        if (this.clazz.isRecord()) {
+            return List.of(this.clazz.getRecordComponents()).stream()
+                    .map((RecordComponent recordComponent) -> new LHStructProperty(recordComponent, this))
+                    .filter((LHStructProperty property) -> !property.isIgnored())
+                    .collect(Collectors.toUnmodifiableList());
+        }
+
         return List.of(Introspector.getBeanInfo(this.clazz).getPropertyDescriptors()).stream()
                 // Default property descriptor provided by Java, should be filtered out
                 .filter((PropertyDescriptor pd) -> !"class".equals(pd.getName()))
