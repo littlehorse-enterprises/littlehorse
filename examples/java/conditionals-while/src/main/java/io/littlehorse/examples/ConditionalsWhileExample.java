@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,15 +18,18 @@ import java.util.Properties;
  */
 public class ConditionalsWhileExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-conditionals-while", wf -> {
-            WfRunVariable numDonuts = wf.declareInt("number-of-donuts").required();
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-conditionals-while",
+                wf -> {
+                    WfRunVariable numDonuts = wf.declareInt("number-of-donuts").required();
 
-            wf.doWhile(numDonuts.isGreaterThan(0), handler -> {
-                numDonuts.assign(numDonuts.subtract(1));
-                handler.execute("eating-donut", numDonuts);
-            });
-        });
+                    wf.doWhile(numDonuts.isGreaterThan(0), handler -> {
+                        numDonuts.assign(numDonuts.subtract(1));
+                        handler.execute("eating-donut", numDonuts);
+                    });
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -56,7 +58,7 @@ public class ConditionalsWhileExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

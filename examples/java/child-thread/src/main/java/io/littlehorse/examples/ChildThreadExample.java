@@ -6,7 +6,6 @@ import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,36 +27,39 @@ public class ChildThreadExample {
 
     private static final Logger log = LoggerFactory.getLogger(ChildThreadExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-child-thread", wf -> {
-            WfRunVariable parentVar = wf.declareInt("parent-var");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-child-thread",
+                wf -> {
+                    WfRunVariable parentVar = wf.declareInt("parent-var");
 
-            parentVar.assign(wf.execute("parent-task-1", parentVar));
+                    parentVar.assign(wf.execute("parent-task-1", parentVar));
 
-            SpawnedThread childThread = wf.spawnThread(
-                    child -> {
-                        WfRunVariable childVar = child.declareInt("child-var");
-                        childVar.assign(child.execute("child-task-1", childVar));
+                    SpawnedThread childThread = wf.spawnThread(
+                            child -> {
+                                WfRunVariable childVar = child.declareInt("child-var");
+                                childVar.assign(child.execute("child-task-1", childVar));
 
-                        SpawnedThread grandchildThread = child.spawnThread(
-                                grandchild -> {
-                                    WfRunVariable grandchildVar = grandchild.declareInt("grandchild-var");
-                                    grandchild.execute("grandchild-task", grandchildVar);
-                                },
-                                "spawned-grandchild-thread",
-                                Map.of("grandchild-var", childVar));
+                                SpawnedThread grandchildThread = child.spawnThread(
+                                        grandchild -> {
+                                            WfRunVariable grandchildVar = grandchild.declareInt("grandchild-var");
+                                            grandchild.execute("grandchild-task", grandchildVar);
+                                        },
+                                        "spawned-grandchild-thread",
+                                        Map.of("grandchild-var", childVar));
 
-                        child.waitForThreads(SpawnedThreads.of(grandchildThread));
+                                child.waitForThreads(SpawnedThreads.of(grandchildThread));
 
-                        child.execute("child-task-2");
-                    },
-                    "spawned-thread",
-                    Map.of("child-var", parentVar));
+                                child.execute("child-task-2");
+                            },
+                            "spawned-thread",
+                            Map.of("child-var", parentVar));
 
-            wf.waitForThreads(SpawnedThreads.of(childThread));
+                    wf.waitForThreads(SpawnedThreads.of(childThread));
 
-            wf.execute("parent-task-2");
-        });
+                    wf.execute("parent-task-2");
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -95,7 +97,7 @@ public class ChildThreadExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

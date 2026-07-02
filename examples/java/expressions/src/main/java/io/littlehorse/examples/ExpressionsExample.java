@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,13 +17,16 @@ import java.util.Properties;
  */
 public class ExpressionsExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-expressions", wf -> {
-            var quantity = wf.declareInt("quantity");
-            var price = wf.declareDouble("price");
-            var taxes = wf.declareDouble("taxes");
-            wf.execute("place-order", quantity.multiply(price.multiply(wf.add(1, taxes.divide(100.0)))));
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-expressions",
+                wf -> {
+                    var quantity = wf.declareInt("quantity");
+                    var price = wf.declareDouble("price");
+                    var taxes = wf.declareDouble("taxes");
+                    wf.execute("place-order", quantity.multiply(price.multiply(wf.add(1, taxes.divide(100.0)))));
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -52,7 +54,7 @@ public class ExpressionsExample {
         LHConfig config = new LHConfig(props);
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

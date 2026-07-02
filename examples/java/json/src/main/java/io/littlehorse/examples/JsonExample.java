@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,13 +26,16 @@ public class JsonExample {
 
     private static final Logger log = LoggerFactory.getLogger(JsonExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-json", wf -> {
-            WfRunVariable person = wf.declareJsonObj("person");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-json",
+                wf -> {
+                    WfRunVariable person = wf.declareJsonObj("person");
 
-            wf.execute("greet", person.jsonPath("$.name"));
-            wf.execute("describe-car", person.jsonPath("$.car"));
-        });
+                    wf.execute("greet", person.jsonPath("$.name"));
+                    wf.execute("describe-car", person.jsonPath("$.car"));
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -67,7 +69,7 @@ public class JsonExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);
