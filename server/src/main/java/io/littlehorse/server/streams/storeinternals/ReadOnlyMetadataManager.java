@@ -67,6 +67,11 @@ public class ReadOnlyMetadataManager {
         return out;
     }
 
+    public void disableCache() {
+        this.clusterStore.enableCache(null);
+        this.tenantStore.enableCache(null);
+    }
+
     public <U extends Message, T extends MetadataGetable<U>, EX extends Throwable> T getOrThrow(
             MetadataId<?, U, T> id, Supplier<EX> throwable) throws EX {
         T result = get(id);

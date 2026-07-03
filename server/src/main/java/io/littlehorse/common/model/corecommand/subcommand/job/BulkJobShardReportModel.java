@@ -70,7 +70,10 @@ public class BulkJobShardReportModel extends MetadataSubCommand<BulkJobShardRepo
 
     @Override
     public Message process(MetadataProcessorContext executionContext) {
-
+        // Bypass the shared MetadataCache for this read-modify-write pattern. The MetadataGlobalStoreProcessor
+        // updates the cache asynchronously from the changelog and can overwrite our just-written value
+        // with an older snapshot, causing lost updates when multiple shard reports merge into the same BulkJob.
+        executionContext.metadataManager().disableCache();
         BulkJobModel bulkJobModel = executionContext.metadataManager().get(bulkJobId);
         bulkJobModel.updateShard(this);
 
