@@ -190,6 +190,33 @@ public class WfSpecUtilTest {
         }
 
         @Test
+        void shouldDetectFrozenVariableTypeChangesAfterCanonicalization() throws Exception {
+            WfSpecModel original =
+                    modelFromBytes(specWithFrozenVariables(List.of(variable("same-name", VariableType.STR))));
+            WfSpecModel changed =
+                    modelFromBytes(specWithFrozenVariables(List.of(variable("same-name", VariableType.INT))));
+
+            assertThat(WfSpecUtil.equals(original, changed)).isFalse();
+        }
+
+        @Test
+        void shouldDetectComplexWorkflowThreadSpecChangesAfterCanonicalization() throws Exception {
+            WfSpec compiled = complexImageProcessingSpec();
+            WfSpecModel original = modelFromBytes(compiled);
+
+            WfSpec changed = compiled.toBuilder()
+                    .putThreadSpecs(
+                            compiled.getEntrypointThreadName(),
+                            compiled.getThreadSpecsOrThrow(compiled.getEntrypointThreadName()).toBuilder()
+                                    .clearNodes()
+                                    .build())
+                    .build();
+            WfSpecModel candidate = modelFromBytes(changed);
+
+            assertThat(WfSpecUtil.equals(original, candidate)).isFalse();
+        }
+
+        @Test
         void shouldBeTrueWhenTwoWfSpecModelsAreEqual() {
             String name = "test";
             String entrypointThreadName = "thread";
