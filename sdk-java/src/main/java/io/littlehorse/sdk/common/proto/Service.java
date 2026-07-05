@@ -968,7 +968,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "PDATES\020\000\022\032\n\026MINOR_REVISION_UPDATES\020\001\022\016\n\n" +
       "NO_UPDATES\020\002*X\n\032StructDefCompatibilityTy" +
       "pe\022\025\n\021NO_SCHEMA_UPDATES\020\000\022#\n\037FULLY_COMPA" +
-      "TIBLE_SCHEMA_UPDATES\020\0012\324@\n\013LittleHorse\022D" +
+      "TIBLE_SCHEMA_UPDATES\020\0012\364A\n\013LittleHorse\022D" +
       "\n\nPutTaskDef\022\036.littlehorse.PutTaskDefReq" +
       "uest\032\024.littlehorse.TaskDef\"\000\022<\n\nGetTaskD" +
       "ef\022\026.littlehorse.TaskDefId\032\024.littlehorse" +
@@ -1145,7 +1145,11 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "ob\022!.littlehorse.CreateBulkJobRequest\032\024." +
       "littlehorse.BulkJob\"\000\022D\n\nGetBulkJob\022\036.li" +
       "ttlehorse.GetBulkJobRequest\032\024.littlehors" +
-      "e.BulkJob\"\000\022a\n\027GetTaskDefMetricsWindow\022\'" +
+      "e.BulkJob\"\000\022P\n\rSearchBulkJob\022!.littlehor" +
+      "se.SearchBulkJobRequest\032\032.littlehorse.Bu" +
+      "lkJobIdList\"\000\022L\n\rDeleteBulkJob\022!.littleh" +
+      "orse.DeleteBulkJobRequest\032\026.google.proto" +
+      "buf.Empty\"\000\022a\n\027GetTaskDefMetricsWindow\022\'" +
       ".littlehorse.TaskDefMetricsQueryRequest\032" +
       "\033.littlehorse.TaskDefMetrics\"\000\022^\n\026GetWfS" +
       "pecMetricsWindow\022&.littlehorse.WfSpecMet" +

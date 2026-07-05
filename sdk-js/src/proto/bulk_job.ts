@@ -123,6 +123,41 @@ export interface GetBulkJobRequest {
   id: BulkJobId | undefined;
 }
 
+/** Request to search for BulkJobs, optionally filtering by status. */
+export interface SearchBulkJobRequest {
+  /** Bookmark for cursor-based pagination; pass if applicable. */
+  bookmark?:
+    | Buffer
+    | undefined;
+  /** Maximum results to return in one request. */
+  limit?:
+    | number
+    | undefined;
+  /** If set, only return BulkJobs with this status. */
+  status?: BulkJobStatus | undefined;
+}
+
+/** List of BulkJob Id's. */
+export interface BulkJobIdList {
+  /** The resulting object id's. */
+  results: BulkJobId[];
+  /**
+   * The bookmark can be used for cursor-based pagination. If it is null, the server
+   * has returned all results. If it is set, you can pass it into your next request
+   * to resume searching where your previous request left off.
+   */
+  bookmark?: Buffer | undefined;
+}
+
+/**
+ * Request to delete a BulkJob. Only permitted for BulkJobs in a terminal state
+ * (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+ */
+export interface DeleteBulkJobRequest {
+  /** The ID of the BulkJob to delete. */
+  id: BulkJobId | undefined;
+}
+
 function createBaseBulkJob(): BulkJob {
   return {
     id: undefined,
@@ -609,6 +644,234 @@ export const GetBulkJobRequest = {
     return message;
   },
 };
+
+function createBaseSearchBulkJobRequest(): SearchBulkJobRequest {
+  return { bookmark: undefined, limit: undefined, status: undefined };
+}
+
+export const SearchBulkJobRequest = {
+  encode(message: SearchBulkJobRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.bookmark !== undefined) {
+      writer.uint32(10).bytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      writer.uint32(16).int32(message.limit);
+    }
+    if (message.status !== undefined) {
+      writer.uint32(24).int32(bulkJobStatusToNumber(message.status));
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): SearchBulkJobRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSearchBulkJobRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
+          continue;
+        case 3:
+          if (tag !== 24) {
+            break;
+          }
+
+          message.status = bulkJobStatusFromJSON(reader.int32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SearchBulkJobRequest {
+    return {
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      status: isSet(object.status) ? bulkJobStatusFromJSON(object.status) : undefined,
+    };
+  },
+
+  toJSON(message: SearchBulkJobRequest): unknown {
+    const obj: any = {};
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.status !== undefined) {
+      obj.status = bulkJobStatusToJSON(message.status);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SearchBulkJobRequest>): SearchBulkJobRequest {
+    return SearchBulkJobRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SearchBulkJobRequest>): SearchBulkJobRequest {
+    const message = createBaseSearchBulkJobRequest();
+    message.bookmark = object.bookmark ?? undefined;
+    message.limit = object.limit ?? undefined;
+    message.status = object.status ?? undefined;
+    return message;
+  },
+};
+
+function createBaseBulkJobIdList(): BulkJobIdList {
+  return { results: [], bookmark: undefined };
+}
+
+export const BulkJobIdList = {
+  encode(message: BulkJobIdList, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    for (const v of message.results) {
+      BulkJobId.encode(v!, writer.uint32(10).fork()).ldelim();
+    }
+    if (message.bookmark !== undefined) {
+      writer.uint32(18).bytes(message.bookmark);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): BulkJobIdList {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBulkJobIdList();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.results.push(BulkJobId.decode(reader, reader.uint32()));
+          continue;
+        case 2:
+          if (tag !== 18) {
+            break;
+          }
+
+          message.bookmark = reader.bytes() as Buffer;
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BulkJobIdList {
+    return {
+      results: globalThis.Array.isArray(object?.results) ? object.results.map((e: any) => BulkJobId.fromJSON(e)) : [],
+      bookmark: isSet(object.bookmark) ? Buffer.from(bytesFromBase64(object.bookmark)) : undefined,
+    };
+  },
+
+  toJSON(message: BulkJobIdList): unknown {
+    const obj: any = {};
+    if (message.results?.length) {
+      obj.results = message.results.map((e) => BulkJobId.toJSON(e));
+    }
+    if (message.bookmark !== undefined) {
+      obj.bookmark = base64FromBytes(message.bookmark);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<BulkJobIdList>): BulkJobIdList {
+    return BulkJobIdList.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<BulkJobIdList>): BulkJobIdList {
+    const message = createBaseBulkJobIdList();
+    message.results = object.results?.map((e) => BulkJobId.fromPartial(e)) || [];
+    message.bookmark = object.bookmark ?? undefined;
+    return message;
+  },
+};
+
+function createBaseDeleteBulkJobRequest(): DeleteBulkJobRequest {
+  return { id: undefined };
+}
+
+export const DeleteBulkJobRequest = {
+  encode(message: DeleteBulkJobRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.id !== undefined) {
+      BulkJobId.encode(message.id, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): DeleteBulkJobRequest {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDeleteBulkJobRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.id = BulkJobId.decode(reader, reader.uint32());
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DeleteBulkJobRequest {
+    return { id: isSet(object.id) ? BulkJobId.fromJSON(object.id) : undefined };
+  },
+
+  toJSON(message: DeleteBulkJobRequest): unknown {
+    const obj: any = {};
+    if (message.id !== undefined) {
+      obj.id = BulkJobId.toJSON(message.id);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<DeleteBulkJobRequest>): DeleteBulkJobRequest {
+    return DeleteBulkJobRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DeleteBulkJobRequest>): DeleteBulkJobRequest {
+    const message = createBaseDeleteBulkJobRequest();
+    message.id = (object.id !== undefined && object.id !== null) ? BulkJobId.fromPartial(object.id) : undefined;
+    return message;
+  },
+};
+
+function bytesFromBase64(b64: string): Uint8Array {
+  return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  return globalThis.Buffer.from(arr).toString("base64");
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

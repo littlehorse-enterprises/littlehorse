@@ -49,6 +49,10 @@ message BulkJob {
 
     // Current status of this subprocess.
     BulkJobStatus status = 2;
+
+    // Timestamp of the last key seen by this subprocess. Updated periodically as the
+    // subprocess makes progress, so users can observe how far a shard has advanced.
+    google.protobuf.Timestamp last_seen_key = 3;
   }
 
   // Per-partition subprocesses tracking progress.
@@ -194,7 +198,8 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 | `BulkJob` | Tenant-scoped | Global Metadata Store | User-facing metadata object. Tracks overall status and per-subprocess progress. |
 | `ActiveBulkJob` | Cluster-scoped | Global Metadata Store | Internal registry entry. Exists only while the BulkJob is RUNNING. Allows the punctuator to discover active jobs with a single prefix scan without iterating tenants. |
 | `BulkJobShardCursor` | Partition-local | Core Store | Internal storeable. Tracks the range scan cursor (last iterated key) for this partition. Not exposed to users. |
-| `BulkJobShard` | Partition-local | Core Store | User-facing per-partition shard tracking progress (processed items, status). |
+
+> Per-partition progress is surfaced to users through the `BulkJob.subprocesses` list (one `Subprocess` per partition, each with a `status` and `last_seen_key`), not a separate object. The only per-partition internal object is `BulkJobShardCursor`.
 
 ### Flow
 
@@ -202,11 +207,12 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
    - A **`BulkJob`** (tenant-scoped) in the Global Metadata Store with status `BULK_JOB_RUNNING`. Contains the operation details and a `subprocesses` list (one entry per partition, initially all `BULK_JOB_RUNNING`).
    - An **`ActiveBulkJob`** (cluster-scoped) registry entry containing only the `BulkJobId` and `tenantId`. This enables the punctuator to discover active jobs via a single prefix scan.
 
-2. **Punctuator Discovery:** Each `CommandProcessor` runs a `BulkJobPunctuator` that periodically:
-   - Computes a **deadline** (`Instant.now() + PUNCTUATION_BUDGET`) to prevent exceeding Kafka Streams transaction timeouts.
+2. **Punctuator Discovery:** Each `CommandProcessor` schedules a `BulkJobPunctuator` on a **1-second wall-clock interval**. On each tick it:
+   - Computes a **deadline** (`now + punctuationBudget`) to bound its own runtime and avoid exceeding Kafka Streams transaction timeouts. The clock is injectable (defaults to `Instant::now`) so the budget is deterministically testable.
+   - Derives a shared `outOfBudget` predicate used by both the inter-job loop and the intra-job Tag scan.
    - Scans `ActiveBulkJob` registry entries via a cluster-scoped prefix range scan.
    - For each entry, resolves the `tenantId` and `BulkJobId`.
-   - Checks the deadline before processing each job — if exceeded, breaks the loop (remaining jobs will be processed on the next tick).
+   - Checks `outOfBudget` before processing each job — if exceeded, breaks the loop (remaining jobs are processed on the next tick).
 
 3. **Shard Cursor Check:** For each active job, the punctuator checks the partition's Core Store for a `BulkJobShardCursor`:
    - If no cursor exists, a new one is created (this is the first time this partition processes this job).
@@ -215,9 +221,10 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 4. **Time-Budgeted Tag Range Scan:** The punctuator delegates to `BulkJobModel.tryToComplete()`, which calls `BulkDeleteWfRunModel.process()`. This method:
    - Builds a `TagScan` from the job criteria (`wf_spec_name`, time range, optional status).
-   - Performs a range scan over matching `Tag`s in the Core Store.
-   - For each tag, forwards a **`DeleteWfRunRequest`** command (wrapped in an `LHTimer`) to the repartition topic, keyed by the target `WfRunId`.
-   - Checks the **deadline** inside the iteration loop. If exceeded, saves the current cursor position and returns without marking `scan_completed = true`. The next tick resumes from the saved position.
+   - Determines the scan start: the cursor's `last_key` if resuming, otherwise the range's computed start key.
+   - Performs a range scan over matching `Tag`s in the Core Store. Because the resume `last_key` is the **full Tag store key** of the last-deleted `WfRun` and the range is inclusive of it, the scan **skips that boundary key** on resume so each matching `WfRun` is deleted **exactly once** across punctuations.
+   - For each remaining tag, forwards a **`DeleteWfRunRequest`** command (wrapped in an `LHTimer`) to the repartition topic, keyed by the target `WfRunId`, and records the tag's store key and `createdAt` as the cursor's `last_key` / `last_seen_timestamp`.
+   - Checks `outOfBudget` at the top of each iteration. If exceeded, saves the current cursor position and returns without setting `scan_completed = true`. The next tick resumes from the saved position.
 
 5. **Shard Report:** After each iteration (whether the scan completed or was interrupted by the deadline), the punctuator:
    - Saves the updated `BulkJobShardCursor` to the Core Store.
@@ -225,11 +232,11 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 6. **Deletion (per WfRun):** Each forwarded `DeleteWfRunRequest` is processed by the `CommandProcessor` as a normal command — deleting a single `WfRun` and its associated data in its own Kafka Streams transaction.
 
-7. **Job Completion:** The `MetadataProcessor` receives `BulkJobShardReport`s and updates the corresponding `Subprocess` entry in the `BulkJob`. Once all subprocesses report `completed = true`, the `BulkJob` transitions to `BULK_JOB_COMPLETED` and the `ActiveBulkJob` registry entry is deleted. If an unrecoverable error occurs, the job transitions to `BULK_JOB_FAILED` and the registry entry is also deleted.
+7. **Job Completion:** The `MetadataProcessor` receives `BulkJobShardReport`s and, in `BulkJobModel.updateShard`, updates the corresponding `Subprocess` entry — setting its `status` and its `last_seen_key` from the report's `last_seen_timestamp`. (The read-modify-write disables the metadata cache to avoid lost updates when multiple shard reports merge into the same `BulkJob`.) Once all subprocesses report `completed = true`, the `BulkJob` transitions to `BULK_JOB_COMPLETED` and the `ActiveBulkJob` registry entry is deleted. If an unrecoverable error occurs, the job transitions to `BULK_JOB_FAILED` and the registry entry is also deleted.
 
 ### Time Budget
 
-The punctuator operates with a **time budget** (currently 500ms) to prevent Kafka Streams transaction timeouts. The budget is enforced at two levels:
+The punctuator runs on a 1-second wall-clock schedule and operates with a **time budget** (currently 50ms, `CommandProcessor.BULK_JOB_PUNCTUATION_BUDGET`) to keep each punctuation well within Kafka Streams transaction timeouts. The budget is evaluated against an injectable clock and enforced at two levels via a shared `outOfBudget` predicate:
 
-1. **Inter-job:** Before processing each `ActiveBulkJob`, the punctuator checks whether the deadline has passed. If so, it breaks the loop and defers remaining jobs to the next tick.
-2. **Intra-job:** Inside the Tag range scan loop, each iteration checks the deadline. If exceeded, the scan saves its cursor position and returns early. The next tick resumes from the saved position.
+1. **Inter-job:** Before processing each `ActiveBulkJob`, the punctuator checks `outOfBudget`. If exhausted, it breaks the loop and defers remaining jobs to the next tick.
+2. **Intra-job:** Inside the Tag range scan loop, each iteration checks `outOfBudget`. If exhausted, the scan saves its cursor position (full Tag store key + last-seen timestamp) and returns early; the next tick resumes from exactly that position, skipping the boundary key so no `WfRun` is deleted twice.

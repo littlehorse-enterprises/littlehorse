@@ -112,6 +112,7 @@ message MetadataCommand {
         DeleteQuotaRequest delete_quota = 20;
         CreateBulkJobRequest create_bulk_job = 21;
         BulkJobShardReport bulk_job_shard_report = 22;
+        DeleteBulkJobRequest delete_bulk_job = 23;
     }
 }
 

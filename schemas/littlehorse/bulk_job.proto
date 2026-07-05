@@ -90,3 +90,33 @@ message GetBulkJobRequest {
   BulkJobId id = 1;
 }
 
+// Request to search for BulkJobs, optionally filtering by status.
+message SearchBulkJobRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // If set, only return BulkJobs with this status.
+  optional BulkJobStatus status = 3;
+}
+
+// List of BulkJob Id's.
+message BulkJobIdList {
+  // The resulting object id's.
+  repeated BulkJobId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// Request to delete a BulkJob. Only permitted for BulkJobs in a terminal state
+// (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+message DeleteBulkJobRequest {
+  // The ID of the BulkJob to delete.
+  BulkJobId id = 1;
+}
+

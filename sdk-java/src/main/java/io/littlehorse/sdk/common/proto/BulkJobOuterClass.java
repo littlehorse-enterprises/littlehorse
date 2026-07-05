@@ -51,6 +51,21 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_GetBulkJobRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_SearchBulkJobRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_SearchBulkJobRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_BulkJobIdList_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_BulkJobIdList_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_DeleteBulkJobRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_DeleteBulkJobRequest_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -82,11 +97,19 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
       "\001 \001(\tH\001\210\001\001\022:\n\022bulk_delete_wf_run\030\n \001(\0132\034" +
       ".littlehorse.BulkDeleteWfRunH\000B\013\n\toperat" +
       "ionB\005\n\003_id\"7\n\021GetBulkJobRequest\022\"\n\002id\030\001 " +
-      "\001(\0132\026.littlehorse.BulkJobId*R\n\rBulkJobSt" +
-      "atus\022\024\n\020BULK_JOB_RUNNING\020\000\022\026\n\022BULK_JOB_C" +
-      "OMPLETED\020\001\022\023\n\017BULK_JOB_FAILED\020\002BM\n\037io.li" +
-      "ttlehorse.sdk.common.protoP\001Z\t.;lhproto\252" +
-      "\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "\001(\0132\026.littlehorse.BulkJobId\"\224\001\n\024SearchBu" +
+      "lkJobRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005l" +
+      "imit\030\002 \001(\005H\001\210\001\001\022/\n\006status\030\003 \001(\0162\032.little" +
+      "horse.BulkJobStatusH\002\210\001\001B\013\n\t_bookmarkB\010\n" +
+      "\006_limitB\t\n\007_status\"\\\n\rBulkJobIdList\022\'\n\007r" +
+      "esults\030\001 \003(\0132\026.littlehorse.BulkJobId\022\025\n\010" +
+      "bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\":\n\024Dele" +
+      "teBulkJobRequest\022\"\n\002id\030\001 \001(\0132\026.littlehor" +
+      "se.BulkJobId*R\n\rBulkJobStatus\022\024\n\020BULK_JO" +
+      "B_RUNNING\020\000\022\026\n\022BULK_JOB_COMPLETED\020\001\022\023\n\017B" +
+      "ULK_JOB_FAILED\020\002BM\n\037io.littlehorse.sdk.c" +
+      "ommon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.S" +
+      "dk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -124,6 +147,24 @@ public final class BulkJobOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_GetBulkJobRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_GetBulkJobRequest_descriptor,
+        new java.lang.String[] { "Id", });
+    internal_static_littlehorse_SearchBulkJobRequest_descriptor =
+      getDescriptor().getMessageTypes().get(4);
+    internal_static_littlehorse_SearchBulkJobRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_SearchBulkJobRequest_descriptor,
+        new java.lang.String[] { "Bookmark", "Limit", "Status", });
+    internal_static_littlehorse_BulkJobIdList_descriptor =
+      getDescriptor().getMessageTypes().get(5);
+    internal_static_littlehorse_BulkJobIdList_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_BulkJobIdList_descriptor,
+        new java.lang.String[] { "Results", "Bookmark", });
+    internal_static_littlehorse_DeleteBulkJobRequest_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_littlehorse_DeleteBulkJobRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_DeleteBulkJobRequest_descriptor,
         new java.lang.String[] { "Id", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();

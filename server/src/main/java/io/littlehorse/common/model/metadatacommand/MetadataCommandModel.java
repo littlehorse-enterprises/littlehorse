@@ -6,6 +6,7 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
@@ -61,6 +62,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteStructDefRequestModel deleteStructDef;
     private CreateBulkJobRequestModel createBulkJob;
     private BulkJobShardReportModel bulkJobShardReport;
+    private DeleteBulkJobRequestModel deleteBulkJob;
 
     public MetadataCommandModel() {
         super();
@@ -144,6 +146,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case BULK_JOB_SHARD_REPORT:
                 out.setBulkJobShardReport(bulkJobShardReport.toProto());
+                break;
+            case DELETE_BULK_JOB:
+                out.setDeleteBulkJob(deleteBulkJob.toProto());
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
@@ -229,6 +234,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 bulkJobShardReport =
                         LHSerializable.fromProto(p.getBulkJobShardReport(), BulkJobShardReportModel.class, context);
                 break;
+            case DELETE_BULK_JOB:
+                deleteBulkJob = DeleteBulkJobRequestModel.fromProto(p.getDeleteBulkJob(), context);
+                break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
         }
@@ -274,6 +282,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return createBulkJob;
             case BULK_JOB_SHARD_REPORT:
                 return bulkJobShardReport;
+            case DELETE_BULK_JOB:
+                return deleteBulkJob;
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -338,6 +348,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(BulkJobShardReportModel.class)) {
             type = MetadataCommandCase.BULK_JOB_SHARD_REPORT;
             bulkJobShardReport = (BulkJobShardReportModel) cmd;
+        } else if (cls.equals(DeleteBulkJobRequestModel.class)) {
+            type = MetadataCommandCase.DELETE_BULK_JOB;
+            deleteBulkJob = (DeleteBulkJobRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

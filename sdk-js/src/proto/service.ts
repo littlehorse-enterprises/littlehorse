@@ -19,7 +19,14 @@ import {
   QuotaId,
   Tenant,
 } from "./acls";
-import { BulkJob, CreateBulkJobRequest, GetBulkJobRequest } from "./bulk_job";
+import {
+  BulkJob,
+  BulkJobIdList,
+  CreateBulkJobRequest,
+  DeleteBulkJobRequest,
+  GetBulkJobRequest,
+  SearchBulkJobRequest,
+} from "./bulk_job";
 import {
   LHStatus,
   lHStatusFromJSON,
@@ -12654,6 +12661,24 @@ export const LittleHorseDefinition = {
       responseStream: false,
       options: {},
     },
+    /** Searches for BulkJob's, optionally filtering by status. */
+    searchBulkJob: {
+      name: "SearchBulkJob",
+      requestType: SearchBulkJobRequest,
+      requestStream: false,
+      responseType: BulkJobIdList,
+      responseStream: false,
+      options: {},
+    },
+    /** Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED). */
+    deleteBulkJob: {
+      name: "DeleteBulkJob",
+      requestType: DeleteBulkJobRequest,
+      requestStream: false,
+      responseType: Empty,
+      responseStream: false,
+      options: {},
+    },
     /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
     getTaskDefMetricsWindow: {
       name: "GetTaskDefMetricsWindow",
@@ -13235,6 +13260,13 @@ export interface LittleHorseServiceImplementation<CallContextExt = {}> {
   createBulkJob(request: CreateBulkJobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<BulkJob>>;
   /** Gets the status of a BulkJob. */
   getBulkJob(request: GetBulkJobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<BulkJob>>;
+  /** Searches for BulkJob's, optionally filtering by status. */
+  searchBulkJob(
+    request: SearchBulkJobRequest,
+    context: CallContext & CallContextExt,
+  ): Promise<DeepPartial<BulkJobIdList>>;
+  /** Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED). */
+  deleteBulkJob(request: DeleteBulkJobRequest, context: CallContext & CallContextExt): Promise<DeepPartial<Empty>>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: TaskDefMetricsQueryRequest,
@@ -13727,6 +13759,13 @@ export interface LittleHorseClient<CallOptionsExt = {}> {
   createBulkJob(request: DeepPartial<CreateBulkJobRequest>, options?: CallOptions & CallOptionsExt): Promise<BulkJob>;
   /** Gets the status of a BulkJob. */
   getBulkJob(request: DeepPartial<GetBulkJobRequest>, options?: CallOptions & CallOptionsExt): Promise<BulkJob>;
+  /** Searches for BulkJob's, optionally filtering by status. */
+  searchBulkJob(
+    request: DeepPartial<SearchBulkJobRequest>,
+    options?: CallOptions & CallOptionsExt,
+  ): Promise<BulkJobIdList>;
+  /** Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED). */
+  deleteBulkJob(request: DeepPartial<DeleteBulkJobRequest>, options?: CallOptions & CallOptionsExt): Promise<Empty>;
   /** Returns TaskDef Metrics for a specific TaskDef and a specific time window. */
   getTaskDefMetricsWindow(
     request: DeepPartial<TaskDefMetricsQueryRequest>,

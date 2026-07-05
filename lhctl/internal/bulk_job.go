@@ -27,6 +27,55 @@ var getBulkJobCmd = &cobra.Command{
 	},
 }
 
+var searchBulkJobCmd = &cobra.Command{
+	Use:   "bulkJob",
+	Short: "Search for BulkJob's, optionally filtering by status.",
+	Long: `Search for BulkJob's. Returns a list of BulkJobId's.
+
+Optional flags:
+  --status  Only return BulkJob's with this status
+            (BULK_JOB_RUNNING, BULK_JOB_COMPLETED, BULK_JOB_FAILED)
+`,
+	Args: cobra.ExactArgs(0),
+	Run: func(cmd *cobra.Command, args []string) {
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+		statusStr, _ := cmd.Flags().GetString("status")
+
+		search := &lhproto.SearchBulkJobRequest{
+			Bookmark: bookmark,
+			Limit:    &limit,
+		}
+
+		if statusStr != "" {
+			statusVal, ok := lhproto.BulkJobStatus_value[statusStr]
+			if !ok {
+				log.Fatalf("Invalid status: %s. Valid values: BULK_JOB_RUNNING, BULK_JOB_COMPLETED, BULK_JOB_FAILED", statusStr)
+			}
+			status := lhproto.BulkJobStatus(statusVal)
+			search.Status = &status
+		}
+
+		littlehorse.PrintResp(getGlobalClient(cmd).SearchBulkJob(requestContext(cmd), search))
+	},
+}
+
+var deleteBulkJobCmd = &cobra.Command{
+	Use:   "bulkJob <id>",
+	Short: "Delete a BulkJob that has finished (COMPLETED or FAILED).",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		littlehorse.PrintResp(getGlobalClient(cmd).DeleteBulkJob(
+			requestContext(cmd),
+			&lhproto.DeleteBulkJobRequest{
+				Id: &lhproto.BulkJobId{
+					Id: args[0],
+				},
+			},
+		))
+	},
+}
+
 var bulkDeleteWfRunCmd = &cobra.Command{
 	Use:   "wfRunBulk <wfSpecName>",
 	Short: "Bulk delete WfRun's matching criteria (creates a BulkJob).",
@@ -102,6 +151,10 @@ Optional flags:
 func init() {
 	getCmd.AddCommand(getBulkJobCmd)
 	deleteCmd.AddCommand(bulkDeleteWfRunCmd)
+	deleteCmd.AddCommand(deleteBulkJobCmd)
+	searchCmd.AddCommand(searchBulkJobCmd)
+
+	searchBulkJobCmd.Flags().String("status", "", "Only return BulkJob's with this status (BULK_JOB_RUNNING, BULK_JOB_COMPLETED, BULK_JOB_FAILED)")
 
 	bulkDeleteWfRunCmd.Flags().String("from", "", "Start of time range (inclusive), ISO 8601 format (required)")
 	bulkDeleteWfRunCmd.Flags().String("to", "", "End of time range (inclusive), ISO 8601 format (required)")

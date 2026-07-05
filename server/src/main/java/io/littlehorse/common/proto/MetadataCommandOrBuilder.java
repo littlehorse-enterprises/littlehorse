@@ -339,5 +339,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder();
 
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return Whether the deleteBulkJob field is set.
+   */
+  boolean hasDeleteBulkJob();
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return The deleteBulkJob.
+   */
+  io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob();
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

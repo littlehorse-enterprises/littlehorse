@@ -66,6 +66,7 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
@@ -107,6 +108,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchBulkJobRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
@@ -132,6 +134,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTask
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchBulkJobReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
@@ -450,6 +453,30 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         }
         ctx.onNext(bulkJob.toProto().build());
         ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchBulkJob(SearchBulkJobRequest req, StreamObserver<BulkJobIdList> ctx) {
+        handleScan(SearchBulkJobRequestModel.fromProto(req, requestContext()), ctx, SearchBulkJobReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void deleteBulkJob(DeleteBulkJobRequest req, StreamObserver<Empty> ctx) {
+        BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
+        BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
+        if (bulkJob == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find BulkJob %s".formatted(idModel.toString()));
+        }
+        if (bulkJob.getStatus() == BulkJobStatus.BULK_JOB_RUNNING) {
+            throw new LHApiException(
+                    Status.FAILED_PRECONDITION,
+                    "Cannot delete a RUNNING BulkJob %s; wait for it to finish".formatted(idModel.toString()));
+        }
+        DeleteBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
     }
 
     @Override

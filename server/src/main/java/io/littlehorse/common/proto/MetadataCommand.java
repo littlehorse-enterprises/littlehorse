@@ -74,6 +74,7 @@ private static final long serialVersionUID = 0L;
     DELETE_QUOTA(20),
     CREATE_BULK_JOB(21),
     BULK_JOB_SHARD_REPORT(22),
+    DELETE_BULK_JOB(23),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -110,6 +111,7 @@ private static final long serialVersionUID = 0L;
         case 20: return DELETE_QUOTA;
         case 21: return CREATE_BULK_JOB;
         case 22: return BULK_JOB_SHARD_REPORT;
+        case 23: return DELETE_BULK_JOB;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -799,6 +801,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
   }
 
+  public static final int DELETE_BULK_JOB_FIELD_NUMBER = 23;
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return Whether the deleteBulkJob field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteBulkJob() {
+    return metadataCommandCase_ == 23;
+  }
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return The deleteBulkJob.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob() {
+    if (metadataCommandCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder() {
+    if (metadataCommandCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -875,6 +908,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 22) {
       output.writeMessage(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 23) {
+      output.writeMessage(23, (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -967,6 +1003,10 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 22) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 23) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(23, (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1071,6 +1111,10 @@ private static final long serialVersionUID = 0L;
         if (!getBulkJobShardReport()
             .equals(other.getBulkJobShardReport())) return false;
         break;
+      case 23:
+        if (!getDeleteBulkJob()
+            .equals(other.getDeleteBulkJob())) return false;
+        break;
       case 0:
       default:
     }
@@ -1169,6 +1213,10 @@ private static final long serialVersionUID = 0L;
       case 22:
         hash = (37 * hash) + BULK_JOB_SHARD_REPORT_FIELD_NUMBER;
         hash = (53 * hash) + getBulkJobShardReport().hashCode();
+        break;
+      case 23:
+        hash = (37 * hash) + DELETE_BULK_JOB_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteBulkJob().hashCode();
         break;
       case 0:
       default:
@@ -1377,6 +1425,9 @@ private static final long serialVersionUID = 0L;
       if (bulkJobShardReportBuilder_ != null) {
         bulkJobShardReportBuilder_.clear();
       }
+      if (deleteBulkJobBuilder_ != null) {
+        deleteBulkJobBuilder_.clear();
+      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1506,6 +1557,10 @@ private static final long serialVersionUID = 0L;
           bulkJobShardReportBuilder_ != null) {
         result.metadataCommand_ = bulkJobShardReportBuilder_.build();
       }
+      if (metadataCommandCase_ == 23 &&
+          deleteBulkJobBuilder_ != null) {
+        result.metadataCommand_ = deleteBulkJobBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -1603,6 +1658,10 @@ private static final long serialVersionUID = 0L;
         }
         case BULK_JOB_SHARD_REPORT: {
           mergeBulkJobShardReport(other.getBulkJobShardReport());
+          break;
+        }
+        case DELETE_BULK_JOB: {
+          mergeDeleteBulkJob(other.getDeleteBulkJob());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -1780,6 +1839,13 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 22;
               break;
             } // case 178
+            case 186: {
+              input.readMessage(
+                  internalGetDeleteBulkJobFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 23;
+              break;
+            } // case 186
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4744,6 +4810,148 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 22;
       onChanged();
       return bulkJobShardReportBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder> deleteBulkJobBuilder_;
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     * @return Whether the deleteBulkJob field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteBulkJob() {
+      return metadataCommandCase_ == 23;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     * @return The deleteBulkJob.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          return deleteBulkJobBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder setDeleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest value) {
+      if (deleteBulkJobBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deleteBulkJobBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder setDeleteBulkJob(
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder builderForValue) {
+      if (deleteBulkJobBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteBulkJobBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder mergeDeleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest value) {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          deleteBulkJobBuilder_.mergeFrom(value);
+        } else {
+          deleteBulkJobBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder clearDeleteBulkJob() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 23) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deleteBulkJobBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder getDeleteBulkJobBuilder() {
+      return internalGetDeleteBulkJobFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder() {
+      if ((metadataCommandCase_ == 23) && (deleteBulkJobBuilder_ != null)) {
+        return deleteBulkJobBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder> 
+        internalGetDeleteBulkJobFieldBuilder() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (!(metadataCommandCase_ == 23)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+        }
+        deleteBulkJobBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 23;
+      onChanged();
+      return deleteBulkJobBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

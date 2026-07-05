@@ -470,6 +470,16 @@ class LittleHorseStub(object):
                 request_serializer=bulk__job__pb2.GetBulkJobRequest.SerializeToString,
                 response_deserializer=bulk__job__pb2.BulkJob.FromString,
                 _registered_method=True)
+        self.SearchBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchBulkJob',
+                request_serializer=bulk__job__pb2.SearchBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJobIdList.FromString,
+                _registered_method=True)
+        self.DeleteBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteBulkJob',
+                request_serializer=bulk__job__pb2.DeleteBulkJobRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
         self.GetTaskDefMetricsWindow = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetTaskDefMetricsWindow',
                 request_serializer=service__pb2.TaskDefMetricsQueryRequest.SerializeToString,
@@ -1214,6 +1224,20 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchBulkJob(self, request, context):
+        """Searches for BulkJob's, optionally filtering by status.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteBulkJob(self, request, context):
+        """Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetTaskDefMetricsWindow(self, request, context):
         """Returns TaskDef Metrics for a specific TaskDef and a specific time window.
         """
@@ -1751,6 +1775,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetBulkJob,
                     request_deserializer=bulk__job__pb2.GetBulkJobRequest.FromString,
                     response_serializer=bulk__job__pb2.BulkJob.SerializeToString,
+            ),
+            'SearchBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchBulkJob,
+                    request_deserializer=bulk__job__pb2.SearchBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJobIdList.SerializeToString,
+            ),
+            'DeleteBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteBulkJob,
+                    request_deserializer=bulk__job__pb2.DeleteBulkJobRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
                     servicer.GetTaskDefMetricsWindow,
@@ -4101,6 +4135,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetBulkJob',
             bulk__job__pb2.GetBulkJobRequest.SerializeToString,
             bulk__job__pb2.BulkJob.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchBulkJob',
+            bulk__job__pb2.SearchBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJobIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteBulkJob',
+            bulk__job__pb2.DeleteBulkJobRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,
             insecure,

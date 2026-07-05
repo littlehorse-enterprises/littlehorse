@@ -71,3 +71,27 @@ class GetBulkJobRequest(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.BulkJobId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ...) -> None: ...
+
+class SearchBulkJobRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "status")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    STATUS_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    status: BulkJobStatus
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., status: _Optional[_Union[BulkJobStatus, str]] = ...) -> None: ...
+
+class BulkJobIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.BulkJobId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.BulkJobId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
+class DeleteBulkJobRequest(_message.Message):
+    __slots__ = ("id",)
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.BulkJobId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.BulkJobId, _Mapping]] = ...) -> None: ...

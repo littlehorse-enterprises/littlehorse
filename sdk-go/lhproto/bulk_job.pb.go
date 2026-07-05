@@ -392,6 +392,183 @@ func (x *GetBulkJobRequest) GetId() *BulkJobId {
 	return nil
 }
 
+// Request to search for BulkJobs, optionally filtering by status.
+type SearchBulkJobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Bookmark for cursor-based pagination; pass if applicable.
+	Bookmark []byte `protobuf:"bytes,1,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
+	// Maximum results to return in one request.
+	Limit *int32 `protobuf:"varint,2,opt,name=limit,proto3,oneof" json:"limit,omitempty"`
+	// If set, only return BulkJobs with this status.
+	Status *BulkJobStatus `protobuf:"varint,3,opt,name=status,proto3,enum=littlehorse.BulkJobStatus,oneof" json:"status,omitempty"`
+}
+
+func (x *SearchBulkJobRequest) Reset() {
+	*x = SearchBulkJobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_bulk_job_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SearchBulkJobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchBulkJobRequest) ProtoMessage() {}
+
+func (x *SearchBulkJobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_bulk_job_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchBulkJobRequest.ProtoReflect.Descriptor instead.
+func (*SearchBulkJobRequest) Descriptor() ([]byte, []int) {
+	return file_bulk_job_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SearchBulkJobRequest) GetBookmark() []byte {
+	if x != nil {
+		return x.Bookmark
+	}
+	return nil
+}
+
+func (x *SearchBulkJobRequest) GetLimit() int32 {
+	if x != nil && x.Limit != nil {
+		return *x.Limit
+	}
+	return 0
+}
+
+func (x *SearchBulkJobRequest) GetStatus() BulkJobStatus {
+	if x != nil && x.Status != nil {
+		return *x.Status
+	}
+	return BulkJobStatus_BULK_JOB_RUNNING
+}
+
+// List of BulkJob Id's.
+type BulkJobIdList struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The resulting object id's.
+	Results []*BulkJobId `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
+	// The bookmark can be used for cursor-based pagination. If it is null, the server
+	// has returned all results. If it is set, you can pass it into your next request
+	// to resume searching where your previous request left off.
+	Bookmark []byte `protobuf:"bytes,2,opt,name=bookmark,proto3,oneof" json:"bookmark,omitempty"`
+}
+
+func (x *BulkJobIdList) Reset() {
+	*x = BulkJobIdList{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_bulk_job_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BulkJobIdList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BulkJobIdList) ProtoMessage() {}
+
+func (x *BulkJobIdList) ProtoReflect() protoreflect.Message {
+	mi := &file_bulk_job_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BulkJobIdList.ProtoReflect.Descriptor instead.
+func (*BulkJobIdList) Descriptor() ([]byte, []int) {
+	return file_bulk_job_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *BulkJobIdList) GetResults() []*BulkJobId {
+	if x != nil {
+		return x.Results
+	}
+	return nil
+}
+
+func (x *BulkJobIdList) GetBookmark() []byte {
+	if x != nil {
+		return x.Bookmark
+	}
+	return nil
+}
+
+// Request to delete a BulkJob. Only permitted for BulkJobs in a terminal state
+// (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+type DeleteBulkJobRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The ID of the BulkJob to delete.
+	Id *BulkJobId `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (x *DeleteBulkJobRequest) Reset() {
+	*x = DeleteBulkJobRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_bulk_job_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteBulkJobRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteBulkJobRequest) ProtoMessage() {}
+
+func (x *DeleteBulkJobRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_bulk_job_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteBulkJobRequest.ProtoReflect.Descriptor instead.
+func (*DeleteBulkJobRequest) Descriptor() ([]byte, []int) {
+	return file_bulk_job_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteBulkJobRequest) GetId() *BulkJobId {
+	if x != nil {
+		return x.Id
+	}
+	return nil
+}
+
 type BulkJob_Subprocess struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -408,7 +585,7 @@ type BulkJob_Subprocess struct {
 func (x *BulkJob_Subprocess) Reset() {
 	*x = BulkJob_Subprocess{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_bulk_job_proto_msgTypes[4]
+		mi := &file_bulk_job_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -421,7 +598,7 @@ func (x *BulkJob_Subprocess) String() string {
 func (*BulkJob_Subprocess) ProtoMessage() {}
 
 func (x *BulkJob_Subprocess) ProtoReflect() protoreflect.Message {
-	mi := &file_bulk_job_proto_msgTypes[4]
+	mi := &file_bulk_job_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -528,18 +705,40 @@ var file_bulk_job_proto_rawDesc = []byte{
 	0x22, 0x3b, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x26, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x2a, 0x52, 0x0a,
-	0x0d, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x14,
-	0x0a, 0x10, 0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f, 0x42, 0x5f, 0x52, 0x55, 0x4e, 0x4e, 0x49,
-	0x4e, 0x47, 0x10, 0x00, 0x12, 0x16, 0x0a, 0x12, 0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f, 0x42,
-	0x5f, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x01, 0x12, 0x13, 0x0a, 0x0f,
-	0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f, 0x42, 0x5f, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44, 0x10,
-	0x02, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f,
-	0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65, 0x2e,
-	0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x22, 0xad, 0x01,
+	0x0a, 0x14, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6f, 0x6f, 0x6b, 0x6d, 0x61,
+	0x72, 0x6b, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6f, 0x6f, 0x6b,
+	0x6d, 0x61, 0x72, 0x6b, 0x88, 0x01, 0x01, 0x12, 0x19, 0x0a, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x05, 0x48, 0x01, 0x52, 0x05, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x88,
+	0x01, 0x01, 0x12, 0x37, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01,
+	0x28, 0x0e, 0x32, 0x1a, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x48, 0x02,
+	0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f,
+	0x62, 0x6f, 0x6f, 0x6b, 0x6d, 0x61, 0x72, 0x6b, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x6c, 0x69, 0x6d,
+	0x69, 0x74, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x6f, 0x0a,
+	0x0d, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x49, 0x64, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x30,
+	0x0a, 0x07, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32,
+	0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x42, 0x75,
+	0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x49, 0x64, 0x52, 0x07, 0x72, 0x65, 0x73, 0x75, 0x6c, 0x74, 0x73,
+	0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6f, 0x6f, 0x6b, 0x6d, 0x61, 0x72, 0x6b, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0c, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6f, 0x6f, 0x6b, 0x6d, 0x61, 0x72, 0x6b, 0x88, 0x01,
+	0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6f, 0x6f, 0x6b, 0x6d, 0x61, 0x72, 0x6b, 0x22, 0x3e,
+	0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x26, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x16, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x49, 0x64, 0x52, 0x02, 0x69, 0x64, 0x2a, 0x52,
+	0x0a, 0x0d, 0x42, 0x75, 0x6c, 0x6b, 0x4a, 0x6f, 0x62, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12,
+	0x14, 0x0a, 0x10, 0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f, 0x42, 0x5f, 0x52, 0x55, 0x4e, 0x4e,
+	0x49, 0x4e, 0x47, 0x10, 0x00, 0x12, 0x16, 0x0a, 0x12, 0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f,
+	0x42, 0x5f, 0x43, 0x4f, 0x4d, 0x50, 0x4c, 0x45, 0x54, 0x45, 0x44, 0x10, 0x01, 0x12, 0x13, 0x0a,
+	0x0f, 0x42, 0x55, 0x4c, 0x4b, 0x5f, 0x4a, 0x4f, 0x42, 0x5f, 0x46, 0x41, 0x49, 0x4c, 0x45, 0x44,
+	0x10, 0x02, 0x42, 0x4d, 0x0a, 0x1f, 0x69, 0x6f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x73, 0x64, 0x6b, 0x2e, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x09, 0x2e, 0x3b, 0x6c, 0x68, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0xaa, 0x02, 0x1c, 0x4c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x48, 0x6f, 0x72, 0x73, 0x65,
+	0x2e, 0x53, 0x64, 0x6b, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x2e, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -555,36 +754,42 @@ func file_bulk_job_proto_rawDescGZIP() []byte {
 }
 
 var file_bulk_job_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_bulk_job_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_bulk_job_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_bulk_job_proto_goTypes = []interface{}{
 	(BulkJobStatus)(0),            // 0: littlehorse.BulkJobStatus
 	(*BulkJob)(nil),               // 1: littlehorse.BulkJob
 	(*BulkDeleteWfRun)(nil),       // 2: littlehorse.BulkDeleteWfRun
 	(*CreateBulkJobRequest)(nil),  // 3: littlehorse.CreateBulkJobRequest
 	(*GetBulkJobRequest)(nil),     // 4: littlehorse.GetBulkJobRequest
-	(*BulkJob_Subprocess)(nil),    // 5: littlehorse.BulkJob.Subprocess
-	(*BulkJobId)(nil),             // 6: littlehorse.BulkJobId
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
-	(LHStatus)(0),                 // 8: littlehorse.LHStatus
+	(*SearchBulkJobRequest)(nil),  // 5: littlehorse.SearchBulkJobRequest
+	(*BulkJobIdList)(nil),         // 6: littlehorse.BulkJobIdList
+	(*DeleteBulkJobRequest)(nil),  // 7: littlehorse.DeleteBulkJobRequest
+	(*BulkJob_Subprocess)(nil),    // 8: littlehorse.BulkJob.Subprocess
+	(*BulkJobId)(nil),             // 9: littlehorse.BulkJobId
+	(*timestamppb.Timestamp)(nil), // 10: google.protobuf.Timestamp
+	(LHStatus)(0),                 // 11: littlehorse.LHStatus
 }
 var file_bulk_job_proto_depIdxs = []int32{
-	6,  // 0: littlehorse.BulkJob.id:type_name -> littlehorse.BulkJobId
-	7,  // 1: littlehorse.BulkJob.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 0: littlehorse.BulkJob.id:type_name -> littlehorse.BulkJobId
+	10, // 1: littlehorse.BulkJob.created_at:type_name -> google.protobuf.Timestamp
 	0,  // 2: littlehorse.BulkJob.status:type_name -> littlehorse.BulkJobStatus
 	2,  // 3: littlehorse.BulkJob.bulk_delete_wf_run:type_name -> littlehorse.BulkDeleteWfRun
-	5,  // 4: littlehorse.BulkJob.subprocesses:type_name -> littlehorse.BulkJob.Subprocess
-	7,  // 5: littlehorse.BulkDeleteWfRun.earliest_start:type_name -> google.protobuf.Timestamp
-	7,  // 6: littlehorse.BulkDeleteWfRun.latest_start:type_name -> google.protobuf.Timestamp
-	8,  // 7: littlehorse.BulkDeleteWfRun.wf_run_status:type_name -> littlehorse.LHStatus
+	8,  // 4: littlehorse.BulkJob.subprocesses:type_name -> littlehorse.BulkJob.Subprocess
+	10, // 5: littlehorse.BulkDeleteWfRun.earliest_start:type_name -> google.protobuf.Timestamp
+	10, // 6: littlehorse.BulkDeleteWfRun.latest_start:type_name -> google.protobuf.Timestamp
+	11, // 7: littlehorse.BulkDeleteWfRun.wf_run_status:type_name -> littlehorse.LHStatus
 	2,  // 8: littlehorse.CreateBulkJobRequest.bulk_delete_wf_run:type_name -> littlehorse.BulkDeleteWfRun
-	6,  // 9: littlehorse.GetBulkJobRequest.id:type_name -> littlehorse.BulkJobId
-	0,  // 10: littlehorse.BulkJob.Subprocess.status:type_name -> littlehorse.BulkJobStatus
-	7,  // 11: littlehorse.BulkJob.Subprocess.last_seen_key:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	9,  // 9: littlehorse.GetBulkJobRequest.id:type_name -> littlehorse.BulkJobId
+	0,  // 10: littlehorse.SearchBulkJobRequest.status:type_name -> littlehorse.BulkJobStatus
+	9,  // 11: littlehorse.BulkJobIdList.results:type_name -> littlehorse.BulkJobId
+	9,  // 12: littlehorse.DeleteBulkJobRequest.id:type_name -> littlehorse.BulkJobId
+	0,  // 13: littlehorse.BulkJob.Subprocess.status:type_name -> littlehorse.BulkJobStatus
+	10, // 14: littlehorse.BulkJob.Subprocess.last_seen_key:type_name -> google.protobuf.Timestamp
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_bulk_job_proto_init() }
@@ -644,6 +849,42 @@ func file_bulk_job_proto_init() {
 			}
 		}
 		file_bulk_job_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SearchBulkJobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_bulk_job_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BulkJobIdList); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_bulk_job_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteBulkJobRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_bulk_job_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*BulkJob_Subprocess); i {
 			case 0:
 				return &v.state
@@ -663,13 +904,15 @@ func file_bulk_job_proto_init() {
 	file_bulk_job_proto_msgTypes[2].OneofWrappers = []interface{}{
 		(*CreateBulkJobRequest_BulkDeleteWfRun)(nil),
 	}
+	file_bulk_job_proto_msgTypes[4].OneofWrappers = []interface{}{}
+	file_bulk_job_proto_msgTypes[5].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_bulk_job_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

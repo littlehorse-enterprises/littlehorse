@@ -163,7 +163,11 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
         SubprocessModel toUpdate = subprocesses.stream()
                 .filter(subprocessModel -> subprocessModel.getId() == report.getPartition())
                 .findFirst()
-                .orElseGet(null);
+                .orElse(null);
+        if (toUpdate == null) {
+            log.warn("Received report for unknown shard {}", report.getPartition());
+            return;
+        }
         toUpdate.setStatus(report.isCompleted() ? BulkJobStatus.BULK_JOB_COMPLETED : BulkJobStatus.BULK_JOB_RUNNING);
         toUpdate.setLastSeenKey(report.getLastSeenTimestamp());
         boolean allShardsCompleted = subprocesses.stream()
