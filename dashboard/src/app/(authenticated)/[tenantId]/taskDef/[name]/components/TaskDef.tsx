@@ -254,7 +254,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                   ? taskRunSource.userTaskTrigger.nodeRunId
                                   : undefined
                             return (
-                              <TableRow key={taskRun.id?.taskGuid}>
+                              <TableRow key={`${wfRunIdToPath(taskRun.id.wfRunId)}-${taskRun.id?.taskGuid}`}>
                                 <TableCell>
                                   <LinkWithTenant
                                     className="text-blue-500 hover:underline"
