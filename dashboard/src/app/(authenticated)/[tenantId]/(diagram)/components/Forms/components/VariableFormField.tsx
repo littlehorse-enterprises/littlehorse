@@ -31,7 +31,7 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     )
   }
 
-  if (definedType.$case === 'primitiveType' && definedType.value === VariableType.TIMESTAMP) {
+  if (definedType.oneofKind === 'primitiveType' && definedType.primitiveType === VariableType.TIMESTAMP) {
     return (
       <TimestampVariableField
         label={name}
@@ -43,8 +43,8 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     )
   }
 
-  if (definedType.$case === 'primitiveType') {
-    const { type, component } = VariableTypeToFieldComponent[definedType.value]
+  if (definedType.oneofKind === 'primitiveType') {
+    const { type, component } = VariableTypeToFieldComponent[definedType.primitiveType]
 
     return (
       <FormField
@@ -54,16 +54,16 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         type={type}
         protoRequired={variable.required}
         accessLevel={variable.accessLevel}
-        variableType={definedType.value}
+        variableType={definedType.primitiveType}
         masked={varDef.typeDef?.masked}
       />
     )
   }
 
-  if (definedType.$case === 'structDefId') {
+  if (definedType.oneofKind === 'structDefId') {
     return (
       <StructDefGroup
-        structDefId={definedType.value}
+        structDefId={definedType.structDefId}
         name={name}
         required={variable.required}
         masked={varDef.typeDef?.masked}

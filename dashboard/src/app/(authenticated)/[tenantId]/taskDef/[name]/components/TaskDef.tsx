@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus } from 'littlehorse-client/proto'
+import { TaskDef as TaskDefProto, TaskStatus, Timestamp } from 'littlehorse-client/proto'
 import { RefreshCwIcon, TagIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useCallback, useState } from 'react'
@@ -52,7 +52,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         tenantId,
         bookmarkAsString: pageParam,
         limit: wfSpecLimit,
-        wfSpecCriteria: { $case: 'taskDefName', value: taskDefName },
+        wfSpecCriteria: { oneofKind: 'taskDefName', taskDefName },
       })
     },
   })
@@ -68,8 +68,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
         taskDefName,
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
@@ -89,24 +93,12 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     } finally {
       setIsRefreshing(false)
     }
-  }, [
-    queryClient,
-    tenantId,
-    taskDefName,
-    selectedStatus,
-    limit,
-    wfSpecLimit,
-    createdAfter,
-    createdBefore,
-  ])
+  }, [queryClient, tenantId, taskDefName, selectedStatus, limit, wfSpecLimit, createdAfter, createdBefore])
 
   return (
     <div className="space-y-8 pb-12">
       <Breadcrumb
-        items={[
-          { label: 'TaskDefs', href: routes.search.homeWithType('TaskDef') },
-          { label: taskDefName },
-        ]}
+        items={[{ label: 'TaskDefs', href: routes.search.homeWithType('TaskDef') }, { label: taskDefName }]}
       />
 
       <TaskDefMetadata
@@ -195,14 +187,15 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                   className="rounded border px-2 py-2"
                   value={selectedStatus}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                    setSelectedStatus(e.target.value as TaskStatus | 'ALL')
+                    const value = e.target.value
+                    setSelectedStatus(value === 'ALL' ? 'ALL' : (Number(value) as TaskStatus))
                   }}
                 >
                   <option value="ALL">ALL</option>
                   {Object.keys(TaskStatus)
-                    .filter(status => status != TaskStatus.UNRECOGNIZED)
+                    .filter(status => isNaN(Number(status)))
                     .map(status => (
-                      <option key={status} value={status}>
+                      <option key={status} value={TaskStatus[status as keyof typeof TaskStatus]}>
                         {status}
                       </option>
                     ))}
@@ -239,49 +232,56 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                     <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
                   </div>
                 ) : null}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead scope="col">WfRun Id</TableHead>
-                    <TableHead scope="col">Task GUID</TableHead>
-                    <TableHead scope="col">Creation Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data?.pages.some(page => page.resultsWithDetails.length > 0) ? (
-                    data.pages.map((page, i) => (
-                      <Fragment key={i}>
-                        {page.resultsWithDetails.map(({ taskRun }) => {
-                          if (!taskRun.id?.wfRunId) return null
-                          return (
-                            <TableRow key={taskRun.id?.taskGuid}>
-                              <TableCell>
-                                <LinkWithTenant
-                                  className="text-blue-500 hover:underline"
-                                  target="_blank"
-                                  href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${taskRun.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
-                                >
-                                  {wfRunIdToPath(taskRun.id.wfRunId)}
-                                </LinkWithTenant>
-                              </TableCell>
-                              <TableCell className="font-mono text-sm">{taskRun.id?.taskGuid}</TableCell>
-                              <TableCell>
-                                {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
-                              </TableCell>
-                            </TableRow>
-                          )
-                        })}
-                      </Fragment>
-                    ))
-                  ) : (
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={3} className="text-center text-muted-foreground">
-                        No TaskRuns match these filters
-                      </TableCell>
+                      <TableHead scope="col">WfRun Id</TableHead>
+                      <TableHead scope="col">Task GUID</TableHead>
+                      <TableHead scope="col">Creation Date</TableHead>
                     </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {data?.pages.some(page => page.resultsWithDetails.length > 0) ? (
+                      data.pages.map((page, i) => (
+                        <Fragment key={i}>
+                          {page.resultsWithDetails.map(({ taskRun }) => {
+                            if (!taskRun.id?.wfRunId) return null
+                            const taskRunSource = taskRun.source?.taskRunSource
+                            const sourceNodeRunId =
+                              taskRunSource?.oneofKind === 'taskNode'
+                                ? taskRunSource.taskNode.nodeRunId
+                                : taskRunSource?.oneofKind === 'userTaskTrigger'
+                                  ? taskRunSource.userTaskTrigger.nodeRunId
+                                  : undefined
+                            return (
+                              <TableRow key={taskRun.id?.taskGuid}>
+                                <TableCell>
+                                  <LinkWithTenant
+                                    className="text-blue-500 hover:underline"
+                                    target="_blank"
+                                    href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${sourceNodeRunId?.threadRunNumber}`}
+                                  >
+                                    {wfRunIdToPath(taskRun.id.wfRunId)}
+                                  </LinkWithTenant>
+                                </TableCell>
+                                <TableCell className="font-mono text-sm">{taskRun.id?.taskGuid}</TableCell>
+                                <TableCell>
+                                  {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
+                                </TableCell>
+                              </TableRow>
+                            )
+                          })}
+                        </Fragment>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                          No TaskRuns match these filters
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
               </div>
             )}
 

@@ -20,14 +20,14 @@ export const SleepDefDetail: FC<AccordionNode<'sleep'>> = ({ nodeRun }) => {
       </div>
       <div className="mb-2 items-center gap-2">
         <div className="mb-2 mt-1 text-sm font-bold">
-          Matured : <span className="border-2 border-blue-500 p-1">{nodeRun.nodeType.value.matured.toString()}</span>
+          Matured : <span className="border-2 border-blue-500 p-1">{nodeRun.nodeType.sleep.matured.toString()}</span>
         </div>
       </div>
 
       <div className={cn('flex w-full flex-col overflow-auto rounded p-1', 'bg-zinc-500 text-white')}>
         <h3 className="font-bold">Maturation Time</h3>
-        {nodeRun.nodeType.value.maturationTime && (
-          <pre className="overflow-auto">{utcToLocalDateTime(nodeRun.nodeType.value.maturationTime)}</pre>
+        {nodeRun.nodeType.sleep.maturationTime && (
+          <pre className="overflow-auto">{utcToLocalDateTime(nodeRun.nodeType.sleep.maturationTime)}</pre>
         )}
       </div>
     </Fragment>

@@ -52,9 +52,9 @@ export const Attempts = ({
           <AccordionContent className="px-4 pb-4 pt-0">
             {attempt.status && <NodeStatus status={attempt.status} type="task" />}
             <div className="mt-3">
-              <NodeVariable label="scheduleTime:" text={`${attempt.scheduleTime}`} type="date" />
-              <NodeVariable label="startTime:" text={`${attempt.startTime}`} type="date" />
-              <NodeVariable label="endTime:" text={`${attempt.endTime}`} type="date" />
+              <NodeVariable label="scheduleTime:" text={attempt.scheduleTime} type="date" />
+              <NodeVariable label="startTime:" text={attempt.startTime} type="date" />
+              <NodeVariable label="endTime:" text={attempt.endTime} type="date" />
               <NodeVariable label="taskWorkerId:" text={`${attempt.taskWorkerId}`} />
               {attempt.taskWorkerVersion && (
                 <NodeVariable label="taskWorkerVersion:" text={`${attempt.taskWorkerVersion}`} />

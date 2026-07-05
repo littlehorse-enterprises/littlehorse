@@ -2,7 +2,7 @@
 
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { MetricsList, MetricWindow, TaskDefId } from 'littlehorse-client/proto'
+import { MetricsList, MetricWindow, TaskDefId, Timestamp } from 'littlehorse-client/proto'
 
 type GetTaskMetricsProps = {
   taskDefId: TaskDefId
@@ -13,6 +13,8 @@ type GetTaskMetricsProps = {
 const CHUNK_MINUTES = 90
 const MAX_CONCURRENT = 8
 
+const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
+
 export const getTaskMetrics = async ({
   taskDefId,
   windowStart,
@@ -22,7 +24,11 @@ export const getTaskMetrics = async ({
   const client = await lhClient({ tenantId })
 
   if (!windowStart || !windowEnd) {
-    return client.listTaskMetrics({ taskDef: taskDefId, windowStart, windowEnd })
+    return client.listTaskMetrics({
+      taskDef: taskDefId,
+      windowStart: toTimestamp(windowStart),
+      windowEnd: toTimestamp(windowEnd),
+    })
   }
 
   const startMs = new Date(windowStart).getTime()
@@ -30,7 +36,11 @@ export const getTaskMetrics = async ({
   const rangeMinutes = (endMs - startMs) / 60_000
 
   if (rangeMinutes <= CHUNK_MINUTES) {
-    return client.listTaskMetrics({ taskDef: taskDefId, windowStart, windowEnd })
+    return client.listTaskMetrics({
+      taskDef: taskDefId,
+      windowStart: toTimestamp(windowStart),
+      windowEnd: toTimestamp(windowEnd),
+    })
   }
 
   const chunks: { start: string; end: string }[] = []
@@ -48,7 +58,9 @@ export const getTaskMetrics = async ({
   for (let i = 0; i < chunks.length; i += MAX_CONCURRENT) {
     const batch = chunks.slice(i, i + MAX_CONCURRENT)
     const results = await Promise.all(
-      batch.map(c => client.listTaskMetrics({ taskDef: taskDefId, windowStart: c.start, windowEnd: c.end }))
+      batch.map(c =>
+        client.listTaskMetrics({ taskDef: taskDefId, windowStart: toTimestamp(c.start), windowEnd: toTimestamp(c.end) })
+      )
     )
     for (const r of results) {
       allWindows.push(...(r.windows ?? []))

@@ -50,7 +50,9 @@ export const searchUserTaskRun = async ({
 
   return {
     ...userTaskRunIdList,
-    bookmarkAsString: userTaskRunIdList.bookmark?.toString('base64'),
+    bookmarkAsString: userTaskRunIdList.bookmark
+      ? Buffer.from(userTaskRunIdList.bookmark).toString('base64')
+      : undefined,
     resultsWithDetails: userTaskRunWithDetails,
   }
 }

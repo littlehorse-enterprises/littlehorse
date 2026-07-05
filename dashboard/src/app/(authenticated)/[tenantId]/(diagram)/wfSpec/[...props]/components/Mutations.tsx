@@ -33,7 +33,7 @@ export const Mutations: FC<Props> = ({ nodes }) => {
 
 export const MutationRhS: FC<{ rhsValue: VariableMutation['rhsValue'] }> = ({ rhsValue }) => {
   if (!rhsValue) return <></>
-  switch (rhsValue.$case) {
+  switch (rhsValue.oneofKind) {
     case 'nodeOutput':
       return <NodeOutput value={rhsValue} />
     case 'rhsAssignment':
@@ -46,30 +46,34 @@ export const MutationRhS: FC<{ rhsValue: VariableMutation['rhsValue'] }> = ({ rh
   }
 }
 
-const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'nodeOutput' }> }> = ({
-  value: { value: nodeOutput },
+const NodeOutput: FC<{ value: Extract<VariableMutation['rhsValue'], { oneofKind: 'nodeOutput' }> }> = ({
+  value: { nodeOutput },
 }) => {
   return (
     <>
       <Badge className="bg-gray-200">Node Output</Badge>
-      {nodeOutput.path && nodeOutput.path.$case == 'jsonpath' && (
-        <Badge className="bg-gray-100 font-mono text-orange-500">{nodeOutput.path.value}</Badge>
+      {nodeOutput.path && nodeOutput.path.oneofKind == 'jsonpath' && (
+        <Badge className="bg-gray-100 font-mono text-orange-500">{nodeOutput.path.jsonpath}</Badge>
       )}
-      {nodeOutput.path && nodeOutput.path.$case == 'lhPath' && (
-        <Badge className="bg-gray-100 font-mono text-orange-500">{lhPathToString(nodeOutput.path.value)}</Badge>
+      {nodeOutput.path && nodeOutput.path.oneofKind == 'lhPath' && (
+        <Badge className="bg-gray-100 font-mono text-orange-500">{lhPathToString(nodeOutput.path.lhPath)}</Badge>
       )}
     </>
   )
 }
 
-const RhsAssignment: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'rhsAssignment' }> }> = ({
-  value: { value: rhsAssignment },
+const RhsAssignment: FC<{ value: Extract<VariableMutation['rhsValue'], { oneofKind: 'rhsAssignment' }> }> = ({
+  value: { rhsAssignment },
 }) => {
   return <VariableAssignment variableAssigment={rhsAssignment} />
 }
 
-const LiteralValue: FC<{ value: Extract<VariableMutation['rhsValue'], { $case: 'literalValue' }> }> = ({
-  value: { value: literalValue },
+const LiteralValue: FC<{ value: Extract<VariableMutation['rhsValue'], { oneofKind: 'literalValue' }> }> = ({
+  value: { literalValue },
 }) => {
-  return <VariableAssignment variableAssigment={{ source: { $case: 'literalValue', value: literalValue } }} />
+  return (
+    <VariableAssignment
+      variableAssigment={{ path: { oneofKind: undefined }, source: { oneofKind: 'literalValue', literalValue } }}
+    />
+  )
 }

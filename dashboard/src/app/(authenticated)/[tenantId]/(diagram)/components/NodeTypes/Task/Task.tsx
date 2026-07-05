@@ -37,7 +37,7 @@ export const Task = memo(Node)
 export const getTaskName = (task: TaskNode['taskToExecute']): string => {
   if (!task) return ''
 
-  if (task.$case === 'taskDefId') return task.value.name
-  if (task.$case === 'dynamicTask') return getVariable(task.value)
+  if (task.oneofKind === 'taskDefId') return task.taskDefId.name
+  if (task.oneofKind === 'dynamicTask') return getVariable(task.dynamicTask)
   return ''
 }

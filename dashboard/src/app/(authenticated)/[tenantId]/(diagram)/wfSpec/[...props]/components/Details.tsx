@@ -1,5 +1,5 @@
 'use client'
-import { WfSpec } from 'littlehorse-client/proto'
+import { MetadataStatus, WfSpec } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Versions } from './Versions'
 import { WF_SPEC_STATUS_COLOR } from '../../../components/Sidebar/Components/StatusColor'
@@ -14,7 +14,7 @@ export const Details: FC<DetailsProps> = ({ id, status }) => {
       <div className="flex flex-row gap-2 text-sm text-gray-500">
         <Versions wfSpecId={id} />
         <div className="flex items-center">
-          Status: <span className={`ml-2 rounded px-2 ${WF_SPEC_STATUS_COLOR[status]}`}>{`${status}`}</span>
+          Status: <span className={`ml-2 rounded px-2 ${WF_SPEC_STATUS_COLOR[status]}`}>{MetadataStatus[status]}</span>
         </div>
       </div>
     </div>

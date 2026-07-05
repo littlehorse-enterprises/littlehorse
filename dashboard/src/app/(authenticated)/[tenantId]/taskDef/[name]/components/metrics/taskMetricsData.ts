@@ -1,4 +1,5 @@
 import { MetricWindow, TaskMetrics } from 'littlehorse-client/proto'
+import { toDate } from '@/app/utils'
 import {
   avgLatency,
   bucketStartMs,
@@ -29,15 +30,18 @@ export const EMPTY_TASK_METRICS: TaskMetrics = mergeTaskMetricsGroup([])
 
 export function parseTaskWindows(windows: MetricWindow[]): { ts: number; task: TaskMetrics }[] {
   return windows
-    .filter(w => w.metric?.$case === 'task')
+    .filter(w => w.metric?.oneofKind === 'task')
     .map(w => ({
-      ts: new Date(w.id?.windowStart ?? 0).getTime(),
-      task: w.metric!.value as TaskMetrics,
+      ts: toDate(w.id?.windowStart)?.getTime() ?? 0,
+      task: (w.metric as { oneofKind: 'task'; task: TaskMetrics }).task,
     }))
     .sort((a, b) => a.ts - b.ts)
 }
 
-export function aggregateTaskByBucket(points: { ts: number; task: TaskMetrics }[], bucketMs: number): Map<number, TaskMetrics> {
+export function aggregateTaskByBucket(
+  points: { ts: number; task: TaskMetrics }[],
+  bucketMs: number
+): Map<number, TaskMetrics> {
   const groups = new Map<number, TaskMetrics[]>()
   for (const p of points) {
     const k = bucketStartMs(p.ts, bucketMs)
@@ -98,9 +102,9 @@ export function transformTaskToLatencyData(
     time: formatBucketLabel(bucketStart, bucketMinutes, rangeMinutes),
     timestamp: bucketStart,
     completedAvg: avgLatency(task.taskrunCreatedToCompleted),
-    completedMax: task.taskrunCreatedToCompleted?.maxLatencyMs ?? 0,
+    completedMax: Number(task.taskrunCreatedToCompleted?.maxLatencyMs ?? 0),
     errorAvg: avgLatency(task.taskrunCreatedToError),
-    errorMax: task.taskrunCreatedToError?.maxLatencyMs ?? 0,
+    errorMax: Number(task.taskrunCreatedToError?.maxLatencyMs ?? 0),
   }))
 }
 

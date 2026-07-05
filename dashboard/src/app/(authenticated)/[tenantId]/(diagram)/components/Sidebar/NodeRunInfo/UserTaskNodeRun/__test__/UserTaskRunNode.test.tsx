@@ -5,12 +5,14 @@ import useSWR, { MutatorOptions } from 'swr'
 import { ContextProps, useWhoAmI } from '@/contexts/WhoAmIContext'
 import { UserTaskNodeRun } from '../UserTaskNodeRun'
 import {
+  Timestamp,
   UserTaskEvent_UTETaskExecuted,
   UserTaskNodeRun as UserTaskNodeRunProto,
   UserTaskRun,
   UserTaskRunStatus,
   VariableValue,
 } from 'littlehorse-client/proto'
+import { utcToLocalDateTime } from '@/app/utils'
 
 jest.mock('@/contexts/WhoAmIContext', () => {
   return {
@@ -32,9 +34,14 @@ jest.mock('../../../../NodeTypes/UserTask/getUserTaskRun', () => {
 })
 
 jest.mock('../../../Components/NodeVariable', () => {
+  const { utcToLocalDateTime: toLocal } = jest.requireActual('@/app/utils')
   return {
-    NodeVariable: ({ label, text }: { label: string; text: string }) =>
-      React.createElement('div', { 'data-testid': `nodevar-${label}` }, `${label} ${text}`),
+    NodeVariable: ({ label, text, type }: { label: string; text: unknown; type?: string }) =>
+      React.createElement(
+        'div',
+        { 'data-testid': `nodevar-${label}` },
+        `${label} ${type === 'date' ? toLocal(text) : text}`
+      ),
   }
 })
 
@@ -61,6 +68,7 @@ describe('UserTaskRunNode', () => {
   })
 
   it('renders detailed fields, results and events when nodeTask data exists', () => {
+    const scheduledTime = Timestamp.fromDate(new Date('2025-01-01T00:00:00Z'))
     const executedEvent: UserTaskEvent_UTETaskExecuted = {
       taskRun: {
         wfRunId: {
@@ -77,7 +85,7 @@ describe('UserTaskRunNode', () => {
       userGroup: 'group-1',
       userId: 'user-1',
       notes: 'some notes',
-      scheduledTime: '2025-01-01T00:00:00Z',
+      scheduledTime: scheduledTime,
       nodeRunId: {
         position: 3,
         threadRunNumber: 2,
@@ -87,18 +95,20 @@ describe('UserTaskRunNode', () => {
       results: {
         requestedItem: {
           value: {
-            $case: 'str',
-            value: 'testing',
+            oneofKind: 'str',
+            str: 'testing',
           },
         },
         justification: {
           value: {
-            $case: 'str',
-            value: 'as',
+            oneofKind: 'str',
+            str: 'as',
           },
         },
       },
-      events: [{ time: new Date().toDateString(), event: { $case: 'taskExecuted', value: executedEvent } }],
+      events: [
+        { time: Timestamp.fromDate(new Date()), event: { oneofKind: 'taskExecuted', taskExecuted: executedEvent } },
+      ],
 
       id: undefined,
       status: UserTaskRunStatus.UNASSIGNED,
@@ -130,7 +140,9 @@ describe('UserTaskRunNode', () => {
     expect(screen.getByTestId('nodevar-user_group:')).toHaveTextContent('user_group: group-1')
     expect(screen.getByTestId('nodevar-user_id:')).toHaveTextContent('user_id: user-1')
     expect(screen.getByTestId('nodevar-notes:')).toHaveTextContent('notes: some notes')
-    expect(screen.getByTestId('nodevar-scheduled_time:')).toHaveTextContent('scheduled_time: 2025-01-01T00:00:00Z')
+    expect(screen.getByTestId('nodevar-scheduled_time:')).toHaveTextContent(
+      `scheduled_time: ${utcToLocalDateTime(scheduledTime)}`
+    )
     expect(screen.getByTestId('nodevar-position:')).toHaveTextContent('position: 3')
     expect(screen.getByTestId('nodevar-threadRunNumber:')).toHaveTextContent('threadRunNumber: 2')
     expect(screen.getByTestId('nodevar-epoch:')).toHaveTextContent('epoch: 42')

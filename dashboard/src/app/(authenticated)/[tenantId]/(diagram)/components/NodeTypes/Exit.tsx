@@ -8,7 +8,7 @@ import { SelectedNode } from './SelectedNode'
 
 const ExitNode: FC<NodeProps<'exit', ExitNodeProto>> = ({ data }) => {
   const { fade } = data
-  const failureDef = data.result?.$case === 'failureDef' ? data.result.value : undefined
+  const failureDef = data.result?.oneofKind === 'failureDef' ? data.result.failureDef : undefined
   return (
     <>
       <SelectedNode />

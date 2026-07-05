@@ -1,17 +1,19 @@
 'use server'
 
-import { uniqueInOrder } from '@/app/utils'
+import { toDate, uniqueInOrder } from '@/app/utils'
 import { TaskDefData } from '@/types'
-import { LittleHorseClient, TaskStatus } from 'littlehorse-client/proto'
+import { TaskStatus } from 'littlehorse-client/proto'
 import { ClientError, Status } from 'nice-grpc-common'
 import { lhClient } from '../lhClient'
+
+type LhClient = Awaited<ReturnType<typeof lhClient>>
 
 export type TaskDefStats = {
   connectedWorkers: number | null
   queueDepth: number | null
 }
 
-async function fetchConnectedWorkers(client: LittleHorseClient, name: string): Promise<number | null> {
+async function fetchConnectedWorkers(client: LhClient, name: string): Promise<number | null> {
   try {
     const group = await client.getTaskWorkerGroup({ name })
     return group ? Object.keys(group.taskWorkers).length : 0
@@ -21,7 +23,7 @@ async function fetchConnectedWorkers(client: LittleHorseClient, name: string): P
   }
 }
 
-async function fetchQueueDepth(client: LittleHorseClient, name: string): Promise<number | null> {
+async function fetchQueueDepth(client: LhClient, name: string): Promise<number | null> {
   if (typeof client.countTaskRun !== 'function') {
     return null
   }
@@ -38,13 +40,13 @@ async function fetchQueueDepth(client: LittleHorseClient, name: string): Promise
   }
 }
 
-async function fetchTaskDefRow(client: LittleHorseClient, name: string): Promise<TaskDefData | null> {
+async function fetchTaskDefRow(client: LhClient, name: string): Promise<TaskDefData | null> {
   const taskDef = await client.getTaskDef({ name })
   if (!taskDef) return null
 
   return {
     name,
-    createdAt: taskDef.createdAt ? new Date(taskDef.createdAt) : undefined,
+    createdAt: toDate(taskDef.createdAt),
     description: taskDef.description,
     inputVarCount: taskDef.inputVars.length,
     returnType: taskDef.returnType?.returnType?.definedType,
@@ -68,10 +70,7 @@ export async function getTaskDefs(tenantId: string, taskDefNames: string[]): Pro
   return uniqueOrdered.map(name => taskDefMap.get(name)).filter((row): row is TaskDefData => row != null)
 }
 
-export async function getTaskDefStats(
-  tenantId: string,
-  taskDefNames: string[]
-): Promise<Record<string, TaskDefStats>> {
+export async function getTaskDefStats(tenantId: string, taskDefNames: string[]): Promise<Record<string, TaskDefStats>> {
   const client = await lhClient({ tenantId })
   const uniqueOrdered = uniqueInOrder(taskDefNames)
 

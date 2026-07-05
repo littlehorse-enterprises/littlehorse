@@ -1,3 +1,4 @@
+import { toDate } from '@/app/utils'
 import { CountAndTiming, MetricWindow, WfMetrics } from 'littlehorse-client/proto'
 
 export type CountDataPoint = {
@@ -26,15 +27,15 @@ export function mergeManyTimings(parts: (CountAndTiming | undefined)[]): CountAn
   for (const p of parts) {
     if (!p || p.count === 0) continue
     count += p.count
-    totalLatencyMs += p.totalLatencyMs
-    minLatencyMs = Math.min(minLatencyMs, p.minLatencyMs)
-    maxLatencyMs = Math.max(maxLatencyMs, p.maxLatencyMs)
+    totalLatencyMs += Number(p.totalLatencyMs)
+    minLatencyMs = Math.min(minLatencyMs, Number(p.minLatencyMs))
+    maxLatencyMs = Math.max(maxLatencyMs, Number(p.maxLatencyMs))
   }
   return {
     count,
-    totalLatencyMs,
-    minLatencyMs: minLatencyMs === Number.POSITIVE_INFINITY ? 0 : minLatencyMs,
-    maxLatencyMs,
+    totalLatencyMs: String(totalLatencyMs),
+    minLatencyMs: String(minLatencyMs === Number.POSITIVE_INFINITY ? 0 : minLatencyMs),
+    maxLatencyMs: String(maxLatencyMs),
   }
 }
 
@@ -63,10 +64,10 @@ export function bucketStartMs(ts: number, bucketMs: number): number {
 
 export function parseWorkflowWindows(windows: MetricWindow[]): { ts: number; wf: WfMetrics }[] {
   return windows
-    .filter(w => w.metric?.$case === 'workflow')
+    .filter(w => w.metric?.oneofKind === 'workflow')
     .map(w => ({
-      ts: new Date(w.id?.windowStart ?? 0).getTime(),
-      wf: w.metric!.value as WfMetrics,
+      ts: toDate(w.id?.windowStart)?.getTime() ?? 0,
+      wf: (w.metric as { oneofKind: 'workflow'; workflow: WfMetrics }).workflow,
     }))
     .sort((a, b) => a.ts - b.ts)
 }
@@ -143,7 +144,7 @@ export function formatBucketLabel(bucketStartMs: number, bucketMinutes: number, 
 
 export function avgLatency(ct: CountAndTiming | undefined): number {
   if (!ct || ct.count === 0) return 0
-  return Math.round(ct.totalLatencyMs / ct.count)
+  return Math.round(Number(ct.totalLatencyMs) / ct.count)
 }
 
 export function transformToCountData(
@@ -180,9 +181,9 @@ export function transformToLatencyData(
     time: formatBucketLabel(bucketStart, bucketMinutes, rangeMinutes),
     timestamp: bucketStart,
     completedAvg: avgLatency(wf.runningToCompleted),
-    completedMax: wf.runningToCompleted?.maxLatencyMs ?? 0,
+    completedMax: Number(wf.runningToCompleted?.maxLatencyMs ?? 0),
     errorAvg: avgLatency(wf.runningToError),
-    errorMax: wf.runningToError?.maxLatencyMs ?? 0,
+    errorMax: Number(wf.runningToError?.maxLatencyMs ?? 0),
   }))
 }
 
