@@ -1,4 +1,4 @@
-import lhConfig from '@/lhConfig'
+import { getClient } from '@/lhConfig'
 import { ACLAction, ACLResource, Principal } from 'littlehorse-client/proto'
 import { getServerSession } from 'next-auth'
 import { WhoAmI } from '../types'
@@ -6,7 +6,7 @@ import { authOptions } from './api/auth/[...nextauth]/authOptions'
 
 const getWhoAmI = async (): Promise<WhoAmI> => {
   const session = await getServerSession(authOptions)
-  const client = lhConfig.getClient(session?.accessToken)
+  const client = getClient({ accessToken: session?.accessToken })
 
   const { id, perTenantAcls, globalAcls } = await client.whoami({})
   const tenants = hasGlobalAccess({ globalAcls }) ? await searchTenants(client) : Object.keys(perTenantAcls)
@@ -25,7 +25,7 @@ const hasGlobalAccess = ({ globalAcls }: Pick<Principal, 'globalAcls'>): boolean
   )
 }
 
-const searchTenants = async (client: ReturnType<typeof lhConfig.getClient>): Promise<string[]> => {
+const searchTenants = async (client: ReturnType<typeof getClient>): Promise<string[]> => {
   try {
     const { results } = await client.searchTenant({})
     return results.map(t => t.id).filter((id): id is string => id !== undefined)

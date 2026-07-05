@@ -1,26 +1,28 @@
 'use client'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { Navigation } from '@/app/(authenticated)/[tenantId]/components/Navigation'
+import { Breadcrumb } from '@/app/(authenticated)/[tenantId]/components/Breadcrumb'
 import { SearchFooter } from '@/app/(authenticated)/[tenantId]/components/SearchFooter'
+import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { PaginatedWfSpecList, searchWfSpecs } from '@/app/actions/getWfSpecsByTaskDef'
 import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
 import { localDateTimeToUTCIsoString, utcToLocalDateTime, wfRunIdToPath } from '@/app/utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { TaskDef as TaskDefProto, TaskStatus, Timestamp } from 'littlehorse-client/proto'
-import { RefreshCwIcon } from 'lucide-react'
-import { useParams } from 'next/navigation'
-import { FC, Fragment, useState } from 'react'
-import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
-import { Details } from './Details'
-import { TaskDefSchema } from './TaskDefSchema'
-
-import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/SelectionLink'
 import { Separator } from '@/components/ui/separator'
-import { TagIcon } from 'lucide-react'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { TaskDef as TaskDefProto, TaskStatus, Timestamp } from 'littlehorse-client/proto'
+import { RefreshCwIcon, TagIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
+import { FC, Fragment, useCallback, useState } from 'react'
+import { mutate } from 'swr'
+import { PaginatedTaskRunList, searchTaskRun } from '../actions/searchTaskRun'
+import { TaskDefMetadata } from './TaskDefMetadata'
+import { TaskDefMetrics } from './metrics'
+import { TaskDefConnectedWorkersCard, TaskDefQueueDepthCard } from './TaskDefOverview'
+import { TaskDefWorkers } from './TaskDefWorkers'
 
 type Props = {
   spec: TaskDefProto
@@ -33,6 +35,8 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   const tenantId = useParams().tenantId as string
   const [limit, setLimit] = usePersistedSearchLimit('taskdef-task-runs')
   const [wfSpecLimit, setWfSpecLimit] = usePersistedSearchLimit('taskdef-wf-specs')
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const queryClient = useQueryClient()
   const taskDefName = spec.id?.name || ''
 
   const {
@@ -54,7 +58,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
   })
 
   const { isPending, data, hasNextPage, fetchNextPage } = useInfiniteQuery({
-    queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore],
+    queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore, taskDefName],
     initialPageParam: undefined,
     getNextPageParam: (lastPage: PaginatedTaskRunList) => lastPage.bookmarkAsString,
     queryFn: async ({ pageParam }) => {
@@ -63,7 +67,7 @@ export const TaskDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit,
         status: selectedStatus == 'ALL' ? undefined : selectedStatus,
-        taskDefName: spec.id?.name || '',
+        taskDefName,
         earliestStart: createdAfter
           ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
           : undefined,
@@ -74,93 +78,160 @@ export const TaskDef: FC<Props> = ({ spec }) => {
     },
   })
 
+  const refreshAll = useCallback(async () => {
+    setIsRefreshing(true)
+    try {
+      await Promise.all([
+        queryClient.refetchQueries({ queryKey: ['taskDefQueueDepth', tenantId, taskDefName] }),
+        queryClient.refetchQueries({ queryKey: ['taskWorkerGroup', tenantId, taskDefName] }),
+        queryClient.refetchQueries({
+          queryKey: ['taskRun', selectedStatus, tenantId, limit, createdAfter, createdBefore, taskDefName],
+        }),
+        queryClient.refetchQueries({ queryKey: ['wfSpecs', tenantId, wfSpecLimit, taskDefName] }),
+        mutate(key => Array.isArray(key) && key[0] === 'taskMetrics' && key[1] === taskDefName),
+      ])
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [queryClient, tenantId, taskDefName, selectedStatus, limit, wfSpecLimit, createdAfter, createdBefore])
+
   return (
-    <>
-      <Navigation href={routes.search.homeWithType('TaskDef')} title="Go back to TaskDefs" />
-      <Details spec={spec} />
-      <TaskDefSchema spec={spec} />
+    <div className="space-y-8 pb-12">
+      <Breadcrumb
+        items={[{ label: 'TaskDefs', href: routes.search.homeWithType('TaskDef') }, { label: taskDefName }]}
+      />
 
-      <Separator className="my-4" />
+      <TaskDefMetadata
+        spec={spec}
+        actions={
+          <button
+            type="button"
+            onClick={refreshAll}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-60"
+            aria-label="Refresh overview"
+          >
+            <RefreshCwIcon className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </button>
+        }
+      />
 
-      <div className="flex gap-1">
-        <div className="flex-1">
-          <h2 className="text-2xl font-bold">WfSpec Usage:</h2>
-          {wfSpecsData && (
-            <div className="flex max-h-[200px] flex-col overflow-auto">
-              {wfSpecsData.pages
-                .flatMap(page => page.results)
-                .map(wfSpec => (
-                  <Fragment key={wfSpec.name}>
-                    <SelectionLink
-                      href={routes.wfSpec.detail(wfSpec.name, `${wfSpec.majorVersion}.${wfSpec.revision}`)}
-                    >
-                      <p className="group">{wfSpec.name}</p>
-                      <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
-                        <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
-                        {wfSpec.revision}
-                      </div>
-                    </SelectionLink>
-                    <Separator />
-                  </Fragment>
-                ))}
-              <div className="mt-6">
-                <SearchFooter
-                  currentLimit={wfSpecLimit}
-                  setLimit={setWfSpecLimit}
-                  hasNextPage={wfSpecsHasNextPage}
-                  fetchNextPage={wfSpecsFetchNextPage}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <TaskDefQueueDepthCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
+        <TaskDefConnectedWorkersCard taskDefName={taskDefName} isRefreshing={isRefreshing} />
+      </div>
 
-        <Separator orientation="vertical" className="h-92 mx-4" />
+      <TaskDefWorkers taskDefName={taskDefName} isRefreshing={isRefreshing} onRefresh={refreshAll} />
 
-        <div className="flex-[2.5]">
-          <h2 className="text-2xl font-bold">Related Task Run&apos;s:</h2>
-          <div className="mb-5 flex w-full flex-col items-start justify-between">
-            <div className="flex w-full justify-around gap-5">
-              <select
-                className="max-w-72 rounded border px-2 py-2"
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                  const value = e.target.value
-                  setSelectedStatus(value === 'ALL' ? 'ALL' : TaskStatus[value as keyof typeof TaskStatus])
-                }}
-              >
-                <option>ALL</option>
-                {Object.keys(TaskStatus)
-                  .filter(status => isNaN(Number(status)))
-                  .map(status => (
-                    <option key={status}>{status}</option>
+      {spec.id && <TaskDefMetrics taskDefId={spec.id} />}
+
+      <div className="grid gap-6 lg:grid-cols-5">
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-lg">WfSpec usage</CardTitle>
+            <CardDescription>WfSpecs that reference this TaskDef</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {wfSpecsData ? (
+              <div className="relative flex max-h-[320px] flex-col overflow-auto">
+                {isRefreshing ? (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center rounded-md bg-background/60">
+                    <RefreshCwIcon className="h-6 w-6 animate-spin text-blue-500" />
+                  </div>
+                ) : null}
+                {wfSpecsData.pages
+                  .flatMap(page => page.results)
+                  .map(wfSpec => (
+                    <Fragment key={`${wfSpec.name}-${wfSpec.majorVersion}-${wfSpec.revision}`}>
+                      <SelectionLink
+                        href={routes.wfSpec.detail(wfSpec.name, `${wfSpec.majorVersion}.${wfSpec.revision}`)}
+                      >
+                        <p className="group">{wfSpec.name}</p>
+                        <div className="flex items-center gap-2 rounded bg-blue-200 px-2 font-mono text-sm text-gray-500">
+                          <TagIcon className="h-4 w-4 fill-none stroke-gray-500 stroke-1" />v{wfSpec.majorVersion}.
+                          {wfSpec.revision}
+                        </div>
+                      </SelectionLink>
+                      <Separator />
+                    </Fragment>
                   ))}
-              </select>
-              <div className="flex items-center justify-between gap-1">
-                <Label className="text-right font-bold">Created after:</Label>
+                <div className="mt-6">
+                  <SearchFooter
+                    currentLimit={wfSpecLimit}
+                    setLimit={setWfSpecLimit}
+                    hasNextPage={wfSpecsHasNextPage}
+                    fetchNextPage={wfSpecsFetchNextPage}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="flex min-h-[120px] items-center justify-center">
+                <RefreshCwIcon className="h-6 w-6 animate-spin text-blue-500" />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="lg:col-span-3">
+          <CardHeader>
+            <CardTitle className="text-lg">Related TaskRuns</CardTitle>
+            <CardDescription>Search TaskRuns for this TaskDef</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:gap-5">
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <Label htmlFor="task-run-status">Status</Label>
+                <select
+                  id="task-run-status"
+                  className="rounded border px-2 py-2"
+                  value={selectedStatus}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    const value = e.target.value
+                    setSelectedStatus(value === 'ALL' ? 'ALL' : (Number(value) as TaskStatus))
+                  }}
+                >
+                  <option value="ALL">ALL</option>
+                  {Object.keys(TaskStatus)
+                    .filter(status => isNaN(Number(status)))
+                    .map(status => (
+                      <option key={status} value={TaskStatus[status as keyof typeof TaskStatus]}>
+                        {status}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <Label htmlFor="created-after">Created after</Label>
                 <Input
+                  id="created-after"
                   type="datetime-local"
                   value={createdAfter}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedAfter(e.target.value)}
-                  className="w-full"
                 />
               </div>
-
-              <div className="flex items-center justify-between gap-1">
-                <Label className="text-right font-bold">Created before:</Label>
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <Label htmlFor="created-before">Created before</Label>
                 <Input
+                  id="created-before"
                   type="datetime-local"
                   value={createdBefore}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCreatedBefore(e.target.value)}
-                  className="w-full"
                 />
               </div>
             </div>
-            {isPending ? (
-              <div className="flex min-h-[360px] items-center justify-center text-center">
+
+            {isPending || (isRefreshing && !data) ? (
+              <div className="flex min-h-[280px] items-center justify-center">
                 <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
               </div>
             ) : (
-              <div className="flex min-h-[360px] w-full flex-col gap-4">
+              <div className="relative">
+                {isRefreshing ? (
+                  <div className="absolute inset-0 z-10 flex min-h-[280px] items-center justify-center rounded-md bg-background/60">
+                    <RefreshCwIcon className="h-8 w-8 animate-spin text-blue-500" />
+                  </div>
+                ) : null}
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -170,11 +241,11 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data?.pages.map((page, i) => (
-                      <Fragment key={i}>
-                        {page.resultsWithDetails.length > 0 ? (
-                          page.resultsWithDetails.map(({ taskRun }) => {
-                            if (!taskRun.id?.wfRunId) return
+                    {data?.pages.some(page => page.resultsWithDetails.length > 0) ? (
+                      data.pages.map((page, i) => (
+                        <Fragment key={i}>
+                          {page.resultsWithDetails.map(({ taskRun }) => {
+                            if (!taskRun.id?.wfRunId) return null
                             const taskRunSource = taskRun.source?.taskRunSource
                             const sourceNodeRunId =
                               taskRunSource?.oneofKind === 'taskNode'
@@ -183,50 +254,46 @@ export const TaskDef: FC<Props> = ({ spec }) => {
                                   ? taskRunSource.userTaskTrigger.nodeRunId
                                   : undefined
                             return (
-                              <TableRow key={taskRun.id?.taskGuid}>
+                              <TableRow key={`${wfRunIdToPath(taskRun.id.wfRunId)}-${taskRun.id?.taskGuid}`}>
                                 <TableCell>
                                   <LinkWithTenant
-                                    className="py-2 text-blue-500 hover:underline"
+                                    className="text-blue-500 hover:underline"
                                     target="_blank"
                                     href={`${routes.wfRun.detail(wfRunIdToPath(taskRun.id.wfRunId))}?threadRunNumber=${sourceNodeRunId?.threadRunNumber}`}
                                   >
                                     {wfRunIdToPath(taskRun.id.wfRunId)}
                                   </LinkWithTenant>
                                 </TableCell>
-                                <TableCell>{taskRun.id?.taskGuid}</TableCell>
-
+                                <TableCell className="font-mono text-sm">{taskRun.id?.taskGuid}</TableCell>
                                 <TableCell>
                                   {taskRun.scheduledAt ? utcToLocalDateTime(taskRun.scheduledAt) : 'N/A'}
                                 </TableCell>
                               </TableRow>
                             )
-                          })
-                        ) : (
-                          <TableRow>
-                            <TableCell colSpan={3} className="text-center">
-                              No data
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </Fragment>
-                    ))}
+                          })}
+                        </Fragment>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center text-muted-foreground">
+                          No TaskRuns match these filters
+                        </TableCell>
+                      </TableRow>
+                    )}
                   </TableBody>
                 </Table>
               </div>
             )}
-          </div>
-          <div className="mt-6">
+
             <SearchFooter
               currentLimit={limit}
               setLimit={setLimit}
               hasNextPage={hasNextPage}
               fetchNextPage={fetchNextPage}
             />
-          </div>
-
-          <hr className="mt-6" />
-        </div>
+          </CardContent>
+        </Card>
       </div>
-    </>
+    </div>
   )
 }
