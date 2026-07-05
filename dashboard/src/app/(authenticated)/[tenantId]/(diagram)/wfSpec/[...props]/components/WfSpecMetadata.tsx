@@ -5,7 +5,7 @@ import { formatDateReadable } from '@/app/utils'
 import { cn } from '@/components/utils'
 import { Separator } from '@/components/ui/separator'
 import { useQuery } from '@tanstack/react-query'
-import { WfSpec } from 'littlehorse-client/proto'
+import { MetadataStatus, WfSpec } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, ReactNode } from 'react'
@@ -33,8 +33,8 @@ const formatRetention = (seconds: number) => {
 }
 
 const getRetentionSeconds = (spec: WfSpec) =>
-  spec.retentionPolicy?.wfGcPolicy?.$case === 'secondsAfterWfTermination'
-    ? Number(spec.retentionPolicy.wfGcPolicy.value)
+  spec.retentionPolicy?.wfGcPolicy?.oneofKind === 'secondsAfterWfTermination'
+    ? Number(spec.retentionPolicy.wfGcPolicy.secondsAfterWfTermination)
     : undefined
 
 export const WfSpecMetadata: FC<Props> = ({ spec, actions }) => {
@@ -70,7 +70,7 @@ export const WfSpecMetadata: FC<Props> = ({ spec, actions }) => {
             ) : (
               <Icon className="h-3 w-3" />
             )}
-            {spec.status}
+            {MetadataStatus[spec.status]}
           </span>
         </div>
         {actions}
@@ -80,9 +80,7 @@ export const WfSpecMetadata: FC<Props> = ({ spec, actions }) => {
         <MetadataField label="Version">
           <Versions wfSpecId={spec.id} compact />
         </MetadataField>
-        <MetadataField label="Created">
-          {spec.createdAt ? formatDateReadable(spec.createdAt) : '—'}
-        </MetadataField>
+        <MetadataField label="Created">{spec.createdAt ? formatDateReadable(spec.createdAt) : '—'}</MetadataField>
         <MetadataField label="Storage usage">
           {isPending ? (
             <RefreshCwIcon className="h-4 w-4 animate-spin text-muted-foreground" />

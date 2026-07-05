@@ -3,12 +3,7 @@ import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@
 import { cn } from '@/components/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDiagram } from '../hooks/useDiagram'
@@ -56,14 +51,14 @@ const ThreadRunTab: FC<{
   isActive: boolean
   onClick: () => void
 }> = ({ name, number, status, isActive, onClick }) => {
-  const { backgroundColor, Icon } = WF_RUN_STATUS[status] ?? WF_RUN_STATUS[LHStatus.UNRECOGNIZED]
+  const { backgroundColor, Icon } = WF_RUN_STATUS[status] ?? WF_RUN_STATUS[LHStatus.STARTING]
 
   return (
     <button
       type="button"
       role="tab"
       aria-selected={isActive}
-      aria-label={`${name} run ${number}, ${status}`}
+      aria-label={`${name} run ${number}, ${LHStatus[status]}`}
       onClick={onClick}
       className={cn(
         'inline-flex shrink-0 items-center gap-2 rounded-sm px-3 py-1.5 text-sm font-medium transition-all',
@@ -188,135 +183,135 @@ export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }
 
   return (
     <div className="relative flex items-center gap-2 overflow-hidden">
-        {totalPages > 1 && (
-          <div className="flex-shrink-0">
-            <Pagination className="justify-start">
-              <PaginationContent className="gap-0.5">
+      {totalPages > 1 && (
+        <div className="flex-shrink-0">
+          <Pagination className="justify-start">
+            <PaginationContent className="gap-0.5">
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault()
+                    handlePageChange(1)
+                  }}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  size="icon"
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault()
+                    handlePageChange(currentPage - 1)
+                  }}
+                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  size="icon"
+                >
+                  <ChevronLeftIcon className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+
+              <PaginationItem>
+                <Input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onKeyDown={handlePageInputSubmit}
+                  onBlur={handlePageInputBlur}
+                  className="h-9 w-12 text-center text-sm [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  disabled={isLoading}
+                />
+              </PaginationItem>
+
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault()
+                    handlePageChange(currentPage + 1)
+                  }}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  size="icon"
+                >
+                  <ChevronRightIcon className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+
+              <PaginationItem>
+                <PaginationLink
+                  href="#"
+                  onClick={e => {
+                    e.preventDefault()
+                    handlePageChange(totalPages)
+                  }}
+                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  size="icon"
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </PaginationLink>
+              </PaginationItem>
+
+              {isLoading && (
                 <PaginationItem>
-                  <PaginationLink
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault()
-                      handlePageChange(1)
-                    }}
-                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                    size="icon"
-                  >
-                    <ChevronsLeft className="h-4 w-4" />
-                  </PaginationLink>
+                  <span className="ml-1 text-xs text-muted-foreground">Loading...</span>
                 </PaginationItem>
+              )}
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
 
-                <PaginationItem>
-                  <PaginationLink
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault()
-                      handlePageChange(currentPage - 1)
-                    }}
-                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                    size="icon"
-                  >
-                    <ChevronLeftIcon className="h-4 w-4" />
-                  </PaginationLink>
-                </PaginationItem>
-
-                <PaginationItem>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={totalPages}
-                    value={pageInput}
-                    onChange={handlePageInputChange}
-                    onKeyDown={handlePageInputSubmit}
-                    onBlur={handlePageInputBlur}
-                    className="h-9 w-12 text-center text-sm [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                    disabled={isLoading}
-                  />
-                </PaginationItem>
-
-                <PaginationItem>
-                  <PaginationLink
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault()
-                      handlePageChange(currentPage + 1)
-                    }}
-                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                    size="icon"
-                  >
-                    <ChevronRightIcon className="h-4 w-4" />
-                  </PaginationLink>
-                </PaginationItem>
-
-                <PaginationItem>
-                  <PaginationLink
-                    href="#"
-                    onClick={e => {
-                      e.preventDefault()
-                      handlePageChange(totalPages)
-                    }}
-                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                    size="icon"
-                  >
-                    <ChevronsRight className="h-4 w-4" />
-                  </PaginationLink>
-                </PaginationItem>
-
-                {isLoading && (
-                  <PaginationItem>
-                    <span className="ml-1 text-xs text-muted-foreground">Loading...</span>
-                  </PaginationItem>
-                )}
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
-
-        <div className="relative flex min-w-0 flex-1 items-center overflow-hidden">
+      <div className="relative flex min-w-0 flex-1 items-center overflow-hidden">
+        <div
+          className={cn(
+            "absolute left-0 top-0 z-10 flex after:h-[38px] after:w-[50px] after:bg-gradient-to-r after:from-white after:to-transparent after:content-['']",
+            scroll === 0 && 'hidden'
+          )}
+        >
+          <button type="button" className="bg-white" onClick={() => scrollLeft()} aria-label="Scroll left">
+            <ChevronLeftIcon className="h-6 w-6" />
+          </button>
+        </div>
+        <div className="flex h-full w-full touch-pan-y items-center text-nowrap" ref={containerRef}>
           <div
-            className={cn(
-              "absolute left-0 top-0 z-10 flex after:h-[38px] after:w-[50px] after:bg-gradient-to-r after:from-white after:to-transparent after:content-['']",
-              scroll === 0 && 'hidden'
-            )}
+            className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex h-full gap-2 overflow-x-auto will-change-transform"
+            style={{ transform: `translateX(${scroll}px)` }}
+            ref={itemsRef}
           >
-            <button type="button" className="bg-white" onClick={() => scrollLeft()} aria-label="Scroll left">
-              <ChevronLeftIcon className="h-6 w-6" />
-            </button>
-          </div>
-          <div className="flex h-full w-full touch-pan-y items-center text-nowrap" ref={containerRef}>
-            <div
-              className="duration-[15ms] ease-[cubic-bezier(.05,0,0,1)] flex h-full gap-2 overflow-x-auto will-change-transform"
-              style={{ transform: `translateX(${scroll}px)` }}
-              ref={itemsRef}
-            >
-              <ThreadTabList className="flex-nowrap">
-                {threadSpecs.map(({ name, number }) => (
-                  <ThreadRunTab
-                    key={`${name}-${number}`}
-                    name={name}
-                    number={number}
-                    status={threadRunStatusByNumber.get(number) ?? LHStatus.UNRECOGNIZED}
-                    isActive={name === thread.name && number === thread.number}
-                    onClick={() => {
-                      setThread({ name, number })
-                      router.replace(replaceQuery('threadRunNumber', number.toString()))
-                    }}
-                  />
-                ))}
-              </ThreadTabList>
-            </div>
-          </div>
-          <div
-            className={cn(
-              "absolute right-0 top-0 flex before:h-[38px] before:w-[50px] before:bg-gradient-to-l before:from-white before:to-transparent before:content-['']",
-              (!maxScroll || -scroll >= maxScroll) && 'hidden'
-            )}
-          >
-            <button type="button" className="bg-white" onClick={() => scrollRight()} aria-label="Scroll right">
-              <ChevronRightIcon className="h-6 w-6" />
-            </button>
+            <ThreadTabList className="flex-nowrap">
+              {threadSpecs.map(({ name, number }) => (
+                <ThreadRunTab
+                  key={`${name}-${number}`}
+                  name={name}
+                  number={number}
+                  status={threadRunStatusByNumber.get(number) ?? LHStatus.STARTING}
+                  isActive={name === thread.name && number === thread.number}
+                  onClick={() => {
+                    setThread({ name, number })
+                    router.replace(replaceQuery('threadRunNumber', number.toString()))
+                  }}
+                />
+              ))}
+            </ThreadTabList>
           </div>
         </div>
+        <div
+          className={cn(
+            "absolute right-0 top-0 flex before:h-[38px] before:w-[50px] before:bg-gradient-to-l before:from-white before:to-transparent before:content-['']",
+            (!maxScroll || -scroll >= maxScroll) && 'hidden'
+          )}
+        >
+          <button type="button" className="bg-white" onClick={() => scrollRight()} aria-label="Scroll right">
+            <ChevronRightIcon className="h-6 w-6" />
+          </button>
+        </div>
       </div>
+    </div>
   )
 }

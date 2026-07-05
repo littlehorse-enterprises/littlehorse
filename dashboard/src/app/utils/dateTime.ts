@@ -1,4 +1,28 @@
-import { UserTaskEvent } from 'littlehorse-client/proto'
+import { Timestamp, UserTaskEvent } from 'littlehorse-client/proto'
+
+/**
+ * A value that can represent a point in time. With `@protobuf-ts`, protobuf
+ * `google.protobuf.Timestamp` fields are represented as a `Timestamp` message
+ * (`{ seconds, nanos }`) rather than a `Date`/`string`, so date helpers accept
+ * any of these representations.
+ */
+export type DateLike = string | number | Date | Timestamp | undefined | null
+
+const isProtoTimestamp = (value: unknown): value is Timestamp =>
+  typeof value === 'object' && value !== null && 'seconds' in value && 'nanos' in value
+
+/**
+ * Normalizes any supported time representation into a `Date`, or `undefined`
+ * when the input is missing or invalid.
+ */
+export const toDate = (input: DateLike): Date | undefined => {
+  if (input === undefined || input === null) return undefined
+  if (input instanceof Date) return Number.isNaN(input.getTime()) ? undefined : input
+  if (typeof input === 'number') return new Date(input)
+  if (isProtoTimestamp(input)) return Timestamp.toDate(input)
+  const parsed = new Date(input)
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed
+}
 
 export const formatDate = (date?: Date | number) => {
   return new Intl.DateTimeFormat('en-US', {
@@ -11,25 +35,19 @@ export const formatDate = (date?: Date | number) => {
     hour12: false,
   }).format(date)
 }
-// Normalize and sort events by their `time` field (which may be a string or Date).
+// Normalize and sort events by their `time` field.
 
 export const getEventTime = (e: UserTaskEvent) => {
-  const t: any = e.time
-  if (!t) return 0
-  if (t instanceof Date) return t.getTime()
-  const parsed = Date.parse(t)
-  return Number.isNaN(parsed) ? 0 : parsed
+  return toDate(e.time)?.getTime() ?? 0
 }
 /**
  * Human-friendly date/time like: "April 2, 2022 at 11:29 am"
- * Accepts a Date or a numeric timestamp. Returns empty string for invalid input.
+ * Accepts a Date, numeric timestamp, ISO string, or proto Timestamp.
+ * Returns empty string for invalid input.
  */
-export const formatDateReadable = (dateInput?: string | undefined): string => {
-  if (dateInput === undefined || dateInput === null) return ''
-  const date = new Date(dateInput)
-
-  const dt = typeof date === 'number' ? new Date(date) : date instanceof Date ? date : new Date(date)
-  if (Number.isNaN(dt.getTime())) return ''
+export const formatDateReadable = (dateInput?: DateLike): string => {
+  const dt = toDate(dateInput)
+  if (!dt) return ''
 
   const formattedDate = dt.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -48,8 +66,11 @@ export const formatDateReadable = (dateInput?: string | undefined): string => {
   return `  ${formattedDate} at ${formattedTime}`
 }
 
-export const utcToLocalDateTime = (utcISODateTime: string): string =>
-  new Date(Date.parse(utcISODateTime)).toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })
+export const utcToLocalDateTime = (utcISODateTime: DateLike): string => {
+  const date = toDate(utcISODateTime)
+  if (!date) return ''
+  return date.toLocaleString(undefined, { hour12: false, timeZoneName: 'short' })
+}
 
 export const localDateTimeToUTCIsoString = (localDateTime: string): string => new Date(localDateTime).toISOString()
 

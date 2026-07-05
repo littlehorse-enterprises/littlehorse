@@ -13,8 +13,8 @@ export const countNodeRun = async ({ tenantId, wfSpecId }: Props): Promise<NodeR
   const client = await lhClient({ tenantId })
   const request: CountNodeRunRequest = {
     filter: {
-      $case: 'wfSpecFilter',
-      value: {
+      oneofKind: 'wfSpecFilter',
+      wfSpecFilter: {
         wfSpecName: wfSpecId.name,
         wfSpecMajorVersion: wfSpecId.majorVersion,
         wfSpecRevision: wfSpecId.revision,

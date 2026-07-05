@@ -10,15 +10,15 @@ export const ExitNode: FC<{ node: ExitNodeProto }> = ({ node }) => {
   return (
     <div className="flex max-w-full flex-1 flex-col">
       <div className="mb-2 flex flex-col gap-2">
-        {result.$case === 'failureDef' && <FailureDetails failureDef={result.value} />}
-        {result.$case === 'returnContent' && <ReturnContent returnContent={result.value} />}
+        {result.oneofKind === 'failureDef' && <FailureDetails failureDef={result.failureDef} />}
+        {result.oneofKind === 'returnContent' && <ReturnContent returnContent={result.returnContent} />}
       </div>
     </div>
   )
 }
 
 const FailureDetails: FC<{
-  failureDef: NonNullable<Extract<ExitNodeProto['result'], { $case: 'failureDef' }>>['value']
+  failureDef: Extract<ExitNodeProto['result'], { oneofKind: 'failureDef' }>['failureDef']
 }> = ({ failureDef }) => {
   const { failureName, message, content } = failureDef
   return (
@@ -38,7 +38,7 @@ const FailureDetails: FC<{
 }
 
 const ReturnContent: FC<{
-  returnContent: NonNullable<Extract<ExitNodeProto['result'], { $case: 'returnContent' }>>['value']
+  returnContent: Extract<ExitNodeProto['result'], { oneofKind: 'returnContent' }>['returnContent']
 }> = ({ returnContent }) => {
   return (
     <>

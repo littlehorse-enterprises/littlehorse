@@ -1,7 +1,8 @@
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import { TaskRun, TaskStatus } from 'littlehorse-client/proto'
+import { TaskRun, TaskStatus, Timestamp } from 'littlehorse-client/proto'
+import { utcToLocalDateTime } from '@/app/utils'
 import useSWR from 'swr'
 import { TaskNodeRun } from '../TaskNodeRun'
 
@@ -16,9 +17,11 @@ jest.mock('../../../NodeTypes/Task/getTaskRun', () => ({ getTaskRun: jest.fn() }
 jest.mock('../../../NodeTypes/Task/getCheckpoints', () => ({ getCheckpoints: jest.fn() }))
 
 jest.mock('../../Components/NodeVariable', () => ({
-  NodeVariable: ({ label, text, type }: any) => (
-    <div data-testid={`node-variable-${label}`}>{`${label}${String(text ?? '')}${type ? `|${type}` : ''}`}</div>
-  ),
+  NodeVariable: ({ label, text, type }: any) => {
+    const { utcToLocalDateTime } = require('@/app/utils')
+    const display = type === 'date' ? utcToLocalDateTime(text) : String(text ?? '')
+    return <div data-testid={`node-variable-${label}`}>{`${label}${display}${type ? `|${type}` : ''}`}</div>
+  },
 }))
 jest.mock('../../Components', () => ({
   InputVariables: ({ variables }: any) => <div data-testid="input-variables">{JSON.stringify(variables)}</div>,
@@ -29,7 +32,11 @@ jest.mock('../../Components/Attempts', () => ({
   ),
 }))
 jest.mock('../../Components/NodeStatus', () => ({
-  NodeStatus: ({ status, type }: any) => <div data-testid="node-status">{`${status}:${type}`}</div>,
+  NodeStatus: ({ status, type }: any) => {
+    const { TaskStatus, LHStatus } = require('littlehorse-client/proto')
+    const name = type === 'task' ? TaskStatus[status] : LHStatus[status]
+    return <div data-testid="node-status">{`${name}:${type}`}</div>
+  },
 }))
 
 // Now import the component under test
@@ -58,22 +65,22 @@ describe('TaskNodeRun', () => {
         {
           logOutput: {
             value: {
-              $case: 'str',
-              value: '',
+              oneofKind: 'str',
+              str: '',
             },
           },
-          scheduleTime: '2025-12-02T16:17:00.649Z',
-          startTime: '2025-12-02T16:17:00.654Z',
-          endTime: '2025-12-02T16:17:00.677Z',
+          scheduleTime: Timestamp.fromDate(new Date('2025-12-02T16:17:00.649Z')),
+          startTime: Timestamp.fromDate(new Date('2025-12-02T16:17:00.654Z')),
+          endTime: Timestamp.fromDate(new Date('2025-12-02T16:17:00.677Z')),
           taskWorkerId: 'worker-d2ad24c018e949e5a06ee1484e207d0a',
           taskWorkerVersion: '',
-          status: 'TASK_SUCCESS' as TaskStatus,
+          status: TaskStatus.TASK_SUCCESS,
           result: {
-            $case: 'output',
-            value: {
+            oneofKind: 'output',
+            output: {
               value: {
-                $case: 'str',
-                value: 'hello there, hi from parent',
+                oneofKind: 'str',
+                str: 'hello there, hi from parent',
               },
             },
           },
@@ -85,8 +92,8 @@ describe('TaskNodeRun', () => {
           varName: 'arg0',
           value: {
             value: {
-              $case: 'str',
-              value: 'hi from parent',
+              oneofKind: 'str',
+              str: 'hi from parent',
             },
           },
           masked: false,
@@ -94,8 +101,8 @@ describe('TaskNodeRun', () => {
       ],
       source: {
         taskRunSource: {
-          $case: 'taskNode',
-          value: {
+          oneofKind: 'taskNode',
+          taskNode: {
             nodeRunId: {
               wfRunId: {
                 id: 'c7a5dd72910f4a77b1c1fc0f69546c40',
@@ -106,8 +113,8 @@ describe('TaskNodeRun', () => {
           },
         },
       },
-      scheduledAt: '2025-12-02T16:17:00.649Z',
-      status: 'TASK_SUCCESS' as TaskStatus,
+      scheduledAt: Timestamp.fromDate(new Date('2025-12-02T16:17:00.649Z')),
+      status: TaskStatus.TASK_SUCCESS,
       timeoutSeconds: 60,
       totalAttempts: 1,
       totalCheckpoints: 0,
@@ -117,14 +124,16 @@ describe('TaskNodeRun', () => {
 
     render(<TaskNodeRun node={{ taskRunId: { taskGuid: 'tg-1' } } as any} />)
 
-    expect(screen.getByTestId('node-status')).toHaveTextContent('SUCCESS:task')
+    expect(screen.getByTestId('node-status')).toHaveTextContent('TASK_SUCCESS:task')
     expect(screen.getByTestId('node-variable-Node Type:')).toHaveTextContent('Node Type:Task')
     expect(screen.getByTestId('node-variable-taskGuid:')).toHaveTextContent('taskGuid:tg-1')
     expect(screen.getByTestId('node-variable-TaskDefId:')).toHaveTextContent('TaskDefId:greet')
     expect(screen.getByTestId('node-variable-position:')).toHaveTextContent('position:2')
     expect(screen.getByTestId('node-variable-threadRunNumber:')).toHaveTextContent('threadRunNumber:0')
     expect(screen.getByTestId('node-variable-wfRunId:')).toHaveTextContent('wfRunId:c7a5dd72910f4a77b1c1fc0f69546c40')
-    expect(screen.getByTestId('node-variable-scheduledAt:')).toHaveTextContent('scheduledAt:2025-12-02T16:17:00.649Z')
+    expect(screen.getByTestId('node-variable-scheduledAt:')).toHaveTextContent(
+      `scheduledAt:${utcToLocalDateTime(nodeTask.scheduledAt)}`
+    )
     expect(screen.getByTestId('node-variable-timeoutSeconds:')).toHaveTextContent('timeoutSeconds:60')
     expect(screen.getByTestId('node-variable-totalCheckpoints:')).toHaveTextContent('totalCheckpoints:0')
 

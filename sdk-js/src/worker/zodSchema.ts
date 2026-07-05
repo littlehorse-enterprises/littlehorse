@@ -32,10 +32,9 @@
 
 import { z, type ZodTypeAny, type ZodObject, type ZodRawShape } from 'zod'
 import { VariableType } from '../proto/common_enums'
-import { VariableDef, StructFieldDef } from '../proto/common_wfspec'
-import { TypeDefinition } from '../proto/type_definition'
+import { VariableDef } from '../proto/common_wfspec'
+import { TypeDefinition, StructFieldDef, VariableValue, StructField } from '../proto/type_definition'
 import { PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
-import { VariableValue, StructField } from '../proto/variable'
 import { toVariableValue } from './variableMapping'
 
 // ── Metadata key for struct name ─────────────────────────────────────
@@ -128,8 +127,8 @@ export function zodToTypeDef(schema: ZodTypeAny): TypeDefinition {
   if (structName) {
     return {
       definedType: {
-        $case: 'structDefId',
-        value: { name: structName, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name: structName, version: 0 },
       },
       masked,
     }
@@ -245,8 +244,8 @@ export function buildStructVariableDef(paramName: string, schema: ZodTypeAny): V
     name: paramName,
     typeDef: {
       definedType: {
-        $case: 'structDefId',
-        value: { name, version: 0 },
+        oneofKind: 'structDefId',
+        structDefId: { name, version: 0 },
       },
       masked: false,
     },
@@ -334,8 +333,8 @@ export function toStructVariableValue(
 
   return {
     value: {
-      $case: 'struct',
-      value: {
+      oneofKind: 'struct',
+      struct: {
         structDefId: { name, version: structDefVersion },
         struct: { fields },
       },
@@ -347,7 +346,7 @@ export function toStructVariableValue(
 
 function primitiveDef(type: VariableType, masked: boolean = false): TypeDefinition {
   return {
-    definedType: { $case: 'primitiveType', value: type },
+    definedType: { oneofKind: 'primitiveType', primitiveType: type },
     masked,
   }
 }

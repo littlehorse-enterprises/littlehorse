@@ -37,7 +37,8 @@ const nodeTypes: Record<NodeType | 'cycle', ComponentType<any>> = {
   cycle: Cycle,
 }
 
-export type NodeProps<C extends NonNullable<NodeRun['nodeType']>['$case'] = 'entrypoint', T = unknown> = NodeFlow<
-  T & { fade?: boolean; nodeRunsList: [NodeRunCase<C>] }
->
+export type NodeProps<
+  C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined> = 'entrypoint',
+  T = unknown,
+> = NodeFlow<T & { fade?: boolean; nodeRunsList: [NodeRunCase<C>] }>
 export default nodeTypes
