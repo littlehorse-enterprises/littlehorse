@@ -16,7 +16,6 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
@@ -389,16 +388,21 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     }
 
     private boolean isValidSizeOfOperand(TypeDefinitionModel operandType) {
-        if (operandType.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
-            return true;
+        switch (operandType.getDefinedTypeCase()) {
+            case INLINE_ARRAY_DEF:
+                return true;
+            case PRIMITIVE_TYPE:
+                if (operandType.getPrimitiveType() == VariableType.JSON_ARR
+                        || operandType.getPrimitiveType() == VariableType.STR) {
+                    return true;
+                }
+                break;
+            case INLINE_MAP_DEF:
+            case STRUCT_DEF_ID:
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                break;
         }
-
-        if (operandType.getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
-            return true;
-        }
-
-        return operandType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
-                && (operandType.getPrimitiveType() == VariableType.JSON_ARR
-                        || operandType.getPrimitiveType() == VariableType.STR);
+        return false;
     }
 }

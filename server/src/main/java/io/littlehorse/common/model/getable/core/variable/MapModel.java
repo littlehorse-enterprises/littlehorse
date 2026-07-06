@@ -30,8 +30,7 @@ public final class MapModel extends LHSerializable<Map> {
         if (entries != null) {
             for (MapEntryModel entry : entries) {
                 this.entries.add(new MapEntryModel(
-                        entry.getKey() == null ? null : entry.getKey().getCopy(),
-                        entry.getValue() == null ? null : entry.getValue().getCopy()));
+                        entry.getKey().getCopy(), entry.getValue().getCopy()));
             }
         }
         this.mapType = mapType == null ? null : new InlineMapDefModel(mapType);
@@ -46,8 +45,7 @@ public final class MapModel extends LHSerializable<Map> {
         if (other.entries != null) {
             for (MapEntryModel entry : other.entries) {
                 this.entries.add(new MapEntryModel(
-                        entry.getKey() == null ? null : entry.getKey().getCopy(),
-                        entry.getValue() == null ? null : entry.getValue().getCopy()));
+                        entry.getKey().getCopy(), entry.getValue().getCopy()));
             }
         }
 
