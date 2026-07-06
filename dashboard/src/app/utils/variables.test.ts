@@ -550,19 +550,19 @@ describe('formatTypeDefinition', () => {
   it('should format map type with key and value types', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'inlineMapDef',
-        value: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
           keyType: {
             definedType: {
-              $case: 'primitiveType',
-              value: VariableType.STR,
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
             },
             masked: false,
           },
           valueType: {
             definedType: {
-              $case: 'primitiveType',
-              value: VariableType.INT,
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.INT,
             },
             masked: false,
           },
@@ -577,23 +577,23 @@ describe('formatTypeDefinition', () => {
   it('should format nested map value types recursively', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'inlineMapDef',
-        value: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
           keyType: {
             definedType: {
-              $case: 'primitiveType',
-              value: VariableType.STR,
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
             },
             masked: false,
           },
           valueType: {
             definedType: {
-              $case: 'inlineArrayDef',
-              value: {
+              oneofKind: 'inlineArrayDef',
+              inlineArrayDef: {
                 arrayType: {
                   definedType: {
-                    $case: 'primitiveType',
-                    value: VariableType.INT,
+                    oneofKind: 'primitiveType',
+                    primitiveType: VariableType.INT,
                   },
                   masked: false,
                 },
@@ -648,7 +648,7 @@ describe('getVariableValue', () => {
   })
 
   it('should render native map as JSON object keyed by entry keys', () => {
-    const variableValue = VariableValue.fromJSON({
+    const variableValue = VariableValue.fromJson({
       map: {
         entries: [
           { key: { str: 'one' }, value: { int: 1 } },
