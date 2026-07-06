@@ -406,16 +406,19 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     selectors.remove(0);
                     break;
                 case MAP:
+                    VariableValueModel matchedValue = null;
                     for (MapModel.MapEntryModel entry : val.getMap().getEntries()) {
                         if (entry.getKey().equals(new VariableValueModel(currentSelector.getKey()))) {
-                            val = entry.getValue();
-                            selectors.remove(0);
+                            matchedValue = entry.getValue();
                             break;
                         }
                     }
-                    if (!selectors.isEmpty() && selectors.get(0) == currentSelector) {
-                        throw new LHVarSubError(null, "Key not found in Map: " + currentSelector.getKey());
+                    // Accessing a key that is not present resolves to null (see proposal)
+                    if (matchedValue == null) {
+                        return new VariableValueModel();
                     }
+                    val = matchedValue;
+                    selectors.remove(0);
                     break;
                 case JSON_ARR:
                     // Once we find a JSON_ARR, we can use JSONPath for the rest of our queries
@@ -837,11 +840,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     throw new LHVarSubError(null, "Cannot get size of null array");
                 }
                 return new VariableValueModel(array.getItems().size());
-            case MAP:
-                if (map == null || map.getEntries() == null) {
-                    throw new LHVarSubError(null, "Cannot get size of null map");
-                }
-                return new VariableValueModel(map.getEntries().size());
             default:
                 throw new LHVarSubError(null, "Cannot resolve size() for var of type " + valueType);
         }

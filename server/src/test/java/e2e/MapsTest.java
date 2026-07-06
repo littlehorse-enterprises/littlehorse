@@ -41,6 +41,9 @@ public class MapsTest {
     @LHWorkflow("map-get-wf")
     private Workflow mapGetWf;
 
+    @LHWorkflow("map-get-missing-wf")
+    private Workflow mapGetMissingWf;
+
     @LHWorkflow("map-contains-wf")
     private Workflow mapContainsWf;
 
@@ -49,9 +52,6 @@ public class MapsTest {
 
     @LHWorkflow("map-remove-key-wf")
     private Workflow mapRemoveKeyWf;
-
-    @LHWorkflow("map-size-wf")
-    private Workflow mapSizeWf;
 
     @LHWorkflow("map-int-key-wf")
     private Workflow mapIntKeyWf;
@@ -64,6 +64,9 @@ public class MapsTest {
 
     @LHWorkflow("map-array-value-wf")
     private Workflow mapArrayValueWf;
+
+    @LHWorkflow("map-nullable-wf")
+    private Workflow mapNullableWf;
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
@@ -134,6 +137,61 @@ public class MapsTest {
     }
 
     @Test
+    public void shouldResolveMissingMapKeyToNull() {
+        workflowVerifier
+                .prepareRun(mapGetMissingWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "picked", variableValue -> {
+                    // A missing key resolves to NULL (an unset VariableValue), consistent with
+                    // native-typing NULL semantics and missing JSON_OBJ keys.
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.VALUE_NOT_SET);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldSupportNullKeysAndValues() {
+        workflowVerifier
+                .prepareRun(mapNullableWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    assertThat(entries).hasSize(3);
+
+                    // A native Map may contain a NULL key and/or NULL value, represented as an
+                    // unset VariableValue oneof, consistent with LittleHorse NULL semantics.
+                    long nullKeyCount = entries.stream()
+                            .filter(e -> e.getKey().getValueCase() == ValueCase.VALUE_NOT_SET)
+                            .count();
+                    long nullValueCount = entries.stream()
+                            .filter(e -> e.getValue().getValueCase() == ValueCase.VALUE_NOT_SET)
+                            .count();
+                    assertThat(nullKeyCount).isEqualTo(1);
+                    assertThat(nullValueCount).isEqualTo(1);
+
+                    // The NULL-key entry maps to the value 99.
+                    assertThat(entries.stream()
+                                    .filter(e -> e.getKey().getValueCase() == ValueCase.VALUE_NOT_SET)
+                                    .findFirst()
+                                    .orElseThrow()
+                                    .getValue()
+                                    .getInt())
+                            .isEqualTo(99L);
+
+                    // The NULL-value entry is keyed by "null-value".
+                    assertThat(entries.stream()
+                                    .filter(e -> e.getValue().getValueCase() == ValueCase.VALUE_NOT_SET)
+                                    .findFirst()
+                                    .orElseThrow()
+                                    .getKey()
+                                    .getStr())
+                            .isEqualTo("null-value");
+                })
+                .start();
+    }
+
+    @Test
     public void shouldDetectMapContainsKey() {
         workflowVerifier
                 .prepareRun(mapContainsWf)
@@ -173,15 +231,23 @@ public class MapsTest {
     }
 
     @Test
-    public void shouldComputeMapSize() {
-        workflowVerifier
-                .prepareRun(mapSizeWf)
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyVariable(0, "map-size", variableValue -> {
-                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.INT);
-                    assertThat(variableValue.getInt()).isEqualTo(2L);
-                })
-                .start();
+    public void shouldRejectSizeOfOnMapAtRegistration() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-size-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable mapSize = thread.declareInt("map-size");
+            mapSize.assign(mapVar.size());
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
+                .matches(
+                        exn -> {
+                            if (!(exn instanceof StatusRuntimeException)) return false;
+                            StatusRuntimeException sre = (StatusRuntimeException) exn;
+                            return sre.getStatus().getCode() == Status.Code.INVALID_ARGUMENT
+                                    && sre.getMessage()
+                                            .contains("size() only supports STR, ARRAY or JSON_ARR operands");
+                        },
+                        "should reject size() on a Map at WfSpec registration time");
     }
 
     @Test
@@ -332,6 +398,17 @@ public class MapsTest {
         });
     }
 
+    @LHWorkflow("map-get-missing-wf")
+    public Workflow buildMapGetMissingWf() {
+        return new WorkflowImpl("map-get-missing-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable picked = thread.declareInt("picked");
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            picked.assign(mapVar.get("nonexistent-key"));
+        });
+    }
+
     @LHWorkflow("map-contains-wf")
     public Workflow buildMapContainsWf() {
         return new WorkflowImpl("map-contains-wf", thread -> {
@@ -370,17 +447,6 @@ public class MapsTest {
         });
     }
 
-    @LHWorkflow("map-size-wf")
-    public Workflow buildMapSizeWf() {
-        return new WorkflowImpl("map-size-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable mapSize = thread.declareInt("map-size");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            mapSize.assign(mapVar.size());
-        });
-    }
-
     @LHTaskMethod("produce-empty-map")
     @LHType(isLHMap = true)
     public Map<String, Long> produceEmptyMap() {
@@ -401,6 +467,27 @@ public class MapsTest {
     public Map<String, Long> produceSingleEntryMap() {
         Map<String, Long> result = new HashMap<>();
         result.put("new-key", 99L);
+        return result;
+    }
+
+    @LHWorkflow("map-nullable-wf")
+    public Workflow buildMapNullableWf() {
+        return new WorkflowImpl("map-nullable-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-nullable-map");
+            mapVar.assign(produced);
+        });
+    }
+
+    @LHTaskMethod("produce-nullable-map")
+    @LHType(isLHMap = true)
+    public Map<String, Long> produceNullableMap() {
+        Map<String, Long> result = new HashMap<>();
+        result.put("present", 42L);
+        // Entry with a NULL value.
+        result.put("null-value", null);
+        // Entry with a NULL key.
+        result.put(null, 99L);
         return result;
     }
 
