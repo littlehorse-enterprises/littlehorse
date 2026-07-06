@@ -19,4 +19,3 @@ public class SearchBulkJobReply extends PublicScanReply<BulkJobIdList, BulkJobId
         return BulkJobId.class;
     }
 }
-

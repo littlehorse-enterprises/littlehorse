@@ -16,7 +16,7 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 
 public class DeleteBulkJobRequestModel extends MetadataSubCommand<DeleteBulkJobRequest> {
 
-    public BulkJobIdModel id;
+    private BulkJobIdModel id;
 
     public Class<DeleteBulkJobRequest> getProtoBaseClass() {
         return DeleteBulkJobRequest.class;
@@ -54,4 +54,3 @@ public class DeleteBulkJobRequestModel extends MetadataSubCommand<DeleteBulkJobR
         return out;
     }
 }
-

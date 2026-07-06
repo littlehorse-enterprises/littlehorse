@@ -25,7 +25,9 @@ import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +63,15 @@ public class BulkJobPunctuator {
     private final Duration punctuationBudget;
 
     /**
+     * Maximum number of commands the punctuator is allowed to forward in a single tick before
+     * yielding back to Kafka Streams. This bounds how many records a single punctuation appends
+     * within one transaction, complementing the wall-clock {@link #punctuationBudget}. Like the
+     * time budget, it is enforced through the shared {@code outOfBudget} predicate at both the
+     * inter-job and intra-job levels.
+     */
+    private final long maxCommandsPerPunctuation;
+
+    /**
      * Source of "now" used to evaluate the punctuation budget. Injectable so tests can drive the
      * deadline deterministically; production uses {@link Instant#now()}.
      */
@@ -70,8 +81,9 @@ public class BulkJobPunctuator {
             ProcessorContext<String, CommandProcessorOutput> ctx,
             LHServerConfig config,
             MetadataCache metadataCache,
-            Duration punctuationBudget) {
-        this(ctx, config, metadataCache, punctuationBudget, Instant::now);
+            Duration punctuationBudget,
+            long maxCommandsPerPunctuation) {
+        this(ctx, config, metadataCache, punctuationBudget, maxCommandsPerPunctuation, Instant::now);
     }
 
     // For testing
@@ -80,11 +92,13 @@ public class BulkJobPunctuator {
             LHServerConfig config,
             MetadataCache metadataCache,
             Duration punctuationBudget,
+            long maxCommandsPerPunctuation,
             Supplier<Instant> clock) {
         this.ctx = ctx;
         this.config = config;
         this.metadataCache = metadataCache;
         this.punctuationBudget = punctuationBudget;
+        this.maxCommandsPerPunctuation = maxCommandsPerPunctuation;
         this.clock = clock;
     }
 
@@ -93,7 +107,8 @@ public class BulkJobPunctuator {
      */
     public void punctuate(long timestamp) {
         final Instant deadline = clock.get().plus(punctuationBudget);
-        final BooleanSupplier outOfBudget = () -> clock.get().isAfter(deadline);
+        final AtomicLong remainingCommandBudget = new AtomicLong(maxCommandsPerPunctuation);
+        final BooleanSupplier outOfBudget = () -> clock.get().isAfter(deadline) || remainingCommandBudget.get() == 0;
         final int currentPartition = ctx.taskId().partition();
         final BackgroundContext context = new BackgroundContext();
         KeyValueStore<String, Bytes> metadataNativeStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
@@ -110,6 +125,8 @@ public class BulkJobPunctuator {
                 runningJobs.add(activeBulkJob);
             });
         }
+        // Oldest first
+        runningJobs.sort(Comparator.comparing(ActiveBulkJobModel::getCreatedAt));
         for (ActiveBulkJobModel runningJob : runningJobs) {
             // Check deadline before processing each job
             if (outOfBudget.getAsBoolean()) {
@@ -135,7 +152,8 @@ public class BulkJobPunctuator {
             }
             PunctuationExecutionContext punctuateContext = new PunctuationExecutionContext(
                     timestamp, config, metadataNativeStore, coreNativeStore, metadataCache, tenantId);
-            currentCursor = job.tryToComplete(ctx::forward, punctuateContext, currentCursor, outOfBudget);
+            currentCursor = job.tryToComplete(
+                    ctx::forward, punctuateContext, currentCursor, outOfBudget, remainingCommandBudget);
             CommandProcessorOutput processorOutput = createBulkJobReport(job, currentPartition, currentCursor);
             Record<String, CommandProcessorOutput> reportRecord = new Record<>(
                     processorOutput.partitionKey,

@@ -63,6 +63,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private final CommandProcessorMetrics metrics;
     private BulkJobPunctuator bulkJobPunctuator;
     private static final Duration BULK_JOB_PUNCTUATION_BUDGET = Duration.ofMillis(50);
+    private static final long BULK_JOB_MAX_COMMANDS_PER_PUNCTUATION = 100L;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -95,7 +96,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 PunctuationType.WALL_CLOCK_TIME,
                 this::collectPartitionMetrics);
 
-        this.bulkJobPunctuator = new BulkJobPunctuator(ctx, config, metadataCache, BULK_JOB_PUNCTUATION_BUDGET);
+        this.bulkJobPunctuator = new BulkJobPunctuator(
+                ctx, config, metadataCache, BULK_JOB_PUNCTUATION_BUDGET, BULK_JOB_MAX_COMMANDS_PER_PUNCTUATION);
         ctx.schedule(
                 Duration.ofSeconds(1),
                 PunctuationType.WALL_CLOCK_TIME,

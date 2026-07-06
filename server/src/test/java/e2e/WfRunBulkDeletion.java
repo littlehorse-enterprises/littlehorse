@@ -92,8 +92,7 @@ public class WfRunBulkDeletion {
         assertThat(searchBulkJobs(BulkJobStatus.BULK_JOB_COMPLETED)).contains(jobId);
 
         // Deleting a finished BulkJob removes it from both Get and Search.
-        client.deleteBulkJob(
-                DeleteBulkJobRequest.newBuilder().setId(jobId).build());
+        client.deleteBulkJob(DeleteBulkJobRequest.newBuilder().setId(jobId).build());
 
         assertThatThrownBy(() -> client.getBulkJob(
                         GetBulkJobRequest.newBuilder().setId(jobId).build()))

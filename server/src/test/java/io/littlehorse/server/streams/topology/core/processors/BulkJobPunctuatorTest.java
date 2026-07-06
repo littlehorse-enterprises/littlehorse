@@ -50,9 +50,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class BulkJobPunctuatorTest {
 
     private static final String METADATA_CMD_TOPIC = "metadata-cmd-topic";
-    private static final String CORE_CMD_TOPIC = "core-cmd-topic";
     private static final String WF_SPEC_NAME = "target-wf";
     private static final int NUMBER_OF_PARTITIONS = 12;
+
+    /**
+     * A command budget large enough that it never interferes with the time-budget focused tests:
+     * they assert on wall-clock deadlines, not on the number of forwarded commands.
+     */
+    private static final long UNLIMITED_COMMAND_BUDGET = 1_000L;
 
     @Mock
     private LHServerConfig config;
@@ -80,7 +85,8 @@ public class BulkJobPunctuatorTest {
         // ctx.getStateStore(name) resolve them inside the punctuator.
         globalStore.init(mockProcessorContext.getStateStoreContext(), globalStore);
         coreStore.init(mockProcessorContext.getStateStoreContext(), coreStore);
-        punctuator = new BulkJobPunctuator(mockProcessorContext, config, metadataCache, punctuationBudget);
+        punctuator = new BulkJobPunctuator(
+                mockProcessorContext, config, metadataCache, punctuationBudget, UNLIMITED_COMMAND_BUDGET);
         when(config.getMetadataCmdTopicName()).thenReturn(METADATA_CMD_TOPIC);
         clusterStore = ClusterScopedStore.newInstance(globalStore, context);
         tenantGlobalStore = TenantScopedStore.newInstance(globalStore, tenantId, context);
@@ -103,7 +109,6 @@ public class BulkJobPunctuatorTest {
 
     @Test
     void shouldForwardDeleteCommandsForMatchingWfRuns() {
-        when(config.getCoreCmdTopicName()).thenReturn(CORE_CMD_TOPIC);
         final String jobId = LHUtil.generateGuid();
         seedRunningJob(jobId, deleteForWfSpec(WF_SPEC_NAME));
 
@@ -150,8 +155,8 @@ public class BulkJobPunctuatorTest {
 
         // An already-elapsed budget makes the deadline expire before the first job is processed,
         // so the punctuator forwards nothing and persists no cursor: all work is deferred.
-        BulkJobPunctuator exhaustedBudget =
-                new BulkJobPunctuator(mockProcessorContext, config, metadataCache, Duration.ofSeconds(-1));
+        BulkJobPunctuator exhaustedBudget = new BulkJobPunctuator(
+                mockProcessorContext, config, metadataCache, Duration.ofSeconds(-1), UNLIMITED_COMMAND_BUDGET);
         exhaustedBudget.punctuate(System.currentTimeMillis());
 
         assertThat(mockProcessorContext.forwarded()).isEmpty();
@@ -170,7 +175,6 @@ public class BulkJobPunctuatorTest {
 
     @Test
     void shouldResumeFromTheSameKeyOnTheNextPunctuationWhenBudgetIsExhausted() {
-        when(config.getCoreCmdTopicName()).thenReturn(CORE_CMD_TOPIC);
         String jobId = LHUtil.generateGuid();
         seedRunningJob(jobId, deleteForWfSpec(WF_SPEC_NAME));
 
@@ -192,7 +196,12 @@ public class BulkJobPunctuatorTest {
         Supplier<Instant> budgetExhaustedAfterTwoDeletes =
                 () -> mockProcessorContext.forwarded().size() >= 2 ? base.plus(Duration.ofHours(1)) : base;
         BulkJobPunctuator firstPunctuation = new BulkJobPunctuator(
-                mockProcessorContext, config, metadataCache, Duration.ofMinutes(1), budgetExhaustedAfterTwoDeletes);
+                mockProcessorContext,
+                config,
+                metadataCache,
+                Duration.ofMinutes(1),
+                UNLIMITED_COMMAND_BUDGET,
+                budgetExhaustedAfterTwoDeletes);
         firstPunctuation.punctuate(System.currentTimeMillis());
 
         // Exactly the first two WfRuns are deleted and the shard is reported as not yet complete.
@@ -204,6 +213,74 @@ public class BulkJobPunctuatorTest {
 
         // Second punctuation resumes exactly where the first left off: only the remaining WfRun is
         // deleted (no re-processing of the first two), and the shard completes.
+        punctuator.punctuate(System.currentTimeMillis());
+
+        assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdC);
+        assertThat(onlyForwardedShardReport().isCompleted()).isTrue();
+        assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(wfRunCreatedAtC);
+    }
+
+    @Test
+    void shouldDeferAllWorkWhenCommandBudgetIsExhaustedBeforeFirstJob() {
+        String jobId = LHUtil.generateGuid();
+        seedRunningJob(jobId, emptyMatchDelete());
+        String cursorKey = new BulkJobShardCursorModel(new BulkJobIdModel(jobId)).getStoreKey();
+
+        // A command budget of 1 is consumed by the very first (inter-job) outOfBudget check, so the
+        // punctuator yields before touching any job: nothing is forwarded and no cursor is persisted.
+        // The generous time budget proves the yield is caused by the command budget, not the clock.
+        BulkJobPunctuator exhaustedCommandBudget =
+                new BulkJobPunctuator(mockProcessorContext, config, metadataCache, Duration.ofMinutes(1), 0L);
+        exhaustedCommandBudget.punctuate(System.currentTimeMillis());
+
+        assertThat(mockProcessorContext.forwarded()).isEmpty();
+        assertThat(tenantCoreStore.get(cursorKey, BulkJobShardCursorModel.class))
+                .isNull();
+
+        // A later punctuation with an ample command budget resumes the still-pending job to completion.
+        punctuator.punctuate(System.currentTimeMillis());
+
+        BulkJobShardReportModel report = onlyForwardedShardReport();
+        assertThat(report.getBulkJobId().getId()).isEqualTo(jobId);
+        assertThat(report.isCompleted()).isTrue();
+        assertThat(tenantCoreStore.get(cursorKey, BulkJobShardCursorModel.class).isScanCompleted())
+                .isTrue();
+    }
+
+    @Test
+    void shouldStopForwardingDeletesWhenCommandBudgetIsExhausted() {
+        String jobId = LHUtil.generateGuid();
+        seedRunningJob(jobId, deleteForWfSpec(WF_SPEC_NAME));
+
+        // Distinct, increasing createdAt timestamps make the Tag scan order deterministic: a -> b -> c.
+        String wfRunIdA = LHUtil.generateGuid();
+        String wfRunIdB = LHUtil.generateGuid();
+        String wfRunIdC = LHUtil.generateGuid();
+        long now = System.currentTimeMillis();
+        Date wfRunCreatedAtA = new Date(now - 3000);
+        Date wfRunCreatedAtB = new Date(now - 2000);
+        Date wfRunCreatedAtC = new Date(now - 1000);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, wfRunCreatedAtA);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, wfRunCreatedAtB);
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdC, wfRunCreatedAtC);
+
+        // The shared budget is decremented once by the inter-job check and once per scanned Tag. With
+        // a budget of 2 that leaves room for exactly two deletes (a, b) before the third scan iteration
+        // exhausts it, so the scan yields mid-way and persists its position. A minutes-long time budget
+        // guarantees the yield is driven by the command budget, not the clock.
+        BulkJobPunctuator commandBudgetOfFour =
+                new BulkJobPunctuator(mockProcessorContext, config, metadataCache, Duration.ofMinutes(1), 2L);
+        commandBudgetOfFour.punctuate(System.currentTimeMillis());
+
+        // Exactly the first two WfRuns are deleted and the shard is reported as not yet complete.
+        assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdA, wfRunIdB);
+        assertThat(onlyForwardedShardReport().isCompleted()).isFalse();
+        assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(wfRunCreatedAtB);
+
+        mockProcessorContext.resetForwards();
+
+        // Second punctuation with an ample budget resumes exactly where the first left off: only the
+        // remaining WfRun is deleted (no re-processing of the first two), and the shard completes.
         punctuator.punctuate(System.currentTimeMillis());
 
         assertThat(forwardedDeletedWfRunIds()).containsExactly(wfRunIdC);

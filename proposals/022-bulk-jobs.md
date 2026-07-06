@@ -252,7 +252,4 @@ The `BulkJob` execution is split into **two distinct steps** to ensure Kafka Str
 
 ### Time Budget
 
-The punctuator runs on a 1-second wall-clock schedule and operates with a **time budget** (currently 50ms, `CommandProcessor.BULK_JOB_PUNCTUATION_BUDGET`) to keep each punctuation well within Kafka Streams transaction timeouts. The budget is evaluated against an injectable clock and enforced at two levels via a shared `outOfBudget` predicate:
-
-1. **Inter-job:** Before processing each `ActiveBulkJob`, the punctuator checks `outOfBudget`. If exhausted, it breaks the loop and defers remaining jobs to the next tick.
-2. **Intra-job:** Inside the Tag range scan loop, each iteration checks `outOfBudget`. If exhausted, the scan saves its cursor position (full Tag store key + last-seen timestamp) and returns early; the next tick resumes from exactly that position, skipping the boundary key so no `WfRun` is deleted twice.
+The punctuator runs on a 1-second wall-clock schedule and operates with a **time budget** (currently 50ms, `CommandProcessor.BULK_JOB_PUNCTUATION_BUDGET`) to keep each punctuation well within Kafka Streams transaction timeouts. In addition, it enforces a **command budget** (`CommandProcessor.BULK_JOB_MAX_COMMANDS_PER_PUNCTUATION`) that caps how many records a single punctuation appends within one punctuation, so a burst of matches can never overflow a transaction even if it stays under the time budget.

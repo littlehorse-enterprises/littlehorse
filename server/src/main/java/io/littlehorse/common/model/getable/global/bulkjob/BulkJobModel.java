@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import lombok.Getter;
@@ -102,22 +103,26 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             Consumer<Record> commandOutput,
             PunctuationExecutionContext context,
             BulkJobShardCursorModel shardCursor,
-            BooleanSupplier outOfBudget) {
+            BooleanSupplier outOfBudget,
+            AtomicLong remainingCommandBudget) {
         return bulkDeleteWfRun.process(
-                c -> forwardDeleteCommand(c, commandOutput, context.serverConfig()),
+                c -> forwardDeleteCommand(c, commandOutput, context.serverConfig(), remainingCommandBudget),
                 context.coreStore(),
                 shardCursor,
                 outOfBudget);
     }
 
     private void forwardDeleteCommand(
-            CoreSubCommand<?> subCommand, Consumer<Record> commandOutput, LHServerConfig config) {
+            CoreSubCommand<?> subCommand,
+            Consumer<Record> commandOutput,
+            LHServerConfig config,
+            AtomicLong remainingCommandBudget) {
         CommandModel command = new CommandModel(subCommand);
         LHTimer timer = new LHTimer(command, true);
-        timer.topic = command.getTopic(config);
+        timer.topic = config.getRepartitionTopicName();
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = command.getPartitionKey();
-        cpo.topic = command.getTopic(config);
+        cpo.topic = timer.getTopic();
         cpo.payload = timer;
         TenantIdModel tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         PrincipalIdModel principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
@@ -126,6 +131,7 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
                 cpo,
                 System.currentTimeMillis(),
                 HeadersUtil.metadataHeadersFor(tenantId, principalId)));
+        remainingCommandBudget.decrementAndGet();
     }
 
     @Override
