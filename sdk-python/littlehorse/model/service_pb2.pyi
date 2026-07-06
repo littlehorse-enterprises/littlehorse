@@ -94,9 +94,9 @@ class PutStructDefRequest(_message.Message):
     ALLOWED_UPDATES_FIELD_NUMBER: _ClassVar[int]
     name: str
     description: str
-    struct_def: _common_wfspec_pb2.InlineStructDef
+    struct_def: _type_definition_pb2.InlineStructDef
     allowed_updates: StructDefCompatibilityType
-    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_common_wfspec_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+    def __init__(self, name: _Optional[str] = ..., description: _Optional[str] = ..., struct_def: _Optional[_Union[_type_definition_pb2.InlineStructDef, _Mapping]] = ..., allowed_updates: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
 
 class ValidateStructDefEvolutionRequest(_message.Message):
     __slots__ = ("struct_def_id", "struct_def", "compatibility_type")
@@ -104,9 +104,9 @@ class ValidateStructDefEvolutionRequest(_message.Message):
     STRUCT_DEF_FIELD_NUMBER: _ClassVar[int]
     COMPATIBILITY_TYPE_FIELD_NUMBER: _ClassVar[int]
     struct_def_id: _object_id_pb2.StructDefId
-    struct_def: _common_wfspec_pb2.InlineStructDef
+    struct_def: _type_definition_pb2.InlineStructDef
     compatibility_type: StructDefCompatibilityType
-    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_common_wfspec_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
+    def __init__(self, struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., struct_def: _Optional[_Union[_type_definition_pb2.InlineStructDef, _Mapping]] = ..., compatibility_type: _Optional[_Union[StructDefCompatibilityType, str]] = ...) -> None: ...
 
 class ValidateStructDefEvolutionResponse(_message.Message):
     __slots__ = ("is_valid",)
@@ -155,10 +155,10 @@ class PutExternalEventRequest(_message.Message):
     wf_run_id: _object_id_pb2.WfRunId
     external_event_def_id: _object_id_pb2.ExternalEventDefId
     guid: str
-    content: _variable_pb2.VariableValue
+    content: _type_definition_pb2.VariableValue
     thread_run_number: int
     node_run_position: int
-    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
+    def __init__(self, wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., guid: _Optional[str] = ..., content: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., thread_run_number: _Optional[int] = ..., node_run_position: _Optional[int] = ...) -> None: ...
 
 class PutCorrelatedEventRequest(_message.Message):
     __slots__ = ("key", "external_event_def_id", "content")
@@ -167,8 +167,8 @@ class PutCorrelatedEventRequest(_message.Message):
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     key: str
     external_event_def_id: _object_id_pb2.ExternalEventDefId
-    content: _variable_pb2.VariableValue
-    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    content: _type_definition_pb2.VariableValue
+    def __init__(self, key: _Optional[str] = ..., external_event_def_id: _Optional[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]] = ..., content: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class DeleteExternalEventRequest(_message.Message):
     __slots__ = ("id",)
@@ -237,8 +237,8 @@ class RunWfRequest(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
     REVISION_FIELD_NUMBER: _ClassVar[int]
@@ -248,10 +248,10 @@ class RunWfRequest(_message.Message):
     wf_spec_name: str
     major_version: int
     revision: int
-    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     id: str
     parent_wf_run_id: _object_id_pb2.WfRunId
-    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
+    def __init__(self, wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., id: _Optional[str] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ...) -> None: ...
 
 class ScheduleWfRequest(_message.Message):
     __slots__ = ("id", "wf_spec_name", "major_version", "revision", "variables", "parent_wf_run_id", "cron_expression")
@@ -260,8 +260,8 @@ class ScheduleWfRequest(_message.Message):
         KEY_FIELD_NUMBER: _ClassVar[int]
         VALUE_FIELD_NUMBER: _ClassVar[int]
         key: str
-        value: _variable_pb2.VariableValue
-        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
@@ -273,10 +273,10 @@ class ScheduleWfRequest(_message.Message):
     wf_spec_name: str
     major_version: int
     revision: int
-    variables: _containers.MessageMap[str, _variable_pb2.VariableValue]
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
     parent_wf_run_id: _object_id_pb2.WfRunId
     cron_expression: str
-    def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _variable_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
+    def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
 
 class PutWorkflowMigrationPlanRequest(_message.Message):
     __slots__ = ("name", "old_wfSpec", "major_version", "revision", "thread_migrations")
@@ -327,8 +327,8 @@ class VariableMatch(_message.Message):
     VAR_NAME_FIELD_NUMBER: _ClassVar[int]
     VALUE_FIELD_NUMBER: _ClassVar[int]
     var_name: str
-    value: _variable_pb2.VariableValue
-    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    value: _type_definition_pb2.VariableValue
+    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class AwaitWorkflowEventRequest(_message.Message):
     __slots__ = ("wf_run_id", "event_def_ids", "workflow_events_to_ignore")
@@ -485,12 +485,12 @@ class SearchVariableRequest(_message.Message):
     WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
-    value: _variable_pb2.VariableValue
+    value: _type_definition_pb2.VariableValue
     wf_spec_major_version: int
     wf_spec_revision: int
     var_name: str
     wf_spec_name: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., wf_spec_major_version: _Optional[int] = ..., wf_spec_revision: _Optional[int] = ..., var_name: _Optional[str] = ..., wf_spec_name: _Optional[str] = ...) -> None: ...
 
 class VariableIdList(_message.Message):
     __slots__ = ("results", "bookmark")
@@ -848,9 +848,9 @@ class PutCheckpointRequest(_message.Message):
     LOGS_FIELD_NUMBER: _ClassVar[int]
     task_run_id: _object_id_pb2.TaskRunId
     task_attempt: int
-    value: _variable_pb2.VariableValue
+    value: _type_definition_pb2.VariableValue
     logs: str
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_attempt: _Optional[int] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ...) -> None: ...
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., task_attempt: _Optional[int] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ...) -> None: ...
 
 class PutCheckpointResponse(_message.Message):
     __slots__ = ("flow_control_continue_type", "created_checkpoint")
@@ -904,13 +904,13 @@ class ReportTaskRun(_message.Message):
     task_run_id: _object_id_pb2.TaskRunId
     time: _timestamp_pb2.Timestamp
     status: _common_enums_pb2.TaskStatus
-    log_output: _variable_pb2.VariableValue
+    log_output: _type_definition_pb2.VariableValue
     attempt_number: int
-    output: _variable_pb2.VariableValue
+    output: _type_definition_pb2.VariableValue
     error: _task_run_pb2.LHTaskError
     exception: _task_run_pb2.LHTaskException
     total_checkpoints: int
-    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
+    def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
 
 class StopWfRunRequest(_message.Message):
     __slots__ = ("wf_run_id", "thread_run_number")

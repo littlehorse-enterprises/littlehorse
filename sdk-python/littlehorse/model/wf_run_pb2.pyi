@@ -3,7 +3,7 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.workflow_migration_pb2 as _workflow_migration_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
@@ -102,8 +102,8 @@ class ThreadRun(_message.Message):
     current_node_position: int
     handled_failed_children: _containers.RepeatedScalarFieldContainer[int]
     type: ThreadType
-    output: _variable_pb2.VariableValue
-    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    output: _type_definition_pb2.VariableValue
+    def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class InactiveThreadRun(_message.Message):
     __slots__ = ("thread_run",)

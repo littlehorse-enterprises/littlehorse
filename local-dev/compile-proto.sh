@@ -6,7 +6,7 @@ SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
 WORK_DIR=$(cd "$SCRIPT_DIR/.." && pwd)
 PUBLIC_PROTOS=$(ls "$WORK_DIR"/schemas/littlehorse | grep -v -E "^internal")
 INTERNAL_PROTOS=$(ls "$WORK_DIR"/schemas/internal)
-docker_run="docker run --user $(id -u):$(id -g) --rm -it -v ${WORK_DIR}:/littlehorse lh-protoc:$PROTOC_VERSION"
+docker_run="docker run --user $(id -u):$(id -g) --rm -i -v ${WORK_DIR}:/littlehorse lh-protoc:$PROTOC_VERSION"
 
 # compile protoc
 echo "Compiling docker image 'lh-protoc:$PROTOC_VERSION'"
@@ -19,7 +19,7 @@ ENV PROTO_GEN_JAVA           1.75.0
 ENV PROTO_GEN_GO             1.31.0
 ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_PYTHON         1.75.1
-ENV PROTO_GEN_JS             1.181.2
+ENV PROTO_GEN_JS             2.11.1
 
 ENV GO_VERSION                1.24.2
 ENV NODE_VERSION              22
@@ -71,7 +71,7 @@ RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v\${PROTO_GEN_GO} &&
 
 RUN pip3 install grpcio-tools==\${PROTO_GEN_PYTHON} --break-system-packages
 
-RUN npm install -g ts-proto@\${PROTO_GEN_JS}
+RUN npm install -g @protobuf-ts/plugin@\${PROTO_GEN_JS}
 
 EOF
 
@@ -84,6 +84,8 @@ rm -rf "${WORK_DIR}"/sdk-java/src/main/java/io/littlehorse/sdk/common/proto/*
 rm -rf "${WORK_DIR}"/sdk-go/lhproto/*
 rm -rf "${WORK_DIR}"/sdk-python/littlehorse/model/*
 rm -rf "${WORK_DIR}"/server/src/main/java/io/littlehorse/common/proto/*
+find "${WORK_DIR}/sdk-js/src/proto" -name '*.ts' ! -name 'index.ts' -delete 2>/dev/null || true
+rm -rf "${WORK_DIR}/sdk-js/src/proto/google"
 
 # compile protobuf
 echo "Compiling protobuf objects"
@@ -125,11 +127,12 @@ find "${WORK_DIR}/sdk-python/littlehorse/model" -type f -name "*.py" -print0 | s
 # compile js protobuf
 echo "Compiling protobuf sdk-js"
 
-# This segment is for the sdk-js
+# This segment is for the sdk-js (uses @protobuf-ts/plugin)
 $docker_run protoc \
-	--plugin=/usr/local/lib/node_modules/ts-proto/protoc-gen-ts_proto \
-	--ts_proto_out /littlehorse/sdk-js/src/proto \
-	--ts_proto_opt=env=node,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=true,esModuleInterop=true,useDate=string,stringEnums=true,useExactTypes=false,exportCommonSymbols=false,oneof=unions-value \
+	--ts_out /littlehorse/sdk-js/src/proto \
+	--ts_opt long_type_string \
+	--ts_opt generate_dependencies \
+	--ts_opt optimize_code_size \
 	-I /littlehorse/schemas/littlehorse \
     service.proto
 

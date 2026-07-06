@@ -11,5 +11,4 @@ export const Conditions: Record<Comparator, string> = {
   [Comparator.NOT_EQUALS]: '!=',
   [Comparator.IN]: 'IN',
   [Comparator.NOT_IN]: 'NOT IN',
-  [Comparator.UNRECOGNIZED]: '',
 }

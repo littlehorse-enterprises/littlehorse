@@ -20,7 +20,7 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
   const client = await lhClient({ tenantId })
   const wfRun = await client.getWfRun(wfRunId)
   const [wfSpec, { results: nodeRuns }, { results: variables }] = await Promise.all([
-    client.getWfSpec({ ...wfRun.wfSpecId }),
+    client.getWfSpec(wfRun.wfSpecId!),
     client.listNodeRuns({
       wfRunId,
     }),

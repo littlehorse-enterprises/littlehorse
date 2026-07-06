@@ -161,6 +161,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
                 break;
             case DEFINEDTYPE_NOT_SET:
+            default:
                 this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
                 this.primitiveType = VariableType.JSON_OBJ;
                 break;

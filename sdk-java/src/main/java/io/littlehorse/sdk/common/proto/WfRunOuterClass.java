@@ -117,88 +117,88 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\014wf_run.proto\022\013littlehorse\032\037google/prot" +
       "obuf/timestamp.proto\032\022common_enums.proto" +
-      "\032\017object_id.proto\032\016variable.proto\032\030workf" +
-      "low_migration.proto\"\312\007\n\005WfRun\022 \n\002id\030\001 \001(" +
-      "\0132\024.littlehorse.WfRunId\022)\n\nwf_spec_id\030\002 " +
-      "\001(\0132\025.littlehorse.WfSpecId\0223\n\024old_wf_spe" +
-      "c_versions\030\003 \003(\0132\025.littlehorse.WfSpecId\022" +
-      "%\n\006status\030\004 \001(\0162\025.littlehorse.LHStatus\022!" +
-      "\n\031greatest_threadrun_number\030\005 \001(\005\022.\n\nsta" +
-      "rt_time\030\006 \001(\0132\032.google.protobuf.Timestam" +
-      "p\0221\n\010end_time\030\007 \001(\0132\032.google.protobuf.Ti" +
-      "mestampH\000\210\001\001\022+\n\013thread_runs\030\010 \003(\0132\026.litt" +
-      "lehorse.ThreadRun\0229\n\022pending_interrupts\030" +
-      "\t \003(\0132\035.littlehorse.PendingInterrupt\022<\n\020" +
-      "pending_failures\030\n \003(\0132\".littlehorse.Pen" +
-      "dingFailureHandler\022F\n\016parent_trigger\030\013 \001" +
-      "(\0132).littlehorse.WfRun.ParentTriggerRefe" +
-      "renceH\001\210\001\001\022H\n\032workflow_migration_plan_id" +
-      "\030\014 \001(\0132$.littlehorse.WorkflowMigrationPl" +
-      "anId\022G\n\023migration_variables\030\r \003(\0132*.litt" +
-      "lehorse.WfRun.MigrationVariablesEntry\032\231\001" +
-      "\n\026ParentTriggerReference\0223\n\023triggering_n" +
-      "ode_run\030\001 \001(\0132\026.littlehorse.NodeRunId\0225\n" +
-      "\020waiting_node_run\030\002 \001(\0132\026.littlehorse.No" +
-      "deRunIdH\000\210\001\001B\023\n\021_waiting_node_run\032U\n\027Mig" +
-      "rationVariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005val" +
-      "ue\030\002 \001(\0132\032.littlehorse.MigrationVars:\0028\001" +
-      "B\013\n\t_end_timeB\021\n\017_parent_trigger\"\205\006\n\tThr" +
-      "eadRun\022)\n\nwf_spec_id\030\001 \001(\0132\025.littlehorse" +
-      ".WfSpecId\022\016\n\006number\030\002 \001(\005\022%\n\006status\030\003 \001(" +
-      "\0162\025.littlehorse.LHStatus\022\030\n\020thread_spec_" +
-      "name\030\004 \001(\t\022.\n\nstart_time\030\005 \001(\0132\032.google." +
-      "protobuf.Timestamp\0221\n\010end_time\030\006 \001(\0132\032.g" +
-      "oogle.protobuf.TimestampH\000\210\001\001\022\032\n\rerror_m" +
-      "essage\030\007 \001(\tH\001\210\001\001\022\030\n\020child_thread_ids\030\010 " +
-      "\003(\005\022\035\n\020parent_thread_id\030\t \001(\005H\002\210\001\001\0223\n\014ha" +
-      "lt_reasons\030\n \003(\0132\035.littlehorse.ThreadHal" +
-      "tReason\022?\n\024interrupt_trigger_id\030\013 \001(\0132\034." +
-      "littlehorse.ExternalEventIdH\003\210\001\001\022D\n\025fail" +
-      "ure_being_handled\030\014 \001(\0132 .littlehorse.Fa" +
-      "ilureBeingHandledH\004\210\001\001\022\035\n\025current_node_p" +
-      "osition\030\r \001(\005\022\037\n\027handled_failed_children" +
-      "\030\016 \003(\005\022%\n\004type\030\017 \001(\0162\027.littlehorse.Threa" +
-      "dType\022/\n\006output\030\020 \001(\0132\032.littlehorse.Vari" +
-      "ableValueH\005\210\001\001B\013\n\t_end_timeB\020\n\016_error_me" +
-      "ssageB\023\n\021_parent_thread_idB\027\n\025_interrupt" +
-      "_trigger_idB\030\n\026_failure_being_handledB\t\n" +
-      "\007_output\"?\n\021InactiveThreadRun\022*\n\nthread_" +
-      "run\030\001 \001(\0132\026.littlehorse.ThreadRun\"c\n\023Fai" +
-      "lureBeingHandled\022\031\n\021thread_run_number\030\001 " +
-      "\001(\005\022\031\n\021node_run_position\030\002 \001(\005\022\026\n\016failur" +
-      "e_number\030\003 \001(\005\"\205\001\n\020PendingInterrupt\0227\n\021e" +
-      "xternal_event_id\030\001 \001(\0132\034.littlehorse.Ext" +
-      "ernalEventId\022\031\n\021handler_spec_name\030\002 \001(\t\022" +
-      "\035\n\025interrupted_thread_id\030\003 \001(\005\"M\n\025Pendin" +
-      "gFailureHandler\022\031\n\021failed_thread_run\030\001 \001" +
-      "(\005\022\031\n\021handler_spec_name\030\002 \001(\t\"U\n\032Pending" +
-      "InterruptHaltReason\0227\n\021external_event_id" +
-      "\030\001 \001(\0132\034.littlehorse.ExternalEventId\"<\n\037" +
-      "PendingFailureHandlerHaltReason\022\031\n\021node_" +
-      "run_position\030\001 \001(\005\"6\n\031HandlingFailureHal" +
-      "tReason\022\031\n\021handler_thread_id\030\001 \001(\005\"c\n\034Ha" +
-      "ltedByParentNodeHaltReason\022 \n\030parent_thr" +
-      "ead_run_number\030\001 \001(\005\022!\n\031waiting_node_run" +
-      "_position\030\002 \001(\005\"(\n\014ParentHalted\022\030\n\020paren" +
-      "t_thread_id\030\001 \001(\005\"*\n\013Interrupted\022\033\n\023inte" +
-      "rrupt_thread_id\030\001 \001(\005\"&\n\nManualHalt\022\030\n\017m" +
-      "eaning_of_life\030\211\001 \001(\010\"\313\003\n\020ThreadHaltReas" +
-      "on\0222\n\rparent_halted\030\001 \001(\0132\031.littlehorse." +
-      "ParentHaltedH\000\022/\n\013interrupted\030\002 \001(\0132\030.li" +
-      "ttlehorse.InterruptedH\000\022D\n\021pending_inter" +
-      "rupt\030\003 \001(\0132\'.littlehorse.PendingInterrup" +
-      "tHaltReasonH\000\022G\n\017pending_failure\030\004 \001(\0132," +
-      ".littlehorse.PendingFailureHandlerHaltRe" +
-      "asonH\000\022B\n\020handling_failure\030\005 \001(\0132&.littl" +
-      "ehorse.HandlingFailureHaltReasonH\000\022.\n\013ma" +
-      "nual_halt\030\006 \001(\0132\027.littlehorse.ManualHalt" +
-      "H\000\022E\n\020halted_by_parent\030\007 \001(\0132).littlehor" +
-      "se.HaltedByParentNodeHaltReasonH\000B\010\n\006rea" +
-      "son*K\n\nThreadType\022\016\n\nENTRYPOINT\020\000\022\t\n\005CHI" +
-      "LD\020\001\022\r\n\tINTERRUPT\020\002\022\023\n\017FAILURE_HANDLER\020\003" +
-      "BM\n\037io.littlehorse.sdk.common.protoP\001Z\t." +
-      ";lhproto\252\002\034LittleHorse.Sdk.Common.Protob" +
-      "\006proto3"
+      "\032\017object_id.proto\032\025type_definition.proto" +
+      "\032\030workflow_migration.proto\"\312\007\n\005WfRun\022 \n\002" +
+      "id\030\001 \001(\0132\024.littlehorse.WfRunId\022)\n\nwf_spe" +
+      "c_id\030\002 \001(\0132\025.littlehorse.WfSpecId\0223\n\024old" +
+      "_wf_spec_versions\030\003 \003(\0132\025.littlehorse.Wf" +
+      "SpecId\022%\n\006status\030\004 \001(\0162\025.littlehorse.LHS" +
+      "tatus\022!\n\031greatest_threadrun_number\030\005 \001(\005" +
+      "\022.\n\nstart_time\030\006 \001(\0132\032.google.protobuf.T" +
+      "imestamp\0221\n\010end_time\030\007 \001(\0132\032.google.prot" +
+      "obuf.TimestampH\000\210\001\001\022+\n\013thread_runs\030\010 \003(\013" +
+      "2\026.littlehorse.ThreadRun\0229\n\022pending_inte" +
+      "rrupts\030\t \003(\0132\035.littlehorse.PendingInterr" +
+      "upt\022<\n\020pending_failures\030\n \003(\0132\".littleho" +
+      "rse.PendingFailureHandler\022F\n\016parent_trig" +
+      "ger\030\013 \001(\0132).littlehorse.WfRun.ParentTrig" +
+      "gerReferenceH\001\210\001\001\022H\n\032workflow_migration_" +
+      "plan_id\030\014 \001(\0132$.littlehorse.WorkflowMigr" +
+      "ationPlanId\022G\n\023migration_variables\030\r \003(\013" +
+      "2*.littlehorse.WfRun.MigrationVariablesE" +
+      "ntry\032\231\001\n\026ParentTriggerReference\0223\n\023trigg" +
+      "ering_node_run\030\001 \001(\0132\026.littlehorse.NodeR" +
+      "unId\0225\n\020waiting_node_run\030\002 \001(\0132\026.littleh" +
+      "orse.NodeRunIdH\000\210\001\001B\023\n\021_waiting_node_run" +
+      "\032U\n\027MigrationVariablesEntry\022\013\n\003key\030\001 \001(\t" +
+      "\022)\n\005value\030\002 \001(\0132\032.littlehorse.MigrationV" +
+      "ars:\0028\001B\013\n\t_end_timeB\021\n\017_parent_trigger\"" +
+      "\205\006\n\tThreadRun\022)\n\nwf_spec_id\030\001 \001(\0132\025.litt" +
+      "lehorse.WfSpecId\022\016\n\006number\030\002 \001(\005\022%\n\006stat" +
+      "us\030\003 \001(\0162\025.littlehorse.LHStatus\022\030\n\020threa" +
+      "d_spec_name\030\004 \001(\t\022.\n\nstart_time\030\005 \001(\0132\032." +
+      "google.protobuf.Timestamp\0221\n\010end_time\030\006 " +
+      "\001(\0132\032.google.protobuf.TimestampH\000\210\001\001\022\032\n\r" +
+      "error_message\030\007 \001(\tH\001\210\001\001\022\030\n\020child_thread" +
+      "_ids\030\010 \003(\005\022\035\n\020parent_thread_id\030\t \001(\005H\002\210\001" +
+      "\001\0223\n\014halt_reasons\030\n \003(\0132\035.littlehorse.Th" +
+      "readHaltReason\022?\n\024interrupt_trigger_id\030\013" +
+      " \001(\0132\034.littlehorse.ExternalEventIdH\003\210\001\001\022" +
+      "D\n\025failure_being_handled\030\014 \001(\0132 .littleh" +
+      "orse.FailureBeingHandledH\004\210\001\001\022\035\n\025current" +
+      "_node_position\030\r \001(\005\022\037\n\027handled_failed_c" +
+      "hildren\030\016 \003(\005\022%\n\004type\030\017 \001(\0162\027.littlehors" +
+      "e.ThreadType\022/\n\006output\030\020 \001(\0132\032.littlehor" +
+      "se.VariableValueH\005\210\001\001B\013\n\t_end_timeB\020\n\016_e" +
+      "rror_messageB\023\n\021_parent_thread_idB\027\n\025_in" +
+      "terrupt_trigger_idB\030\n\026_failure_being_han" +
+      "dledB\t\n\007_output\"?\n\021InactiveThreadRun\022*\n\n" +
+      "thread_run\030\001 \001(\0132\026.littlehorse.ThreadRun" +
+      "\"c\n\023FailureBeingHandled\022\031\n\021thread_run_nu" +
+      "mber\030\001 \001(\005\022\031\n\021node_run_position\030\002 \001(\005\022\026\n" +
+      "\016failure_number\030\003 \001(\005\"\205\001\n\020PendingInterru" +
+      "pt\0227\n\021external_event_id\030\001 \001(\0132\034.littleho" +
+      "rse.ExternalEventId\022\031\n\021handler_spec_name" +
+      "\030\002 \001(\t\022\035\n\025interrupted_thread_id\030\003 \001(\005\"M\n" +
+      "\025PendingFailureHandler\022\031\n\021failed_thread_" +
+      "run\030\001 \001(\005\022\031\n\021handler_spec_name\030\002 \001(\t\"U\n\032" +
+      "PendingInterruptHaltReason\0227\n\021external_e" +
+      "vent_id\030\001 \001(\0132\034.littlehorse.ExternalEven" +
+      "tId\"<\n\037PendingFailureHandlerHaltReason\022\031" +
+      "\n\021node_run_position\030\001 \001(\005\"6\n\031HandlingFai" +
+      "lureHaltReason\022\031\n\021handler_thread_id\030\001 \001(" +
+      "\005\"c\n\034HaltedByParentNodeHaltReason\022 \n\030par" +
+      "ent_thread_run_number\030\001 \001(\005\022!\n\031waiting_n" +
+      "ode_run_position\030\002 \001(\005\"(\n\014ParentHalted\022\030" +
+      "\n\020parent_thread_id\030\001 \001(\005\"*\n\013Interrupted\022" +
+      "\033\n\023interrupt_thread_id\030\001 \001(\005\"&\n\nManualHa" +
+      "lt\022\030\n\017meaning_of_life\030\211\001 \001(\010\"\313\003\n\020ThreadH" +
+      "altReason\0222\n\rparent_halted\030\001 \001(\0132\031.littl" +
+      "ehorse.ParentHaltedH\000\022/\n\013interrupted\030\002 \001" +
+      "(\0132\030.littlehorse.InterruptedH\000\022D\n\021pendin" +
+      "g_interrupt\030\003 \001(\0132\'.littlehorse.PendingI" +
+      "nterruptHaltReasonH\000\022G\n\017pending_failure\030" +
+      "\004 \001(\0132,.littlehorse.PendingFailureHandle" +
+      "rHaltReasonH\000\022B\n\020handling_failure\030\005 \001(\0132" +
+      "&.littlehorse.HandlingFailureHaltReasonH" +
+      "\000\022.\n\013manual_halt\030\006 \001(\0132\027.littlehorse.Man" +
+      "ualHaltH\000\022E\n\020halted_by_parent\030\007 \001(\0132).li" +
+      "ttlehorse.HaltedByParentNodeHaltReasonH\000" +
+      "B\010\n\006reason*K\n\nThreadType\022\016\n\nENTRYPOINT\020\000" +
+      "\022\t\n\005CHILD\020\001\022\r\n\tINTERRUPT\020\002\022\023\n\017FAILURE_HA" +
+      "NDLER\020\003BM\n\037io.littlehorse.sdk.common.pro" +
+      "toP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common" +
+      ".Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -206,7 +206,7 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
-          io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
+          io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.WorkflowMigration.getDescriptor(),
         });
     internal_static_littlehorse_WfRun_descriptor =
@@ -309,7 +309,7 @@ public final class WfRunOuterClass extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
-    io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
+    io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.WorkflowMigration.getDescriptor();
   }
 

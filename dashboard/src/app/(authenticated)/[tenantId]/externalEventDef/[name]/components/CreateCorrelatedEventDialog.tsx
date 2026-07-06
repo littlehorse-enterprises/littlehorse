@@ -1,5 +1,10 @@
 'use client'
-import { getTypedVariableValue, getVariableCaseFromTypeDef, VARIABLE_CASE_LABELS } from '@/app/utils/variables'
+import {
+  getTypedVariableValue,
+  getVariableCaseFromTypeDef,
+  VARIABLE_CASE_LABELS,
+  VariableValueCase,
+} from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -13,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { ExternalEventDef, VariableValue } from 'littlehorse-client/proto'
+import { ExternalEventDef } from 'littlehorse-client/proto'
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
@@ -40,7 +45,7 @@ export default function CreateCorrelatedEventDialog({
   const expectedType = spec.typeInformation?.returnType
     ? getVariableCaseFromTypeDef(spec.typeInformation.returnType)
     : 'str'
-  const [contentType, setContentType] = useState<NonNullable<VariableValue['value']>['$case']>(expectedType)
+  const [contentType, setContentType] = useState<VariableValueCase>(expectedType)
   const [contentValue, setContentValue] = useState('')
   const [jsonError, setJsonError] = useState<string | null>(null)
 
@@ -141,7 +146,7 @@ export default function CreateCorrelatedEventDialog({
               <Label htmlFor="content-type">Content Type</Label>
               <Select
                 value={contentType}
-                onValueChange={(value: NonNullable<VariableValue['value']>['$case']) => {
+                onValueChange={(value: VariableValueCase) => {
                   setContentType(value)
                   setContentValue('') // Reset value when type changes
                   setJsonError(null)

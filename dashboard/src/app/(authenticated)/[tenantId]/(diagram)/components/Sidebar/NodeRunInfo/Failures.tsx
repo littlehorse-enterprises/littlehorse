@@ -29,7 +29,7 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
               </AccordionTrigger>
               <AccordionContent>
                 <div className="mt-1">
-                  <NodeStatus status={(failure.wasProperlyHandled ? 'COMPLETED' : 'ERROR') as LHStatus}></NodeStatus>
+                  <NodeStatus status={failure.wasProperlyHandled ? LHStatus.COMPLETED : LHStatus.ERROR}></NodeStatus>
                 </div>
                 <div className="my-1 ml-2">
                   <div className="mb-2 border-b-2 pb-2">Message</div>

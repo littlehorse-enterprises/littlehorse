@@ -12,7 +12,7 @@ import { getTaskRun } from '../../NodeTypes/Task/getTaskRun'
 import { AccordionNode } from './AccordionContent'
 
 export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
-  const { taskRunId } = nodeRun.nodeType.value
+  const { taskRunId } = nodeRun.nodeType.task
   const { tenantId } = useWhoAmI()
 
   const { data, isLoading } = useQuery({
@@ -97,7 +97,7 @@ export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
                       <div
                         className={cn(
                           'flex items-center justify-between p-2',
-                          attempt.result?.$case === 'error' || attempt.result?.$case === 'exception'
+                          attempt.result?.oneofKind === 'error' || attempt.result?.oneofKind === 'exception'
                             ? 'bg-red-200'
                             : 'bg-green-200'
                         )}
@@ -123,19 +123,24 @@ export const TaskDefDetail: FC<AccordionNode<'task'>> = ({ nodeRun }) => {
 }
 
 export function AttemptErrorExceptionOutput({ attempt }: { attempt: TaskAttempt }) {
-  if (!attempt.result) return
+  const { result } = attempt
+  if (result.oneofKind === undefined) return
 
   const message =
-    attempt.result.$case === 'output' ? getVariableValue(attempt.result.value) : attempt.result.value.message
+    result.oneofKind === 'output'
+      ? getVariableValue(result.output)
+      : result.oneofKind === 'error'
+        ? result.error.message
+        : result.exception.message
 
   return (
     <div
       className={cn(
         'flex w-full flex-col overflow-auto rounded p-1',
-        attempt.result.$case === 'output' ? 'bg-zinc-500 text-white' : 'bg-red-200'
+        result.oneofKind === 'output' ? 'bg-zinc-500 text-white' : 'bg-red-200'
       )}
     >
-      <h3 className="font-bold">{attempt.result.$case}</h3>
+      <h3 className="font-bold">{result.oneofKind}</h3>
       <pre className="overflow-auto">{message}</pre>
     </div>
   )
