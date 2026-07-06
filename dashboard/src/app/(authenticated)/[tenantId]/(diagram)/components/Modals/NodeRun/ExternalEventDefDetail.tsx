@@ -8,7 +8,7 @@ import { getExternalEvent } from '../../NodeTypes/ExternalEvent/actions'
 import { AccordionNode } from './AccordionContent'
 
 export const ExternalEventDefDetail: FC<AccordionNode<'externalEvent'>> = ({ nodeRun }) => {
-  const { externalEventId } = nodeRun.nodeType!.value
+  const { externalEventId } = nodeRun.nodeType.externalEvent
   const { tenantId } = useWhoAmI()
 
   const { data, isLoading } = useQuery({

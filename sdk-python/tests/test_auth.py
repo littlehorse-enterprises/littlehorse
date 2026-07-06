@@ -42,8 +42,12 @@ def encode_retry_info_status_details(delay_seconds: int, delay_nanos: int = 0) -
         duration += encode_field(2, 0, encode_varint(delay_nanos))
 
     retry_info = encode_length_delimited(1, duration)
-    any_message = encode_length_delimited(1, b"type.googleapis.com/google.rpc.RetryInfo") + encode_length_delimited(2, retry_info)
-    return encode_field(1, 0, encode_varint(8)) + encode_length_delimited(3, any_message)
+    any_message = encode_length_delimited(
+        1, b"type.googleapis.com/google.rpc.RetryInfo"
+    ) + encode_length_delimited(2, retry_info)
+    return encode_field(1, 0, encode_varint(8)) + encode_length_delimited(
+        3, any_message
+    )
 
 
 class FakeMetadataEntry:

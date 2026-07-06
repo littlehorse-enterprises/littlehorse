@@ -25,7 +25,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { CorrelatedEventId, ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { CorrelatedEventId, ExternalEventDef as ExternalEventDefProto, Timestamp } from 'littlehorse-client/proto'
 import { RefreshCwIcon, Trash2 } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -97,8 +97,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         limit,
         externalEventDefId: { name: spec.id?.name ?? '' },
         isClaimed,
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })
@@ -126,8 +130,12 @@ export const ExternalEventDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit: correlatedLimit,
         externalEventDefId: { name: spec.id?.name ?? '' },
-        earliestStart: correlatedCreatedAfter ? localDateTimeToUTCIsoString(correlatedCreatedAfter) : undefined,
-        latestStart: correlatedCreatedBefore ? localDateTimeToUTCIsoString(correlatedCreatedBefore) : undefined,
+        earliestStart: correlatedCreatedAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(correlatedCreatedAfter)))
+          : undefined,
+        latestStart: correlatedCreatedBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(correlatedCreatedBefore)))
+          : undefined,
         hasExternalEvents: hasExternalEvents,
       })
     },

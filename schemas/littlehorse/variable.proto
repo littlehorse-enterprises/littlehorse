@@ -11,54 +11,6 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
-// VariableValue is a structure containing a value in LittleHorse. It can be
-// used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
-// from a TaskRun, as the value of a WfRun's Variable, etc.
-message VariableValue {
-  reserved 1;
-
-  // The value held in this VariableValue. If this is unset, treat it as
-  // a NULL.
-  oneof value {
-    // A String representing a serialized json object.
-    string json_obj = 2;
-
-    // A String representing a serialized json list.
-    string json_arr = 3;
-
-    // A 64-bit floating point number.
-    double double = 4;
-
-    // A boolean.
-    bool bool = 5;
-
-    // A string.
-    string str = 6;
-
-    // The `INT` variable type is stored as a 64-bit integer. The
-    // `INT` can be cast to a `DOUBLE`.
-    int64 int = 7;
-
-    // An arbitrary String of bytes.
-    bytes bytes = 8;
-
-    // Reference to a WfRunId
-    WfRunId wf_run_id = 9;
-
-    // A timestamp (UTC)
-    google.protobuf.Timestamp utc_timestamp = 10;
-
-    // A Struct object.
-    Struct struct = 11;
-
-    // An Array object.
-    Array array = 12;
-
-    // A Map object.
-    Map map = 13;
-  }
-}
-
 // A Variable is an instance of a variable assigned to a WfRun.
 message Variable {
   // ID of this Variable. Note that the VariableId contains the relevant
@@ -76,63 +28,4 @@ message Variable {
 
   // Marks a variable to show masked values
   bool masked = 5;
-}
-
-// An Array is a strongly-typed list of values.
-message Array {
-  repeated VariableValue items = 1;
-  
-  // Optional, authoritative element type for this array.
-  // Stored alongside the items for ease of access, since we often need to know the element type when processing the items on the server.
-  // If absent, element type may be unknown and must be derived from items or treated as wildcard.
-  optional TypeDefinition element_type = 2;
-}
-
-// A Map is a strongly-typed mapping from key values to value values.
-message Map {
-  // A single key/value entry in the Map.
-  message Entry {
-    // The key of this entry.
-    VariableValue key = 1;
-
-    // The value of this entry.
-    VariableValue value = 2;
-  }
-
-  // The entries of the map.
-  //
-  // Note: We use a repeated list of entries rather than a protobuf `map<...>` because
-  // protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
-  // `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
-  repeated Entry entries = 1;
-
-  // Optional, authoritative key/value types for this map.
-  // Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-  // If absent, the types may be unknown and must be derived from entries or treated as wildcard.
-  optional InlineMapDef map_type = 2;
-}
-
-// A Struct is a strongly-typed structure containing fields. The Struct is defined
-// according to the `Schema` object.
-message Struct {
-  // The id of the schema.
-  StructDefId struct_def_id = 1;
-  // The content of the Struct
-  InlineStruct struct = 2;
-}
-
-// An `InlineStruct` is a pre-validated set of fields that are part of a `Struct`.
-message InlineStruct {
-  // The fields in the inline struct.
-  map<string, StructField> fields = 1;
-}
-
-// A StructField represents the value for a single field in a struct.
-message StructField {
-  // The `value` of the field is an untyped `VariableValue`.
-  VariableValue value = 1;
-
-  // Whether or not this StructField value is masked.
-  // Set by the server based on the StructDef's field definition for this configuration.
-  bool masked = 2;
 }

@@ -48,9 +48,37 @@ public class MaxThreadRunCountTest {
         verifier.prepareRun(spawnManyThreadsWf, Arg.of("json-arr", largeArr))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
-                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.HALTING);
+                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
                     Assertions.assertThat(nodeRun.getFailuresList().get(0).getMessage())
-                            .contains("You exceeded the maximum number of ThreadRuns per WfRun");
+                            .contains("exceeding the maximum number of ThreadRuns per WfRun");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldNotLeaveOrphanThreadsWhenSpawnExceedsLimit() {
+        int maxThreadRuns = this.serverConfig.getMaxThreadRunsPerWfRun();
+        ArrayList<Integer> largeArr = new ArrayList<>();
+        for (int i = 0; i < maxThreadRuns; i++) {
+            largeArr.add(i);
+        }
+
+        // 1 entrypoint ThreadRun + maxThreadRuns requested children would exceed the limit.
+        String expectedFailureMessage = String.format(
+                "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns per WfRun: %d. "
+                        + "Reduce the number of spawned ThreadRuns or increase LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                maxThreadRuns + 1, maxThreadRuns);
+
+        verifier.prepareRun(spawnManyThreadsWf, Arg.of("json-arr", largeArr))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getStatus()).isEqualTo(LHStatus.ERROR);
+                    Assertions.assertThat(nodeRun.getFailuresList().get(0).getMessage())
+                            .isEqualTo(expectedFailureMessage);
+                })
+                .thenVerifyWfRun(wfRun -> {
+                    Assertions.assertThat(wfRun.getThreadRunsCount()).isEqualTo(1);
+                    Assertions.assertThat(wfRun.getThreadRuns(0).getStatus()).isEqualTo(LHStatus.ERROR);
                 })
                 .start();
     }

@@ -57,7 +57,8 @@ private static final long serialVersionUID = 0L;
     PRIMITIVE_TYPE(1),
     STRUCT_DEF_ID(5),
     INLINE_ARRAY_DEF(6),
-    INLINE_MAP_DEF(7),
+    INLINE_STRUCT_DEF(7),
+    INLINE_MAP_DEF(8),
     DEFINEDTYPE_NOT_SET(0);
     private final int value;
     private DefinedTypeCase(int value) {
@@ -78,7 +79,8 @@ private static final long serialVersionUID = 0L;
         case 1: return PRIMITIVE_TYPE;
         case 5: return STRUCT_DEF_ID;
         case 6: return INLINE_ARRAY_DEF;
-        case 7: return INLINE_MAP_DEF;
+        case 7: return INLINE_STRUCT_DEF;
+        case 8: return INLINE_MAP_DEF;
         case 0: return DEFINEDTYPE_NOT_SET;
         default: return null;
       }
@@ -223,30 +225,73 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.InlineArrayDef.getDefaultInstance();
   }
 
-  public static final int INLINE_MAP_DEF_FIELD_NUMBER = 7;
+  public static final int INLINE_STRUCT_DEF_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   * @return Whether the inlineStructDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasInlineStructDef() {
+    return definedTypeCase_ == 7;
+  }
+  /**
+   * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   * @return The inlineStructDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef() {
+    if (definedTypeCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * An inline Struct definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder() {
+    if (definedTypeCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+  }
+
+  public static final int INLINE_MAP_DEF_FIELD_NUMBER = 8;
   /**
    * <pre>
    * An inline Map definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
    * @return Whether the inlineMapDef field is set.
    */
   @java.lang.Override
   public boolean hasInlineMapDef() {
-    return definedTypeCase_ == 7;
+    return definedTypeCase_ == 8;
   }
   /**
    * <pre>
    * An inline Map definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
    * @return The inlineMapDef.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.InlineMapDef getInlineMapDef() {
-    if (definedTypeCase_ == 7) {
+    if (definedTypeCase_ == 8) {
        return (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_;
     }
     return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
@@ -256,11 +301,11 @@ private static final long serialVersionUID = 0L;
    * An inline Map definition.
    * </pre>
    *
-   * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder getInlineMapDefOrBuilder() {
-    if (definedTypeCase_ == 7) {
+    if (definedTypeCase_ == 8) {
        return (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_;
     }
     return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
@@ -308,7 +353,10 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.InlineArrayDef) definedType_);
     }
     if (definedTypeCase_ == 7) {
-      output.writeMessage(7, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_);
+    }
+    if (definedTypeCase_ == 8) {
+      output.writeMessage(8, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -337,7 +385,11 @@ private static final long serialVersionUID = 0L;
     }
     if (definedTypeCase_ == 7) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_);
+    }
+    if (definedTypeCase_ == 8) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -371,6 +423,10 @@ private static final long serialVersionUID = 0L;
             .equals(other.getInlineArrayDef())) return false;
         break;
       case 7:
+        if (!getInlineStructDef()
+            .equals(other.getInlineStructDef())) return false;
+        break;
+      case 8:
         if (!getInlineMapDef()
             .equals(other.getInlineMapDef())) return false;
         break;
@@ -405,6 +461,10 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getInlineArrayDef().hashCode();
         break;
       case 7:
+        hash = (37 * hash) + INLINE_STRUCT_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getInlineStructDef().hashCode();
+        break;
+      case 8:
         hash = (37 * hash) + INLINE_MAP_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getInlineMapDef().hashCode();
         break;
@@ -553,6 +613,9 @@ private static final long serialVersionUID = 0L;
       if (inlineArrayDefBuilder_ != null) {
         inlineArrayDefBuilder_.clear();
       }
+      if (inlineStructDefBuilder_ != null) {
+        inlineStructDefBuilder_.clear();
+      }
       if (inlineMapDefBuilder_ != null) {
         inlineMapDefBuilder_.clear();
       }
@@ -593,7 +656,7 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TypeDefinition result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.masked_ = masked_;
       }
     }
@@ -610,6 +673,10 @@ private static final long serialVersionUID = 0L;
         result.definedType_ = inlineArrayDefBuilder_.build();
       }
       if (definedTypeCase_ == 7 &&
+          inlineStructDefBuilder_ != null) {
+        result.definedType_ = inlineStructDefBuilder_.build();
+      }
+      if (definedTypeCase_ == 8 &&
           inlineMapDefBuilder_ != null) {
         result.definedType_ = inlineMapDefBuilder_.build();
       }
@@ -641,6 +708,10 @@ private static final long serialVersionUID = 0L;
         }
         case INLINE_ARRAY_DEF: {
           mergeInlineArrayDef(other.getInlineArrayDef());
+          break;
+        }
+        case INLINE_STRUCT_DEF: {
+          mergeInlineStructDef(other.getInlineStructDef());
           break;
         }
         case INLINE_MAP_DEF: {
@@ -685,7 +756,7 @@ private static final long serialVersionUID = 0L;
             } // case 8
             case 32: {
               masked_ = input.readBool();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 32
             case 42: {
@@ -704,11 +775,18 @@ private static final long serialVersionUID = 0L;
             } // case 50
             case 58: {
               input.readMessage(
-                  internalGetInlineMapDefFieldBuilder().getBuilder(),
+                  internalGetInlineStructDefFieldBuilder().getBuilder(),
                   extensionRegistry);
               definedTypeCase_ = 7;
               break;
             } // case 58
+            case 66: {
+              input.readMessage(
+                  internalGetInlineMapDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              definedTypeCase_ = 8;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1190,36 +1268,214 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> inlineStructDefBuilder_;
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     * @return Whether the inlineStructDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasInlineStructDef() {
+      return definedTypeCase_ == 7;
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     * @return The inlineStructDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineStructDef getInlineStructDef() {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      } else {
+        if (definedTypeCase_ == 7) {
+          return inlineStructDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    public Builder setInlineStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
+      if (inlineStructDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        definedType_ = value;
+        onChanged();
+      } else {
+        inlineStructDefBuilder_.setMessage(value);
+      }
+      definedTypeCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    public Builder setInlineStructDef(
+        io.littlehorse.sdk.common.proto.InlineStructDef.Builder builderForValue) {
+      if (inlineStructDefBuilder_ == null) {
+        definedType_ = builderForValue.build();
+        onChanged();
+      } else {
+        inlineStructDefBuilder_.setMessage(builderForValue.build());
+      }
+      definedTypeCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    public Builder mergeInlineStructDef(io.littlehorse.sdk.common.proto.InlineStructDef value) {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 7 &&
+            definedType_ != io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance()) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineStructDef.newBuilder((io.littlehorse.sdk.common.proto.InlineStructDef) definedType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          definedType_ = value;
+        }
+        onChanged();
+      } else {
+        if (definedTypeCase_ == 7) {
+          inlineStructDefBuilder_.mergeFrom(value);
+        } else {
+          inlineStructDefBuilder_.setMessage(value);
+        }
+      }
+      definedTypeCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    public Builder clearInlineStructDef() {
+      if (inlineStructDefBuilder_ == null) {
+        if (definedTypeCase_ == 7) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+          onChanged();
+        }
+      } else {
+        if (definedTypeCase_ == 7) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+        }
+        inlineStructDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.InlineStructDef.Builder getInlineStructDefBuilder() {
+      return internalGetInlineStructDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder getInlineStructDefOrBuilder() {
+      if ((definedTypeCase_ == 7) && (inlineStructDefBuilder_ != null)) {
+        return inlineStructDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (definedTypeCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An inline Struct definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineStructDef inline_struct_def = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder> 
+        internalGetInlineStructDefFieldBuilder() {
+      if (inlineStructDefBuilder_ == null) {
+        if (!(definedTypeCase_ == 7)) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineStructDef.getDefaultInstance();
+        }
+        inlineStructDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.InlineStructDef, io.littlehorse.sdk.common.proto.InlineStructDef.Builder, io.littlehorse.sdk.common.proto.InlineStructDefOrBuilder>(
+                (io.littlehorse.sdk.common.proto.InlineStructDef) definedType_,
+                getParentForChildren(),
+                isClean());
+        definedType_ = null;
+      }
+      definedTypeCase_ = 7;
+      onChanged();
+      return inlineStructDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.InlineMapDef, io.littlehorse.sdk.common.proto.InlineMapDef.Builder, io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder> inlineMapDefBuilder_;
     /**
      * <pre>
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      * @return Whether the inlineMapDef field is set.
      */
     @java.lang.Override
     public boolean hasInlineMapDef() {
-      return definedTypeCase_ == 7;
+      return definedTypeCase_ == 8;
     }
     /**
      * <pre>
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      * @return The inlineMapDef.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.InlineMapDef getInlineMapDef() {
       if (inlineMapDefBuilder_ == null) {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           return (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_;
         }
         return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
       } else {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           return inlineMapDefBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
@@ -1230,7 +1486,7 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     public Builder setInlineMapDef(io.littlehorse.sdk.common.proto.InlineMapDef value) {
       if (inlineMapDefBuilder_ == null) {
@@ -1242,7 +1498,7 @@ private static final long serialVersionUID = 0L;
       } else {
         inlineMapDefBuilder_.setMessage(value);
       }
-      definedTypeCase_ = 7;
+      definedTypeCase_ = 8;
       return this;
     }
     /**
@@ -1250,7 +1506,7 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     public Builder setInlineMapDef(
         io.littlehorse.sdk.common.proto.InlineMapDef.Builder builderForValue) {
@@ -1260,7 +1516,7 @@ private static final long serialVersionUID = 0L;
       } else {
         inlineMapDefBuilder_.setMessage(builderForValue.build());
       }
-      definedTypeCase_ = 7;
+      definedTypeCase_ = 8;
       return this;
     }
     /**
@@ -1268,11 +1524,11 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     public Builder mergeInlineMapDef(io.littlehorse.sdk.common.proto.InlineMapDef value) {
       if (inlineMapDefBuilder_ == null) {
-        if (definedTypeCase_ == 7 &&
+        if (definedTypeCase_ == 8 &&
             definedType_ != io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance()) {
           definedType_ = io.littlehorse.sdk.common.proto.InlineMapDef.newBuilder((io.littlehorse.sdk.common.proto.InlineMapDef) definedType_)
               .mergeFrom(value).buildPartial();
@@ -1281,13 +1537,13 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           inlineMapDefBuilder_.mergeFrom(value);
         } else {
           inlineMapDefBuilder_.setMessage(value);
         }
       }
-      definedTypeCase_ = 7;
+      definedTypeCase_ = 8;
       return this;
     }
     /**
@@ -1295,17 +1551,17 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     public Builder clearInlineMapDef() {
       if (inlineMapDefBuilder_ == null) {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           definedTypeCase_ = 0;
           definedType_ = null;
           onChanged();
         }
       } else {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           definedTypeCase_ = 0;
           definedType_ = null;
         }
@@ -1318,7 +1574,7 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     public io.littlehorse.sdk.common.proto.InlineMapDef.Builder getInlineMapDefBuilder() {
       return internalGetInlineMapDefFieldBuilder().getBuilder();
@@ -1328,14 +1584,14 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder getInlineMapDefOrBuilder() {
-      if ((definedTypeCase_ == 7) && (inlineMapDefBuilder_ != null)) {
+      if ((definedTypeCase_ == 8) && (inlineMapDefBuilder_ != null)) {
         return inlineMapDefBuilder_.getMessageOrBuilder();
       } else {
-        if (definedTypeCase_ == 7) {
+        if (definedTypeCase_ == 8) {
           return (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_;
         }
         return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
@@ -1346,13 +1602,13 @@ private static final long serialVersionUID = 0L;
      * An inline Map definition.
      * </pre>
      *
-     * <code>.littlehorse.InlineMapDef inline_map_def = 7;</code>
+     * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.InlineMapDef, io.littlehorse.sdk.common.proto.InlineMapDef.Builder, io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder> 
         internalGetInlineMapDefFieldBuilder() {
       if (inlineMapDefBuilder_ == null) {
-        if (!(definedTypeCase_ == 7)) {
+        if (!(definedTypeCase_ == 8)) {
           definedType_ = io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
         }
         inlineMapDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1362,7 +1618,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         definedType_ = null;
       }
-      definedTypeCase_ = 7;
+      definedTypeCase_ = 8;
       onChanged();
       return inlineMapDefBuilder_;
     }
@@ -1392,7 +1648,7 @@ private static final long serialVersionUID = 0L;
     public Builder setMasked(boolean value) {
 
       masked_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1405,7 +1661,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMasked() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       masked_ = false;
       onChanged();
       return this;

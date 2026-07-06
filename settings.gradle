@@ -11,7 +11,8 @@ include(
         'sdk-java',
         'test-utils',
         'test-utils-container',
-        'canary'
+        'canary',
+        'quickstart'
 )
 
 [
@@ -53,3 +54,5 @@ include(
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")
 }
+
+project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")

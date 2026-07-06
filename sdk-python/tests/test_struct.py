@@ -29,7 +29,7 @@ from littlehorse.model import (
     VariableType,
     VariableValue,
 )
-from littlehorse.model.variable_pb2 import InlineStruct, Struct, StructField
+from littlehorse.model.type_definition_pb2 import InlineStruct, Struct, StructField
 from littlehorse.utils import extract_value, to_variable_value
 from littlehorse.workflow import (
     WfRunVariable,
@@ -37,7 +37,6 @@ from littlehorse.workflow import (
     WorkflowThread,
     to_variable_assignment,
 )
-
 
 # ---------------------------------------------------------------------------
 # Fixture struct classes

@@ -23,6 +23,12 @@ From the repository root: (substitute `{name}` for the name of the example you w
 ./gradlew example-{name}:run
 ```
 
+The quickstart uses:
+
+```bash
+./gradlew quickstart:run
+```
+
 Most Java examples start a long-lived worker process. Keep that command running and use another terminal for `lhctl run ...`.
 
 ## Java Example Index
@@ -47,6 +53,7 @@ Most Java examples start a long-lived worker process. Keep that command running 
 - [`mutation/`](./mutation/README.md): Variable mutation behavior.
 - [`output-topic/`](./output-topic/README.md): Output-topic event publishing.
 - [`parallel-approval/`](./parallel-approval/README.md): Parallel approval flow.
+- [`quickstart/`](./quickstart/README.md): KYC-style getting-started workflow.
 - [`run-child-workflow/`](./run-child-workflow/README.md): Invoke child workflow.
 - [`run-wf/`](./run-wf/README.md): Programmatic workflow-run operations.
 - [`saga/`](./saga/README.md): Saga/compensation pattern.
