@@ -3,5 +3,5 @@ import { WaitForChildWfNodeRun } from '../../Sidebar/NodeRunInfo/WaitForChildWfN
 import { FC } from 'react'
 
 export const WaitForChildWfDefDetail: FC<AccordionNode<'waitForChildWf'>> = ({ nodeRun }) => (
-  <WaitForChildWfNodeRun node={nodeRun.nodeType.value} />
+  <WaitForChildWfNodeRun node={nodeRun.nodeType.waitForChildWf} />
 )

@@ -29,7 +29,7 @@ export const ExternalEventNodeRun: FC<{ node: ExternalEventNodeRunProto }> = ({ 
   return (
     <div>
       <NodeVariable label="Node Type:" text="External event " />
-      {node.eventTime && <NodeVariable label="eventTime:" text={`${node.eventTime}`} />}
+      {node.eventTime && <NodeVariable label="eventTime:" text={node.eventTime} type="date" />}
       <NodeVariable label="timedOut:" text={`${node.timedOut}`} />
       <NodeVariable label="timeout:" text={`${node}`} />
       {node.correlationKey && <NodeVariable label="correlationKey:" text={`${node.correlationKey}`} />}

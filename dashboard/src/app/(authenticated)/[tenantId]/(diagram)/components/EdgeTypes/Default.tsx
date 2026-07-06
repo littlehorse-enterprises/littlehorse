@@ -49,7 +49,7 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
         >
           <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
             {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {data?.edgeCondition ? (
+            {data?.edgeCondition?.oneofKind !== undefined ? (
               <div
                 className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
                 style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}

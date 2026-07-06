@@ -5,7 +5,7 @@ option java_package = "io.littlehorse.common.proto";
 
 import "google/protobuf/timestamp.proto";
 import "object_id.proto";
-import "variable.proto";
+import "type_definition.proto";
 import "metrics.proto";
 
 

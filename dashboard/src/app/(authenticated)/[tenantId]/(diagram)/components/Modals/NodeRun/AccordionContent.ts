@@ -14,11 +14,11 @@ import { RunChildWfDefDetail } from './RunChildWfDefDetail'
 import { WaitForChildWfDefDetail } from './WaitForChildWfDefDetail'
 import { WaitForConditionDefDetail } from './WaitForConditionDefDetail'
 
-export type NodeRunCase<C extends NonNullable<NodeRun['nodeType']>['$case']> = Omit<NodeRun, 'nodeType'> & {
-  nodeType: Extract<NodeRun['nodeType'], { $case: C }>
+export type NodeRunCase<C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined>> = Omit<NodeRun, 'nodeType'> & {
+  nodeType: Extract<NodeRun['nodeType'], { oneofKind: C }>
 }
 
-type AccordionNodeTypes = NonNullable<NodeRun['nodeType']>['$case']
+type AccordionNodeTypes = Exclude<NodeRun['nodeType']['oneofKind'], undefined>
 
 export type AccordionNode<C extends AccordionNodeTypes> = { nodeRun: NodeRunCase<C>; userTaskNode?: UserTaskNode }
 
