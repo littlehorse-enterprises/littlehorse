@@ -291,7 +291,7 @@ export const getTypedVariableValue = (type: VariableValueCase, value: string): V
     case 'array':
       return VariableValue.create({ value: { oneofKind: 'array', array: LHArray.fromJsonString(value) } })
     case 'map':
-      return VariableValue.create({ value: { oneofKind: 'map', map: LHMap.fromJsonString(value)}})
+      return VariableValue.create({ value: { oneofKind: 'map', map: LHMap.fromJsonString(value) } })
     default:
       throw new Error(`Unknown variable value type: ${type}`)
   }
