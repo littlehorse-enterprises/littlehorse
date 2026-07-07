@@ -78,11 +78,12 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
     @Override
     public Optional<TypeDefinitionModel> extend(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        if (matchesArrayDefType(other.getIdentity())) {
+        TypeDefinitionModel otherType = other.getIdentity();
+        if (matchesArrayDefType(otherType) || getIdentity().equals(otherType)) {
             return Optional.of(getIdentity());
         }
-        throw new UnsupportedOperationException("Cannot extend an Array of " + this.inlineArrayDef.getArrayType()
-                + " with type " + other.getIdentity());
+        throw new UnsupportedOperationException(
+                "Cannot extend an Array of " + this.inlineArrayDef.getArrayType() + " with type " + otherType);
     }
 
     private boolean matchesArrayDefType(TypeDefinitionModel other) {

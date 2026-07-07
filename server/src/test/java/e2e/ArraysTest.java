@@ -52,6 +52,9 @@ public class ArraysTest {
     @LHWorkflow("array-extend-wf")
     private Workflow arrayExtendWf;
 
+    @LHWorkflow("array-concat-wf")
+    private Workflow arrayConcatWf;
+
     @LHWorkflow("array-remove-wf")
     private Workflow arrayRemoveWf;
 
@@ -196,6 +199,26 @@ public class ArraysTest {
     }
 
     @Test
+    public void shouldConcatenateArraysOnExtend() {
+        workflowVerifier
+                .prepareRun(arrayConcatWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    // [1, 2, 3] EXTEND [1, 2, 3] => [1, 2, 3, 1, 2, 3]
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(6);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(3).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(5).getInt())
+                            .isEqualTo(3L);
+                })
+                .start();
+    }
+
+    @Test
     public void shouldRemoveItemOnRemoveIfPresent() {
         workflowVerifier
                 .prepareRun(buildArrayRemoveWf())
@@ -311,6 +334,22 @@ public class ArraysTest {
             // TODO: Test contains unnecessary task call because of mutation bug #2181
             thread.execute("produce-array");
             arrVar.assign(arrVar.extend(4L));
+        });
+    }
+
+    @LHWorkflow("array-concat-wf")
+    public Workflow buildArrayConcatWf() {
+        return new WorkflowImpl("array-concat-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            WfRunVariable other = thread.declareArray("other", Long.class);
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            TaskNodeOutput producedOther = thread.execute("produce-array");
+            other.assign(producedOther);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
+            thread.execute("produce-array");
+            // Concatenate the two native Arrays.
+            arrVar.assign(arrVar.extend(other));
         });
     }
 

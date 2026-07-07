@@ -648,14 +648,20 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     }
 
                     TypeDefinitionModel elemType = arr.getElementType();
-                    VariableValueModel itemToAppend;
-                    if (elemType != null && !elemType.isNull()) {
-                        itemToAppend = rhs.coerceToType(elemType);
-                    } else {
-                        itemToAppend = rhs.getCopy();
-                    }
 
-                    newItems.add(itemToAppend);
+                    if (isArrayConcatenation(rhs)) {
+                        for (VariableValueModel rhsItem : rhs.getArray().getItems()) {
+                            newItems.add(rhsItem.getCopy());
+                        }
+                    } else {
+                        VariableValueModel itemToAppend;
+                        if (elemType != null && !elemType.isNull()) {
+                            itemToAppend = rhs.coerceToType(elemType);
+                        } else {
+                            itemToAppend = rhs.getCopy();
+                        }
+                        newItems.add(itemToAppend);
+                    }
 
                     ArrayModel newArr = new ArrayModel(newItems, elemType);
                     return new VariableValueModel(newArr);
@@ -709,6 +715,19 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns true when an EXTEND on this ARRAY should concatenate the RHS rather than append it
+     * as a single element. This is the case when the RHS is an Array of the same type as this
+     * Array, which distinguishes concatenation from appending an Array as one element to an
+     * Array-of-Arrays.
+     */
+    private boolean isArrayConcatenation(VariableValueModel rhs) {
+        if (rhs.getValueType() != ValueCase.ARRAY) {
+            return false;
+        }
+        return this.getTypeDefinition().equals(rhs.getTypeDefinition());
     }
 
     public VariableValueModel removeIfPresent(VariableValueModel other) throws LHVarSubError {
