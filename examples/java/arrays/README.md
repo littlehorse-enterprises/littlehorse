@@ -1,6 +1,8 @@
 ## Running ArrayExample
 
-This example demonstrates using LittleHorse typed Arrays.
+This example demonstrates using LittleHorse typed Arrays. It takes an `Array<INT>` as input,
+merges it with another Array produced by the `produce-array` task using `EXTEND` (native Array
+concatenation), and passes the merged Array to the `consume-array` task.
 
 Run the example Java app:
 
@@ -8,10 +10,21 @@ Run the example Java app:
 ./gradlew example-arrays:run
 ```
 
-In another terminal, start a workflow run with `lhctl`:
+In another terminal, start a workflow run with `lhctl`.
+
+The `my-array` input variable is a typed `Array<INT>`. Provide it as a JSON array; the
+elements are coerced to the declared element type. The workflow then appends `[1, 2, 3]`
+(from `produce-array`) to it:
 
 ```
-# No input variables are required for this example
+# Input [10, 20, 30] is merged with [1, 2, 3] => [10, 20, 30, 1, 2, 3]
+lhctl run example-arrays my-array '[10, 20, 30]'
+```
+
+`my-array` has a default value, so you can also run it with no input:
+
+```
+# Uses the default [1, 2, 3], merged with [1, 2, 3] => [1, 2, 3, 1, 2, 3]
 lhctl run example-arrays
 ```
 
