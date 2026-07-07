@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.*;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,38 +14,42 @@ import java.util.Properties;
 
 public class CastingExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("casting-workflow", wf -> {
-            WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
-            WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
-            WfRunVariable jsonInput =
-                    wf.declareJsonObj("json-input").withDefault(Map.of("int", "1", "string", "hello"));
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "casting-workflow",
+                wf -> {
+                    WfRunVariable stringInput = wf.declareStr("string-number").withDefault("3.14");
+                    WfRunVariable stringBool = wf.declareStr("string-bool").withDefault("false");
+                    WfRunVariable jsonInput =
+                            wf.declareJsonObj("json-input").withDefault(Map.of("int", "1", "string", "hello"));
 
-            NodeOutput doubleResult = wf.execute(
-                    "double-method",
-                    stringInput.castTo(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
-            NodeOutput intResult =
-                    wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE output to INT
+                    NodeOutput doubleResult = wf.execute(
+                            "double-method",
+                            stringInput.castTo(VariableType.DOUBLE)); // Manual cast from STR variable to DOUBLE
+                    NodeOutput intResult =
+                            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE output to INT
 
-            LHExpression mathOverDouble = doubleResult.multiply(2.0).divide(6.0); // This is a DOUBLE expression
-            wf.execute("int-method", mathOverDouble.castToInt()); // Auto cast from LHExpression to DOUBLE
+                    LHExpression mathOverDouble = doubleResult.multiply(2.0).divide(6.0); // This is a DOUBLE expression
+                    wf.execute("int-method", mathOverDouble.castToInt()); // Auto cast from LHExpression to DOUBLE
 
-            TaskNodeOutput boolResult =
-                    wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
-            wf.handleError(boolResult, handler -> {
-                // If we want to cast "Hello" to BOOL, that will fail at runtime, and we could handle it here.
-                handler.execute("string-method", "This is how to handle casting errors");
-            });
+                    TaskNodeOutput boolResult =
+                            wf.execute("bool-method", stringBool.castToBool()); // Manual cast from STR to BOOL
+                    wf.handleError(boolResult, handler -> {
+                        // If we want to cast "Hello" to BOOL, that will fail at runtime, and we could handle it here.
+                        handler.execute("string-method", "This is how to handle casting errors");
+                    });
 
-            wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
-            wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
-            wf.execute(
-                    "int-method",
-                    jsonInput
-                            .jsonPath("$.int")
-                            .castToInt()); // We don't know the type of json path, but here we are forcing it to be INT
-            wf.execute("string-method", stringInput); // Print the original string
-        });
+                    wf.execute("int-method", doubleResult.castToInt()); // Manual cast from DOUBLE to INT
+                    wf.execute("double-method", intResult); // Auto cast from INT to DOUBLE
+                    wf.execute(
+                            "int-method",
+                            jsonInput
+                                    .jsonPath("$.int")
+                                    .castToInt()); // We don't know the type of json path, but here we are forcing it to
+                    // be INT
+                    wf.execute("string-method", stringInput); // Print the original string
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -77,7 +80,7 @@ public class CastingExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         for (LHTaskWorker worker : workers) {

@@ -8,7 +8,6 @@ import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,19 +26,24 @@ public class SagaExample {
 
     private static final Logger log = LoggerFactory.getLogger(SagaExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-saga", wf -> {
-            WfRunVariable flightConfirmationNumber = wf.declareStr("flight-confirmation-number");
-            WfRunVariable hotelConfirmationNumber = wf.declareStr("hotel-confirmation-number");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-saga",
+                wf -> {
+                    WfRunVariable flightConfirmationNumber = wf.declareStr("flight-confirmation-number");
+                    WfRunVariable hotelConfirmationNumber = wf.declareStr("hotel-confirmation-number");
 
-            SpawnedThread sagaThread = wf.spawnThread(
-                    bookFlightAndHotel(flightConfirmationNumber, hotelConfirmationNumber), "example-saga", null);
+                    SpawnedThread sagaThread = wf.spawnThread(
+                            bookFlightAndHotel(flightConfirmationNumber, hotelConfirmationNumber),
+                            "example-saga",
+                            null);
 
-            // If there is a failure, we abort it.
-            NodeOutput waitForThread = wf.waitForThreads(SpawnedThreads.of(sagaThread));
+                    // If there is a failure, we abort it.
+                    NodeOutput waitForThread = wf.waitForThreads(SpawnedThreads.of(sagaThread));
 
-            wf.handleException(waitForThread, null, abortFlight(flightConfirmationNumber));
-        });
+                    wf.handleException(waitForThread, null, abortFlight(flightConfirmationNumber));
+                },
+                config);
     }
 
     private static ThreadFunc abortFlight(WfRunVariable flightConfirmationNumber) {
@@ -90,7 +94,7 @@ public class SagaExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);

@@ -15,25 +15,32 @@ import java.util.Properties;
 
 public class ChildWorkflowExample {
 
-    public static Workflow getChild() {
-        return new WorkflowImpl("some-other-wfspec", wf -> {
-            // In the `hierarchical-workflow` example, we require the variable to be INHERITED;
-            // however, here the variable is an input.
-            WfRunVariable childInputName = wf.declareStr("child-input-name").required();
-            wf.complete(wf.execute("greet", childInputName));
-        });
+    public static Workflow getChild(LHConfig config) {
+        return Workflow.newWorkflow(
+                "some-other-wfspec",
+                wf -> {
+                    // In the `hierarchical-workflow` example, we require the variable to be INHERITED;
+                    // however, here the variable is an input.
+                    WfRunVariable childInputName =
+                            wf.declareStr("child-input-name").required();
+                    wf.complete(wf.execute("greet", childInputName));
+                },
+                config);
     }
 
-    public static Workflow getParent() {
-        WorkflowImpl out = new WorkflowImpl("my-parent", wf -> {
-            WfRunVariable theName = wf.declareStr("input-name").required();
-            WfRunVariable childOutput = wf.declareStr("child-output");
+    public static Workflow getParent(LHConfig config) {
+        WorkflowImpl out = Workflow.newWorkflow(
+                "my-parent",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("input-name").required();
+                    WfRunVariable childOutput = wf.declareStr("child-output");
 
-            SpawnedChildWf child = wf.runWf("some-other-wfspec", Map.of("child-input-name", theName));
-            wf.execute("greet", "hi from parent");
+                    SpawnedChildWf child = wf.runWf("some-other-wfspec", Map.of("child-input-name", theName));
+                    wf.execute("greet", "hi from parent");
 
-            childOutput.assign(wf.waitForChildWf(child));
-        });
+                    childOutput.assign(wf.waitForChildWf(child));
+                },
+                config);
         return out;
     }
 
@@ -66,8 +73,8 @@ public class ChildWorkflowExample {
         worker.registerTaskDef();
 
         // Register the workflows.
-        getChild().registerWfSpec(config.getBlockingStub());
-        getParent().registerWfSpec(config.getBlockingStub());
+        getChild(config).registerWfSpec(config.getBlockingStub());
+        getParent(config).registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();
