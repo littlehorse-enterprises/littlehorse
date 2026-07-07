@@ -74,6 +74,12 @@ func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableV
 		out.Value = &lhproto.VariableValue_WfRunId{
 			WfRunId: StrToWfRunId(input),
 		}
+	case lhproto.VariableType_TIMESTAMP:
+		var ts *timestamppb.Timestamp
+		ts, err = parseTimestamp(input)
+		if err == nil {
+			out.Value = &lhproto.VariableValue_UtcTimestamp{UtcTimestamp: ts}
+		}
 	}
 
 	if err != nil {
@@ -81,6 +87,145 @@ func StrToVarVal(input string, varType lhproto.VariableType) (*lhproto.VariableV
 	}
 
 	return out, nil
+}
+
+// parseTimestamp parses a TIMESTAMP from either epoch milliseconds or an
+// ISO-8601 / RFC 3339 string.
+func parseTimestamp(input string) (*timestamppb.Timestamp, error) {
+	if ms, err := strconv.ParseInt(input, 10, 64); err == nil {
+		return timestamppb.New(time.UnixMilli(ms)), nil
+	}
+	t, err := time.Parse(time.RFC3339, input)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"invalid TIMESTAMP %q: expected epoch milliseconds or an ISO-8601 string", input,
+		)
+	}
+	return timestamppb.New(t), nil
+}
+
+// TypeDefToVarVal converts a CLI input string into a VariableValue according to a
+// registered TypeDefinition.
+//
+// Primitive types keep the existing behavior (the input is a raw scalar string).
+// Native Arrays (INLINE_ARRAY_DEF) and Maps (INLINE_MAP_DEF) are parsed as a JSON
+// document and interpreted recursively against their element/key/value types: JSON
+// supplies the structure while the declared type supplies the meaning of each leaf.
+func TypeDefToVarVal(input string, typeDef *lhproto.TypeDefinition) (*lhproto.VariableValue, error) {
+	if typeDef == nil {
+		return nil, fmt.Errorf("cannot convert value without a TypeDefinition")
+	}
+
+	switch typeDef.GetDefinedType().(type) {
+	case *lhproto.TypeDefinition_InlineArrayDef, *lhproto.TypeDefinition_InlineMapDef:
+		decoder := json.NewDecoder(strings.NewReader(input))
+		// Preserve INT64 precision by decoding numbers as json.Number instead of float64.
+		decoder.UseNumber()
+		var node interface{}
+		if err := decoder.Decode(&node); err != nil {
+			return nil, fmt.Errorf("failed parsing JSON for Array/Map input: %w", err)
+		}
+		return jsonNodeToVarVal(node, typeDef)
+	case *lhproto.TypeDefinition_StructDefId:
+		return nil, fmt.Errorf("Struct values are not supported as lhctl input yet")
+	default:
+		// PRIMITIVE_TYPE (or unset): interpret the input as a raw scalar string.
+		return StrToVarVal(input, typeDef.GetPrimitiveType())
+	}
+}
+
+// jsonNodeToVarVal recursively converts a decoded JSON node into a VariableValue,
+// interpreting each node against the provided TypeDefinition.
+func jsonNodeToVarVal(node interface{}, typeDef *lhproto.TypeDefinition) (*lhproto.VariableValue, error) {
+	if node == nil {
+		// A JSON null resolves to an unset VariableValue (LittleHorse NULL).
+		return &lhproto.VariableValue{}, nil
+	}
+
+	switch dt := typeDef.GetDefinedType().(type) {
+	case *lhproto.TypeDefinition_InlineArrayDef:
+		items, ok := node.([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected a JSON array for Array type, but got %T", node)
+		}
+		elementType := dt.InlineArrayDef.GetArrayType()
+		out := &lhproto.Array{}
+		for _, item := range items {
+			itemVal, err := jsonNodeToVarVal(item, elementType)
+			if err != nil {
+				return nil, err
+			}
+			out.Items = append(out.Items, itemVal)
+		}
+		return &lhproto.VariableValue{Value: &lhproto.VariableValue_Array{Array: out}}, nil
+
+	case *lhproto.TypeDefinition_InlineMapDef:
+		obj, ok := node.(map[string]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected a JSON object for Map type, but got %T", node)
+		}
+		keyType := dt.InlineMapDef.GetKeyType()
+		valueType := dt.InlineMapDef.GetValueType()
+		if _, isPrimitive := keyType.GetDefinedType().(*lhproto.TypeDefinition_PrimitiveType); !isPrimitive {
+			return nil, fmt.Errorf("Map key type must be a primitive type")
+		}
+		out := &lhproto.Map{}
+		for key, value := range obj {
+			// JSON object keys are always strings; coerce to the declared key type.
+			keyVal, err := StrToVarVal(key, keyType.GetPrimitiveType())
+			if err != nil {
+				return nil, fmt.Errorf("failed converting map key %q: %w", key, err)
+			}
+			valueVal, err := jsonNodeToVarVal(value, valueType)
+			if err != nil {
+				return nil, err
+			}
+			out.Entries = append(out.Entries, &lhproto.Map_Entry{Key: keyVal, Value: valueVal})
+		}
+		return &lhproto.VariableValue{Value: &lhproto.VariableValue_Map{Map: out}}, nil
+
+	case *lhproto.TypeDefinition_PrimitiveType:
+		return jsonLeafToVarVal(node, dt.PrimitiveType)
+
+	case *lhproto.TypeDefinition_StructDefId:
+		return nil, fmt.Errorf("Struct values are not supported as lhctl input yet")
+
+	default:
+		return nil, fmt.Errorf("unsupported or unset TypeDefinition for value")
+	}
+}
+
+// jsonLeafToVarVal converts a scalar JSON node into a primitive VariableValue.
+func jsonLeafToVarVal(node interface{}, primitiveType lhproto.VariableType) (*lhproto.VariableValue, error) {
+	// JSON_OBJ / JSON_ARR leaves carry a nested JSON structure verbatim.
+	if primitiveType == lhproto.VariableType_JSON_OBJ || primitiveType == lhproto.VariableType_JSON_ARR {
+		raw, err := json.Marshal(node)
+		if err != nil {
+			return nil, fmt.Errorf("failed re-serializing nested JSON value: %w", err)
+		}
+		return StrToVarVal(string(raw), primitiveType)
+	}
+
+	scalar, err := jsonScalarToString(node)
+	if err != nil {
+		return nil, err
+	}
+	return StrToVarVal(scalar, primitiveType)
+}
+
+// jsonScalarToString renders a scalar JSON node as the string form that
+// StrToVarVal expects.
+func jsonScalarToString(node interface{}) (string, error) {
+	switch v := node.(type) {
+	case string:
+		return v, nil
+	case json.Number:
+		return v.String(), nil
+	case bool:
+		return strconv.FormatBool(v), nil
+	default:
+		return "", fmt.Errorf("expected a scalar JSON value but got %T", node)
+	}
 }
 
 func VarValToVarType(varVal *lhproto.VariableValue) *lhproto.VariableType {

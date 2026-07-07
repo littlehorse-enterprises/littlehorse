@@ -106,15 +106,17 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
-				vType := varDef.Type
-				if vType == nil {
-					primitiveType := varDef.TypeDef.GetPrimitiveType()
-					vType = &primitiveType
+				if varDef.TypeDef != nil {
+					runReq.Variables[varName], err = littlehorse.TypeDefToVarVal(
+						varValStr, varDef.TypeDef,
+					)
+				} else if varDef.Type != nil {
+					runReq.Variables[varName], err = littlehorse.StrToVarVal(
+						varValStr, *varDef.Type,
+					)
+				} else {
+					log.Fatal("Variable '" + varName + "' has no type information in WfSpec.")
 				}
-
-				runReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, *vType,
-				)
 
 				if err != nil {
 					log.Fatal("Failed converting variable: " + err.Error())
