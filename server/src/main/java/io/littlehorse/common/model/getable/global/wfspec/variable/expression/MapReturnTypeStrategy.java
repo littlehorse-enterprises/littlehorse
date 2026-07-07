@@ -82,7 +82,7 @@ public class MapReturnTypeStrategy implements LHTypeStrategy {
             return Optional.of(getIdentity());
         }
         throw new InvalidExpressionException("Cannot extend a Map with type " + otherIdentity
-                + ". EXTEND on a Map requires a Map argument (single-entry map to put).");
+                + ". EXTEND on a Map requires a Map argument to merge into this Map.");
     }
 
     @Override

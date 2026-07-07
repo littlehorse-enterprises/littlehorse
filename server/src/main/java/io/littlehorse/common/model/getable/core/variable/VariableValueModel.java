@@ -670,38 +670,45 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     throw new LHVarSubError(null, "Cannot extend MAP with non-MAP value");
                 }
                 MapModel rhsMap = rhs.getMap();
-                if (rhsMap.getEntries().size() != 1) {
-                    throw new LHVarSubError(null, "EXTEND on MAP requires exactly one entry in rhs");
-                }
-                MapModel.MapEntryModel newEntry = rhsMap.getEntries().get(0);
 
-                List<MapModel.MapEntryModel> newEntries = new ArrayList<>();
-                boolean replaced = false;
+                List<MapModel.MapEntryModel> mergedEntries = new ArrayList<>();
                 if (thisMap.getEntries() != null) {
-                    for (MapModel.MapEntryModel e : thisMap.getEntries()) {
-                        if (e.getKey().equals(newEntry.getKey())) {
-                            newEntries.add(new MapModel.MapEntryModel(
-                                    newEntry.getKey().getCopy(),
-                                    newEntry.getValue().getCopy()));
-                            replaced = true;
-                        } else {
-                            newEntries.add(new MapModel.MapEntryModel(
-                                    e.getKey().getCopy(), e.getValue().getCopy()));
+                    for (MapModel.MapEntryModel lhsEntry : thisMap.getEntries()) {
+                        MapModel.MapEntryModel override = findEntryByKey(rhsMap, lhsEntry.getKey());
+                        MapModel.MapEntryModel source = override != null ? override : lhsEntry;
+                        mergedEntries.add(new MapModel.MapEntryModel(
+                                source.getKey().getCopy(), source.getValue().getCopy()));
+                    }
+                }
+                if (rhsMap.getEntries() != null) {
+                    for (MapModel.MapEntryModel rhsEntry : rhsMap.getEntries()) {
+                        if (findEntryByKey(thisMap, rhsEntry.getKey()) == null) {
+                            mergedEntries.add(new MapModel.MapEntryModel(
+                                    rhsEntry.getKey().getCopy(),
+                                    rhsEntry.getValue().getCopy()));
                         }
                     }
                 }
-                if (!replaced) {
-                    newEntries.add(new MapModel.MapEntryModel(
-                            newEntry.getKey().getCopy(), newEntry.getValue().getCopy()));
-                }
 
                 MapModel resultMap = new MapModel();
-                resultMap.getEntries().addAll(newEntries);
+                resultMap.getEntries().addAll(mergedEntries);
                 resultMap.setMapType(thisMap.getMapType());
                 return new VariableValueModel(resultMap);
             default:
         }
         throw new LHVarSubError(null, "Cannot extend var of type " + valueType);
+    }
+
+    private static MapModel.MapEntryModel findEntryByKey(MapModel map, VariableValueModel key) {
+        if (map == null || map.getEntries() == null) {
+            return null;
+        }
+        for (MapModel.MapEntryModel entry : map.getEntries()) {
+            if (entry.getKey().equals(key)) {
+                return entry;
+            }
+        }
+        return null;
     }
 
     public VariableValueModel removeIfPresent(VariableValueModel other) throws LHVarSubError {

@@ -50,6 +50,9 @@ public class MapsTest {
     @LHWorkflow("map-extend-wf")
     private Workflow mapExtendWf;
 
+    @LHWorkflow("map-extend-merge-wf")
+    private Workflow mapExtendMergeWf;
+
     @LHWorkflow("map-remove-key-wf")
     private Workflow mapRemoveKeyWf;
 
@@ -211,6 +214,35 @@ public class MapsTest {
                 .thenVerifyVariable(0, "my-map", variableValue -> {
                     assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
                     assertThat(variableValue.getMap().getEntriesList()).hasSize(3);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldMergeTwoMapsOnExtend() {
+        workflowVerifier
+                .prepareRun(mapExtendMergeWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+
+                    assertThat(entries).hasSize(3);
+
+                    // The overlapping key "hello" must appear exactly once (replaced, not duplicated). Important since
+                    // we don't rely on a real Map structure under the hood in our protobuf schema.
+                    long helloCount = entries.stream()
+                            .filter(e -> "hello".equals(e.getKey().getStr()))
+                            .count();
+                    assertThat(helloCount).isEqualTo(1);
+
+                    java.util.Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+
+                    assertThat(asJavaMap).containsEntry("hello", 100L);
+                    assertThat(asJavaMap).containsEntry("world", 99L);
+                    assertThat(asJavaMap).containsEntry("brand-new", 7L);
                 })
                 .start();
     }
@@ -467,6 +499,28 @@ public class MapsTest {
     public Map<String, Long> produceSingleEntryMap() {
         Map<String, Long> result = new HashMap<>();
         result.put("new-key", 99L);
+        return result;
+    }
+
+    @LHWorkflow("map-extend-merge-wf")
+    public Workflow buildMapExtendMergeWf() {
+        return new WorkflowImpl("map-extend-merge-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            // TODO: unnecessary task call because of mutation bug #2181
+            thread.execute("produce-map");
+            // Merge in a full map: replaces "hello" and appends "brand-new".
+            mapVar.assign(mapVar.extend(thread.execute("produce-overlapping-map")));
+        });
+    }
+
+    @LHTaskMethod("produce-overlapping-map")
+    @LHType(isLHMap = true)
+    public Map<String, Long> produceOverlappingMap() {
+        Map<String, Long> result = new HashMap<>();
+        result.put("hello", 100L);
+        result.put("brand-new", 7L);
         return result;
     }
 
