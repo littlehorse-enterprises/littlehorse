@@ -121,6 +121,33 @@ public interface TypeDefinitionOrBuilder extends
 
   /**
    * <pre>
+   * An inline Map definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
+   * @return Whether the inlineMapDef field is set.
+   */
+  boolean hasInlineMapDef();
+  /**
+   * <pre>
+   * An inline Map definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
+   * @return The inlineMapDef.
+   */
+  io.littlehorse.sdk.common.proto.InlineMapDef getInlineMapDef();
+  /**
+   * <pre>
+   * An inline Map definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineMapDef inline_map_def = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder getInlineMapDefOrBuilder();
+
+  /**
+   * <pre>
    * Set to true if values of this type contain sensitive information and must be masked.
    * </pre>
    *

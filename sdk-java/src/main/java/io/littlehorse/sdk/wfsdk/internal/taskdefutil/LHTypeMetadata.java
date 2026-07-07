@@ -21,18 +21,22 @@ public final class LHTypeMetadata {
     @Getter
     private final boolean isLHArray;
 
+    @Getter
+    private final boolean isLHMap;
+
     private final String name;
     private final String structDefName;
 
-    private LHTypeMetadata(boolean masked, boolean isLHArray, String name, String structDefName) {
+    private LHTypeMetadata(boolean masked, boolean isLHArray, boolean isLHMap, String name, String structDefName) {
         this.masked = masked;
         this.isLHArray = isLHArray;
+        this.isLHMap = isLHMap;
         this.name = name;
         this.structDefName = structDefName;
     }
 
     private LHTypeMetadata() {
-        this(false, false, null, null);
+        this(false, false, false, null, null);
     }
 
     public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
@@ -50,7 +54,12 @@ public final class LHTypeMetadata {
             parsedStructDefName = PlaceholderUtil.replacePlaceholders(parsedStructDefName, placeholders);
         }
 
-        return new LHTypeMetadata(typeAnnotation.masked(), typeAnnotation.isLHArray(), parsedName, parsedStructDefName);
+        return new LHTypeMetadata(
+                typeAnnotation.masked(),
+                typeAnnotation.isLHArray(),
+                typeAnnotation.isLHMap(),
+                parsedName,
+                parsedStructDefName);
     }
 
     boolean isMasked() {
@@ -84,6 +93,16 @@ public final class LHTypeMetadata {
 
         if (!javaType.isArray()) {
             throw new TaskSchemaMismatchError(buildUnexpectedLHArrayMessage(context, contextName, javaType));
+        }
+    }
+
+    void validateLHMapUsage(Class<?> javaType, ValidationContext context, String contextName) {
+        if (!isLHMap) {
+            return;
+        }
+
+        if (!Map.class.isAssignableFrom(javaType)) {
+            throw new TaskSchemaMismatchError(buildUnexpectedLHMapMessage(context, contextName, javaType));
         }
     }
 
@@ -136,6 +155,23 @@ public final class LHTypeMetadata {
         }
 
         return "@LHType(isLHArray = true) can only be used on array return types. Invalid return type for method "
+                + contextName
+                + " with Java type "
+                + javaType.getName()
+                + ".";
+    }
+
+    private static String buildUnexpectedLHMapMessage(
+            ValidationContext context, String contextName, Class<?> javaType) {
+        if (context == ValidationContext.PARAMETER) {
+            return "@LHType(isLHMap = true) can only be used on Map parameters. Invalid parameter "
+                    + contextName
+                    + " with Java type "
+                    + javaType.getName()
+                    + ".";
+        }
+
+        return "@LHType(isLHMap = true) can only be used on Map return types. Invalid return type for method "
                 + contextName
                 + " with Java type "
                 + javaType.getName()

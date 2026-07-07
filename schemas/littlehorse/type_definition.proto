@@ -30,6 +30,9 @@ message TypeDefinition {
 
     // An inline Struct definition.
     InlineStructDef inline_struct_def = 7;
+    
+    // An inline Map definition.
+    InlineMapDef inline_map_def = 8;
   }
 
   // For compatibility purposes.
@@ -43,6 +46,15 @@ message TypeDefinition {
 message InlineArrayDef {
   // Type definition for each element in the array.
   TypeDefinition array_type = 1;
+}
+
+// Inline schema definition for a native LittleHorse Map.
+message InlineMapDef {
+  // Type definition for each key in the map. Must resolve to a primitive type.
+  TypeDefinition key_type = 1;
+
+  // Type definition for each value in the map.
+  TypeDefinition value_type = 2;
 }
 
 // A map of InlineStructDef's field names to their StructFieldDef's.
@@ -106,7 +118,34 @@ message VariableValue {
 
     // An Array object.
     Array array = 12;
+
+    // A Map object.
+    Map map = 13;
   }
+}
+
+// A Map is a strongly-typed mapping from key values to value values.
+message Map {
+  // A single key/value entry in the Map.
+  message Entry {
+    // The key of this entry.
+    VariableValue key = 1;
+
+    // The value of this entry.
+    VariableValue value = 2;
+  }
+
+  // The entries of the map.
+  //
+  // Note: We use a repeated list of entries rather than a protobuf `map<...>` because
+  // protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
+  // `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
+  repeated Entry entries = 1;
+
+  // Optional, authoritative key/value types for this map.
+  // Stored alongside the entries for ease of access, mirroring `Array.element_type`.
+  // If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+  optional InlineMapDef map_type = 2;
 }
 
 // An Array is a strongly-typed list of values.
