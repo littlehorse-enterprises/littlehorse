@@ -19,6 +19,11 @@
     - [Path Access](#path-access)
     - [Casting](#casting)
     - [Comparators and Indexing](#comparators-and-indexing)
+  - [`lhctl` / CLI Support](#lhctl--cli-support)
+    - [Affected Commands](#affected-commands)
+    - [Input Format](#input-format)
+    - [Support for Non-JSON Types](#support-for-non-json-types)
+    - [Notes on `lhctl` support](#notes-on-lhctl-support)
   - [Backwards Compatibility](#backwards-compatibility)
 
 Author: Jacob Snarr
@@ -236,6 +241,57 @@ A `Map` cannot be cast to a `JSON_OBJ` but a `JSON_OBJ` should be castable to a 
 
 - `EQUALS` / `NOT_EQUALS` perform proto-level equality comparison.
 - `IN` / `NOT_IN` (`CONTAINS`) checks whether the RHS key exists in the map's key set.
+
+## `lhctl` / CLI Support
+
+Today, `lhctl` can only send primitive `VariableType` values into LittleHorse. There is no way to pass a native `Array` or `Map`. This section proposes the CLI surface for sending both.
+
+The design is intentionally symmetric for `Array`s and `Map`s: both are entered as JSON, and the value is interpreted against the variable's registered `TypeDefinition` (the key/value types of the `InlineMapDef`, or the element type of the `InlineArrayDef`).
+
+### Affected Commands
+
+The new `Array`/`Map` input applies to commands that send a variable value whose type is known from registered metadata, i.e. the value is validated against a `TypeDefinition` the server already knows:
+
+- `lhctl run <wfSpecName> [<varName> <varValue>]...` — running a `WfSpec`.
+- The equivalent `WfSpec` scheduling command (schedules a `WfSpec` run with input variables).
+
+Commands where the caller supplies the type by **name** on the command line (e.g. posting an `ExternalEvent`, which today takes a `VariableType` enum name such as `INT`) are out of scope for this proposal: the `VariableType` enum cannot name an `InlineArrayDef`/`InlineMapDef`. Support for those paths is deferred (see [Caveats](#caveats)).
+
+### Input Format
+
+We will accept `Array` and `Map` inputs in the standard `JSON` format that `lhctl` already supports, coercing values to their known types according to the server.
+
+```bash
+# Type: Map<STR, INT>
+lhctl run word-count-wf counts '{"hello": 1, "world": 2}'
+
+# Type: Array<INT>
+lhctl run sum-wf nums '[1, 2, 3]'
+
+# Type: Map<INT, STR>  (JSON object keys are strings, coerced to the INT key type)
+lhctl run lookup-wf table '{"1": "one", "2": "two"}'
+
+# Type: Map<STR, Array<INT>>
+lhctl run buckets-wf data '{"evens": [2, 4], "odds": [1, 3]}'
+```
+
+### Support for Non-JSON Types
+
+LittleHorse supports types that JSON has no native representation for. Inside an `Array` or `Map`, these are carried as JSON strings (or numbers) and decoded according to the declared type. The CLI mappings will be:
+
+| LH type             | CLI encoding                                                        | Usage   (as a map value)        |
+|---------------------|---------------------------------------------------------------------|---------------------------------|
+| `TIMESTAMP`         | ISO-8601 string (epoch-millis number also accepted)                 | `{"a": "2026-01-01T00:00:00Z"}` |
+| `WF_RUN_ID`         | `WfRunId` string form (`parent_child` for children)                 | `{"a": "0a1b2c3d"}`             |
+| `WF_RUN_ID` (child) | parent and child IDs joined by `_` (recursively for deeper nesting) | `{"a": "0a1b2c3d_9f8e7d6c"}`    |
+| `BYTES`             | base64 string                                                       | `{"a": "aGVsbG8="}`             |
+| `INT` / `DOUBLE`    | JSON number (numeric string also accepted)                          | `{"a": 42}`                     |
+
+### Notes on `lhctl` support
+
+- `null` map keys are not possible via the JSON-object form, because JSON object keys cannot be `null`. (Native Maps otherwise permit `null` keys and values.)
+- `Struct`-valued `Array`s/`Map`s (e.g. `Map<STR, Customer>`) are not supported as CLI input in the initial version; a clear error is returned for struct element/value types.
+- Backwards compatible: existing primitive/`JSON_OBJ`/`JSON_ARR` CLI input is unchanged; this only adds interpretation for variables whose registered type is an `InlineArrayDef` or `InlineMapDef`.
 
 ## Backwards Compatibility
 
