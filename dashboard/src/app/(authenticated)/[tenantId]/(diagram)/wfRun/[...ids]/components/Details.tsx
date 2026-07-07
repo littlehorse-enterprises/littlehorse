@@ -3,8 +3,8 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { ThreadType } from '@/app/(authenticated)/[tenantId]/(diagram)/context'
 import { useSelectedThreadError } from '@/app/(authenticated)/[tenantId]/(diagram)/hooks/useSelectedThreadError'
 import { routes } from '@/app/routes'
-import { flattenWfRunId, formatDate, wfRunIdToPath } from '@/app/utils'
-import { WfRun } from 'littlehorse-client/proto'
+import { flattenWfRunId, formatDate, toDate, wfRunIdToPath } from '@/app/utils'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { Expand } from 'lucide-react'
 import { FC, useState } from 'react'
 import { CopyToClipboard } from './CopyToClipboard'
@@ -45,10 +45,11 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
           </LinkWithTenant>
         </div>
         <div className="flex items-center">
-          Status: <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[status].backgroundColor}`}>{`${status}`}</span>
+          Status:{' '}
+          <span className={`ml-2 rounded px-2 ${WF_RUN_STATUS[status].backgroundColor}`}>{LHStatus[status]}</span>
         </div>
         <div className="flex items-center">
-          Started: <span className={` ml-2`}>{`${formatDate(Date.parse(startTime || ''))}`}</span>
+          Started: <span className={` ml-2`}>{`${formatDate(toDate(startTime))}`}</span>
         </div>
       </div>
       {threadError && (
@@ -60,7 +61,7 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
           <span
             className={`shrink-0 rounded px-2 py-0.5 text-sm font-medium ${WF_RUN_STATUS[status].backgroundColor} ${WF_RUN_STATUS[status].textColor}`}
           >
-            {status}
+            {LHStatus[status]}
           </span>
           {threadError.threadName && (
             <span className="shrink-0 rounded bg-yellow-100 px-2 py-0.5 text-sm font-medium text-yellow-800">

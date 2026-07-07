@@ -1,6 +1,6 @@
 'use server'
 
-import { uniqueInOrder } from '@/app/utils'
+import { toDate, uniqueInOrder } from '@/app/utils'
 import { WfSpecData } from '@/types'
 import { lhClient } from '../lhClient'
 
@@ -17,7 +17,7 @@ export async function getLatestWfSpecs(tenantId: string, wfSpecNames: string[]):
       specMap.set(name, {
         name,
         latestVersion: `${wf.id?.majorVersion}.${wf.id?.revision}`,
-        createdAt: wf.createdAt ? new Date(wf.createdAt) : undefined,
+        createdAt: toDate(wf.createdAt),
         parentWfSpec: wf.parentWfSpec ?? undefined,
       })
     })

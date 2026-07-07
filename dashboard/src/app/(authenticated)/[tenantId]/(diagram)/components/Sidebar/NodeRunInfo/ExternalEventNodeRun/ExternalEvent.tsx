@@ -7,14 +7,14 @@ import { Divider } from '../../Components/Divider'
 
 export const ExternalEvent = ({ event }: { event: ExternalEventProto }) => {
   const variable = event.content
-  const variableType = variable?.value?.$case
+  const variableType = variable?.value?.oneofKind
   return (
     <>
       <Divider title="ExternalEvent" />
       <NodeVariable label="externalEventId:" text={`${event.id?.externalEventDefId?.name}`} />
       <NodeVariable label="guid:" text={`${event.id?.guid}`} />
       <NodeVariable label="wfRunId:" text={`${event.id?.wfRunId?.id}`} />
-      <NodeVariable label="createdAt:" text={`${event.createdAt}`} />
+      <NodeVariable label="createdAt:" text={event.createdAt} type="date" />
 
       {event.threadRunNumber !== undefined && (
         <NodeVariable label="threadRunNumber:" text={`${event.threadRunNumber}`} />
@@ -25,7 +25,7 @@ export const ExternalEvent = ({ event }: { event: ExternalEventProto }) => {
         <>
           <div className=" mb-1 ml-1 text-sm font-bold">content:</div>
           <div className="ml-1 flex w-full items-center gap-1">
-            {variable.value?.$case && <IdentifierBadge name={variable.value.$case} />}
+            {variable.value?.oneofKind && <IdentifierBadge name={variable.value.oneofKind} />}
 
             {variableType && <TypeBadge>{VARIABLE_TYPES[variableType]}</TypeBadge>}
             <p> = </p>

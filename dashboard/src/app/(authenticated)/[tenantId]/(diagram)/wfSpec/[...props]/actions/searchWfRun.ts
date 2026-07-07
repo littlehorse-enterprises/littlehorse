@@ -31,6 +31,6 @@ export const searchWfRun = async ({
 
   return {
     results: wfRunData,
-    bookmarkAsString: wfRunIdList.bookmark?.toString('base64'),
+    bookmarkAsString: wfRunIdList.bookmark ? Buffer.from(wfRunIdList.bookmark).toString('base64') : undefined,
   }
 }

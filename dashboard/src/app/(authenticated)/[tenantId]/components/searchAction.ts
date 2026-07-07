@@ -19,7 +19,7 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
       results = await client.searchStructDef({
         bookmark: bookmarkBuf,
         limit: lim,
-        structDefCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+        structDefCriteria: prefix ? { oneofKind: 'prefix', prefix } : { oneofKind: undefined },
       })
       break
     case 'TaskDef':
@@ -33,7 +33,7 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
       results = await client.searchUserTaskDef({
         bookmark: bookmarkBuf,
         limit: lim,
-        userTaskDefCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+        userTaskDefCriteria: prefix ? { oneofKind: 'prefix', prefix } : { oneofKind: undefined },
       })
       break
     case 'ExternalEventDef':
@@ -54,7 +54,7 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
       results = await client.searchWfSpec({
         bookmark: bookmarkBuf,
         limit: lim,
-        wfSpecCriteria: prefix ? { $case: 'prefix', value: prefix } : undefined,
+        wfSpecCriteria: prefix ? { oneofKind: 'prefix', prefix } : { oneofKind: undefined },
       })
       break
   }
@@ -62,7 +62,7 @@ export const search = async ({ type, tenantId, bookmark, limit, prefix }: Search
   return {
     ...results,
     type,
-    bookmark: results.bookmark?.toString('base64'),
+    bookmark: results.bookmark ? Buffer.from(results.bookmark).toString('base64') : undefined,
   }
 }
 

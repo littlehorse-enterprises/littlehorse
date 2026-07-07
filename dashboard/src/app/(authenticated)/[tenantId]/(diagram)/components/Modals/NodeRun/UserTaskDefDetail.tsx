@@ -9,7 +9,7 @@ import { getUserTaskRun } from '../../NodeTypes/UserTask/getUserTaskRun'
 import { AccordionNode } from './AccordionContent'
 
 export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, userTaskNode }) => {
-  const { userTaskRunId } = nodeRun.nodeType.value
+  const { userTaskRunId } = nodeRun.nodeType.userTask
   const { tenantId } = useWhoAmI()
 
   const { data, isLoading } = useQuery({
@@ -145,10 +145,10 @@ export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, user
               {assigmentHistory.map((e, index) => (
                 <tr key={index} className="border-b border-neutral-200">
                   <td className="px-6 py-4">{e.time && utcToLocalDateTime(e.time)}</td>
-                  <td className="px-6 py-4">{e.event?.value?.oldUserGroup}</td>
-                  <td className="px-6 py-4">{e.event.value.newUserGroup}</td>
-                  <td className="px-6 py-4">{e.event.value.oldUserId}</td>
-                  <td className="px-6 py-4">{e.event.value.newUserId}</td>
+                  <td className="px-6 py-4">{e.event?.assigned?.oldUserGroup}</td>
+                  <td className="px-6 py-4">{e.event.assigned.newUserGroup}</td>
+                  <td className="px-6 py-4">{e.event.assigned.oldUserId}</td>
+                  <td className="px-6 py-4">{e.event.assigned.newUserId}</td>
                 </tr>
               ))}
             </tbody>
@@ -173,7 +173,7 @@ export const UserTaskDefDetail: FC<AccordionNode<'userTask'>> = ({ nodeRun, user
                   {cancellationHistory.map((e, index) => (
                     <tr key={index} className="border-b border-neutral-200">
                       <td className="px-6 py-4">{e.time && utcToLocalDateTime(e.time)}</td>
-                      <td className="px-6 py-4">{e.event.value.message}</td>
+                      <td className="px-6 py-4">{e.event.cancelled.message}</td>
                     </tr>
                   ))}
                 </tbody>
