@@ -288,6 +288,42 @@ public class BulkJobPunctuatorTest {
         assertThat(onlyForwardedShardReport().getLastSeenTimestamp()).isEqualTo(wfRunCreatedAtC);
     }
 
+    @Test
+    void shouldBackOffWithoutCompletingWhenBoundaryWfRunIsNotDeletedYet() {
+        String jobId = LHUtil.generateGuid();
+        seedRunningJob(jobId, deleteForWfSpec(WF_SPEC_NAME));
+
+        // The boundary WfRun (A) is where a previous punctuation left off. Its delete command has
+        // NOT been processed yet, so both its Tag and its WfRun getable still exist in the store. A
+        // later WfRun (B) also matches and would be deleted if the scan proceeded past the boundary.
+        String wfRunIdA = LHUtil.generateGuid();
+        String wfRunIdB = LHUtil.generateGuid();
+        long now = System.currentTimeMillis();
+        Tag boundaryTag = seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdA, new Date(now - 2000));
+        seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, new Date(now - 1000));
+        // The boundary WfRun still exists: its delete has not been applied yet.
+        tenantCoreStore.put(TestUtil.storedWfRun(wfRunIdA));
+
+        // Resume cursor pointing at the boundary Tag, with the scan not yet complete.
+        BulkJobShardCursorModel cursor = new BulkJobShardCursorModel(new BulkJobIdModel(jobId));
+        cursor.setLastKey(boundaryTag.getStoreKey());
+        cursor.setScanCompleted(false);
+        tenantCoreStore.put(cursor);
+
+        punctuator.punctuate(System.currentTimeMillis());
+
+        // The punctuator backs off: it forwards no new deletes (not even for the still-pending
+        // boundary run, nor for the later WfRun B) and reports the shard as NOT complete.
+        assertThat(forwardedDeletedWfRunIds()).isEmpty();
+        assertThat(onlyForwardedShardReport().isCompleted()).isFalse();
+
+        // The persisted cursor is unchanged: still incomplete and still pointing at the boundary key,
+        // so the next punctuation retries from exactly the same position once the delete lands.
+        BulkJobShardCursorModel persisted = tenantCoreStore.get(cursor.getStoreKey(), BulkJobShardCursorModel.class);
+        assertThat(persisted.isScanCompleted()).isFalse();
+        assertThat(persisted.getLastKey()).isEqualTo(boundaryTag.getStoreKey());
+    }
+
     private void seedRunningJob(String jobId, BulkDeleteWfRunModel deleteWfRun) {
         BulkJobIdModel bulkJobId = new BulkJobIdModel(jobId);
         // Cluster-scoped marker that the discovery range-scan iterates over.
@@ -315,7 +351,7 @@ public class BulkJobPunctuatorTest {
         return LHSerializable.fromProto(proto, BulkDeleteWfRunModel.class, context);
     }
 
-    private void seedMatchingWfRunTag(String wfSpecName, String wfRunId, Date createdAt) {
+    private Tag seedMatchingWfRunTag(String wfSpecName, String wfRunId, Date createdAt) {
         WfRunIdModel id = new WfRunIdModel(wfRunId);
         Tag tag = new Tag(
                 TagStorageType.LOCAL, GetableClassEnum.WF_RUN, List.of(new Attribute("wfSpecName", wfSpecName)));
@@ -323,6 +359,7 @@ public class BulkJobPunctuatorTest {
         tag.setDescribedObjectId(id.toString());
         // Tags are co-partitioned with the WfRun in the tenant-scoped CORE store.
         tenantCoreStore.put(tag);
+        return tag;
     }
 
     private List<String> forwardedDeletedWfRunIds() {

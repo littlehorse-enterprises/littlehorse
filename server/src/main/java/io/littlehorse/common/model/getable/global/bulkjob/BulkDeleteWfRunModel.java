@@ -7,6 +7,7 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardCursorModel;
+import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.InternalScanPb;
@@ -17,6 +18,7 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -107,12 +109,19 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
                     return shardCursor;
                 }
                 Tag tag = range.next().getValue();
-                // The resume key is included in the range; it was already processed, so skip it.
-                if (!resumeFromKey.isBlank() && tag.getStoreKey().equals(resumeFromKey)) {
-                    continue;
-                }
                 WfRunIdModel wfRunIdToDelete =
                         (WfRunIdModel) WfRunIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
+                // The resume key is included in the range; it was already processed, so skip it.
+                if (!resumeFromKey.isBlank() && tag.getStoreKey().equals(resumeFromKey)) {
+                    ReadOnlyGetableManager getableManager = new ReadOnlyGetableManager(coreStore);
+                    WfRunModel wfRunModel = getableManager.get(wfRunIdToDelete);
+                    if (wfRunModel != null) {
+                        // Previous delete not processed yet — back off, keep scanCompleted == false,
+                        // and resume from the same boundary key next tick.
+                        return shardCursor;
+                    }
+                    continue;
+                }
                 DeleteWfRunRequest delete = DeleteWfRunRequest.newBuilder()
                         .setId(wfRunIdToDelete.toProto())
                         .build();
