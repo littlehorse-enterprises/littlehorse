@@ -44,13 +44,17 @@ lhctl get structdef person 0
 
 ### Running a workflow
 
-Run the application again with arguments to:
-* Run our workflow
-* Pass in a Struct object to the workflow as an input variable
+Now that the `StructDef`s, `TaskDef`s, and `WfSpec` are registered (and the workers
+from the previous step are still running), you can run the workflow directly with
+`lhctl`, passing the `ParkingTicketReport` `Struct` as a JSON input variable:
 
 ```
-dotnet run -- BARC Speeder 1HGCM82633A004352
+lhctl run issue-parking-ticket ticket-report '{"vehicleMake": "BARC", "vehicleModel": "Speeder", "licensePlateNumber": "1HGCM82633A004352"}'
 ```
+
+`lhctl` looks up the registered `StructDef` for the `ticket-report` variable and
+coerces each JSON field against its declared type. The JSON keys are the `StructDef`
+field names (`vehicleMake`, `vehicleModel`, `licensePlateNumber`).
 
 You can check the results of this workflow run using `lhctl`:
 
@@ -70,4 +74,3 @@ lhctl get taskRun <wf_run_id> <task_run_global_id>
 Additional `StructDef` functionality and demos are coming soon, including:
 - Examples of `StructDef` evolution
 - Examples of `Struct` validation failures
-- `lhctl` support for passing Structs as input variables when running workflows
