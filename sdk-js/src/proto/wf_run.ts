@@ -258,9 +258,9 @@ export interface InactiveThreadRun {
      */
     threadRun?: ThreadRun;
     /**
-     * @generated from protobuf oneof: inactive_thread_run_type
+     * @generated from protobuf oneof: inactive_reason
      */
-    inactiveThreadRunType: {
+    inactiveReason: {
         oneofKind: "archived";
         /**
          * @generated from protobuf field: littlehorse.ArchivedThreadRunInfo archived = 2
@@ -938,13 +938,13 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
     constructor() {
         super("littlehorse.InactiveThreadRun", [
             { no: 1, name: "thread_run", kind: "message", T: () => ThreadRun },
-            { no: 2, name: "archived", kind: "message", oneof: "inactiveThreadRunType", T: () => ArchivedThreadRunInfo },
-            { no: 3, name: "queued", kind: "message", oneof: "inactiveThreadRunType", T: () => QueuedThreadRunInfo }
+            { no: 2, name: "archived", kind: "message", oneof: "inactiveReason", T: () => ArchivedThreadRunInfo },
+            { no: 3, name: "queued", kind: "message", oneof: "inactiveReason", T: () => QueuedThreadRunInfo }
         ]);
     }
     create(value?: PartialMessage<InactiveThreadRun>): InactiveThreadRun {
         const message = globalThis.Object.create((this.messagePrototype!));
-        message.inactiveThreadRunType = { oneofKind: undefined };
+        message.inactiveReason = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial<InactiveThreadRun>(this, message, value);
         return message;
@@ -958,15 +958,15 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
                     message.threadRun = ThreadRun.internalBinaryRead(reader, reader.uint32(), options, message.threadRun);
                     break;
                 case /* littlehorse.ArchivedThreadRunInfo archived */ 2:
-                    message.inactiveThreadRunType = {
+                    message.inactiveReason = {
                         oneofKind: "archived",
-                        archived: ArchivedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveThreadRunType as any).archived)
+                        archived: ArchivedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveReason as any).archived)
                     };
                     break;
                 case /* littlehorse.QueuedThreadRunInfo queued */ 3:
-                    message.inactiveThreadRunType = {
+                    message.inactiveReason = {
                         oneofKind: "queued",
-                        queued: QueuedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveThreadRunType as any).queued)
+                        queued: QueuedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveReason as any).queued)
                     };
                     break;
                 default:
@@ -985,11 +985,11 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
         if (message.threadRun)
             ThreadRun.internalBinaryWrite(message.threadRun, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         /* littlehorse.ArchivedThreadRunInfo archived = 2; */
-        if (message.inactiveThreadRunType.oneofKind === "archived")
-            ArchivedThreadRunInfo.internalBinaryWrite(message.inactiveThreadRunType.archived, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        if (message.inactiveReason.oneofKind === "archived")
+            ArchivedThreadRunInfo.internalBinaryWrite(message.inactiveReason.archived, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
         /* littlehorse.QueuedThreadRunInfo queued = 3; */
-        if (message.inactiveThreadRunType.oneofKind === "queued")
-            QueuedThreadRunInfo.internalBinaryWrite(message.inactiveThreadRunType.queued, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        if (message.inactiveReason.oneofKind === "queued")
+            QueuedThreadRunInfo.internalBinaryWrite(message.inactiveReason.queued, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

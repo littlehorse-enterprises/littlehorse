@@ -91,11 +91,11 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
         InactiveThreadRun p = (InactiveThreadRun) proto;
         this.threadRun = ThreadRunModel.fromProto(p.getThreadRun(), context);
 
-        switch (p.getInactiveThreadRunTypeCase()) {
+        switch (p.getInactiveReasonCase()) {
             case ARCHIVED -> this.archived = ArchivedThreadRunInfoModel.fromProto(p.getArchived(), context);
             case QUEUED -> this.queued = QueuedThreadRunInfoModel.fromProto(p.getQueued(), context);
             // Data persisted before the oneof existed has no type set; treat it as archived.
-            case INACTIVETHREADRUNTYPE_NOT_SET -> this.archived = new ArchivedThreadRunInfoModel();
+            case INACTIVEREASON_NOT_SET -> this.archived = new ArchivedThreadRunInfoModel();
         }
     }
 

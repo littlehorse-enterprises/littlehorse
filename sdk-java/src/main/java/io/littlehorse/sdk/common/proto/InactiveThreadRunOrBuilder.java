@@ -55,5 +55,5 @@ public interface InactiveThreadRunOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder();
 
-  io.littlehorse.sdk.common.proto.InactiveThreadRun.InactiveThreadRunTypeCase getInactiveThreadRunTypeCase();
+  io.littlehorse.sdk.common.proto.InactiveThreadRun.InactiveReasonCase getInactiveReasonCase();
 }

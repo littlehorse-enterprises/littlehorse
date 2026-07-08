@@ -162,7 +162,7 @@ message ThreadRun {
 message InactiveThreadRun {
   ThreadRun thread_run = 1;
 
-  oneof inactive_thread_run_type {
+  oneof inactive_reason {
     ArchivedThreadRunInfo archived = 2;
     QueuedThreadRunInfo queued = 3;
   }
