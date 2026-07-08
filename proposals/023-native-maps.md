@@ -19,6 +19,12 @@
     - [Path Access](#path-access)
     - [Casting](#casting)
     - [Comparators and Indexing](#comparators-and-indexing)
+  - [`lhctl` / CLI Support](#lhctl--cli-support)
+    - [Affected Commands](#affected-commands)
+    - [Input Format](#input-format)
+    - [Struct Field Semantics](#struct-field-semantics)
+    - [Support for Non-JSON Types](#support-for-non-json-types)
+    - [Notes on `lhctl` support](#notes-on-lhctl-support)
   - [Backwards Compatibility](#backwards-compatibility)
 
 Author: Jacob Snarr
@@ -236,6 +242,76 @@ A `Map` cannot be cast to a `JSON_OBJ` but a `JSON_OBJ` should be castable to a 
 
 - `EQUALS` / `NOT_EQUALS` perform proto-level equality comparison.
 - `IN` / `NOT_IN` (`CONTAINS`) checks whether the RHS key exists in the map's key set.
+
+## `lhctl` / CLI Support
+
+Today, `lhctl` can only send primitive `VariableType` values into LittleHorse. There is no way to pass a native `Array`, `Map`, or `Struct`. This section proposes the CLI surface for sending all three.
+
+The design is intentionally symmetric for `Array`s, `Map`s, and `Struct`s: all are entered as JSON, and the value is interpreted against the variable's registered `TypeDefinition` (the key/value types of the `InlineMapDef`, the element type of the `InlineArrayDef`, or the field schema of the `StructDef`/`InlineStructDef`).
+
+### Affected Commands
+
+The new `Array`/`Map`/`Struct` input applies to commands that send a variable value whose type is known from registered metadata, i.e. the value is validated against a `TypeDefinition` the server already knows:
+
+- `lhctl run <wfSpecName> [<varName> <varValue>]...` — running a `WfSpec`.
+- The equivalent `WfSpec` scheduling command (schedules a `WfSpec` run with input variables).
+
+Commands where the caller supplies the type by **name** on the command line (e.g. posting an `ExternalEvent`, which today takes a `VariableType` enum name such as `INT`) are out of scope for this proposal: the `VariableType` enum cannot name an `InlineArrayDef`/`InlineMapDef`/`StructDef`. Support for those paths is deferred (see [Caveats](#caveats)).
+
+Because a `StructDefId` `TypeDefinition` only names the `StructDef` (by name and pinned version), `lhctl` fetches the referenced `StructDef` (via `GetStructDef`) to obtain the field schema, and coerces each field value against its declared `field_type`. Fetched `StructDef`s are cached so that inputs referencing the same `StructDef` many times (e.g. an `Array<Customer>`) incur a single fetch.
+
+### Input Format
+
+We will accept `Array`, `Map`, and `Struct` inputs in the standard `JSON` format that `lhctl` already supports, coercing values to their known types according to the server.
+
+```bash
+# Type: Map<STR, INT>
+lhctl run word-count-wf counts '{"hello": 1, "world": 2}'
+
+# Type: Array<INT>
+lhctl run sum-wf nums '[1, 2, 3]'
+
+# Type: Map<INT, STR>  (JSON object keys are strings, coerced to the INT key type)
+lhctl run lookup-wf table '{"1": "one", "2": "two"}'
+
+# Type: Map<STR, Array<INT>>
+lhctl run buckets-wf data '{"evens": [2, 4], "odds": [1, 3]}'
+
+# Type: Customer Struct { name: STR, age: INT }
+lhctl run greet-wf customer '{"name": "Joe", "age": 30}'
+
+# Structs nest naturally inside Arrays, Maps, and other Structs.
+# Type: Map<STR, Customer>
+lhctl run customers-wf byId '{"c1": {"name": "Joe", "age": 30}}'
+```
+
+### Struct Field Semantics
+
+A `Struct` is entered as a JSON object whose keys are field names. Each field value is coerced against its declared `field_type` (which may itself be an `Array`, `Map`, or nested `Struct`). Field handling mirrors the server's superset validation, but is checked client-side to produce clearer errors:
+
+- **Unknown field**: a JSON key that is not declared in the `StructDef` is rejected.
+- **Provided field**: coerced against its `field_type`.
+- **`null` field**: only permitted when the field is nullable; produces a LittleHorse `NULL`. A non-nullable field set to `null` is rejected.
+- **Absent field with a default**: omitted from the payload so that the server applies the declared default.
+- **Absent field without a default**: omitted when nullable, otherwise rejected as a missing required field.
+
+### Support for Non-JSON Types
+
+LittleHorse supports types that JSON has no native representation for. Inside an `Array` or `Map`, these are carried as JSON strings (or numbers) and decoded according to the declared type. The CLI mappings will be:
+
+| LH type             | CLI encoding                                                        | Usage   (as a map value)        |
+|---------------------|---------------------------------------------------------------------|---------------------------------|
+| `TIMESTAMP`         | ISO-8601 string (epoch-millis number also accepted)                 | `{"a": "2026-01-01T00:00:00Z"}` |
+| `WF_RUN_ID`         | `WfRunId` string form (`parent_child` for children)                 | `{"a": "0a1b2c3d"}`             |
+| `WF_RUN_ID` (child) | parent and child IDs joined by `_` (recursively for deeper nesting) | `{"a": "0a1b2c3d_9f8e7d6c"}`    |
+| `BYTES`             | base64 string                                                       | `{"a": "aGVsbG8="}`             |
+| `INT` / `DOUBLE`    | JSON number (numeric string also accepted)                          | `{"a": 42}`                     |
+
+### Notes on `lhctl` support
+
+- `null` map keys are not possible via the JSON-object form, because JSON object keys cannot be `null`. (Native Maps otherwise permit `null` keys and values.)
+- `Struct`s are supported as CLI input, including nested inside `Array`s and `Map`s (e.g. `Map<STR, Customer>`) and inside other `Struct`s. This requires the variable's type to reference a registered `StructDef` (`StructDefId`) or an inline `InlineStructDef`.
+- Backwards compatible: existing primitive/`JSON_OBJ`/`JSON_ARR` CLI input is unchanged; this only adds interpretation for variables whose registered type is an `InlineArrayDef`, `InlineMapDef`, `StructDefId`, or `InlineStructDef`.
 
 ## Backwards Compatibility
 
