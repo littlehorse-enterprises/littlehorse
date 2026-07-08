@@ -11,6 +11,7 @@ import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
@@ -27,6 +28,7 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -470,6 +472,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel();
         }
 
+        LHServerConfig serverConfig = context == null ? null : context.serverConfig();
+        boolean convertBigDecimal = serverConfig != null && serverConfig.isJsonPathBigDecimalToDoubleEnabled();
+
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
@@ -480,13 +485,17 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Double) val);
+        } else if (convertBigDecimal && val instanceof BigDecimal bigDecimal) {
+            return new VariableValueModel(bigDecimal.doubleValue());
         } else if (Map.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Map<String, Object>) val);
         } else if (List.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((List<Object>) val);
         } else {
-            log.error("Not possible to get this from jsonpath {}={}", val, val.getClass());
-            throw new RuntimeException("Not possible to get this from jsonpath");
+            String errorMessage = "Not possible to get this from jsonpath path=%s type=%s"
+                    .formatted(path, val.getClass().getName());
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
     }
 

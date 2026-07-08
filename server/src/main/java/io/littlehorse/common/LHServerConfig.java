@@ -160,8 +160,10 @@ public class LHServerConfig extends ConfigBase {
 
     // Maximum number of thread runs per workflow run.
     public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
+    public static final String X_JSONPATH_BIG_DECIMAL_TO_DOUBLE_KEY = "LHS_X_JSONPATH_BIG_DECIMAL_TO_DOUBLE";
     // Instance configs
     private String lhsMetricsLevel;
+    private boolean jsonPathBigDecimalToDoubleEnabled;
 
     // Singletons for RocksConfigSetter
     @Getter
@@ -199,6 +201,8 @@ public class LHServerConfig extends ConfigBase {
         initKafkaAdmin();
         initRocksdbSingletons();
         this.lhsMetricsLevel = getServerMetricLevel();
+        this.jsonPathBigDecimalToDoubleEnabled =
+                Boolean.parseBoolean(getOrSetDefault(X_JSONPATH_BIG_DECIMAL_TO_DOUBLE_KEY, "false"));
     }
 
     @Override
@@ -515,6 +519,10 @@ public class LHServerConfig extends ConfigBase {
 
     public int getMaxThreadRunsPerWfRun() {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.X_MAX_THREAD_RUNS_PER_WF_RUN, "65"));
+    }
+
+    public boolean isJsonPathBigDecimalToDoubleEnabled() {
+        return jsonPathBigDecimalToDoubleEnabled;
     }
 
     public OAuthConfig getOAuthConfig() {

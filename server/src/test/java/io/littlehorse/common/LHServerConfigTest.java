@@ -653,4 +653,25 @@ public class LHServerConfigTest {
                     .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_TEST_CERT is invalid");
         }
     }
+
+    @Nested
+    class JsonPathBigDecimalToDouble {
+
+        @Test
+        void defaultsToFalse() {
+            LHServerConfig config = new LHServerConfig(new Properties());
+
+            assertThat(config.isJsonPathBigDecimalToDoubleEnabled()).isFalse();
+        }
+
+        @Test
+        void parsesTrue() {
+            Properties properties = new Properties();
+            properties.put(LHServerConfig.X_JSONPATH_BIG_DECIMAL_TO_DOUBLE_KEY, "true");
+
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.isJsonPathBigDecimalToDoubleEnabled()).isTrue();
+        }
+    }
 }

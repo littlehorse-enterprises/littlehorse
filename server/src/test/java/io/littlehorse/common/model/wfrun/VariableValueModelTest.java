@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -21,6 +23,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +32,20 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class VariableValueModelTest {
+
+    private VariableValueModel jsonValueWithBigDecimalJsonPathResult(boolean convertBigDecimal) {
+        LHServerConfig serverConfig = mock(LHServerConfig.class);
+        when(serverConfig.isJsonPathBigDecimalToDoubleEnabled()).thenReturn(convertBigDecimal);
+
+        ExecutionContext context = mock(ExecutionContext.class);
+        when(context.serverConfig()).thenReturn(serverConfig);
+
+        VariableValue proto = VariableValue.newBuilder()
+                .setJsonObj("{\"score\":0.47380000352859497}")
+                .build();
+
+        return VariableValueModel.fromProto(proto, context);
+    }
 
     @Test
     void castDoubleToInt() throws LHVarSubError {
@@ -294,6 +312,27 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
 
         assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
+    }
+
+    @Test
+    void jsonPathBigDecimalFailsWhenConversionDisabled() {
+        VariableValueModel jsonObjValue = jsonValueWithBigDecimalJsonPathResult(false);
+
+        RuntimeException exn = assertThrows(RuntimeException.class, () -> jsonObjValue.jsonPath("$.score"));
+
+        assertThat(exn.getMessage())
+                .isEqualTo("Not possible to get this from jsonpath path=$.score type=java.math.BigDecimal");
+        assertThat(exn.getMessage()).doesNotContain("0.47380000352859497");
+    }
+
+    @Test
+    void jsonPathBigDecimalConvertsToDoubleWhenConversionEnabled() throws LHVarSubError {
+        VariableValueModel jsonObjValue = jsonValueWithBigDecimalJsonPathResult(true);
+
+        VariableValueModel result = jsonObjValue.jsonPath("$.score");
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(result.getDoubleVal()).isEqualTo(new BigDecimal("0.47380000352859497").doubleValue());
     }
 
     @Test
