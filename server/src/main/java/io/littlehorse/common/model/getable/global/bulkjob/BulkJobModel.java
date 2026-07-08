@@ -106,7 +106,12 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             BooleanSupplier outOfBudget,
             AtomicLong remainingCommandBudget) {
         return bulkDeleteWfRun.process(
-                c -> forwardDeleteCommand(c, commandOutput, context.serverConfig(), remainingCommandBudget),
+                c -> forwardDeleteCommand(
+                        c,
+                        commandOutput,
+                        context.serverConfig(),
+                        remainingCommandBudget,
+                        context.authorization().tenantId()),
                 context.coreStore(),
                 shardCursor,
                 outOfBudget);
@@ -116,15 +121,15 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
             CoreSubCommand<?> subCommand,
             Consumer<Record> commandOutput,
             LHServerConfig config,
-            AtomicLong remainingCommandBudget) {
+            AtomicLong remainingCommandBudget,
+            TenantIdModel tenantId) {
         CommandModel command = new CommandModel(subCommand);
         LHTimer timer = new LHTimer(command, true);
-        timer.topic = config.getRepartitionTopicName();
+        timer.topic = command.getTopic(config);
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.partitionKey = command.getPartitionKey();
         cpo.topic = timer.getTopic();
         cpo.payload = timer;
-        TenantIdModel tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
         PrincipalIdModel principalId = new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL);
         commandOutput.accept(new Record<>(
                 cpo.partitionKey,
