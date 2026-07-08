@@ -653,5 +653,4 @@ public class LHServerConfigTest {
                     .hasMessage("Invalid configuration: File location specified on LHS_LISTENER_TEST_CERT is invalid");
         }
     }
-
 }
