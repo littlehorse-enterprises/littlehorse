@@ -15,6 +15,7 @@ import { ClockIcon, XIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { getVariableFilterValue } from '@/app/utils/variables'
 import { VariableFilter } from './types'
 
 const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
@@ -51,6 +52,7 @@ export const WfRunsHeader: FC<Props> = ({
   const [open, setOpen] = useState(false)
   const [selectedName, setSelectedName] = useState(() => variableFilter?.varDef.name ?? variables[0]?.name ?? '')
   const [valueDraft, setValueDraft] = useState(variableFilter?.value ?? '')
+  const [valueError, setValueError] = useState<string | null>(null)
 
   // Keep the dialog draft synced with the source-of-truth filter so external clears reset it.
   useEffect(() => {
@@ -60,6 +62,7 @@ export const WfRunsHeader: FC<Props> = ({
     } else {
       setValueDraft('')
     }
+    setValueError(null)
   }, [variableFilter])
 
   const selectedDef = useMemo(
@@ -69,6 +72,15 @@ export const WfRunsHeader: FC<Props> = ({
 
   const applyFilter = () => {
     if (!hasVariableFilter || !selectedDef || !valueDraft.trim()) return
+    try {
+      // Parse now so an invalid value (e.g. a Map filter that isn't valid JSON) is surfaced
+      // here instead of throwing during render and white-screening the page.
+      getVariableFilterValue(selectedDef, valueDraft.trim())
+    } catch (e) {
+      setValueError(e instanceof Error ? e.message : 'Invalid value for this variable type')
+      return
+    }
+    setValueError(null)
     onVariableFilterChange({ varDef: selectedDef, value: valueDraft.trim() })
     setOpen(false)
   }
@@ -157,11 +169,15 @@ export const WfRunsHeader: FC<Props> = ({
                 <Input
                   placeholder="Variable value…"
                   value={valueDraft}
-                  onChange={e => setValueDraft(e.target.value)}
+                  onChange={e => {
+                    setValueDraft(e.target.value)
+                    if (valueError) setValueError(null)
+                  }}
                   onKeyDown={e => {
                     if (e.key === 'Enter') applyFilter()
                   }}
                 />
+                {valueError && <p className="text-xs text-destructive">{valueError}</p>}
                 <div className="flex flex-wrap gap-2">
                   <Button type="button" onClick={applyFilter} disabled={!selectedDef || !valueDraft.trim()}>
                     Apply
