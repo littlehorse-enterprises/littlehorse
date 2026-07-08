@@ -11,7 +11,6 @@ import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
@@ -473,10 +472,6 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel();
         }
 
-        LHServerConfig serverConfig = context == null ? null : context.serverConfig();
-        boolean convertBigDecimal = serverConfig != null && serverConfig.isJsonPathBigDecimalToDoubleEnabled();
-        boolean convertBigInteger = serverConfig != null && serverConfig.isJsonPathBigIntegerToIntEnabled();
-
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((long) val);
         } else if (Integer.class.isAssignableFrom(val.getClass())) {
@@ -487,9 +482,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Double) val);
-        } else if (convertBigDecimal && val instanceof BigDecimal bigDecimal) {
+        } else if (val instanceof BigDecimal bigDecimal) {
             return new VariableValueModel(bigDecimal.doubleValue());
-        } else if (convertBigInteger && val instanceof BigInteger bigInteger) {
+        } else if (val instanceof BigInteger bigInteger) {
             try {
                 return new VariableValueModel(bigInteger.longValueExact());
             } catch (ArithmeticException exn) {
