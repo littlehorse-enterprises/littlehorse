@@ -104,30 +104,56 @@ func parseTimestamp(input string) (*timestamppb.Timestamp, error) {
 	return timestamppb.New(t), nil
 }
 
+// StructDefResolver fetches the StructDef metadata for a given StructDefId. It is
+// used while coercing Struct-typed CLI input so that each field value can be
+// interpreted against its declared field type. Implementations are expected to
+// cache results, since a single input may reference the same StructDef many times
+// (e.g. an Array<Struct> with many elements).
+type StructDefResolver func(id *lhproto.StructDefId) (*lhproto.StructDef, error)
+
 // TypeDefToVarVal converts a CLI input string into a VariableValue according to a
 // registered TypeDefinition.
 //
-// Primitive types keep the existing behavior (the input is a raw scalar string).
-// Native Arrays (INLINE_ARRAY_DEF) and Maps (INLINE_MAP_DEF) are parsed as a JSON
-// document and interpreted recursively against their element/key/value types: JSON
-// supplies the structure while the declared type supplies the meaning of each leaf.
+// This is equivalent to calling TypeDefToVarValWithResolver with a nil resolver,
+// meaning Struct-typed input (via a StructDefId) is not supported.
 func TypeDefToVarVal(input string, typeDef *lhproto.TypeDefinition) (*lhproto.VariableValue, error) {
+	return TypeDefToVarValWithResolver(input, typeDef, nil)
+}
+
+// TypeDefToVarValWithResolver converts a CLI input string into a VariableValue
+// according to a registered TypeDefinition.
+//
+// Primitive types keep the existing behavior (the input is a raw scalar string).
+// Native Arrays (INLINE_ARRAY_DEF), Maps (INLINE_MAP_DEF) and Structs
+// (STRUCT_DEF_ID / INLINE_STRUCT_DEF) are parsed as a JSON document and interpreted
+// recursively against their declared types: JSON supplies the structure while the
+// declared type supplies the meaning of each leaf.
+//
+// A non-nil resolver is required to coerce Struct values that are declared via a
+// StructDefId, since the field schema lives in a separate StructDef that must be
+// fetched from the server.
+func TypeDefToVarValWithResolver(
+	input string,
+	typeDef *lhproto.TypeDefinition,
+	resolver StructDefResolver,
+) (*lhproto.VariableValue, error) {
 	if typeDef == nil {
 		return nil, fmt.Errorf("cannot convert value without a TypeDefinition")
 	}
 
 	switch typeDef.GetDefinedType().(type) {
-	case *lhproto.TypeDefinition_InlineArrayDef, *lhproto.TypeDefinition_InlineMapDef:
+	case *lhproto.TypeDefinition_InlineArrayDef,
+		*lhproto.TypeDefinition_InlineMapDef,
+		*lhproto.TypeDefinition_StructDefId,
+		*lhproto.TypeDefinition_InlineStructDef:
 		decoder := json.NewDecoder(strings.NewReader(input))
 		// Preserve INT64 precision by decoding numbers as json.Number instead of float64.
 		decoder.UseNumber()
 		var node interface{}
 		if err := decoder.Decode(&node); err != nil {
-			return nil, fmt.Errorf("failed parsing JSON for Array/Map input: %w", err)
+			return nil, fmt.Errorf("failed parsing JSON for Array/Map/Struct input: %w", err)
 		}
-		return jsonNodeToVarVal(node, typeDef)
-	case *lhproto.TypeDefinition_StructDefId:
-		return nil, fmt.Errorf("Struct values are not supported as lhctl input yet")
+		return jsonNodeToVarVal(node, typeDef, resolver)
 	default:
 		// PRIMITIVE_TYPE (or unset): interpret the input as a raw scalar string.
 		return StrToVarVal(input, typeDef.GetPrimitiveType())
@@ -136,7 +162,11 @@ func TypeDefToVarVal(input string, typeDef *lhproto.TypeDefinition) (*lhproto.Va
 
 // jsonNodeToVarVal recursively converts a decoded JSON node into a VariableValue,
 // interpreting each node against the provided TypeDefinition.
-func jsonNodeToVarVal(node interface{}, typeDef *lhproto.TypeDefinition) (*lhproto.VariableValue, error) {
+func jsonNodeToVarVal(
+	node interface{},
+	typeDef *lhproto.TypeDefinition,
+	resolver StructDefResolver,
+) (*lhproto.VariableValue, error) {
 	if node == nil {
 		// A JSON null resolves to an unset VariableValue (LittleHorse NULL).
 		return &lhproto.VariableValue{}, nil
@@ -151,7 +181,7 @@ func jsonNodeToVarVal(node interface{}, typeDef *lhproto.TypeDefinition) (*lhpro
 		elementType := dt.InlineArrayDef.GetArrayType()
 		out := &lhproto.Array{}
 		for _, item := range items {
-			itemVal, err := jsonNodeToVarVal(item, elementType)
+			itemVal, err := jsonNodeToVarVal(item, elementType, resolver)
 			if err != nil {
 				return nil, err
 			}
@@ -176,7 +206,7 @@ func jsonNodeToVarVal(node interface{}, typeDef *lhproto.TypeDefinition) (*lhpro
 			if err != nil {
 				return nil, fmt.Errorf("failed converting map key %q: %w", key, err)
 			}
-			valueVal, err := jsonNodeToVarVal(value, valueType)
+			valueVal, err := jsonNodeToVarVal(value, valueType, resolver)
 			if err != nil {
 				return nil, err
 			}
@@ -188,11 +218,108 @@ func jsonNodeToVarVal(node interface{}, typeDef *lhproto.TypeDefinition) (*lhpro
 		return jsonLeafToVarVal(node, dt.PrimitiveType)
 
 	case *lhproto.TypeDefinition_StructDefId:
-		return nil, fmt.Errorf("Struct values are not supported as lhctl input yet")
+		return structNodeToVarVal(node, dt.StructDefId, nil, resolver)
+
+	case *lhproto.TypeDefinition_InlineStructDef:
+		return structNodeToVarVal(node, nil, dt.InlineStructDef, resolver)
 
 	default:
 		return nil, fmt.Errorf("unsupported or unset TypeDefinition for value")
 	}
+}
+
+// structNodeToVarVal converts a decoded JSON object into a Struct VariableValue.
+//
+// The struct schema is resolved from either an inline InlineStructDef (when the
+// variable is typed via INLINE_STRUCT_DEF) or by fetching the StructDef from the
+// server via the resolver (when typed via STRUCT_DEF_ID). Each provided field is
+// coerced against its declared field type; unknown fields and missing required
+// fields are rejected. Fields that are absent but declare a default are omitted so
+// that the server applies the default.
+func structNodeToVarVal(
+	node interface{},
+	structDefId *lhproto.StructDefId,
+	inlineStructDef *lhproto.InlineStructDef,
+	resolver StructDefResolver,
+) (*lhproto.VariableValue, error) {
+	obj, ok := node.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("expected a JSON object for Struct type, but got %T", node)
+	}
+
+	// Resolve the field schema.
+	if inlineStructDef == nil {
+		if structDefId == nil {
+			return nil, fmt.Errorf("cannot resolve Struct schema without a StructDefId")
+		}
+		if resolver == nil {
+			return nil, fmt.Errorf(
+				"Struct values are not supported for this command (no StructDef resolver available)",
+			)
+		}
+		structDef, err := resolver(structDefId)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"failed fetching StructDef %s (version %d): %w",
+				structDefId.GetName(), structDefId.GetVersion(), err,
+			)
+		}
+		inlineStructDef = structDef.GetStructDef()
+		if inlineStructDef == nil {
+			return nil, fmt.Errorf(
+				"StructDef %s (version %d) has no schema", structDefId.GetName(), structDefId.GetVersion(),
+			)
+		}
+	}
+
+	fieldDefs := inlineStructDef.GetFields()
+
+	// Reject unknown fields for a clearer error than the server would produce.
+	for key := range obj {
+		if _, ok := fieldDefs[key]; !ok {
+			return nil, fmt.Errorf("unknown field %q for Struct", key)
+		}
+	}
+
+	fields := make(map[string]*lhproto.StructField)
+	for fieldName, fieldDef := range fieldDefs {
+		rawValue, present := obj[fieldName]
+		if !present {
+			// Absent: rely on the server-side default when one is declared.
+			if fieldDef.DefaultValue != nil {
+				continue
+			}
+			// Absent and no default: a nullable field may simply be omitted.
+			if fieldDef.GetIsNullable() {
+				continue
+			}
+			return nil, fmt.Errorf("missing required field %q for Struct", fieldName)
+		}
+
+		if rawValue == nil {
+			// Explicit JSON null is only allowed for nullable fields.
+			if !fieldDef.GetIsNullable() {
+				return nil, fmt.Errorf("field %q is not nullable but was null", fieldName)
+			}
+			fields[fieldName] = &lhproto.StructField{Value: &lhproto.VariableValue{}}
+			continue
+		}
+
+		fieldVal, err := jsonNodeToVarVal(rawValue, fieldDef.GetFieldType(), resolver)
+		if err != nil {
+			return nil, fmt.Errorf("failed converting field %q: %w", fieldName, err)
+		}
+		fields[fieldName] = &lhproto.StructField{Value: fieldVal}
+	}
+
+	return &lhproto.VariableValue{
+		Value: &lhproto.VariableValue_Struct{
+			Struct: &lhproto.Struct{
+				StructDefId: structDefId,
+				Struct:      &lhproto.InlineStruct{Fields: fields},
+			},
+		},
+	}, nil
 }
 
 // jsonLeafToVarVal converts a scalar JSON node into a primitive VariableValue.

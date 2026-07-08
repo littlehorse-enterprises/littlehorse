@@ -1,10 +1,8 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
-import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -91,11 +88,7 @@ public class StructDefExample {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
-            runWorkers();
-        } else {
-            runWf(args);
-        }
+        runWorkers();
     }
 
     public static void runWorkers() throws IOException {
@@ -123,36 +116,5 @@ public class StructDefExample {
             log.debug("Starting {}", worker.getTaskDefName());
             worker.start();
         }
-    }
-
-    public static void runWf(String[] args) throws IOException {
-        if (args.length < 3) {
-            throw new IllegalArgumentException("Usage: <vehicleMake> <vehicleModel> <licensePlateNumber>. "
-                    + "Use a plate starting with 'NOADDR' to demo nullable Person.homeAddress.");
-        }
-
-        Properties props = getConfigProps();
-        LHConfig config = new LHConfig(props);
-        LittleHorseBlockingStub client = config.getBlockingStub();
-
-        System.out.println("Running the workflow...");
-
-        String vehicleMake = args[0];
-        String vehicleModel = args[1];
-        String licensePlateNumber = args[2];
-
-        ParkingTicketReport parkingTicketReport =
-                new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber, new Date());
-
-        System.out.println("Generated parking ticket report from arguments: \n" + parkingTicketReport);
-        if (licensePlateNumber.startsWith("NOADDR")) {
-            System.out.println("Nullable demo: this plate will produce a Person with null homeAddress "
-                    + "(allowed by @LHStructField(isNullable = true)).");
-        }
-
-        client.runWf(RunWfRequest.newBuilder()
-                .setWfSpecName("issue-parking-ticket")
-                .putVariables("ticket-report", LHLibUtil.objToVarVal(parkingTicketReport))
-                .build());
     }
 }
