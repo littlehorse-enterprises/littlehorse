@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,8 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
     private Date earliestStart;
     private Date latestStart;
     private LHStatus wfRunStatus;
+    private static final Set<LHStatus> DELETABLE_WF_RUN_STATUSES =
+            Set.of(LHStatus.COMPLETED, LHStatus.HALTED, LHStatus.ERROR, LHStatus.EXCEPTION);
 
     @Override
     public BulkDeleteWfRun.Builder toProto() {
@@ -143,6 +146,9 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         }
         if (earliestStart != null && latestStart != null && earliestStart.after(latestStart)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "earliestStart must be before or equal to latestStart");
+        }
+        if (!DELETABLE_WF_RUN_STATUSES.contains(wfRunStatus)) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "wfRunStatus must be a terminal status");
         }
     }
 }
