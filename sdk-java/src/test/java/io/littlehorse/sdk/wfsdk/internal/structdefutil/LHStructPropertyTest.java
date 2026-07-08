@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -137,5 +138,38 @@ public class LHStructPropertyTest {
         assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(def.getArray().getItemsCount()).isEqualTo(2);
         assertThat(def.getArray().getItems(0).getStr()).isEqualTo("a");
+    }
+
+    @Test
+    public void structProperty_withMapType_emitsInlineMapDef() throws Exception {
+        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("inventory", Library.class);
+        LHStructProperty prop = new LHStructProperty(pd, parent);
+
+        StructFieldDef fieldDef = prop.toStructFieldDef(LHTypeAdapterRegistry.empty());
+        TypeDefinition typeDef = fieldDef.getFieldType();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_MAP_DEF);
+
+        InlineMapDef mapDef = typeDef.getInlineMapDef();
+        assertThat(mapDef.getKeyType().getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE);
+        assertThat(mapDef.getKeyType().getPrimitiveType()).isEqualTo(VariableType.STR);
+        assertThat(mapDef.getValueType().getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE);
+        assertThat(mapDef.getValueType().getPrimitiveType()).isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    public void structProperty_withMapValue_serializesAsNativeMap() throws Exception {
+        LHStructDefType parent = new LHStructDefType(Library.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("inventory", Library.class);
+        LHStructProperty prop = new LHStructProperty(pd, parent);
+
+        Library library = new Library();
+        library.setInventory(java.util.Map.of("sci-fi", 42L, "fantasy", 17L));
+
+        VariableValue val = prop.getValueFrom(library, LHTypeAdapterRegistry.empty());
+
+        assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
+        assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
     }
 }
