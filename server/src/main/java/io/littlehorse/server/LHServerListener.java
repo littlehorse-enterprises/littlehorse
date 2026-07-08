@@ -123,6 +123,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchTenantR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchVariableRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfMetricWindowRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
@@ -149,6 +150,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTe
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchVariableReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfMetricWindowReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
@@ -449,7 +451,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
         BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
         if (bulkJob == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find BulkJob %s".formatted(idModel.toString()));
+            ctx.onError(new StatusRuntimeException(
+                    Status.NOT_FOUND.withDescription("Couldn't find BulkJob %s".formatted(idModel.toString()))));
+            return;
         }
         ctx.onNext(bulkJob.toProto().build());
         ctx.onCompleted();
@@ -464,16 +468,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void deleteBulkJob(DeleteBulkJobRequest req, StreamObserver<Empty> ctx) {
-        BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
-        BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
-        if (bulkJob == null) {
-            throw new LHApiException(Status.NOT_FOUND, "Couldn't find BulkJob %s".formatted(idModel.toString()));
-        }
-        if (bulkJob.getStatus() == BulkJobStatus.BULK_JOB_RUNNING) {
-            throw new LHApiException(
-                    Status.FAILED_PRECONDITION,
-                    "Cannot delete a RUNNING BulkJob %s; wait for it to finish".formatted(idModel.toString()));
-        }
         DeleteBulkJobRequestModel reqModel =
                 LHSerializable.fromProto(req, DeleteBulkJobRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
@@ -997,6 +991,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     public void listNodeRuns(ListNodeRunsRequest req, StreamObserver<NodeRunList> ctx) {
         ListNodeRunsRequestModel lnr = LHSerializable.fromProto(req, ListNodeRunsRequestModel.class, requestContext());
         handleScan(lnr, ctx, ListNodeRunReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
+        handleScan(
+                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWfMetricWindowReply.class);
     }
 
     @Override
