@@ -10,7 +10,7 @@ import {
   LoaderCircleIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
-export type Pin = {
+type Pin = {
   color: string
   Icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
@@ -19,12 +19,6 @@ export type Pin = {
     } & React.RefAttributes<SVGSVGElement>
   >
 }
-export const WF_SPEC_STATUS_COLOR: { [key in WfSpec['status']]: string } = {
-  [MetadataStatus.ARCHIVED]: 'bg-gray-200',
-  [MetadataStatus.ACTIVE]: 'bg-blue-200',
-  [MetadataStatus.TERMINATING]: 'bg-yellow-200',
-}
-
 type WfSpecStatusProp = Record<
   WfSpec['status'],
   { backgroundColor: string; textColor: string; animate?: boolean } & Pin

@@ -27,10 +27,7 @@ export const Thread: FC<Props> = ({ name, spec }) => {
   return (
     <AccordionItem value={name} className="border-b border-gray-200 last:border-b-0">
       <AccordionTrigger
-        className={cn(
-          'px-4 py-3 hover:no-underline',
-          'hover:bg-muted/40 [&[data-state=open]]:bg-muted/20'
-        )}
+        className={cn('px-4 py-3 hover:no-underline', 'hover:bg-muted/40 [&[data-state=open]]:bg-muted/20')}
       >
         <div className="flex min-w-0 items-center gap-3 text-left">
           <span className="truncate font-medium">{name}</span>

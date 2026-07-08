@@ -214,9 +214,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleConfirmWfRunAction}>
-                      Confirm
-                    </AlertDialogAction>
+                    <AlertDialogAction onClick={handleConfirmWfRunAction}>Confirm</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

@@ -18,8 +18,6 @@ export const VARIABLE_TYPES = {
   array: 'Array',
 } as const
 
-export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
-
 export const SEARCH_ENTITIES = [
   'WfSpec',
   'TaskDef',

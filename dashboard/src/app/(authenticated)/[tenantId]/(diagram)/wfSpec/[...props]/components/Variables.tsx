@@ -1,10 +1,4 @@
-import {
-  AccessLevelBadge,
-  IdentifierBadge,
-  MaskedBadge,
-  RequiredBadge,
-  SearchableBadge,
-} from '@/components/ui/badge'
+import { AccessLevelBadge, IdentifierBadge, MaskedBadge, RequiredBadge, SearchableBadge } from '@/components/ui/badge'
 import { ThreadSpec } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { TypeDisplay } from '../../../../components/TypeDisplay'

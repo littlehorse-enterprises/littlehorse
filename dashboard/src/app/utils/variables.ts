@@ -136,22 +136,6 @@ export const getVariableValue = ({ value }: VariableValue): string => {
   }
 }
 
-/**
- * Formats a JSON string or returns the original value if parsing fails.
- * This is useful for displaying JSON in a readable format in the UI.
- *
- * @param value - The string value to format as JSON.
- * @returns A formatted JSON string or the original value if parsing fails.
- */
-export const formatJsonOrReturnOriginalValue = (value: string) => {
-  try {
-    const json = JSON.parse(value)
-    return JSON.stringify(json, null, 2)
-  } catch {
-    return value
-  }
-}
-
 const toNumberIfPossible = (value: unknown): number | unknown => {
   if (typeof value === 'number') return value
   if (typeof value === 'bigint') {
@@ -197,7 +181,7 @@ const arrayToJSONObject = (array: LHArray): unknown[] => {
   return arrayObject
 }
 
-export const variableValueToJSON = (variableValue: VariableValue): unknown => {
+const variableValueToJSON = (variableValue: VariableValue): unknown => {
   const value = variableValue.value
   if (!value || value.oneofKind === undefined) return null
 

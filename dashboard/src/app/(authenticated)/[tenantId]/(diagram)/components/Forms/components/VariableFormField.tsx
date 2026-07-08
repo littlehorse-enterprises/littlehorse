@@ -10,7 +10,7 @@ interface VariableFormFieldProps {
   variable: ThreadVarDef
 }
 
-export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
+const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
   const varDef = variable.varDef
   if (!varDef) return null
 

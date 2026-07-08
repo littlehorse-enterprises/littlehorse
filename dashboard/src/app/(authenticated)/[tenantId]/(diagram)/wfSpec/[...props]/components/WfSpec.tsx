@@ -30,10 +30,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
     setShowModal(true)
   }, [spec, setModal, setShowModal])
 
-  const breadcrumbItems = [
-    { label: 'WfSpecs', href: routes.appRoot() },
-    { label: spec.id?.name ?? '' },
-  ]
+  const breadcrumbItems = [{ label: 'WfSpecs', href: routes.appRoot() }, { label: spec.id?.name ?? '' }]
 
   const executeButton = (
     <Button type="button" className="gap-1" onClick={onClick}>

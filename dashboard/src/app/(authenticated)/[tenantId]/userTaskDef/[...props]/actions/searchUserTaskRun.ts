@@ -9,7 +9,7 @@ import {
   UserTaskRunIdList,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   userTaskRun: UserTaskRun
   nodeRun: NodeRun
 }
