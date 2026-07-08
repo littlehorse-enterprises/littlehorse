@@ -54,11 +54,8 @@ public class Program
         {
             WfRunVariable arrVar = wf.DeclareArray("my-array", typeof(long));
 
-            WfRunVariable fromTask = wf.DeclareArray("from-task", typeof(long));
             NodeOutput produced = wf.Execute("produce-array");
-            fromTask.Assign(produced);
-            
-            arrVar.Assign(arrVar.Extend(fromTask));
+            arrVar.Assign(arrVar.Extend(produced));
 
             wf.Execute("consume-array", arrVar);
         }
