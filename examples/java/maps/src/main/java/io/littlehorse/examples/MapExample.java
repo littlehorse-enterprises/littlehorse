@@ -2,12 +2,12 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +17,8 @@ public class MapExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-maps", wf -> {
-            WfRunVariable mapVar = wf.declareMap("my-map", String.class, Long.class);
-
-            NodeOutput produced = wf.execute("produce-map");
-            mapVar.assign(produced);
+            WfRunVariable mapVar = wf.declareMap("my-map", String.class, Long.class)
+                    .withDefault(Map.of("apples", 3L, "bananas", 5L, "cherries", 12L));
 
             wf.execute("consume-map", mapVar);
 
@@ -32,9 +30,7 @@ public class MapExample {
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
         MapWorker worker = new MapWorker();
         return List.of(
-                new LHTaskWorker(worker, "produce-map", config),
-                new LHTaskWorker(worker, "consume-map", config),
-                new LHTaskWorker(worker, "consume-value", config));
+                new LHTaskWorker(worker, "consume-map", config), new LHTaskWorker(worker, "consume-value", config));
     }
 
     public static void main(String[] args) throws Exception {
