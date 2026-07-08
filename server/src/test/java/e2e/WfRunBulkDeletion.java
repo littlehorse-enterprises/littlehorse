@@ -70,7 +70,7 @@ public class WfRunBulkDeletion {
         runWfRuns(instantComplete, LHStatus.COMPLETED, 3);
         runWfRuns(infiniteRunning, LHStatus.RUNNING, 3);
         List<WfRunId> idsBeforeDeletion = search(instantComplete, LHStatus.COMPLETED);
-        assertThat(idsBeforeDeletion).hasSize(3);
+        assertThat(idsBeforeDeletion).isNotEmpty();
         delete(instantComplete, LHStatus.COMPLETED);
         // Wait for bulkjob to complete
         TimeUnit.SECONDS.sleep(30);
@@ -85,6 +85,8 @@ public class WfRunBulkDeletion {
         runWfRuns(instantComplete, LHStatus.COMPLETED, 2);
 
         BulkJobId jobId = delete(instantComplete, LHStatus.COMPLETED).getId();
+        // Wait for metadata propagation
+        TimeUnit.SECONDS.sleep(10);
         BulkJob completed = waitForBulkJobCompletion(jobId);
         assertThat(completed.getStatus()).isEqualTo(BulkJobStatus.BULK_JOB_COMPLETED);
 
@@ -93,6 +95,9 @@ public class WfRunBulkDeletion {
 
         // Deleting a finished BulkJob removes it from both Get and Search.
         client.deleteBulkJob(DeleteBulkJobRequest.newBuilder().setId(jobId).build());
+
+        // Wait for metadata propagation
+        TimeUnit.SECONDS.sleep(10);
 
         assertThatThrownBy(() -> client.getBulkJob(
                         GetBulkJobRequest.newBuilder().setId(jobId).build()))

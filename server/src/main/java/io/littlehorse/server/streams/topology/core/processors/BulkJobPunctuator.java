@@ -138,6 +138,10 @@ public class BulkJobPunctuator {
             TenantScopedStore metadataStore = TenantScopedStore.newInstance(metadataNativeStore, tenantId, context);
             TenantScopedStore coreStore = TenantScopedStore.newInstance(coreNativeStore, tenantId, context);
             StoredGetable<?, ?> bulkJob = metadataStore.get(bulkJobId.getStoreableKey(), StoredGetable.class);
+            if (bulkJob == null) {
+                // Metadata object not propagated yet, skip and will be picked up on next tick
+                continue;
+            }
             BulkJobModel job = (BulkJobModel) bulkJob.getStoredObject();
             if (job.getStatus() != BulkJobStatus.BULK_JOB_RUNNING) {
                 continue;
