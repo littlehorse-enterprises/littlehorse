@@ -22,13 +22,13 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
     @Override
     public Optional<TypeDefinitionModel> add(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new UnsupportedOperationException("Cannot add to an Array. Use EXTEND instead.");
+        throw new InvalidExpressionException("Cannot add to an Array. Use EXTEND instead.");
     }
 
     @Override
     public Optional<TypeDefinitionModel> subtract(ReadOnlyMetadataManager manager, LHTypeStrategy other)
             throws InvalidExpressionException {
-        throw new UnsupportedOperationException("Cannot subtract from an Array. Use a REMOVE operation instead.");
+        throw new InvalidExpressionException("Cannot subtract from an Array. Use a REMOVE operation instead.");
     }
 
     @Override
@@ -82,8 +82,8 @@ public class ArrayReturnTypeStrategy implements LHTypeStrategy {
         if (matchesArrayDefType(otherType) || getIdentity().equals(otherType)) {
             return Optional.of(getIdentity());
         }
-        throw new UnsupportedOperationException(
-                "Cannot extend an Array of " + this.inlineArrayDef.getArrayType() + " with type " + otherType);
+        throw new InvalidExpressionException("Cannot extend an Array of " + this.inlineArrayDef.getArrayType()
+                + " with type " + other.getIdentity());
     }
 
     private boolean matchesArrayDefType(TypeDefinitionModel other) {

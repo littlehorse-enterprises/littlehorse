@@ -1,6 +1,6 @@
 ## Running ArrayExample
 
-This example demonstrates using LittleHorse typed Arrays.
+This example demonstrates using LittleHorse typed Arrays. It takes in a required input variable `my-array`, which is typed as an Array of `Long`s (64-bit integers). It concatenates the input Array with an Array produced by another task, then passes the result into a new task.
 
 Run the example Java app:
 
@@ -8,11 +8,10 @@ Run the example Java app:
 ./gradlew example-arrays:run
 ```
 
-In another terminal, start a workflow run with `lhctl`:
+In another terminal, start a workflow run with `lhctl` with the input variable `my-array` and an Array value:
 
 ```
-# No input variables are required for this example
-lhctl run example-arrays
+lhctl run example-arrays my-array '[1,2,3]'
 ```
 
 Inspect the run and task/node outputs:
