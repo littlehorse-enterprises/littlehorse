@@ -1,4 +1,5 @@
 import { getVariableDefType, wfRunIdFromFlattenedId, wfRunIdToPath } from '@/app/utils'
+import { getTypedVariableValueFromTypeDef } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -85,6 +86,24 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
         }
 
         const caseName = matchVariableType(transformedKey)
+
+        // Container types (Map/Array) are entered as human-friendly JSON in a textarea
+        // (e.g. {"one":1}) and need the declared key/element types to build proper entries.
+        // fromJson would reject that shape and the create() fallback below would silently
+        // produce an EMPTY container, discarding the user's data.
+        if (caseName === 'map' || caseName === 'array') {
+          try {
+            acc[transformedKey] = getTypedVariableValueFromTypeDef(
+              variableDef?.varDef?.typeDef,
+              String(primitiveValues[key])
+            )
+          } catch {
+            // Field-level validation already blocks invalid JSON before submit; if something
+            // still slips through, omit the variable rather than send an empty container.
+          }
+          return acc
+        }
+
         // The old ts-proto `VariableValue.fromJSON({ [case]: value })` coerced JSON values
         // to the correct runtime type (e.g. base64 string -> Uint8Array for BYTES, ISO
         // string -> Timestamp). @protobuf-ts `fromJson` performs the same coercion, but
