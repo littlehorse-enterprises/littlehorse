@@ -60,6 +60,7 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -587,28 +588,36 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
+        return addStructVariable(
+                name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
     }
 
     @Override
     public WfRunVariable declareStruct(String name, String structDefName) {
-        return addStructVariable(name, new LHStructDefId(structDefName));
+        return addStructVariable(name, new LHStructDefId(resolveStructDefName(structDefName)));
     }
 
     @Override
     public WfRunVariable declareStruct(String name, String structDefName, int structDefVersion) {
-        return addStructVariable(name, new LHStructDefId(structDefName, structDefVersion));
+        return addStructVariable(name, new LHStructDefId(resolveStructDefName(structDefName), structDefVersion));
+    }
+
+    private String resolveStructDefName(String structDefName) {
+        return PlaceholderUtil.replacePlaceholders(structDefName, parent.getPlaceholderValues());
     }
 
     @Override
     public WfRunVariable declareArray(String name, Class<?> elementType) {
         Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
-        return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+        return addArrayVariable(
+                name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
     }
 
     @Override
     public WfRunVariable declareMap(String name, Class<?> keyType, Class<?> valueType) {
-        return addMapVariable(name, new LHMapType(keyType, valueType, parent.getTypeAdapterRegistry()));
+        return addMapVariable(
+                name,
+                new LHMapType(keyType, valueType, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
     }
 
     @Override
