@@ -24,7 +24,9 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,17 +36,43 @@ import org.junit.jupiter.api.Test;
 public class VariableValueModelTest {
 
     private VariableValueModel jsonValueWithBigDecimalJsonPathResult(boolean convertBigDecimal) {
+        return jsonValueWithJsonPathFlags("{\"score\":0.47380000352859497}", convertBigDecimal, false);
+    }
+
+    private VariableValueModel jsonValueWithBigIntegerJsonPathResult(boolean convertBigInteger) {
+        VariableValueModel value = new VariableValueModel(Map.of("count", new BigInteger("9223372036854775808")));
+        setJsonPathContext(value, false, convertBigInteger);
+        return value;
+    }
+
+    private VariableValueModel jsonValueWithJsonPathFlags(
+            String jsonObj, boolean convertBigDecimal, boolean convertBigInteger) {
+        ExecutionContext context = jsonPathContext(convertBigDecimal, convertBigInteger);
+
+        VariableValue proto = VariableValue.newBuilder().setJsonObj(jsonObj).build();
+
+        return VariableValueModel.fromProto(proto, context);
+    }
+
+    private ExecutionContext jsonPathContext(boolean convertBigDecimal, boolean convertBigInteger) {
         LHServerConfig serverConfig = mock(LHServerConfig.class);
         when(serverConfig.isJsonPathBigDecimalToDoubleEnabled()).thenReturn(convertBigDecimal);
+        when(serverConfig.isJsonPathBigIntegerToIntEnabled()).thenReturn(convertBigInteger);
 
         ExecutionContext context = mock(ExecutionContext.class);
         when(context.serverConfig()).thenReturn(serverConfig);
+        return context;
+    }
 
-        VariableValue proto = VariableValue.newBuilder()
-                .setJsonObj("{\"score\":0.47380000352859497}")
-                .build();
-
-        return VariableValueModel.fromProto(proto, context);
+    private void setJsonPathContext(
+            VariableValueModel value, boolean convertBigDecimal, boolean convertBigInteger) {
+        try {
+            Field contextField = VariableValueModel.class.getDeclaredField("context");
+            contextField.setAccessible(true);
+            contextField.set(value, jsonPathContext(convertBigDecimal, convertBigInteger));
+        } catch (ReflectiveOperationException exn) {
+            throw new RuntimeException(exn);
+        }
     }
 
     @Test
@@ -333,6 +361,29 @@ public class VariableValueModelTest {
 
         assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
         assertThat(result.getDoubleVal()).isEqualTo(new BigDecimal("0.47380000352859497").doubleValue());
+    }
+
+    @Test
+    void jsonPathBigIntegerFailsWhenConversionDisabled() {
+        VariableValueModel jsonObjValue = jsonValueWithBigIntegerJsonPathResult(false);
+
+        RuntimeException exn = assertThrows(RuntimeException.class, () -> jsonObjValue.jsonPath("$.count"));
+
+        assertThat(exn.getMessage())
+                .isEqualTo("Not possible to get this from jsonpath path=$.count type=java.math.BigInteger");
+        assertThat(exn.getMessage()).doesNotContain("9223372036854775808");
+    }
+
+    @Test
+    void jsonPathBigIntegerFailsWhenConversionEnabledAndOutOfInt64Range() {
+        VariableValueModel jsonObjValue = jsonValueWithBigIntegerJsonPathResult(true);
+
+        RuntimeException exn = assertThrows(RuntimeException.class, () -> jsonObjValue.jsonPath("$.count"));
+
+        assertThat(exn.getMessage())
+                .isEqualTo(
+                        "Not possible to get this from jsonpath path=$.count type=java.math.BigInteger reason=out_of_int64_range");
+        assertThat(exn.getMessage()).doesNotContain("9223372036854775808");
     }
 
     @Test

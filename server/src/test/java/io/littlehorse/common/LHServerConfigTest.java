@@ -674,4 +674,25 @@ public class LHServerConfigTest {
             assertThat(config.isJsonPathBigDecimalToDoubleEnabled()).isTrue();
         }
     }
+
+    @Nested
+    class JsonPathBigIntegerToInt {
+
+        @Test
+        void defaultsToFalse() {
+            LHServerConfig config = new LHServerConfig(new Properties());
+
+            assertThat(config.isJsonPathBigIntegerToIntEnabled()).isFalse();
+        }
+
+        @Test
+        void parsesTrue() {
+            Properties properties = new Properties();
+            properties.put(LHServerConfig.X_JSONPATH_BIG_INTEGER_TO_INT_KEY, "true");
+
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.isJsonPathBigIntegerToIntEnabled()).isTrue();
+        }
+    }
 }

@@ -29,6 +29,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -474,6 +475,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
         LHServerConfig serverConfig = context == null ? null : context.serverConfig();
         boolean convertBigDecimal = serverConfig != null && serverConfig.isJsonPathBigDecimalToDoubleEnabled();
+        boolean convertBigInteger = serverConfig != null && serverConfig.isJsonPathBigIntegerToIntEnabled();
 
         if (Long.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((long) val);
@@ -487,6 +489,15 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((Double) val);
         } else if (convertBigDecimal && val instanceof BigDecimal bigDecimal) {
             return new VariableValueModel(bigDecimal.doubleValue());
+        } else if (convertBigInteger && val instanceof BigInteger bigInteger) {
+            try {
+                return new VariableValueModel(bigInteger.longValueExact());
+            } catch (ArithmeticException exn) {
+                String errorMessage = "Not possible to get this from jsonpath path=%s type=%s reason=out_of_int64_range"
+                        .formatted(path, val.getClass().getName());
+                log.error(errorMessage);
+                throw new RuntimeException(errorMessage, exn);
+            }
         } else if (Map.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Map<String, Object>) val);
         } else if (List.class.isAssignableFrom(val.getClass())) {
