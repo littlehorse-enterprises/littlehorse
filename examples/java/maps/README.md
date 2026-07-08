@@ -8,10 +8,20 @@ Run the example Java app:
 ./gradlew example-maps:run
 ```
 
-In another terminal, start a workflow run with `lhctl`:
+In another terminal, start a workflow run with `lhctl`.
+
+The `my-map` input variable is a typed `Map<STR, INT>`. Provide it as a JSON object; the
+keys and values are coerced to the declared key/value types:
 
 ```
-# No input variables are required for this example
+# Override the map input with your own entries
+lhctl run example-maps my-map '{"apples": 10, "grapes": 7}'
+```
+
+`my-map` has a default value, so you can also run it with no input:
+
+```
+# Uses the default map: {"apples": 3, "bananas": 5, "cherries": 12}
 lhctl run example-maps
 ```
 

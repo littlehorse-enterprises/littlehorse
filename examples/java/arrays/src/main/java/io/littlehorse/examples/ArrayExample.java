@@ -17,7 +17,7 @@ public class ArrayExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-arrays", wf -> {
-            WfRunVariable arrVar = wf.declareArray("my-array", Long.class).required();
+            WfRunVariable arrVar = wf.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
 
             NodeOutput produced = wf.execute("produce-array");
             arrVar.assign(arrVar.extend(produced));
