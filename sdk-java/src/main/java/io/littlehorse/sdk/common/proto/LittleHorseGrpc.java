@@ -4119,7 +4119,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      * </pre>
      */
     default void createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request,
@@ -4129,7 +4129,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      * </pre>
      */
     default void getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request,
@@ -4139,7 +4139,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      * </pre>
      */
     default void searchBulkJob(io.littlehorse.sdk.common.proto.SearchBulkJobRequest request,
@@ -4149,7 +4149,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      * </pre>
      */
     default void deleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest request,
@@ -5312,7 +5312,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      * </pre>
      */
     public void createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request,
@@ -5323,7 +5323,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      * </pre>
      */
     public void getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request,
@@ -5334,7 +5334,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      * </pre>
      */
     public void searchBulkJob(io.littlehorse.sdk.common.proto.SearchBulkJobRequest request,
@@ -5345,7 +5345,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      * </pre>
      */
     public void deleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest request,
@@ -6434,7 +6434,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJob createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request) throws io.grpc.StatusException {
@@ -6444,7 +6444,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJob getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request) throws io.grpc.StatusException {
@@ -6454,7 +6454,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJobIdList searchBulkJob(io.littlehorse.sdk.common.proto.SearchBulkJobRequest request) throws io.grpc.StatusException {
@@ -6464,7 +6464,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      * </pre>
      */
     public com.google.protobuf.Empty deleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest request) throws io.grpc.StatusException {
@@ -7523,7 +7523,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJob createBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest request) {
@@ -7533,7 +7533,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJob getBulkJob(io.littlehorse.sdk.common.proto.GetBulkJobRequest request) {
@@ -7543,7 +7543,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      * </pre>
      */
     public io.littlehorse.sdk.common.proto.BulkJobIdList searchBulkJob(io.littlehorse.sdk.common.proto.SearchBulkJobRequest request) {
@@ -7553,7 +7553,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      * </pre>
      */
     public com.google.protobuf.Empty deleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest request) {
@@ -8693,7 +8693,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.BulkJob> createBulkJob(
@@ -8704,7 +8704,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.BulkJob> getBulkJob(
@@ -8715,7 +8715,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.BulkJobIdList> searchBulkJob(
@@ -8726,7 +8726,7 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      * </pre>
      */
     public com.google.common.util.concurrent.ListenableFuture<com.google.protobuf.Empty> deleteBulkJob(

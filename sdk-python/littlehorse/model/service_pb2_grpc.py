@@ -1211,28 +1211,28 @@ class LittleHorseServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def CreateBulkJob(self, request, context):
-        """Creates a BulkJob for performing large-scale background operations.
+        """EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetBulkJob(self, request, context):
-        """Gets the status of a BulkJob.
+        """EXPERIMENTAL: Gets the status of a BulkJob.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SearchBulkJob(self, request, context):
-        """Searches for BulkJob's, optionally filtering by status.
+        """EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def DeleteBulkJob(self, request, context):
-        """Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+        """EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')

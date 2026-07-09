@@ -362,13 +362,13 @@ type LittleHorseClient interface {
 	DeleteQuota(ctx context.Context, in *DeleteQuotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Creates a BulkJob for performing large-scale background operations.
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
 	CreateBulkJob(ctx context.Context, in *CreateBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
-	// Gets the status of a BulkJob.
+	// EXPERIMENTAL: Gets the status of a BulkJob.
 	GetBulkJob(ctx context.Context, in *GetBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
-	// Searches for BulkJob's, optionally filtering by status.
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
 	SearchBulkJob(ctx context.Context, in *SearchBulkJobRequest, opts ...grpc.CallOption) (*BulkJobIdList, error)
-	// Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
 	DeleteBulkJob(ctx context.Context, in *DeleteBulkJobRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
@@ -1593,13 +1593,13 @@ type LittleHorseServer interface {
 	DeleteQuota(context.Context, *DeleteQuotaRequest) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
-	// Creates a BulkJob for performing large-scale background operations.
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
 	CreateBulkJob(context.Context, *CreateBulkJobRequest) (*BulkJob, error)
-	// Gets the status of a BulkJob.
+	// EXPERIMENTAL: Gets the status of a BulkJob.
 	GetBulkJob(context.Context, *GetBulkJobRequest) (*BulkJob, error)
-	// Searches for BulkJob's, optionally filtering by status.
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
 	SearchBulkJob(context.Context, *SearchBulkJobRequest) (*BulkJobIdList, error)
-	// Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
 	DeleteBulkJob(context.Context, *DeleteBulkJobRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)

@@ -339,13 +339,13 @@ service LittleHorse {
   // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
 
-  // Creates a BulkJob for performing large-scale background operations.
+  // EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
   rpc CreateBulkJob(CreateBulkJobRequest) returns (BulkJob) {}
-  // Gets the status of a BulkJob.
+  // EXPERIMENTAL: Gets the status of a BulkJob.
   rpc GetBulkJob(GetBulkJobRequest) returns (BulkJob) {}
-  // Searches for BulkJob's, optionally filtering by status.
+  // EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
   rpc SearchBulkJob(SearchBulkJobRequest) returns (BulkJobIdList) {}
-  // Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+  // EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
   rpc DeleteBulkJob(DeleteBulkJobRequest) returns (google.protobuf.Empty) {}
 
   // Returns TaskDef Metrics for a specific TaskDef and a specific time window.

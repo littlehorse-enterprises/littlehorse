@@ -734,25 +734,25 @@ export interface ILittleHorseClient {
      */
     deleteScheduledWfRun(input: DeleteScheduledWfRunRequest, options?: RpcOptions): UnaryCall<DeleteScheduledWfRunRequest, Empty>;
     /**
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      *
      * @generated from protobuf rpc: CreateBulkJob
      */
     createBulkJob(input: CreateBulkJobRequest, options?: RpcOptions): UnaryCall<CreateBulkJobRequest, BulkJob>;
     /**
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      *
      * @generated from protobuf rpc: GetBulkJob
      */
     getBulkJob(input: GetBulkJobRequest, options?: RpcOptions): UnaryCall<GetBulkJobRequest, BulkJob>;
     /**
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      *
      * @generated from protobuf rpc: SearchBulkJob
      */
     searchBulkJob(input: SearchBulkJobRequest, options?: RpcOptions): UnaryCall<SearchBulkJobRequest, BulkJobIdList>;
     /**
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      *
      * @generated from protobuf rpc: DeleteBulkJob
      */
@@ -1676,7 +1676,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
         return stackIntercept<DeleteScheduledWfRunRequest, Empty>("unary", this._transport, method, opt, input);
     }
     /**
-     * Creates a BulkJob for performing large-scale background operations.
+     * EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
      *
      * @generated from protobuf rpc: CreateBulkJob
      */
@@ -1685,7 +1685,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
         return stackIntercept<CreateBulkJobRequest, BulkJob>("unary", this._transport, method, opt, input);
     }
     /**
-     * Gets the status of a BulkJob.
+     * EXPERIMENTAL: Gets the status of a BulkJob.
      *
      * @generated from protobuf rpc: GetBulkJob
      */
@@ -1694,7 +1694,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
         return stackIntercept<GetBulkJobRequest, BulkJob>("unary", this._transport, method, opt, input);
     }
     /**
-     * Searches for BulkJob's, optionally filtering by status.
+     * EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
      *
      * @generated from protobuf rpc: SearchBulkJob
      */
@@ -1703,7 +1703,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
         return stackIntercept<SearchBulkJobRequest, BulkJobIdList>("unary", this._transport, method, opt, input);
     }
     /**
-     * Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+     * EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
      *
      * @generated from protobuf rpc: DeleteBulkJob
      */
