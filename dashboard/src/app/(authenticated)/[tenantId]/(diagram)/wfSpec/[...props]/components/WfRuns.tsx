@@ -9,7 +9,7 @@ import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
 import { DateLike, formatDate, getStatus, getVariableValue, toDate, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
-import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
+import { getVariableFilterValue } from '@/app/utils/variables'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -34,12 +34,15 @@ const defaultSort = (): SortState => ({ key: 'startTime', dir: 'desc' })
 
 const buildVariableFilters = (filter: VariableFilter | null): VariableMatch[] => {
   if (!filter?.value?.trim()) return []
-  return [
-    {
-      varName: filter.varDef.name,
-      value: getTypedVariableValue(getVariableDefType(filter.varDef), filter.value.trim()),
-    },
-  ]
+  try {
+    return [{ varName: filter.varDef.name, value: getVariableFilterValue(filter.varDef, filter.value.trim()) }]
+  } catch {
+    // Invalid input for the selected variable type (e.g. a map/array filter whose text
+    // isn't valid JSON). This runs inside a render-time useMemo, so a throw escapes to the
+    // error boundary and white-screens the page — skip the filter instead. The dialog
+    // validates and surfaces the error before a bad filter can reach here.
+    return []
+  }
 }
 
 const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)

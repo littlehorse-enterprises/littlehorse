@@ -1,4 +1,4 @@
-import { Array$ as LHArray, Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
+import { Array$ as LHArray, Map as LHMap, Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
 import { getVariableValue, variableValueToJSON } from './variables'
 
 export const structToJSONString = (struct: Struct): string => {
@@ -15,6 +15,14 @@ export const arrayToJSONString = (array: LHArray): string => {
 
 export const arrayFromJSONString = (jsonStr: string): LHArray => {
   return LHArray.fromJsonString(jsonStr)
+}
+
+export const mapToJSONString = (map: LHMap): string => {
+  return JSON.stringify(variableValueToJSON(VariableValue.create({ value: { oneofKind: 'map', map } })))
+}
+
+export const mapFromJSONString = (jsonStr: string): LHMap => {
+  return LHMap.fromJsonString(jsonStr)
 }
 
 export const getAttemptOutput = (output: VariableValue | undefined): string => {

@@ -62,6 +62,14 @@ export interface TypeDefinition {
          */
         inlineStructDef: InlineStructDef;
     } | {
+        oneofKind: "inlineMapDef";
+        /**
+         * An inline Map definition.
+         *
+         * @generated from protobuf field: littlehorse.InlineMapDef inline_map_def = 8
+         */
+        inlineMapDef: InlineMapDef;
+    } | {
         oneofKind: undefined;
     };
     /**
@@ -83,6 +91,25 @@ export interface InlineArrayDef {
      * @generated from protobuf field: littlehorse.TypeDefinition array_type = 1
      */
     arrayType?: TypeDefinition;
+}
+/**
+ * Inline schema definition for a native LittleHorse Map.
+ *
+ * @generated from protobuf message littlehorse.InlineMapDef
+ */
+export interface InlineMapDef {
+    /**
+     * Type definition for each key in the map. Must resolve to a primitive type.
+     *
+     * @generated from protobuf field: littlehorse.TypeDefinition key_type = 1
+     */
+    keyType?: TypeDefinition;
+    /**
+     * Type definition for each value in the map.
+     *
+     * @generated from protobuf field: littlehorse.TypeDefinition value_type = 2
+     */
+    valueType?: TypeDefinition;
 }
 /**
  * A map of InlineStructDef's field names to their StructFieldDef's.
@@ -229,8 +256,60 @@ export interface VariableValue {
          */
         array: Array$;
     } | {
+        oneofKind: "map";
+        /**
+         * A Map object.
+         *
+         * @generated from protobuf field: littlehorse.Map map = 13
+         */
+        map: Map;
+    } | {
         oneofKind: undefined;
     };
+}
+/**
+ * A Map is a strongly-typed mapping from key values to value values.
+ *
+ * @generated from protobuf message littlehorse.Map
+ */
+export interface Map {
+    /**
+     * The entries of the map.
+     *
+     * Note: We use a repeated list of entries rather than a protobuf `map<...>` because
+     * protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
+     * `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
+     *
+     * @generated from protobuf field: repeated littlehorse.Map.Entry entries = 1
+     */
+    entries: Map_Entry[];
+    /**
+     * Optional, authoritative key/value types for this map.
+     * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
+     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * @generated from protobuf field: optional littlehorse.InlineMapDef map_type = 2
+     */
+    mapType?: InlineMapDef;
+}
+/**
+ * A single key/value entry in the Map.
+ *
+ * @generated from protobuf message littlehorse.Map.Entry
+ */
+export interface Map_Entry {
+    /**
+     * The key of this entry.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue key = 1
+     */
+    key?: VariableValue;
+    /**
+     * The value of this entry.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue value = 2
+     */
+    value?: VariableValue;
 }
 /**
  * An Array is a strongly-typed list of values.
@@ -392,6 +471,7 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
             { no: 5, name: "struct_def_id", kind: "message", oneof: "definedType", T: () => StructDefId },
             { no: 6, name: "inline_array_def", kind: "message", oneof: "definedType", T: () => InlineArrayDef },
             { no: 7, name: "inline_struct_def", kind: "message", oneof: "definedType", T: () => InlineStructDef },
+            { no: 8, name: "inline_map_def", kind: "message", oneof: "definedType", T: () => InlineMapDef },
             { no: 4, name: "masked", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
@@ -432,6 +512,12 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
                         inlineStructDef: InlineStructDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineStructDef)
                     };
                     break;
+                case /* littlehorse.InlineMapDef inline_map_def */ 8:
+                    message.definedType = {
+                        oneofKind: "inlineMapDef",
+                        inlineMapDef: InlineMapDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineMapDef)
+                    };
+                    break;
                 case /* bool masked */ 4:
                     message.masked = reader.bool();
                     break;
@@ -462,6 +548,9 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
         /* littlehorse.InlineStructDef inline_struct_def = 7; */
         if (message.definedType.oneofKind === "inlineStructDef")
             InlineStructDef.internalBinaryWrite(message.definedType.inlineStructDef, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InlineMapDef inline_map_def = 8; */
+        if (message.definedType.oneofKind === "inlineMapDef")
+            InlineMapDef.internalBinaryWrite(message.definedType.inlineMapDef, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -518,6 +607,59 @@ class InlineArrayDef$Type extends MessageType<InlineArrayDef> {
  * @generated MessageType for protobuf message littlehorse.InlineArrayDef
  */
 export const InlineArrayDef = new InlineArrayDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class InlineMapDef$Type extends MessageType<InlineMapDef> {
+    constructor() {
+        super("littlehorse.InlineMapDef", [
+            { no: 1, name: "key_type", kind: "message", T: () => TypeDefinition },
+            { no: 2, name: "value_type", kind: "message", T: () => TypeDefinition }
+        ]);
+    }
+    create(value?: PartialMessage<InlineMapDef>): InlineMapDef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<InlineMapDef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InlineMapDef): InlineMapDef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.TypeDefinition key_type */ 1:
+                    message.keyType = TypeDefinition.internalBinaryRead(reader, reader.uint32(), options, message.keyType);
+                    break;
+                case /* littlehorse.TypeDefinition value_type */ 2:
+                    message.valueType = TypeDefinition.internalBinaryRead(reader, reader.uint32(), options, message.valueType);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: InlineMapDef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.TypeDefinition key_type = 1; */
+        if (message.keyType)
+            TypeDefinition.internalBinaryWrite(message.keyType, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.TypeDefinition value_type = 2; */
+        if (message.valueType)
+            TypeDefinition.internalBinaryWrite(message.valueType, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.InlineMapDef
+ */
+export const InlineMapDef = new InlineMapDef$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class InlineStructDef$Type extends MessageType<InlineStructDef> {
     constructor() {
@@ -660,7 +802,8 @@ class VariableValue$Type extends MessageType<VariableValue> {
             { no: 9, name: "wf_run_id", kind: "message", oneof: "value", T: () => WfRunId },
             { no: 10, name: "utc_timestamp", kind: "message", oneof: "value", T: () => Timestamp },
             { no: 11, name: "struct", kind: "message", oneof: "value", T: () => Struct },
-            { no: 12, name: "array", kind: "message", oneof: "value", T: () => Array$ }
+            { no: 12, name: "array", kind: "message", oneof: "value", T: () => Array$ },
+            { no: 13, name: "map", kind: "message", oneof: "value", T: () => Map }
         ]);
     }
     create(value?: PartialMessage<VariableValue>): VariableValue {
@@ -741,6 +884,12 @@ class VariableValue$Type extends MessageType<VariableValue> {
                         array: Array$.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).array)
                     };
                     break;
+                case /* littlehorse.Map map */ 13:
+                    message.value = {
+                        oneofKind: "map",
+                        map: Map.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).map)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -786,6 +935,9 @@ class VariableValue$Type extends MessageType<VariableValue> {
         /* littlehorse.Array array = 12; */
         if (message.value.oneofKind === "array")
             Array$.internalBinaryWrite(message.value.array, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.Map map = 13; */
+        if (message.value.oneofKind === "map")
+            Map.internalBinaryWrite(message.value.map, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -796,6 +948,113 @@ class VariableValue$Type extends MessageType<VariableValue> {
  * @generated MessageType for protobuf message littlehorse.VariableValue
  */
 export const VariableValue = new VariableValue$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Map$Type extends MessageType<Map> {
+    constructor() {
+        super("littlehorse.Map", [
+            { no: 1, name: "entries", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => Map_Entry },
+            { no: 2, name: "map_type", kind: "message", T: () => InlineMapDef }
+        ]);
+    }
+    create(value?: PartialMessage<Map>): Map {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.entries = [];
+        if (value !== undefined)
+            reflectionMergePartial<Map>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Map): Map {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated littlehorse.Map.Entry entries */ 1:
+                    message.entries.push(Map_Entry.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* optional littlehorse.InlineMapDef map_type */ 2:
+                    message.mapType = InlineMapDef.internalBinaryRead(reader, reader.uint32(), options, message.mapType);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Map, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated littlehorse.Map.Entry entries = 1; */
+        for (let i = 0; i < message.entries.length; i++)
+            Map_Entry.internalBinaryWrite(message.entries[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.InlineMapDef map_type = 2; */
+        if (message.mapType)
+            InlineMapDef.internalBinaryWrite(message.mapType, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.Map
+ */
+export const Map = new Map$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Map_Entry$Type extends MessageType<Map_Entry> {
+    constructor() {
+        super("littlehorse.Map.Entry", [
+            { no: 1, name: "key", kind: "message", T: () => VariableValue },
+            { no: 2, name: "value", kind: "message", T: () => VariableValue }
+        ]);
+    }
+    create(value?: PartialMessage<Map_Entry>): Map_Entry {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<Map_Entry>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Map_Entry): Map_Entry {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.VariableValue key */ 1:
+                    message.key = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.key);
+                    break;
+                case /* littlehorse.VariableValue value */ 2:
+                    message.value = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.value);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Map_Entry, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.VariableValue key = 1; */
+        if (message.key)
+            VariableValue.internalBinaryWrite(message.key, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.VariableValue value = 2; */
+        if (message.value)
+            VariableValue.internalBinaryWrite(message.value, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.Map.Entry
+ */
+export const Map_Entry = new Map_Entry$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Array$$Type extends MessageType<Array$> {
     constructor() {

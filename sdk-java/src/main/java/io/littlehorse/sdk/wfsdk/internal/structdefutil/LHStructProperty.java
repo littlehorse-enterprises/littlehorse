@@ -12,8 +12,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
@@ -63,6 +66,10 @@ public class LHStructProperty {
 
             if (isNativeArray() && val.getClass().isArray()) {
                 return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
+            }
+
+            if (isNativeMap() && val instanceof Map) {
+                return LHLibUtil.objToVarValAsNativeMap(val, typeAdapterRegistry);
             }
 
             return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry);
@@ -163,15 +170,48 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Map<String, String> placeholderValues = parentStructDef.getPlaceholderValues();
+
         if (isNativeArray()) {
-            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
+            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
         }
 
-        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
+        if (isNativeMap()) {
+            return resolveMapType(typeAdapterRegistry);
+        }
+
+        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
     }
 
     private boolean isNativeArray() {
         return pd.getPropertyType().isArray() && !byte[].class.equals(pd.getPropertyType());
+    }
+
+    private boolean isNativeMap() {
+        return Map.class.isAssignableFrom(pd.getPropertyType());
+    }
+
+    private LHMapType resolveMapType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Type genericType = null;
+        if (pd.getReadMethod() != null) {
+            genericType = pd.getReadMethod().getGenericReturnType();
+        }
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArgs = paramType.getActualTypeArguments();
+            if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
+                return new LHMapType(
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        parentStructDef.getPlaceholderValues());
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Map property '" + fieldName + "' must declare generic type parameters (e.g. Map<String, Integer>). "
+                        + "Raw or wildcard Map types are not supported.");
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or
