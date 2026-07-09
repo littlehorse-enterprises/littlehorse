@@ -466,4 +466,53 @@ public class LHLibUtilTest {
 
         assertThat(pojo.getNullableField()).isNull();
     }
+
+    @Test
+    void shouldSerializeMapAsNativeLHMapWhenRequested() {
+        Map<String, Long> items = Map.of("apples", 3L, "bananas", 5L);
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
+        Assertions.assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
+
+        Map<String, Long> roundTripped = new HashMap<>();
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : val.getMap().getEntriesList()) {
+            roundTripped.put(entry.getKey().getStr(), entry.getValue().getInt());
+        }
+        Assertions.assertThat(roundTripped).containsEntry("apples", 3L).containsEntry("bananas", 5L);
+    }
+
+    @Test
+    void shouldFailNativeMapSerializationForNonMapObject() {
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                .hasMessageContaining("java.util.Map");
+    }
+
+    @Test
+    void shouldDeserializeNativeLHMapToJavaMap() {
+        VariableValue nativeMap = VariableValue.newBuilder()
+                .setMap(io.littlehorse.sdk.common.proto.Map.newBuilder()
+                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                .setKey(VariableValue.newBuilder().setStr("x"))
+                                .setValue(VariableValue.newBuilder().setInt(10L)))
+                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                .setKey(VariableValue.newBuilder().setStr("y"))
+                                .setValue(VariableValue.newBuilder().setInt(20L))))
+                .build();
+
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> out =
+                (Map<Object, Object>) LHLibUtil.varValToObj(nativeMap, Map.class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(out).containsEntry("x", 10L).containsEntry("y", 20L);
+    }
+
+    @Test
+    void shouldSerializeNullMapAsValueNotSet() {
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, LHTypeAdapterRegistry.empty());
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+    }
 }

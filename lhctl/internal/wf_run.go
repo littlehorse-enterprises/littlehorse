@@ -321,9 +321,17 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
-				scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, varDef.TypeDef.GetPrimitiveType(),
-				)
+				if varDef.TypeDef != nil {
+					scheduleWfReq.Variables[varName], err = littlehorse.TypeDefToVarVal(
+						varValStr, varDef.TypeDef,
+					)
+				} else if varDef.Type != nil {
+					scheduleWfReq.Variables[varName], err = littlehorse.StrToVarVal(
+						varValStr, *varDef.Type,
+					)
+				} else {
+					log.Fatal("Variable '" + varName + "' has no type information in WfSpec.")
+				}
 
 				if err != nil {
 					log.Fatal("Failed converting variable: " + err.Error())
