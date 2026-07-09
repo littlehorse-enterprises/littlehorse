@@ -175,6 +175,10 @@ public class ScheduledTaskExecutor {
             return LHLibUtil.objToVarValAsNativeArray(result, returnType, typeAdapterRegistry);
         }
 
+        if (metadata.isLHMap()) {
+            return LHLibUtil.objToVarValAsNativeMap(result, typeAdapterRegistry);
+        }
+
         if (InlineStruct.class.equals(returnType)) {
             return serializeInlineStructResult(result);
         }

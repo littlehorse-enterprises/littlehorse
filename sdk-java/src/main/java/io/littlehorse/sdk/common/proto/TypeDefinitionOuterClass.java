@@ -37,6 +37,11 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_InlineArrayDef_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_InlineMapDef_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_InlineMapDef_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_InlineStructDef_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -56,6 +61,16 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_VariableValue_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Map_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_Map_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_Map_Entry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_Map_Entry_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_Array_descriptor;
   static final 
@@ -97,51 +112,61 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
     java.lang.String[] descriptorData = {
       "\n\025type_definition.proto\022\013littlehorse\032\017ob" +
       "ject_id.proto\032\022common_enums.proto\032\037googl" +
-      "e/protobuf/timestamp.proto\"\230\002\n\016TypeDefin" +
+      "e/protobuf/timestamp.proto\"\315\002\n\016TypeDefin" +
       "ition\0223\n\016primitive_type\030\001 \001(\0162\031.littleho" +
       "rse.VariableTypeH\000\0221\n\rstruct_def_id\030\005 \001(" +
       "\0132\030.littlehorse.StructDefIdH\000\0227\n\020inline_" +
       "array_def\030\006 \001(\0132\033.littlehorse.InlineArra" +
       "yDefH\000\0229\n\021inline_struct_def\030\007 \001(\0132\034.litt" +
-      "lehorse.InlineStructDefH\000\022\016\n\006masked\030\004 \001(" +
-      "\010B\016\n\014defined_typeJ\004\010\002\020\003J\004\010\003\020\004\"A\n\016InlineA" +
-      "rrayDef\022/\n\narray_type\030\001 \001(\0132\033.littlehors" +
-      "e.TypeDefinition\"\227\001\n\017InlineStructDef\0228\n\006" +
-      "fields\030\001 \003(\0132(.littlehorse.InlineStructD" +
-      "ef.FieldsEntry\032J\n\013FieldsEntry\022\013\n\003key\030\001 \001" +
-      "(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse.StructFi" +
-      "eldDef:\0028\001\"\240\001\n\016StructFieldDef\022/\n\nfield_t" +
-      "ype\030\001 \001(\0132\033.littlehorse.TypeDefinition\0226" +
-      "\n\rdefault_value\030\002 \001(\0132\032.littlehorse.Vari" +
-      "ableValueH\000\210\001\001\022\023\n\013is_nullable\030\003 \001(\010B\020\n\016_" +
-      "default_value\"\303\002\n\rVariableValue\022\022\n\010json_" +
-      "obj\030\002 \001(\tH\000\022\022\n\010json_arr\030\003 \001(\tH\000\022\020\n\006doubl" +
-      "e\030\004 \001(\001H\000\022\016\n\004bool\030\005 \001(\010H\000\022\r\n\003str\030\006 \001(\tH\000" +
-      "\022\r\n\003int\030\007 \001(\003H\000\022\017\n\005bytes\030\010 \001(\014H\000\022)\n\twf_r" +
-      "un_id\030\t \001(\0132\024.littlehorse.WfRunIdH\000\0223\n\ru" +
-      "tc_timestamp\030\n \001(\0132\032.google.protobuf.Tim" +
-      "estampH\000\022%\n\006struct\030\013 \001(\0132\023.littlehorse.S" +
-      "tructH\000\022#\n\005array\030\014 \001(\0132\022.littlehorse.Arr" +
-      "ayH\000B\007\n\005valueJ\004\010\001\020\002\"{\n\005Array\022)\n\005items\030\001 " +
-      "\003(\0132\032.littlehorse.VariableValue\0226\n\014eleme" +
-      "nt_type\030\002 \001(\0132\033.littlehorse.TypeDefiniti" +
-      "onH\000\210\001\001B\017\n\r_element_type\"d\n\006Struct\022/\n\rst" +
-      "ruct_def_id\030\001 \001(\0132\030.littlehorse.StructDe" +
-      "fId\022)\n\006struct\030\002 \001(\0132\031.littlehorse.Inline" +
-      "Struct\"\216\001\n\014InlineStruct\0225\n\006fields\030\001 \003(\0132" +
-      "%.littlehorse.InlineStruct.FieldsEntry\032G" +
-      "\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022\'\n\005value\030\002 \001(" +
-      "\0132\030.littlehorse.StructField:\0028\001\"H\n\013Struc" +
-      "tField\022)\n\005value\030\001 \001(\0132\032.littlehorse.Vari" +
-      "ableValue\022\016\n\006masked\030\002 \001(\010\"S\n\nReturnType\022" +
-      "5\n\013return_type\030\001 \001(\0132\033.littlehorse.TypeD" +
-      "efinitionH\000\210\001\001B\016\n\014_return_type*\204\001\n\nCompa" +
-      "rator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020\001\022\020" +
-      "\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003\022\n\n" +
-      "\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006NOT" +
-      "_IN\020\007BM\n\037io.littlehorse.sdk.common.proto" +
-      "P\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.P" +
-      "rotob\006proto3"
+      "lehorse.InlineStructDefH\000\0223\n\016inline_map_" +
+      "def\030\010 \001(\0132\031.littlehorse.InlineMapDefH\000\022\016" +
+      "\n\006masked\030\004 \001(\010B\016\n\014defined_typeJ\004\010\002\020\003J\004\010\003" +
+      "\020\004\"A\n\016InlineArrayDef\022/\n\narray_type\030\001 \001(\013" +
+      "2\033.littlehorse.TypeDefinition\"n\n\014InlineM" +
+      "apDef\022-\n\010key_type\030\001 \001(\0132\033.littlehorse.Ty" +
+      "peDefinition\022/\n\nvalue_type\030\002 \001(\0132\033.littl" +
+      "ehorse.TypeDefinition\"\227\001\n\017InlineStructDe" +
+      "f\0228\n\006fields\030\001 \003(\0132(.littlehorse.InlineSt" +
+      "ructDef.FieldsEntry\032J\n\013FieldsEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022*\n\005value\030\002 \001(\0132\033.littlehorse.Str" +
+      "uctFieldDef:\0028\001\"\240\001\n\016StructFieldDef\022/\n\nfi" +
+      "eld_type\030\001 \001(\0132\033.littlehorse.TypeDefinit" +
+      "ion\0226\n\rdefault_value\030\002 \001(\0132\032.littlehorse" +
+      ".VariableValueH\000\210\001\001\022\023\n\013is_nullable\030\003 \001(\010" +
+      "B\020\n\016_default_value\"\344\002\n\rVariableValue\022\022\n\010" +
+      "json_obj\030\002 \001(\tH\000\022\022\n\010json_arr\030\003 \001(\tH\000\022\020\n\006" +
+      "double\030\004 \001(\001H\000\022\016\n\004bool\030\005 \001(\010H\000\022\r\n\003str\030\006 " +
+      "\001(\tH\000\022\r\n\003int\030\007 \001(\003H\000\022\017\n\005bytes\030\010 \001(\014H\000\022)\n" +
+      "\twf_run_id\030\t \001(\0132\024.littlehorse.WfRunIdH\000" +
+      "\0223\n\rutc_timestamp\030\n \001(\0132\032.google.protobu" +
+      "f.TimestampH\000\022%\n\006struct\030\013 \001(\0132\023.littleho" +
+      "rse.StructH\000\022#\n\005array\030\014 \001(\0132\022.littlehors" +
+      "e.ArrayH\000\022\037\n\003map\030\r \001(\0132\020.littlehorse.Map" +
+      "H\000B\007\n\005valueJ\004\010\001\020\002\"\312\001\n\003Map\022\'\n\007entries\030\001 \003" +
+      "(\0132\026.littlehorse.Map.Entry\0220\n\010map_type\030\002" +
+      " \001(\0132\031.littlehorse.InlineMapDefH\000\210\001\001\032[\n\005" +
+      "Entry\022\'\n\003key\030\001 \001(\0132\032.littlehorse.Variabl" +
+      "eValue\022)\n\005value\030\002 \001(\0132\032.littlehorse.Vari" +
+      "ableValueB\013\n\t_map_type\"{\n\005Array\022)\n\005items" +
+      "\030\001 \003(\0132\032.littlehorse.VariableValue\0226\n\014el" +
+      "ement_type\030\002 \001(\0132\033.littlehorse.TypeDefin" +
+      "itionH\000\210\001\001B\017\n\r_element_type\"d\n\006Struct\022/\n" +
+      "\rstruct_def_id\030\001 \001(\0132\030.littlehorse.Struc" +
+      "tDefId\022)\n\006struct\030\002 \001(\0132\031.littlehorse.Inl" +
+      "ineStruct\"\216\001\n\014InlineStruct\0225\n\006fields\030\001 \003" +
+      "(\0132%.littlehorse.InlineStruct.FieldsEntr" +
+      "y\032G\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\022\'\n\005value\030\002" +
+      " \001(\0132\030.littlehorse.StructField:\0028\001\"H\n\013St" +
+      "ructField\022)\n\005value\030\001 \001(\0132\032.littlehorse.V" +
+      "ariableValue\022\016\n\006masked\030\002 \001(\010\"S\n\nReturnTy" +
+      "pe\0225\n\013return_type\030\001 \001(\0132\033.littlehorse.Ty" +
+      "peDefinitionH\000\210\001\001B\016\n\014_return_type*\204\001\n\nCo" +
+      "mparator\022\r\n\tLESS_THAN\020\000\022\020\n\014GREATER_THAN\020" +
+      "\001\022\020\n\014LESS_THAN_EQ\020\002\022\023\n\017GREATER_THAN_EQ\020\003" +
+      "\022\n\n\006EQUALS\020\004\022\016\n\nNOT_EQUALS\020\005\022\006\n\002IN\020\006\022\n\n\006" +
+      "NOT_IN\020\007BM\n\037io.littlehorse.sdk.common.pr" +
+      "otoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Commo" +
+      "n.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -155,15 +180,21 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
     internal_static_littlehorse_TypeDefinition_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TypeDefinition_descriptor,
-        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineArrayDef", "InlineStructDef", "Masked", "DefinedType", });
+        new java.lang.String[] { "PrimitiveType", "StructDefId", "InlineArrayDef", "InlineStructDef", "InlineMapDef", "Masked", "DefinedType", });
     internal_static_littlehorse_InlineArrayDef_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_littlehorse_InlineArrayDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InlineArrayDef_descriptor,
         new java.lang.String[] { "ArrayType", });
-    internal_static_littlehorse_InlineStructDef_descriptor =
+    internal_static_littlehorse_InlineMapDef_descriptor =
       getDescriptor().getMessageTypes().get(2);
+    internal_static_littlehorse_InlineMapDef_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_InlineMapDef_descriptor,
+        new java.lang.String[] { "KeyType", "ValueType", });
+    internal_static_littlehorse_InlineStructDef_descriptor =
+      getDescriptor().getMessageTypes().get(3);
     internal_static_littlehorse_InlineStructDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InlineStructDef_descriptor,
@@ -175,31 +206,43 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
         internal_static_littlehorse_InlineStructDef_FieldsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_StructFieldDef_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_littlehorse_StructFieldDef_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructFieldDef_descriptor,
         new java.lang.String[] { "FieldType", "DefaultValue", "IsNullable", });
     internal_static_littlehorse_VariableValue_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_littlehorse_VariableValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableValue_descriptor,
-        new java.lang.String[] { "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "WfRunId", "UtcTimestamp", "Struct", "Array", "Value", });
+        new java.lang.String[] { "JsonObj", "JsonArr", "Double", "Bool", "Str", "Int", "Bytes", "WfRunId", "UtcTimestamp", "Struct", "Array", "Map", "Value", });
+    internal_static_littlehorse_Map_descriptor =
+      getDescriptor().getMessageTypes().get(6);
+    internal_static_littlehorse_Map_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_Map_descriptor,
+        new java.lang.String[] { "Entries", "MapType", });
+    internal_static_littlehorse_Map_Entry_descriptor =
+      internal_static_littlehorse_Map_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_Map_Entry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_Map_Entry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_Array_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(7);
     internal_static_littlehorse_Array_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Array_descriptor,
         new java.lang.String[] { "Items", "ElementType", });
     internal_static_littlehorse_Struct_descriptor =
-      getDescriptor().getMessageTypes().get(6);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_littlehorse_Struct_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Struct_descriptor,
         new java.lang.String[] { "StructDefId", "Struct", });
     internal_static_littlehorse_InlineStruct_descriptor =
-      getDescriptor().getMessageTypes().get(7);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_InlineStruct_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_InlineStruct_descriptor,
@@ -211,13 +254,13 @@ public final class TypeDefinitionOuterClass extends com.google.protobuf.Generate
         internal_static_littlehorse_InlineStruct_FieldsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_StructField_descriptor =
-      getDescriptor().getMessageTypes().get(8);
+      getDescriptor().getMessageTypes().get(10);
     internal_static_littlehorse_StructField_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructField_descriptor,
         new java.lang.String[] { "Value", "Masked", });
     internal_static_littlehorse_ReturnType_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(11);
     internal_static_littlehorse_ReturnType_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ReturnType_descriptor,

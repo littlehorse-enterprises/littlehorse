@@ -33,6 +33,7 @@ include(
         'interrupt-handler',
         'inline-struct-placeholder',
         'json',
+        'maps',
         'mutation',
         'output-topic',
         'parallel-approval',

@@ -11,9 +11,11 @@ import {
   formatTypeDefinition,
   getPrimitiveFormDefaultValue,
   getTypedVariableValue,
+  getTypedVariableValueFromTypeDef,
   getVariable,
   getVariableCaseFromTypeDef,
   getVariableDefType,
+  getVariableFilterValue,
   getVariableValue,
 } from './variables'
 import { normalizeUtcTimestampString } from './timestamp'
@@ -547,6 +549,68 @@ describe('formatTypeDefinition', () => {
     expect(formatTypeDefinition(typeDef)).toEqual('Array<Array<Integer>>')
   })
 
+  it('should format map type with key and value types', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.INT,
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Integer>')
+  })
+
+  it('should format nested map value types recursively', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              oneofKind: 'inlineArrayDef',
+              inlineArrayDef: {
+                arrayType: {
+                  definedType: {
+                    oneofKind: 'primitiveType',
+                    primitiveType: VariableType.INT,
+                  },
+                  masked: false,
+                },
+              },
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Array<Integer>>')
+  })
+
   it('should format struct type', () => {
     const typeDef: TypeDefinition = {
       definedType: {
@@ -583,5 +647,88 @@ describe('getVariableValue', () => {
     })
 
     expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
+  })
+
+  it('should render native map as JSON object keyed by entry keys', () => {
+    const variableValue = VariableValue.fromJson({
+      map: {
+        entries: [
+          { key: { str: 'one' }, value: { int: 1 } },
+          { key: { str: 'two' }, value: { int: 2 } },
+        ],
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual('{"one":1,"two":2}')
+  })
+})
+
+describe('getTypedVariableValueFromTypeDef', () => {
+  const mapStrInt: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineMapDef',
+      inlineMapDef: {
+        keyType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR }, masked: false },
+        valueType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.INT }, masked: false },
+      },
+    },
+    masked: false,
+  }
+
+  const arrayInt: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineArrayDef',
+      inlineArrayDef: {
+        arrayType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.INT }, masked: false },
+      },
+    },
+    masked: false,
+  }
+
+  it('converts friendly Map JSON into a proto Map that round-trips back to the same display', () => {
+    const vv = getTypedVariableValueFromTypeDef(mapStrInt, '{"apples":3,"bananas":5}')
+    expect(vv.value.oneofKind).toEqual('map')
+    // entries carry the declared key/value types, not raw JSON
+    expect(vv.value).toEqual({
+      oneofKind: 'map',
+      map: {
+        entries: [
+          { key: { value: { oneofKind: 'str', str: 'apples' } }, value: { value: { oneofKind: 'int', int: '3' } } },
+          { key: { value: { oneofKind: 'str', str: 'bananas' } }, value: { value: { oneofKind: 'int', int: '5' } } },
+        ],
+      },
+    })
+    expect(getVariableValue(vv)).toEqual('{"apples":3,"bananas":5}')
+  })
+
+  it('converts friendly Array JSON into a proto Array that round-trips', () => {
+    const vv = getTypedVariableValueFromTypeDef(arrayInt, '[1,2,3]')
+    expect(vv.value.oneofKind).toEqual('array')
+    expect(getVariableValue(vv)).toEqual('[1,2,3]')
+  })
+
+  it('handles nested Map<String,Array<Integer>> recursively', () => {
+    const nested: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR }, masked: false },
+          valueType: arrayInt,
+        },
+      },
+      masked: false,
+    }
+    const vv = getTypedVariableValueFromTypeDef(nested, '{"a":[1,2],"b":[3]}')
+    expect(getVariableValue(vv)).toEqual('{"a":[1,2],"b":[3]}')
+  })
+
+  it('throws on malformed JSON so callers can surface a validation error instead of crashing', () => {
+    expect(() => getTypedVariableValueFromTypeDef(mapStrInt, 'not json')).toThrow()
+  })
+
+  it('getVariableFilterValue builds a filter value from a map-typed VariableDef', () => {
+    const varDef: VariableDef = { name: 'settings', typeDef: mapStrInt } as VariableDef
+    const vv = getVariableFilterValue(varDef, '{"x":1}')
+    expect(getVariableValue(vv)).toEqual('{"x":1}')
   })
 })
