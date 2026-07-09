@@ -417,9 +417,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } catch (PathNotFoundException exn) {
             return new VariableValueModel();
         } catch (Exception exn) {
-            exn.printStackTrace();
-            throw new LHVarSubError(
-                    exn, "Failed accessing path " + path + " on data " + jsonStr + "  :\n" + exn.getMessage());
+            throw new LHVarSubError(exn, "Failed accessing JSONPath " + path);
         }
 
         if (val == null) {
@@ -444,8 +442,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
         } else if (List.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((List<Object>) val);
         } else {
-            log.error("Not possible to get this from jsonpath {}={}", val, val.getClass());
-            throw new RuntimeException("Not possible to get this from jsonpath");
+            log.error("Not possible to get this type from jsonpath {}", val.getClass());
+            throw new RuntimeException("Unsupported JSONPath result type: " + val.getClass().getName());
         }
     }
 

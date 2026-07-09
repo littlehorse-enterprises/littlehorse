@@ -902,18 +902,52 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
         }
 
-        switch (assn.getPathCase()) {
-            case JSON_PATH:
-                val = val.jsonPath(assn.getJsonPath());
-                break;
-            case LH_PATH:
-                val = val.get(assn.getLhPath());
-                break;
-            case PATH_NOT_SET:
+        try {
+            switch (assn.getPathCase()) {
+                case JSON_PATH:
+                    val = val.jsonPath(assn.getJsonPath());
+                    break;
+                case LH_PATH:
+                    val = val.get(assn.getLhPath());
+                    break;
+                case PATH_NOT_SET:
+            }
+        } catch (LHVarSubError | RuntimeException exn) {
+            throw new LHVarSubError(
+                    exn,
+                    safeVarSubContext(
+                            "variable_assignment",
+                            assn.getPathCase()
+                                            == io.littlehorse.sdk.common.proto.VariableAssignment.PathCase.JSON_PATH
+                                    ? "jsonPath"
+                                    : "lhPath",
+                            assn.getPathCase()
+                                            == io.littlehorse.sdk.common.proto.VariableAssignment.PathCase.JSON_PATH
+                                    ? assn.getJsonPath()
+                                    : String.valueOf(assn.getLhPath())));
         }
 
         val = assn.applyCast(val);
         return val;
+    }
+
+    public String safeVarSubContext(String role, String pathType, String path) {
+        NodeRunModel nodeRun = null;
+        try {
+            nodeRun = getCurrentNodeRun();
+        } catch (RuntimeException ignored) {
+            // Keep error reporting from masking the original variable substitution failure.
+        }
+        return "wfRunId=%s threadRunNumber=%d threadSpecName=%s nodeRunPosition=%d nodeName=%s role=%s %s=%s"
+                .formatted(
+                        wfRun == null || wfRun.getId() == null ? "<unknown>" : wfRun.getId().toString(),
+                        number,
+                        threadSpecName == null ? "<unknown>" : threadSpecName,
+                        nodeRun == null || nodeRun.getId() == null ? currentNodePosition : nodeRun.getId().getPosition(),
+                        nodeRun == null || nodeRun.getNodeName() == null ? "<unknown>" : nodeRun.getNodeName(),
+                        role,
+                        pathType,
+                        path == null ? "<none>" : path);
     }
 
     private VariableValueModel buildStructValue(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)

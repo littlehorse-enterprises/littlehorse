@@ -10,14 +10,17 @@ import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskAttempt.ResultCase;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -37,6 +40,28 @@ public class VarSubErrorTest {
 
     @LHWorkflow("var-type-validations")
     private Workflow varTypeValidationsWf;
+
+    @LHWorkflow("jsonpath-assignment-error-context")
+    private Workflow jsonPathAssignmentErrorContextWf;
+
+    @LHWorkflow("jsonpath-mutation-error-context")
+    private Workflow jsonPathMutationErrorContextWf;
+
+    private static final String SECRET_PAYLOAD = "customer-secret-value";
+
+    private static void assertSafeJsonPathContext(NodeRun nodeRun, String role, String path) {
+        Failure failure = nodeRun.getFailures(0);
+        assertThat(failure.getFailureName()).isEqualTo(LHErrorType.VAR_SUB_ERROR.toString());
+        assertThat(failure.getMessage())
+                .contains("wfRunId=" + nodeRun.getId().getWfRunId().getId())
+                .contains("threadRunNumber=" + nodeRun.getId().getThreadRunNumber())
+                .contains("threadSpecName=" + nodeRun.getThreadSpecName())
+                .contains("nodeRunPosition=" + nodeRun.getId().getPosition())
+                .contains("nodeName=" + nodeRun.getNodeName())
+                .contains("role=" + role)
+                .contains("jsonPath=" + path)
+                .doesNotContain(SECRET_PAYLOAD);
+    }
 
     @Test
     void shouldThrowInvalidArgumentIfRequiredVarMissing() {
@@ -163,6 +188,27 @@ public class VarSubErrorTest {
                 .start();
     }
 
+    @Test
+    void shouldAddSafeContextToJsonPathVariableAssignmentFailures() {
+        verifier.prepareRun(jsonPathAssignmentErrorContextWf, Arg.of("input-json", Map.of("secret", SECRET_PAYLOAD)))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> assertSafeJsonPathContext(nodeRun, "variable_assignment", "$["))
+                .start();
+    }
+
+    @Test
+    void shouldAddSafeContextToJsonPathMutationFailures() {
+        verifier.prepareRun(jsonPathMutationErrorContextWf, Arg.of("input-json", Map.of("secret", SECRET_PAYLOAD)))
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    assertSafeJsonPathContext(nodeRun, "mutation_rhs_node_output", "$[");
+                    assertThat(nodeRun.getFailures(0).getMessage())
+                            .contains("mutationVariable=input-json")
+                            .contains("mutationOperation=ASSIGN");
+                })
+                .start();
+    }
+
     /*
      * Allows testers to check that variable type validations are working properly on the following:
      * - input variables
@@ -182,6 +228,23 @@ public class VarSubErrorTest {
         });
     }
 
+    @LHWorkflow("jsonpath-assignment-error-context")
+    public Workflow getJsonPathAssignmentErrorContextWf() {
+        return Workflow.newWorkflow("jsonpath-assignment-error-context", wf -> {
+            WfRunVariable inputJson = wf.addVariable("input-json", VariableType.JSON_OBJ);
+            wf.execute("takes-in-string", inputJson.jsonPath("$["));
+        });
+    }
+
+    @LHWorkflow("jsonpath-mutation-error-context")
+    public Workflow getJsonPathMutationErrorContextWf() {
+        return Workflow.newWorkflow("jsonpath-mutation-error-context", wf -> {
+            WfRunVariable inputJson = wf.addVariable("input-json", VariableType.JSON_OBJ);
+            NodeOutput output = wf.execute("return-json", inputJson);
+            wf.mutate(inputJson, VariableMutationType.ASSIGN, output.jsonPath("$["));
+        });
+    }
+
     @LHTaskMethod("takes-in-int")
     public int obiWan(int input) {
         return input + 1;
@@ -190,5 +253,10 @@ public class VarSubErrorTest {
     @LHTaskMethod("takes-in-string")
     public String anakin(String input) {
         return input + "!";
+    }
+
+    @LHTaskMethod("return-json")
+    public Map<String, Object> returnJson(Map<String, Object> input) {
+        return input;
     }
 }

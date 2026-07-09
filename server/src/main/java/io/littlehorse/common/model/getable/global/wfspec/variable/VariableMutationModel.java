@@ -129,14 +129,29 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             out = thread.assignVariable(rhsRhsAssignment, txnCache);
         } else if (rhsValueType == RhsValueCase.NODE_OUTPUT) {
             out = nodeOutput;
-            switch (nodeOutputSource.getPathCase()) {
-                case JSONPATH:
-                    out = out.jsonPath(nodeOutputSource.getJsonPath());
-                    break;
-                case LH_PATH:
-                    out = out.get(nodeOutputSource.getLhPath());
-                    break;
-                case PATH_NOT_SET:
+            try {
+                switch (nodeOutputSource.getPathCase()) {
+                    case JSONPATH:
+                        out = out.jsonPath(nodeOutputSource.getJsonPath());
+                        break;
+                    case LH_PATH:
+                        out = out.get(nodeOutputSource.getLhPath());
+                        break;
+                    case PATH_NOT_SET:
+                }
+            } catch (LHVarSubError | RuntimeException exn) {
+                throw wrapPathError(
+                        thread,
+                        exn,
+                        "mutation_rhs_node_output",
+                        nodeOutputSource.getPathCase()
+                                        == io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.PathCase.JSONPATH
+                                ? "jsonPath"
+                                : "lhPath",
+                        nodeOutputSource.getPathCase()
+                                        == io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource.PathCase.JSONPATH
+                                ? nodeOutputSource.getJsonPath()
+                                : String.valueOf(nodeOutputSource.getLhPath()));
             }
         } else {
             throw new RuntimeException("Unsupported RHS Value type: " + rhsValueType);
@@ -156,7 +171,12 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         try {
             // NOTE Part 2: see below
             if (lhsJsonPath != null) {
-                VariableValueModel lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
+                VariableValueModel lhsJsonPathed;
+                try {
+                    lhsJsonPathed = lhsVal.jsonPath(lhsJsonPath);
+                } catch (LHVarSubError | RuntimeException exn) {
+                    throw wrapPathError(thread, exn, "mutation_lhs_json_path", "jsonPath", lhsJsonPath);
+                }
                 TypeDefinitionModel typeToCoerceTo = lhsJsonPathed.getTypeDefinition();
 
                 // If the key does not exist in the LHS, we just plop the RHS there. Otherwise,
@@ -179,8 +199,19 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             throw exn;
         } catch (Exception exn) {
             log.trace(exn.getMessage(), exn);
-            throw new LHVarSubError(exn, "Caught unexpected error when mutating variables: " + exn.getMessage());
+            throw new LHVarSubError(exn, "Caught unexpected error when mutating variables");
         }
+    }
+
+    private LHVarSubError wrapPathError(
+            ThreadRunModel thread, Exception exn, String role, String pathType, String path) {
+        return new LHVarSubError(
+                exn,
+                thread.safeVarSubContext(role, pathType, path)
+                        + " mutationVariable="
+                        + lhsName
+                        + " mutationOperation="
+                        + operation);
     }
 
     public Set<String> getRequiredVariableNames() {
