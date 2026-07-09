@@ -35,7 +35,11 @@ public class WorkflowImpl extends Workflow {
     private Set<ExternalEventDefRegistration> externalEventsToRegister;
 
     public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc) {
-        super(name, entrypointThreadFunc);
+        this(name, entrypointThreadFunc, Map.of());
+    }
+
+    public WorkflowImpl(String name, ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
+        super(name, entrypointThreadFunc, placeholderValues);
         this.compiledWorkflow = null;
         this.taskSignatures = new HashMap<>();
         this.requiredTaskDefNames = new HashSet<>();

@@ -9,17 +9,28 @@ import { FC } from 'react'
 interface FormLabelProps {
   label: string
   variableType?: VariableType
+  /** Pre-formatted type label for container types (e.g. `Map<String,Integer>`) that have no single VariableType. */
+  typeLabel?: string
   structDefId?: StructDefId
   accessLevel?: WfRunVariableAccessLevel
   required?: boolean
   masked?: boolean
 }
-const FormLabel: FC<FormLabelProps> = ({ label, variableType, structDefId, accessLevel, required, masked }) => {
+const FormLabel: FC<FormLabelProps> = ({
+  label,
+  variableType,
+  typeLabel,
+  structDefId,
+  accessLevel,
+  required,
+  masked,
+}) => {
   return (
     <FieldLabel className="flex gap-2">
       <p className="font-semibold">{label}</p>
       <div className="space-x-2">
         {variableType && <TypeBadge>{VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}</TypeBadge>}
+        {typeLabel && <TypeBadge>{typeLabel}</TypeBadge>}
         {structDefId && (
           <TypeBadge>
             <LinkWithTenant
