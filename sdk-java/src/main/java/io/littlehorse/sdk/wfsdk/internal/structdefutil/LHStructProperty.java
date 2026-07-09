@@ -170,15 +170,17 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Map<String, String> placeholderValues = parentStructDef.getPlaceholderValues();
+
         if (isNativeArray()) {
-            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
+            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
         }
 
         if (isNativeMap()) {
             return resolveMapType(typeAdapterRegistry);
         }
 
-        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
+        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
     }
 
     private boolean isNativeArray() {
@@ -199,7 +201,11 @@ public class LHStructProperty {
             ParameterizedType paramType = (ParameterizedType) genericType;
             Type[] typeArgs = paramType.getActualTypeArguments();
             if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
-                return new LHMapType((Class<?>) typeArgs[0], (Class<?>) typeArgs[1], typeAdapterRegistry);
+                return new LHMapType(
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        parentStructDef.getPlaceholderValues());
             }
         }
 
