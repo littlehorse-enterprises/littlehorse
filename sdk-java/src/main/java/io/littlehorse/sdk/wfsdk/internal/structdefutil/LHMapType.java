@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
+import java.util.Map;
 
 /**
  * Represents a native LittleHorse map type with typed keys and values.
@@ -14,9 +15,17 @@ public final class LHMapType extends LHClassType {
     private final LHClassType valueType;
 
     public LHMapType(Class<?> keyClazz, Class<?> valueClazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(java.util.Map.class, typeAdapterRegistry);
+        this(keyClazz, valueClazz, typeAdapterRegistry, Map.of());
+    }
 
-        LHClassType resolvedKeyType = LHClassType.fromJavaClass(keyClazz, typeAdapterRegistry);
+    public LHMapType(
+            Class<?> keyClazz,
+            Class<?> valueClazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues) {
+        super(java.util.Map.class, typeAdapterRegistry, placeholderValues);
+
+        LHClassType resolvedKeyType = LHClassType.fromJavaClass(keyClazz, typeAdapterRegistry, this.placeholderValues);
         if (resolvedKeyType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
             throw new IllegalArgumentException(
                     "Map key type must resolve to a primitive VariableType. Provided key class: " + keyClazz.getName()
@@ -26,9 +35,9 @@ public final class LHMapType extends LHClassType {
         this.keyType = resolvedKeyType;
 
         if (valueClazz.isArray()) {
-            this.valueType = new LHArrayType(valueClazz, typeAdapterRegistry);
+            this.valueType = new LHArrayType(valueClazz, typeAdapterRegistry, this.placeholderValues);
         } else {
-            this.valueType = LHClassType.fromJavaClass(valueClazz, typeAdapterRegistry);
+            this.valueType = LHClassType.fromJavaClass(valueClazz, typeAdapterRegistry, this.placeholderValues);
         }
 
         try {
