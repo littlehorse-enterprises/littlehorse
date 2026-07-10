@@ -27,6 +27,10 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): VariableVal
       return getVariableCaseFromType(typeDef.definedType.primitiveType)
     case 'structDefId':
       return 'struct'
+    case 'inlineArrayDef':
+      return 'array'
+    case 'inlineMapDef':
+      return 'map'
     default:
       throw new Error('Unknown variable type.')
   }
@@ -282,6 +286,85 @@ export const getTypedVariableValue = (type: VariableValueCase, value: string): V
 }
 
 /**
+ * Renders a primitive JS value (already JSON-parsed) into the string shape that
+ * `getTypedVariableValue` consumes for that primitive type.
+ */
+const primitiveJsonToString = (type: VariableType, value: unknown): string => {
+  if (type === VariableType.JSON_OBJ || type === VariableType.JSON_ARR) {
+    return typeof value === 'string' ? value : JSON.stringify(value)
+  }
+  return typeof value === 'string' ? value : String(value)
+}
+
+/**
+ * Converts an already-JSON-parsed value into a VariableValue, using a TypeDefinition to
+ * type container keys/elements. This accepts the same human-friendly shape the dashboard
+ * *displays* (via `variableValueToJSON`): a Map is `{"one":1}` and an Array is `[1,2]`,
+ * NOT proto-JSON (`{"entries":[...]}` / `{"items":[...]}`). It is the input-side inverse of
+ * `variableValueToJSON` for the container types.
+ */
+const jsonValueToVariableValue = (typeDef: TypeDefinition | undefined, value: unknown): VariableValue => {
+  const definedType = typeDef?.definedType
+  switch (definedType?.oneofKind) {
+    case 'inlineArrayDef': {
+      if (!Array.isArray(value)) throw new Error('Expected a JSON array')
+      const elementType = definedType.inlineArrayDef.arrayType
+      return VariableValue.create({
+        value: { oneofKind: 'array', array: { items: value.map(el => jsonValueToVariableValue(elementType, el)) } },
+      })
+    }
+    case 'inlineMapDef': {
+      if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        throw new Error('Expected a JSON object')
+      }
+      const { keyType, valueType } = definedType.inlineMapDef
+      // Object.entries always yields string keys; the keyType drives their real parsing.
+      const entries = Object.entries(value as Record<string, unknown>).map(([k, v]) => ({
+        key: jsonValueToVariableValue(keyType, k),
+        value: jsonValueToVariableValue(valueType, v),
+      }))
+      return VariableValue.create({ value: { oneofKind: 'map', map: { entries } } })
+    }
+    case 'primitiveType':
+      return getTypedVariableValue(
+        getVariableCaseFromType(definedType.primitiveType),
+        primitiveJsonToString(definedType.primitiveType, value)
+      )
+    case 'structDefId':
+      return VariableValue.create({
+        value: { oneofKind: 'struct', struct: Struct.fromJsonString(JSON.stringify(value)) },
+      })
+    default:
+      throw new Error('Unsupported type for value conversion.')
+  }
+}
+
+/**
+ * Like `getTypedVariableValue`, but resolves container element/key types from a
+ * TypeDefinition, so Map and Array inputs can be provided in the same human-friendly JSON
+ * the dashboard displays (e.g. `{"one":1}`) rather than raw proto-JSON. Primitives and
+ * structs fall back to the existing string-based path.
+ */
+export const getTypedVariableValueFromTypeDef = (typeDef: TypeDefinition | undefined, value: string): VariableValue => {
+  const oneofKind = typeDef?.definedType?.oneofKind
+  if (oneofKind === 'inlineArrayDef' || oneofKind === 'inlineMapDef') {
+    return jsonValueToVariableValue(typeDef, JSON.parse(value))
+  }
+  if (!typeDef?.definedType) throw new Error('Variable type is unknown.')
+  return getTypedVariableValue(getVariableCaseFromTypeDef(typeDef), value)
+}
+
+/**
+ * Builds the VariableValue for a WfRun variable-search filter, handling both the new
+ * `typeDef` (including Map/Array via friendly JSON) and legacy `.type`-only VariableDefs.
+ * Throws on invalid input — callers (dialog validation, filter builder) must catch.
+ */
+export const getVariableFilterValue = (varDef: VariableDef, value: string): VariableValue =>
+  varDef.typeDef?.definedType
+    ? getTypedVariableValueFromTypeDef(varDef.typeDef, value)
+    : getTypedVariableValue(getVariableDefType(varDef), value)
+
+/**
  * Converts a VariableValue (from a `VariableDef.defaultValue`) into the
  * representation used by primitive form fields in the Execute WfRun form.
  *
@@ -321,19 +404,10 @@ export const getPrimitiveFormDefaultValue = (defaultValue?: VariableValue): unkn
  */
 export const getVariableDefType = (varDef: VariableDef): VariableValueCase => {
   if (varDef.typeDef && varDef.typeDef.definedType) {
-    const definedType = varDef.typeDef.definedType
-    switch (definedType.oneofKind) {
-      case 'primitiveType':
-        return getVariableCaseFromType(definedType.primitiveType)
-      case 'structDefId':
-        return 'struct'
-      case 'inlineArrayDef':
-        return 'array'
-      case 'inlineMapDef':
-        return 'map'
-      default:
-        throw new Error('Unknown variable type.')
-    }
+    // Delegate to the single source of truth so the two type-dispatch switches
+    // cannot drift out of sync (they previously did: map support was added here
+    // but not to getVariableCaseFromTypeDef, crashing the ExternalEventDef page).
+    return getVariableCaseFromTypeDef(varDef.typeDef)
   } else if (varDef.type) {
     return getVariableCaseFromType(varDef.type)
   }
