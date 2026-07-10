@@ -1,6 +1,6 @@
-# Proposal: Native `Map`s
+# Proposal: Native Maps
 
-- [Proposal: Native `Map`s](#proposal-native-maps)
+- [Proposal: Native Maps](#proposal-native-maps)
   - [Background](#background)
     - [The Problems with JSON Maps](#the-problems-with-json-maps)
   - [API Glossary](#api-glossary)

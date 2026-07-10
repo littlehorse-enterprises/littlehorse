@@ -41,6 +41,12 @@ public class IngressTypeUtils {
             value.getArray().setElementType(typeDef.getInlineArrayDef().getArrayType());
         }
 
+        // If expected is inline map and value is map, set authoritative map type
+        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF
+                && value.getValueType() == VariableValue.ValueCase.MAP) {
+            value.getMap().setMapType(typeDef.getInlineMapDef());
+        }
+
         // Validate using existing TypeDefinitionModel logic. It will perform
         // per-item checks for inline arrays as needed. Map domain errors to API errors.
         typeDef.validateCompatibility(value, metadataManager);

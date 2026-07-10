@@ -419,6 +419,8 @@ public class LHLibUtil {
                 return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
             case ARRAY:
                 return deserializeNativeArrayToObject(val, targetClazz, typeAdapterRegistry);
+            case MAP:
+                return deserializeNativeMapToObject(val, targetClazz, typeAdapterRegistry);
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -465,6 +467,48 @@ public class LHLibUtil {
         }
 
         return outputArray;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Object deserializeNativeMapToObject(
+            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (!Map.class.isAssignableFrom(targetClazz)) {
+            throw new LHSerdeException(
+                    "Failed deserializing native LittleHorse MAP: target class is not a java.util.Map type.");
+        }
+
+        io.littlehorse.sdk.common.proto.Map protoMap = val.getMap();
+        Map<Object, Object> result = new HashMap<>();
+
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : protoMap.getEntriesList()) {
+            Object key = varValToRawObj(entry.getKey());
+            Object value = varValToRawObj(entry.getValue());
+            result.put(key, value);
+        }
+
+        return result;
+    }
+
+    private static Object varValToRawObj(VariableValue val) throws LHSerdeException {
+        switch (val.getValueCase()) {
+            case INT:
+                return val.getInt();
+            case DOUBLE:
+                return val.getDouble();
+            case STR:
+                return val.getStr();
+            case BOOL:
+                return val.getBool();
+            case BYTES:
+                return val.getBytes().toByteArray();
+            case WF_RUN_ID:
+                return val.getWfRunId();
+            case VALUE_NOT_SET:
+                return null;
+            default:
+                return varValToObj(val, Object.class, LHTypeAdapterRegistry.empty());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -673,6 +717,44 @@ public class LHLibUtil {
         }
 
         return VariableValue.newBuilder().setArray(out).build();
+    }
+
+    /**
+     * Serializes a Java Map into a native LittleHorse MAP VariableValue.
+     *
+     * <p>Each entry's key and value are serialized independently. Use this method when you know
+     * the target is a native LH Map variable (as opposed to a JSON_OBJ).
+     */
+    public static VariableValue objToVarValAsNativeMap(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (!(o instanceof Map)) {
+            throw new LHSerdeException(
+                    "Native map serialization requires the given object to be a java.util.Map, but got: "
+                            + o.getClass().getName());
+        }
+
+        return VariableValue.newBuilder()
+                .setMap(serializeToNativeMap((Map<?, ?>) o, typeAdapterRegistry))
+                .build();
+    }
+
+    private static io.littlehorse.sdk.common.proto.Map serializeToNativeMap(
+            Map<?, ?> map, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        io.littlehorse.sdk.common.proto.Map.Builder out = io.littlehorse.sdk.common.proto.Map.newBuilder();
+
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            VariableValue key = objToVarVal(entry.getKey(), typeAdapterRegistry);
+            VariableValue value = objToVarVal(entry.getValue(), typeAdapterRegistry);
+            out.addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                    .setKey(key)
+                    .setValue(value));
+        }
+
+        return out.build();
     }
 
     @SuppressWarnings("unchecked")

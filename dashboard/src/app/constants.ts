@@ -16,6 +16,7 @@ export const VARIABLE_TYPES = {
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
+  map: 'Map',
 } as const
 
 export const SEARCH_ENTITIES = [
