@@ -1,5 +1,5 @@
 import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
-import { Node, NodeProps } from 'reactflow'
+import { Node } from 'reactflow'
 
 export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
   return Object.entries(spec.nodes).map(([id, node]) => {
@@ -114,10 +114,14 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
   })
   return threadSpec
 }
-export type NodeRunTypeList = Exclude<
-  NodeType,
-  'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
->
+
+export const getNodeAfterEntrypoint = (threadSpec: ThreadSpec): string | undefined => {
+  for (const node of Object.values(threadSpec.nodes)) {
+    if (node.node?.oneofKind === 'entrypoint') {
+      return node.outgoingEdges[0]?.sinkNodeName
+    }
+  }
+  return undefined
+}
 
 export type NodeType = Exclude<NonNullable<NodeProto['node']>['oneofKind'], undefined>
-export type NodeData<T = any> = NodeProps<NodeProto & T>

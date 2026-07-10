@@ -17,12 +17,12 @@ import {
   VariableValue,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   externalEvent: ExternalEvent
   nodeRun: NodeRun | null
 }
 
-export interface correlatedEventDetails {
+interface correlatedEventDetails {
   correlatedEvent: CorrelatedEvent
 }
 
