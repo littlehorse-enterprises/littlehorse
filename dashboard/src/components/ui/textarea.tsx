@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import { cn } from '@/components/utils'
 
-export type InputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>
+type InputProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
 const Textarea = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, _ref) => {
   return (
