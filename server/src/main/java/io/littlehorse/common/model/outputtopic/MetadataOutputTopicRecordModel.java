@@ -3,6 +3,7 @@ package io.littlehorse.common.model.outputtopic;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
@@ -110,7 +111,7 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 return structDef;
             case METADATARECORD_NOT_SET:
         }
-        throw new IllegalStateException();
+        return null;
     }
 
     public void setSubRecord(MetadataGetable<?> thing) {
@@ -132,6 +133,8 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
         } else if (StructDefModel.class.isAssignableFrom(thing.getClass())) {
             recordCase = MetadataRecordCase.STRUCT_DEF;
             this.structDef = (StructDefModel) thing;
+        } else if (BulkJobModel.class.isAssignableFrom(thing.getClass())) {
+            recordCase = MetadataRecordCase.METADATARECORD_NOT_SET;
         } else {
             throw new IllegalStateException("Unknown type: " + thing.getClass());
         }

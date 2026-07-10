@@ -14,6 +14,7 @@ import "common_enums.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
+import "bulk_job.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -38,7 +39,6 @@ message Command {
         TriggeredTaskRunPb triggered_task_run = 17;
         DeadlineReassignUserTask reassigned_user_task = 18;
         CancelUserTaskRunRequest cancel_user_task = 19;
-        BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
@@ -110,6 +110,9 @@ message MetadataCommand {
         DeleteStructDefRequest delete_struct_def = 18;
         PutQuotaRequest put_quota = 19;
         DeleteQuotaRequest delete_quota = 20;
+        CreateBulkJobRequest create_bulk_job = 21;
+        BulkJobShardReport bulk_job_shard_report = 22;
+        DeleteBulkJobRequest delete_bulk_job = 23;
     }
 }
 
