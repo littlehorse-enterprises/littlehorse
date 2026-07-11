@@ -76,6 +76,19 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         return defaultValue != null || isNullable;
     }
 
+    /**
+     * @return true if the client provided an explicit default value for this field. Unlike
+     *         {@link #hasDefaultValue()}, this does not treat a nullable field's implicit null as a
+     *         default, so it distinguishes fields whose default should be materialized at ingress.
+     */
+    public boolean hasExplicitDefault() {
+        return defaultValue != null;
+    }
+
+    public VariableValueModel getDefaultValue() {
+        return defaultValue;
+    }
+
     public boolean isRequired() {
         return !hasDefaultValue();
     }

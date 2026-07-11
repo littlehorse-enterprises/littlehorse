@@ -128,6 +128,17 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     throw new StructValidationException(
                             String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
                 }
+            } else if (fieldDef.hasExplicitDefault()) {
+                // Optional field is absent but the StructDef provides an explicit default: materialize
+                // it into the payload so downstream reads observe the default value. Copy the default so
+                // the shared (cached) StructDef is never mutated.
+                inlineStruct
+                        .getFields()
+                        .put(
+                                fieldName,
+                                new StructFieldModel(
+                                        fieldDef.getDefaultValue().getCopy(),
+                                        fieldDef.getFieldType().isMasked()));
             }
         }
     }

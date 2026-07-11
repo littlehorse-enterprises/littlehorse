@@ -54,6 +54,17 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
             throw new StructValidationException("StructDef %s does not exist.".formatted(expectedStructDefId));
         }
 
+        validateAgainstStructDef(structDef, expectedStructDefId, metadataManager);
+    }
+
+    /**
+     * Validates this struct against an already-resolved StructDef. Callers that validate many structs
+     * against the same StructDef (e.g. an array or map of structs) should resolve the StructDef once
+     * and reuse it via this method rather than re-resolving it per element.
+     */
+    public void validateAgainstStructDef(
+            StructDefModel structDef, StructDefIdModel expectedStructDefId, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
         try {
             structDef.validateAgainstSuperset(this, metadataManager);
         } catch (StructValidationException e) {

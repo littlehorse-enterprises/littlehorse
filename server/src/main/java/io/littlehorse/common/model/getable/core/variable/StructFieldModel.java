@@ -21,6 +21,13 @@ public class StructFieldModel extends LHSerializable<StructField> {
 
     private ExecutionContext context;
 
+    public StructFieldModel() {}
+
+    public StructFieldModel(VariableValueModel value, boolean masked) {
+        this.value = value;
+        this.masked = masked;
+    }
+
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         StructField p = (StructField) proto;

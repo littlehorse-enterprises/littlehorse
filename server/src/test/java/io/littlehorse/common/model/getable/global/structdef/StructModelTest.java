@@ -1,5 +1,6 @@
 package io.littlehorse.common.model.getable.global.structdef;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.common.LHSerializable;
@@ -211,10 +212,10 @@ public class StructModelTest {
     }
 
     @Test
-    public void nullableOptionalFieldAbsentShouldPass() throws Exception {
+    public void nullableOptionalFieldAbsentShouldMaterializeDefault() throws Exception {
         ReadOnlyMetadataManager metadataManager = null;
 
-        // nullable=true with a non-null default => optional; absence is fine
+        // nullable=true with a non-null default => optional; absence should materialize the default
         InlineStructDefModel def = new InlineStructDefModel();
         StructFieldDef sfd = StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
@@ -227,7 +228,7 @@ public class StructModelTest {
         model.setStructDef(def);
         model.setId(new StructDefIdModel("test-nullable-optional", 1));
 
-        // Field completely absent — default applies
+        // Field completely absent — default should be materialized
         InlineStruct payloadInline = InlineStruct.newBuilder().build();
 
         StructModel sm = new StructModel();
@@ -240,8 +241,128 @@ public class StructModelTest {
                         .build(),
                 null);
 
-        // should not throw
         model.validateAgainstSuperset(sm, metadataManager);
+
+        // The default must be written into the struct, not merely tolerated.
+        assertThat(sm.getInlineStruct().getFields()).containsKey("name");
+        assertThat(sm.getInlineStruct().getFields().get("name").getValue().getStrVal())
+                .isEqualTo("default");
+    }
+
+    @Test
+    public void nonNullableOptionalFieldAbsentShouldMaterializeDefault() throws Exception {
+        ReadOnlyMetadataManager metadataManager = null;
+
+        // nullable=false with a non-null default => optional; absence should materialize the default
+        InlineStructDefModel def = new InlineStructDefModel();
+        StructFieldDef sfd = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setIsNullable(false)
+                .setDefaultValue(VariableValue.newBuilder().setStr("default").build())
+                .build();
+        def.getFields().put("name", LHSerializable.fromProto(sfd, StructFieldDefModel.class, null));
+
+        StructDefModel model = new StructDefModel();
+        model.setStructDef(def);
+        model.setId(new StructDefIdModel("test-non-nullable-optional", 1));
+
+        // Field completely absent — default should be materialized
+        InlineStruct payloadInline = InlineStruct.newBuilder().build();
+
+        StructModel sm = new StructModel();
+        sm.initFrom(
+                Struct.newBuilder()
+                        .setStruct(payloadInline)
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("test-non-nullable-optional")
+                                .build())
+                        .build(),
+                null);
+
+        model.validateAgainstSuperset(sm, metadataManager);
+
+        assertThat(sm.getInlineStruct().getFields()).containsKey("name");
+        assertThat(sm.getInlineStruct().getFields().get("name").getValue().getStrVal())
+                .isEqualTo("default");
+    }
+
+    @Test
+    public void explicitNullValueShouldNotBeOverriddenByDefault() throws Exception {
+        ReadOnlyMetadataManager metadataManager = null;
+
+        // nullable=true with a non-null default, but the payload explicitly provides null.
+        // The explicit null must be preserved; the default must NOT override it.
+        InlineStructDefModel def = new InlineStructDefModel();
+        StructFieldDef sfd = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setIsNullable(true)
+                .setDefaultValue(VariableValue.newBuilder().setStr("default").build())
+                .build();
+        def.getFields().put("name", LHSerializable.fromProto(sfd, StructFieldDefModel.class, null));
+
+        StructDefModel model = new StructDefModel();
+        model.setStructDef(def);
+        model.setId(new StructDefIdModel("test-explicit-null", 1));
+
+        // Field present with an explicit null value
+        InlineStruct payloadInline = InlineStruct.newBuilder()
+                .putFields(
+                        "name",
+                        StructField.newBuilder()
+                                .setValue(VariableValue.newBuilder())
+                                .build())
+                .build();
+
+        StructModel sm = new StructModel();
+        sm.initFrom(
+                Struct.newBuilder()
+                        .setStruct(payloadInline)
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("test-explicit-null")
+                                .build())
+                        .build(),
+                null);
+
+        model.validateAgainstSuperset(sm, metadataManager);
+
+        assertThat(sm.getInlineStruct().getFields()).containsKey("name");
+        assertThat(sm.getInlineStruct().getFields().get("name").getValue().isNull())
+                .isTrue();
+    }
+
+    @Test
+    public void materializedDefaultShouldNotMutateSharedStructDef() throws Exception {
+        ReadOnlyMetadataManager metadataManager = null;
+
+        InlineStructDefModel def = new InlineStructDefModel();
+        StructFieldDef sfd = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setIsNullable(true)
+                .setDefaultValue(VariableValue.newBuilder().setStr("default").build())
+                .build();
+        def.getFields().put("name", LHSerializable.fromProto(sfd, StructFieldDefModel.class, null));
+
+        StructDefModel model = new StructDefModel();
+        model.setStructDef(def);
+        model.setId(new StructDefIdModel("test-shared-def", 1));
+
+        InlineStruct payloadInline = InlineStruct.newBuilder().build();
+
+        StructModel sm = new StructModel();
+        sm.initFrom(
+                Struct.newBuilder()
+                        .setStruct(payloadInline)
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("test-shared-def")
+                                .build())
+                        .build(),
+                null);
+
+        model.validateAgainstSuperset(sm, metadataManager);
+
+        // Materialized value must be a distinct copy so the cached StructDef is never mutated.
+        assertThat(sm.getInlineStruct().getFields().get("name").getValue())
+                .isNotSameAs(def.getFields().get("name").getDefaultValue());
     }
 
     @Test

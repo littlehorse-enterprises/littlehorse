@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
@@ -489,41 +490,98 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 TypeDefinitionModel expectedElementType =
                         this.getInlineArrayDef().getArrayType();
 
-                for (VariableValueModel item : value.getArray().getItems()) {
+                List<VariableValueModel> items = value.getArray().getItems();
+
+                // Resolve the element StructDef (if any) once, rather than re-resolving it for every
+                // item in the array. Skip resolution entirely when the array is empty.
+                StructDefModel elementStructDef =
+                        items.isEmpty() ? null : expectedElementType.resolveStructDefOrNull(readOnlyMetadataManager);
+
+                for (VariableValueModel item : items) {
                     TypeDefinitionModel itemType = item.getTypeDefinition();
                     if (!expectedElementType.isCompatibleWith(itemType)) {
                         throw new TypeValidationException(String.format(
                                 "Array element type %s incompatible with expected element type %s",
                                 itemType, expectedElementType));
                     }
+                    // Recurse so that struct elements are deeply validated and their field defaults are
+                    // materialized (this also handles arbitrarily nested arrays/maps of structs).
+                    expectedElementType.validateElement(item, elementStructDef, readOnlyMetadataManager);
                 }
                 break;
             case MAP:
                 TypeDefinitionModel expectedKeyType = this.getInlineMapDef().getKeyType();
                 TypeDefinitionModel expectedValueType = this.getInlineMapDef().getValueType();
 
-                for (MapModel.MapEntryModel entry : value.getMap().getEntries()) {
-                    if (expectedKeyType != null && !expectedKeyType.isNull()) {
+                List<MapModel.MapEntryModel> entries = value.getMap().getEntries();
+                boolean hasKeyType = expectedKeyType != null && !expectedKeyType.isNull();
+                boolean hasValueType = expectedValueType != null && !expectedValueType.isNull();
+
+                // Resolve the key/value StructDefs (if any) once, rather than per entry. Skip
+                // resolution entirely when the map is empty.
+                StructDefModel keyStructDef = (hasKeyType && !entries.isEmpty())
+                        ? expectedKeyType.resolveStructDefOrNull(readOnlyMetadataManager)
+                        : null;
+                StructDefModel valueStructDef = (hasValueType && !entries.isEmpty())
+                        ? expectedValueType.resolveStructDefOrNull(readOnlyMetadataManager)
+                        : null;
+
+                for (MapModel.MapEntryModel entry : entries) {
+                    if (hasKeyType) {
                         TypeDefinitionModel entryKeyType = entry.getKey().getTypeDefinition();
                         if (!expectedKeyType.isCompatibleWith(entryKeyType)) {
                             throw new TypeValidationException(String.format(
                                     "Map key type %s incompatible with expected key type %s",
                                     entryKeyType, expectedKeyType));
                         }
+                        expectedKeyType.validateElement(entry.getKey(), keyStructDef, readOnlyMetadataManager);
                     }
-                    if (expectedValueType != null && !expectedValueType.isNull()) {
+                    if (hasValueType) {
                         TypeDefinitionModel entryValueType = entry.getValue().getTypeDefinition();
                         if (!expectedValueType.isCompatibleWith(entryValueType)) {
                             throw new TypeValidationException(String.format(
                                     "Map value type %s incompatible with expected value type %s",
                                     entryValueType, expectedValueType));
                         }
+                        expectedValueType.validateElement(entry.getValue(), valueStructDef, readOnlyMetadataManager);
                     }
                 }
                 break;
             case VALUE_NOT_SET:
                 return;
             default:
+        }
+    }
+
+    /**
+     * Resolves the StructDef this type refers to, or returns {@code null} if this type is not a
+     * struct. Used to resolve the StructDef once for collections of structs rather than per element.
+     */
+    private StructDefModel resolveStructDefOrNull(ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
+        if (this.getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID) {
+            return null;
+        }
+        StructDefModel structDef = new WfService(metadataManager).getStructDef(this.getStructDefId());
+        if (structDef == null) {
+            throw new StructValidationException("StructDef %s does not exist.".formatted(this.getStructDefId()));
+        }
+        return structDef;
+    }
+
+    /**
+     * Validates a single collection element against this (the expected element/key/value) type. When
+     * the element is a struct and its StructDef has already been resolved, it is validated directly
+     * against that pre-resolved StructDef to avoid re-resolving it for every element; otherwise it
+     * falls back to the generic {@link #validateCompatibility} recursion.
+     */
+    private void validateElement(
+            VariableValueModel item, StructDefModel preResolvedStructDef, ReadOnlyMetadataManager metadataManager)
+            throws TypeValidationException {
+        if (preResolvedStructDef != null && item.getValueType() == ValueCase.STRUCT) {
+            item.getStruct().validateAgainstStructDef(preResolvedStructDef, this.getStructDefId(), metadataManager);
+        } else {
+            this.validateCompatibility(item, metadataManager);
         }
     }
 
