@@ -165,7 +165,8 @@ public class LHTaskWorker implements Closeable {
                     taskMethod,
                     mappings,
                     executable,
-                    config);
+                    config,
+                    placeholderValues);
         }
     }
 
@@ -323,7 +324,10 @@ public class LHTaskWorker implements Closeable {
 
         for (LHTaskParameter lhTaskParameter : taskSignature.getVariableDefs()) {
             VariableMapping mapping = new VariableMapping(
-                    lhTaskParameter.getVariableDef(), lhTaskParameter, config.getTypeAdapterRegistry());
+                    lhTaskParameter.getVariableDef(),
+                    lhTaskParameter,
+                    config.getTypeAdapterRegistry(),
+                    placeholderValues);
             mappings.add(mapping);
         }
     }
