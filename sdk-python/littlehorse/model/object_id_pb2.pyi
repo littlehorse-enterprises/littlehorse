@@ -206,3 +206,9 @@ class MetricWindowId(_message.Message):
     window_start: _timestamp_pb2.Timestamp
     metric_type: _common_enums_pb2.MetricWindowType
     def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[UserTaskDefId, _Mapping]] = ..., tenant_id: _Optional[_Union[TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metric_type: _Optional[_Union[_common_enums_pb2.MetricWindowType, str]] = ...) -> None: ...
+
+class WorkflowMigrationPlanId(_message.Message):
+    __slots__ = ("name",)
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    def __init__(self, name: _Optional[str] = ...) -> None: ...

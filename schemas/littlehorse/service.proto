@@ -21,6 +21,7 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 import "metrics.proto";
+import "workflow_migration.proto";
 import "bulk_job.proto";
 
 option go_package = ".;lhproto";
@@ -211,6 +212,19 @@ service LittleHorse {
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
   rpc SearchWfRun(SearchWfRunRequest) returns (WfRunIdList) {}
 
+  // EXPERIMENTAL: Register a workflow migration plan with lh server
+  rpc PutWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlan) {}
+
+  // EXPERIMENTAL: Get a workflow migration plan by ID
+  rpc GetWorkflowMigrationPlan(WorkflowMigrationPlanId) returns (WorkflowMigrationPlan) {}
+
+  // EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+  rpc DeleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest) returns (google.protobuf.Empty) {}
+
+  // EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+  // destination WfSpec.
+  rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
+  
   // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
   // events that may be orphaned.
   rpc SearchCorrelatedEvent(SearchCorrelatedEventRequest) returns (CorrelatedEventIdList) {}
@@ -713,6 +727,38 @@ message ScheduleWfRequest {
 
   // UNIX expression used to specify the schedule for executing WfRuns
   string cron_expression = 7;
+}
+
+// EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
+message PutWorkflowMigrationPlanRequest {
+
+  string name = 1;
+
+  WfSpecId old_wfSpec = 2;
+
+  int32 major_version = 3;
+
+  int32 revision = 4;
+
+  map<string, ThreadMigrationPlanRequest> thread_migrations = 5;
+
+}
+
+// EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
+message DeleteWorkflowMigrationPlanRequest{
+  WorkflowMigrationPlanId id = 1;
+}
+
+
+// EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
+message ApplyWorkflowMigrationPlanRequest {
+
+  WorkflowMigrationPlanId id = 1;
+
+  WfRunId wfRun_id = 2;
+
+  map<string, MigrationVars> migration_vars_by_thread= 3;
+
 }
 
 // Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's

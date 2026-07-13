@@ -85,6 +85,7 @@ public class CommandModel extends AbstractCommand<Command> {
     private AggregateWindowMetricsModel aggregateWindowMetrics;
     private DeleteMetricWindowModel deleteMetricWindow;
     private UpdateCountedTagModel updateCountedTag;
+    private ApplyWorkflowMigrationRequestModel applyWorkflowMigrationPlan;
 
     public Class<Command> getProtoBaseClass() {
         return Command.class;
@@ -206,6 +207,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_METRIC_WINDOW:
                 out.setDeleteMetricWindow(deleteMetricWindow.toProto());
+                break;
+            case APPLY_WORKFLOW_MIGRATION_PLAN:
+                out.setApplyWorkflowMigrationPlan(applyWorkflowMigrationPlan.toProto());
                 break;
             case UPDATE_COUNTED_TAG:
                 out.setUpdateCountedTag(updateCountedTag.toProto());
@@ -347,6 +351,10 @@ public class CommandModel extends AbstractCommand<Command> {
                 updateCountedTag =
                         LHSerializable.fromProto(p.getUpdateCountedTag(), UpdateCountedTagModel.class, context);
                 break;
+            case APPLY_WORKFLOW_MIGRATION_PLAN:
+                applyWorkflowMigrationPlan = LHSerializable.fromProto(
+                        p.getApplyWorkflowMigrationPlan(), ApplyWorkflowMigrationRequestModel.class, context);
+                break;
             case COMMAND_NOT_SET:
                 throw new RuntimeException("Not possible");
         }
@@ -420,6 +428,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return deleteMetricWindow;
             case UPDATE_COUNTED_TAG:
                 return updateCountedTag;
+            case APPLY_WORKFLOW_MIGRATION_PLAN:
+                return applyWorkflowMigrationPlan;
             case COMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
@@ -526,6 +536,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(UpdateCountedTagModel.class)) {
             type = CommandCase.UPDATE_COUNTED_TAG;
             updateCountedTag = (UpdateCountedTagModel) cmd;
+        } else if (cls.equals(ApplyWorkflowMigrationRequestModel.class)) {
+            type = CommandCase.APPLY_WORKFLOW_MIGRATION_PLAN;
+            applyWorkflowMigrationPlan = (ApplyWorkflowMigrationRequestModel) cmd;
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }

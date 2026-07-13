@@ -146,6 +146,11 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_MetricWindowId_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_WorkflowMigrationPlanId_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_WorkflowMigrationPlanId_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -210,9 +215,10 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
       "w_start\030\007 \001(\0132\032.google.protobuf.Timestam" +
       "p\0227\n\013metric_type\030\010 \001(\0162\035.littlehorse.Met" +
       "ricWindowTypeH\002\210\001\001B\004\n\002idB\014\n\n_tenant_idB\016" +
-      "\n\014_metric_typeBM\n\037io.littlehorse.sdk.com" +
-      "mon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk" +
-      ".Common.Protob\006proto3"
+      "\n\014_metric_type\"\'\n\027WorkflowMigrationPlanI" +
+      "d\022\014\n\004name\030\001 \001(\tBM\n\037io.littlehorse.sdk.co" +
+      "mmon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sd" +
+      "k.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -364,6 +370,12 @@ public final class ObjectId extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetricWindowId_descriptor,
         new java.lang.String[] { "WfSpecId", "TaskDefId", "UserTaskDefId", "TenantId", "WindowStart", "MetricType", "Id", });
+    internal_static_littlehorse_WorkflowMigrationPlanId_descriptor =
+      getDescriptor().getMessageTypes().get(24);
+    internal_static_littlehorse_WorkflowMigrationPlanId_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_WorkflowMigrationPlanId_descriptor,
+        new java.lang.String[] { "Name", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();

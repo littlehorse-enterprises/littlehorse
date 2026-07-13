@@ -56,6 +56,7 @@ message Command {
         AggregateWindowMetrics aggregate_window_metrics = 35;
         DeleteMetricWindow delete_metric_window = 36;
         UpdateCountedTag update_counted_tag = 37;
+        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;
     }
 }
 
@@ -113,6 +114,7 @@ message MetadataCommand {
         CreateBulkJobRequest create_bulk_job = 21;
         BulkJobShardReport bulk_job_shard_report = 22;
         DeleteBulkJobRequest delete_bulk_job = 23;
+        PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;
     }
 }
 

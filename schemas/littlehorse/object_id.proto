@@ -259,3 +259,9 @@ message MetricWindowId {
   optional MetricWindowType metric_type = 8;
 
 }
+
+
+message WorkflowMigrationPlanId {
+  string name = 1;
+  
+} 

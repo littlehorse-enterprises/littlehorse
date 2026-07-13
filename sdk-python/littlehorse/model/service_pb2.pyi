@@ -19,6 +19,7 @@ import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
 import littlehorse.model.metrics_pb2 as _metrics_pb2
+import littlehorse.model.workflow_migration_pb2 as _workflow_migration_pb2
 import littlehorse.model.bulk_job_pb2 as _bulk_job_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
@@ -277,6 +278,50 @@ class ScheduleWfRequest(_message.Message):
     parent_wf_run_id: _object_id_pb2.WfRunId
     cron_expression: str
     def __init__(self, id: _Optional[str] = ..., wf_spec_name: _Optional[str] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., parent_wf_run_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., cron_expression: _Optional[str] = ...) -> None: ...
+
+class PutWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("name", "old_wfSpec", "major_version", "revision", "thread_migrations")
+    class ThreadMigrationsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _workflow_migration_pb2.ThreadMigrationPlanRequest
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_workflow_migration_pb2.ThreadMigrationPlanRequest, _Mapping]] = ...) -> None: ...
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    OLD_WFSPEC_FIELD_NUMBER: _ClassVar[int]
+    MAJOR_VERSION_FIELD_NUMBER: _ClassVar[int]
+    REVISION_FIELD_NUMBER: _ClassVar[int]
+    THREAD_MIGRATIONS_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    old_wfSpec: _object_id_pb2.WfSpecId
+    major_version: int
+    revision: int
+    thread_migrations: _containers.MessageMap[str, _workflow_migration_pb2.ThreadMigrationPlanRequest]
+    def __init__(self, name: _Optional[str] = ..., old_wfSpec: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., major_version: _Optional[int] = ..., revision: _Optional[int] = ..., thread_migrations: _Optional[_Mapping[str, _workflow_migration_pb2.ThreadMigrationPlanRequest]] = ...) -> None: ...
+
+class DeleteWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("id",)
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.WorkflowMigrationPlanId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]] = ...) -> None: ...
+
+class ApplyWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("id", "wfRun_id", "migration_vars_by_thread")
+    class MigrationVarsByThreadEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _workflow_migration_pb2.MigrationVars
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_workflow_migration_pb2.MigrationVars, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    WFRUN_ID_FIELD_NUMBER: _ClassVar[int]
+    MIGRATION_VARS_BY_THREAD_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.WorkflowMigrationPlanId
+    wfRun_id: _object_id_pb2.WfRunId
+    migration_vars_by_thread: _containers.MessageMap[str, _workflow_migration_pb2.MigrationVars]
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]] = ..., wfRun_id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., migration_vars_by_thread: _Optional[_Mapping[str, _workflow_migration_pb2.MigrationVars]] = ...) -> None: ...
 
 class VariableMatch(_message.Message):
     __slots__ = ("var_name", "value")
