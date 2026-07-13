@@ -224,6 +224,12 @@ message ScheduledWfRunId {
   string id = 1;
 }
 
+// ID for a BulkJob.
+message BulkJobId {
+  // The unique identifier of the BulkJob.
+  string id = 1;
+}
+
 // ID for an InactiveThreadRun.
 message InactiveThreadRunId {
   // The WfRunId of the InactiveThreadRun.

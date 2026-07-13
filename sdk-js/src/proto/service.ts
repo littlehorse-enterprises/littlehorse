@@ -14,6 +14,12 @@ import { MetricWindowId } from "./object_id";
 import { ListWfMetricsRequest } from "./metrics";
 import { MetricsList } from "./metrics";
 import { ListTaskMetricsRequest } from "./metrics";
+import { DeleteBulkJobRequest } from "./bulk_job";
+import { BulkJobIdList } from "./bulk_job";
+import { SearchBulkJobRequest } from "./bulk_job";
+import { GetBulkJobRequest } from "./bulk_job";
+import { BulkJob } from "./bulk_job";
+import { CreateBulkJobRequest } from "./bulk_job";
 import { DeleteQuotaRequest } from "./acls";
 import { DeletePrincipalRequest } from "./acls";
 import { CheckpointId } from "./object_id";
@@ -9683,6 +9689,10 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "DeletePrincipal", options: {}, I: DeletePrincipalRequest, O: Empty },
     { name: "DeleteQuota", options: {}, I: DeleteQuotaRequest, O: Empty },
     { name: "DeleteScheduledWfRun", options: {}, I: DeleteScheduledWfRunRequest, O: Empty },
+    { name: "CreateBulkJob", options: {}, I: CreateBulkJobRequest, O: BulkJob },
+    { name: "GetBulkJob", options: {}, I: GetBulkJobRequest, O: BulkJob },
+    { name: "SearchBulkJob", options: {}, I: SearchBulkJobRequest, O: BulkJobIdList },
+    { name: "DeleteBulkJob", options: {}, I: DeleteBulkJobRequest, O: Empty },
     { name: "GetTaskDefMetricsWindow", options: {}, I: TaskDefMetricsQueryRequest, O: TaskDefMetrics },
     { name: "GetWfSpecMetricsWindow", options: {}, I: WfSpecMetricsQueryRequest, O: WfSpecMetrics },
     { name: "ListTaskMetrics", options: {}, I: ListTaskMetricsRequest, O: MetricsList },

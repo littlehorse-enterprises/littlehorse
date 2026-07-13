@@ -72,7 +72,10 @@ private static final long serialVersionUID = 0L;
     DELETE_STRUCT_DEF(18),
     PUT_QUOTA(19),
     DELETE_QUOTA(20),
-    PUT_WORKFLOW_MIGRATION_PLAN(21),
+    CREATE_BULK_JOB(21),
+    BULK_JOB_SHARD_REPORT(22),
+    DELETE_BULK_JOB(23),
+    PUT_WORKFLOW_MIGRATION_PLAN(24),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -107,7 +110,10 @@ private static final long serialVersionUID = 0L;
         case 18: return DELETE_STRUCT_DEF;
         case 19: return PUT_QUOTA;
         case 20: return DELETE_QUOTA;
-        case 21: return PUT_WORKFLOW_MIGRATION_PLAN;
+        case 21: return CREATE_BULK_JOB;
+        case 22: return BULK_JOB_SHARD_REPORT;
+        case 23: return DELETE_BULK_JOB;
+        case 24: return PUT_WORKFLOW_MIGRATION_PLAN;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -735,32 +741,125 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.DeleteQuotaRequest.getDefaultInstance();
   }
 
-  public static final int PUT_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER = 21;
+  public static final int CREATE_BULK_JOB_FIELD_NUMBER = 21;
   /**
-   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   * @return Whether the createBulkJob field is set.
+   */
+  @java.lang.Override
+  public boolean hasCreateBulkJob() {
+    return metadataCommandCase_ == 21;
+  }
+  /**
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   * @return The createBulkJob.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CreateBulkJobRequest getCreateBulkJob() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder getCreateBulkJobOrBuilder() {
+    if (metadataCommandCase_ == 21) {
+       return (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+  }
+
+  public static final int BULK_JOB_SHARD_REPORT_FIELD_NUMBER = 22;
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return Whether the bulkJobShardReport field is set.
+   */
+  @java.lang.Override
+  public boolean hasBulkJobShardReport() {
+    return metadataCommandCase_ == 22;
+  }
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return The bulkJobShardReport.
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkJobShardReport getBulkJobShardReport() {
+    if (metadataCommandCase_ == 22) {
+       return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder() {
+    if (metadataCommandCase_ == 22) {
+       return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+    }
+    return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+  }
+
+  public static final int DELETE_BULK_JOB_FIELD_NUMBER = 23;
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return Whether the deleteBulkJob field is set.
+   */
+  @java.lang.Override
+  public boolean hasDeleteBulkJob() {
+    return metadataCommandCase_ == 23;
+  }
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return The deleteBulkJob.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob() {
+    if (metadataCommandCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder() {
+    if (metadataCommandCase_ == 23) {
+       return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+    }
+    return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+  }
+
+  public static final int PUT_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER = 24;
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
    * @return Whether the putWorkflowMigrationPlan field is set.
    */
   @java.lang.Override
   public boolean hasPutWorkflowMigrationPlan() {
-    return metadataCommandCase_ == 21;
+    return metadataCommandCase_ == 24;
   }
   /**
-   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
    * @return The putWorkflowMigrationPlan.
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan() {
-    if (metadataCommandCase_ == 21) {
+    if (metadataCommandCase_ == 24) {
        return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
     }
     return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
   }
   /**
-   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder() {
-    if (metadataCommandCase_ == 21) {
+    if (metadataCommandCase_ == 24) {
        return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
     }
     return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
@@ -838,7 +937,16 @@ private static final long serialVersionUID = 0L;
       output.writeMessage(20, (io.littlehorse.sdk.common.proto.DeleteQuotaRequest) metadataCommand_);
     }
     if (metadataCommandCase_ == 21) {
-      output.writeMessage(21, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
+      output.writeMessage(21, (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 22) {
+      output.writeMessage(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 23) {
+      output.writeMessage(23, (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 24) {
+      output.writeMessage(24, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -926,7 +1034,19 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 21) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
+        .computeMessageSize(21, (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 22) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(22, (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 23) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(23, (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_);
+    }
+    if (metadataCommandCase_ == 24) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(24, (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1024,6 +1144,18 @@ private static final long serialVersionUID = 0L;
             .equals(other.getDeleteQuota())) return false;
         break;
       case 21:
+        if (!getCreateBulkJob()
+            .equals(other.getCreateBulkJob())) return false;
+        break;
+      case 22:
+        if (!getBulkJobShardReport()
+            .equals(other.getBulkJobShardReport())) return false;
+        break;
+      case 23:
+        if (!getDeleteBulkJob()
+            .equals(other.getDeleteBulkJob())) return false;
+        break;
+      case 24:
         if (!getPutWorkflowMigrationPlan()
             .equals(other.getPutWorkflowMigrationPlan())) return false;
         break;
@@ -1119,6 +1251,18 @@ private static final long serialVersionUID = 0L;
         hash = (53 * hash) + getDeleteQuota().hashCode();
         break;
       case 21:
+        hash = (37 * hash) + CREATE_BULK_JOB_FIELD_NUMBER;
+        hash = (53 * hash) + getCreateBulkJob().hashCode();
+        break;
+      case 22:
+        hash = (37 * hash) + BULK_JOB_SHARD_REPORT_FIELD_NUMBER;
+        hash = (53 * hash) + getBulkJobShardReport().hashCode();
+        break;
+      case 23:
+        hash = (37 * hash) + DELETE_BULK_JOB_FIELD_NUMBER;
+        hash = (53 * hash) + getDeleteBulkJob().hashCode();
+        break;
+      case 24:
         hash = (37 * hash) + PUT_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER;
         hash = (53 * hash) + getPutWorkflowMigrationPlan().hashCode();
         break;
@@ -1323,6 +1467,15 @@ private static final long serialVersionUID = 0L;
       if (deleteQuotaBuilder_ != null) {
         deleteQuotaBuilder_.clear();
       }
+      if (createBulkJobBuilder_ != null) {
+        createBulkJobBuilder_.clear();
+      }
+      if (bulkJobShardReportBuilder_ != null) {
+        bulkJobShardReportBuilder_.clear();
+      }
+      if (deleteBulkJobBuilder_ != null) {
+        deleteBulkJobBuilder_.clear();
+      }
       if (putWorkflowMigrationPlanBuilder_ != null) {
         putWorkflowMigrationPlanBuilder_.clear();
       }
@@ -1448,6 +1601,18 @@ private static final long serialVersionUID = 0L;
         result.metadataCommand_ = deleteQuotaBuilder_.build();
       }
       if (metadataCommandCase_ == 21 &&
+          createBulkJobBuilder_ != null) {
+        result.metadataCommand_ = createBulkJobBuilder_.build();
+      }
+      if (metadataCommandCase_ == 22 &&
+          bulkJobShardReportBuilder_ != null) {
+        result.metadataCommand_ = bulkJobShardReportBuilder_.build();
+      }
+      if (metadataCommandCase_ == 23 &&
+          deleteBulkJobBuilder_ != null) {
+        result.metadataCommand_ = deleteBulkJobBuilder_.build();
+      }
+      if (metadataCommandCase_ == 24 &&
           putWorkflowMigrationPlanBuilder_ != null) {
         result.metadataCommand_ = putWorkflowMigrationPlanBuilder_.build();
       }
@@ -1540,6 +1705,18 @@ private static final long serialVersionUID = 0L;
         }
         case DELETE_QUOTA: {
           mergeDeleteQuota(other.getDeleteQuota());
+          break;
+        }
+        case CREATE_BULK_JOB: {
+          mergeCreateBulkJob(other.getCreateBulkJob());
+          break;
+        }
+        case BULK_JOB_SHARD_REPORT: {
+          mergeBulkJobShardReport(other.getBulkJobShardReport());
+          break;
+        }
+        case DELETE_BULK_JOB: {
+          mergeDeleteBulkJob(other.getDeleteBulkJob());
           break;
         }
         case PUT_WORKFLOW_MIGRATION_PLAN: {
@@ -1709,11 +1886,32 @@ private static final long serialVersionUID = 0L;
             } // case 162
             case 170: {
               input.readMessage(
-                  internalGetPutWorkflowMigrationPlanFieldBuilder().getBuilder(),
+                  internalGetCreateBulkJobFieldBuilder().getBuilder(),
                   extensionRegistry);
               metadataCommandCase_ = 21;
               break;
             } // case 170
+            case 178: {
+              input.readMessage(
+                  internalGetBulkJobShardReportFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 22;
+              break;
+            } // case 178
+            case 186: {
+              input.readMessage(
+                  internalGetDeleteBulkJobFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 23;
+              break;
+            } // case 186
+            case 194: {
+              input.readMessage(
+                  internalGetPutWorkflowMigrationPlanFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataCommandCase_ = 24;
+              break;
+            } // case 194
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4397,35 +4595,461 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CreateBulkJobRequest, io.littlehorse.sdk.common.proto.CreateBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder> createBulkJobBuilder_;
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     * @return Whether the createBulkJob field is set.
+     */
+    @java.lang.Override
+    public boolean hasCreateBulkJob() {
+      return metadataCommandCase_ == 21;
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     * @return The createBulkJob.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CreateBulkJobRequest getCreateBulkJob() {
+      if (createBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return createBulkJobBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    public Builder setCreateBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest value) {
+      if (createBulkJobBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        createBulkJobBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    public Builder setCreateBulkJob(
+        io.littlehorse.sdk.common.proto.CreateBulkJobRequest.Builder builderForValue) {
+      if (createBulkJobBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        createBulkJobBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    public Builder mergeCreateBulkJob(io.littlehorse.sdk.common.proto.CreateBulkJobRequest value) {
+      if (createBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 21 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.CreateBulkJobRequest.newBuilder((io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          createBulkJobBuilder_.mergeFrom(value);
+        } else {
+          createBulkJobBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 21;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    public Builder clearCreateBulkJob() {
+      if (createBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 21) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        createBulkJobBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    public io.littlehorse.sdk.common.proto.CreateBulkJobRequest.Builder getCreateBulkJobBuilder() {
+      return internalGetCreateBulkJobFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder getCreateBulkJobOrBuilder() {
+      if ((metadataCommandCase_ == 21) && (createBulkJobBuilder_ != null)) {
+        return createBulkJobBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 21) {
+          return (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.CreateBulkJobRequest, io.littlehorse.sdk.common.proto.CreateBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder> 
+        internalGetCreateBulkJobFieldBuilder() {
+      if (createBulkJobBuilder_ == null) {
+        if (!(metadataCommandCase_ == 21)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.CreateBulkJobRequest.getDefaultInstance();
+        }
+        createBulkJobBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.CreateBulkJobRequest, io.littlehorse.sdk.common.proto.CreateBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.CreateBulkJobRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 21;
+      onChanged();
+      return createBulkJobBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder> bulkJobShardReportBuilder_;
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     * @return Whether the bulkJobShardReport field is set.
+     */
+    @java.lang.Override
+    public boolean hasBulkJobShardReport() {
+      return metadataCommandCase_ == 22;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     * @return The bulkJobShardReport.
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkJobShardReport getBulkJobShardReport() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22) {
+          return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          return bulkJobShardReportBuilder_.getMessage();
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder setBulkJobShardReport(io.littlehorse.common.proto.BulkJobShardReport value) {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        bulkJobShardReportBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder setBulkJobShardReport(
+        io.littlehorse.common.proto.BulkJobShardReport.Builder builderForValue) {
+      if (bulkJobShardReportBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        bulkJobShardReportBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder mergeBulkJobShardReport(io.littlehorse.common.proto.BulkJobShardReport value) {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22 &&
+            metadataCommand_ != io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.common.proto.BulkJobShardReport.newBuilder((io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          bulkJobShardReportBuilder_.mergeFrom(value);
+        } else {
+          bulkJobShardReportBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 22;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public Builder clearBulkJobShardReport() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (metadataCommandCase_ == 22) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 22) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        bulkJobShardReportBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    public io.littlehorse.common.proto.BulkJobShardReport.Builder getBulkJobShardReportBuilder() {
+      return internalGetBulkJobShardReportFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder() {
+      if ((metadataCommandCase_ == 22) && (bulkJobShardReportBuilder_ != null)) {
+        return bulkJobShardReportBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 22) {
+          return (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_;
+        }
+        return io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder> 
+        internalGetBulkJobShardReportFieldBuilder() {
+      if (bulkJobShardReportBuilder_ == null) {
+        if (!(metadataCommandCase_ == 22)) {
+          metadataCommand_ = io.littlehorse.common.proto.BulkJobShardReport.getDefaultInstance();
+        }
+        bulkJobShardReportBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.common.proto.BulkJobShardReport, io.littlehorse.common.proto.BulkJobShardReport.Builder, io.littlehorse.common.proto.BulkJobShardReportOrBuilder>(
+                (io.littlehorse.common.proto.BulkJobShardReport) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 22;
+      onChanged();
+      return bulkJobShardReportBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder> deleteBulkJobBuilder_;
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     * @return Whether the deleteBulkJob field is set.
+     */
+    @java.lang.Override
+    public boolean hasDeleteBulkJob() {
+      return metadataCommandCase_ == 23;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     * @return The deleteBulkJob.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          return deleteBulkJobBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder setDeleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest value) {
+      if (deleteBulkJobBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataCommand_ = value;
+        onChanged();
+      } else {
+        deleteBulkJobBuilder_.setMessage(value);
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder setDeleteBulkJob(
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder builderForValue) {
+      if (deleteBulkJobBuilder_ == null) {
+        metadataCommand_ = builderForValue.build();
+        onChanged();
+      } else {
+        deleteBulkJobBuilder_.setMessage(builderForValue.build());
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder mergeDeleteBulkJob(io.littlehorse.sdk.common.proto.DeleteBulkJobRequest value) {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23 &&
+            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance()) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataCommand_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          deleteBulkJobBuilder_.mergeFrom(value);
+        } else {
+          deleteBulkJobBuilder_.setMessage(value);
+        }
+      }
+      metadataCommandCase_ = 23;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public Builder clearDeleteBulkJob() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (metadataCommandCase_ == 23) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataCommandCase_ == 23) {
+          metadataCommandCase_ = 0;
+          metadataCommand_ = null;
+        }
+        deleteBulkJobBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder getDeleteBulkJobBuilder() {
+      return internalGetDeleteBulkJobFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder() {
+      if ((metadataCommandCase_ == 23) && (deleteBulkJobBuilder_ != null)) {
+        return deleteBulkJobBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataCommandCase_ == 23) {
+          return (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_;
+        }
+        return io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder> 
+        internalGetDeleteBulkJobFieldBuilder() {
+      if (deleteBulkJobBuilder_ == null) {
+        if (!(metadataCommandCase_ == 23)) {
+          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.getDefaultInstance();
+        }
+        deleteBulkJobBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.DeleteBulkJobRequest, io.littlehorse.sdk.common.proto.DeleteBulkJobRequest.Builder, io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.DeleteBulkJobRequest) metadataCommand_,
+                getParentForChildren(),
+                isClean());
+        metadataCommand_ = null;
+      }
+      metadataCommandCase_ = 23;
+      onChanged();
+      return deleteBulkJobBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder> putWorkflowMigrationPlanBuilder_;
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      * @return Whether the putWorkflowMigrationPlan field is set.
      */
     @java.lang.Override
     public boolean hasPutWorkflowMigrationPlan() {
-      return metadataCommandCase_ == 21;
+      return metadataCommandCase_ == 24;
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      * @return The putWorkflowMigrationPlan.
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan() {
       if (putWorkflowMigrationPlanBuilder_ == null) {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
         }
         return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
       } else {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           return putWorkflowMigrationPlanBuilder_.getMessage();
         }
         return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     public Builder setPutWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest value) {
       if (putWorkflowMigrationPlanBuilder_ == null) {
@@ -4437,11 +5061,11 @@ private static final long serialVersionUID = 0L;
       } else {
         putWorkflowMigrationPlanBuilder_.setMessage(value);
       }
-      metadataCommandCase_ = 21;
+      metadataCommandCase_ = 24;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     public Builder setPutWorkflowMigrationPlan(
         io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder builderForValue) {
@@ -4451,15 +5075,15 @@ private static final long serialVersionUID = 0L;
       } else {
         putWorkflowMigrationPlanBuilder_.setMessage(builderForValue.build());
       }
-      metadataCommandCase_ = 21;
+      metadataCommandCase_ = 24;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     public Builder mergePutWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest value) {
       if (putWorkflowMigrationPlanBuilder_ == null) {
-        if (metadataCommandCase_ == 21 &&
+        if (metadataCommandCase_ == 24 &&
             metadataCommand_ != io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance()) {
           metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.newBuilder((io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_)
               .mergeFrom(value).buildPartial();
@@ -4468,27 +5092,27 @@ private static final long serialVersionUID = 0L;
         }
         onChanged();
       } else {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           putWorkflowMigrationPlanBuilder_.mergeFrom(value);
         } else {
           putWorkflowMigrationPlanBuilder_.setMessage(value);
         }
       }
-      metadataCommandCase_ = 21;
+      metadataCommandCase_ = 24;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     public Builder clearPutWorkflowMigrationPlan() {
       if (putWorkflowMigrationPlanBuilder_ == null) {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           metadataCommandCase_ = 0;
           metadataCommand_ = null;
           onChanged();
         }
       } else {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           metadataCommandCase_ = 0;
           metadataCommand_ = null;
         }
@@ -4497,33 +5121,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder getPutWorkflowMigrationPlanBuilder() {
       return internalGetPutWorkflowMigrationPlanFieldBuilder().getBuilder();
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     @java.lang.Override
     public io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder() {
-      if ((metadataCommandCase_ == 21) && (putWorkflowMigrationPlanBuilder_ != null)) {
+      if ((metadataCommandCase_ == 24) && (putWorkflowMigrationPlanBuilder_ != null)) {
         return putWorkflowMigrationPlanBuilder_.getMessageOrBuilder();
       } else {
-        if (metadataCommandCase_ == 21) {
+        if (metadataCommandCase_ == 24) {
           return (io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest) metadataCommand_;
         }
         return io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
       }
     }
     /**
-     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 21;</code>
+     * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder> 
         internalGetPutWorkflowMigrationPlanFieldBuilder() {
       if (putWorkflowMigrationPlanBuilder_ == null) {
-        if (!(metadataCommandCase_ == 21)) {
+        if (!(metadataCommandCase_ == 24)) {
           metadataCommand_ = io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest.getDefaultInstance();
         }
         putWorkflowMigrationPlanBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -4533,7 +5157,7 @@ private static final long serialVersionUID = 0L;
                 isClean());
         metadataCommand_ = null;
       }
-      metadataCommandCase_ = 21;
+      metadataCommandCase_ = 24;
       onChanged();
       return putWorkflowMigrationPlanBuilder_;
     }

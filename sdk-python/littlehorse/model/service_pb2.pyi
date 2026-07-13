@@ -20,6 +20,7 @@ import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
 import littlehorse.model.metrics_pb2 as _metrics_pb2
 import littlehorse.model.workflow_migration_pb2 as _workflow_migration_pb2
+import littlehorse.model.bulk_job_pb2 as _bulk_job_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor

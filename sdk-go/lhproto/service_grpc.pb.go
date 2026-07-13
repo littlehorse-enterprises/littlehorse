@@ -106,6 +106,10 @@ const (
 	LittleHorse_DeletePrincipal_FullMethodName             = "/littlehorse.LittleHorse/DeletePrincipal"
 	LittleHorse_DeleteQuota_FullMethodName                 = "/littlehorse.LittleHorse/DeleteQuota"
 	LittleHorse_DeleteScheduledWfRun_FullMethodName        = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
+	LittleHorse_CreateBulkJob_FullMethodName               = "/littlehorse.LittleHorse/CreateBulkJob"
+	LittleHorse_GetBulkJob_FullMethodName                  = "/littlehorse.LittleHorse/GetBulkJob"
+	LittleHorse_SearchBulkJob_FullMethodName               = "/littlehorse.LittleHorse/SearchBulkJob"
+	LittleHorse_DeleteBulkJob_FullMethodName               = "/littlehorse.LittleHorse/DeleteBulkJob"
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName      = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
 	LittleHorse_ListTaskMetrics_FullMethodName             = "/littlehorse.LittleHorse/ListTaskMetrics"
@@ -371,6 +375,14 @@ type LittleHorseClient interface {
 	DeleteQuota(ctx context.Context, in *DeleteQuotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+	CreateBulkJob(ctx context.Context, in *CreateBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
+	// EXPERIMENTAL: Gets the status of a BulkJob.
+	GetBulkJob(ctx context.Context, in *GetBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+	SearchBulkJob(ctx context.Context, in *SearchBulkJobRequest, opts ...grpc.CallOption) (*BulkJobIdList, error)
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	DeleteBulkJob(ctx context.Context, in *DeleteBulkJobRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
@@ -1212,6 +1224,42 @@ func (c *littleHorseClient) DeleteScheduledWfRun(ctx context.Context, in *Delete
 	return out, nil
 }
 
+func (c *littleHorseClient) CreateBulkJob(ctx context.Context, in *CreateBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error) {
+	out := new(BulkJob)
+	err := c.cc.Invoke(ctx, LittleHorse_CreateBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetBulkJob(ctx context.Context, in *GetBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error) {
+	out := new(BulkJob)
+	err := c.cc.Invoke(ctx, LittleHorse_GetBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchBulkJob(ctx context.Context, in *SearchBulkJobRequest, opts ...grpc.CallOption) (*BulkJobIdList, error) {
+	out := new(BulkJobIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteBulkJob(ctx context.Context, in *DeleteBulkJobRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error) {
 	out := new(TaskDefMetrics)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTaskDefMetricsWindow_FullMethodName, in, out, opts...)
@@ -1603,6 +1651,14 @@ type LittleHorseServer interface {
 	DeleteQuota(context.Context, *DeleteQuotaRequest) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+	CreateBulkJob(context.Context, *CreateBulkJobRequest) (*BulkJob, error)
+	// EXPERIMENTAL: Gets the status of a BulkJob.
+	GetBulkJob(context.Context, *GetBulkJobRequest) (*BulkJob, error)
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+	SearchBulkJob(context.Context, *SearchBulkJobRequest) (*BulkJobIdList, error)
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	DeleteBulkJob(context.Context, *DeleteBulkJobRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
@@ -1902,6 +1958,18 @@ func (UnimplementedLittleHorseServer) DeleteQuota(context.Context, *DeleteQuotaR
 }
 func (UnimplementedLittleHorseServer) DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteScheduledWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) CreateBulkJob(context.Context, *CreateBulkJobRequest) (*BulkJob, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) GetBulkJob(context.Context, *GetBulkJobRequest) (*BulkJob, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchBulkJob(context.Context, *SearchBulkJobRequest) (*BulkJobIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteBulkJob(context.Context, *DeleteBulkJobRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBulkJob not implemented")
 }
 func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDefMetricsWindow not implemented")
@@ -3520,6 +3588,78 @@ func _LittleHorse_DeleteScheduledWfRun_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_CreateBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).CreateBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_CreateBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).CreateBulkJob(ctx, req.(*CreateBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetBulkJob(ctx, req.(*GetBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchBulkJob(ctx, req.(*SearchBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteBulkJob(ctx, req.(*DeleteBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetTaskDefMetricsWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TaskDefMetricsQueryRequest)
 	if err := dec(in); err != nil {
@@ -4154,6 +4294,22 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteScheduledWfRun",
 			Handler:    _LittleHorse_DeleteScheduledWfRun_Handler,
+		},
+		{
+			MethodName: "CreateBulkJob",
+			Handler:    _LittleHorse_CreateBulkJob_Handler,
+		},
+		{
+			MethodName: "GetBulkJob",
+			Handler:    _LittleHorse_GetBulkJob_Handler,
+		},
+		{
+			MethodName: "SearchBulkJob",
+			Handler:    _LittleHorse_SearchBulkJob_Handler,
+		},
+		{
+			MethodName: "DeleteBulkJob",
+			Handler:    _LittleHorse_DeleteBulkJob_Handler,
 		},
 		{
 			MethodName: "GetTaskDefMetricsWindow",

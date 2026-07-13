@@ -1,4 +1,5 @@
 from .acls_pb2 import *
+from .bulk_job_pb2 import *
 from .common_enums_pb2 import *
 from .common_wfspec_pb2 import *
 from .external_event_pb2 import *

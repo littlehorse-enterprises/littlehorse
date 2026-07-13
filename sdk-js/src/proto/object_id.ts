@@ -439,6 +439,19 @@ export interface ScheduledWfRunId {
     id: string;
 }
 /**
+ * ID for a BulkJob.
+ *
+ * @generated from protobuf message littlehorse.BulkJobId
+ */
+export interface BulkJobId {
+    /**
+     * The unique identifier of the BulkJob.
+     *
+     * @generated from protobuf field: string id = 1
+     */
+    id: string;
+}
+/**
  * ID for an InactiveThreadRun.
  *
  * @generated from protobuf message littlehorse.InactiveThreadRunId
@@ -1657,6 +1670,53 @@ class ScheduledWfRunId$Type extends MessageType<ScheduledWfRunId> {
  * @generated MessageType for protobuf message littlehorse.ScheduledWfRunId
  */
 export const ScheduledWfRunId = new ScheduledWfRunId$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class BulkJobId$Type extends MessageType<BulkJobId> {
+    constructor() {
+        super("littlehorse.BulkJobId", [
+            { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<BulkJobId>): BulkJobId {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.id = "";
+        if (value !== undefined)
+            reflectionMergePartial<BulkJobId>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: BulkJobId): BulkJobId {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string id */ 1:
+                    message.id = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: BulkJobId, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string id = 1; */
+        if (message.id !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.BulkJobId
+ */
+export const BulkJobId = new BulkJobId$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class InactiveThreadRunId$Type extends MessageType<InactiveThreadRunId> {
     constructor() {
