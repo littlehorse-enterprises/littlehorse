@@ -11,6 +11,7 @@ Today, LittleHorse only supports deleting (or operating on) a single `WfRun` at 
 ### Out of Scope
 
 * Bulk operations beyond `WfRun` deletion (future extensions).
+* Bulk deletion of `WfRun`s that are **not** in a terminal state. For now, `BulkDeleteWfRun` requires a terminal `wf_run_status` (`COMPLETED` or `ERROR`) because deleting non-terminal `WfRun`s is dangerous. This may be revisited once we resolve how to safely delete non-terminal `WfRun`s.
 
 ## Public Contract
 
@@ -75,8 +76,10 @@ message BulkDeleteWfRun {
   // Only delete WfRun's that started at or before this time. Required.
   google.protobuf.Timestamp latest_start = 3;
 
-  // If set, only delete WfRun's with this status.
-  optional LHStatus wf_run_status = 4;
+  // Only delete WfRun's with this status. Required. Must be a terminal status
+  // (i.e. COMPLETED or ERROR). Deleting WfRun's that are not in a terminal state
+  // is not supported yet, so a non-terminal status is rejected with INVALID_ARGUMENT.
+  LHStatus wf_run_status = 4;
 }
 
 // Request to create a BulkJob.
@@ -165,7 +168,7 @@ message BulkJobShardReport {
 The CLI exposes bulk deletion of `WfRun`s via the `delete` subcommand:
 
 ```
-lhctl delete wfRunBulk <wfSpecName> --from <dateFrom> --to <dateTo> [--status <status>] [--id <id>]
+lhctl delete wfRunBulk <wfSpecName> --from <dateFrom> --to <dateTo> --status <status> [--id <id>]
 ```
 
 ### Arguments
@@ -175,20 +178,22 @@ lhctl delete wfRunBulk <wfSpecName> --from <dateFrom> --to <dateTo> [--status <s
 | `<wfSpecName>` | Yes | Name of the `WfSpec` whose `WfRun`s should be deleted. |
 | `--from` | Yes | Start of the time range (inclusive). ISO 8601 format (e.g., `2025-01-01T00:00:00Z`). |
 | `--to` | Yes | End of the time range (inclusive). ISO 8601 format (e.g., `2025-06-01T00:00:00Z`). |
-| `--status` | No | If provided, only delete `WfRun`s with this status (e.g., `COMPLETED`, `ERROR`). |
+| `--status` | Yes | Only delete `WfRun`s with this status. Must be a terminal status (`COMPLETED` or `ERROR`). |
 | `--id` | No | Client-provided ID for idempotency. |
+
+> **Note:** `--status` is required and only terminal statuses (`COMPLETED`, `ERROR`) are accepted. Bulk-deleting `WfRun`s that are not in a terminal state is dangerous and is not supported yet; this restriction may be relaxed in the future once we resolve how to safely delete non-terminal `WfRun`s.
 
 ### Example Usage
 
 ```bash
-# Delete all WfRuns of "my-workflow" between Jan 1 and Jun 1, 2025
-lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z
-
-# Delete only COMPLETED WfRuns of "my-workflow" in that range
+# Delete all COMPLETED WfRuns of "my-workflow" between Jan 1 and Jun 1, 2025
 lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --status COMPLETED
 
+# Delete only ERROR WfRuns of "my-workflow" in that range
+lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --status ERROR
+
 # With a custom ID for idempotency
-lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --id my-bulk-job-123
+lhctl delete wfRunBulk my-workflow --from 2025-01-01T00:00:00Z --to 2025-06-01T00:00:00Z --status COMPLETED --id my-bulk-job-123
 ```
 
 ### Checking Status
