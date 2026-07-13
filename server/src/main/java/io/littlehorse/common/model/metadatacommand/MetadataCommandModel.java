@@ -61,13 +61,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteQuotaRequestModel deleteQuota;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private DeleteStructDefRequestModel deleteStructDef;
-<<<<<<< HEAD
     private PutWorkflowMigrationPlanRequestModel putWorkflowMigrationPlan;
-=======
     private CreateBulkJobRequestModel createBulkJob;
     private BulkJobShardReportModel bulkJobShardReport;
     private DeleteBulkJobRequestModel deleteBulkJob;
->>>>>>> origin/master
 
     public MetadataCommandModel() {
         super();
@@ -146,10 +143,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_QUOTA:
                 out.setDeleteQuota(deleteQuota.toProto());
                 break;
-<<<<<<< HEAD
             case PUT_WORKFLOW_MIGRATION_PLAN:
                 out.setPutWorkflowMigrationPlan(putWorkflowMigrationPlan.toProto());
-=======
+                break;
             case CREATE_BULK_JOB:
                 out.setCreateBulkJob(createBulkJob.toProto());
                 break;
@@ -158,7 +154,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case DELETE_BULK_JOB:
                 out.setDeleteBulkJob(deleteBulkJob.toProto());
->>>>>>> origin/master
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
@@ -236,11 +231,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_QUOTA:
                 deleteQuota = LHSerializable.fromProto(p.getDeleteQuota(), DeleteQuotaRequestModel.class, context);
                 break;
-<<<<<<< HEAD
             case PUT_WORKFLOW_MIGRATION_PLAN:
                 putWorkflowMigrationPlan = LHSerializable.fromProto(
                         p.getPutWorkflowMigrationPlan(), PutWorkflowMigrationPlanRequestModel.class, context);
-=======
+                break;
             case CREATE_BULK_JOB:
                 createBulkJob =
                         LHSerializable.fromProto(p.getCreateBulkJob(), CreateBulkJobRequestModel.class, context);
@@ -251,7 +245,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case DELETE_BULK_JOB:
                 deleteBulkJob = DeleteBulkJobRequestModel.fromProto(p.getDeleteBulkJob(), context);
->>>>>>> origin/master
                 break;
             case METADATACOMMAND_NOT_SET:
                 log.warn("Metadata command was empty! Will throw LHSerdeError in future.");
@@ -360,11 +353,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteQuotaRequestModel.class)) {
             type = MetadataCommandCase.DELETE_QUOTA;
             deleteQuota = (DeleteQuotaRequestModel) cmd;
-<<<<<<< HEAD
         } else if (cls.equals(PutWorkflowMigrationPlanRequestModel.class)) {
             type = MetadataCommandCase.PUT_WORKFLOW_MIGRATION_PLAN;
             putWorkflowMigrationPlan = (PutWorkflowMigrationPlanRequestModel) cmd;
-=======
         } else if (cls.equals(CreateBulkJobRequestModel.class)) {
             type = MetadataCommandCase.CREATE_BULK_JOB;
             createBulkJob = (CreateBulkJobRequestModel) cmd;
@@ -374,7 +365,6 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteBulkJobRequestModel.class)) {
             type = MetadataCommandCase.DELETE_BULK_JOB;
             deleteBulkJob = (DeleteBulkJobRequestModel) cmd;
->>>>>>> origin/master
         } else {
             throw new IllegalArgumentException("Unrecognized SubCommand class: " + cls.getName());
         }
