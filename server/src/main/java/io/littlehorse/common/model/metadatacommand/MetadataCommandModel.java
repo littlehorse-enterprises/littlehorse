@@ -24,6 +24,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowMigrationPlanRequestModel;
 import io.littlehorse.common.proto.LHStoreType;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase;
@@ -60,6 +61,7 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
     private DeleteQuotaRequestModel deleteQuota;
     private PutWorkflowEventDefRequestModel putWorkflowEventDef;
     private DeleteStructDefRequestModel deleteStructDef;
+    private PutWorkflowMigrationPlanRequestModel putWorkflowMigrationPlan;
     private CreateBulkJobRequestModel createBulkJob;
     private BulkJobShardReportModel bulkJobShardReport;
     private DeleteBulkJobRequestModel deleteBulkJob;
@@ -140,6 +142,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 break;
             case DELETE_QUOTA:
                 out.setDeleteQuota(deleteQuota.toProto());
+                break;
+            case PUT_WORKFLOW_MIGRATION_PLAN:
+                out.setPutWorkflowMigrationPlan(putWorkflowMigrationPlan.toProto());
                 break;
             case CREATE_BULK_JOB:
                 out.setCreateBulkJob(createBulkJob.toProto());
@@ -226,6 +231,10 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
             case DELETE_QUOTA:
                 deleteQuota = LHSerializable.fromProto(p.getDeleteQuota(), DeleteQuotaRequestModel.class, context);
                 break;
+            case PUT_WORKFLOW_MIGRATION_PLAN:
+                putWorkflowMigrationPlan = LHSerializable.fromProto(
+                        p.getPutWorkflowMigrationPlan(), PutWorkflowMigrationPlanRequestModel.class, context);
+                break;
             case CREATE_BULK_JOB:
                 createBulkJob =
                         LHSerializable.fromProto(p.getCreateBulkJob(), CreateBulkJobRequestModel.class, context);
@@ -278,6 +287,8 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putQuota;
             case DELETE_QUOTA:
                 return deleteQuota;
+            case PUT_WORKFLOW_MIGRATION_PLAN:
+                return putWorkflowMigrationPlan;
             case CREATE_BULK_JOB:
                 return createBulkJob;
             case BULK_JOB_SHARD_REPORT:
@@ -342,6 +353,9 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
         } else if (cls.equals(DeleteQuotaRequestModel.class)) {
             type = MetadataCommandCase.DELETE_QUOTA;
             deleteQuota = (DeleteQuotaRequestModel) cmd;
+        } else if (cls.equals(PutWorkflowMigrationPlanRequestModel.class)) {
+            type = MetadataCommandCase.PUT_WORKFLOW_MIGRATION_PLAN;
+            putWorkflowMigrationPlan = (PutWorkflowMigrationPlanRequestModel) cmd;
         } else if (cls.equals(CreateBulkJobRequestModel.class)) {
             type = MetadataCommandCase.CREATE_BULK_JOB;
             createBulkJob = (CreateBulkJobRequestModel) cmd;

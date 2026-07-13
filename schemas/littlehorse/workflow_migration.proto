@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "object_id.proto";
+import "common_wfspec.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+
+// EXPERIMENTAL: Plan describing how to migrate live WfRun's from one WfSpec version to another.
+message WorkflowMigrationPlan {
+    // The id of the migration plan
+    WorkflowMigrationPlanId workflow_migration_plan_id= 1;
+
+    // Time WorkflowMigrationPlan was created
+    google.protobuf.Timestamp created_at = 2;
+
+    // How to migrate an oldThreadSpec to the new threadSpecVersion
+    map<string, ThreadMigrationPlan> thread_migrations = 3;
+        
+    // Source wfSpec 
+    WfSpecId old_wfSpec = 4;
+
+    // major_version and revision of the destination specs 
+    int32 major_version = 5;
+    int32 revision = 6;
+}
+
+
+// EXPERIMENTAL: Plan describing how to migrate a ThreadRun to a thread in the new WfSpec.
+message ThreadMigrationPlan {
+    
+    // Name of thread in new wfSpec that thread wants 
+    // to migrate to 
+    string new_thread_name = 1;
+
+    // How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
+    map<string, NodeMigrationPlan> node_migrations = 2;
+
+    // An internally built list of threadSpec names that must exist at runtime for the given
+    // thread migration to be valid. An example would be, migrating to a new threadSpec that uses a variable
+    // not defined in the previous wfSpec and the new threadSpec does not own the threadVarDef. The threadSpec that 
+    // owns the threadVarDef will be added to the thread_spec_dependencies list.
+    repeated string thread_spec_dependencies = 3;
+
+}
+
+// Request-side representation of a thread migration. 
+// Dependencies are not provided by the client; they are computed internally by
+// the server when building the WorkflowMigrationPlan.
+//
+// EXPERIMENTAL.
+message ThreadMigrationPlanRequest {
+
+    // Name of thread in new wfSpec that thread wants 
+    // to migrate to 
+    string new_thread_name = 1;
+
+    // How to migrate from a nodename in the oldThreadSpec to a new node within the newThreadSpec
+    map<string, NodeMigrationPlan> node_migrations = 2;
+}
+
+// EXPERIMENTAL: Plan describing which Node in the new WfSpec a migrated ThreadRun lands on.
+message NodeMigrationPlan {
+
+    // Name of node in the new wfSpec's threadSpec to migrate to
+    string new_node_name = 1;
+}
+
+// EXPERIMENTAL: Variable assignments applied to a thread when it is migrated.
+message MigrationVars {
+  map<string, VariableAssignment>  var_assignment_by_var_name = 1;
+}

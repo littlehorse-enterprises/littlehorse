@@ -8,8 +8,8 @@ from .node_run_pb2 import *
 from .object_id_pb2 import *
 from .output_topic_pb2 import *
 from .scheduled_wf_run_pb2 import *
-from .service_pb2 import *
 from .service_pb2_grpc import *
+from .service_pb2 import *
 from .struct_def_pb2 import *
 from .task_def_pb2 import *
 from .task_run_pb2 import *
@@ -19,3 +19,4 @@ from .variable_pb2 import *
 from .wf_run_pb2 import *
 from .wf_spec_pb2 import *
 from .workflow_event_pb2 import *
+from .workflow_migration_pb2 import *

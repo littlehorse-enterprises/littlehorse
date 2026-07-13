@@ -71,6 +71,7 @@ enum GetableClassEnum {
     QUOTA = 23;
     BULK_JOB = 24;
     ACTIVE_BULK_JOB = 25;
+    WORKFLOW_MIGRATION_PLAN = 26;
 }
 
 message AttributePb {

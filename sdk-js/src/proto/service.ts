@@ -25,6 +25,7 @@ import { DeletePrincipalRequest } from "./acls";
 import { CheckpointId } from "./object_id";
 import { InactiveThreadRun } from "./wf_run";
 import { InactiveThreadRunId } from "./object_id";
+import { WorkflowMigrationPlan } from "./workflow_migration";
 import { CorrelatedEvent } from "./external_event";
 import { DeleteUserTaskRunCommentRequest } from "./user_tasks";
 import { EditUserTaskRunCommentRequest } from "./user_tasks";
@@ -78,6 +79,9 @@ import { TaskStatus } from "./common_enums";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { LHStatus } from "./common_enums";
 import { WorkflowEventId } from "./object_id";
+import { MigrationVars } from "./workflow_migration";
+import { WorkflowMigrationPlanId } from "./object_id";
+import { ThreadMigrationPlanRequest } from "./workflow_migration";
 import { WorkflowEventDefId } from "./object_id";
 import { WfSpecId } from "./object_id";
 import { UserTaskDefId } from "./object_id";
@@ -667,6 +671,67 @@ export interface ScheduleWfRequest {
      * @generated from protobuf field: string cron_expression = 7
      */
     cronExpression: string;
+}
+/**
+ * EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
+ *
+ * @generated from protobuf message littlehorse.PutWorkflowMigrationPlanRequest
+ */
+export interface PutWorkflowMigrationPlanRequest {
+    /**
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * @generated from protobuf field: littlehorse.WfSpecId old_wfSpec = 2
+     */
+    oldWfSpec?: WfSpecId;
+    /**
+     * @generated from protobuf field: int32 major_version = 3
+     */
+    majorVersion: number;
+    /**
+     * @generated from protobuf field: int32 revision = 4
+     */
+    revision: number;
+    /**
+     * @generated from protobuf field: map<string, littlehorse.ThreadMigrationPlanRequest> thread_migrations = 5
+     */
+    threadMigrations: {
+        [key: string]: ThreadMigrationPlanRequest;
+    };
+}
+/**
+ * EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
+ *
+ * @generated from protobuf message littlehorse.DeleteWorkflowMigrationPlanRequest
+ */
+export interface DeleteWorkflowMigrationPlanRequest {
+    /**
+     * @generated from protobuf field: littlehorse.WorkflowMigrationPlanId id = 1
+     */
+    id?: WorkflowMigrationPlanId;
+}
+/**
+ * EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
+ *
+ * @generated from protobuf message littlehorse.ApplyWorkflowMigrationPlanRequest
+ */
+export interface ApplyWorkflowMigrationPlanRequest {
+    /**
+     * @generated from protobuf field: littlehorse.WorkflowMigrationPlanId id = 1
+     */
+    id?: WorkflowMigrationPlanId;
+    /**
+     * @generated from protobuf field: littlehorse.WfRunId wfRun_id = 2
+     */
+    wfRunId?: WfRunId;
+    /**
+     * @generated from protobuf field: map<string, littlehorse.MigrationVars> migration_vars_by_thread = 3
+     */
+    migrationVarsByThread: {
+        [key: string]: MigrationVars;
+    };
 }
 /**
  * Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
@@ -4389,6 +4454,231 @@ class ScheduleWfRequest$Type extends MessageType<ScheduleWfRequest> {
  * @generated MessageType for protobuf message littlehorse.ScheduleWfRequest
  */
 export const ScheduleWfRequest = new ScheduleWfRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PutWorkflowMigrationPlanRequest$Type extends MessageType<PutWorkflowMigrationPlanRequest> {
+    constructor() {
+        super("littlehorse.PutWorkflowMigrationPlanRequest", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "old_wfSpec", kind: "message", T: () => WfSpecId },
+            { no: 3, name: "major_version", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 4, name: "revision", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 5, name: "thread_migrations", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => ThreadMigrationPlanRequest } }
+        ]);
+    }
+    create(value?: PartialMessage<PutWorkflowMigrationPlanRequest>): PutWorkflowMigrationPlanRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        message.majorVersion = 0;
+        message.revision = 0;
+        message.threadMigrations = {};
+        if (value !== undefined)
+            reflectionMergePartial<PutWorkflowMigrationPlanRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PutWorkflowMigrationPlanRequest): PutWorkflowMigrationPlanRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* littlehorse.WfSpecId old_wfSpec */ 2:
+                    message.oldWfSpec = WfSpecId.internalBinaryRead(reader, reader.uint32(), options, message.oldWfSpec);
+                    break;
+                case /* int32 major_version */ 3:
+                    message.majorVersion = reader.int32();
+                    break;
+                case /* int32 revision */ 4:
+                    message.revision = reader.int32();
+                    break;
+                case /* map<string, littlehorse.ThreadMigrationPlanRequest> thread_migrations */ 5:
+                    this.binaryReadMap5(message.threadMigrations, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap5(map: PutWorkflowMigrationPlanRequest["threadMigrations"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof PutWorkflowMigrationPlanRequest["threadMigrations"] | undefined, val: PutWorkflowMigrationPlanRequest["threadMigrations"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = ThreadMigrationPlanRequest.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.PutWorkflowMigrationPlanRequest.thread_migrations");
+            }
+        }
+        map[key ?? ""] = val ?? ThreadMigrationPlanRequest.create();
+    }
+    internalBinaryWrite(message: PutWorkflowMigrationPlanRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* littlehorse.WfSpecId old_wfSpec = 2; */
+        if (message.oldWfSpec)
+            WfSpecId.internalBinaryWrite(message.oldWfSpec, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* int32 major_version = 3; */
+        if (message.majorVersion !== 0)
+            writer.tag(3, WireType.Varint).int32(message.majorVersion);
+        /* int32 revision = 4; */
+        if (message.revision !== 0)
+            writer.tag(4, WireType.Varint).int32(message.revision);
+        /* map<string, littlehorse.ThreadMigrationPlanRequest> thread_migrations = 5; */
+        for (let k of globalThis.Object.keys(message.threadMigrations)) {
+            writer.tag(5, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            ThreadMigrationPlanRequest.internalBinaryWrite(message.threadMigrations[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.PutWorkflowMigrationPlanRequest
+ */
+export const PutWorkflowMigrationPlanRequest = new PutWorkflowMigrationPlanRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class DeleteWorkflowMigrationPlanRequest$Type extends MessageType<DeleteWorkflowMigrationPlanRequest> {
+    constructor() {
+        super("littlehorse.DeleteWorkflowMigrationPlanRequest", [
+            { no: 1, name: "id", kind: "message", T: () => WorkflowMigrationPlanId }
+        ]);
+    }
+    create(value?: PartialMessage<DeleteWorkflowMigrationPlanRequest>): DeleteWorkflowMigrationPlanRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<DeleteWorkflowMigrationPlanRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteWorkflowMigrationPlanRequest): DeleteWorkflowMigrationPlanRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.WorkflowMigrationPlanId id */ 1:
+                    message.id = WorkflowMigrationPlanId.internalBinaryRead(reader, reader.uint32(), options, message.id);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: DeleteWorkflowMigrationPlanRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.WorkflowMigrationPlanId id = 1; */
+        if (message.id)
+            WorkflowMigrationPlanId.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.DeleteWorkflowMigrationPlanRequest
+ */
+export const DeleteWorkflowMigrationPlanRequest = new DeleteWorkflowMigrationPlanRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ApplyWorkflowMigrationPlanRequest$Type extends MessageType<ApplyWorkflowMigrationPlanRequest> {
+    constructor() {
+        super("littlehorse.ApplyWorkflowMigrationPlanRequest", [
+            { no: 1, name: "id", kind: "message", T: () => WorkflowMigrationPlanId },
+            { no: 2, name: "wfRun_id", kind: "message", T: () => WfRunId },
+            { no: 3, name: "migration_vars_by_thread", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => MigrationVars } }
+        ]);
+    }
+    create(value?: PartialMessage<ApplyWorkflowMigrationPlanRequest>): ApplyWorkflowMigrationPlanRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.migrationVarsByThread = {};
+        if (value !== undefined)
+            reflectionMergePartial<ApplyWorkflowMigrationPlanRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ApplyWorkflowMigrationPlanRequest): ApplyWorkflowMigrationPlanRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.WorkflowMigrationPlanId id */ 1:
+                    message.id = WorkflowMigrationPlanId.internalBinaryRead(reader, reader.uint32(), options, message.id);
+                    break;
+                case /* littlehorse.WfRunId wfRun_id */ 2:
+                    message.wfRunId = WfRunId.internalBinaryRead(reader, reader.uint32(), options, message.wfRunId);
+                    break;
+                case /* map<string, littlehorse.MigrationVars> migration_vars_by_thread */ 3:
+                    this.binaryReadMap3(message.migrationVarsByThread, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap3(map: ApplyWorkflowMigrationPlanRequest["migrationVarsByThread"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof ApplyWorkflowMigrationPlanRequest["migrationVarsByThread"] | undefined, val: ApplyWorkflowMigrationPlanRequest["migrationVarsByThread"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = MigrationVars.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.ApplyWorkflowMigrationPlanRequest.migration_vars_by_thread");
+            }
+        }
+        map[key ?? ""] = val ?? MigrationVars.create();
+    }
+    internalBinaryWrite(message: ApplyWorkflowMigrationPlanRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.WorkflowMigrationPlanId id = 1; */
+        if (message.id)
+            WorkflowMigrationPlanId.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.WfRunId wfRun_id = 2; */
+        if (message.wfRunId)
+            WfRunId.internalBinaryWrite(message.wfRunId, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.MigrationVars> migration_vars_by_thread = 3; */
+        for (let k of globalThis.Object.keys(message.migrationVarsByThread)) {
+            writer.tag(3, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            MigrationVars.internalBinaryWrite(message.migrationVarsByThread[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.ApplyWorkflowMigrationPlanRequest
+ */
+export const ApplyWorkflowMigrationPlanRequest = new ApplyWorkflowMigrationPlanRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class VariableMatch$Type extends MessageType<VariableMatch> {
     constructor() {
@@ -9359,6 +9649,10 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "ListExternalEvents", options: {}, I: ListExternalEventsRequest, O: ExternalEventList },
     { name: "ListWorkflowEvents", options: {}, I: ListWorkflowEventsRequest, O: WorkflowEventList },
     { name: "SearchWfRun", options: {}, I: SearchWfRunRequest, O: WfRunIdList },
+    { name: "PutWorkflowMigrationPlan", options: {}, I: PutWorkflowMigrationPlanRequest, O: WorkflowMigrationPlan },
+    { name: "GetWorkflowMigrationPlan", options: {}, I: WorkflowMigrationPlanId, O: WorkflowMigrationPlan },
+    { name: "DeleteWorkflowMigrationPlan", options: {}, I: DeleteWorkflowMigrationPlanRequest, O: Empty },
+    { name: "ApplyWorkflowMigrationPlan", options: {}, I: ApplyWorkflowMigrationPlanRequest, O: WfRun },
     { name: "SearchCorrelatedEvent", options: {}, I: SearchCorrelatedEventRequest, O: CorrelatedEventIdList },
     { name: "SearchNodeRun", options: {}, I: SearchNodeRunRequest, O: NodeRunIdList },
     { name: "SearchTaskRun", options: {}, I: SearchTaskRunRequest, O: TaskRunIdList },

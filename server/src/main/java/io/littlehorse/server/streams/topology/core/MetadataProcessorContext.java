@@ -7,6 +7,7 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
@@ -106,10 +107,14 @@ public class MetadataProcessorContext implements ExecutionContext {
     private void maybeForwardMetadataGetableToOutputTopic(TenantIdModel tenantId, MetadataGetable<?> getable) {
         TenantModel tenant = metadataManager.get(tenantId);
         if (tenant.getOutputTopicConfig() == null) return;
+
+        if (getable instanceof WorkflowMigrationPlanModel) return;
+
         MetadataOutputTopicRecordModel output = new MetadataOutputTopicRecordModel(getable);
         if (output.getSubrecord() == null) {
             return; // This means that the getable is not a type that we want to forward to the output topic
         }
+
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
         cpo.payload = output;
