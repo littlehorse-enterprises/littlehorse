@@ -150,5 +150,8 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         if (!DELETABLE_WF_RUN_STATUSES.contains(wfRunStatus)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "wfRunStatus must be a terminal status");
         }
+        if (wfRunStatus == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "wfRunStatus must be provided");
+        }
     }
 }
