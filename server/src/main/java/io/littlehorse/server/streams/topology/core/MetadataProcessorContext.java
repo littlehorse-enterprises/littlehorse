@@ -46,12 +46,14 @@ public class MetadataProcessorContext implements ExecutionContext {
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
 
+
         this.metadataCache = metadataCache;
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
         this.metadataManager = new MetadataManager(
                 ClusterScopedStore.newInstance(nativeMetadataStore, this),
                 TenantScopedStore.newInstance(nativeMetadataStore, tenantId, this),
+                this.metadataCache,
                 this.metadataCache,
                 (getable) -> {
                     maybeForwardMetadataGetableToOutputTopic(tenantId, getable);
