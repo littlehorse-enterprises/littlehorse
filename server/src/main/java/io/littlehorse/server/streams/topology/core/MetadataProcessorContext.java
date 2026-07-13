@@ -54,7 +54,6 @@ public class MetadataProcessorContext implements ExecutionContext {
                 ClusterScopedStore.newInstance(nativeMetadataStore, this),
                 TenantScopedStore.newInstance(nativeMetadataStore, tenantId, this),
                 this.metadataCache,
-                this.metadataCache,
                 (getable) -> {
                     maybeForwardMetadataGetableToOutputTopic(tenantId, getable);
                 });
