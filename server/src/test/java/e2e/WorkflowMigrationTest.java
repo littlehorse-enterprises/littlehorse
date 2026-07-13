@@ -181,7 +181,7 @@ public class WorkflowMigrationTest {
     @Test
     void shouldMigrateWfRunFromExternalEventToTask() {
         WfRunId runId = verifier.prepareRun(migrationWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -265,7 +265,7 @@ public class WorkflowMigrationTest {
         // and the sleep spec would become a new major version instead. The 300s sleep keeps
         // the node parked long enough to migrate before it matures.
         WfRunId runId = verifier.prepareRun(migrateFromSleepWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -345,7 +345,7 @@ public class WorkflowMigrationTest {
     @Test
     void shouldMigrateWfRunFromUserTaskToTask() {
         WfRunId runId = verifier.prepareRun(migrateFromUserTaskWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -422,7 +422,7 @@ public class WorkflowMigrationTest {
     @Test
     void shouldMigrateWfRunFromWaitForConditionToTask() {
         WfRunId runId = verifier.prepareRun(migrateFromWaitForConditionWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -733,7 +733,11 @@ public class WorkflowMigrationTest {
 
     @Test
     void shouldSelectCorrectNodeMigrationWhenMultipleNodesInThreadPlan() {
+        // Wait for the task node (position 1) to complete first. The external-event node
+        // (position 2) does not exist until then, so polling it directly would hit NOT_FOUND
+        // on the first poll (which fails immediately instead of retrying).
         WfRunId runId = verifier.prepareRun(migrateFromSecondMigrationNode)
+                .waitForNodeRunStatus(0, 1, LHStatus.COMPLETED, Duration.ofSeconds(30))
                 .waitForNodeRunStatus(0, 2, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
@@ -818,7 +822,7 @@ public class WorkflowMigrationTest {
     void shouldApplyMigrationVariableWhenMigratingFromExternalEventToTask() {
 
         WfRunId runId = verifier.prepareRun(migrateWithVariableWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
@@ -887,7 +891,7 @@ public class WorkflowMigrationTest {
         // Start v0 first so it claims (major=0, revision=0). The entrypoint parks on an
         // external event, keeping the thread halted long enough to migrate.
         WfRunId runId = verifier.prepareRun(migrateWithVariableWf)
-                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING)
+                .waitForNodeRunStatus(0, 1, LHStatus.RUNNING, Duration.ofSeconds(30))
                 .start();
 
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
