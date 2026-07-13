@@ -27,6 +27,8 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -480,13 +482,26 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             return new VariableValueModel((Boolean) val);
         } else if (Double.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Double) val);
+        } else if (val instanceof BigDecimal bigDecimal) {
+            return new VariableValueModel(bigDecimal.doubleValue());
+        } else if (val instanceof BigInteger bigInteger) {
+            try {
+                return new VariableValueModel(bigInteger.longValueExact());
+            } catch (ArithmeticException exn) {
+                String errorMessage = "Not possible to get this from jsonpath path=%s type=%s reason=out_of_int64_range"
+                        .formatted(path, val.getClass().getName());
+                log.error(errorMessage);
+                throw new RuntimeException(errorMessage, exn);
+            }
         } else if (Map.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((Map<String, Object>) val);
         } else if (List.class.isAssignableFrom(val.getClass())) {
             return new VariableValueModel((List<Object>) val);
         } else {
-            log.error("Not possible to get this from jsonpath {}={}", val, val.getClass());
-            throw new RuntimeException("Not possible to get this from jsonpath");
+            String errorMessage = "Not possible to get this from jsonpath path=%s type=%s"
+                    .formatted(path, val.getClass().getName());
+            log.error(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
     }
 

@@ -13,7 +13,7 @@ import {
 
 export type { CountDataPoint, LatencyDataPoint, PieDataPoint }
 
-export function mergeTaskMetricsGroup(tasks: TaskMetrics[]): TaskMetrics {
+function mergeTaskMetricsGroup(tasks: TaskMetrics[]): TaskMetrics {
   return {
     taskrunCreatedToCompleted: mergeManyTimings(tasks.map(t => t.taskrunCreatedToCompleted)),
     taskrunCreatedToError: mergeManyTimings(tasks.map(t => t.taskrunCreatedToError)),
@@ -26,9 +26,9 @@ export function mergeTaskMetricsGroup(tasks: TaskMetrics[]): TaskMetrics {
   }
 }
 
-export const EMPTY_TASK_METRICS: TaskMetrics = mergeTaskMetricsGroup([])
+const EMPTY_TASK_METRICS: TaskMetrics = mergeTaskMetricsGroup([])
 
-export function parseTaskWindows(windows: MetricWindow[]): { ts: number; task: TaskMetrics }[] {
+function parseTaskWindows(windows: MetricWindow[]): { ts: number; task: TaskMetrics }[] {
   return windows
     .filter(w => w.metric?.oneofKind === 'task')
     .map(w => ({
@@ -38,7 +38,7 @@ export function parseTaskWindows(windows: MetricWindow[]): { ts: number; task: T
     .sort((a, b) => a.ts - b.ts)
 }
 
-export function aggregateTaskByBucket(
+function aggregateTaskByBucket(
   points: { ts: number; task: TaskMetrics }[],
   bucketMs: number
 ): Map<number, TaskMetrics> {

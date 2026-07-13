@@ -177,6 +177,12 @@ class ScheduledWfRunId(_message.Message):
     id: str
     def __init__(self, id: _Optional[str] = ...) -> None: ...
 
+class BulkJobId(_message.Message):
+    __slots__ = ("id",)
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: str
+    def __init__(self, id: _Optional[str] = ...) -> None: ...
+
 class InactiveThreadRunId(_message.Message):
     __slots__ = ("wf_run_id", "thread_run_number")
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]
