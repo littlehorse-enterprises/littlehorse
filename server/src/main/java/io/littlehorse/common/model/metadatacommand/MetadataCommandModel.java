@@ -4,7 +4,6 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
-
 import io.littlehorse.common.model.corecommand.subcommand.job.BulkJobShardReportModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;

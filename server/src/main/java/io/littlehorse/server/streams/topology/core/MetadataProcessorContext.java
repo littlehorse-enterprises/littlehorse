@@ -46,7 +46,6 @@ public class MetadataProcessorContext implements ExecutionContext {
             MetadataCommand currentCommand) {
         this.processorContext = processorContext;
 
-
         this.metadataCache = metadataCache;
         TenantIdModel tenantId = HeadersUtil.tenantIdFromMetadata(recordMetadata);
         KeyValueStore<String, Bytes> nativeMetadataStore = nativeMetadataStore();
@@ -115,7 +114,7 @@ public class MetadataProcessorContext implements ExecutionContext {
         if (output.getSubrecord() == null) {
             return; // This means that the getable is not a type that we want to forward to the output topic
         }
-        
+
         CommandProcessorOutput cpo = new CommandProcessorOutput();
         cpo.topic = lhConfig.getMetadataOutputTopicName(tenantId);
         cpo.payload = output;
