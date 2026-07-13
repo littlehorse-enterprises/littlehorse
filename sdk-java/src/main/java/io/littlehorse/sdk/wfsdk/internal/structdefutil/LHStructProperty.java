@@ -55,6 +55,12 @@ public class LHStructProperty {
     }
 
     public VariableValue getValueFrom(Object o, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        return getValueFrom(o, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public VariableValue getValueFrom(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (pd.getReadMethod() == null) {
             throw new IllegalStateException(
                     "No read method for property " + this.fieldName + " found on object of type: " + o.getClass());
@@ -72,7 +78,7 @@ public class LHStructProperty {
                 return LHLibUtil.objToVarValAsNativeMap(val, typeAdapterRegistry);
             }
 
-            return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry);
+            return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e, "Failed getting value of property " + this.fieldName + "from object of type: " + o.getClass());
@@ -85,13 +91,23 @@ public class LHStructProperty {
 
     public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        setValueTo(o, v, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public void setValueTo(
+            Object o,
+            VariableValue v,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (pd.getWriteMethod() == null) {
             throw new IllegalStateException(String.format(
                     "No write method for property [%s] found on object of type [%s]", this.fieldName, o.getClass()));
         }
 
         try {
-            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry));
+            pd.getWriteMethod()
+                    .invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry, placeholderValues));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
