@@ -40,6 +40,7 @@ public class ScheduledTaskExecutor {
     private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
     private final LHTypeAdapterRegistry typeAdapterRegistry;
     private final TaskDef taskDef;
+    private final Map<String, String> placeholderValues;
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
@@ -65,10 +66,20 @@ public class ScheduledTaskExecutor {
             final LittleHorseBlockingStub blockingStub,
             final LHTypeAdapterRegistry typeAdapterRegistry,
             final TaskDef taskDef) {
+        this(retriesStub, blockingStub, typeAdapterRegistry, taskDef, Map.of());
+    }
+
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub,
+            final LittleHorseBlockingStub blockingStub,
+            final LHTypeAdapterRegistry typeAdapterRegistry,
+            final TaskDef taskDef,
+            final Map<String, String> placeholderValues) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
         this.taskDef = taskDef;
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
     }
 
     public void doTask(
@@ -182,7 +193,7 @@ public class ScheduledTaskExecutor {
         if (InlineStruct.class.equals(returnType)) {
             return serializeInlineStructResult(result);
         }
-        return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry);
+        return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);
     }
 
     private VariableValue serializeInlineStructResult(Object result) {
