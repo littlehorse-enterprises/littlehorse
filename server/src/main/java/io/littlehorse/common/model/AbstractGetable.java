@@ -131,16 +131,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.METRIC_WINDOW;
         } else if (cls.equals(InactiveThreadRunModel.class)) {
             return GetableClassEnum.INACTIVE_THREAD_RUN;
-<<<<<<< HEAD
         } else if (cls.equals(WorkflowMigrationPlanModel.class)) {
             return GetableClassEnum.WORKFLOW_MIGRATION_PLAN;
-=======
         } else if (cls.equals(BulkJobModel.class)) {
             return GetableClassEnum.BULK_JOB;
         } else if (cls.equals(ActiveBulkJobModel.class)) {
             return GetableClassEnum.ACTIVE_BULK_JOB;
-
->>>>>>> origin/master
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -196,15 +192,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricWindowModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunModel.class;
-<<<<<<< HEAD
             case WORKFLOW_MIGRATION_PLAN:
                 return WorkflowMigrationPlanModel.class;
-=======
             case BULK_JOB:
                 return BulkJobModel.class;
             case ACTIVE_BULK_JOB:
                 return ActiveBulkJobModel.class;
->>>>>>> origin/master
             case UNRECOGNIZED:
                 // default:
         }
@@ -261,15 +254,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricWindowIdModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunIdModel.class;
-<<<<<<< HEAD
             case WORKFLOW_MIGRATION_PLAN:
                 return WorkflowMigrationPlanIdModel.class;
-=======
             case BULK_JOB:
                 return BulkJobIdModel.class;
             case ACTIVE_BULK_JOB:
                 return ActiveBulkJobIdModel.class;
->>>>>>> origin/master
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

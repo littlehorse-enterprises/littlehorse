@@ -294,17 +294,14 @@ public class MetadataCommandModel extends AbstractCommand<MetadataCommand> {
                 return putQuota;
             case DELETE_QUOTA:
                 return deleteQuota;
-<<<<<<< HEAD
             case PUT_WORKFLOW_MIGRATION_PLAN:
                 return putWorkflowMigrationPlan;
-=======
             case CREATE_BULK_JOB:
                 return createBulkJob;
             case BULK_JOB_SHARD_REPORT:
                 return bulkJobShardReport;
             case DELETE_BULK_JOB:
                 return deleteBulkJob;
->>>>>>> origin/master
             case METADATACOMMAND_NOT_SET:
         }
         throw new IllegalStateException("Not possible to have missing subcommand.");
