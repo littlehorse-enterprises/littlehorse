@@ -6,7 +6,6 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.subcommand.*;
 import io.littlehorse.common.model.corecommand.subcommand.AssignUserTaskRunRequestModel;
-import io.littlehorse.common.model.corecommand.subcommand.BulkUpdateJobModel;
 import io.littlehorse.common.model.corecommand.subcommand.CancelUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.CompleteUserTaskRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.DeadlineReassignUserTaskModel;
@@ -73,7 +72,6 @@ public class CommandModel extends AbstractCommand<Command> {
     private EditUserTaskRunCommentRequestModel editUserTaskRunComment;
     private DeleteUserTaskRunCommentRequestModel deleteUserTaskRunComment;
     private TaskAttemptRetryReadyModel taskAttemptRetryReady;
-    private BulkUpdateJobModel bulkJob;
     private RescueThreadRunRequestModel rescueThreadRun;
     private DeleteTaskWorkerGroupRequestModel deleteTaskWorkerGroup;
     private SaveUserTaskRunProgressRequestModel saveUserTaskRunProgress;
@@ -169,9 +167,6 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case DELETE_USER_TASK_RUN_COMMENT:
                 out.setDeleteUserTaskRunComment(deleteUserTaskRunComment.toProto());
-                break;
-            case BULK_JOB:
-                out.setBulkJob(bulkJob.toProto());
                 break;
             case TASK_ATTEMPT_RETRY_READY:
                 out.setTaskAttemptRetryReady(taskAttemptRetryReady.toProto());
@@ -296,9 +291,6 @@ public class CommandModel extends AbstractCommand<Command> {
                 deleteUserTaskRunComment = LHSerializable.fromProto(
                         p.getDeleteUserTaskRunComment(), DeleteUserTaskRunCommentRequestModel.class, context);
                 break;
-            case BULK_JOB:
-                bulkJob = LHSerializable.fromProto(p.getBulkJob(), BulkUpdateJobModel.class, context);
-                break;
             case TASK_ATTEMPT_RETRY_READY:
                 taskAttemptRetryReady = LHSerializable.fromProto(
                         p.getTaskAttemptRetryReady(), TaskAttemptRetryReadyModel.class, context);
@@ -400,8 +392,6 @@ public class CommandModel extends AbstractCommand<Command> {
                 return editUserTaskRunComment;
             case DELETE_USER_TASK_RUN_COMMENT:
                 return deleteUserTaskRunComment;
-            case BULK_JOB:
-                return bulkJob;
             case TASK_ATTEMPT_RETRY_READY:
                 return taskAttemptRetryReady;
             case RESCUE_THREAD_RUN:
@@ -494,9 +484,6 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(DeleteUserTaskRunCommentRequestModel.class)) {
             type = CommandCase.DELETE_USER_TASK_RUN_COMMENT;
             deleteUserTaskRunComment = (DeleteUserTaskRunCommentRequestModel) cmd;
-        } else if (cls.equals(BulkUpdateJobModel.class)) {
-            type = CommandCase.BULK_JOB;
-            bulkJob = (BulkUpdateJobModel) cmd;
         } else if (cls.equals(TaskAttemptRetryReadyModel.class)) {
             type = CommandCase.TASK_ATTEMPT_RETRY_READY;
             taskAttemptRetryReady = (TaskAttemptRetryReadyModel) cmd;
