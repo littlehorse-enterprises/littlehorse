@@ -188,6 +188,26 @@ class MetadataCacheTest {
         verify(noOpSupplier, times(0)).get();
     }
 
+    @Test
+    void shouldCapAtMaxEntriesAndEvictLeastRecentlyUsed() {
+        for (int i = 0; i < MetadataCache.MAX_ENTRIES; i++) {
+            cache.update("key-" + i, (StoredGetable) mockStoredGetable());
+        }
+        assertThat(cache.size()).isEqualTo(MetadataCache.MAX_ENTRIES);
+
+        // Touch the eldest entry so it becomes most-recently-used and survives the next eviction.
+        Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> noOpSupplier = mockSupplier(null);
+        assertThat(cache.getOrUpdate("key-0", noOpSupplier)).isNotNull();
+
+        // Insert one more entry, forcing an eviction of the least-recently-used entry.
+        cache.update("key-overflow", (StoredGetable) mockStoredGetable());
+        assertThat(cache.size()).isEqualTo(MetadataCache.MAX_ENTRIES);
+
+        // key-0 was recently accessed, so key-1 should have been evicted instead.
+        assertThat(cache.getOrUpdate("key-0", noOpSupplier)).isNotNull();
+        assertThat(cache.getOrUpdate("key-1", mockSupplier(null))).isNull();
+    }
+
     @SuppressWarnings("unchecked")
     private Supplier<StoredGetable<? extends Message, ? extends MetadataGetable<?>>> mockSupplier(
             StoredGetable<?, ?> returnValue) {
