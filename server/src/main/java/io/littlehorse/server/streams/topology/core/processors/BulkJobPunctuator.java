@@ -39,7 +39,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 /**
  * Punctuator that runs on each CommandProcessor partition. It performs two functions:
  *
- * 1. Discovery & Claiming: Scans global metadata for RUNNING BulkJob objects and creates
+ * 1. Discovery and Claiming: Scans global metadata for RUNNING BulkJob objects and creates
  *    a BulkJobShardCursor on this partition if not already claimed.
  *
  * 2. Time-budgeted Tag Range Scan: For each claimed-but-incomplete shard, resumes scanning
