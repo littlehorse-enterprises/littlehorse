@@ -3,6 +3,12 @@ package io.littlehorse.sdk.worker.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructField;
+import io.littlehorse.sdk.common.proto.TaskDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHType;
@@ -27,6 +33,27 @@ public class ScheduledTaskExecutorTest {
             out.setName("Eve");
             return out;
         }
+
+        public InlineStruct returnInlineStruct() {
+            return InlineStruct.newBuilder()
+                    .putFields(
+                            "name",
+                            StructField.newBuilder()
+                                    .setValue(VariableValue.newBuilder().setStr("Han"))
+                                    .build())
+                    .build();
+        }
+
+        @LHType(structDefName = "${customerStructName}")
+        public InlineStruct returnInlineStructWithPlaceholderAnnotation() {
+            return InlineStruct.newBuilder()
+                    .putFields(
+                            "name",
+                            StructField.newBuilder()
+                                    .setValue(VariableValue.newBuilder().setStr("Leia"))
+                                    .build())
+                    .build();
+        }
     }
 
     @LHStructDef("${company}-customer")
@@ -45,13 +72,9 @@ public class ScheduledTaskExecutorTest {
     @Test
     void shouldSerializeReturnAsNativeArrayWhenAnnotated() throws Exception {
         ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
-        Method serializeResult =
-                ScheduledTaskExecutor.class.getDeclaredMethod("serializeResult", Object.class, Method.class);
-        serializeResult.setAccessible(true);
 
         Method method = ReturnTasks.class.getMethod("nativeArrayReturn");
-        VariableValue out =
-                (VariableValue) serializeResult.invoke(executor, new ReturnTasks().nativeArrayReturn(), method);
+        VariableValue out = executor.serializeResult(new ReturnTasks().nativeArrayReturn(), method);
 
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(out.getArray().getItemsCount()).isEqualTo(3);
@@ -61,13 +84,9 @@ public class ScheduledTaskExecutorTest {
     @Test
     void shouldKeepJsonArraySerializationWhenNotAnnotated() throws Exception {
         ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
-        Method serializeResult =
-                ScheduledTaskExecutor.class.getDeclaredMethod("serializeResult", Object.class, Method.class);
-        serializeResult.setAccessible(true);
 
         Method method = ReturnTasks.class.getMethod("jsonArrayReturn");
-        VariableValue out =
-                (VariableValue) serializeResult.invoke(executor, new ReturnTasks().jsonArrayReturn(), method);
+        VariableValue out = executor.serializeResult(new ReturnTasks().jsonArrayReturn(), method);
 
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.JSON_ARR);
     }
@@ -76,13 +95,9 @@ public class ScheduledTaskExecutorTest {
     void shouldResolvePlaceholderInStructReturn() throws Exception {
         ScheduledTaskExecutor executor =
                 new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null, Map.of("company", "acme"));
-        Method serializeResult =
-                ScheduledTaskExecutor.class.getDeclaredMethod("serializeResult", Object.class, Method.class);
-        serializeResult.setAccessible(true);
 
         Method method = ReturnTasks.class.getMethod("placeholderStructReturn");
-        VariableValue out =
-                (VariableValue) serializeResult.invoke(executor, new ReturnTasks().placeholderStructReturn(), method);
+        VariableValue out = executor.serializeResult(new ReturnTasks().placeholderStructReturn(), method);
 
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         assertThat(out.getStruct().getStructDefId().getName()).isEqualTo("acme-customer");
@@ -93,5 +108,57 @@ public class ScheduledTaskExecutorTest {
                         .getValue()
                         .getStr())
                 .isEqualTo("Eve");
+    }
+
+    @Test
+    void shouldSerializeInlineStructReturnValueUsingTaskDefReturnType() throws Exception {
+        TaskDef taskDef = taskDefWithStructReturn("acme-customer");
+        ScheduledTaskExecutor executor =
+                new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), taskDef, Map.of());
+
+        Method method = ReturnTasks.class.getMethod("returnInlineStruct");
+        VariableValue out = executor.serializeResult(new ReturnTasks().returnInlineStruct(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(out.getStruct().getStructDefId().getName()).isEqualTo("acme-customer");
+        assertThat(out.getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("name")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Han");
+    }
+
+    @Test
+    void shouldSerializeInlineStructReturnWithUnresolvedPlaceholderAnnotation() throws Exception {
+        // Regression: the InlineStruct return path serializes using the server-registered TaskDef
+        // return type, so it must not attempt to resolve the "${...}" placeholder on the return-type
+        // annotation. Even with an empty placeholder map, serialization must succeed rather than throw.
+        TaskDef taskDef = taskDefWithStructReturn("acme-customer");
+        ScheduledTaskExecutor executor =
+                new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), taskDef, Map.of());
+
+        Method method = ReturnTasks.class.getMethod("returnInlineStructWithPlaceholderAnnotation");
+        VariableValue out =
+                executor.serializeResult(new ReturnTasks().returnInlineStructWithPlaceholderAnnotation(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(out.getStruct().getStructDefId().getName()).isEqualTo("acme-customer");
+        assertThat(out.getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("name")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Leia");
+    }
+
+    private static TaskDef taskDefWithStructReturn(String structDefName) {
+        return TaskDef.newBuilder()
+                .setReturnType(ReturnType.newBuilder()
+                        .setReturnType(TypeDefinition.newBuilder()
+                                .setStructDefId(StructDefId.newBuilder().setName(structDefName))))
+                .build();
     }
 }
