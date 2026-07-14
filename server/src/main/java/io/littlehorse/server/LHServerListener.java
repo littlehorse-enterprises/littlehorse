@@ -37,12 +37,15 @@ import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
@@ -62,7 +65,10 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
@@ -71,7 +77,6 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefReque
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutQuotaRequestModel;
@@ -81,6 +86,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowMigrationPlanRequestModel;
 import io.littlehorse.common.proto.InternalCountResponse;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -104,6 +110,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskR
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchBulkJobRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
@@ -130,6 +137,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTask
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchBulkJobReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
@@ -432,6 +440,42 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void createBulkJob(CreateBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        CreateBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, CreateBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, BulkJob.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getBulkJob(GetBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
+        BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
+        if (bulkJob == null) {
+            ctx.onError(new StatusRuntimeException(
+                    Status.NOT_FOUND.withDescription("Couldn't find BulkJob %s".formatted(idModel.toString()))));
+            return;
+        }
+        ctx.onNext(bulkJob.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchBulkJob(SearchBulkJobRequest req, StreamObserver<BulkJobIdList> ctx) {
+        handleScan(SearchBulkJobRequestModel.fromProto(req, requestContext()), ctx, SearchBulkJobReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void deleteBulkJob(DeleteBulkJobRequest req, StreamObserver<Empty> ctx) {
+        DeleteBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void validateStructDefEvolution(
             ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
@@ -566,11 +610,40 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getWorkflowMigrationPlan(WorkflowMigrationPlanId req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        WorkflowMigrationPlanIdModel id =
+                LHSerializable.fromProto(req, WorkflowMigrationPlanIdModel.class, requestContext());
+        WorkflowMigrationPlanModel plan = requestContext()
+                .metadataManager()
+                .getOrThrow(
+                        id,
+                        () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified WorkflowMigrationPlan"));
+        ctx.onNext(plan.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
-    public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        MigrateWfSpecRequestModel reqModel =
-                LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
+    public void putWorkflowMigrationPlan(
+            PutWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        PutWorkflowMigrationPlanRequestModel reqModel =
+                LHSerializable.fromProto(req, PutWorkflowMigrationPlanRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowMigrationPlan.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest req, StreamObserver<WfRun> ctx) {
+        ApplyWorkflowMigrationRequestModel reqModel =
+                LHSerializable.fromProto(req, ApplyWorkflowMigrationRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void deleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest req, StreamObserver<Empty> ctx) {
+        throw new LHApiException(Status.UNIMPLEMENTED, "DeleteWorkflowMigrationPlan is not yet implemented");
     }
 
     @Override
@@ -953,6 +1026,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
+        handleScan(
+                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWfMetricWindowReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listVariables(ListVariablesRequest req, StreamObserver<VariableList> ctx) {
         ListVariablesRequestModel lv = LHSerializable.fromProto(req, ListVariablesRequestModel.class, requestContext());
         handleScan(lv, ctx, ListVariablesReply.class);
@@ -997,15 +1079,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
         ctx.onNext(metricWindow.toProto().build());
         ctx.onCompleted();
-    }
-
-    @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
-        handleScan(
-                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
-                ctx,
-                SearchWfMetricWindowReply.class);
     }
 
     @Override

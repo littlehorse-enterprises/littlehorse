@@ -4,6 +4,7 @@ import grpc
 import warnings
 
 import littlehorse.model.acls_pb2 as acls__pb2
+import littlehorse.model.bulk_job_pb2 as bulk__job__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import littlehorse.model.metrics_pb2 as metrics__pb2
@@ -19,6 +20,7 @@ import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
 import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 import littlehorse.model.workflow_event_pb2 as workflow__event__pb2
+import littlehorse.model.workflow_migration_pb2 as workflow__migration__pb2
 
 GRPC_GENERATED_VERSION = '1.75.1'
 GRPC_VERSION = grpc.__version__
@@ -279,6 +281,26 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.SearchWfRunRequest.SerializeToString,
                 response_deserializer=service__pb2.WfRunIdList.FromString,
                 _registered_method=True)
+        self.PutWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutWorkflowMigrationPlan',
+                request_serializer=service__pb2.PutWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+                _registered_method=True)
+        self.GetWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetWorkflowMigrationPlan',
+                request_serializer=object__id__pb2.WorkflowMigrationPlanId.SerializeToString,
+                response_deserializer=workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+                _registered_method=True)
+        self.DeleteWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan',
+                request_serializer=service__pb2.DeleteWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.ApplyWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
+                request_serializer=service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
+                _registered_method=True)
         self.SearchCorrelatedEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchCorrelatedEvent',
                 request_serializer=service__pb2.SearchCorrelatedEventRequest.SerializeToString,
@@ -457,6 +479,26 @@ class LittleHorseStub(object):
         self.DeleteScheduledWfRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteScheduledWfRun',
                 request_serializer=service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
+                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+                _registered_method=True)
+        self.CreateBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/CreateBulkJob',
+                request_serializer=bulk__job__pb2.CreateBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJob.FromString,
+                _registered_method=True)
+        self.GetBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetBulkJob',
+                request_serializer=bulk__job__pb2.GetBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJob.FromString,
+                _registered_method=True)
+        self.SearchBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchBulkJob',
+                request_serializer=bulk__job__pb2.SearchBulkJobRequest.SerializeToString,
+                response_deserializer=bulk__job__pb2.BulkJobIdList.FromString,
+                _registered_method=True)
+        self.DeleteBulkJob = channel.unary_unary(
+                '/littlehorse.LittleHorse/DeleteBulkJob',
+                request_serializer=bulk__job__pb2.DeleteBulkJobRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
         self.GetTaskDefMetricsWindow = channel.unary_unary(
@@ -907,6 +949,35 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PutWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Register a workflow migration plan with lh server
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Get a workflow migration plan by ID
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ApplyWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+        destination WfSpec.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SearchCorrelatedEvent(self, request, context):
         """Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
         events that may be orphaned.
@@ -1184,6 +1255,34 @@ class LittleHorseServicer(object):
 
     def DeleteScheduledWfRun(self, request, context):
         """Deletes a scheduled run and prevents any further associated WfRun from being executed.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateBulkJob(self, request, context):
+        """EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBulkJob(self, request, context):
+        """EXPERIMENTAL: Gets the status of a BulkJob.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchBulkJob(self, request, context):
+        """EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteBulkJob(self, request, context):
+        """EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1537,6 +1636,26 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.SearchWfRunRequest.FromString,
                     response_serializer=service__pb2.WfRunIdList.SerializeToString,
             ),
+            'PutWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.PutWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=workflow__migration__pb2.WorkflowMigrationPlan.SerializeToString,
+            ),
+            'GetWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWorkflowMigrationPlan,
+                    request_deserializer=object__id__pb2.WorkflowMigrationPlanId.FromString,
+                    response_serializer=workflow__migration__pb2.WorkflowMigrationPlan.SerializeToString,
+            ),
+            'DeleteWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.DeleteWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'ApplyWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.ApplyWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.ApplyWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
             'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchCorrelatedEvent,
                     request_deserializer=service__pb2.SearchCorrelatedEventRequest.FromString,
@@ -1715,6 +1834,26 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteScheduledWfRun': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteScheduledWfRun,
                     request_deserializer=service__pb2.DeleteScheduledWfRunRequest.FromString,
+                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
+            ),
+            'CreateBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateBulkJob,
+                    request_deserializer=bulk__job__pb2.CreateBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJob.SerializeToString,
+            ),
+            'GetBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBulkJob,
+                    request_deserializer=bulk__job__pb2.GetBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJob.SerializeToString,
+            ),
+            'SearchBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchBulkJob,
+                    request_deserializer=bulk__job__pb2.SearchBulkJobRequest.FromString,
+                    response_serializer=bulk__job__pb2.BulkJobIdList.SerializeToString,
+            ),
+            'DeleteBulkJob': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteBulkJob,
+                    request_deserializer=bulk__job__pb2.DeleteBulkJobRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'GetTaskDefMetricsWindow': grpc.unary_unary_rpc_method_handler(
@@ -3051,6 +3190,114 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def PutWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutWorkflowMigrationPlan',
+            service__pb2.PutWorkflowMigrationPlanRequest.SerializeToString,
+            workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetWorkflowMigrationPlan',
+            object__id__pb2.WorkflowMigrationPlanId.SerializeToString,
+            workflow__migration__pb2.WorkflowMigrationPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan',
+            service__pb2.DeleteWorkflowMigrationPlanRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ApplyWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
+            service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def SearchCorrelatedEvent(request,
             target,
             options=(),
@@ -4011,6 +4258,114 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteScheduledWfRun',
             service__pb2.DeleteScheduledWfRunRequest.SerializeToString,
+            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/CreateBulkJob',
+            bulk__job__pb2.CreateBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJob.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetBulkJob',
+            bulk__job__pb2.GetBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJob.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchBulkJob',
+            bulk__job__pb2.SearchBulkJobRequest.SerializeToString,
+            bulk__job__pb2.BulkJobIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteBulkJob(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/DeleteBulkJob',
+            bulk__job__pb2.DeleteBulkJobRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

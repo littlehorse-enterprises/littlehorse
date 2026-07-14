@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
+import com.jayway.jsonpath.JsonPath;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
@@ -21,6 +22,8 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,26 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class VariableValueModelTest {
+
+    private VariableValueModel jsonValueWithBigDecimalJsonPathResult() {
+        String jsonObj = "{\"score\":0.47380000352859497}";
+        Object parsedValue = JsonPath.parse(jsonObj).read("$.score");
+        assertThat(parsedValue).isInstanceOf(BigDecimal.class);
+        return jsonValueWithJsonObj(jsonObj);
+    }
+
+    private VariableValueModel jsonValueWithBigIntegerJsonPathResult() {
+        String jsonObj = "{\"score\":100000000000000000000}";
+        Object parsedValue = JsonPath.parse(jsonObj).read("$.score");
+        assertThat(parsedValue).isInstanceOf(BigInteger.class);
+        return new VariableValueModel(Map.of("score", parsedValue));
+    }
+
+    private VariableValueModel jsonValueWithJsonObj(String jsonObj) {
+        VariableValue proto = VariableValue.newBuilder().setJsonObj(jsonObj).build();
+
+        return VariableValueModel.fromProto(proto, mock());
+    }
 
     @Test
     void castDoubleToInt() throws LHVarSubError {
@@ -294,6 +317,28 @@ public class VariableValueModelTest {
         VariableValueModel strVarVal = structVarVal.get(LHPathModel.fromProto(lhPath, mock()));
 
         assertThat(strVarVal.getStrVal()).isEqualTo("Obi-Wan");
+    }
+
+    @Test
+    void jsonPathBigDecimalConvertsToDouble() throws LHVarSubError {
+        VariableValueModel jsonObjValue = jsonValueWithBigDecimalJsonPathResult();
+
+        VariableValueModel result = jsonObjValue.jsonPath("$.score");
+
+        assertThat(result.getTypeDefinition().getPrimitiveType()).isEqualTo(VariableType.DOUBLE);
+        assertThat(result.getDoubleVal()).isEqualTo(new BigDecimal("0.47380000352859497").doubleValue());
+    }
+
+    @Test
+    void jsonPathBigIntegerFailsWhenOutOfInt64Range() {
+        VariableValueModel jsonObjValue = jsonValueWithBigIntegerJsonPathResult();
+
+        RuntimeException exn = assertThrows(RuntimeException.class, () -> jsonObjValue.jsonPath("$.score"));
+
+        assertThat(exn.getMessage())
+                .isEqualTo(
+                        "Not possible to get this from jsonpath path=$.score type=java.math.BigInteger reason=out_of_int64_range");
+        assertThat(exn.getMessage()).doesNotContain("100000000000000000000");
     }
 
     @Test

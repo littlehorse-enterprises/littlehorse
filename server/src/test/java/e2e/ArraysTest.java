@@ -52,6 +52,12 @@ public class ArraysTest {
     @LHWorkflow("array-extend-wf")
     private Workflow arrayExtendWf;
 
+    @LHWorkflow("array-concat-wf")
+    private Workflow arrayConcatWf;
+
+    @LHWorkflow("array-of-arrays-extend-wf")
+    private Workflow arrayOfArraysExtendWf;
+
     @LHWorkflow("array-remove-wf")
     private Workflow arrayRemoveWf;
 
@@ -196,6 +202,90 @@ public class ArraysTest {
     }
 
     @Test
+    public void shouldConcatenateArraysOnExtend() {
+        workflowVerifier
+                .prepareRun(arrayConcatWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    // [1, 2, 3] EXTEND [1, 2, 3] => [1, 2, 3, 1, 2, 3]
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(6);
+                    Assertions.assertThat(variableValue.getArray().getItems(0).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(3).getInt())
+                            .isEqualTo(1L);
+                    Assertions.assertThat(variableValue.getArray().getItems(5).getInt())
+                            .isEqualTo(3L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldExtendArrayOntoArrayOfArrays() {
+        // my-array is an Array<Array<INT>> holding a single inner array: [[1, 2, 3]]
+        VariableValue arrayOfArrays = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .addItems(VariableValue.newBuilder()
+                                .setArray(Array.newBuilder()
+                                        .addItems(VariableValue.newBuilder().setInt(1))
+                                        .addItems(VariableValue.newBuilder().setInt(2))
+                                        .addItems(VariableValue.newBuilder().setInt(3)))))
+                .build();
+
+        // to-append is a single Array<INT>: [4, 5, 6]
+        VariableValue toAppend = VariableValue.newBuilder()
+                .setArray(Array.newBuilder()
+                        .addItems(VariableValue.newBuilder().setInt(4))
+                        .addItems(VariableValue.newBuilder().setInt(5))
+                        .addItems(VariableValue.newBuilder().setInt(6)))
+                .build();
+
+        workflowVerifier
+                .prepareRun(arrayOfArraysExtendWf, Arg.of("my-array", arrayOfArrays), Arg.of("to-append", toAppend))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-array", variableValue -> {
+                    // [[1, 2, 3]] EXTEND [4, 5, 6] => [[1, 2, 3], [4, 5, 6]]
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.ARRAY);
+                    Assertions.assertThat(variableValue.getArray().getItemsList())
+                            .hasSize(2);
+
+                    VariableValue firstInnerExpected = VariableValue.newBuilder()
+                            .setArray(Array.newBuilder()
+                                    .addItems(
+                                            0,
+                                            VariableValue.newBuilder().setInt(1).build())
+                                    .addItems(
+                                            1,
+                                            VariableValue.newBuilder().setInt(2).build())
+                                    .addItems(
+                                            2,
+                                            VariableValue.newBuilder().setInt(3).build())
+                                    .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                            .build();
+                    VariableValue firstInnerActual = variableValue.getArray().getItems(0);
+                    Assertions.assertThat(firstInnerActual).isEqualTo(firstInnerExpected);
+
+                    VariableValue appendedInnerExpected = VariableValue.newBuilder()
+                            .setArray(Array.newBuilder()
+                                    .addItems(
+                                            0,
+                                            VariableValue.newBuilder().setInt(4).build())
+                                    .addItems(
+                                            1,
+                                            VariableValue.newBuilder().setInt(5).build())
+                                    .addItems(
+                                            2,
+                                            VariableValue.newBuilder().setInt(6).build())
+                                    .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                            .build();
+                    VariableValue appendedInnerActual = variableValue.getArray().getItems(1);
+                    Assertions.assertThat(appendedInnerActual).isEqualTo(appendedInnerExpected);
+                })
+                .start();
+    }
+
+    @Test
     public void shouldRemoveItemOnRemoveIfPresent() {
         workflowVerifier
                 .prepareRun(buildArrayRemoveWf())
@@ -311,6 +401,37 @@ public class ArraysTest {
             // TODO: Test contains unnecessary task call because of mutation bug #2181
             thread.execute("produce-array");
             arrVar.assign(arrVar.extend(4L));
+        });
+    }
+
+    @LHWorkflow("array-concat-wf")
+    public Workflow buildArrayConcatWf() {
+        return new WorkflowImpl("array-concat-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+            WfRunVariable other = thread.declareArray("other", Long.class);
+            TaskNodeOutput produced = thread.execute("produce-array");
+            arrVar.assign(produced);
+            TaskNodeOutput producedOther = thread.execute("produce-array");
+            other.assign(producedOther);
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
+            thread.execute("produce-array");
+            // Concatenate the two native Arrays.
+            arrVar.assign(arrVar.extend(other));
+        });
+    }
+
+    @LHWorkflow("array-of-arrays-extend-wf")
+    public Workflow buildArrayOfArraysExtendWf() {
+        return new WorkflowImpl("array-of-arrays-extend-wf", thread -> {
+            // Array<Array<INT>> -- an array whose elements are themselves Array<INT>.
+            WfRunVariable arrVar = thread.declareArray("my-array", Long[].class).required();
+            // A single Array<INT> to append as a new element of the outer array.
+            WfRunVariable toAppend =
+                    thread.declareArray("to-append", Long.class).required();
+            // TODO: Test contains unnecessary task call because of mutation bug #2181
+            thread.execute("produce-array");
+            // EXTEND a single Array<INT> onto the Array<Array<INT>>; it is appended as a new element.
+            arrVar.assign(arrVar.extend(toAppend));
         });
     }
 

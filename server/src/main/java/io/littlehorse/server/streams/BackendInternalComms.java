@@ -682,6 +682,7 @@ public class BackendInternalComms implements Closeable {
             case WORKFLOW_EVENT:
             case WORKFLOW_EVENT_DEF:
             case SCHEDULED_WF_RUN:
+            case WORKFLOW_MIGRATION_PLAN:
             case UNRECOGNIZED:
         }
         return false;
