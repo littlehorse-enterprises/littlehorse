@@ -175,13 +175,25 @@ public class ScheduledTaskExecutor {
     }
 
     /**
-     * Bridges the reflection boundary: Method.getReturnType() is a raw Class<?>, so
-     * the cast to Class<T> is unchecked but safe—returnType always matches the actual object.
+     * Serializes a task's return value into a {@link VariableValue}, dispatching on the return type.
+     *
+     * <p>The return type is resolved from two different sources depending on the case:
+     * <ul>
+     *   <li>{@code InlineStruct} -> the server-registered {@link TaskDef} return type;
+     *       the task method's {@code @LHType} annotation is intentionally ignored here.</li>
+     *   <li>{@code @LHType(isLHArray = true)} -> native LittleHorse Array.</li>
+     *   <li>{@code @LHType(isLHMap = true)} -> native LittleHorse Map.</li>
+     *   <li>otherwise -> reflection on the method's return type via {@code objToVarVal}.</li>
+     * </ul>
      */
-    private VariableValue serializeResult(Object result, Method taskMethod) {
+    VariableValue serializeResult(Object result, Method taskMethod) {
         Class<?> returnType = taskMethod.getReturnType();
 
-        LHTypeMetadata metadata = LHTypeMetadata.from(taskMethod, Map.of());
+        if (InlineStruct.class.equals(returnType)) {
+            return serializeInlineStructResult(result);
+        }
+
+        LHTypeMetadata metadata = LHTypeMetadata.from(taskMethod, placeholderValues);
         if (metadata.isLHArray()) {
             return LHLibUtil.objToVarValAsNativeArray(result, returnType, typeAdapterRegistry);
         }
@@ -190,9 +202,6 @@ public class ScheduledTaskExecutor {
             return LHLibUtil.objToVarValAsNativeMap(result, typeAdapterRegistry);
         }
 
-        if (InlineStruct.class.equals(returnType)) {
-            return serializeInlineStructResult(result);
-        }
         return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);
     }
 
@@ -211,6 +220,8 @@ public class ScheduledTaskExecutor {
             throw new LHSerdeException("InlineStruct task return requires a StructDef return type in TaskDef.");
         }
 
+        // The StructDefId comes from the server-registered TaskDef, whose name was already
+        // placeholder-resolved at registration time.
         StructDefId structDefId = taskDef.getReturnType().getReturnType().getStructDefId();
         return LHLibUtil.inlineStructToVarVal((InlineStruct) result, structDefId);
     }
