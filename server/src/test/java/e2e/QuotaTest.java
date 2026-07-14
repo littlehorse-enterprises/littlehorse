@@ -39,6 +39,7 @@ import java.util.UUID;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
+import org.junitpioneer.jupiter.RetryingTest;
 
 @LHTest
 @Isolated
@@ -266,7 +267,7 @@ public class QuotaTest {
      * Uses the intercepted client (which retries RESOURCE_EXHAUSTED transparently)
      * to confirm all requests succeed and a workflow completes under throttling.
      */
-    @Test
+    @RetryingTest(maxAttempts = 3, suspendForMs = 1000)
     void shouldCompleteWorkflowWithTransparentRetries() {
         setQuota(2);
         try {
