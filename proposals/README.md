@@ -47,3 +47,5 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 019 | [Buildling `Struct`s Inside `WfSpec`](./019-struct-field-assignment-in-wfspec.md)                  | Colt McNealy                     | #2219 |
 | 020 | [Quotas](./019-quotas.md)                                                                          | Colt McNealy                     | TODO |
 | 021 | [Counted Tags](./021-counted-tags.md)                                                              | Eduwer Camacaro                  | TODO |
+| 023 | [Workflow Migrations](./022-workflow-migrations.md)                                                | Jake Rose.                       | TODO |
+| 023 | [Native Maps](./022-native-maps.md)                                                              | Jacob Snarr                      | TODO |

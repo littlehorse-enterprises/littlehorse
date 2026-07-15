@@ -1,7 +1,9 @@
 'use server'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { MetricsList, MetricWindow, WfSpecId } from 'littlehorse-client/proto'
+import { MetricsList, MetricWindow, Timestamp, WfSpecId } from 'littlehorse-client/proto'
+
+const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
 
 type GetWfMetricsProps = {
   wfSpecId: WfSpecId
@@ -21,7 +23,11 @@ export const getWfMetrics = async ({
   const client = await lhClient({ tenantId })
 
   if (!windowStart || !windowEnd) {
-    return client.listWfMetrics({ wfSpec: wfSpecId, windowStart, windowEnd })
+    return client.listWfMetrics({
+      wfSpec: wfSpecId,
+      windowStart: toTimestamp(windowStart),
+      windowEnd: toTimestamp(windowEnd),
+    })
   }
 
   const startMs = new Date(windowStart).getTime()
@@ -29,7 +35,11 @@ export const getWfMetrics = async ({
   const rangeMinutes = (endMs - startMs) / 60_000
 
   if (rangeMinutes <= CHUNK_MINUTES) {
-    return client.listWfMetrics({ wfSpec: wfSpecId, windowStart, windowEnd })
+    return client.listWfMetrics({
+      wfSpec: wfSpecId,
+      windowStart: toTimestamp(windowStart),
+      windowEnd: toTimestamp(windowEnd),
+    })
   }
 
   const chunks: { start: string; end: string }[] = []
@@ -47,7 +57,9 @@ export const getWfMetrics = async ({
   for (let i = 0; i < chunks.length; i += MAX_CONCURRENT) {
     const batch = chunks.slice(i, i + MAX_CONCURRENT)
     const results = await Promise.all(
-      batch.map(c => client.listWfMetrics({ wfSpec: wfSpecId, windowStart: c.start, windowEnd: c.end }))
+      batch.map(c =>
+        client.listWfMetrics({ wfSpec: wfSpecId, windowStart: toTimestamp(c.start), windowEnd: toTimestamp(c.end) })
+      )
     )
     for (const r of results) {
       allWindows.push(...(r.windows ?? []))

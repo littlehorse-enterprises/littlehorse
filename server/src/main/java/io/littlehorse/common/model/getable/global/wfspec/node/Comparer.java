@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.ArrayModel;
+import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
@@ -49,6 +50,12 @@ public class Comparer {
                 ArrayModel leftArray = left.getArray();
                 for (VariableValueModel item : leftArray.getItems()) {
                     if (item.equals(right)) return true;
+                }
+                return false;
+            } else if (left.getValueType() == ValueCase.MAP) {
+                MapModel leftMap = left.getMap();
+                for (MapModel.MapEntryModel entry : leftMap.getEntries()) {
+                    if (entry.getKey().equals(right)) return true;
                 }
                 return false;
             } else {

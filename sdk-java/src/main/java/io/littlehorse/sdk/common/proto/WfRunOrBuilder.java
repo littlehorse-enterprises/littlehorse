@@ -386,4 +386,90 @@ public interface WfRunOrBuilder extends
    * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
    */
   io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
+
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return Whether the workflowMigrationPlanId field is set.
+   */
+  boolean hasWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return The workflowMigrationPlanId.
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder getWorkflowMigrationPlanIdOrBuilder();
+
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  int getMigrationVariablesCount();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  boolean containsMigrationVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getMigrationVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariables();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariablesMap();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars defaultValue);
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
+      java.lang.String key);
 }

@@ -372,6 +372,15 @@ public class LHLibUtil {
 
     public static Object varValToObj(VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return varValToObj(val, targetClazz, typeAdapterRegistry, Map.of());
+    }
+
+    public static Object varValToObj(
+            VariableValue val,
+            Class<?> targetClazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
 
         if (maybeAdapter.isPresent()) {
@@ -416,9 +425,11 @@ public class LHLibUtil {
                 return val.getWfRunId();
             case STRUCT:
                 Struct struct = val.getStruct();
-                return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
+                return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry, placeholderValues);
             case ARRAY:
                 return deserializeNativeArrayToObject(val, targetClazz, typeAdapterRegistry);
+            case MAP:
+                return deserializeNativeMapToObject(val, targetClazz, typeAdapterRegistry);
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -465,6 +476,48 @@ public class LHLibUtil {
         }
 
         return outputArray;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Object deserializeNativeMapToObject(
+            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (!Map.class.isAssignableFrom(targetClazz)) {
+            throw new LHSerdeException(
+                    "Failed deserializing native LittleHorse MAP: target class is not a java.util.Map type.");
+        }
+
+        io.littlehorse.sdk.common.proto.Map protoMap = val.getMap();
+        Map<Object, Object> result = new HashMap<>();
+
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : protoMap.getEntriesList()) {
+            Object key = varValToRawObj(entry.getKey());
+            Object value = varValToRawObj(entry.getValue());
+            result.put(key, value);
+        }
+
+        return result;
+    }
+
+    private static Object varValToRawObj(VariableValue val) throws LHSerdeException {
+        switch (val.getValueCase()) {
+            case INT:
+                return val.getInt();
+            case DOUBLE:
+                return val.getDouble();
+            case STR:
+                return val.getStr();
+            case BOOL:
+                return val.getBool();
+            case BYTES:
+                return val.getBytes().toByteArray();
+            case WF_RUN_ID:
+                return val.getWfRunId();
+            case VALUE_NOT_SET:
+                return null;
+            default:
+                return varValToObj(val, Object.class, LHTypeAdapterRegistry.empty());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -558,8 +611,12 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToObject(
-            Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
-        LHClassType lhClassType = LHClassType.fromJavaClass(clazz, typeAdapterRegistry);
+            Struct struct,
+            Class<?> clazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        LHClassType lhClassType = LHClassType.fromJavaClass(clazz, typeAdapterRegistry, placeholderValues);
 
         if (!(lhClassType instanceof LHStructDefType)) {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
@@ -585,7 +642,7 @@ public class LHLibUtil {
                 VariableValue fieldValue =
                         struct.getStruct().getFieldsMap().get(fieldName).getValue();
 
-                property.setValueTo(structObject, fieldValue, typeAdapterRegistry);
+                property.setValueTo(structObject, fieldValue, typeAdapterRegistry, placeholderValues);
             }
 
             return structObject;
@@ -620,6 +677,15 @@ public class LHLibUtil {
 
     public static VariableValue objToVarVal(Object o, Class<?> declaredClass, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return objToVarVal(o, declaredClass, typeAdapterRegistry, Map.of());
+    }
+
+    public static VariableValue objToVarVal(
+            Object o,
+            Class<?> declaredClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (o == null) {
             return VariableValue.newBuilder().build();
         }
@@ -638,7 +704,7 @@ public class LHLibUtil {
             return objToVarValViaAdapter(o, maybeAdapter.get());
         }
 
-        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry, placeholderValues);
     }
 
     /**
@@ -673,6 +739,44 @@ public class LHLibUtil {
         }
 
         return VariableValue.newBuilder().setArray(out).build();
+    }
+
+    /**
+     * Serializes a Java Map into a native LittleHorse MAP VariableValue.
+     *
+     * <p>Each entry's key and value are serialized independently. Use this method when you know
+     * the target is a native LH Map variable (as opposed to a JSON_OBJ).
+     */
+    public static VariableValue objToVarValAsNativeMap(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (!(o instanceof Map)) {
+            throw new LHSerdeException(
+                    "Native map serialization requires the given object to be a java.util.Map, but got: "
+                            + o.getClass().getName());
+        }
+
+        return VariableValue.newBuilder()
+                .setMap(serializeToNativeMap((Map<?, ?>) o, typeAdapterRegistry))
+                .build();
+    }
+
+    private static io.littlehorse.sdk.common.proto.Map serializeToNativeMap(
+            Map<?, ?> map, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        io.littlehorse.sdk.common.proto.Map.Builder out = io.littlehorse.sdk.common.proto.Map.newBuilder();
+
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            VariableValue key = objToVarVal(entry.getKey(), typeAdapterRegistry);
+            VariableValue value = objToVarVal(entry.getValue(), typeAdapterRegistry);
+            out.addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                    .setKey(key)
+                    .setValue(value));
+        }
+
+        return out.build();
     }
 
     @SuppressWarnings("unchecked")
@@ -750,6 +854,12 @@ public class LHLibUtil {
 
     private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry, Map.of());
+    }
+
+    private static VariableValue objToVarValWithoutTypeAdapter(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
         if (o instanceof InlineStruct) {
             throw new LHSerdeException(
@@ -776,7 +886,7 @@ public class LHLibUtil {
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
-            out.setStruct(serializeToStruct(o, typeAdapterRegistry));
+            out.setStruct(serializeToStruct(o, typeAdapterRegistry, placeholderValues));
         } else if (o instanceof Instant) {
             out.setUtcTimestamp(fromInstant((Instant) o));
         } else if (o instanceof Timestamp) {
@@ -850,7 +960,12 @@ public class LHLibUtil {
     }
 
     public static Struct serializeToStruct(Object o, LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry);
+        return serializeToStruct(o, typeAdapterRegistry, Map.of());
+    }
+
+    public static Struct serializeToStruct(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry, placeholderValues);
 
         if (!(lhClassType instanceof LHStructDefType))
             throw new IllegalStateException("Cannot serialize given object to Struct");
@@ -867,7 +982,7 @@ public class LHLibUtil {
             List<LHStructProperty> lhStructProperties = structDefType.getStructProperties();
 
             for (LHStructProperty property : lhStructProperties) {
-                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry);
+                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
 
                 if (fieldValue == null) {
                     fieldValue = VariableValue.newBuilder().build();

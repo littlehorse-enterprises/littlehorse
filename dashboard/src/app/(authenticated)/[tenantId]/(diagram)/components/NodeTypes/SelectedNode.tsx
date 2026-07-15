@@ -11,8 +11,10 @@ export const SelectedNode: FC = () => {
   )
 
   useEffect(() => {
-    setSelectedNode(selectedNode)
-  }, [setSelectedNode, selectedNode])
+    if (selectedNode?.id === contextNodeId) {
+      setSelectedNode(selectedNode)
+    }
+  }, [setSelectedNode, selectedNode, contextNodeId])
 
   useEffect(() => {
     if (selectedNode && selectedNode.zIndex !== 9999) {

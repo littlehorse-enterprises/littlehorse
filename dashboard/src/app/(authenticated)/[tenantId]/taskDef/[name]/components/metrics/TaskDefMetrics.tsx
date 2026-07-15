@@ -42,11 +42,11 @@ export const TaskDefMetrics: FC<TaskDefMetricsProps> = ({ taskDefId }) => {
     return { result, rangeStartMs, rangeEndMs: nowMs }
   }, [taskDefId, rangeNum, tenantId])
 
-  const { data, error, isLoading } = useSWR(
-    ['taskMetrics', taskDefName, tenantId, rangeMinutes],
-    fetcher,
-    { refreshInterval: 120_000, revalidateOnFocus: true, revalidateOnMount: true }
-  )
+  const { data, error, isLoading } = useSWR(['taskMetrics', taskDefName, tenantId, rangeMinutes], fetcher, {
+    refreshInterval: 120_000,
+    revalidateOnFocus: true,
+    revalidateOnMount: true,
+  })
 
   const { countData, latencyData, pieData } = useMemo(() => {
     if (data === undefined) {

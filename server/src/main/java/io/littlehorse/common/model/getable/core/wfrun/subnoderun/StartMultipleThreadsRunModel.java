@@ -92,6 +92,21 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 throw new LHVarSubError(null, "Iterable must be ARRAY or JSON_ARR, got " + iterableVar.getValueType());
             }
 
+            // Enforce the max ThreadRuns limit before spawning any child threads.
+            int currentThreadCount = nodeRun.getThreadRun().getWfRun().getActiveThreadRunCount();
+            int maxAllowed = processorContext.serverConfig().getMaxThreadRunsPerWfRun();
+            int requested = iterItems.size();
+            if (currentThreadCount + requested > maxAllowed) {
+                FailureModel failure = new FailureModel(
+                        String.format(
+                                "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                        + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                        + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                                currentThreadCount + requested, maxAllowed),
+                        LHConstants.INTERNAL_ERROR);
+                throw new NodeFailureException(failure);
+            }
+
             for (VariableValueModel iterInput : iterItems) {
                 // Construct input variables
                 Map<String, VariableValueModel> inputs = new HashMap<>();
@@ -117,9 +132,8 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 childThreadIds.add(child.getNumber());
             }
         } catch (LHVarSubError | LHSerdeException | LHValidationException e) {
-            FailureModel failure = new FailureModel();
-            failure.message = "Failed constructing input variables for thread: " + e.getMessage();
-            failure.failureName = LHConstants.VAR_SUB_ERROR;
+            FailureModel failure = new FailureModel(
+                    "Failed constructing input variables for thread: " + e.getMessage(), LHConstants.VAR_SUB_ERROR);
             throw new NodeFailureException(failure);
         }
     }

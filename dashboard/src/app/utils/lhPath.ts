@@ -7,11 +7,11 @@ import { LHPath } from 'littlehorse-client/proto'
  */
 export const lhPathToString = (lhPath: LHPath): string => {
   return lhPath.path.reduce((outputStr, selector) => {
-    switch (selector.selectorType?.$case) {
+    switch (selector.selectorType?.oneofKind) {
       case 'index':
-        return `${outputStr}[${selector.selectorType.value}]`
+        return `${outputStr}[${selector.selectorType.index}]`
       case 'key':
-        return `${outputStr}.${selector.selectorType.value}`
+        return `${outputStr}.${selector.selectorType.key}`
       default:
         return outputStr
     }

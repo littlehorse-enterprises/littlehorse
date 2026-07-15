@@ -14,8 +14,10 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
     return <TypeBadge>void</TypeBadge>
   }
 
-  switch (definedType.$case) {
+  switch (definedType.oneofKind) {
     case 'inlineArrayDef':
+      return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
+    case 'inlineMapDef':
       return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
     case 'primitiveType':
       return <TypeBadge>{formatTypeDefinition(definedType)}</TypeBadge>
@@ -24,9 +26,9 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
         <TypeBadge>
           <LinkWithTenant
             className="flex underline"
-            href={routes.structDef.detail(definedType.value.name, definedType.value.version)}
+            href={routes.structDef.detail(definedType.structDefId.name, definedType.structDefId.version)}
           >
-            {`Struct<${definedType.value.name},${definedType.value.version}>`}
+            {`Struct<${definedType.structDefId.name},${definedType.structDefId.version}>`}
           </LinkWithTenant>
         </TypeBadge>
       )

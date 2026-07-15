@@ -16,9 +16,8 @@ export const VARIABLE_TYPES = {
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
+  map: 'Map',
 } as const
-
-export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
 
 export const SEARCH_ENTITIES = [
   'WfSpec',
@@ -28,7 +27,10 @@ export const SEARCH_ENTITIES = [
   'WorkflowEventDef',
   'StructDef',
 ] as const
-export const WF_RUN_STATUSES = Object.values(LHStatus).filter(status => status !== 'UNRECOGNIZED')
+// With @protobuf-ts, LHStatus is a numeric enum, so Object.values() returns both the
+// status names and their numeric values. We want only the status names (matching the
+// previous ts-proto string-enum behavior), so keep the non-numeric keys.
+export const WF_RUN_STATUSES = Object.keys(LHStatus).filter(key => isNaN(Number(key)))
 export type SearchType = (typeof SEARCH_ENTITIES)[number]
 
 export const TIME_RANGES = [-1, 5, 15, 30, 60, 180, 360, 720, 1440, 4320] as const

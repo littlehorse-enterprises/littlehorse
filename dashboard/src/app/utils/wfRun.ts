@@ -1,4 +1,4 @@
-import { lHStatusFromJSON, WfRunId } from 'littlehorse-client/proto'
+import { LHStatus, WfRunId } from 'littlehorse-client/proto'
 
 /**
  * Converts a WfRunId to a path string by concatenating its IDs.
@@ -66,7 +66,27 @@ export const wfRunIdFromFlattenedId = (flattenedId: string): WfRunId => {
  * @param status - The status string to convert.
  * @returns The LHStatus enum value or undefined.
  */
-export const getStatus = (status: string | null) => {
+export const getStatus = (status: string | null): LHStatus | undefined => {
   if (!status) return undefined
-  return lHStatusFromJSON(status)
+  return LHStatus[status as keyof typeof LHStatus]
+}
+
+/**
+ * Parses user-provided WfRun ID input into a WfRunId.
+ * Accepts plain ids, slash-separated paths, underscore-flattened ids, and dashboard URLs.
+ */
+export const parseWfRunIdInput = (input: string): WfRunId => {
+  const trimmed = input.trim()
+  if (!trimmed) throw new Error('WfRun ID is required')
+
+  const slashPath = trimmed.match(/\/wfRun\/([^?#]+)/)?.[1] ?? (trimmed.includes('/') ? trimmed : null)
+  if (slashPath) {
+    return wfRunIdFromList(slashPath.split('/').filter(Boolean))
+  }
+
+  if (trimmed.includes('_')) {
+    return wfRunIdFromFlattenedId(trimmed)
+  }
+
+  return { id: trimmed }
 }

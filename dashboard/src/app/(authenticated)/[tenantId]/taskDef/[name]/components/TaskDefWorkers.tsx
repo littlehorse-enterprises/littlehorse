@@ -2,7 +2,7 @@
 
 import { getTaskWorkerGroup } from '@/app/(authenticated)/[tenantId]/taskDef/[name]/actions/getTaskWorkerGroup'
 import { SEARCH_DEFAULT_LIMIT, SEARCH_LIMITS, SearchLimit } from '@/app/constants'
-import { utcToLocalDateTime } from '@/app/utils'
+import { toDate, utcToLocalDateTime } from '@/app/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import {
@@ -38,8 +38,8 @@ type WorkerRow = {
 
 const sortWorkers = (workers: WorkerRow[]): WorkerRow[] =>
   [...workers].sort((a, b) => {
-    const aTime = a.metadata.latestHeartbeat ? Date.parse(a.metadata.latestHeartbeat) : 0
-    const bTime = b.metadata.latestHeartbeat ? Date.parse(b.metadata.latestHeartbeat) : 0
+    const aTime = toDate(a.metadata.latestHeartbeat)?.getTime() ?? 0
+    const bTime = toDate(b.metadata.latestHeartbeat)?.getTime() ?? 0
     return bTime - aTime
   })
 

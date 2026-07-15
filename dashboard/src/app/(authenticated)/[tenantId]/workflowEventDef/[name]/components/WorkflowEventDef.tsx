@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { WorkflowEventDef as WorkflowEventDefProto } from 'littlehorse-client/proto'
+import { Timestamp, WorkflowEventDef as WorkflowEventDefProto } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import { FC, Fragment, useState } from 'react'
@@ -36,8 +36,12 @@ export const WorkflowEventDef: FC<Props> = ({ spec }) => {
         bookmarkAsString: pageParam,
         limit,
         workflowEventDefId: { name: spec.id?.name ?? '' },
-        earliestStart: createdAfter ? localDateTimeToUTCIsoString(createdAfter) : undefined,
-        latestStart: createdBefore ? localDateTimeToUTCIsoString(createdBefore) : undefined,
+        earliestStart: createdAfter
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdAfter)))
+          : undefined,
+        latestStart: createdBefore
+          ? Timestamp.fromDate(new Date(localDateTimeToUTCIsoString(createdBefore)))
+          : undefined,
       })
     },
   })

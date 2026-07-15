@@ -20,23 +20,28 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
@@ -99,6 +104,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ParentTriggerReferenceModel parentTrigger;
     private ExecutionContext executionContext;
+    private WorkflowMigrationPlanIdModel workflowMigrationPlanId;
+    private Map<String, MigrationVarsModel> migrationVarsByThread = new HashMap<>();
 
     // Not in proto
     private int numAdvancesInThisCommand = 0;
@@ -267,6 +274,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (proto.hasParentTrigger()) {
             parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
         }
+        if (proto.hasWorkflowMigrationPlanId()) {
+            workflowMigrationPlanId = LHSerializable.fromProto(
+                    proto.getWorkflowMigrationPlanId(), WorkflowMigrationPlanIdModel.class, context);
+        }
+        migrationVarsByThread = new HashMap<>();
+        for (Map.Entry<String, MigrationVars> entry :
+                proto.getMigrationVariablesMap().entrySet()) {
+            migrationVarsByThread.put(
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+        }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
@@ -329,6 +346,12 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (parentTrigger != null) {
             out.setParentTrigger(parentTrigger.toProto());
         }
+        if (workflowMigrationPlanId != null) {
+            out.setWorkflowMigrationPlanId(workflowMigrationPlanId.toProto().build());
+        }
+        for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
+            out.putMigrationVariables(entry.getKey(), entry.getValue().toProto().build());
+        }
 
         return out;
     }
@@ -346,11 +369,23 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             Date start,
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
-            ThreadType type) {
+            ThreadType type)
+            throws NodeFailureException {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
+        }
+
+        int maxThreadRuns = executionContext.serverConfig().getMaxThreadRunsPerWfRun();
+        if (parentThreadId != null && threadRunsUseMeCarefully.size() >= maxThreadRuns) {
+            throw new NodeFailureException(new FailureModel(
+                    String.format(
+                            "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                    + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                    + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN at the server configuration level.",
+                            threadRunsUseMeCarefully.size() + 1, maxThreadRuns),
+                    LHConstants.INTERNAL_ERROR));
         }
 
         ThreadRunModel newThread = new ThreadRunModel(processorContext);
@@ -431,8 +466,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             } else {
                 vars = new HashMap<>();
             }
-            ThreadRunModel interruptor =
-                    startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            ThreadRunModel interruptor;
+            try {
+                interruptor = startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(toInterrupt, exn.getFailure(), time, processorContext);
+                continue;
+            }
             interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
@@ -472,8 +512,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
             }
 
-            ThreadRunModel fh =
-                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            ThreadRunModel fh;
+            try {
+                fh = startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(
+                        failedThr, exn.getFailure(), time, executionContext.castOnSupport(CoreProcessorContext.class));
+                continue;
+            }
 
             failedThr.getCurrentNodeRun().getFailureHandlerIds().add(fh.number);
 
@@ -538,7 +584,10 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
-                                        "You exceeded the maximum number of ThreadRuns per WfRun: %s",
+                                        "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                                + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                                + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                                        this.threadRunsUseMeCarefully.size(),
                                         this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
@@ -551,11 +600,57 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                statusChanged = thread.advance(time) || statusChanged;
+                if (workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)) {
+                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
+                } else {
+                    statusChanged = thread.advance(time, null) || statusChanged;
+                }
+            }
+
+            if (workflowMigrationPlanId != null) {
+                maybeDoneMigration();
             }
         }
 
         archiveCompletedThreadRuns(false);
+    }
+
+    // Migration is complete once no live ThreadRun is still operating on the old WfSpec. We cannot
+    // key off the plan's threadMigrations: a threadSpec that has no migration plan can still spawn a
+    // child thread whose threadSpec does, so the plan must stay active as long as any live thread is
+    // on the old spec. Clearing earlier would strand such threads (and any children they spawn) on
+    // the old spec forever.
+    private void maybeDoneMigration() {
+        if (workflowMigrationPlanId == null) {
+            return;
+        }
+
+        WorkflowMigrationPlanModel workflowMigrationPlan =
+                executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (workflowMigrationPlan == null) {
+            return;
+        }
+
+        WfSpecIdModel oldWfSpecId = workflowMigrationPlan.getOldWfSpecId();
+
+        ThreadRunIterator iterator = getThreadRunIterator();
+        while (iterator.hasNext()) {
+            ThreadRunModel threadRun = iterator.next();
+
+            // Terminated threads will never advance again, so they can never migrate.
+            if (threadRun.isTerminated()) {
+                continue;
+            }
+
+            // A live thread still on the old spec can still reach a migration node, so the
+            // migration is not complete yet.
+            if (oldWfSpecId.equals(threadRun.getWfSpecId())) {
+                return;
+            }
+        }
+
+        workflowMigrationPlanId = null;
+        migrationVarsByThread.clear();
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
@@ -563,6 +658,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                         * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
                 / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
+    }
+
+    /**
+     * Returns the number of active ThreadRuns held by this WfRun.
+     */
+    public int getActiveThreadRunCount() {
+        return this.threadRunsUseMeCarefully.size();
     }
 
     private void archiveCompletedThreadRuns(boolean forceArchiveCompletedThreads) {

@@ -14,8 +14,8 @@ import {
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE_PATTERN'
 export const STRUCT_FORM_FIELD_PREFIX = 'structValues'
 
-export type StructPath = string[]
-export type VariableCase = NonNullable<VariableValue['value']>['$case']
+type StructPath = string[]
+export type VariableCase = Exclude<VariableValue['value']['oneofKind'], undefined>
 
 export interface StructFormContextValue {
   registerStructPath: (path: StructPath, structDefId: StructDefId) => void
@@ -37,8 +37,8 @@ const structPathKey = (path: StructPath) => path.join(STRUCT_PATH_KEY_SEPARATOR)
 
 const createStructVariableValue = (structDefId: StructDefId): VariableValue => ({
   value: {
-    $case: 'struct',
-    value: {
+    oneofKind: 'struct',
+    struct: {
       structDefId,
       struct: {
         fields: {},
@@ -50,34 +50,34 @@ const createStructVariableValue = (structDefId: StructDefId): VariableValue => (
 const cloneVariableValue = (value: VariableValue): VariableValue => JSON.parse(JSON.stringify(value))
 
 const ensureStructFields = (value: VariableValue, structDefId: StructDefId): Record<string, StructField> => {
-  if (!value.value || value.value.$case !== 'struct') {
+  if (!value.value || value.value.oneofKind !== 'struct') {
     value.value = {
-      $case: 'struct',
-      value: {
+      oneofKind: 'struct',
+      struct: {
         structDefId,
         struct: {
           fields: {},
         },
       },
     }
-  } else if (!value.value.value.struct) {
-    value.value.value.struct = { fields: {} }
+  } else if (!value.value.struct.struct) {
+    value.value.struct.struct = { fields: {} }
   }
 
   const structUnion = value.value
-  if (!structUnion || structUnion.$case !== 'struct' || !structUnion.value.struct) {
+  if (!structUnion || structUnion.oneofKind !== 'struct' || !structUnion.struct.struct) {
     return {}
   }
 
-  return structUnion.value.struct.fields
+  return structUnion.struct.struct.fields
 }
 
 const readStructFields = (value?: VariableValue): Record<string, StructField> | undefined => {
-  if (!value || !value.value || value.value.$case !== 'struct') {
+  if (!value || !value.value || value.value.oneofKind !== 'struct') {
     return undefined
   }
 
-  const inlineStruct = value.value.value.struct
+  const inlineStruct = value.value.struct.struct
   if (!inlineStruct) return undefined
 
   return inlineStruct.fields
@@ -230,9 +230,9 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
       fields[fieldName] = {
         value: {
           value: {
-            $case: variableCase,
-            value: value as any,
-          },
+            oneofKind: variableCase,
+            [variableCase]: value,
+          } as unknown as VariableValue['value'],
         },
         masked: false,
       }

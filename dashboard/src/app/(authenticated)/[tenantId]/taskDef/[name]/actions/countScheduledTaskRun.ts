@@ -7,9 +7,7 @@ import { ClientError, Status } from 'nice-grpc-common'
 
 type Props = WithTenant & { taskDefName: string }
 
-export type QueueDepthResult =
-  | { status: 'ok'; count: number }
-  | { status: 'unavailable'; message: string }
+export type QueueDepthResult = { status: 'ok'; count: number } | { status: 'unavailable'; message: string }
 
 export const countScheduledTaskRun = async ({ tenantId, taskDefName }: Props): Promise<QueueDepthResult> => {
   const client = await lhClient({ tenantId })

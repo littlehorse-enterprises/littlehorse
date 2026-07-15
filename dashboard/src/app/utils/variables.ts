@@ -1,6 +1,8 @@
 import {
-  Array as LHArray,
+  Array$ as LHArray,
+  Map as LHMap,
   Struct,
+  Timestamp,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
@@ -13,31 +15,45 @@ import { normalizeUtcTimestampString } from './timestamp'
 import { lhPathToString } from './lhPath'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
-export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): NonNullable<VariableValue['value']>['$case'] => {
-  switch (typeDef.definedType?.$case) {
+/**
+ * The set of discriminator values for the `VariableValue.value` oneof.
+ * With `@protobuf-ts`, oneofs are discriminated unions keyed on `oneofKind`.
+ */
+export type VariableValueCase = Exclude<VariableValue['value']['oneofKind'], undefined>
+
+export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): VariableValueCase => {
+  switch (typeDef.definedType?.oneofKind) {
     case 'primitiveType':
-      return getVariableCaseFromType(typeDef.definedType.value)
+      return getVariableCaseFromType(typeDef.definedType.primitiveType)
     case 'structDefId':
       return 'struct'
+    case 'inlineArrayDef':
+      return 'array'
+    case 'inlineMapDef':
+      return 'map'
     default:
       throw new Error('Unknown variable type.')
   }
 }
 
 export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['definedType']): string => {
-  const definedType = !typeDef ? undefined : '$case' in typeDef ? typeDef : typeDef.definedType
+  const definedType = !typeDef ? undefined : 'oneofKind' in typeDef ? typeDef : typeDef.definedType
   if (!definedType) return 'void'
 
-  switch (definedType.$case) {
+  switch (definedType.oneofKind) {
     case 'primitiveType': {
-      const variableCase = getVariableCaseFromType(definedType.value)
+      const variableCase = getVariableCaseFromType(definedType.primitiveType)
       return VARIABLE_CASE_LABELS[variableCase]
     }
     case 'structDefId':
-      return `Struct<${definedType.value.name},${definedType.value.version}>`
+      return `Struct<${definedType.structDefId.name},${definedType.structDefId.version}>`
     case 'inlineArrayDef': {
-      const nested = definedType.value.arrayType
+      const nested = definedType.inlineArrayDef.arrayType
       return `Array<${formatTypeDefinition(nested)}>`
+    }
+    case 'inlineMapDef': {
+      const { keyType, valueType } = definedType.inlineMapDef
+      return `Map<${formatTypeDefinition(keyType)},${formatTypeDefinition(valueType)}>`
     }
     default:
       throw new Error('Unknown variable type.')
@@ -48,7 +64,7 @@ export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['
  * Maps VariableValue cases to their human-readable display names.
  * This is used for UI components that need to show friendly type names.
  */
-export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$case'], string> = {
+export const VARIABLE_CASE_LABELS: Record<VariableValueCase, string> = {
   str: 'String',
   int: 'Integer',
   double: 'Double',
@@ -60,6 +76,7 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
   struct: 'Struct',
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
+  map: 'Map',
 }
 
 /**
@@ -71,21 +88,21 @@ export const VARIABLE_CASE_LABELS: Record<NonNullable<VariableValue['value']>['$
  * @returns The formatted string representation of the variable value.
  */
 export const getVariable = (variable: VariableAssignment, depth = 0): string => {
-  if (!variable || !variable.source) return ''
+  if (!variable || variable.source?.oneofKind === undefined) return ''
 
-  switch (variable.source.$case) {
+  switch (variable.source.oneofKind) {
     case 'expression':
       return formatVariableExpression(variable.source, depth)
     case 'formatString':
       return getValueFromFormatString(variable.source)
     case 'literalValue':
-      return getVariableValue(variable.source.value)
+      return getVariableValue(variable.source.literalValue)
     case 'nodeOutput':
-      return variable.source.value.nodeName
+      return variable.source.nodeOutput.nodeName
     case 'variableName':
       return getValueFromVariableName(variable.source, variable.path)
     case 'sizeOf':
-      return `${getVariable(variable.source.value.operand!, depth + 1)}.size()`
+      return `${getVariable(variable.source.sizeOf.operand!, depth + 1)}.size()`
     default:
       return ''
   }
@@ -99,35 +116,35 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
  * @returns A string representation of the value.
  */
 export const getVariableValue = ({ value }: VariableValue): string => {
-  if (!value || Object.keys(value).length === 0) return 'NULL'
+  if (!value || value.oneofKind === undefined) return 'NULL'
 
-  switch (value.$case) {
+  switch (value.oneofKind) {
     case 'bytes':
       return '[bytes]'
     case 'wfRunId':
-      return flattenWfRunId(value.value)
+      return flattenWfRunId(value.wfRunId)
     case 'struct':
       return JSON.stringify(variableValueToJSON({ value }))
     case 'array':
       return JSON.stringify(variableValueToJSON({ value }))
+    case 'map':
+      return JSON.stringify(variableValueToJSON({ value }))
+    case 'utcTimestamp':
+      return Timestamp.toDate(value.utcTimestamp).toISOString()
+    case 'str':
+      return value.str.toString()
+    case 'int':
+      return value.int.toString()
+    case 'double':
+      return value.double.toString()
+    case 'bool':
+      return value.bool.toString()
+    case 'jsonObj':
+      return value.jsonObj.toString()
+    case 'jsonArr':
+      return value.jsonArr.toString()
     default:
-      return value.value.toString()
-  }
-}
-
-/**
- * Formats a JSON string or returns the original value if parsing fails.
- * This is useful for displaying JSON in a readable format in the UI.
- *
- * @param value - The string value to format as JSON.
- * @returns A formatted JSON string or the original value if parsing fails.
- */
-export const formatJsonOrReturnOriginalValue = (value: string) => {
-  try {
-    const json = JSON.parse(value)
-    return JSON.stringify(json, null, 2)
-  } catch {
-    return value
+      return 'NULL'
   }
 }
 
@@ -158,7 +175,7 @@ const structToJSONObject = (struct: Struct): Record<string, unknown> => {
 
   for (const entry of Object.entries(struct.struct.fields)) {
     if (entry[1].value) {
-      structObject[entry[0]] = variableValueToJSON(entry[1].value)
+      structObject[entry[0]] = variableValueToJSON(entry[1].value!)
     }
   }
 
@@ -176,31 +193,49 @@ const arrayToJSONObject = (array: LHArray): unknown[] => {
   return arrayObject
 }
 
-export const variableValueToJSON = (variableValue: VariableValue): unknown => {
-  const value = variableValue.value
-  if (!value) return null
+const mapToJSONObject = (map: LHMap): Record<string, unknown> => {
+  const mapObject: Record<string, unknown> = {}
+  if (map == null) return mapObject
 
-  switch (value.$case) {
+  for (const entry of map.entries) {
+    if (!entry.key) continue
+    const key = variableValueToJSON(entry.key)
+    const keyString = typeof key === 'string' ? key : JSON.stringify(key)
+    mapObject[keyString] = entry.value ? variableValueToJSON(entry.value) : null
+  }
+
+  return mapObject
+}
+
+const variableValueToJSON = (variableValue: VariableValue): unknown => {
+  const value = variableValue.value
+  if (!value || value.oneofKind === undefined) return null
+
+  switch (value.oneofKind) {
     case 'bytes':
       return '[bytes]'
     case 'wfRunId':
-      return flattenWfRunId(value.value)
+      return flattenWfRunId(value.wfRunId)
     case 'struct':
-      return structToJSONObject(value.value)
+      return structToJSONObject(value.struct)
     case 'array':
-      return arrayToJSONObject(value.value)
+      return arrayToJSONObject(value.array)
+    case 'map':
+      return mapToJSONObject(value.map)
     case 'int':
-      return toNumberIfPossible(value.value)
+      return toNumberIfPossible(value.int)
     case 'double':
-      return toNumberIfPossible(value.value)
+      return toNumberIfPossible(value.double)
     case 'bool':
+      return value.bool
     case 'str':
-      return value.value
+      return value.str
     case 'jsonObj':
+      return parseJsonStringOrReturn(value.jsonObj)
     case 'jsonArr':
-      return parseJsonStringOrReturn(value.value)
+      return parseJsonStringOrReturn(value.jsonArr)
     case 'utcTimestamp':
-      return value.value.toString()
+      return Timestamp.toDate(value.utcTimestamp).toISOString()
     default:
       return null
   }
@@ -214,38 +249,120 @@ export const variableValueToJSON = (variableValue: VariableValue): unknown => {
  * @param value - The string value to convert.
  * @returns A VariableValue object with the appropriate type and value.
  */
-export const getTypedVariableValue = (
-  type: NonNullable<VariableValue['value']>['$case'],
-  value: string
-): VariableValue => {
+export const getTypedVariableValue = (type: VariableValueCase, value: string): VariableValue => {
   switch (type) {
     case 'jsonObj':
-      return VariableValue.fromJSON({ jsonObj: JSON.stringify(JSON.parse(value)) })
+      return VariableValue.create({ value: { oneofKind: 'jsonObj', jsonObj: JSON.stringify(JSON.parse(value)) } })
     case 'jsonArr':
-      return VariableValue.fromJSON({ jsonArr: JSON.stringify(JSON.parse(value)) })
+      return VariableValue.create({ value: { oneofKind: 'jsonArr', jsonArr: JSON.stringify(JSON.parse(value)) } })
     case 'double':
-      return VariableValue.fromJSON({ double: parseFloat(value) })
+      return VariableValue.create({ value: { oneofKind: 'double', double: parseFloat(value) } })
     case 'bool':
-      return VariableValue.fromJSON({ bool: value.toLowerCase() === 'true' })
+      return VariableValue.create({ value: { oneofKind: 'bool', bool: value.toLowerCase() === 'true' } })
     case 'str':
-      return VariableValue.fromJSON({ str: value })
+      return VariableValue.create({ value: { oneofKind: 'str', str: value } })
     case 'int':
-      return VariableValue.fromJSON({ int: parseInt(value, 10) })
+      return VariableValue.create({ value: { oneofKind: 'int', int: parseInt(value, 10).toString() } })
     case 'bytes':
-      return VariableValue.fromJSON({ bytes: Buffer.from(value) })
+      return VariableValue.create({ value: { oneofKind: 'bytes', bytes: new Uint8Array(Buffer.from(value)) } })
     case 'wfRunId':
-      return VariableValue.fromJSON({ wfRunId: wfRunIdFromFlattenedId(value) })
+      return VariableValue.create({ value: { oneofKind: 'wfRunId', wfRunId: wfRunIdFromFlattenedId(value) } })
     case 'struct':
-      return VariableValue.fromJSON({ struct: Struct.fromJSON(value) })
+      return VariableValue.create({ value: { oneofKind: 'struct', struct: Struct.fromJsonString(value) } })
     case 'utcTimestamp':
-      return VariableValue.fromJSON({ utcTimestamp: normalizeUtcTimestampString(value) })
-    case 'array': {
-      return VariableValue.fromJSON({ array: LHArray.fromJSON(value) })
-    }
+      return VariableValue.create({
+        value: {
+          oneofKind: 'utcTimestamp',
+          utcTimestamp: Timestamp.fromDate(new Date(normalizeUtcTimestampString(value))),
+        },
+      })
+    case 'array':
+      return VariableValue.create({ value: { oneofKind: 'array', array: LHArray.fromJsonString(value) } })
+    case 'map':
+      return VariableValue.create({ value: { oneofKind: 'map', map: LHMap.fromJsonString(value) } })
     default:
       throw new Error(`Unknown variable value type: ${type}`)
   }
 }
+
+/**
+ * Renders a primitive JS value (already JSON-parsed) into the string shape that
+ * `getTypedVariableValue` consumes for that primitive type.
+ */
+const primitiveJsonToString = (type: VariableType, value: unknown): string => {
+  if (type === VariableType.JSON_OBJ || type === VariableType.JSON_ARR) {
+    return typeof value === 'string' ? value : JSON.stringify(value)
+  }
+  return typeof value === 'string' ? value : String(value)
+}
+
+/**
+ * Converts an already-JSON-parsed value into a VariableValue, using a TypeDefinition to
+ * type container keys/elements. This accepts the same human-friendly shape the dashboard
+ * *displays* (via `variableValueToJSON`): a Map is `{"one":1}` and an Array is `[1,2]`,
+ * NOT proto-JSON (`{"entries":[...]}` / `{"items":[...]}`). It is the input-side inverse of
+ * `variableValueToJSON` for the container types.
+ */
+const jsonValueToVariableValue = (typeDef: TypeDefinition | undefined, value: unknown): VariableValue => {
+  const definedType = typeDef?.definedType
+  switch (definedType?.oneofKind) {
+    case 'inlineArrayDef': {
+      if (!Array.isArray(value)) throw new Error('Expected a JSON array')
+      const elementType = definedType.inlineArrayDef.arrayType
+      return VariableValue.create({
+        value: { oneofKind: 'array', array: { items: value.map(el => jsonValueToVariableValue(elementType, el)) } },
+      })
+    }
+    case 'inlineMapDef': {
+      if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        throw new Error('Expected a JSON object')
+      }
+      const { keyType, valueType } = definedType.inlineMapDef
+      // Object.entries always yields string keys; the keyType drives their real parsing.
+      const entries = Object.entries(value as Record<string, unknown>).map(([k, v]) => ({
+        key: jsonValueToVariableValue(keyType, k),
+        value: jsonValueToVariableValue(valueType, v),
+      }))
+      return VariableValue.create({ value: { oneofKind: 'map', map: { entries } } })
+    }
+    case 'primitiveType':
+      return getTypedVariableValue(
+        getVariableCaseFromType(definedType.primitiveType),
+        primitiveJsonToString(definedType.primitiveType, value)
+      )
+    case 'structDefId':
+      return VariableValue.create({
+        value: { oneofKind: 'struct', struct: Struct.fromJsonString(JSON.stringify(value)) },
+      })
+    default:
+      throw new Error('Unsupported type for value conversion.')
+  }
+}
+
+/**
+ * Like `getTypedVariableValue`, but resolves container element/key types from a
+ * TypeDefinition, so Map and Array inputs can be provided in the same human-friendly JSON
+ * the dashboard displays (e.g. `{"one":1}`) rather than raw proto-JSON. Primitives and
+ * structs fall back to the existing string-based path.
+ */
+export const getTypedVariableValueFromTypeDef = (typeDef: TypeDefinition | undefined, value: string): VariableValue => {
+  const oneofKind = typeDef?.definedType?.oneofKind
+  if (oneofKind === 'inlineArrayDef' || oneofKind === 'inlineMapDef') {
+    return jsonValueToVariableValue(typeDef, JSON.parse(value))
+  }
+  if (!typeDef?.definedType) throw new Error('Variable type is unknown.')
+  return getTypedVariableValue(getVariableCaseFromTypeDef(typeDef), value)
+}
+
+/**
+ * Builds the VariableValue for a WfRun variable-search filter, handling both the new
+ * `typeDef` (including Map/Array via friendly JSON) and legacy `.type`-only VariableDefs.
+ * Throws on invalid input — callers (dialog validation, filter builder) must catch.
+ */
+export const getVariableFilterValue = (varDef: VariableDef, value: string): VariableValue =>
+  varDef.typeDef?.definedType
+    ? getTypedVariableValueFromTypeDef(varDef.typeDef, value)
+    : getTypedVariableValue(getVariableDefType(varDef), value)
 
 /**
  * Converts a VariableValue (from a `VariableDef.defaultValue`) into the
@@ -256,19 +373,23 @@ export const getTypedVariableValue = (
  */
 export const getPrimitiveFormDefaultValue = (defaultValue?: VariableValue): unknown => {
   const union = defaultValue?.value
-  if (!union) return undefined
+  if (!union || union.oneofKind === undefined) return undefined
 
-  switch (union.$case) {
+  switch (union.oneofKind) {
     case 'bool':
-      return union.value ? 'true' : 'false'
+      return union.bool ? 'true' : 'false'
     case 'int':
+      return union.int
     case 'double':
-      return union.value
+      return union.double
     case 'str':
+      return union.str
     case 'jsonObj':
+      return union.jsonObj
     case 'jsonArr':
+      return union.jsonArr
     case 'utcTimestamp':
-      return union.value
+      return Timestamp.toDate(union.utcTimestamp).toISOString()
     default:
       return undefined
   }
@@ -281,19 +402,12 @@ export const getPrimitiveFormDefaultValue = (defaultValue?: VariableValue): unkn
  * Old server versions may keep around both old and new Variables, so this function
  * determines which typing strategy a Variable uses.
  */
-export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableValue['value']>['$case'] => {
+export const getVariableDefType = (varDef: VariableDef): VariableValueCase => {
   if (varDef.typeDef && varDef.typeDef.definedType) {
-    const { $case, value } = varDef.typeDef.definedType
-    switch ($case) {
-      case 'primitiveType':
-        return getVariableCaseFromType(value)
-      case 'structDefId':
-        return 'struct'
-      case 'inlineArrayDef':
-        return 'array'
-      default:
-        throw new Error('Unknown variable type.')
-    }
+    // Delegate to the single source of truth so the two type-dispatch switches
+    // cannot drift out of sync (they previously did: map support was added here
+    // but not to getVariableCaseFromTypeDef, crashing the ExternalEventDef page).
+    return getVariableCaseFromTypeDef(varDef.typeDef)
   } else if (varDef.type) {
     return getVariableCaseFromType(varDef.type)
   }
@@ -307,7 +421,7 @@ export const getVariableDefType = (varDef: VariableDef): NonNullable<VariableVal
  * @param type - The VariableType to map.
  * @returns The corresponding VariableValue case.
  */
-export const getVariableCaseFromType = (type: VariableType): NonNullable<VariableValue['value']>['$case'] => {
+export const getVariableCaseFromType = (type: VariableType): VariableValueCase => {
   switch (type) {
     case VariableType.BOOL:
       return 'bool'
@@ -333,19 +447,21 @@ export const getVariableCaseFromType = (type: VariableType): NonNullable<Variabl
 }
 
 const getValueFromVariableName = (
-  { value }: Extract<VariableAssignment['source'], { $case: 'variableName' }>,
-  path?: Extract<VariableAssignment['path'], {}>
+  source: Extract<VariableAssignment['source'], { oneofKind: 'variableName' }>,
+  path?: VariableAssignment['path']
 ): string => {
+  const value = source.variableName
   if (!value) return ''
 
-  if (path?.$case == 'jsonPath') return `{${path.value.replace('$', value)}}`
-  if (path?.$case == 'lhPath') return `{${lhPathToString(path.value).replace('$', value)}}`
+  if (path?.oneofKind == 'jsonPath') return `{${path.jsonPath.replace('$', value)}}`
+  if (path?.oneofKind == 'lhPath') return `{${lhPathToString(path.lhPath).replace('$', value)}}`
   return `{${value}}`
 }
 
-const getValueFromFormatString = ({
-  value,
-}: Extract<VariableAssignment['source'], { $case: 'formatString' }>): string => {
+const getValueFromFormatString = (
+  source: Extract<VariableAssignment['source'], { oneofKind: 'formatString' }>
+): string => {
+  const value = source.formatString
   const template = getVariable(value.format!)
   const args = value.args.map(getVariable)
 
@@ -380,17 +496,17 @@ const getExpressionSymbol = (expression: VariableMutationType): string => {
 }
 
 const formatVariableExpression = (
-  { value }: Extract<VariableAssignment['source'], { $case: 'expression' }>,
+  source: Extract<VariableAssignment['source'], { oneofKind: 'expression' }>,
   depth = 0
 ): string => {
-  const { lhs, rhs, operation } = value
-  if (!operation) return ''
+  const { lhs, rhs, operation } = source.expression
+  if (!operation || operation.oneofKind === undefined) return ''
 
   let symbol: string
   let useDotNotation = false
 
-  if (operation.$case === 'mutationType') {
-    const mt = operation.value
+  if (operation.oneofKind === 'mutationType') {
+    const mt = operation.mutationType
     symbol = getExpressionSymbol(mt)
     useDotNotation =
       mt === VariableMutationType.REMOVE_IF_PRESENT ||
@@ -398,7 +514,7 @@ const formatVariableExpression = (
       mt === VariableMutationType.REMOVE_KEY ||
       mt === VariableMutationType.EXTEND
   } else {
-    symbol = getComparatorSymbol(operation.value)
+    symbol = getComparatorSymbol(operation.comparator)
   }
 
   const result = useDotNotation

@@ -3,9 +3,9 @@ import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import { NodeRun, SearchTaskRunRequest, TaskRun, TaskRunId, TaskRunIdList } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   taskRun: TaskRun
-  nodeRun: NodeRun
+  nodeRun?: NodeRun
 }
 export interface PaginatedTaskRunList extends TaskRunIdList {
   resultsWithDetails: runDetails[]
@@ -31,7 +31,23 @@ export const searchTaskRun = async ({
         wfRunId: taskRunId.wfRunId,
         taskGuid: taskRunId.taskGuid,
       })
-      const nodeRun = await client.getNodeRun(taskRun.id!)
+
+      const taskRunSource = taskRun.source?.taskRunSource
+      const nodeRunId =
+        taskRunSource?.oneofKind === 'taskNode'
+          ? taskRunSource.taskNode.nodeRunId
+          : taskRunSource?.oneofKind === 'userTaskTrigger'
+            ? taskRunSource.userTaskTrigger.nodeRunId
+            : undefined
+
+      let nodeRun: NodeRun | undefined
+      if (nodeRunId) {
+        try {
+          nodeRun = await client.getNodeRun(nodeRunId)
+        } catch {
+          nodeRun = undefined
+        }
+      }
 
       return {
         taskRun,
@@ -44,7 +60,7 @@ export const searchTaskRun = async ({
 
   return {
     ...taskRunIdList,
-    bookmarkAsString: taskRunIdList.bookmark?.toString('base64'),
+    bookmarkAsString: taskRunIdList.bookmark ? Buffer.from(taskRunIdList.bookmark).toString('base64') : undefined,
     resultsWithDetails: taskRunWithDetails,
   }
 }

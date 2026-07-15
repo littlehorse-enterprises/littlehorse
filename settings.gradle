@@ -11,7 +11,8 @@ include(
         'sdk-java',
         'test-utils',
         'test-utils-container',
-        'canary'
+        'canary',
+        'quickstart'
 )
 
 [
@@ -32,6 +33,7 @@ include(
         'interrupt-handler',
         'inline-struct-placeholder',
         'json',
+        'maps',
         'mutation',
         'output-topic',
         'parallel-approval',
@@ -52,3 +54,5 @@ include(
     include "example-$example"
     project(":example-$example").projectDir = new File(rootProject.projectDir, "examples/java/$example")
 }
+
+project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")

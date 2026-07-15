@@ -87,16 +87,16 @@ describe('NodeRunComponent', () => {
   ]
 
   cases.forEach(([caseName, testId]) => {
-    test(`renders ${testId} when nodeType.$case is "${caseName}"`, () => {
-      const nodeRun = { nodeType: { $case: caseName, value: { id: `${caseName}-id` } } }
+    test(`renders ${testId} when nodeType.oneofKind is "${caseName}"`, () => {
+      const nodeRun = { nodeType: { oneofKind: caseName, [caseName]: { id: `${caseName}-id` } } }
       mockedUseDiagram.mockReturnValue({ selectedNode: { data: { nodeRunsList: [nodeRun] } } })
       render(<NodeRunComponent nodeRunIndex={0} />)
       expect(screen.getByTestId(testId)).toBeInTheDocument()
     })
   })
 
-  test('renders fallback when nodeType.$case is unknown', () => {
-    const nodeRun = { nodeType: { $case: 'somethingElse', value: { id: 'x' } } }
+  test('renders fallback when nodeType.oneofKind is unknown', () => {
+    const nodeRun = { nodeType: { oneofKind: 'somethingElse', somethingElse: { id: 'x' } } }
     mockedUseDiagram.mockReturnValue({ selectedNode: { data: { nodeRunsList: [nodeRun] } } })
     render(<NodeRunComponent nodeRunIndex={0} />)
     expect(screen.getByText('No information required here.')).toBeInTheDocument()

@@ -56,9 +56,7 @@ export const TaskDefMetadata: FC<Props> = ({ spec, actions }) => {
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
-        <MetadataField label="Created">
-          {spec.createdAt ? formatDateReadable(spec.createdAt) : '—'}
-        </MetadataField>
+        <MetadataField label="Created">{spec.createdAt ? formatDateReadable(spec.createdAt) : '—'}</MetadataField>
         <MetadataField label="Inputs">{inputVars.length}</MetadataField>
         <MetadataField label="Return type">
           <TypeDisplay definedType={spec.returnType?.returnType?.definedType} />

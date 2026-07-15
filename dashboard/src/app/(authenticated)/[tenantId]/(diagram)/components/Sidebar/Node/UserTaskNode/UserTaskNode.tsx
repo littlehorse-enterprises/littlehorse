@@ -69,8 +69,14 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
           <div>
             {actions.map((trigger, index) => {
               const { action, delaySeconds, hook } = trigger
-              if (!action) return
-              const { value, $case } = action
+              if (!action || action.oneofKind === undefined) return
+              const $case = action.oneofKind
+              const value =
+                action.oneofKind === 'task'
+                  ? action.task
+                  : action.oneofKind === 'cancel'
+                    ? action.cancel
+                    : action.reassign
               return (
                 <div key={`action-${index}`} className="border-t-2 border-slate-100 ">
                   <Accordion type="single" collapsible>
@@ -89,7 +95,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
                             <VariableAssignment variableAssigment={delaySeconds} />
                           </div>
                         )}
-                        {$case === 'task' && <ActionTask {...value} />}
+                        {action.oneofKind === 'task' && <ActionTask {...action.task} />}
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -103,15 +109,15 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
   )
 }
 
-export const NodeTitleComponent: FC<{
+const NodeTitleComponent: FC<{
   title: string
   action: UTActionTrigger_UTATask | UTActionTrigger_UTACancel | UTActionTrigger_UTAReassign | undefined
 }> = ({ title, action }) => {
   let summaryNodeTitle = ''
   if (title === 'task' && action && 'task' in action) {
-    const value = action?.task?.taskToExecute?.value
-    if (value && 'name' in value) {
-      summaryNodeTitle = (value as TaskDefId).name ?? ''
+    const taskToExecute = action?.task?.taskToExecute
+    if (taskToExecute?.oneofKind === 'taskDefId') {
+      summaryNodeTitle = (taskToExecute.taskDefId as TaskDefId).name ?? ''
     }
   }
 
