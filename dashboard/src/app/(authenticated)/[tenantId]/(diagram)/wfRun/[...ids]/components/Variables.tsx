@@ -9,11 +9,12 @@ import { TypeDisplay } from '../../../../components/TypeDisplay'
 type VariablesProps = {
   variableDefs: ThreadVarDef[]
   variables: Variable[]
+  variablesTooLarge?: boolean
   thread: ThreadType
   wfRunId?: WfRunId
 }
 
-export const Variables: FC<VariablesProps> = ({ variableDefs, variables, thread, wfRunId }) => {
+export const Variables: FC<VariablesProps> = ({ variableDefs, variables, variablesTooLarge, thread, wfRunId }) => {
   const currentWfRunPath = wfRunId ? wfRunIdToPath(wfRunId) : ''
   const threadVariables = useMemo(() => {
     return variables.filter(v => {
@@ -30,6 +31,11 @@ export const Variables: FC<VariablesProps> = ({ variableDefs, variables, thread,
   return (
     <div>
       <h2 className="text-md mb-2 font-bold">Variables ({threadLabel})</h2>
+      {variablesTooLarge && (
+        <div className="mb-2 flex items-center gap-3 rounded border border-yellow-200 bg-yellow-50 px-3 py-2 text-sm text-yellow-900">
+          The variables of this WfRun are too large to display.
+        </div>
+      )}
       {variableDefs.map(variable => (
         <div key={variable.varDef?.name} className="mb-1 flex items-center gap-1">
           {variable.varDef?.name && <IdentifierBadge name={variable.varDef.name} />}
