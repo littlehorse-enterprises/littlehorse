@@ -229,7 +229,12 @@ jobs:
         working-directory: ${{env.working-directory}}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-        run: npm publish --access public
+        run: |
+          if [[ "${{ needs.prepare.outputs.prerelease }}" == "true" ]]; then
+            npm publish --access public --tag next
+          else
+            npm publish --access public
+          fi
 
   publish-sdk-dotnet:
     runs-on: ubuntu-latest
