@@ -13,7 +13,7 @@ public class ArrayWorker {
     @LHType(isLHArray = true)
     public Long[] produceArray() {
         log.info("Producing native LittleHorse Array of type Long");
-        return new Long[] {1L, 2L, 3L};
+        return new Long[] {7L, 8L, 9L};
     }
 
     @LHTaskMethod("consume-array")

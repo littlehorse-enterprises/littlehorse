@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { FC, useCallback, useState } from 'react'
 import { getWfSpecVersions } from '../actions/getVersions'
 
-export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
+export const Versions: FC<{ wfSpecId?: WfSpecId; compact?: boolean }> = ({ wfSpecId, compact }) => {
   const [versions, setVersions] = useState<string[]>([])
   const { name, majorVersion, revision } = wfSpecId!
   const { props } = useParams()
@@ -22,6 +22,9 @@ export const Versions: FC<{ wfSpecId?: WfSpecId }> = ({ wfSpecId }) => {
       currentVersion={`${majorVersion}.${revision}`}
       versions={versions}
       loadVersions={loadVersions}
+      hideLabel
+      versionPrefix="v"
+      compact={compact}
     />
   )
 }

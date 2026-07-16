@@ -94,4 +94,40 @@ describe('LHConfig', () => {
 
     expect(config.getResourceExhaustedRetryEnabled()).toBe(false)
   })
+
+  it('leaves max receive message length unset by default', () => {
+    const config = LHConfig.from({})
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBeUndefined()
+  })
+
+  it('parses max receive message length', () => {
+    const config = LHConfig.from({
+      grpcMaxReceiveMessageLength: '8388608',
+    })
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBe(8388608)
+  })
+
+  it('accepts -1 as unlimited max receive message length', () => {
+    const config = LHConfig.from({
+      grpcMaxReceiveMessageLength: '-1',
+    })
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBe(-1)
+  })
+
+  it('rejects an invalid max receive message length', () => {
+    expect(() =>
+      LHConfig.from({
+        grpcMaxReceiveMessageLength: 'lots',
+      })
+    ).toThrow(/LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH/)
+
+    expect(() =>
+      LHConfig.from({
+        grpcMaxReceiveMessageLength: '0',
+      })
+    ).toThrow(/LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH/)
+  })
 })

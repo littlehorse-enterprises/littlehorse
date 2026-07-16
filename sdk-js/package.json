@@ -3,6 +3,11 @@
   "version": "0.0.0-development",
   "license": "Apache-2.0",
   "description": "Littlehorse gPRC Client",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/littlehorse-enterprises/littlehorse.git",
+    "directory": "sdk-js"
+  },
   "engines": {
     "node": ">=18.14.0"
   },
@@ -32,6 +37,7 @@
     "lint:fix": "prettier --write ."
   },
   "devDependencies": {
+    "@jest/globals": "^30.4.1",
     "@tsconfig/node20": "^20.1.6",
     "@types/jest": "^29.5.12",
     "@types/node": "^24.1.0",
