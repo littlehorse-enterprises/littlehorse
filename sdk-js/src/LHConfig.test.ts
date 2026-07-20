@@ -1,38 +1,31 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import { readFileSync } from 'fs'
-import { ChannelCredentials, createChannel } from 'nice-grpc'
+import { ChannelCredentials } from '@grpc/grpc-js'
 import { LHConfig } from './LHConfig'
-
-const createMock = jest.fn()
-const useMock = jest.fn().mockReturnValue({ create: createMock })
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn(),
 }))
 
-jest.mock('nice-grpc', () => ({
+jest.mock('@grpc/grpc-js', () => ({
   ChannelCredentials: {
     createSsl: jest.fn(),
+    createInsecure: jest.fn(() => 'insecure-creds'),
   },
-  createChannel: jest.fn(),
-  createClientFactory: jest.fn(() => ({
-    use: useMock,
-  })),
-  Metadata: jest.fn(() => ({
-    append: jest.fn().mockReturnThis(),
-  })),
 }))
 
 describe('LHConfig', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    ;(ChannelCredentials.createInsecure as jest.Mock).mockReturnValue('insecure-creds')
   })
 
-  it('creates a plaintext channel by default', () => {
-    LHConfig.from({})
+  it('uses insecure channel credentials by default', () => {
+    const config = LHConfig.from({})
 
     expect(ChannelCredentials.createSsl).not.toHaveBeenCalled()
-    expect(createChannel).toHaveBeenCalledWith('localhost:2023', undefined)
+    expect(ChannelCredentials.createInsecure).toHaveBeenCalled()
+    expect(config.getChannelCredentials()).toBe('insecure-creds')
   })
 
   it('creates TLS channel credentials with a CA certificate', () => {
@@ -48,7 +41,6 @@ describe('LHConfig', () => {
 
     expect(readFileSync).toHaveBeenCalledWith('/path/to/ca.crt')
     expect(ChannelCredentials.createSsl).toHaveBeenCalledWith(caBuffer)
-    expect(createChannel).toHaveBeenCalledWith('localhost:2023', tlsCreds)
     expect(config.getChannelCredentials()).toBe(tlsCreds)
   })
 
@@ -86,7 +78,7 @@ describe('LHConfig', () => {
     })
 
     expect(readFileSync).toHaveBeenCalledWith('/path/to/client.crt')
-    expect(ChannelCredentials.createSsl).toHaveBeenCalledWith(undefined)
+    expect(ChannelCredentials.createSsl).toHaveBeenCalledWith(null)
   })
 
   it('enables resource exhausted retry by default', () => {
@@ -101,5 +93,41 @@ describe('LHConfig', () => {
     })
 
     expect(config.getResourceExhaustedRetryEnabled()).toBe(false)
+  })
+
+  it('leaves max receive message length unset by default', () => {
+    const config = LHConfig.from({})
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBeUndefined()
+  })
+
+  it('parses max receive message length', () => {
+    const config = LHConfig.from({
+      grpcMaxReceiveMessageLength: '8388608',
+    })
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBe(8388608)
+  })
+
+  it('accepts -1 as unlimited max receive message length', () => {
+    const config = LHConfig.from({
+      grpcMaxReceiveMessageLength: '-1',
+    })
+
+    expect(config.getGrpcMaxReceiveMessageLength()).toBe(-1)
+  })
+
+  it('rejects an invalid max receive message length', () => {
+    expect(() =>
+      LHConfig.from({
+        grpcMaxReceiveMessageLength: 'lots',
+      })
+    ).toThrow(/LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH/)
+
+    expect(() =>
+      LHConfig.from({
+        grpcMaxReceiveMessageLength: '0',
+      })
+    ).toThrow(/LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH/)
   })
 })

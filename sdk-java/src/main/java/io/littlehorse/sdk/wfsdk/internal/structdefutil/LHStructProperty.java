@@ -13,9 +13,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
@@ -72,6 +75,12 @@ public class LHStructProperty {
     }
 
     public VariableValue getValueFrom(Object o, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        return getValueFrom(o, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public VariableValue getValueFrom(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
         Method readMethod = getReadMethod();
         if (readMethod == null) {
             throw new IllegalStateException(
@@ -86,7 +95,11 @@ public class LHStructProperty {
                 return LHLibUtil.objToVarValAsNativeArray(val, getPropertyTypeClass(), typeAdapterRegistry);
             }
 
-            return LHLibUtil.objToVarVal(val, getPropertyTypeClass(), typeAdapterRegistry);
+            if (isNativeMap() && val instanceof Map) {
+                return LHLibUtil.objToVarValAsNativeMap(val, typeAdapterRegistry);
+            }
+
+            return LHLibUtil.objToVarVal(val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e, "Failed getting value of property " + this.fieldName + "from object of type: " + o.getClass());
@@ -99,6 +112,15 @@ public class LHStructProperty {
 
     public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        setValueTo(o, v, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public void setValueTo(
+            Object o,
+            VariableValue v,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
         Method writeMethod = getWriteMethod();
         if (writeMethod == null) {
             throw new IllegalStateException(String.format(
@@ -106,7 +128,8 @@ public class LHStructProperty {
         }
 
         try {
-            writeMethod.invoke(o, deserializeValue(v, typeAdapterRegistry));
+            writeMethod.invoke(
+                    o, LHLibUtil.varValToObj(v, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
@@ -189,15 +212,49 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Map<String, String> placeholderValues = parentStructDef.getPlaceholderValues();
+
         if (isNativeArray()) {
-            return new LHArrayType(getPropertyTypeClass(), typeAdapterRegistry);
+            return new LHArrayType(getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
         }
 
-        return LHClassType.fromJavaClass(getPropertyTypeClass(), typeAdapterRegistry);
+        if (isNativeMap()) {
+            return resolveMapType(typeAdapterRegistry);
+        }
+
+        return LHClassType.fromJavaClass(getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
     }
 
     private boolean isNativeArray() {
         return getPropertyTypeClass().isArray() && !byte[].class.equals(getPropertyTypeClass());
+    }
+
+    private boolean isNativeMap() {
+        return Map.class.isAssignableFrom(getPropertyTypeClass());
+    }
+
+    private LHMapType resolveMapType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Type genericType = null;
+        Method readMethod = getReadMethod();
+        if (readMethod != null) {
+            genericType = readMethod.getGenericReturnType();
+        }
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArgs = paramType.getActualTypeArguments();
+            if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
+                return new LHMapType(
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        parentStructDef.getPlaceholderValues());
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Map property '" + fieldName + "' must declare generic type parameters (e.g. Map<String, Integer>). "
+                        + "Raw or wildcard Map types are not supported.");
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or

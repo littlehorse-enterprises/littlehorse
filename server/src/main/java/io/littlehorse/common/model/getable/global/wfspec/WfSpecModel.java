@@ -11,6 +11,7 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
@@ -214,6 +215,13 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
     }
 
+    public Map<String, String> getVarToThreadSpecMap() {
+        if (!initializedVarToThreadSpec) {
+            initializeVarToThreadSpec();
+        }
+        return Map.copyOf(varToThreadSpec);
+    }
+
     public Pair<String, ThreadVarDefModel> lookupVarDef(String name) {
         if (!initializedVarToThreadSpec) {
             initializeVarToThreadSpec();
@@ -346,17 +354,23 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                                         .formatted(varName, tspec.getName(), varToThreadSpec.get(varName)));
                     }
                 }
-                if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+                if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
+                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
+                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
                     try {
                         vd.getTypeDef().validateStructDefExistsAndPinVersion(ctx.metadataManager());
                     } catch (UnknownStructDefException e) {
                         throw new InvalidWfSpecException(
-                                "Var name %s defined in thread %s refers to non-existent StructDef %s"
-                                        .formatted(
-                                                varName,
-                                                tspec.getName(),
-                                                vd.getTypeDef().getStructDefId().getName()));
+                                "Var name %s defined in thread %s refers to non-existent StructDef: %s"
+                                        .formatted(varName, tspec.getName(), e.getMessage()));
                     }
+                }
+                // Validate that Map key types are primitive
+                try {
+                    vd.getTypeDef().validateMapKeyTypes();
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidWfSpecException("Var name %s defined in thread %s has invalid Map key type: %s"
+                            .formatted(varName, tspec.getName(), e.getMessage()));
                 }
                 varToThreadSpec.put(varName, tspec.getName());
             }
@@ -450,8 +464,12 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         out.startTime = currentCommand.getTime();
         out.transitionTo(LHStatus.RUNNING);
 
-        out.startThread(
-                entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        try {
+            out.startThread(
+                    entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+        } catch (NodeFailureException exn) {
+            throw new IllegalStateException("Entrypoint ThreadRun should never exceed the max ThreadRun limit.", exn);
+        }
         getableManager.put(out);
         return out;
     }

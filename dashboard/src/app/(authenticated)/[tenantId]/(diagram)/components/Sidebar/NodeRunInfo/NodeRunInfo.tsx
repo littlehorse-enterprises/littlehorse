@@ -29,7 +29,7 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
       <NodeVariable label="wfSpecId:" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
       <NodeVariable label="threadSpecName:" text={nodeRun.threadSpecName} />
       <NodeVariable label="arrivalTime:" text={nodeRun.arrivalTime} type={'date'} />
-      {nodeRun.endTime !== 'RUNNING' && <NodeVariable label="endTime:" text={nodeRun.endTime} type={'date'} />}
+      {nodeRun.endTime && <NodeVariable label="endTime:" text={nodeRun.endTime} type={'date'} />}
     </div>
   )
 }

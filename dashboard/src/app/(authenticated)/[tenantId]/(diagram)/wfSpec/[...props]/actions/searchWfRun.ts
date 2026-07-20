@@ -2,11 +2,7 @@
 import { getWfRun, WfRunResponse } from '@/app/actions/getWfRun'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { SearchWfRunRequest, WfRunIdList } from 'littlehorse-client/proto'
-
-export interface PaginatedWfRunIdList extends WfRunIdList {
-  bookmarkAsString: string | undefined
-}
+import { SearchWfRunRequest } from 'littlehorse-client/proto'
 
 export type PaginatedWfRunResponseList = {
   results: WfRunResponse[]
@@ -31,6 +27,6 @@ export const searchWfRun = async ({
 
   return {
     results: wfRunData,
-    bookmarkAsString: wfRunIdList.bookmark?.toString('base64'),
+    bookmarkAsString: wfRunIdList.bookmark ? Buffer.from(wfRunIdList.bookmark).toString('base64') : undefined,
   }
 }

@@ -9,7 +9,7 @@ import {
   UserTaskRunIdList,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   userTaskRun: UserTaskRun
   nodeRun: NodeRun
 }
@@ -50,7 +50,9 @@ export const searchUserTaskRun = async ({
 
   return {
     ...userTaskRunIdList,
-    bookmarkAsString: userTaskRunIdList.bookmark?.toString('base64'),
+    bookmarkAsString: userTaskRunIdList.bookmark
+      ? Buffer.from(userTaskRunIdList.bookmark).toString('base64')
+      : undefined,
     resultsWithDetails: userTaskRunWithDetails,
   }
 }

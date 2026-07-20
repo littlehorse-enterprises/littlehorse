@@ -5,8 +5,10 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.TypeValidationException;
+import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
@@ -18,6 +20,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.expression.Int
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.LHTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.MapReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.NullReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.StructReturnTypeStrategy;
@@ -53,6 +56,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     private VariableType primitiveType;
     private StructDefIdModel structDefId;
     private InlineArrayDefModel inlineArrayDef;
+    private InlineMapDefModel inlineMapDef;
 
     public TypeDefinitionModel() {
         this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -88,6 +92,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = false;
     }
 
+    public TypeDefinitionModel(InlineMapDefModel inlineMapDef) {
+        this.definedTypeCase = DefinedTypeCase.INLINE_MAP_DEF;
+        this.inlineMapDef = Objects.requireNonNull(inlineMapDef);
+        this.masked = false;
+    }
+
     public TypeDefinitionModel(TypeDefinitionModel other) {
         if (other == null) {
             this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -108,6 +118,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_ARRAY_DEF:
                 this.inlineArrayDef =
                         other.inlineArrayDef == null ? null : new InlineArrayDefModel(other.inlineArrayDef);
+                break;
+            case INLINE_MAP_DEF:
+                this.inlineMapDef = other.inlineMapDef == null ? null : new InlineMapDefModel(other.inlineMapDef);
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -135,6 +148,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_ARRAY_DEF:
                 out.setInlineArrayDef(inlineArrayDef.toProto());
                 break;
+            case INLINE_MAP_DEF:
+                out.setInlineMapDef(inlineMapDef.toProto());
+                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -160,7 +176,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_ARRAY_DEF:
                 this.inlineArrayDef = InlineArrayDefModel.fromProto(p.getInlineArrayDef(), ctx);
                 break;
+            case INLINE_MAP_DEF:
+                this.inlineMapDef = InlineMapDefModel.fromProto(p.getInlineMapDef(), ctx);
+                break;
             case DEFINEDTYPE_NOT_SET:
+            default:
                 this.definedTypeCase = DefinedTypeCase.PRIMITIVE_TYPE;
                 this.primitiveType = VariableType.JSON_OBJ;
                 break;
@@ -199,6 +219,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case STRUCT_DEF_ID:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
             case INLINE_ARRAY_DEF:
+                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
+            case INLINE_MAP_DEF:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
             case DEFINEDTYPE_NOT_SET:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES, LHComparisonRule.MAGNITUDE);
@@ -240,6 +262,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return new StructReturnTypeStrategy(this.structDefId);
             case INLINE_ARRAY_DEF:
                 return new ArrayReturnTypeStrategy(this.inlineArrayDef);
+            case INLINE_MAP_DEF:
+                return new MapReturnTypeStrategy(this.inlineMapDef);
             default:
         }
         throw new IllegalStateException();
@@ -294,8 +318,45 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 inlineArrayDef.getArrayType().validateStructDefExistsAndPinVersion(metadataManager);
             }
             return;
+        } else if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
+            if (inlineMapDef != null) {
+                if (inlineMapDef.getKeyType() != null) {
+                    inlineMapDef.getKeyType().validateStructDefExistsAndPinVersion(metadataManager);
+                }
+                if (inlineMapDef.getValueType() != null) {
+                    inlineMapDef.getValueType().validateStructDefExistsAndPinVersion(metadataManager);
+                }
+            }
+            return;
         } else {
             return;
+        }
+    }
+
+    /**
+     * Validates that any InlineMapDef in this TypeDefinition has a primitive key type.
+     * Map keys must be primitive VariableTypes (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID).
+     * Non-primitive key types (STRUCT, ARRAY, MAP, JSON_OBJ, JSON_ARR, BYTES) are rejected.
+     *
+     * @throws IllegalArgumentException if a map key type is not primitive.
+     */
+    public void validateMapKeyTypes() {
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+            TypeDefinitionModel keyType = inlineMapDef.getKeyType();
+            if (keyType != null && !keyType.isNull() && !keyType.isPrimitive()) {
+                throw new IllegalArgumentException(
+                        "Map key type must be a primitive VariableType, but got: " + keyType);
+            }
+            if (keyType != null) {
+                keyType.validateMapKeyTypes();
+            }
+            if (inlineMapDef.getValueType() != null) {
+                inlineMapDef.getValueType().validateMapKeyTypes();
+            }
+        } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && inlineArrayDef != null) {
+            if (inlineArrayDef.getArrayType() != null) {
+                inlineArrayDef.getArrayType().validateMapKeyTypes();
+            }
         }
     }
 
@@ -322,6 +383,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 && inlineArrayDef != null
                 && inlineArrayDef.getArrayType() != null) {
             return inlineArrayDef.getArrayType().findForbiddenJsonPrimitiveForStructDef();
+        }
+
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+            VariableType keyForbidden = inlineMapDef.getKeyType() != null
+                    ? inlineMapDef.getKeyType().findForbiddenJsonPrimitiveForStructDef()
+                    : null;
+            if (keyForbidden != null) return keyForbidden;
+            return inlineMapDef.getValueType() != null
+                    ? inlineMapDef.getValueType().findForbiddenJsonPrimitiveForStructDef()
+                    : null;
         }
 
         return null;
@@ -376,6 +447,13 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     }
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
+                case INLINE_MAP_DEF:
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
+                        throw new InvalidExpressionException(String.format(
+                                "Expected key selector for Map type, got index selector '%d'", selector.getIndex()));
+                    }
+                    currentTypeDef = currentTypeDef.getInlineMapDef().getValueType();
+                    break;
                 case DEFINEDTYPE_NOT_SET:
                     break;
             }
@@ -420,6 +498,29 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     }
                 }
                 break;
+            case MAP:
+                TypeDefinitionModel expectedKeyType = this.getInlineMapDef().getKeyType();
+                TypeDefinitionModel expectedValueType = this.getInlineMapDef().getValueType();
+
+                for (MapModel.MapEntryModel entry : value.getMap().getEntries()) {
+                    if (expectedKeyType != null && !expectedKeyType.isNull()) {
+                        TypeDefinitionModel entryKeyType = entry.getKey().getTypeDefinition();
+                        if (!expectedKeyType.isCompatibleWith(entryKeyType)) {
+                            throw new TypeValidationException(String.format(
+                                    "Map key type %s incompatible with expected key type %s",
+                                    entryKeyType, expectedKeyType));
+                        }
+                    }
+                    if (expectedValueType != null && !expectedValueType.isNull()) {
+                        TypeDefinitionModel entryValueType = entry.getValue().getTypeDefinition();
+                        if (!expectedValueType.isCompatibleWith(entryValueType)) {
+                            throw new TypeValidationException(String.format(
+                                    "Map value type %s incompatible with expected value type %s",
+                                    entryValueType, expectedValueType));
+                        }
+                    }
+                }
+                break;
             case VALUE_NOT_SET:
                 return;
             default:
@@ -454,6 +555,21 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     return true;
                 }
                 return this.getInlineArrayDef().equals(other.getInlineArrayDef());
+            case INLINE_MAP_DEF:
+                // If the other map's types are undefined (reported for empty/native maps),
+                // treat it as a wildcard that is compatible with any map key/value types.
+                if (other.getInlineMapDef() == null
+                        || (other.getInlineMapDef().getKeyType() == null
+                                && other.getInlineMapDef().getValueType() == null)
+                        || ((other.getInlineMapDef().getKeyType() == null
+                                        || other.getInlineMapDef().getKeyType().isNull())
+                                && (other.getInlineMapDef().getValueType() == null
+                                        || other.getInlineMapDef()
+                                                .getValueType()
+                                                .isNull()))) {
+                    return true;
+                }
+                return this.getInlineMapDef().equals(other.getInlineMapDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -475,6 +591,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case INLINE_ARRAY_DEF:
                 result = String.format("Array<%s>", inlineArrayDef.getArrayType());
+                break;
+            case INLINE_MAP_DEF:
+                result = String.format("Map<%s, %s>", inlineMapDef.getKeyType(), inlineMapDef.getValueType());
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:

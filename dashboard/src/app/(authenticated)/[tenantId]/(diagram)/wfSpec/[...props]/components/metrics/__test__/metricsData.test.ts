@@ -1,4 +1,4 @@
-import { CountAndTiming, MetricWindow, WfMetrics } from 'littlehorse-client/proto'
+import { CountAndTiming, MetricWindow, Timestamp, WfMetrics } from 'littlehorse-client/proto'
 import {
   mergeManyTimings,
   mergeWfMetricsGroup,
@@ -14,7 +14,7 @@ import {
 } from '../metricsData'
 
 function ct(count: number, min: number, max: number, total: number): CountAndTiming {
-  return { count, minLatencyMs: min, maxLatencyMs: max, totalLatencyMs: total }
+  return { count, minLatencyMs: String(min), maxLatencyMs: String(max), totalLatencyMs: String(total) }
 }
 
 function wfMetrics(overrides: Partial<WfMetrics> = {}): WfMetrics {
@@ -33,8 +33,12 @@ function wfMetrics(overrides: Partial<WfMetrics> = {}): WfMetrics {
 
 function makeWindow(windowStartISO: string, wf: WfMetrics): MetricWindow {
   return {
-    id: { windowStart: windowStartISO, id: undefined, tenantId: undefined },
-    metric: { $case: 'workflow' as const, value: wf },
+    id: {
+      windowStart: Timestamp.fromDate(new Date(windowStartISO)),
+      id: { oneofKind: undefined },
+      tenantId: undefined,
+    },
+    metric: { oneofKind: 'workflow', workflow: wf },
   }
 }
 
@@ -203,8 +207,12 @@ describe('parseWorkflowWindows', () => {
   it('filters out non-workflow windows', () => {
     const wfWindow = makeWindow('2026-04-07T10:00:00Z', wfMetrics({ started: ct(1, 0, 0, 0) }))
     const taskWindow: MetricWindow = {
-      id: { windowStart: '2026-04-07T10:00:00Z', id: undefined, tenantId: undefined },
-      metric: undefined,
+      id: {
+        windowStart: Timestamp.fromDate(new Date('2026-04-07T10:00:00Z')),
+        id: { oneofKind: undefined },
+        tenantId: undefined,
+      },
+      metric: { oneofKind: undefined },
     }
     const result = parseWorkflowWindows([wfWindow, taskWindow])
     expect(result).toHaveLength(1)

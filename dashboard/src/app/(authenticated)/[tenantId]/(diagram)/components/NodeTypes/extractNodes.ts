@@ -1,13 +1,14 @@
 import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
-import { Node, NodeProps } from 'reactflow'
+import { Node } from 'reactflow'
 
 export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
   return Object.entries(spec.nodes).map(([id, node]) => {
     const nodeType = node.node!
+    const payload = nodeType.oneofKind ? (nodeType as Record<string, unknown>)[nodeType.oneofKind] : undefined
     return {
       id,
-      type: nodeType.$case,
-      data: { ...node, ...nodeType.value },
+      type: nodeType.oneofKind,
+      data: { ...node, ...(payload as Record<string, unknown> | undefined) },
       position: { x: 0, y: 0 },
     }
   })
@@ -76,17 +77,18 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
 
     const cycleNodeId = `cycle-${sourceId}-${targetId}`
     type ExtendedNode = Omit<NodeProto, 'node'> & {
-      node: NodeProto['node'] | { $case: 'cycle'; value: {} }
+      node: NodeProto['node'] | { oneofKind: 'cycle'; cycle: {} }
     }
     const cycleNode: ExtendedNode = {
       outgoingEdges: [
         {
           sinkNodeName: targetId,
           variableMutations: [],
+          edgeCondition: { oneofKind: undefined },
         },
       ],
       failureHandlers: [],
-      node: { $case: 'cycle', value: {} },
+      node: { oneofKind: 'cycle', cycle: {} },
     }
     // Add the cycle node to the graph
     threadSpec.nodes[cycleNodeId] = cycleNode as unknown as NodeProto
@@ -103,6 +105,7 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
       sourceNode.outgoingEdges.push({
         sinkNodeName: cycleNodeId,
         variableMutations: [],
+        edgeCondition: { oneofKind: undefined },
       })
     }
 
@@ -111,10 +114,14 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
   })
   return threadSpec
 }
-export type NodeRunTypeList = Exclude<
-  NodeType,
-  'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
->
 
-export type NodeType = NonNullable<NodeProto['node']>['$case']
-export type NodeData<T = any> = NodeProps<NodeProto & T>
+export const getNodeAfterEntrypoint = (threadSpec: ThreadSpec): string | undefined => {
+  for (const node of Object.values(threadSpec.nodes)) {
+    if (node.node?.oneofKind === 'entrypoint') {
+      return node.outgoingEdges[0]?.sinkNodeName
+    }
+  }
+  return undefined
+}
+
+export type NodeType = Exclude<NonNullable<NodeProto['node']>['oneofKind'], undefined>

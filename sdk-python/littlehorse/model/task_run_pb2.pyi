@@ -3,7 +3,7 @@ import datetime
 from google.protobuf import timestamp_pb2 as _timestamp_pb2
 import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.common_wfspec_pb2 as _common_wfspec_pb2
-import littlehorse.model.variable_pb2 as _variable_pb2
+import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 from google.protobuf.internal import containers as _containers
@@ -46,9 +46,9 @@ class VarNameAndVal(_message.Message):
     VALUE_FIELD_NUMBER: _ClassVar[int]
     MASKED_FIELD_NUMBER: _ClassVar[int]
     var_name: str
-    value: _variable_pb2.VariableValue
+    value: _type_definition_pb2.VariableValue
     masked: bool
-    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
+    def __init__(self, var_name: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., masked: _Optional[bool] = ...) -> None: ...
 
 class TaskAttempt(_message.Message):
     __slots__ = ("log_output", "schedule_time", "start_time", "end_time", "task_worker_id", "task_worker_version", "status", "output", "error", "exception", "masked_value")
@@ -63,18 +63,18 @@ class TaskAttempt(_message.Message):
     ERROR_FIELD_NUMBER: _ClassVar[int]
     EXCEPTION_FIELD_NUMBER: _ClassVar[int]
     MASKED_VALUE_FIELD_NUMBER: _ClassVar[int]
-    log_output: _variable_pb2.VariableValue
+    log_output: _type_definition_pb2.VariableValue
     schedule_time: _timestamp_pb2.Timestamp
     start_time: _timestamp_pb2.Timestamp
     end_time: _timestamp_pb2.Timestamp
     task_worker_id: str
     task_worker_version: str
     status: _common_enums_pb2.TaskStatus
-    output: _variable_pb2.VariableValue
+    output: _type_definition_pb2.VariableValue
     error: LHTaskError
     exception: LHTaskException
     masked_value: bool
-    def __init__(self, log_output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., schedule_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., task_worker_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[LHTaskException, _Mapping]] = ..., masked_value: _Optional[bool] = ...) -> None: ...
+    def __init__(self, log_output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., schedule_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., task_worker_id: _Optional[str] = ..., task_worker_version: _Optional[str] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[LHTaskException, _Mapping]] = ..., masked_value: _Optional[bool] = ...) -> None: ...
 
 class TaskRunSource(_message.Message):
     __slots__ = ("task_node", "user_task_trigger", "wf_spec_id")
@@ -107,8 +107,8 @@ class LHTaskException(_message.Message):
     CONTENT_FIELD_NUMBER: _ClassVar[int]
     name: str
     message: str
-    content: _variable_pb2.VariableValue
-    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    content: _type_definition_pb2.VariableValue
+    def __init__(self, name: _Optional[str] = ..., message: _Optional[str] = ..., content: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class Checkpoint(_message.Message):
     __slots__ = ("id", "value", "logs", "created_at")
@@ -117,7 +117,7 @@ class Checkpoint(_message.Message):
     LOGS_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.CheckpointId
-    value: _variable_pb2.VariableValue
+    value: _type_definition_pb2.VariableValue
     logs: str
     created_at: _timestamp_pb2.Timestamp
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.CheckpointId, _Mapping]] = ..., value: _Optional[_Union[_variable_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.CheckpointId, _Mapping]] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., logs: _Optional[str] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...

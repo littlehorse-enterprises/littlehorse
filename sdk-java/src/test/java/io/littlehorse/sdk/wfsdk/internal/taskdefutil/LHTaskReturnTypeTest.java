@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -95,6 +96,18 @@ public class LHTaskReturnTypeTest {
         @LHType(isLHArray = true)
         public UUID[] invalidNativeArrayAdapterJsonObjReturnType() {
             return null;
+        }
+
+        @LHTaskMethod("test-native-map")
+        @LHType(isLHMap = true)
+        public Map<String, Long> testNativeMapReturnType() {
+            return Map.of("a", 1L);
+        }
+
+        @LHTaskMethod("non-map-lh-map-invalid-task")
+        @LHType(isLHMap = true)
+        public String nonMapLhMapInvalidTask() {
+            return "hello world";
         }
     }
 
@@ -305,5 +318,38 @@ public class LHTaskReturnTypeTest {
                 })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    public void shouldHandleNativeMapTaskReturnType() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-native-map");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setInlineMapDef(InlineMapDef.newBuilder()
+                                .setKeyType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .setValueType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.INT)
+                                        .build()))
+                        .build())
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    void shouldFailWhenIsLHMapUsedOnNonMapReturnType() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "non-map-lh-map-invalid-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map return types");
     }
 }

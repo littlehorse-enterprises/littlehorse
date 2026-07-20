@@ -1,4 +1,5 @@
 import { getVariableDefType, wfRunIdFromFlattenedId, wfRunIdToPath } from '@/app/utils'
+import { getTypedVariableValueFromTypeDef } from '@/app/utils/variables'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -68,12 +69,11 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
       const transformedObj = Object.keys(primitiveValues).reduce((acc: RunWfRequest['variables'], key) => {
         if (primitiveValues[key] === undefined) return acc
 
-        // Only send primitive variables the user actually changed away from
-        // the WfSpec default. Otherwise the server applies its own default and
-        // we avoid overwriting it (see issue #2205).
-        if (!dirtyFields[key]) return acc
-
         const transformedKey = key.split(DOT_REPLACEMENT_PATTERN).join('.')
+        const variableDef = wfSpecVariables.find(variable => variable.varDef?.name === key)
+        const isRequired = variableDef?.required ?? false
+
+        if (!dirtyFields[key] && !isRequired) return acc
 
         if (
           wfSpecVariables.some(
@@ -85,7 +85,40 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
           return acc
         }
 
-        acc[transformedKey] = VariableValue.fromJSON({ [matchVariableType(transformedKey)]: primitiveValues[key] })
+        const caseName = matchVariableType(transformedKey)
+
+        // Container types (Map/Array) are entered as human-friendly JSON in a textarea
+        // (e.g. {"one":1}) and need the declared key/element types to build proper entries.
+        // fromJson would reject that shape and the create() fallback below would silently
+        // produce an EMPTY container, discarding the user's data.
+        if (caseName === 'map' || caseName === 'array') {
+          try {
+            acc[transformedKey] = getTypedVariableValueFromTypeDef(
+              variableDef?.varDef?.typeDef,
+              String(primitiveValues[key])
+            )
+          } catch {
+            // Field-level validation already blocks invalid JSON before submit; if something
+            // still slips through, omit the variable rather than send an empty container.
+          }
+          return acc
+        }
+
+        // The old ts-proto `VariableValue.fromJSON({ [case]: value })` coerced JSON values
+        // to the correct runtime type (e.g. base64 string -> Uint8Array for BYTES, ISO
+        // string -> Timestamp). @protobuf-ts `fromJson` performs the same coercion, but
+        // throws on values it cannot parse (e.g. a non-object passed for WF_RUN_ID), where
+        // the old code silently produced a default. Fall back to `create` (raw assignment)
+        // to preserve that lenient, no-throw behavior.
+        try {
+          acc[transformedKey] = VariableValue.fromJson({
+            [caseName]: primitiveValues[key],
+          } as unknown as Parameters<typeof VariableValue.fromJson>[0])
+        } catch {
+          acc[transformedKey] = VariableValue.create({
+            value: { oneofKind: caseName, [caseName]: primitiveValues[key] } as unknown as VariableValue['value'],
+          })
+        }
         return acc
       }, structVariables)
 

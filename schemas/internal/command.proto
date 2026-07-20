@@ -8,12 +8,13 @@ import "google/protobuf/timestamp.proto";
 import "service.proto";
 import "object_id.proto";
 import "common_wfspec.proto";
+import "type_definition.proto";
 import "user_tasks.proto";
 import "common_enums.proto";
-import "variable.proto";
 import "storage.proto";
 import "acls.proto";
 import "job.proto";
+import "bulk_job.proto";
 
 
 // This is the schema of everything that flows through the Central Command topic.
@@ -38,7 +39,6 @@ message Command {
         TriggeredTaskRunPb triggered_task_run = 17;
         DeadlineReassignUserTask reassigned_user_task = 18;
         CancelUserTaskRunRequest cancel_user_task = 19;
-        BulkUpdateJob bulk_job = 20;
         TaskAttemptRetryReady task_attempt_retry_ready = 21;
         RescueThreadRunRequest rescue_thread_run = 22;
         DeleteTaskWorkerGroupRequest delete_task_worker_group = 23;
@@ -56,6 +56,7 @@ message Command {
         AggregateWindowMetrics aggregate_window_metrics = 35;
         DeleteMetricWindow delete_metric_window = 36;
         UpdateCountedTag update_counted_tag = 37;
+        ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;
     }
 }
 
@@ -110,6 +111,10 @@ message MetadataCommand {
         DeleteStructDefRequest delete_struct_def = 18;
         PutQuotaRequest put_quota = 19;
         DeleteQuotaRequest delete_quota = 20;
+        CreateBulkJobRequest create_bulk_job = 21;
+        BulkJobShardReport bulk_job_shard_report = 22;
+        DeleteBulkJobRequest delete_bulk_job = 23;
+        PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;
     }
 }
 

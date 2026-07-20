@@ -24,9 +24,10 @@ _sym_db = _symbol_database.Default()
 
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.common_enums_pb2 as common__enums__pb2
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15type_definition.proto\x12\x0blittlehorse\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\"\xdd\x01\n\x0eTypeDefinition\x12\x33\n\x0eprimitive_type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x12\x31\n\rstruct_def_id\x18\x05 \x01(\x0b\x32\x18.littlehorse.StructDefIdH\x00\x12\x37\n\x10inline_array_def\x18\x06 \x01(\x0b\x32\x1b.littlehorse.InlineArrayDefH\x00\x12\x0e\n\x06masked\x18\x04 \x01(\x08\x42\x0e\n\x0c\x64\x65\x66ined_typeJ\x04\x08\x02\x10\x03J\x04\x08\x03\x10\x04\"A\n\x0eInlineArrayDef\x12/\n\narray_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\"S\n\nReturnType\x12\x35\n\x0breturn_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x00\x88\x01\x01\x42\x0e\n\x0c_return_type*\x84\x01\n\nComparator\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x15type_definition.proto\x12\x0blittlehorse\x1a\x0fobject_id.proto\x1a\x12\x63ommon_enums.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xcd\x02\n\x0eTypeDefinition\x12\x33\n\x0eprimitive_type\x18\x01 \x01(\x0e\x32\x19.littlehorse.VariableTypeH\x00\x12\x31\n\rstruct_def_id\x18\x05 \x01(\x0b\x32\x18.littlehorse.StructDefIdH\x00\x12\x37\n\x10inline_array_def\x18\x06 \x01(\x0b\x32\x1b.littlehorse.InlineArrayDefH\x00\x12\x39\n\x11inline_struct_def\x18\x07 \x01(\x0b\x32\x1c.littlehorse.InlineStructDefH\x00\x12\x33\n\x0einline_map_def\x18\x08 \x01(\x0b\x32\x19.littlehorse.InlineMapDefH\x00\x12\x0e\n\x06masked\x18\x04 \x01(\x08\x42\x0e\n\x0c\x64\x65\x66ined_typeJ\x04\x08\x02\x10\x03J\x04\x08\x03\x10\x04\"A\n\x0eInlineArrayDef\x12/\n\narray_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\"n\n\x0cInlineMapDef\x12-\n\x08key_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12/\n\nvalue_type\x18\x02 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\"\x97\x01\n\x0fInlineStructDef\x12\x38\n\x06\x66ields\x18\x01 \x03(\x0b\x32(.littlehorse.InlineStructDef.FieldsEntry\x1aJ\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12*\n\x05value\x18\x02 \x01(\x0b\x32\x1b.littlehorse.StructFieldDef:\x02\x38\x01\"\xa0\x01\n\x0eStructFieldDef\x12/\n\nfield_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinition\x12\x36\n\rdefault_value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x00\x88\x01\x01\x12\x13\n\x0bis_nullable\x18\x03 \x01(\x08\x42\x10\n\x0e_default_value\"\xe4\x02\n\rVariableValue\x12\x12\n\x08json_obj\x18\x02 \x01(\tH\x00\x12\x12\n\x08json_arr\x18\x03 \x01(\tH\x00\x12\x10\n\x06\x64ouble\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x12\r\n\x03str\x18\x06 \x01(\tH\x00\x12\r\n\x03int\x18\x07 \x01(\x03H\x00\x12\x0f\n\x05\x62ytes\x18\x08 \x01(\x0cH\x00\x12)\n\twf_run_id\x18\t \x01(\x0b\x32\x14.littlehorse.WfRunIdH\x00\x12\x33\n\rutc_timestamp\x18\n \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x12%\n\x06struct\x18\x0b \x01(\x0b\x32\x13.littlehorse.StructH\x00\x12#\n\x05\x61rray\x18\x0c \x01(\x0b\x32\x12.littlehorse.ArrayH\x00\x12\x1f\n\x03map\x18\r \x01(\x0b\x32\x10.littlehorse.MapH\x00\x42\x07\n\x05valueJ\x04\x08\x01\x10\x02\"\xca\x01\n\x03Map\x12\'\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x16.littlehorse.Map.Entry\x12\x30\n\x08map_type\x18\x02 \x01(\x0b\x32\x19.littlehorse.InlineMapDefH\x00\x88\x01\x01\x1a[\n\x05\x45ntry\x12\'\n\x03key\x18\x01 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValueB\x0b\n\t_map_type\"{\n\x05\x41rray\x12)\n\x05items\x18\x01 \x03(\x0b\x32\x1a.littlehorse.VariableValue\x12\x36\n\x0c\x65lement_type\x18\x02 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x00\x88\x01\x01\x42\x0f\n\r_element_type\"d\n\x06Struct\x12/\n\rstruct_def_id\x18\x01 \x01(\x0b\x32\x18.littlehorse.StructDefId\x12)\n\x06struct\x18\x02 \x01(\x0b\x32\x19.littlehorse.InlineStruct\"\x8e\x01\n\x0cInlineStruct\x12\x35\n\x06\x66ields\x18\x01 \x03(\x0b\x32%.littlehorse.InlineStruct.FieldsEntry\x1aG\n\x0b\x46ieldsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\'\n\x05value\x18\x02 \x01(\x0b\x32\x18.littlehorse.StructField:\x02\x38\x01\"H\n\x0bStructField\x12)\n\x05value\x18\x01 \x01(\x0b\x32\x1a.littlehorse.VariableValue\x12\x0e\n\x06masked\x18\x02 \x01(\x08\"S\n\nReturnType\x12\x35\n\x0breturn_type\x18\x01 \x01(\x0b\x32\x1b.littlehorse.TypeDefinitionH\x00\x88\x01\x01\x42\x0e\n\x0c_return_type*\x84\x01\n\nComparator\x12\r\n\tLESS_THAN\x10\x00\x12\x10\n\x0cGREATER_THAN\x10\x01\x12\x10\n\x0cLESS_THAN_EQ\x10\x02\x12\x13\n\x0fGREATER_THAN_EQ\x10\x03\x12\n\n\x06\x45QUALS\x10\x04\x12\x0e\n\nNOT_EQUALS\x10\x05\x12\x06\n\x02IN\x10\x06\x12\n\n\x06NOT_IN\x10\x07\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,12 +35,40 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'type_definition_pb2', _glob
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\037io.littlehorse.sdk.common.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.Proto'
-  _globals['_COMPARATOR']._serialized_start=452
-  _globals['_COMPARATOR']._serialized_end=584
-  _globals['_TYPEDEFINITION']._serialized_start=76
-  _globals['_TYPEDEFINITION']._serialized_end=297
-  _globals['_INLINEARRAYDEF']._serialized_start=299
-  _globals['_INLINEARRAYDEF']._serialized_end=364
-  _globals['_RETURNTYPE']._serialized_start=366
-  _globals['_RETURNTYPE']._serialized_end=449
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._loaded_options = None
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_options = b'8\001'
+  _globals['_INLINESTRUCT_FIELDSENTRY']._loaded_options = None
+  _globals['_INLINESTRUCT_FIELDSENTRY']._serialized_options = b'8\001'
+  _globals['_COMPARATOR']._serialized_start=2036
+  _globals['_COMPARATOR']._serialized_end=2168
+  _globals['_TYPEDEFINITION']._serialized_start=109
+  _globals['_TYPEDEFINITION']._serialized_end=442
+  _globals['_INLINEARRAYDEF']._serialized_start=444
+  _globals['_INLINEARRAYDEF']._serialized_end=509
+  _globals['_INLINEMAPDEF']._serialized_start=511
+  _globals['_INLINEMAPDEF']._serialized_end=621
+  _globals['_INLINESTRUCTDEF']._serialized_start=624
+  _globals['_INLINESTRUCTDEF']._serialized_end=775
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_start=701
+  _globals['_INLINESTRUCTDEF_FIELDSENTRY']._serialized_end=775
+  _globals['_STRUCTFIELDDEF']._serialized_start=778
+  _globals['_STRUCTFIELDDEF']._serialized_end=938
+  _globals['_VARIABLEVALUE']._serialized_start=941
+  _globals['_VARIABLEVALUE']._serialized_end=1297
+  _globals['_MAP']._serialized_start=1300
+  _globals['_MAP']._serialized_end=1502
+  _globals['_MAP_ENTRY']._serialized_start=1398
+  _globals['_MAP_ENTRY']._serialized_end=1489
+  _globals['_ARRAY']._serialized_start=1504
+  _globals['_ARRAY']._serialized_end=1627
+  _globals['_STRUCT']._serialized_start=1629
+  _globals['_STRUCT']._serialized_end=1729
+  _globals['_INLINESTRUCT']._serialized_start=1732
+  _globals['_INLINESTRUCT']._serialized_end=1874
+  _globals['_INLINESTRUCT_FIELDSENTRY']._serialized_start=1803
+  _globals['_INLINESTRUCT_FIELDSENTRY']._serialized_end=1874
+  _globals['_STRUCTFIELD']._serialized_start=1876
+  _globals['_STRUCTFIELD']._serialized_end=1948
+  _globals['_RETURNTYPE']._serialized_start=1950
+  _globals['_RETURNTYPE']._serialized_end=2033
 # @@protoc_insertion_point(module_scope)

@@ -40,6 +40,7 @@ public class ScheduledTaskExecutor {
     private final LittleHorseGrpc.LittleHorseBlockingStub blockingStub;
     private final LHTypeAdapterRegistry typeAdapterRegistry;
     private final TaskDef taskDef;
+    private final Map<String, String> placeholderValues;
 
     public ScheduledTaskExecutor(
             final LittleHorseGrpc.LittleHorseStub retriesStub, final LittleHorseBlockingStub blockingStub) {
@@ -65,10 +66,20 @@ public class ScheduledTaskExecutor {
             final LittleHorseBlockingStub blockingStub,
             final LHTypeAdapterRegistry typeAdapterRegistry,
             final TaskDef taskDef) {
+        this(retriesStub, blockingStub, typeAdapterRegistry, taskDef, Map.of());
+    }
+
+    public ScheduledTaskExecutor(
+            final LittleHorseGrpc.LittleHorseStub retriesStub,
+            final LittleHorseBlockingStub blockingStub,
+            final LHTypeAdapterRegistry typeAdapterRegistry,
+            final TaskDef taskDef,
+            final Map<String, String> placeholderValues) {
         this.retriesStub = retriesStub;
         this.blockingStub = blockingStub;
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
         this.taskDef = taskDef;
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
     }
 
     public void doTask(
@@ -164,21 +175,34 @@ public class ScheduledTaskExecutor {
     }
 
     /**
-     * Bridges the reflection boundary: Method.getReturnType() is a raw Class<?>, so
-     * the cast to Class<T> is unchecked but safe—returnType always matches the actual object.
+     * Serializes a task's return value into a {@link VariableValue}, dispatching on the return type.
+     *
+     * <p>The return type is resolved from two different sources depending on the case:
+     * <ul>
+     *   <li>{@code InlineStruct} -> the server-registered {@link TaskDef} return type;
+     *       the task method's {@code @LHType} annotation is intentionally ignored here.</li>
+     *   <li>{@code @LHType(isLHArray = true)} -> native LittleHorse Array.</li>
+     *   <li>{@code @LHType(isLHMap = true)} -> native LittleHorse Map.</li>
+     *   <li>otherwise -> reflection on the method's return type via {@code objToVarVal}.</li>
+     * </ul>
      */
-    private VariableValue serializeResult(Object result, Method taskMethod) {
+    VariableValue serializeResult(Object result, Method taskMethod) {
         Class<?> returnType = taskMethod.getReturnType();
-
-        LHTypeMetadata metadata = LHTypeMetadata.from(taskMethod, Map.of());
-        if (metadata.isLHArray()) {
-            return LHLibUtil.objToVarValAsNativeArray(result, returnType, typeAdapterRegistry);
-        }
 
         if (InlineStruct.class.equals(returnType)) {
             return serializeInlineStructResult(result);
         }
-        return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry);
+
+        LHTypeMetadata metadata = LHTypeMetadata.from(taskMethod, placeholderValues);
+        if (metadata.isLHArray()) {
+            return LHLibUtil.objToVarValAsNativeArray(result, returnType, typeAdapterRegistry);
+        }
+
+        if (metadata.isLHMap()) {
+            return LHLibUtil.objToVarValAsNativeMap(result, typeAdapterRegistry);
+        }
+
+        return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);
     }
 
     private VariableValue serializeInlineStructResult(Object result) {
@@ -196,6 +220,8 @@ public class ScheduledTaskExecutor {
             throw new LHSerdeException("InlineStruct task return requires a StructDef return type in TaskDef.");
         }
 
+        // The StructDefId comes from the server-registered TaskDef, whose name was already
+        // placeholder-resolved at registration time.
         StructDefId structDefId = taskDef.getReturnType().getReturnType().getStructDefId();
         return LHLibUtil.inlineStructToVarVal((InlineStruct) result, structDefId);
     }

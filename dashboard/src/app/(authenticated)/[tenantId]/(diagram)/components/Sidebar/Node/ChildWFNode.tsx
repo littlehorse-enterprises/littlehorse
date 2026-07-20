@@ -8,7 +8,8 @@ import './node.css'
 
 export const ChildWFNode: FC<{ node: RunChildWfNode }> = ({ node }) => {
   const { wfSpec, majorVersion, inputs } = node
-  const wfSpecName = wfSpec?.$case === 'wfSpecName' ? wfSpec.value : wfSpec?.$case === 'wfSpecVar' ? 'variable' : '—'
+  const wfSpecName =
+    wfSpec?.oneofKind === 'wfSpecName' ? wfSpec.wfSpecName : wfSpec?.oneofKind === 'wfSpecVar' ? 'variable' : '—'
 
   const wfSpecLink =
     wfSpecName && wfSpecName !== 'variable' && wfSpecName !== '—'
