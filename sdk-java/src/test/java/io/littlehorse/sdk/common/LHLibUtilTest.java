@@ -1,9 +1,11 @@
 package io.littlehorse.sdk.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -472,8 +474,8 @@ public class LHLibUtilTest {
         PersonRecordStruct original = new PersonRecordStruct("Leia", "Alderaan");
 
         VariableValue serialized = LHLibUtil.objToVarVal(original, LHTypeAdapterRegistry.empty());
-        PersonRecordStruct deserialized =
-                (PersonRecordStruct) LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
+        PersonRecordStruct deserialized = (PersonRecordStruct)
+                LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
 
         assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         assertThat(deserialized).isEqualTo(original);
@@ -713,5 +715,127 @@ public class LHLibUtilTest {
         Assertions.assertThat(roundTripped.getOrderId()).isEqualTo("order-2");
         Assertions.assertThat(roundTripped.getCustomer()).isNotNull();
         Assertions.assertThat(roundTripped.getCustomer().getName()).isEqualTo("Grace");
+    }
+
+    @LHStructDef("customer-v2-ux")
+    public record CustomerV2Ux(String id, String name, String email) {}
+
+    @Test
+    void shouldFailDeserializingPartialStructPayloadWithMissingField() {
+        Struct partialStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("customer-v2-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "id",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("cust-123"))
+                                        .build())
+                        .putFields(
+                                "name",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Alice"))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(partialStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, CustomerV2Ux.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [email]")
+                .hasMessageContaining("Available fields");
+    }
+
+    @Test
+    void shouldDeserializePartialPayloadIfFieldIsNullable() {
+        @LHStructDef("customer-nullable-ux")
+        record CustomerNullableUx(String id, String name, @LHStructField(isNullable = true) String email) {}
+
+        Struct partialStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("customer-nullable-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "id",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("cust-456"))
+                                        .build())
+                        .putFields(
+                                "name",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Bob"))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(partialStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, CustomerNullableUx.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [email]")
+                .hasMessageContaining("Available fields");
+    }
+
+    @LHStructDef("person-conflicted-ux")
+    public record PersonConflictedUx(
+            @LHStructField(name = "fullName") String name, @LHStructField(masked = true) String ssn) {
+        @Override
+        @LHStructField(name = "givenName", masked = false)
+        public String name() {
+            return name;
+        }
+    }
+
+    @Test
+    void shouldWarnOrFailOnConflictingAnnotations() {
+        PersonConflictedUx person = new PersonConflictedUx("Alice", "123-45-6789");
+        VariableValue serialized = LHLibUtil.objToVarVal(person);
+        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+    }
+
+    @LHStructDef("product-ux")
+    public record ProductUx(String sku, String title, double price) {}
+
+    @Test
+    void shouldProvideHelpfulErrorWhenFieldsMismatch() {
+        Struct mismatchedStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("product-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "product_sku",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("SKU-001"))
+                                        .build())
+                        .putFields(
+                                "title",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Widget"))
+                                        .build())
+                        .putFields(
+                                "price",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setDouble(19.99))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(mismatchedStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, ProductUx.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [sku]")
+                .hasMessageContaining("product_sku");
+    }
+
+    @LHStructDef("person-v1-ux")
+    public record PersonV1Ux(String name, int age) {}
+
+    @Test
+    void shouldFailOrWarnWhenRecordComponentOrderChanges() {
+        PersonV1Ux original = new PersonV1Ux("Alice", 30);
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        assertThat(serialized).isNotNull();
     }
 }

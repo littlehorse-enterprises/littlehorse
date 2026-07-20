@@ -64,6 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class LHLibUtil {
 
@@ -663,10 +664,7 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToRecord(
-            Struct struct,
-            Class<?> clazz,
-            LHStructDefType structDefType,
-            LHTypeAdapterRegistry typeAdapterRegistry)
+            Struct struct, Class<?> clazz, LHStructDefType structDefType, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = structDefType.getStructProperties();
@@ -694,14 +692,17 @@ public class LHLibUtil {
 
             String fieldName = property.getFieldName();
             if (!struct.getStruct().containsFields(fieldName)) {
+                Set<String> availableFields = struct.getStruct().getFieldsMap().keySet();
                 throw new LHSerdeException(
                         null,
                         String.format(
-                                "Failed deserializing VariableValue into Struct because no such field [%s] exists on class [%s]",
-                                fieldName, clazz.getName()));
+                                "Failed deserializing VariableValue into Struct: expected field [%s] on class [%s] not found in Struct. "
+                                        + "Available fields in Struct: %s",
+                                fieldName, clazz.getName(), availableFields));
             }
 
-            VariableValue fieldValue = struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            VariableValue fieldValue =
+                    struct.getStruct().getFieldsMap().get(fieldName).getValue();
             canonicalArgTypes[i] = recordComponent.getType();
             canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry);
         }
