@@ -5,33 +5,50 @@ import java.io.Closeable;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
+import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 
 @Slf4j
 public class LHProducer implements Closeable {
 
-    private final Producer<String, Bytes> prod;
+    private final Producer<String, byte[]> prod;
+    private final BoundedBytesSerde.BoundedBytesSerializer commandSerializer;
 
-    public LHProducer(Properties config) {
+    public LHProducer(Properties config, int maxProducerRequestSize) {
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Serdes.ByteArray().serializer().getClass());
         this.prod = new KafkaProducer<>(config);
+        this.commandSerializer = new BoundedBytesSerde.BoundedBytesSerializer(maxProducerRequestSize);
     }
 
-    public LHProducer(Producer<String, Bytes> prod) {
+    // Visible for testing
+    public LHProducer(Producer<String, byte[]> prod) {
         this.prod = prod;
+        this.commandSerializer = new BoundedBytesSerde.BoundedBytesSerializer(Integer.MAX_VALUE);
     }
 
     /**
      * Sends a Command asynchronously to the underlying producer without blocking the caller's thread.
      */
     public CompletableFuture<RecordMetadata> send(String key, AbstractCommand<?> t, String topic, Header... headers) {
-        return sendRecord(new ProducerRecord<>(topic, null, key, new Bytes(t.toBytes()), List.of(headers)));
+        try {
+            final byte[] valueBytes = commandSerializer.serialize(topic, new Bytes(t.toBytes()));
+            return sendRecord(new ProducerRecord<>(topic, null, key, valueBytes, List.of(headers)));
+        } catch (RecordTooLargeException e) {
+            return CompletableFuture.failedFuture(e);
+        }
+
     }
 
     /**
@@ -42,9 +59,9 @@ public class LHProducer implements Closeable {
      * @param record the record to be sent to the producer
      * @return a CompletableFuture containing the metadata of the sent record or an exception if sending fails
      */
-    private CompletableFuture<RecordMetadata> sendRecord(ProducerRecord<String, Bytes> record) {
+    private CompletableFuture<RecordMetadata> sendRecord(ProducerRecord<String, byte[]> record) {
         CompletableFutureCallback out = new CompletableFutureCallback();
-        CompletableFuture.runAsync(() -> prod.send(record, out));
+        prod.send(record, out);
         return out;
     }
 

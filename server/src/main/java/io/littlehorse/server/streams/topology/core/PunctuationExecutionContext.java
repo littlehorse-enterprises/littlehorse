@@ -33,6 +33,7 @@ public class PunctuationExecutionContext extends BackgroundContext {
             KeyValueStore<String, Bytes> nativeCoreStore,
             MetadataCache metadataCache,
             TenantIdModel tenant) {
+        super(lhConfig);
         this.timestamp = timestamp;
         this.clusterMetadataStore = ReadOnlyClusterScopedStore.newInstance(readOnlyMetadataNativeStore, this);
         this.tenantMetadataStore = ReadOnlyTenantScopedStore.newInstance(readOnlyMetadataNativeStore, tenant, this);

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -30,8 +31,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class MetadataGlobalStoreProcessorTest {
 
     private final MetadataCache metadataCache = new MetadataCache();
+    private final LHServerConfig config = mock();
 
-    private final MetadataGlobalStoreProcessor metadataProcessor = new MetadataGlobalStoreProcessor(metadataCache);
+    private final MetadataGlobalStoreProcessor metadataProcessor = new MetadataGlobalStoreProcessor(metadataCache, config);
     private final ProcessorContext<Void, Void> mockCtx = mock();
     private final KeyValueStore<String, Bytes> mockStore = mock();
     private String tenantId = "default";

@@ -21,11 +21,11 @@ public class BoundedBytesSerde extends Serdes.WrapperSerde<Bytes> {
         super(new BoundedBytesSerializer(maxLength), new BytesDeserializer());
     }
 
-    private static class BoundedBytesSerializer extends BytesSerializer {
+    public static class BoundedBytesSerializer extends BytesSerializer {
 
         private final int maxLength;
 
-        private BoundedBytesSerializer(final int maxLength) {
+        public BoundedBytesSerializer(final int maxLength) {
             this.maxLength = maxLength;
         }
 

@@ -168,7 +168,7 @@ public class ServerTopology {
                 Serdes.Bytes().deserializer(),
                 metadataStoreChangelog, // input topic
                 GLOBAL_METADATA_PROCESSOR,
-                () -> new MetadataGlobalStoreProcessor(metadataCache));
+                () -> new MetadataGlobalStoreProcessor(metadataCache, config));
         return topo;
     }
 

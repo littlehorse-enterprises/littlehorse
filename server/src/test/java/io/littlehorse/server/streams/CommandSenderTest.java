@@ -124,7 +124,7 @@ class CommandSenderTest {
         TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
-        CompletableFuture<RecordMetadata> future =
+        CompletableFuture<Message> future =
                 sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
         assertThat(future.get()).isSameAs(recordMetadata);
         assertThat(clientObserver.getValues()).hasSize(1);
@@ -141,7 +141,7 @@ class CommandSenderTest {
         TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.failedFuture(new TimeoutException());
         producerWithResult(taskClaimProducer, producerResult);
-        CompletableFuture<RecordMetadata> future =
+        CompletableFuture<Message> future =
                 sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
         future.get();
         assertThat(clientObserver.getValues()).isEmpty();

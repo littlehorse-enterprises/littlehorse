@@ -1,6 +1,7 @@
 package io.littlehorse.server.streams.topology.core;
 
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
@@ -30,18 +31,20 @@ public class TimerCoreProcessor implements Processor<String, LHTimer, String, Ob
     private Cancellable punctuator;
     private long lastSeenTimestampMillis;
     private long lastCheckpointedHintTimeMillis;
+    private final LHServerConfig config;
 
     private final boolean forwardTimers;
 
-    public TimerCoreProcessor(boolean forwardTimers) {
+    public TimerCoreProcessor(boolean forwardTimers, LHServerConfig config) {
         this.forwardTimers = forwardTimers;
+        this.config = config;
     }
 
     @Override
     public void init(final ProcessorContext<String, Object> context) {
         this.context = context;
         KeyValueStore<String, Bytes> nativeRocksDBStore = context.getStateStore(ServerTopologyV2.CORE_STORE_NAME);
-        this.lhKeyValueStore = ClusterScopedStore.newInstance(nativeRocksDBStore, null);
+        this.lhKeyValueStore = ClusterScopedStore.newInstance(nativeRocksDBStore, new BackgroundContext(config));
         if (forwardTimers) {
             this.punctuator = context.schedule(
                     LHConstants.TIMER_PUNCTUATOR_INTERVAL, PunctuationType.WALL_CLOCK_TIME, this::clearTimers);

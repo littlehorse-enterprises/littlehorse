@@ -3,6 +3,7 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.proto.StoredGetablePb;
 import io.littlehorse.server.streams.ServerTopology;
@@ -22,9 +23,11 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
 
     private KeyValueStore<String, Bytes> store;
     private final MetadataCache metadataCache;
+    private final LHServerConfig serverConfig;
 
-    public MetadataGlobalStoreProcessor(MetadataCache metadataCache) {
+    public MetadataGlobalStoreProcessor(MetadataCache metadataCache, LHServerConfig serverConfig) {
         this.metadataCache = metadataCache;
+        this.serverConfig = serverConfig;
     }
 
     @Override
@@ -71,6 +74,6 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         if (!isValid) {
             return Optional.empty();
         }
-        return Optional.of(LHSerializable.fromProto(storedGetablePb, StoredGetable.class, new BackgroundContext()));
+        return Optional.of(LHSerializable.fromProto(storedGetablePb, StoredGetable.class, new BackgroundContext(serverConfig)));
     }
 }

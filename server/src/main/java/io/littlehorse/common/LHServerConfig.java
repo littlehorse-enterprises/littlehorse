@@ -751,14 +751,14 @@ public class LHServerConfig extends ConfigBase {
 
     public LHProducer getCommandProducer() {
         if (commandProducer == null) {
-            commandProducer = new LHProducer(this.getCoreCommandProducerConfig(this.getLHInstanceName()));
+            commandProducer = new LHProducer(this.getCoreCommandProducerConfig(this.getLHInstanceName()), this.getProducerMaxRequestSize());
         }
         return commandProducer;
     }
 
     public LHProducer getTaskClaimProducer() {
         if (taskClaimProducer == null) {
-            taskClaimProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()));
+            taskClaimProducer = new LHProducer(this.getKafkaProducerConfig(this.getLHInstanceName()), this.getProducerMaxRequestSize());
         }
         return taskClaimProducer;
     }

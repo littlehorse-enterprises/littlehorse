@@ -110,7 +110,7 @@ public class BulkJobPunctuator {
         final AtomicLong remainingCommandBudget = new AtomicLong(maxCommandsPerPunctuation);
         final BooleanSupplier outOfBudget = () -> clock.get().isAfter(deadline) || remainingCommandBudget.get() == 0;
         final int currentPartition = ctx.taskId().partition();
-        final BackgroundContext context = new BackgroundContext();
+        final BackgroundContext context = new BackgroundContext(config);
         KeyValueStore<String, Bytes> metadataNativeStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         KeyValueStore<String, Bytes> coreNativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(metadataNativeStore, context);

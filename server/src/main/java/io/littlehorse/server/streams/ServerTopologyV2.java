@@ -105,14 +105,14 @@ public class ServerTopologyV2 extends Topology {
         this.routerProcessor2Supplier = () -> ProcessorOutputRouter.createCommandProcessorRouter(
                 TIMER_WITHOUT_FORWARD_PROCESSOR_NAME, OUTPUTTOPIC_PASSTHROUGH_PROCESSOR);
         this.routerProcessorTimer2Supplier = ProcessorOutputRouter::createTimerProcessorRouter;
-        this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
+        this.timerProcessorSupplier = () -> new TimerCoreProcessor(true, config);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
         this.passthroughCommandProcessorSupplier = ProcessorOutputRouter::createPassthroughCoreCommandMetadataRouter;
         this.timerCommandProcessorSupplier = () -> new TimerCommandProcessor(
                 config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.metadataStoreBuilder = Stores.keyValueStoreBuilder(
                 Stores.persistentKeyValueStore(METADATA_STORE_NAME), Serdes.String(), Serdes.Bytes());
-        this.timerWithoutForwardProcessorSupplier = () -> new TimerCoreProcessor(false);
+        this.timerWithoutForwardProcessorSupplier = () -> new TimerCoreProcessor(false, config);
         this.coreCommandTopic = config.getCoreCmdTopicName();
         this.repartitionTopic = config.getRepartitionTopicName();
         this.metadataTopic = config.getMetadataCmdTopicName();
@@ -127,10 +127,10 @@ public class ServerTopologyV2 extends Topology {
                         Stores.persistentKeyValueStore(GLOBAL_METADATA_STORE_NAME), Serdes.String(), Serdes.Bytes())
                 .withLoggingDisabled();
         this.metadataCache = metadataCache;
-        build();
+        build(config);
     }
 
-    private void build() {
+    private void build(LHServerConfig config) {
         final Topology serverTopology = this;
 
         serverTopology.addSource(
@@ -215,6 +215,6 @@ public class ServerTopologyV2 extends Topology {
                 Serdes.Bytes().deserializer(),
                 metadataStoreChangelog, // input topic
                 GLOBAL_METADATA_PROCESSOR_NAME,
-                () -> new MetadataGlobalStoreProcessor(metadataCache));
+                () -> new MetadataGlobalStoreProcessor(metadataCache, config));
     }
 }

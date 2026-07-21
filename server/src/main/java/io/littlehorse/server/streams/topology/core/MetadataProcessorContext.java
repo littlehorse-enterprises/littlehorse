@@ -44,6 +44,7 @@ public class MetadataProcessorContext implements ExecutionContext {
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
+        this.lhConfig = lhConfig;
         this.processorContext = processorContext;
 
         this.metadataCache = metadataCache;
@@ -59,7 +60,7 @@ public class MetadataProcessorContext implements ExecutionContext {
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
-        this.lhConfig = lhConfig;
+
     }
 
     @Override

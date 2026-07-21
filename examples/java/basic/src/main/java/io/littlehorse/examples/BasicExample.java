@@ -1,6 +1,8 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -20,8 +22,13 @@ public class BasicExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-basic", wf -> {
-            WfRunVariable theName = wf.declareStr("input-name").searchable();
-            wf.execute("greet", theName);
+            WfRunVariable bytes = wf.declareBytes("byts").withDefault(new byte[0]);
+            WfRunVariable numberOfIterations = wf.declareInt("number-of-iterations").required();
+            wf.doWhile(numberOfIterations.isGreaterThan(0), handler -> {
+                numberOfIterations.assign(numberOfIterations.subtract(1));
+                TaskNodeOutput taskOutput = handler.execute("greet", bytes);
+                bytes.assign(taskOutput);
+            });
         });
     }
 

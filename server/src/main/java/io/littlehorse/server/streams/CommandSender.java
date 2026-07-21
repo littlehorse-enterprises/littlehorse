@@ -138,28 +138,29 @@ public class CommandSender {
                 .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
-    public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
+    public CompletableFuture<Message> reportTaskAndDontWaitForResponse(
             ReportTaskRunModel reportTaskRun,
             StreamObserver<Empty> client,
             PrincipalIdModel principalId,
             TenantIdModel tenantId) {
         CommandModel commandToSend = new CommandModel(reportTaskRun);
-        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception) -> {
-            if (exception != null) {
-                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
-            } else {
-                client.onNext(Empty.getDefaultInstance());
-                client.onCompleted();
-            }
-            return recordMetadata;
-        };
+        commandToSend.setCommandId(LHUtil.generateGuid());
+//        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception) -> {
+//            if (exception != null) {
+//                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
+//            } else {
+//                client.onNext(Empty.getDefaultInstance());
+//                client.onCompleted();
+//            }
+//            return recordMetadata;
+//        };
         return taskClaimProducer
                 .send(
                         commandToSend.getPartitionKey(),
                         commandToSend,
                         commandToSend.getTopic(serverConfig),
                         HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray())
-                .handleAsync(completeReportTask, networkThreadpool);
+                .thenCompose(recordMetadata -> waitForCommand(commandToSend, Empty.class, null));
     }
 
     private CompletableFuture<Message> waitForCommand(

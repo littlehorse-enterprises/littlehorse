@@ -11,6 +11,12 @@ import java.util.List;
 
 public class BackgroundContext implements ExecutionContext {
 
+    private final LHServerConfig serverConfig;
+
+    public BackgroundContext(LHServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
+    }
+
     @Override
     public AuthorizationContext authorization() {
         return new AuthorizationContextImpl(
@@ -32,6 +38,6 @@ public class BackgroundContext implements ExecutionContext {
 
     @Override
     public LHServerConfig serverConfig() {
-        return null;
+        return serverConfig;
     }
 }

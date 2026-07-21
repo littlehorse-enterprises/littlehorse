@@ -3,6 +3,7 @@ package io.littlehorse.common.util;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -19,8 +20,8 @@ import org.mockito.Mockito;
 
 public class LHProducerTest {
 
-    private MockProducer<String, Bytes> prod = new MockProducer<>(
-            true, null, Serdes.String().serializer(), Serdes.Bytes().serializer());
+    private MockProducer<String, byte[]> prod = new MockProducer<>(
+            true, null, Serdes.String().serializer(), Serdes.ByteArray().serializer());
     private final LHProducer lhProducer = new LHProducer(prod);
     private final TaskWorkerHeartBeatRequest heartBeat = TaskWorkerHeartBeatRequest.newBuilder()
             .setClientId("worker-id")

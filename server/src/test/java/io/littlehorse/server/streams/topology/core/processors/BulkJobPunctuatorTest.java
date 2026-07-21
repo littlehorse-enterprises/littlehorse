@@ -66,7 +66,7 @@ public class BulkJobPunctuatorTest {
             new MockProcessorContext<>();
 
     private final MetadataCache metadataCache = new MetadataCache();
-    private final BackgroundContext context = new BackgroundContext();
+    private final BackgroundContext context = new BackgroundContext(config);
 
     private final TenantIdModel tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
 

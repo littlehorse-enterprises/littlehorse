@@ -30,6 +30,7 @@ import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
@@ -78,7 +79,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     }
 
     private void maybeInitializeStartupResources() {
-        BackgroundContext context = new BackgroundContext();
+        BackgroundContext context = new BackgroundContext(config);
 
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(metadataStore, context);
 
@@ -192,6 +193,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
 
     public MetadataProcessorContext buildContext(final Record<String, MetadataCommand> record) {
         Headers recordMetadata = record.headers();
+        Objects.requireNonNull(config, "config must be present");
         return new MetadataProcessorContext(recordMetadata, streamsContext, metadataCache, config, record.value());
     }
 }
