@@ -74,6 +74,7 @@ public class MetadataGlobalStoreProcessor implements Processor<String, Bytes, Vo
         if (!isValid) {
             return Optional.empty();
         }
-        return Optional.of(LHSerializable.fromProto(storedGetablePb, StoredGetable.class, new BackgroundContext(serverConfig)));
+        return Optional.of(
+                LHSerializable.fromProto(storedGetablePb, StoredGetable.class, new BackgroundContext(serverConfig)));
     }
 }

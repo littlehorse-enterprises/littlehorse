@@ -742,14 +742,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext);
         TenantIdModel tenantId = requestContext.authorization().tenantId();
         PrincipalIdModel principalId = requestContext.authorization().principalId();
-        CompletableFuture<Message> futureResponse = commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
-        try{
+        CompletableFuture<Message> futureResponse =
+                commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
+        try {
             waitForProcessing(futureResponse, Optional.empty());
             ctx.onNext(Empty.getDefaultInstance());
             ctx.onCompleted();
         } catch (LHApiException e) {
             if (e.getStatus().getCode().equals(Status.RESOURCE_EXHAUSTED.getCode())) {
-                CompletableFuture<Message> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(reqModel.toErrorReport(e), ctx, principalId, tenantId);
+                CompletableFuture<Message> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
+                        reqModel.toErrorReport(e), ctx, principalId, tenantId);
                 try {
                     waitForProcessing(failedTaskReport, Optional.empty());
                 } catch (Throwable t) {
@@ -1358,12 +1360,11 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         try {
             return futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new StatusRuntimeException(
-                    Status.UNAVAILABLE.withDescription("This Server instance shutting down"));
+            throw new StatusRuntimeException(Status.UNAVAILABLE.withDescription("This Server instance shutting down"));
         } catch (TimeoutException e) {
             throw new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
                     "Could not process command in time id: %s".formatted(commandId.orElse(""))));
-        } catch (ExecutionException e){
+        } catch (ExecutionException e) {
             if (e.getCause() instanceof LHApiException apiException) {
                 throw apiException;
             } else if (e.getCause() instanceof RecordTooLargeException) {

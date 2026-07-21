@@ -12,10 +12,8 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.LHStatus;
-import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -251,7 +249,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
 
         Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
-//        verifySize(uncommittedChanges.values());
+        //        verifySize(uncommittedChanges.values());
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
@@ -291,8 +289,8 @@ public class GetableManager extends ReadOnlyGetableManager {
             Message objectToStore = entity.getObjectToStore().toProto().build();
             byte[] serialized = objectToStore.toByteArray();
             if (serialized.length > maxRecordSizeInBytes) {
-                throw new RecordTooLargeException(
-                        "Record size " + serialized.length + " exceeds the maximum allowed size " + maxRecordSizeInBytes);
+                throw new RecordTooLargeException("Record size " + serialized.length
+                        + " exceeds the maximum allowed size " + maxRecordSizeInBytes);
             }
         }
     }

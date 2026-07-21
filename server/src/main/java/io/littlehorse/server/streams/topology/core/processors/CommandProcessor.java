@@ -130,7 +130,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             response = command.process(executionContext, config);
             executionContext.endExecution();
         } catch (RecordTooLargeException e) {
-            throw new CoreCommandException(new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(e.getMessage()), e), command);
+            throw new CoreCommandException(
+                    new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(e.getMessage()), e), command);
         } catch (KafkaException ke) {
             throw ke;
         } catch (Exception exn) {
@@ -164,7 +165,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         }
         partitionIsClaimed = true;
         server.drainPartitionTaskQueue(ctx.taskId());
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext(config));
+        ClusterScopedStore clusterStore =
+                ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext(config));
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
                 GetableClassEnum.TENANT.getNumber() + "/~",
@@ -211,8 +213,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     private void collectPartitionMetrics(long timestamp) {
-        ClusterScopedStore clusterScopedStore =
-                ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext(config));
+        ClusterScopedStore clusterScopedStore = ClusterScopedStore.newInstance(
+                ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext(config));
         partitionDrain.punctuate(clusterScopedStore);
     }
 }

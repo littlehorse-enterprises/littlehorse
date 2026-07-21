@@ -3,7 +3,6 @@ package io.littlehorse.common.util;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.model.AbstractCommand;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.sdk.common.proto.TaskDefId;
@@ -14,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.MockProducer;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 

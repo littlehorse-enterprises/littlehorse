@@ -74,8 +74,8 @@ public class TestRequestExecutionContext extends RequestExecutionContext {
         Mockito.when(mockStoreProvider.getNativeGlobalStore()).thenReturn(globalMetadataNativeStore);
         ClusterScopedStore clusterInitStore =
                 ClusterScopedStore.newInstance(globalMetadataNativeStore, new BackgroundContext(lhConfig));
-        TenantScopedStore coreInitStore =
-                TenantScopedStore.newInstance(coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext(lhConfig));
+        TenantScopedStore coreInitStore = TenantScopedStore.newInstance(
+                coreNativeStore, new TenantIdModel(tenantId), new BackgroundContext(lhConfig));
         MetadataManager initManager = new MetadataManager(clusterInitStore, coreInitStore, metadataCache);
         initManager.put(new TenantModel(new TenantIdModel(tenantId)));
 

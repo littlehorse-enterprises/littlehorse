@@ -33,7 +33,8 @@ public class MetadataGlobalStoreProcessorTest {
     private final MetadataCache metadataCache = new MetadataCache();
     private final LHServerConfig config = mock();
 
-    private final MetadataGlobalStoreProcessor metadataProcessor = new MetadataGlobalStoreProcessor(metadataCache, config);
+    private final MetadataGlobalStoreProcessor metadataProcessor =
+            new MetadataGlobalStoreProcessor(metadataCache, config);
     private final ProcessorContext<Void, Void> mockCtx = mock();
     private final KeyValueStore<String, Bytes> mockStore = mock();
     private String tenantId = "default";

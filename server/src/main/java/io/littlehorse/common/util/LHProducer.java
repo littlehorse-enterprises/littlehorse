@@ -1,13 +1,11 @@
 package io.littlehorse.common.util;
 
 import io.littlehorse.common.model.AbstractCommand;
+import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import java.io.Closeable;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-
-import io.littlehorse.server.streams.store.BoundedBytesSerde;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -27,7 +25,9 @@ public class LHProducer implements Closeable {
     private final BoundedBytesSerde.BoundedBytesSerializer commandSerializer;
 
     public LHProducer(Properties config, int maxProducerRequestSize) {
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, Serdes.ByteArray().serializer().getClass());
+        config.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                Serdes.ByteArray().serializer().getClass());
         this.prod = new KafkaProducer<>(config);
         this.commandSerializer = new BoundedBytesSerde.BoundedBytesSerializer(maxProducerRequestSize);
     }
@@ -48,7 +48,6 @@ public class LHProducer implements Closeable {
         } catch (RecordTooLargeException e) {
             return CompletableFuture.failedFuture(e);
         }
-
     }
 
     /**

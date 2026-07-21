@@ -1,10 +1,9 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Random;
 
 public class MyWorker {
 
@@ -27,6 +26,7 @@ public class MyWorker {
         RANDOM.nextBytes(randomBytes);
         return randomBytes;
     }
+
     private byte[] concat(byte[] a, byte[] b) {
         byte[] result = new byte[a.length + b.length];
         System.arraycopy(a, 0, result, 0, a.length);

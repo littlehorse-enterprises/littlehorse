@@ -60,7 +60,6 @@ public class MetadataProcessorContext implements ExecutionContext {
         this.currentCommand = MetadataCommandModel.fromProto(currentCommand, MetadataCommandModel.class, this);
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
-
     }
 
     @Override

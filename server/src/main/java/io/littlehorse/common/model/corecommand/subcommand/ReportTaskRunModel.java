@@ -14,7 +14,6 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -58,7 +57,8 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
 
         task.onTaskAttemptResultReported(this);
         try {
-            // Update the TaskRun instance in the buffer so we validate the size of the object before putting it in the actual store
+            // Update the TaskRun instance in the buffer so we validate the size of the object before putting it in the
+            // actual store
             executionContext.getableManager().put(task);
         } catch (Exception ex) {
             log.error("Failed to put taskRun into buffer", ex);
