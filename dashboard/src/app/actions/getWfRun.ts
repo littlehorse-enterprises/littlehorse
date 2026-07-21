@@ -1,6 +1,7 @@
 'use server'
 
 import { lhClient } from '@/app/lhClient'
+import { isResourceExhausted } from 'littlehorse-client'
 import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
 import { getInheritedVariables } from './getInheritedVariables'
 
@@ -15,18 +16,23 @@ export type WfRunResponse = {
   wfRun: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
   wfSpec: WfSpec
   variables: Variable[]
+  variablesTooLarge: boolean
 }
 export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
   const wfRun = await client.getWfRun(wfRunId)
-  const [wfSpec, { results: nodeRuns }, { results: variables }] = await Promise.all([
+  const [wfSpec, { results: nodeRuns }, ownVariables] = await Promise.all([
     client.getWfSpec(wfRun.wfSpecId!),
     client.listNodeRuns({
       wfRunId,
     }),
-    client.listVariables({
-      wfRunId,
-    }),
+    client.listVariables({ wfRunId }).then(
+      ({ results }) => ({ results, tooLarge: false }),
+      error => {
+        if (isResourceExhausted(error)) return { results: [] as Variable[], tooLarge: true }
+        throw error
+      }
+    ),
   ])
 
   const entrypointThreadRun =
@@ -38,10 +44,15 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
         wfSpec.threadSpecs[entrypointThreadRun.threadSpecName].variableDefs,
         tenantId
       )
-    : []
+    : { variables: [], tooLarge: false }
 
   const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns))
-  return { wfRun: { ...wfRun, threadRuns }, wfSpec, variables: [...variables, ...inheritedVariables] }
+  return {
+    wfRun: { ...wfRun, threadRuns },
+    wfSpec,
+    variables: [...ownVariables.results, ...inheritedVariables.variables],
+    variablesTooLarge: ownVariables.tooLarge || inheritedVariables.tooLarge,
+  }
 }
 
 const mergeThreadRunsWithNodeRuns = (threadRun: ThreadRun, nodeRuns: NodeRun[]): ThreadRunWithNodeRuns => {
