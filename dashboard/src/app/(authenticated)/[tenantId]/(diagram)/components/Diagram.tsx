@@ -20,12 +20,19 @@ import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import ReactFlow, { Controls, Node as RFNode, useEdgesState, useNodesState, type Viewport } from 'reactflow'
+import ReactFlow, {
+  Controls,
+  Node as RFNode,
+  useEdgesState,
+  useNodesState,
+  type OnSelectionChangeParams,
+  type Viewport,
+} from 'reactflow'
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { extractEdges } from './EdgeTypes/extractEdges'
-import { LayoutManager } from './LayoutManager'
+import { getNodeRunsList, LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes, getCycleNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
@@ -116,7 +123,14 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     [wfRun, threadSpec, thread.name, setNodes]
   )
 
+  const resetKey = `${spec.id ? `${spec.id.name}/${spec.id.majorVersion}/${spec.id.revision}` : ''}|${
+    wfRun?.id ? JSON.stringify(wfRun.id) : ''
+  }|${thread.name}`
+  const appliedResetKey = useRef<string | null>(null)
+
   useLayoutEffect(() => {
+    if (appliedResetKey.current === resetKey) return
+    appliedResetKey.current = resetKey
     lastAppliedThread.current = null
     const extractedNodes = extractNodes(threadSpec)
     const extractedEdges = extractEdges(threadSpec)
@@ -138,7 +152,18 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     setNode(undefined)
     setNodes(extractedNodes)
     setEdges(extractedEdges)
-  }, [thread.name, threadSpec, setNodes, setEdges, wfRun])
+  }, [resetKey, thread.name, threadSpec, setNodes, setEdges, wfRun])
+
+  useEffect(() => {
+    if (!wfRun) return
+    const withNodeRuns = <T extends RFNode>(n: T): T => {
+      const nodeRunsList = getNodeRunsList(n.id, threadNodeRuns)
+      const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
+      return { ...n, data: { ...n.data, fade, nodeRunsList } }
+    }
+    setNodes(current => current.map(withNodeRuns))
+    setNode(current => (current ? withNodeRuns(current) : current))
+  }, [threadNodeRuns, wfRun, setNodes])
 
   useEffect(() => {
     onThreadChange?.(thread)
@@ -152,6 +177,10 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     },
     [viewportKey]
   )
+
+  const onSelectionChange = useCallback(({ nodes: selectedNodes }: OnSelectionChangeParams) => {
+    if (selectedNodes.length === 0) setNode(undefined)
+  }, [])
 
   const verb =
     wfRun?.status === LHStatus.RUNNING
@@ -238,6 +267,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             edgeTypes={edgeTypes}
             snapToGrid={true}
             onMoveEnd={onMoveEnd}
+            onSelectionChange={onSelectionChange}
           >
             <Controls />
           </ReactFlow>
