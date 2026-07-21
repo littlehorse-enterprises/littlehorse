@@ -33,6 +33,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
@@ -141,27 +142,27 @@ public class CommandSender {
             ReportTaskRunModel reportTaskRun,
             StreamObserver<Empty> client,
             PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
         CommandModel commandToSend = new CommandModel(reportTaskRun);
         commandToSend.setCommandId(LHUtil.generateGuid());
-        //        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception)
-        // -> {
-        //            if (exception != null) {
-        //                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to
-        // Kafka"));
-        //            } else {
-        //                client.onNext(Empty.getDefaultInstance());
-        //                client.onCompleted();
-        //            }
-        //            return recordMetadata;
-        //        };
+        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception) -> {
+            if (exception != null) {
+                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
+            } else {
+                client.onNext(Empty.getDefaultInstance());
+                client.onCompleted();
+            }
+            return recordMetadata;
+        };
         return taskClaimProducer
                 .send(
                         commandToSend.getPartitionKey(),
                         commandToSend,
                         commandToSend.getTopic(serverConfig),
                         HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray())
-                .thenCompose(recordMetadata -> waitForCommand(commandToSend, Empty.class, null));
+                .handleAsync(completeReportTask, networkThreadpool)
+                .thenCompose(recordMetadata -> waitForCommand(commandToSend, Empty.class, context));
     }
 
     private CompletableFuture<Message> waitForCommand(

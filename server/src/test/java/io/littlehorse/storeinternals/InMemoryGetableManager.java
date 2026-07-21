@@ -1,6 +1,7 @@
 package io.littlehorse.storeinternals;
 
 import com.google.protobuf.Message;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -42,8 +43,8 @@ public class InMemoryGetableManager extends GetableManager {
     private final Map<ObjectIdModel<?, ?, ?>, AbstractGetable<?>> buffer = new ConcurrentHashMap<>();
     private final Map<String, ScheduledTaskModel> scheduledTasks = new ConcurrentHashMap<>();
 
-    public InMemoryGetableManager(CoreProcessorContext executionContext) {
-        super(null, null, null, null, executionContext, null);
+    public InMemoryGetableManager(CoreProcessorContext executionContext, LHServerConfig config) {
+        super(null, null, config, null, executionContext, null);
     }
 
     @Override

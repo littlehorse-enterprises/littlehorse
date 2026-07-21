@@ -59,18 +59,27 @@ class CommandSenderTest {
     private final LHServerConfig serverConfig = mock(LHServerConfig.class);
     private final AsyncWaiters asyncWaiters = mock(AsyncWaiters.class);
     private final RecordMetadata recordMetadata = mock(RecordMetadata.class);
-    private final CommandSender sender = new CommandSender(
-            internalComms, threadPool, commandProducer, taskClaimProducer, 60L, serverConfig, asyncWaiters);
+    private CommandSender sender;
     private final HostInfo localHost = new HostInfo("localhost", 2024);
     private final HostInfo remoteHost = new HostInfo("localhost", 2023);
     private final LHInternalsGrpc.LHInternalsFutureStub internalFutureStub =
             mock(LHInternalsGrpc.LHInternalsFutureStub.class);
+    private final RequestExecutionContext ctx = mock(RequestExecutionContext.class);
+    private final AuthorizationContext auth = mock(AuthorizationContext.class);
 
     @BeforeEach
     public void setup() {
         String topicName = "test-topic";
-        when(serverConfig.getCoreCmdTopicName()).thenReturn(topicName);
         when(internalComms.getThisHost()).thenReturn(localHost);
+        sender = new CommandSender(
+                internalComms, threadPool, commandProducer, taskClaimProducer, 60L, serverConfig, asyncWaiters);
+        when(auth.tenantId()).thenReturn(new TenantIdModel("tenant-1"));
+        when(auth.principalId()).thenReturn(new PrincipalIdModel("principal-1"));
+        when(ctx.authorization()).thenReturn(auth);
+        KeyQueryMetadata metadata = mock(KeyQueryMetadata.class);
+        when(metadata.activeHost()).thenReturn(localHost);
+        when(internalComms.lookupPartitionKey(anyString(), anyString())).thenReturn(metadata);
+        when(serverConfig.getCoreCmdTopicName()).thenReturn(topicName);
         when(recordMetadata.topic()).thenReturn(topicName);
     }
 
@@ -117,6 +126,7 @@ class CommandSenderTest {
     @Test
     @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     public void shouldSendReportTaskRunAndWaitForProducer() throws Exception {
+
         TenantIdModel tenantId = new TenantIdModel("test-tenant");
         PrincipalIdModel principalId = new PrincipalIdModel("test-principal");
         ReportTaskRunModel reportTaskRun = mock(ReportTaskRunModel.class);
@@ -124,9 +134,11 @@ class CommandSenderTest {
         TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
+        when(asyncWaiters.getOrRegisterFuture(anyString(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(Empty.getDefaultInstance()));
         CompletableFuture<Message> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
-        assertThat(future.get()).isSameAs(recordMetadata);
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId, ctx);
+        assertThat(future.get()).isSameAs(Empty.getDefaultInstance());
         assertThat(clientObserver.getValues()).hasSize(1);
         assertThat(clientObserver.isCompleted()).isTrue();
     }
@@ -141,8 +153,10 @@ class CommandSenderTest {
         TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.failedFuture(new TimeoutException());
         producerWithResult(taskClaimProducer, producerResult);
+        when(asyncWaiters.getOrRegisterFuture(anyString(), any(), any()))
+                .thenReturn(CompletableFuture.completedFuture(Empty.getDefaultInstance()));
         CompletableFuture<Message> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId, ctx);
         future.get();
         assertThat(clientObserver.getValues()).isEmpty();
         assertThat(clientObserver.getThrowable())

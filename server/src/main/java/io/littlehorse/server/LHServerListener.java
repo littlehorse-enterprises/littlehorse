@@ -743,7 +743,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         TenantIdModel tenantId = requestContext.authorization().tenantId();
         PrincipalIdModel principalId = requestContext.authorization().principalId();
         CompletableFuture<Message> futureResponse =
-                commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
+                commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId, requestContext);
         try {
             waitForProcessing(futureResponse, Optional.empty());
             ctx.onNext(Empty.getDefaultInstance());
@@ -751,7 +751,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         } catch (LHApiException e) {
             if (e.getStatus().getCode().equals(Status.RESOURCE_EXHAUSTED.getCode())) {
                 CompletableFuture<Message> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
-                        reqModel.toErrorReport(e), ctx, principalId, tenantId);
+                        reqModel.toErrorReport(e), ctx, principalId, tenantId, requestContext);
                 try {
                     waitForProcessing(failedTaskReport, Optional.empty());
                 } catch (Throwable t) {

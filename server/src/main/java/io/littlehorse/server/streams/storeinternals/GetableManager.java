@@ -113,7 +113,6 @@ public class GetableManager extends ReadOnlyGetableManager {
         }
 
         toPut.setObjectToStore(getable);
-        verifySize(List.of(toPut));
         uncommittedChanges.put(getable.getObjectId().getStoreableKey(), toPut);
     }
 
@@ -249,7 +248,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         List<OutputTopicRecordModel> outputTopicRecords = new ArrayList<>();
 
         Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
-        //        verifySize(uncommittedChanges.values());
+        verifySize(uncommittedChanges.values());
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
@@ -286,11 +285,13 @@ public class GetableManager extends ReadOnlyGetableManager {
 
     public void verifySize(Collection<GetableToStore<?, ?>> entities) {
         for (GetableToStore<?, ?> entity : entities) {
-            Message objectToStore = entity.getObjectToStore().toProto().build();
-            byte[] serialized = objectToStore.toByteArray();
-            if (serialized.length > maxRecordSizeInBytes) {
-                throw new RecordTooLargeException("Record size " + serialized.length
-                        + " exceeds the maximum allowed size " + maxRecordSizeInBytes);
+            if (entity.getObjectToStore() != null) {
+                Message objectToStore = entity.getObjectToStore().toProto().build();
+                byte[] serialized = objectToStore.toByteArray();
+                if (serialized.length > maxRecordSizeInBytes) {
+                    throw new RecordTooLargeException("Record size " + serialized.length
+                            + " exceeds the maximum allowed size " + maxRecordSizeInBytes);
+                }
             }
         }
     }
