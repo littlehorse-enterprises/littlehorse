@@ -5,6 +5,15 @@ import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport 
 
 const elk = new ELK()
 
+export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[] | undefined =>
+  nodeRuns
+    ?.filter(nodeRun => nodeRun.nodeName === nodeId)
+    .sort((a, b) => {
+      const aPos = a.id?.position ?? 0
+      const bPos = b.id?.position ?? 0
+      return bPos - aPos
+    })
+
 type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
   viewportKey: string
@@ -67,13 +76,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
         // Layout the original workflow nodes
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
-          const nodeRunsList = nodeRuns
-            ?.filter(nodeRun => nodeRun.nodeName === node.id)
-            .sort((a, b) => {
-              const aPos = a.id?.position ?? 0
-              const bPos = b.id?.position ?? 0
-              return bPos - aPos
-            })
+          const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
           if (node.type === 'cycle' && elkNode?.x !== undefined) {
             const initialNode = laidOutGraph.children?.find(n => n.id === node.data.outgoingEdges[0].sinkNodeName)
