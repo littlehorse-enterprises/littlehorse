@@ -3,15 +3,19 @@ package io.littlehorse.common.util;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskWorkerHeartBeatRequestModel;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskWorkerHeartBeatRequest;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.MockProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.junit.jupiter.api.Test;
@@ -19,8 +23,8 @@ import org.mockito.Mockito;
 
 public class LHProducerTest {
 
-    private MockProducer<String, Bytes> prod = new MockProducer<>(
-            true, null, Serdes.String().serializer(), Serdes.Bytes().serializer());
+    private final MockProducer<String, Bytes> prod = new MockProducer<>(
+            false, null, Serdes.String().serializer(), Serdes.Bytes().serializer());
     private final LHProducer lhProducer = new LHProducer(prod);
     private final TaskWorkerHeartBeatRequest heartBeat = TaskWorkerHeartBeatRequest.newBuilder()
             .setClientId("worker-id")
@@ -35,9 +39,27 @@ public class LHProducerTest {
     @Test
     public void shouldSendCommandToKafkaWithCallback() throws Exception {
         CompletableFuture<RecordMetadata> result = lhProducer.send("test", commandToProduce, "test-topic");
+        prod.completeNext();
         RecordMetadata recordMetadata = result.get(1, TimeUnit.SECONDS);
         assertThat(recordMetadata.topic()).isEqualTo("test-topic");
         assertThat(recordMetadata.partition()).isEqualTo(0);
         assertThat(recordMetadata.offset()).isEqualTo(0);
+    }
+
+    @Test
+    public void shouldPropagateRecordTooLargeExceptionAsLHApiException() {
+        final String expectedErrorMessage =
+                "The message is 1000 " + " bytes when serialized which is larger than 900 , which is the value of the "
+                        + ProducerConfig.MAX_REQUEST_SIZE_CONFIG
+                        + " configuration.";
+        CompletableFuture<RecordMetadata> result = lhProducer.send("test", commandToProduce, "test-topic");
+        RecordTooLargeException exception = new RecordTooLargeException(expectedErrorMessage);
+
+        prod.errorNext(exception);
+
+        assertThatThrownBy(() -> result.get(1, TimeUnit.SECONDS))
+                .isInstanceOf(ExecutionException.class)
+                .hasCauseInstanceOf(LHApiException.class)
+                .hasRootCauseMessage("RESOURCE_EXHAUSTED: " + expectedErrorMessage);
     }
 }

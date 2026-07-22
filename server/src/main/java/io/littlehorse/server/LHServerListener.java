@@ -170,6 +170,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -177,6 +178,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
@@ -740,7 +743,27 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext);
         TenantIdModel tenantId = requestContext.authorization().tenantId();
         PrincipalIdModel principalId = requestContext.authorization().principalId();
-        commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
+        CompletableFuture<RecordMetadata> futureResponse =
+                commandSender.reportTaskAndDontWaitForResponse(reqModel, principalId, tenantId);
+        try {
+            waitForProcessing(futureResponse, Optional.empty());
+            ctx.onNext(Empty.getDefaultInstance());
+            ctx.onCompleted();
+        } catch (LHApiException e) {
+            if (e.getStatus().getCode().equals(Status.RESOURCE_EXHAUSTED.getCode())) {
+                CompletableFuture<RecordMetadata> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
+                        reqModel.toErrorReport(e), principalId, tenantId);
+                try {
+                    waitForProcessing(failedTaskReport, Optional.empty());
+                } catch (Throwable t) {
+                    ctx.onError(t);
+                }
+            } else {
+                ctx.onError(new LHApiException(Status.INTERNAL, "Failed to send ReportTaskRun command"));
+            }
+        } catch (Throwable e) {
+            ctx.onError(new LHApiException(Status.INTERNAL, "Failed to send ReportTaskRun command"));
+        }
     }
 
     @Override
@@ -1324,26 +1347,39 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
-            Message response =
-                    futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+            Message response = waitForProcessing(futureResponse, command.getCommandId());
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException e) {
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
-        } catch (TimeoutException e) {
-            responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
-                    "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            if (cause instanceof StatusRuntimeException) {
-                responseObserver.onError(cause);
-            } else {
-                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
-                log.error("Failed processing command", e);
-            }
+            responseObserver.onError(e);
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
+        }
+    }
+
+    private <T> T waitForProcessing(Future<T> futureResponse, Optional<String> commandId) {
+        try {
+            return futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new StatusRuntimeException(Status.UNAVAILABLE.withDescription("This Server instance shutting down"));
+        } catch (TimeoutException e) {
+            throw new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                    "Could not process command in time id: %s".formatted(commandId.orElse(""))));
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof LHApiException apiException) {
+                throw apiException;
+            } else if (e.getCause() instanceof RecordTooLargeException) {
+                throw new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription("Record too large"));
+            } else {
+                throw new RuntimeException(e);
+            }
+        } catch (Throwable e) {
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException sre) {
+                throw sre;
+            } else {
+                throw new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error"));
+            }
         }
     }
 
