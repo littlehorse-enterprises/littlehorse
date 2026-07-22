@@ -74,6 +74,11 @@ public class LHStructDefType extends LHClassType {
                             + this.clazz);
         }
 
+        // If this is a record, validate the canonical constructor for its components.
+        if (this.clazz.isRecord()) {
+            validateRecordCanonicalConstructor();
+        }
+
         this.inlineStructDef = this.buildInlineStructDef();
     }
 
@@ -281,5 +286,32 @@ public class LHStructDefType extends LHClassType {
         }
 
         return inlineStructDef.build();
+    }
+
+    /**
+     * Validate that the record class has a canonical constructor matching its record
+     * components.
+     *
+     * <p>This method assumes `this.clazz` is a Java record and inspects its
+     * {@link RecordComponent}s to build the expected canonical constructor
+     * parameter types. It throws an {@link IllegalArgumentException} if the
+     * canonical constructor is missing. The canonical constructor is required for
+     * reflective deserialization and for creating default instances when no-arg
+     * constructors are unavailable.
+     */
+    private void validateRecordCanonicalConstructor() {
+        RecordComponent[] rcs = this.clazz.getRecordComponents();
+        Class<?>[] paramTypes = new Class<?>[rcs.length];
+        for (int i = 0; i < rcs.length; i++) {
+            paramTypes[i] = rcs[i].getType();
+        }
+
+        try {
+            this.clazz.getDeclaredConstructor(paramTypes);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(
+                    "Record class " + this.clazz.getName() + " does not have the canonical constructor for its components",
+                    e);
+        }
     }
 }

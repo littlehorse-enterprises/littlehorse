@@ -707,7 +707,9 @@ public class LHLibUtil {
             canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry);
         }
 
-        return clazz.getDeclaredConstructor(canonicalArgTypes).newInstance(canonicalArgValues);
+        java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
+        cons.setAccessible(true);
+        return cons.newInstance(canonicalArgValues);
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {

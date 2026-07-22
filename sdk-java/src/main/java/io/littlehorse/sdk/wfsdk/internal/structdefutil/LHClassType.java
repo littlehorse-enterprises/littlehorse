@@ -5,6 +5,8 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Constructor;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,7 +68,64 @@ public abstract class LHClassType {
     public Object createInstance()
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
                     NoSuchMethodException, SecurityException {
+        if (clazz.isRecord()) {
+            return createRecordInstance();
+        }
+
         return clazz.getDeclaredConstructor().newInstance();
+    }
+
+    /**
+     * Create an instance of a Java record class.
+     *
+     * <p>Prefer a user-defined no-arg constructor if present; otherwise, invoke
+     * the canonical constructor with default values for each component (null for
+     * reference types, primitive defaults for primitives).
+     *
+     * @return a new instance of the record class
+     */
+    private Object createRecordInstance()
+            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+                    NoSuchMethodException {
+        try {
+            java.lang.reflect.Constructor<?> noArgCons = clazz.getDeclaredConstructor();
+            noArgCons.setAccessible(true);
+            return noArgCons.newInstance();
+        } catch (NoSuchMethodException ignored) {
+            // no no-arg ctor; fall through to canonical constructor
+        }
+
+        RecordComponent[] rcs = clazz.getRecordComponents();
+        Class<?>[] paramTypes = new Class<?>[rcs.length];
+        Object[] args = new Object[rcs.length];
+
+        for (int i = 0; i < rcs.length; i++) {
+            paramTypes[i] = rcs[i].getType();
+            args[i] = defaultValueForType(paramTypes[i]);
+        }
+
+        try {
+            Constructor<?> cons = clazz.getDeclaredConstructor(paramTypes);
+            cons.setAccessible(true);
+            return cons.newInstance(args);
+        } catch (NoSuchMethodException e) {
+            throw new InstantiationException("Record class missing canonical constructor: " + clazz.getName());
+        }
+    }
+
+    private static Object defaultValueForType(Class<?> t) {
+        if (!t.isPrimitive()) return null;
+
+        if (t == boolean.class) return false;
+        if (t == byte.class) return (byte) 0;
+        if (t == char.class) return (char) 0;
+        if (t == short.class) return (short) 0;
+        if (t == int.class) return 0;
+        if (t == long.class) return 0L;
+        if (t == float.class) return 0.0f;
+        if (t == double.class) return 0.0d;
+
+        return null;
     }
 
     public abstract TypeDefinition.DefinedTypeCase getDefinedTypeCase();
