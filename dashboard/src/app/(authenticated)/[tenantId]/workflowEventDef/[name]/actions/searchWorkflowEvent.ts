@@ -60,11 +60,12 @@ export const searchWorkflowEvent = async ({
 
   const workflowEventWithDetails: runDetails[] = await Promise.all(hydrateWithWorkflowEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...workflowEventIdListRest } = workflowEventIdList
   return {
-    ...workflowEventIdList,
-    bookmarkAsString: workflowEventIdList.bookmark
-      ? Buffer.from(workflowEventIdList.bookmark).toString('base64')
-      : undefined,
+    ...workflowEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: workflowEventWithDetails,
   }
 }

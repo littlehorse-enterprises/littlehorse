@@ -10,9 +10,10 @@ import { AuditTable } from './AuditTable'
 import { hasEventCase } from '@/app/utils'
 import { Button } from '@/components/ui/button'
 
-type Props = { params: { ids: string[]; tenantId: string } }
+type Props = { params: Promise<{ ids: string[]; tenantId: string }> }
 
-export default async function Page({ params: { ids, tenantId } }: Props) {
+export default async function Page({ params }: Props) {
+  const { ids, tenantId } = await params
   const [wfRunId, userTaskGuid] = ids
 
   try {
@@ -49,7 +50,9 @@ export default async function Page({ params: { ids, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { ids } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { ids } = await params
+
   return {
     title: `UserTask Audit ${ids[1]} | Littlehorse`,
   }

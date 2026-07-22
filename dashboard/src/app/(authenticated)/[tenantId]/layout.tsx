@@ -3,15 +3,12 @@ import { WhoAmIContext } from '@/contexts/WhoAmIContext'
 import { WithTenant } from '@/types'
 import { PropsWithChildren } from 'react'
 import { SWRConfig } from 'swr'
-import getWhoAmI from '../getWhoami'
-import '../globals.css'
-import { Header } from './[tenantId]/components/Header'
-import { QueryProvider } from './[tenantId]/components/QueryProvider'
+import getWhoAmI from '../../getWhoami'
+import { Header } from './components/Header'
+import { QueryProvider } from './components/QueryProvider'
 
-export default async function RootLayout({
-  children,
-  params: { tenantId },
-}: PropsWithChildren<{ params: WithTenant }>) {
+export default async function RootLayout({ children, params }: PropsWithChildren<{ params: Promise<WithTenant> }>) {
+  const { tenantId } = await params
   const { tenants, user } = await getWhoAmI()
 
   return (

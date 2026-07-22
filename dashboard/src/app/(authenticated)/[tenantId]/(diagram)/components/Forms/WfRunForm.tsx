@@ -47,6 +47,10 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
   const methods = useForm<FormValues>({ defaultValues })
 
+  // formState is a Proxy: dirtyFields must be read during render to activate its
+  // subscription, otherwise it is empty when read later inside the submit callback.
+  const { dirtyFields } = methods.formState
+
   // sorted by required first
   const sortedVariables = useMemo(
     () =>
@@ -58,7 +62,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
   )
 
   const handleSubmit = (data: FormValues) => {
-    onSubmit(data, { dirtyFields: methods.formState.dirtyFields as Record<string, boolean | undefined> })
+    onSubmit(data, { dirtyFields: dirtyFields as Record<string, boolean | undefined> })
   }
 
   return (
