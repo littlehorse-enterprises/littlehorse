@@ -11,7 +11,6 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.TestStreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
@@ -121,14 +120,11 @@ class CommandSenderTest {
         PrincipalIdModel principalId = new PrincipalIdModel("test-principal");
         ReportTaskRunModel reportTaskRun = mock(ReportTaskRunModel.class);
         when(reportTaskRun.getPartitionKey()).thenReturn("test-partition-key");
-        TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
         CompletableFuture<RecordMetadata> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId);
         assertThat(future.get()).isSameAs(recordMetadata);
-        assertThat(clientObserver.getValues()).hasSize(1);
-        assertThat(clientObserver.isCompleted()).isTrue();
     }
 
     @Test
@@ -138,17 +134,17 @@ class CommandSenderTest {
         PrincipalIdModel principalId = new PrincipalIdModel("test-principal");
         ReportTaskRunModel reportTaskRun = mock(ReportTaskRunModel.class);
         when(reportTaskRun.getPartitionKey()).thenReturn("test-partition-key");
-        TestStreamObserver<Empty> clientObserver = new TestStreamObserver<>();
-        CompletableFuture<RecordMetadata> producerResult = CompletableFuture.failedFuture(new TimeoutException());
+        CompletableFuture<RecordMetadata> producerResult = CompletableFuture.failedFuture(
+                new LHApiException(Status.UNAVAILABLE, "Failed reporting task run to Kafka"));
         producerWithResult(taskClaimProducer, producerResult);
         CompletableFuture<RecordMetadata> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, clientObserver, principalId, tenantId);
-        future.get();
-        assertThat(clientObserver.getValues()).isEmpty();
-        assertThat(clientObserver.getThrowable())
-                .isNotNull()
-                .isInstanceOf(LHApiException.class)
-                .hasMessage("UNAVAILABLE: Failed recording task claim to Kafka");
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId);
+        assertThatException()
+                .isThrownBy(() -> future.get())
+                .withCauseInstanceOf(LHApiException.class)
+                .extracting(Throwable::getCause)
+                .extracting(Throwable::getMessage)
+                .isEqualTo("UNAVAILABLE: Failed reporting task run to Kafka");
     }
 
     @Test
