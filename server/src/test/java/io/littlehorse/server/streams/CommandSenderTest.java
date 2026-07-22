@@ -64,6 +64,7 @@ class CommandSenderTest {
     private final HostInfo remoteHost = new HostInfo("localhost", 2023);
     private final LHInternalsGrpc.LHInternalsFutureStub internalFutureStub =
             mock(LHInternalsGrpc.LHInternalsFutureStub.class);
+    private final RequestExecutionContext ctx = mock(RequestExecutionContext.class);
 
     @BeforeEach
     public void setup() {
@@ -122,8 +123,8 @@ class CommandSenderTest {
         when(reportTaskRun.getPartitionKey()).thenReturn("test-partition-key");
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
         producerWithResult(taskClaimProducer, producerResult);
-        CompletableFuture<RecordMetadata> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId);
+        CompletableFuture<Message> future =
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId, ctx);
         assertThat(future.get()).isSameAs(recordMetadata);
     }
 
@@ -137,8 +138,8 @@ class CommandSenderTest {
         CompletableFuture<RecordMetadata> producerResult = CompletableFuture.failedFuture(
                 new LHApiException(Status.UNAVAILABLE, "Failed reporting task run to Kafka"));
         producerWithResult(taskClaimProducer, producerResult);
-        CompletableFuture<RecordMetadata> future =
-                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId);
+        CompletableFuture<Message> future =
+                sender.reportTaskAndDontWaitForResponse(reportTaskRun, principalId, tenantId, ctx);
         assertThatException()
                 .isThrownBy(() -> future.get())
                 .withCauseInstanceOf(LHApiException.class)
@@ -158,7 +159,6 @@ class CommandSenderTest {
         CommandModel command = mock(CommandModel.class);
         when(command.getCommandId()).thenReturn(Optional.of("test-command-id"));
         KeyQueryMetadata remoteKeyMetadata = mock(KeyQueryMetadata.class);
-        RequestExecutionContext ctx = mock(RequestExecutionContext.class);
         AuthorizationContext auth = mock(AuthorizationContext.class);
         when(ctx.authorization()).thenReturn(auth);
         when(command.getPartitionKey()).thenReturn("test-partition-key");

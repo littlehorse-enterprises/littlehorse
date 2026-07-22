@@ -21,9 +21,11 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
+@Slf4j
 public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
 
     private TaskRunIdModel taskRunId;
@@ -52,7 +54,6 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
-
         task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
     }
