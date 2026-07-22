@@ -2,11 +2,9 @@ package io.littlehorse.server.streams;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
-import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -139,27 +137,13 @@ public class CommandSender {
     }
 
     public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
-            ReportTaskRunModel reportTaskRun,
-            StreamObserver<Empty> client,
-            PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
+            ReportTaskRunModel reportTaskRun, PrincipalIdModel principalId, TenantIdModel tenantId) {
         CommandModel commandToSend = new CommandModel(reportTaskRun);
-        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception) -> {
-            if (exception != null) {
-                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
-            } else {
-                client.onNext(Empty.getDefaultInstance());
-                client.onCompleted();
-            }
-            return recordMetadata;
-        };
-        return taskClaimProducer
-                .send(
-                        commandToSend.getPartitionKey(),
-                        commandToSend,
-                        commandToSend.getTopic(serverConfig),
-                        HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray())
-                .handleAsync(completeReportTask, networkThreadpool);
+        return taskClaimProducer.send(
+                commandToSend.getPartitionKey(),
+                commandToSend,
+                commandToSend.getTopic(serverConfig),
+                HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray());
     }
 
     private CompletableFuture<Message> waitForCommand(

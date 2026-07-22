@@ -60,11 +60,11 @@ public class LHProducer implements Closeable {
         @Override
         public void onCompletion(RecordMetadata metadata, Exception exception) {
             if (exception != null) {
-                log.error("Error sending record to Kafka", exception);
                 if (exception instanceof RecordTooLargeException rtle) {
                     this.completeExceptionally(
                             new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(rtle.getMessage())));
                 } else {
+                    log.error("Error sending record to Kafka", exception);
                     this.completeExceptionally(exception);
                 }
             } else {
