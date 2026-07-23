@@ -71,10 +71,12 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
     }
 
     public void init(final ProcessorContext<String, CommandProcessorOutput> ctx) {
+        log.info("Starting the init() process on partition {}", ctx.taskId().partition());
         this.streamsContext = ctx;
         this.metadataStore = ctx.getStateStore(ServerTopology.METADATA_STORE);
 
         maybeInitializeStartupResources();
+        log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
 
     private void maybeInitializeStartupResources() {
@@ -107,8 +109,7 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                     initializationLogBuilder.build(), InitializationLogModel.class, context);
             clusterStore.put(initializationLogModel);
 
-            log.info("Initialization Log put to store!");
-            log.info(initializationLogModel.toString());
+            log.info("Cluster initialized with server version {}", Version.getCurrentServerVersion());
         }
     }
 
@@ -170,11 +171,13 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
         try {
             metrics.observe(command);
             Message response = command.process(metadataContext);
+            log.debug("Processed metadata command type {} (commandId {})", command.getType(), command.getCommandId());
             if (command.hasResponse()) {
 
                 CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                         command.getCommandId().get(), Message.class, new CompletableFuture<>());
                 completable.complete(response);
+                log.trace("Completed response future for commandId {}", command.getCommandId());
 
                 // This allows us to set a larger commit interval for the Core Topology
                 // without affecting latency of updates to the metadata global store.
@@ -184,8 +187,12 @@ public class MetadataProcessor implements Processor<String, MetadataCommand, Str
                 // commit will not impact performance of the rest of the application very
                 // often.
                 streamsContext.commit();
+            } else {
+                log.trace("Completed command with no response for commandId {}", command.getCommandId());
             }
         } catch (Exception exn) {
+            // Full stack goes to DEBUG to avoid noisy INFO; the LHProcessingExceptionHandler decides final disposition.
+            log.debug("Metadata command type {} (commandId {}) failed", command.getType(), command.getCommandId(), exn);
             throw new MetadataCommandException(exn, command);
         }
     }
