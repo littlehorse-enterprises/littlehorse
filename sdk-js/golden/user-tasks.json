@@ -1,0 +1,127 @@
+{
+  "name": "golden-user-tasks",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-approve-request-USER_TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-approve-request-USER_TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-finalize-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "userTask": {
+            "userTaskDefName": "approve-request",
+            "userGroup": {
+              "literalValue": {
+                "str": "approvers"
+              }
+            },
+            "userId": {
+              "variableName": "approver"
+            },
+            "actions": [{
+              "reassign": {
+                "userGroup": {
+                  "literalValue": {
+                    "str": "approvers"
+                  }
+                }
+              },
+              "delaySeconds": {
+                "literalValue": {
+                  "int": "300"
+                }
+              },
+              "hook": "ON_TASK_ASSIGNED"
+            }, {
+              "task": {
+                "task": {
+                  "taskDefId": {
+                    "name": "send-reminder"
+                  },
+                  "timeoutSeconds": 0,
+                  "retries": 0,
+                  "variables": []
+                },
+                "mutations": []
+              },
+              "delaySeconds": {
+                "literalValue": {
+                  "int": "60"
+                }
+              },
+              "hook": "ON_ARRIVAL"
+            }, {
+              "cancel": {
+              },
+              "delaySeconds": {
+                "literalValue": {
+                  "int": "86400"
+                }
+              },
+              "hook": "ON_ARRIVAL"
+            }],
+            "notes": {
+              "formatString": {
+                "format": {
+                  "literalValue": {
+                    "str": "Approval needed from {0}"
+                  }
+                },
+                "args": [{
+                  "variableName": "approver"
+                }]
+              }
+            }
+          }
+        },
+        "2-finalize-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "finalize"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "3-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "approver",
+          "typeDef": {
+            "primitiveType": "STR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

@@ -1,0 +1,115 @@
+{
+  "name": "golden-sleep-and-events",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-sleep-SLEEP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-sleep-SLEEP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-sleep-SLEEP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "sleep": {
+            "rawSeconds": {
+              "literalValue": {
+                "int": "30"
+              }
+            }
+          }
+        },
+        "2-sleep-SLEEP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-wait-for-condition-WAIT_FOR_CONDITION",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "sleep": {
+            "timestamp": {
+              "variableName": "wake-at"
+            }
+          }
+        },
+        "3-wait-for-condition-WAIT_FOR_CONDITION": {
+          "outgoingEdges": [{
+            "sinkNodeName": "4-throw-milestone-reached-THROW_EVENT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "waitForCondition": {
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "ready"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "bool": true
+                  }
+                },
+                "comparator": "EQUALS"
+              }
+            }
+          }
+        },
+        "4-throw-milestone-reached-THROW_EVENT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "5-complete-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "throwEvent": {
+            "eventDefId": {
+              "name": "milestone-reached"
+            },
+            "content": {
+              "variableName": "ready"
+            }
+          }
+        },
+        "5-complete-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "ready",
+          "typeDef": {
+            "primitiveType": "BOOL",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "wake-at",
+          "typeDef": {
+            "primitiveType": "TIMESTAMP",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

@@ -1,0 +1,212 @@
+{
+  "name": "golden-conditionals",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-large-order-TASK",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "amount"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "int": "100"
+                  }
+                },
+                "comparator": "GREATER_THAN"
+              }
+            }
+          }, {
+            "sinkNodeName": "4-medium-order-TASK",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "amount"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "int": "10"
+                  }
+                },
+                "comparator": "GREATER_THAN"
+              }
+            }
+          }, {
+            "sinkNodeName": "5-small-order-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "2-large-order-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "large-order"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "3-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "6-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "4-medium-order-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "medium-order"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "5-small-order-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "small-order"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "6-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "7-vip-flow-TASK",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "jsonPath": "$.isVip",
+                  "variableName": "customer"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "bool": true
+                  }
+                },
+                "comparator": "EQUALS"
+              }
+            }
+          }, {
+            "sinkNodeName": "9-regular-flow-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "7-vip-flow-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "8-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "vip-flow"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "8-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "10-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "9-regular-flow-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "8-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "regular-flow"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "10-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "amount",
+          "typeDef": {
+            "primitiveType": "INT",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "customer",
+          "typeDef": {
+            "primitiveType": "JSON_OBJ",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

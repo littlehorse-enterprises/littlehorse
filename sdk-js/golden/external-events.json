@@ -1,0 +1,100 @@
+{
+  "name": "golden-external-events",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-payment-received-EXTERNAL_EVENT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-payment-received-EXTERNAL_EVENT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-fulfill-TASK",
+            "variableMutations": [{
+              "lhsName": "payment",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "nodeOutput": {
+                  "nodeName": "1-payment-received-EXTERNAL_EVENT"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "externalEvent": {
+            "externalEventDefId": {
+              "name": "payment-received"
+            },
+            "timeoutSeconds": {
+              "literalValue": {
+                "int": "3600"
+              }
+            },
+            "correlationKey": {
+              "variableName": "order-id"
+            },
+            "maskCorrelationKey": false
+          }
+        },
+        "2-fulfill-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "fulfill"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": [{
+              "variableName": "order-id"
+            }, {
+              "variableName": "payment"
+            }]
+          }
+        },
+        "3-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "order-id",
+          "typeDef": {
+            "primitiveType": "STR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "payment",
+          "typeDef": {
+            "primitiveType": "JSON_OBJ",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

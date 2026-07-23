@@ -1,0 +1,71 @@
+{
+  "name": "golden-child-workflow",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-run-shipping-wf-RUN_CHILD_WF",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-run-shipping-wf-RUN_CHILD_WF": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-wait-WAIT_FOR_CHILD_WF",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "runChildWf": {
+            "wfSpecName": "shipping-wf",
+            "majorVersion": -1,
+            "inputs": {
+              "order-id": {
+                "variableName": "order-id"
+              }
+            }
+          }
+        },
+        "2-wait-WAIT_FOR_CHILD_WF": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "waitForChildWf": {
+            "childWfRunId": {
+              "nodeOutput": {
+                "nodeName": "1-run-shipping-wf-RUN_CHILD_WF"
+              }
+            },
+            "childWfRunSourceNode": "1-run-shipping-wf-RUN_CHILD_WF"
+          }
+        },
+        "3-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "order-id",
+          "typeDef": {
+            "primitiveType": "STR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

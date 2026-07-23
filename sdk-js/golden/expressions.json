@@ -1,0 +1,204 @@
+{
+  "name": "golden-expressions",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-noop-TASK",
+            "variableMutations": [{
+              "lhsName": "count",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "count"
+                  },
+                  "mutationType": "ADD",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "1"
+                    }
+                  }
+                }
+              }
+            }, {
+              "lhsName": "total",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "expression": {
+                  "lhs": {
+                    "expression": {
+                      "lhs": {
+                        "expression": {
+                          "lhs": {
+                            "variableName": "count"
+                          },
+                          "mutationType": "MULTIPLY",
+                          "rhs": {
+                            "literalValue": {
+                              "int": "2"
+                            }
+                          }
+                        }
+                      },
+                      "mutationType": "DIVIDE",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "4"
+                        }
+                      }
+                    }
+                  },
+                  "mutationType": "SUBTRACT",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "1"
+                    }
+                  }
+                }
+              }
+            }, {
+              "lhsName": "items",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "items"
+                  },
+                  "mutationType": "REMOVE_INDEX",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            }, {
+              "lhsName": "label",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "formatString": {
+                  "format": {
+                    "literalValue": {
+                      "str": "count is {0} of {1}"
+                    }
+                  },
+                  "args": [{
+                    "variableName": "count"
+                  }, {
+                    "variableName": "total"
+                  }]
+                }
+              }
+            }, {
+              "lhsName": "count",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "sizeOf": {
+                  "operand": {
+                    "variableName": "items"
+                  }
+                }
+              }
+            }, {
+              "lhsName": "total",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "variableName": "count",
+                "targetType": {
+                  "primitiveType": "DOUBLE",
+                  "masked": false
+                }
+              }
+            }, {
+              "lhsName": "count",
+              "operation": "ADD",
+              "rhsAssignment": {
+                "literalValue": {
+                  "int": "5"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-noop-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "noop"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "count",
+          "typeDef": {
+            "primitiveType": "INT",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "total",
+          "typeDef": {
+            "primitiveType": "DOUBLE",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "items",
+          "typeDef": {
+            "primitiveType": "JSON_ARR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "label",
+          "typeDef": {
+            "primitiveType": "STR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

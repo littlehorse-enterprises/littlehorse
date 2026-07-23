@@ -26,6 +26,7 @@ include(
         'conditionals-while',
         'conditionals',
         'correlated-event',
+        'dashboard-e2e-fixtures',
         'exception-handler',
         'expressions',
         'external-event',
@@ -56,3 +57,6 @@ include(
 }
 
 project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")
+
+include 'sdk-js-golden-generator'
+project(":sdk-js-golden-generator").projectDir = new File(rootProject.projectDir, "sdk-js/golden/generator")

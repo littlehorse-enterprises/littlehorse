@@ -1,0 +1,126 @@
+{
+  "name": "golden-while-loop",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-nop-NOP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-process-one-TASK",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "remaining"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                },
+                "comparator": "GREATER_THAN"
+              }
+            }
+          }, {
+            "sinkNodeName": "3-nop-NOP",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "remaining"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                },
+                "comparator": "LESS_THAN_EQ"
+              }
+            }
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "2-process-one-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-nop-NOP",
+            "variableMutations": [{
+              "lhsName": "remaining",
+              "operation": "SUBTRACT",
+              "rhsAssignment": {
+                "literalValue": {
+                  "int": "1"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "process-one"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "3-nop-NOP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-nop-NOP",
+            "variableMutations": [],
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "remaining"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                },
+                "comparator": "GREATER_THAN"
+              }
+            }
+          }, {
+            "sinkNodeName": "4-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "nop": {
+          }
+        },
+        "4-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "remaining",
+          "typeDef": {
+            "primitiveType": "INT",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

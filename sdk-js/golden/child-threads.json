@@ -1,0 +1,283 @@
+{
+  "name": "golden-child-threads",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-notifier-START_THREAD",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-notifier-START_THREAD": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-auditor-START_THREAD",
+            "variableMutations": [{
+              "lhsName": "1-notifier-START_THREAD",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "nodeOutput": {
+                  "nodeName": "1-notifier-START_THREAD"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "startThread": {
+            "threadSpecName": "notifier",
+            "variables": {
+            }
+          }
+        },
+        "2-auditor-START_THREAD": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-threads-WAIT_FOR_THREADS",
+            "variableMutations": [{
+              "lhsName": "2-auditor-START_THREAD",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "nodeOutput": {
+                  "nodeName": "2-auditor-START_THREAD"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "startThread": {
+            "threadSpecName": "auditor",
+            "variables": {
+            }
+          }
+        },
+        "3-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [{
+            "sinkNodeName": "4-processor-START_MULTIPLE_THREADS",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "waitForThreads": {
+            "threads": {
+              "threads": [{
+                "threadRunNumber": {
+                  "variableName": "1-notifier-START_THREAD"
+                }
+              }, {
+                "threadRunNumber": {
+                  "variableName": "2-auditor-START_THREAD"
+                }
+              }]
+            },
+            "perThreadFailureHandlers": [],
+            "strategy": "WAIT_FOR_ALL"
+          }
+        },
+        "4-processor-START_MULTIPLE_THREADS": {
+          "outgoingEdges": [{
+            "sinkNodeName": "5-threads-WAIT_FOR_THREADS",
+            "variableMutations": [{
+              "lhsName": "4-processor-START_MULTIPLE_THREADS",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "nodeOutput": {
+                  "nodeName": "4-processor-START_MULTIPLE_THREADS"
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "startMultipleThreads": {
+            "threadSpecName": "processor",
+            "variables": {
+            },
+            "iterable": {
+              "variableName": "orders"
+            }
+          }
+        },
+        "5-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [{
+            "sinkNodeName": "6-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "waitForThreads": {
+            "threadList": {
+              "variableName": "4-processor-START_MULTIPLE_THREADS"
+            },
+            "perThreadFailureHandlers": [],
+            "strategy": "WAIT_FOR_ALL"
+          }
+        },
+        "6-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "orders",
+          "typeDef": {
+            "primitiveType": "JSON_ARR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "1-notifier-START_THREAD",
+          "typeDef": {
+            "primitiveType": "INT",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "2-auditor-START_THREAD",
+          "typeDef": {
+            "primitiveType": "INT",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "4-processor-START_MULTIPLE_THREADS",
+          "typeDef": {
+            "primitiveType": "JSON_ARR",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    },
+    "notifier": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-notify-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-notify-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "notify"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "auditor": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-audit-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-audit-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "audit"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "processor": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-process-order-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-process-order-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "process-order"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

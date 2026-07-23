@@ -1,0 +1,193 @@
+{
+  "name": "golden-failure-handling",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-risky-task-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-risky-task-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-flaky-task-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [{
+            "handlerSpecName": "exn-handler-1-risky-task-TASK-FAILURE_TYPE_ERROR",
+            "anyFailureOfType": "FAILURE_TYPE_ERROR"
+          }],
+          "task": {
+            "taskDefId": {
+              "name": "risky-task"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-flaky-task-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "3-fragile-task-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [{
+            "specificFailure": "out-of-stock",
+            "handlerSpecName": "exn-handler-2-flaky-task-TASK-out-of-stock"
+          }],
+          "task": {
+            "taskDefId": {
+              "name": "flaky-task"
+            },
+            "timeoutSeconds": 0,
+            "retries": 3,
+            "variables": []
+          }
+        },
+        "3-fragile-task-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "4-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [{
+            "handlerSpecName": "exn-handler-3-fragile-task-TASK-any-failure"
+          }],
+          "task": {
+            "taskDefId": {
+              "name": "fragile-task"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "4-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "exn-handler-1-risky-task-TASK-FAILURE_TYPE_ERROR": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-cleanup-error-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-cleanup-error-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "cleanup-error"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "exn-handler-2-flaky-task-TASK-out-of-stock": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-reorder-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-reorder-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "reorder"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "exn-handler-3-fragile-task-TASK-any-failure": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-cleanup-any-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-cleanup-any-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-unrecoverable-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "cleanup-any"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-unrecoverable-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+            "failureDef": {
+              "failureName": "unrecoverable",
+              "message": "Could not recover from failure"
+            }
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}
