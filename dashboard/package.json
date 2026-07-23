@@ -10,7 +10,11 @@
     "lint:fix": "prettier --write .",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "preinstall": "cd ../sdk-js && pnpm install && pnpm run build"
+    "preinstall": "cd ../sdk-js && pnpm install && pnpm run build",
+    "e2e": "playwright test --config e2e/playwright.config.ts",
+    "e2e:ui": "playwright test --config e2e/playwright.config.ts --ui",
+    "e2e:up": "bash e2e/scripts/up.sh",
+    "e2e:down": "bash e2e/scripts/down.sh"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",
@@ -76,7 +80,8 @@
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "@playwright/test": "^1.61.1"
   },
   "pnpm": {
     "overrides": {
