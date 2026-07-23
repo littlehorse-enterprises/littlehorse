@@ -99,7 +99,15 @@ regressions (50x), not to win.
    `src/feature-matrix/*.test.ts`, 188 entries.
 2. Golden-test harness (proto comparison infrastructure + Java golden-file
    generation). **Done** — see "Golden harness" below.
-3. wfsdk port — biggest gap, best oracle.
+3. wfsdk port — biggest gap, best oracle. **Mostly done:** `src/wfsdk/`
+   compiles all 12 reference workflows to protos identical to the Java SDK's
+   goldens; 104 of 119 wfsdk matrix entries are now real passing tests.
+   Remaining todos: registerWfSpec/doesWfSpecExist (need client integration),
+   compileAndSaveToDisk, structs/StructDefs, declareArray/declareMap,
+   `registeredAs` payload auto-registration, withCorrelatedEventConfig.
+   Known JS-vs-Java semantic difference: JS `number` literals compile to INT
+   when integer-valued, DOUBLE otherwise (Java distinguishes statically) —
+   documented in `src/wfsdk/builder.ts`.
 4. Worker hardening — integration + soak tests, connection management,
    rebalancing, liveness.
 5. Benchmarks.
