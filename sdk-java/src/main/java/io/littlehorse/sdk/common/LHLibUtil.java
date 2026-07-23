@@ -708,7 +708,6 @@ public class LHLibUtil {
         }
 
         java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
-        cons.setAccessible(true);
         return cons.newInstance(canonicalArgValues);
     }
 

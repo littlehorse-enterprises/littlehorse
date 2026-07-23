@@ -89,7 +89,6 @@ public abstract class LHClassType {
                     NoSuchMethodException {
         try {
             java.lang.reflect.Constructor<?> noArgCons = clazz.getDeclaredConstructor();
-            noArgCons.setAccessible(true);
             return noArgCons.newInstance();
         } catch (NoSuchMethodException ignored) {
             // no no-arg ctor; fall through to canonical constructor
@@ -104,13 +103,8 @@ public abstract class LHClassType {
             args[i] = defaultValueForType(paramTypes[i]);
         }
 
-        try {
-            Constructor<?> cons = clazz.getDeclaredConstructor(paramTypes);
-            cons.setAccessible(true);
-            return cons.newInstance(args);
-        } catch (NoSuchMethodException e) {
-            throw new InstantiationException("Record class missing canonical constructor: " + clazz.getName());
-        }
+        Constructor<?> cons = clazz.getDeclaredConstructor(paramTypes);
+        return cons.newInstance(args);
     }
 
     private static Object defaultValueForType(Class<?> t) {
