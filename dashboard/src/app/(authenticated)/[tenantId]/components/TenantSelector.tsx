@@ -1,24 +1,44 @@
 'use client'
 import { routes } from '@/app/routes'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/components/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import {
-  DropdownMenu,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from '@/components/ui/dropdown-menu'
 import { useParams, useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useMemo, useState } from 'react'
+
+// Show the search box once the list is large enough that scanning it becomes tedious.
+const SEARCH_THRESHOLD = 8
 
 export const TenantSelector: FC = () => {
   const { tenants } = useWhoAmI()
   const tenantId = useParams().tenantId as string
   const router = useRouter()
+  const [open, setOpen] = useState(false)
+  const [query, setQuery] = useState('')
+
+  const filteredTenants = useMemo(() => {
+    const normalized = query.trim().toLowerCase()
+    if (!normalized) return tenants
+    return tenants.filter(tenant => tenant.toLowerCase().includes(normalized))
+  }, [tenants, query])
+
+  const selectTenant = (tenant: string) => {
+    setOpen(false)
+    router.push(routes.tenant.root(tenant))
+  }
+
+  const showSearch = tenants.length > SEARCH_THRESHOLD
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger className="inline-flex w-full items-center justify-center gap-x-1.5 rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
+    <Popover
+      open={open}
+      onOpenChange={nextOpen => {
+        setOpen(nextOpen)
+        if (!nextOpen) setQuery('')
+      }}
+    >
+      <PopoverTrigger className="inline-flex w-full items-center justify-center gap-x-1.5 rounded bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -34,20 +54,42 @@ export const TenantSelector: FC = () => {
           />
         </svg>
         <p className="break-keep">{tenantId}</p>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-        <div className="px-2 py-2 text-sm font-bold uppercase">Tenants</div>
-        <DropdownMenuSeparator />
-        {tenants.map(tenant => (
-          <DropdownMenuItem
-            key={tenant}
-            className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-100"
-            onClick={() => router.push(routes.tenant.root(tenant))}
-          >
-            {tenant}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="flex max-h-[--radix-popover-content-available-height] w-72 flex-col p-0">
+        <div className="px-3 py-2 text-sm font-bold uppercase">Tenants</div>
+        {showSearch && (
+          <div className="border-b px-2 pb-2">
+            <Input
+              autoFocus
+              value={query}
+              onChange={event => setQuery(event.target.value)}
+              placeholder="Search tenants..."
+              aria-label="Search tenants"
+              className="h-8"
+            />
+          </div>
+        )}
+        <div className="max-h-72 overflow-y-auto py-1">
+          {filteredTenants.length === 0 ? (
+            <p className="px-4 py-2 text-sm text-muted-foreground">No tenants found</p>
+          ) : (
+            filteredTenants.map(tenant => (
+              <button
+                key={tenant}
+                type="button"
+                title={tenant}
+                onClick={() => selectTenant(tenant)}
+                className={cn(
+                  'block w-full break-words px-4 py-2 text-left text-sm hover:bg-gray-100',
+                  tenant === tenantId && 'font-semibold text-blue-600'
+                )}
+              >
+                {tenant}
+              </button>
+            ))
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 }
