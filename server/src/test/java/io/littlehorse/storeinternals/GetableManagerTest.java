@@ -99,6 +99,7 @@ public class GetableManagerTest {
 
     @BeforeEach
     void setup() {
+        when(lhConfig.getProducerMaxRequestSize()).thenReturn(Integer.MAX_VALUE);
         when(executionContext.authorization()).thenReturn(testContext);
         when(executionContext.nativeCoreStore()).thenReturn(store);
         when(executionContext.getCountedTagsAccumulator()).thenReturn(countedTags);
