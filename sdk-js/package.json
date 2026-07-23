@@ -24,6 +24,11 @@
       "import": "./dist/worker/index.js",
       "types": "./dist/worker/index.d.ts",
       "default": "./dist/worker/index.js"
+    },
+    "./wfsdk": {
+      "import": "./dist/wfsdk/index.js",
+      "types": "./dist/wfsdk/index.d.ts",
+      "default": "./dist/wfsdk/index.js"
     }
   },
   "files": [

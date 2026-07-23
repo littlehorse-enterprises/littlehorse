@@ -16,3 +16,4 @@ export {
   toStructVariableValue,
 } from './worker'
 export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions } from './worker'
+export * from './wfsdk'
