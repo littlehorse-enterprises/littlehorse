@@ -13,6 +13,7 @@ import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -71,6 +72,11 @@ public class LHStructDefType extends LHClassType {
             throw new IllegalArgumentException(
                     "Cannot create LHStructDefType, missing `@LHStructDef` annotation on provided class: "
                             + this.clazz);
+        }
+
+        // If this is a record, validate the canonical constructor for its components.
+        if (this.clazz.isRecord()) {
+            validateRecordCanonicalConstructor();
         }
 
         this.inlineStructDef = this.buildInlineStructDef();
@@ -240,6 +246,13 @@ public class LHStructDefType extends LHClassType {
     }
 
     private List<LHStructProperty> buildStructProperties() throws IntrospectionException {
+        if (this.clazz.isRecord()) {
+            return List.of(this.clazz.getRecordComponents()).stream()
+                    .map((RecordComponent recordComponent) -> new LHStructProperty(recordComponent, this))
+                    .filter((LHStructProperty property) -> !property.isIgnored())
+                    .collect(Collectors.toUnmodifiableList());
+        }
+
         return List.of(Introspector.getBeanInfo(this.clazz).getPropertyDescriptors()).stream()
                 // Default property descriptor provided by Java, should be filtered out
                 .filter((PropertyDescriptor pd) -> !"class".equals(pd.getName()))
@@ -273,5 +286,32 @@ public class LHStructDefType extends LHClassType {
         }
 
         return inlineStructDef.build();
+    }
+
+    /**
+     * Validate that the record class has a canonical constructor matching its record
+     * components.
+     *
+     * <p>This method assumes `this.clazz` is a Java record and inspects its
+     * {@link RecordComponent}s to build the expected canonical constructor
+     * parameter types. It throws an {@link IllegalArgumentException} if the
+     * canonical constructor is missing. The canonical constructor is required for
+     * reflective deserialization and for creating default instances when no-arg
+     * constructors are unavailable.
+     */
+    private void validateRecordCanonicalConstructor() {
+        RecordComponent[] rcs = this.clazz.getRecordComponents();
+        Class<?>[] paramTypes = new Class<?>[rcs.length];
+        for (int i = 0; i < rcs.length; i++) {
+            paramTypes[i] = rcs[i].getType();
+        }
+
+        try {
+            this.clazz.getDeclaredConstructor(paramTypes);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(
+                    "Record class " + this.clazz.getName() + " does not have the canonical constructor for its components",
+                    e);
+        }
     }
 }
