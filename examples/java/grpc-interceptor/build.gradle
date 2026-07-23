@@ -24,10 +24,16 @@ dependencies {
     implementation project(':sdk-java')
     implementation 'org.slf4j:slf4j-api:2.0.7'
     implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
+
+    // Micrometer gRPC client metrics + Prometheus registry
     implementation "io.micrometer:micrometer-core:${micrometerVersion}"
     implementation "io.micrometer:micrometer-registry-prometheus:${micrometerVersion}"
+
+    // Web server to expose the Prometheus scrape endpoint
+    implementation "io.javalin:javalin:${javalinVersion}"
 }
 
 application {
-    mainClass = 'io.littlehorse.examples.BasicExample'
+    mainClass = 'io.littlehorse.examples.GrpcInterceptorExample'
 }
+
