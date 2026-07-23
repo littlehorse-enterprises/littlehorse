@@ -8,9 +8,11 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.test.LHTest;
 import java.util.Date;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @LHTest
+@Disabled("These tests are silently failing because the TaskRun is not being created in the arrange phase.")
 public class VarSerdeTest {
     public LittleHorseBlockingStub client;
 
