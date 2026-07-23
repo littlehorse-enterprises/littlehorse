@@ -170,7 +170,6 @@ public class CommandSender {
         if (meta.activeHost().equals(thisHost)) {
             return asyncWaiters.getOrRegisterFuture(commandId.get(), Message.class, out);
         } else {
-            log.info("Doing remote wait");
             WaitForCommandRequest req = WaitForCommandRequest.newBuilder()
                     .setCommandId(commandId.get())
                     .setPartition(meta.partition())
