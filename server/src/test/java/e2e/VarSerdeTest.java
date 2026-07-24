@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test;
  * we can assert the resulting {@code TASK_OUTPUT_SERDE_ERROR}.
  */
 @LHTest
-@Disabled("These tests are silently failing because the TaskRun is not being created in the arrange phase.")
 public class VarSerdeTest {
 
     private static final String TASK_NAME = "var-serde-test-task";
