@@ -2,6 +2,7 @@ package io.littlehorse.server.streams;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -31,7 +32,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
@@ -136,14 +136,20 @@ public class CommandSender {
                 .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
-    public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
-            ReportTaskRunModel reportTaskRun, PrincipalIdModel principalId, TenantIdModel tenantId) {
+    public CompletableFuture<Message> reportTaskAndDontWaitForResponse(
+            ReportTaskRunModel reportTaskRun,
+            PrincipalIdModel principalId,
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
         CommandModel commandToSend = new CommandModel(reportTaskRun);
-        return taskClaimProducer.send(
-                commandToSend.getPartitionKey(),
-                commandToSend,
-                commandToSend.getTopic(serverConfig),
-                HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray());
+        commandToSend.setCommandId(LHUtil.generateGuid());
+        return taskClaimProducer
+                .send(
+                        commandToSend.getPartitionKey(),
+                        commandToSend,
+                        commandToSend.getTopic(serverConfig),
+                        HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray())
+                .thenCompose(recordMetadata -> waitForCommand(commandToSend, null, context));
     }
 
     private CompletableFuture<Message> waitForCommand(
@@ -174,12 +180,23 @@ public class CommandSender {
             futureResponse.addListener(
                     () -> {
                         try {
-                            WaitForCommandResponse response = futureResponse.get();
-                            out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                            if (responseCls != null) {
+                                WaitForCommandResponse response = futureResponse.get();
+                                out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                            } else {
+                                futureResponse.get();
+                                out.complete(Empty.getDefaultInstance());
+                            }
                         } catch (ExecutionException e) {
-                            out.completeExceptionally(e.getCause());
+                            // Most likely a StatusRuntimeException from the remote server
+                            if (e.getCause() instanceof StatusRuntimeException sre) {
+                                Status status = sre.getStatus();
+                                out.completeExceptionally(new LHApiException(status));
+                            } else {
+                                out.completeExceptionally(e.getCause());
+                            }
                         } catch (InterruptedException e) {
-                            log.error("Unexpected interrupted exception", e);
+                            // Interrupted exception is not expected here.
                             out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
                         }
                     },
