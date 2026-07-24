@@ -49,3 +49,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 021 | [Counted Tags](./021-counted-tags.md)                                                              | Eduwer Camacaro                  | TODO |
 | 023 | [Workflow Migrations](./022-workflow-migrations.md)                                                | Jake Rose.                       | TODO |
 | 023 | [Native Maps](./022-native-maps.md)                                                              | Jacob Snarr                      | TODO |
+| 025 | [Configurable gRPC Max Inbound Message Size](./025-configurable-grpc-max-inbound-message-size.md) | Eduwer Camacaro                 | TODO |

@@ -90,6 +90,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String PRODUCER_MAX_REQUEST_SIZE = "LHS_PRODUCER_MAX_REQUEST_SIZE";
+    public static final String GRPC_MAX_INBOUND_MESSAGE_SIZE_KEY = "LHS_GRPC_MAX_INBOUND_MESSAGE_SIZE";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
@@ -1100,6 +1101,15 @@ public class LHServerConfig extends ConfigBase {
 
     public int getProducerMaxRequestSize() {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.PRODUCER_MAX_REQUEST_SIZE, "1047000"));
+    }
+
+    /**
+     * Maximum size (in bytes) of an inbound gRPC message that the server will accept. This is
+     * applied both to the public listeners and to internal server-to-server communication. The
+     * gRPC default is 4 MiB; we use a larger default to accommodate big payloads.
+     */
+    public int getMaxInboundMessageSize() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.GRPC_MAX_INBOUND_MESSAGE_SIZE_KEY, "4194304"));
     }
 
     public int getStreamsStateCleanupDelayMs() {

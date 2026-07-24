@@ -166,6 +166,7 @@ public class BackendInternalComms implements Closeable {
                 .keepAliveTimeout(3, TimeUnit.SECONDS)
                 .permitKeepAliveTime(10, TimeUnit.SECONDS)
                 .permitKeepAliveWithoutCalls(true)
+                .maxInboundMessageSize(config.getMaxInboundMessageSize())
                 .executor(Executors.newVirtualThreadPerTaskExecutor())
                 .addService(new InterBrokerCommServer())
                 .intercept(new GlobalExceptionHandler())
@@ -375,10 +376,12 @@ public class BackendInternalComms implements Closeable {
             if (clientCreds == null) {
                 channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
                         .usePlaintext()
+                        .maxInboundMessageSize(config.getMaxInboundMessageSize())
                         .executor(Executors.newVirtualThreadPerTaskExecutor())
                         .build();
             } else {
                 channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
+                        .maxInboundMessageSize(config.getMaxInboundMessageSize())
                         .executor(Executors.newVirtualThreadPerTaskExecutor())
                         .build();
             }

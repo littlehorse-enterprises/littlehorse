@@ -78,7 +78,8 @@ public class LHServer {
         this.config = config;
         this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
         this.taskQueueManager = new TaskQueueManager(this);
-        this.lhInternalClient = new LHInternalClient(config.getInternalClientCreds(), this.networkThreadpool);
+        this.lhInternalClient = new LHInternalClient(
+                config.getInternalClientCreds(), this.networkThreadpool, config.getMaxInboundMessageSize());
         // Kafka Streams Setup
         if (config.getLHInstanceId().isPresent()) {
             overrideStreamsProcessId("core");

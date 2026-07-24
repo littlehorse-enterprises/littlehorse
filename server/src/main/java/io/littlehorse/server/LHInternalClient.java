@@ -29,10 +29,12 @@ public final class LHInternalClient {
     private final Map<String, ManagedChannel> channels = new ConcurrentHashMap<>();
     private final ChannelCredentials clientCreds;
     private final ExecutorService networkThreads;
+    private final int maxInboundMessageSize;
 
-    public LHInternalClient(ChannelCredentials clientCreds, ExecutorService networkThreads) {
+    public LHInternalClient(ChannelCredentials clientCreds, ExecutorService networkThreads, int maxInboundMessageSize) {
         this.clientCreds = clientCreds;
         this.networkThreads = networkThreads;
+        this.maxInboundMessageSize = maxInboundMessageSize;
     }
 
     public <T extends Message> CompletableFuture<T> remoteWaitForCommand(
@@ -86,10 +88,12 @@ public final class LHInternalClient {
             if (clientCreds == null) {
                 channel = ManagedChannelBuilder.forAddress(host.host(), host.port())
                         .usePlaintext()
+                        .maxInboundMessageSize(maxInboundMessageSize)
                         .executor(networkThreads)
                         .build();
             } else {
                 channel = Grpc.newChannelBuilderForAddress(host.host(), host.port(), clientCreds)
+                        .maxInboundMessageSize(maxInboundMessageSize)
                         .executor(networkThreads)
                         .build();
             }
