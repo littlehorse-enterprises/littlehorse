@@ -178,7 +178,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
@@ -743,16 +742,17 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext);
         TenantIdModel tenantId = requestContext.authorization().tenantId();
         PrincipalIdModel principalId = requestContext.authorization().principalId();
-        CompletableFuture<RecordMetadata> futureResponse =
-                commandSender.reportTaskAndDontWaitForResponse(reqModel, principalId, tenantId);
+        CompletableFuture<Message> futureResponse =
+                commandSender.reportTaskAndDontWaitForResponse(reqModel, principalId, tenantId, requestContext);
         try {
-            waitForProcessing(futureResponse, Optional.empty());
+            String commandId = LHUtil.generateGuid();
+            waitForProcessing(futureResponse, Optional.of(commandId));
             ctx.onNext(Empty.getDefaultInstance());
             ctx.onCompleted();
         } catch (LHApiException e) {
             if (e.getStatus().getCode().equals(Status.RESOURCE_EXHAUSTED.getCode())) {
-                CompletableFuture<RecordMetadata> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
-                        reqModel.toErrorReport(e), principalId, tenantId);
+                CompletableFuture<Message> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
+                        reqModel.toErrorReport(e), principalId, tenantId, requestContext);
                 try {
                     waitForProcessing(failedTaskReport, Optional.empty());
                 } catch (Throwable t) {
