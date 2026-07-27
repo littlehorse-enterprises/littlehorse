@@ -310,7 +310,8 @@ public class LHStructDefType extends LHClassType {
             this.clazz.getDeclaredConstructor(paramTypes);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
-                    "Record class " + this.clazz.getName() + " does not have the canonical constructor for its components",
+                    "Record class " + this.clazz.getName()
+                            + " does not have the canonical constructor for its components",
                     e);
         }
     }

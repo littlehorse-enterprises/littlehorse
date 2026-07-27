@@ -74,7 +74,9 @@ public class LHClassTypeTest {
 
     @LHStructDef("record-with-default-ctor")
     public record RecordWithDefaultCtor(String greeting) {
-        public RecordWithDefaultCtor() { this("hello"); }
+        public RecordWithDefaultCtor() {
+            this("hello");
+        }
     }
 
     @LHStructDef("config-no-default-ux")
@@ -111,12 +113,14 @@ public class LHClassTypeTest {
     @Test
     public void recordInstanceCreationPrefersNoArgOrFallsBackToCanonical() throws Exception {
         // record with no-arg ctor should yield greeting="hello"
-        Object rec = LHClassType.fromJavaClass(RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty()).createInstance();
+        Object rec = LHClassType.fromJavaClass(RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty())
+                .createInstance();
         assertThat(rec).isInstanceOf(RecordWithDefaultCtor.class);
         assertThat(((RecordWithDefaultCtor) rec).greeting()).isEqualTo("hello");
 
         // record without no-arg ctor should fall back to canonical with defaults
-        Object cfg = LHClassType.fromJavaClass(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty()).createInstance();
+        Object cfg = LHClassType.fromJavaClass(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty())
+                .createInstance();
         assertThat(cfg).isInstanceOf(ConfigNoDefaultUx.class);
         assertThat(((ConfigNoDefaultUx) cfg).mode()).isNull();
         assertThat(((ConfigNoDefaultUx) cfg).retries()).isEqualTo(0);
