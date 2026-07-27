@@ -13,6 +13,7 @@ import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.ReportTaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -51,7 +52,6 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
         if (task == null) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Provided taskRunId was invalid");
         }
-
         task.onTaskAttemptResultReported(this);
         return Empty.getDefaultInstance();
     }
@@ -102,6 +102,18 @@ public class ReportTaskRunModel extends CoreSubCommand<ReportTaskRun> {
     public static ReportTaskRunModel fromProto(ReportTaskRun proto, ExecutionContext context) {
         ReportTaskRunModel out = new ReportTaskRunModel();
         out.initFrom(proto, context);
+        return out;
+    }
+
+    public ReportTaskRunModel toErrorReport(LHApiException apiException) {
+        ReportTaskRunModel out = new ReportTaskRunModel();
+        out.taskRunId = this.taskRunId;
+        out.time = this.time;
+        out.status = TaskStatus.TASK_OUTPUT_SERDE_ERROR;
+        out.attemptNumber = this.attemptNumber;
+        out.error = new LHTaskErrorModel(apiException.getMessage(), LHErrorType.TASK_ERROR);
+        out.totalCheckpoints = this.totalCheckpoints;
+        out.logOutput = new VariableValueModel(apiException.getMessage());
         return out;
     }
 }
