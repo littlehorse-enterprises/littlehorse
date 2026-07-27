@@ -18,7 +18,12 @@ import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
@@ -226,8 +231,7 @@ public class GetableManager extends ReadOnlyGetableManager {
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-            if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable) {
-                CoreOutputTopicGetable<U> outputTopicCandidate = (CoreOutputTopicGetable<U>) getable;
+            if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable outputTopicCandidate) {
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
                 if (outputTopicCandidate.shouldProduceToOutputTopic(
