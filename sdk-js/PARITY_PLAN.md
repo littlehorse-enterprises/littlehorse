@@ -13,10 +13,11 @@ cd sdk-js && npx jest src/feature-matrix
 ```
 
 Passed = done, todo = missing, failed = broken. That output *is* the feature
-matrix (see below). Snapshot as of 2026-07-23: 141 passing / 84 todo. The core
-wfsdk compiler is implemented (`src/wfsdk/`) with all 12 reference workflows
-matching the Java goldens; the remaining todos are mostly worker lifecycle,
-config, and advanced wfsdk features (details under "Ordering and status").
+matrix (see below). Snapshot as of 2026-07-23: 191 passing / 58 todo. The
+wfsdk compiler (`src/wfsdk/`) is feature-complete apart from server calls, and
+all 14 reference workflows match the Java goldens. **Nearly every remaining
+todo needs either a live server or a design decision** — see "Ordering and
+status".
 
 ## Background: what an SDK is here
 
@@ -130,15 +131,30 @@ regressions (50x), not to win.
    `src/feature-matrix/*.test.ts`.
 2. Golden-test harness (proto comparison infrastructure + Java golden-file
    generation). **Done** — see "Golden harness" below.
-3. wfsdk port — biggest gap, best oracle. **Mostly done:** `src/wfsdk/`
-   compiles all 12 reference workflows to protos identical to the Java SDK's
-   goldens; 104 of 119 wfsdk matrix entries are now real passing tests.
-   Remaining todos: registerWfSpec/doesWfSpecExist (need client integration),
-   compileAndSaveToDisk, structs/StructDefs, declareArray/declareMap,
-   `registeredAs` payload auto-registration, withCorrelatedEventConfig.
-4. Worker hardening — integration + soak tests, connection management,
-   rebalancing, liveness. **Not started** (Track B below).
-5. Benchmarks. **Not started.**
+3. wfsdk port — biggest gap, best oracle. **Done except server calls:**
+   `src/wfsdk/` compiles all 14 reference workflows to protos identical to the
+   Java SDK's goldens; 116 of 118 wfsdk matrix entries pass. Only
+   `registerWfSpec` and `doesWfSpecExist` remain — both need client wiring, so
+   they move to step 4.
+4. Offline config surface. **Done:** source-composing builder
+   (`LHConfig.newBuilder()`), env-var loading, keepalive options, TLS/mTLS
+   credentials, client creation. 14 of 22 config entries pass.
+5. Worker hardening — integration + soak tests, connection management,
+   rebalancing, liveness. **Not started** (Track B below). Do this together
+   with the leftovers that share its infrastructure: `registerWfSpec`,
+   `doesWfSpecExist`, `getTaskDef`, OAuth (client-credentials + refresh +
+   `isOauth`), and the worker-scoped config entries (concurrency, task worker
+   id/version).
+6. Benchmarks. **Not started.**
+
+### Open decision: type adapters
+
+Java's `LHTypeAdapter` registry handles serde for user-defined classes.
+sdk-js already solves that problem differently, with zod schemas
+(`src/worker/zodSchema.ts`, `lhStruct(...)`). The two `type adapters` entries
+in `config.test.ts` are therefore parked pending a call: mark them
+not-applicable-to-JS with a written rationale, or design a JS analogue. They
+are the only matrix entries that are not simply unimplemented work.
 
 ## Golden harness
 
