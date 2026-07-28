@@ -1,48 +1,75 @@
 import { LHConfig } from '../LHConfig'
+import { allocatePort, containerLogs, dockerAvailable, LH_IMAGE, startLhStandalone } from './container'
 
 /**
- * Creates one tenant for the whole integration run and hands it to the test
- * files via LH_IT_TENANT.
+ * Brings up the server for the integration run and creates its tenant.
  *
- * Why a tenant at all: LittleHorse metadata is immutable — re-registering a
- * TaskDef with different input vars fails with "already exists and is
- * immutable" — so reusing a namespace across runs makes results depend on
- * whatever earlier runs happened to register. A fresh tenant per run makes
- * the suite hermetic and repeatable.
+ * By default this starts a fresh, uniquely named lh-standalone container on a
+ * free port, so a run never depends on a server left behind by an earlier one.
+ * That isolation is not cosmetic: LittleHorse metadata is immutable and WfSpec
+ * registration is eventually consistent, so a warm server can pass tests that
+ * a cold one fails (this suite has done exactly that).
  *
- * Why one for the whole run rather than one per file: creating tenants from
- * several files in the same run produced "Tenant not allowed" on the
- * second file's requests. One tenant per run avoids that entirely and is
- * cheaper besides.
+ * Escape hatches:
+ *  - LH_IT_HOST / LH_IT_PORT — use a server you manage; no container started.
+ *  - LH_IT_KEEP=1            — leave the container running after the run.
+ *  - LH_IT_IMAGE             — override the image under test.
  */
 export default async function globalSetup(): Promise<void> {
-  const host = process.env.LH_IT_HOST ?? 'localhost'
-  const port = process.env.LH_IT_PORT ?? '2023'
-  const client = LHConfig.fromMap({ LHC_API_HOST: host, LHC_API_PORT: port }).getClient()
+  const external = process.env.LH_IT_HOST !== undefined || process.env.LH_IT_PORT !== undefined
 
-  // Wait for the server before doing anything else, so a cold container gives
-  // a clear "not ready" failure rather than a confusing tenant error.
-  const deadline = Date.now() + 90_000
+  let host: string
+  let port: number
+
+  if (external) {
+    host = process.env.LH_IT_HOST ?? 'localhost'
+    port = Number(process.env.LH_IT_PORT ?? '2023')
+    console.log(`\n[integration] using externally managed server ${host}:${port}`)
+  } else {
+    if (!dockerAvailable()) {
+      throw new Error(
+        'Docker is required for the integration suite but is not available.\n' +
+          'Either start Docker, or point the suite at a server you manage:\n' +
+          '  LH_IT_HOST=localhost LH_IT_PORT=2023 npm run test:integration'
+      )
+    }
+    port = await allocatePort()
+    const started = startLhStandalone(port)
+    host = started.host
+    process.env.LH_IT_CONTAINER = started.name
+    console.log(`\n[integration] started container ${started.name} (${LH_IMAGE}) on ${host}:${port}`)
+  }
+
+  process.env.LH_IT_HOST = host
+  process.env.LH_IT_PORT = String(port)
+
+  const client = LHConfig.fromMap({ LHC_API_HOST: host, LHC_API_PORT: String(port) }).getClient()
+  const startedAt = Date.now()
+  const deadline = startedAt + 180_000
+
   for (;;) {
     try {
       await client.putTaskDef({ name: 'lh-sdkjs-it-probe', inputVars: [] })
       break
     } catch (err) {
       if (Date.now() > deadline) {
+        const container = process.env.LH_IT_CONTAINER
         throw new Error(
-          `No LittleHorse server at ${host}:${port} after 90s. Start one with:\n` +
-            `  docker run -d --name lh-sdkjs-it -p 2023:2023 \\\n` +
-            `    -e LHS_ADVERTISED_LISTENERS=PLAIN://localhost:2023 \\\n` +
-            `    ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master\n` +
-            `Underlying error: ${(err as Error).message}`
+          `LittleHorse server at ${host}:${port} never became ready within 180s.\n` +
+            `Underlying error: ${(err as Error).message}` +
+            (container ? `\nContainer logs:\n${containerLogs(container)}` : '')
         )
       }
       await new Promise(resolve => setTimeout(resolve, 1000))
     }
   }
+  console.log(`[integration] server ready in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`)
 
+  // One tenant for the whole run: metadata is immutable, so a fresh namespace
+  // is what makes repeated runs independent. Creating tenants from more than
+  // one test file in a run fails with "Tenant not allowed", hence one here.
   const tenantId = `sdkjs-it-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e6).toString(36)}`
   await client.putTenant({ id: tenantId })
   process.env.LH_IT_TENANT = tenantId
-  console.log(`\n[integration] server ${host}:${port}, tenant ${tenantId}`)
+  console.log(`[integration] tenant ${tenantId}`)
 }

@@ -1,17 +1,21 @@
 /**
  * Integration tests (PARITY_PLAN.md tier 2) run against a REAL LittleHorse
- * server and are kept out of the default `npm test` run, which must stay
+ * server and are kept out of the default `npm test` run, which stays
  * Docker-free. Run them with `npm run test:integration`.
+ *
+ * globalSetup starts a fresh, uniquely named lh-standalone container per run
+ * (override with LH_IT_HOST/LH_IT_PORT to use a server you manage) and
+ * globalTeardown removes it (keep it with LH_IT_KEEP=1).
  */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch: ['<rootDir>/src/integration/**/*.test.ts'],
-  // Real servers are slower than the fake one; per-test timeouts still apply.
+  // A real server is slower than the fake one used by the unit tests.
   testTimeout: 120000,
-  // Integration tests share one server, so parallel suites would collide on
-  // metadata names and worker registration.
+  // The suite shares one server, so parallel files would collide on metadata
+  // names and on tenant creation.
   maxWorkers: 1,
-  // Creates the per-run tenant and waits for the server to be reachable.
   globalSetup: '<rootDir>/src/integration/globalSetup.ts',
+  globalTeardown: '<rootDir>/src/integration/globalTeardown.ts',
 }

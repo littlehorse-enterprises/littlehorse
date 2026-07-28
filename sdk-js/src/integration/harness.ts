@@ -16,15 +16,9 @@ import { zodToTypeDef } from '../worker/zodSchema'
  * used by the worker unit tests. They are the only thing that proves the
  * server actually accepts what the JS SDK produces and executes it correctly.
  *
- * Start a server with:
- *   docker run -d --name lh-sdkjs-it -p 2023:2023 \
- *     -e LHS_ADVERTISED_LISTENERS=PLAIN://localhost:2023 \
- *     ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
- *
- * The advertised listener matters: the worker asks the server which hosts to
- * poll, so the address the server advertises must be reachable from the test
- * process. Without it, workers connect to the bootstrap and then fail to reach
- * the hosts they are handed.
+ * Just run `npm run test:integration` — globalSetup starts a fresh container
+ * per run and globalTeardown removes it. See container.ts for the escape
+ * hatches (LH_IT_HOST/LH_IT_PORT, LH_IT_KEEP, LH_IT_IMAGE).
  */
 
 export const LH_HOST = process.env.LH_IT_HOST ?? 'localhost'
@@ -88,11 +82,10 @@ export function sleep(ms: number): Promise<void> {
 export async function requireServer(timeoutMs = 60000): Promise<void> {
   if (await isServerReachable(timeoutMs)) return
   throw new Error(
-    `No LittleHorse server at ${LH_HOST}:${LH_PORT}. Start one with:\n` +
-      `  docker run -d --name lh-sdkjs-it -p 2023:2023 \\\n` +
-      `    -e LHS_ADVERTISED_LISTENERS=PLAIN://localhost:2023 \\\n` +
-      `    ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master\n` +
-      `Then re-run: npm run test:integration`
+    `No LittleHorse server at ${LH_HOST}:${LH_PORT}.\n` +
+      `globalSetup normally starts one and waits for it, so reaching this means the\n` +
+      `server died mid-run, or the suite was invoked without its config. Run it with:\n` +
+      `  npm run test:integration`
   )
 }
 

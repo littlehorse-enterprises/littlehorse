@@ -154,20 +154,29 @@ regressions (50x), not to win.
 ### Integration tests (tier 2, real server)
 
 `src/integration/` runs against a real `lh-standalone`. Kept out of `npm test`
-so the default suite stays Docker-free:
+so the default suite stays Docker-free. It manages its own server — nothing to
+start first:
 
 ```sh
-docker run -d --name lh-sdkjs-it -p 2023:2023 \
-  -e LHS_ADVERTISED_LISTENERS=PLAIN://localhost:2023 \
-  ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
 cd sdk-js && npm run test:integration
 ```
+
+`globalSetup` starts a uniquely named container on a free port and waits for
+it; `globalTeardown` removes it. Roughly 19s per run, ~14s of which is server
+boot. Env overrides:
+
+| Variable | Effect |
+|---|---|
+| `LH_IT_HOST` / `LH_IT_PORT` | Use a server you manage; no container started (~3.5s runs) |
+| `LH_IT_KEEP=1` | Leave the container up after the run, for debugging |
+| `LH_IT_IMAGE` | Test against a different image |
 
 Two suites: `wfspec-acceptance` registers all 14 reference workflows and
 asserts the server accepts them; `execution` runs real WfRuns driven by JS
 workers and asserts on server-side status and variable values. The suite is
-hermetic — `globalSetup` creates a fresh tenant per run — and verified green
-against a from-scratch container.
+hermetic — a fresh container *and* a fresh tenant per run — which is
+deliberate: a warm server can pass tests a cold one fails, and this suite has
+done exactly that.
 
 **Constraints this surfaced that no offline test could.** Each one was a real
 failure first:
