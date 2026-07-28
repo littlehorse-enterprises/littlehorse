@@ -13,11 +13,11 @@ cd sdk-js && npx jest src/feature-matrix
 ```
 
 Passed = done, todo = missing, failed = broken. That output *is* the feature
-matrix (see below). Snapshot as of 2026-07-23: 191 passing / 58 todo. The
-wfsdk compiler (`src/wfsdk/`) is feature-complete apart from server calls, and
-all 14 reference workflows match the Java goldens. **Nearly every remaining
-todo needs either a live server or a design decision** — see "Ordering and
-status".
+matrix (see below). Snapshot as of 2026-07-28: 224 passing / 28 todo. The
+wfsdk compiler (`src/wfsdk/`) is complete, the worker is hardened and tested
+against a fake server, and all 14 reference workflows match the Java goldens.
+**What remains is mostly OAuth, live-server integration, and soak** — see
+"Ordering and status".
 
 ## Background: what an SDK is here
 
@@ -38,10 +38,10 @@ A LittleHorse SDK is three distinct components on top of the shared gRPC API:
    long-polls for scheduled tasks, deserializes inputs, invokes the user
    function, reports results, plus operational hygiene (liveness/heartbeats,
    server rebalancing, reconnection). `sdk-js` has a basic worker
-   (`LHTaskWorker.ts`); Java has a full `worker/internal/` package
-   (`LHServerConnectionManager`, `PollThread`, `RebalanceThread`,
-   `LHLivenessController`). The gap is production hardening, not the happy
-   path.
+   (`LHTaskWorker.ts`), now hardened and covered by protocol tests; Java has
+   a full `worker/internal/` package (`LHServerConnectionManager`,
+   `PollThread`, `RebalanceThread`, `LHLivenessController`). What is left is
+   liveness, concurrency limits, and live-server coverage.
 
 Plus supporting pieces: `common/` (exceptions, proto ↔ native value
 conversion) and `usertask/` helpers.
@@ -54,6 +54,7 @@ conversion) and `usertask/` helpers.
 | `sdk-js/src/feature-matrix/golden.ts` | `loadGolden` / `expectMatchesGolden` helpers |
 | `sdk-js/src/feature-matrix/referenceWorkflows.ts` | TS twins of the Java reference workflows |
 | `sdk-js/src/feature-matrix/wfsdk-golden.test.ts` | Conformance: every TS twin must compile to its golden |
+| `sdk-js/src/feature-matrix/fakeServer.ts` | In-process gRPC server used by the worker tests |
 | `sdk-js/src/wfsdk/` | The wfsdk port (Track A) |
 | `sdk-js/golden/*.json` | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
 | `sdk-js/golden/generator/` | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens |
@@ -131,21 +132,41 @@ regressions (50x), not to win.
    `src/feature-matrix/*.test.ts`.
 2. Golden-test harness (proto comparison infrastructure + Java golden-file
    generation). **Done** — see "Golden harness" below.
-3. wfsdk port — biggest gap, best oracle. **Done except server calls:**
-   `src/wfsdk/` compiles all 14 reference workflows to protos identical to the
-   Java SDK's goldens; 116 of 118 wfsdk matrix entries pass. Only
-   `registerWfSpec` and `doesWfSpecExist` remain — both need client wiring, so
-   they move to step 4.
-4. Offline config surface. **Done:** source-composing builder
+3. wfsdk port — biggest gap, best oracle. **Done.** `src/wfsdk/` compiles all
+   14 reference workflows to protos identical to the Java SDK's goldens, and
+   every wfsdk matrix entry passes.
+4. Config surface. **Done except OAuth.** Source-composing builder
    (`LHConfig.newBuilder()`), env-var loading, keepalive options, TLS/mTLS
-   credentials, client creation. 14 of 22 config entries pass.
-5. Worker hardening — integration + soak tests, connection management,
-   rebalancing, liveness. **Not started** (Track B below). Do this together
-   with the leftovers that share its infrastructure: `registerWfSpec`,
-   `doesWfSpecExist`, `getTaskDef`, OAuth (client-credentials + refresh +
-   `isOauth`), and the worker-scoped config entries (concurrency, task worker
-   id/version).
-6. Benchmarks. **Not started.**
+   credentials, client creation, `getTaskDef`. 15 of 22 entries pass.
+5. Worker hardening. **Largely done** — 30 of 40 worker entries pass,
+   including registration, execution semantics, WorkerContext, topology
+   discovery, rebalance, reconnect, report-retry-without-duplicates, and
+   graceful close. See "Fake server" below for how, and what it does not
+   prove. Remaining: liveness reporting, a real concurrency ceiling, signature
+   and StructDef validation, checkpointing, user/group context, integration
+   tests against `lh-standalone`, and soak/chaos.
+6. OAuth (client-credentials, refresh, `isOauth`). **Not started** — the
+   single largest unimplemented feature left; Java has a whole `common/auth`
+   package and sdk-js has none of it.
+7. Benchmarks. **Not started.**
+
+### Fake server (worker tests)
+
+`src/feature-matrix/fakeServer.ts` is an in-process gRPC server that speaks
+the real LittleHorse wire protocol on an ephemeral port, built from the
+generated protobuf-ts message types (no extra dependency, no Docker). Worker
+tests drive it to script scenarios that are otherwise hard to produce:
+delivering tasks to a long poll, reassigning hosts mid-run, breaking a poll
+stream with UNAVAILABLE, failing the first N `ReportTask` calls.
+
+**What it proves:** what the *client* does. **What it does not prove:** that
+the real server agrees. Tier-2 integration tests against `lh-standalone` are
+still todo and are not replaced by this.
+
+Two notes for anyone extending it: `PollTask` is a long poll, so a request
+parks until work exists (replying empty would deadlock the worker, which only
+re-asks after a response); and breaking a stream requires *emitting* an error
+— `destroy()` alone never reaches the client.
 
 ### Open decision: type adapters
 
