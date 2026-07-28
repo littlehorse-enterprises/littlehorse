@@ -33,6 +33,8 @@ import {
   WorkflowThread,
 } from '../wfsdk'
 import { lhStruct } from '../worker'
+import { LHConfig } from '../LHConfig'
+import { FakeLHServer } from './fakeServer'
 import { expectMatchesGolden } from './golden'
 import { referenceWorkflows } from './referenceWorkflows'
 
@@ -110,8 +112,53 @@ describe('wfsdk', () => {
       expect(JSON.parse(json).name).toBe('golden-basic')
     })
 
-    test.todo('register a WfSpec with the server — Java: Workflow#registerWfSpec')
-    test.todo('check whether a WfSpec exists (optionally by major version) — Java: Workflow#doesWfSpecExist')
+    test('register a WfSpec with the server — Java: Workflow#registerWfSpec', async () => {
+      const server = new FakeLHServer()
+      await server.start()
+      try {
+        const config = LHConfig.fromMap({ LHC_API_HOST: '127.0.0.1', LHC_API_PORT: String(server.port) })
+        const wf = Workflow.newWorkflow('registered-wf', t => {
+          t.waitForEvent('some-event').registeredAs(z.string())
+          const ready = t.declareBool('ready')
+          t.throwEvent('some-wf-event', ready).registeredAs(z.boolean())
+          t.execute('a')
+        })
+
+        await wf.registerWfSpec(config)
+
+        // Event defs must be created before the WfSpec that references them.
+        expect(server.putExternalEventDefRequests.map(r => r.name)).toEqual(['some-event'])
+        expect(server.putWorkflowEventDefRequests.map(r => r.name)).toEqual(['some-wf-event'])
+        expect(server.putWfSpecRequests).toHaveLength(1)
+        expect(server.putWfSpecRequests[0].name).toBe('registered-wf')
+        expect(PutWfSpecRequest.equals(server.putWfSpecRequests[0], wf.compileWorkflow())).toBe(true)
+      } finally {
+        await server.stop()
+      }
+    }, 20000)
+
+    test('check whether a WfSpec exists (optionally by major version) — Java: Workflow#doesWfSpecExist', async () => {
+      const present = new FakeLHServer()
+      await present.start()
+      const absent = new FakeLHServer({ wfSpecMissing: true })
+      await absent.start()
+      try {
+        const wf = () => Workflow.newWorkflow('exists-wf', t => t.execute('a'))
+        const configFor = (server: FakeLHServer) =>
+          LHConfig.fromMap({ LHC_API_HOST: '127.0.0.1', LHC_API_PORT: String(server.port) })
+
+        await expect(wf().doesWfSpecExist(configFor(present))).resolves.toBe(true)
+        await expect(wf().doesWfSpecExist(configFor(absent))).resolves.toBe(false)
+
+        // A major version checks that exact version rather than the latest.
+        await expect(wf().doesWfSpecExist(configFor(present), 2)).resolves.toBe(true)
+        expect(present.getWfSpecRequests[0]).toMatchObject({ name: 'exists-wf', majorVersion: 2 })
+        expect(present.getLatestWfSpecRequests).toHaveLength(1)
+      } finally {
+        await present.stop()
+        await absent.stop()
+      }
+    }, 20000)
     test('save the compiled WfSpec to disk — Java: Workflow#compileAndSaveToDisk', () => {
       const dir = mkdtempSync(join(tmpdir(), 'lh-wfspec-'))
       const nested = join(dir, 'does', 'not', 'exist')

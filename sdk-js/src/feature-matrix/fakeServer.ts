@@ -2,17 +2,24 @@ import * as grpc from '@grpc/grpc-js'
 import { Empty } from '../proto/google/protobuf/empty'
 import { StructDef } from '../proto/struct_def'
 import { TaskDef } from '../proto/task_def'
+import { WfSpec } from '../proto/wf_spec'
+import { ExternalEventDef } from '../proto/external_event'
+import { WorkflowEventDef } from '../proto/workflow_event'
 import {
+  GetLatestWfSpecRequest,
   PollTaskRequest,
   PollTaskResponse,
+  PutExternalEventDefRequest,
   PutStructDefRequest,
   PutTaskDefRequest,
+  PutWfSpecRequest,
+  PutWorkflowEventDefRequest,
   RegisterTaskWorkerRequest,
   RegisterTaskWorkerResponse,
   ReportTaskRun,
   ScheduledTask,
 } from '../proto/service'
-import { TaskDefId } from '../proto/object_id'
+import { TaskDefId, WfSpecId } from '../proto/object_id'
 
 /**
  * An in-process LittleHorse server for worker tests.
@@ -59,6 +66,11 @@ const SERVICE_DEFINITION = {
   getTaskDef: method('GetTaskDef', TaskDefId, TaskDef),
   putTaskDef: method('PutTaskDef', PutTaskDefRequest, TaskDef),
   putStructDef: method('PutStructDef', PutStructDefRequest, StructDef),
+  putWfSpec: method('PutWfSpec', PutWfSpecRequest, WfSpec),
+  getLatestWfSpec: method('GetLatestWfSpec', GetLatestWfSpecRequest, WfSpec),
+  getWfSpec: method('GetWfSpec', WfSpecId, WfSpec),
+  putExternalEventDef: method('PutExternalEventDef', PutExternalEventDefRequest, ExternalEventDef),
+  putWorkflowEventDef: method('PutWorkflowEventDef', PutWorkflowEventDefRequest, WorkflowEventDef),
 } as unknown as grpc.ServiceDefinition
 
 export interface FakeServerOptions {
@@ -74,6 +86,8 @@ export interface FakeServerOptions {
   taskDefAlreadyExists?: boolean
   /** Fails the first N ReportTask calls, to exercise report retries. */
   failReportTaskTimes?: number
+  /** When set, GetLatestWfSpec / GetWfSpec fail with NOT_FOUND. */
+  wfSpecMissing?: boolean
 }
 
 export class FakeLHServer {
@@ -88,6 +102,11 @@ export class FakeLHServer {
   readonly registerRequests: RegisterTaskWorkerRequest[] = []
   readonly putTaskDefRequests: PutTaskDefRequest[] = []
   readonly putStructDefRequests: PutStructDefRequest[] = []
+  readonly putWfSpecRequests: PutWfSpecRequest[] = []
+  readonly putExternalEventDefRequests: PutExternalEventDefRequest[] = []
+  readonly putWorkflowEventDefRequests: PutWorkflowEventDefRequest[] = []
+  readonly getLatestWfSpecRequests: GetLatestWfSpecRequest[] = []
+  readonly getWfSpecRequests: WfSpecId[] = []
 
   /** Tasks handed to the next poller(s). */
   private readonly pending: ScheduledTask[] = []
@@ -112,6 +131,11 @@ export class FakeLHServer {
       getTaskDef: this.handleGetTaskDef,
       putTaskDef: this.handlePutTaskDef,
       putStructDef: this.handlePutStructDef,
+      putWfSpec: this.handlePutWfSpec,
+      getLatestWfSpec: this.handleGetLatestWfSpec,
+      getWfSpec: this.handleGetWfSpec,
+      putExternalEventDef: this.handlePutExternalEventDef,
+      putWorkflowEventDef: this.handlePutWorkflowEventDef,
     })
 
     this.boundPort = await new Promise<number>((resolve, reject) => {
@@ -251,6 +275,54 @@ export class FakeLHServer {
   ): void => {
     this.putStructDefRequests.push(call.request)
     callback(null, StructDef.create({ id: { name: call.request.name, version: 0 } }))
+  }
+
+  private handlePutWfSpec = (
+    call: grpc.ServerUnaryCall<PutWfSpecRequest, WfSpec>,
+    callback: grpc.sendUnaryData<WfSpec>
+  ): void => {
+    this.putWfSpecRequests.push(call.request)
+    callback(null, WfSpec.create({ id: { name: call.request.name, majorVersion: 0, revision: 0 } }))
+  }
+
+  private handleGetLatestWfSpec = (
+    call: grpc.ServerUnaryCall<GetLatestWfSpecRequest, WfSpec>,
+    callback: grpc.sendUnaryData<WfSpec>
+  ): void => {
+    this.getLatestWfSpecRequests.push(call.request)
+    if (this.options.wfSpecMissing) {
+      callback({ code: grpc.status.NOT_FOUND, details: 'WfSpec not found' })
+      return
+    }
+    callback(null, WfSpec.create({ id: { name: call.request.name, majorVersion: 0, revision: 0 } }))
+  }
+
+  private handleGetWfSpec = (
+    call: grpc.ServerUnaryCall<WfSpecId, WfSpec>,
+    callback: grpc.sendUnaryData<WfSpec>
+  ): void => {
+    this.getWfSpecRequests.push(call.request)
+    if (this.options.wfSpecMissing) {
+      callback({ code: grpc.status.NOT_FOUND, details: 'WfSpec not found' })
+      return
+    }
+    callback(null, WfSpec.create({ id: call.request }))
+  }
+
+  private handlePutExternalEventDef = (
+    call: grpc.ServerUnaryCall<PutExternalEventDefRequest, ExternalEventDef>,
+    callback: grpc.sendUnaryData<ExternalEventDef>
+  ): void => {
+    this.putExternalEventDefRequests.push(call.request)
+    callback(null, ExternalEventDef.create({ id: { name: call.request.name } }))
+  }
+
+  private handlePutWorkflowEventDef = (
+    call: grpc.ServerUnaryCall<PutWorkflowEventDefRequest, WorkflowEventDef>,
+    callback: grpc.sendUnaryData<WorkflowEventDef>
+  ): void => {
+    this.putWorkflowEventDefRequests.push(call.request)
+    callback(null, WorkflowEventDef.create({ id: { name: call.request.name } }))
   }
 }
 

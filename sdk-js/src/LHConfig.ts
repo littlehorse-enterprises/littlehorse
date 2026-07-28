@@ -253,6 +253,11 @@ export class LHConfig {
     return this.protocol
   }
 
+  /** Fetches a TaskDef by name through the configured client. */
+  async getTaskDef(name: string) {
+    return this.getClient().getTaskDef({ name })
+  }
+
   /** Returns the configured gRPC keepalive time in ms, if any. */
   getKeepaliveTimeMs(): number | undefined {
     return this.keepaliveTimeMs

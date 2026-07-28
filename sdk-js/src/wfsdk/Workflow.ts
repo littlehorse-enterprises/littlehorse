@@ -6,7 +6,15 @@ import {
   PutWfSpecRequest,
   PutWorkflowEventDefRequest,
 } from '../proto/service'
+import { WfSpec } from '../proto/wf_spec'
+import type { LHConfig } from '../LHConfig'
 import type { ExternalEventNodeOutput, ThrowEventNodeOutput } from './nodeOutputs'
+
+/** True for a gRPC NOT_FOUND, however the transport surfaces the code. */
+function isNotFound(err: unknown): boolean {
+  const code = (err as { code?: unknown })?.code
+  return code === 'NOT_FOUND' || code === 5
+}
 import { ThreadRetentionPolicy, WfSpec_ParentWfSpecReference, WorkflowRetentionPolicy } from '../proto/wf_spec'
 import { ExponentialBackoffRetryPolicy, VariableMutationType } from '../proto/common_wfspec'
 import { WorkflowThread, ThreadFunc } from './WorkflowThread'
@@ -81,6 +89,43 @@ export class Workflow {
     fs.mkdirSync(directory, { recursive: true })
     fs.writeFileSync(filePath, this.compileWfToJson())
     return filePath
+  }
+
+  /**
+   * Registers this WfSpec with the server, first creating any ExternalEventDefs
+   * and WorkflowEventDefs declared with `registeredAs()` (Java does the same,
+   * in the same order — the event defs must exist before the WfSpec lands).
+   */
+  async registerWfSpec(config: LHConfig): Promise<WfSpec> {
+    const request = this.compileWorkflow()
+    const client = config.getClient()
+
+    for (const eventDef of this.getExternalEventDefsToRegister()) {
+      await client.putExternalEventDef(eventDef)
+    }
+    for (const eventDef of this.getWorkflowEventDefsToRegister()) {
+      await client.putWorkflowEventDef(eventDef)
+    }
+    return client.putWfSpec(request)
+  }
+
+  /**
+   * Whether a WfSpec with this name exists. Passing `majorVersion` checks that
+   * specific version instead of the latest.
+   */
+  async doesWfSpecExist(config: LHConfig, majorVersion?: number): Promise<boolean> {
+    const client = config.getClient()
+    try {
+      if (majorVersion === undefined) {
+        await client.getLatestWfSpec({ name: this.name })
+      } else {
+        await client.getWfSpec({ name: this.name, majorVersion, revision: 0 })
+      }
+      return true
+    } catch (err: unknown) {
+      if (isNotFound(err)) return false
+      throw err
+    }
   }
 
   addExternalEventDefToRegister(node: ExternalEventNodeOutput): void {

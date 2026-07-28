@@ -3,6 +3,7 @@ import { mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { CONFIG_NAMES, LHConfig } from '../LHConfig'
+import { FakeLHServer } from './fakeServer'
 
 /**
  * Feature matrix: config and client.
@@ -126,7 +127,16 @@ describe('config', () => {
       expect(LHConfig.fromMap({ LHC_TENANT_ID: 'tenant-a' }).getTenantId()).toBe('tenant-a')
     })
 
-    test.todo('fetch a TaskDef through the configured client — Java: LHConfig#getTaskDef')
+    test('fetch a TaskDef through the configured client — Java: LHConfig#getTaskDef', async () => {
+      const server = new FakeLHServer()
+      await server.start()
+      try {
+        const config = LHConfig.fromMap({ LHC_API_HOST: '127.0.0.1', LHC_API_PORT: String(server.port) })
+        await expect(config.getTaskDef('my-task')).resolves.toMatchObject({ id: { name: 'my-task' } })
+      } finally {
+        await server.stop()
+      }
+    }, 20000)
   })
 
   describe('TLS and auth', () => {
