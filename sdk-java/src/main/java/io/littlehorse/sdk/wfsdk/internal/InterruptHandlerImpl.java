@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.wfsdk.InterruptHandler;
 
 public class InterruptHandlerImpl implements InterruptHandler {
@@ -17,7 +17,7 @@ public class InterruptHandlerImpl implements InterruptHandler {
     @Override
     public void withEventType(Class<?> eventType) {
         if (eventTypeRegistered) {
-            throw new LHMisconfigurationException("Interrupt event type already registered: " + interruptName);
+            throw new LHWfSpecBuilderException("Interrupt event type already registered: " + interruptName);
         }
         eventTypeRegistered = true;
         parentThread.registerExternalEventDef(new InterruptExternalEventDefRegistration(
