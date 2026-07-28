@@ -1,3 +1,4 @@
+import type { StartedTestContainer } from 'testcontainers'
 import { stopLhStandalone } from './container'
 
 /**
@@ -5,11 +6,15 @@ import { stopLhStandalone } from './container'
  * ran against an externally managed server.
  *
  * Set LH_IT_KEEP=1 to leave it running — useful when a test failed and you
- * want to inspect server state or logs.
+ * want to inspect server state or logs. Note that if the run is killed
+ * outright this hook never fires; Testcontainers' Ryuk reaper cleans up in
+ * that case.
  */
 export default async function globalTeardown(): Promise<void> {
-  const name = process.env.LH_IT_CONTAINER
-  if (name === undefined) return
+  const container = (globalThis as Record<string, unknown>).__LH_IT_CONTAINER__ as StartedTestContainer | undefined
+  if (container === undefined) return
+
+  const name = process.env.LH_IT_CONTAINER_NAME ?? '(unknown)'
 
   if (process.env.LH_IT_KEEP === '1') {
     console.log(
@@ -19,6 +24,6 @@ export default async function globalTeardown(): Promise<void> {
     return
   }
 
-  stopLhStandalone(name)
+  await stopLhStandalone(container)
   console.log(`\n[integration] removed container ${name}`)
 }

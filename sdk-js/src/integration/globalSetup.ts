@@ -1,14 +1,16 @@
+import type { StartedTestContainer } from 'testcontainers'
 import { LHConfig } from '../LHConfig'
-import { allocatePort, containerLogs, dockerAvailable, LH_IMAGE, startLhStandalone } from './container'
+import { allocatePort, containerLogs, LH_IMAGE, startLhStandalone } from './container'
 
 /**
  * Brings up the server for the integration run and creates its tenant.
  *
- * By default this starts a fresh, uniquely named lh-standalone container on a
- * free port, so a run never depends on a server left behind by an earlier one.
- * That isolation is not cosmetic: LittleHorse metadata is immutable and WfSpec
- * registration is eventually consistent, so a warm server can pass tests that
- * a cold one fails (this suite has done exactly that).
+ * By default this starts a fresh lh-standalone container (via Testcontainers)
+ * on a free port, so a run never depends on a server left behind by an
+ * earlier one. That isolation is not cosmetic: LittleHorse metadata is
+ * immutable and WfSpec registration is eventually consistent, so a warm
+ * server can pass tests that a cold one fails — this suite has done exactly
+ * that.
  *
  * Escape hatches:
  *  - LH_IT_HOST / LH_IT_PORT — use a server you manage; no container started.
@@ -26,17 +28,23 @@ export default async function globalSetup(): Promise<void> {
     port = Number(process.env.LH_IT_PORT ?? '2023')
     console.log(`\n[integration] using externally managed server ${host}:${port}`)
   } else {
-    if (!dockerAvailable()) {
+    port = await allocatePort()
+    let started
+    try {
+      started = await startLhStandalone(port)
+    } catch (err) {
       throw new Error(
-        'Docker is required for the integration suite but is not available.\n' +
-          'Either start Docker, or point the suite at a server you manage:\n' +
-          '  LH_IT_HOST=localhost LH_IT_PORT=2023 npm run test:integration'
+        `Could not start ${LH_IMAGE}. Docker is required for the integration suite.\n` +
+          `Either start Docker, or point the suite at a server you manage:\n` +
+          `  LH_IT_HOST=localhost LH_IT_PORT=2023 npm run test:integration\n` +
+          `Underlying error: ${(err as Error).message}`
       )
     }
-    port = await allocatePort()
-    const started = startLhStandalone(port)
     host = started.host
-    process.env.LH_IT_CONTAINER = started.name
+    // globalSetup and globalTeardown share a process but not a module scope,
+    // so the handle goes on globalThis.
+    ;(globalThis as Record<string, unknown>).__LH_IT_CONTAINER__ = started.container
+    process.env.LH_IT_CONTAINER_NAME = started.name
     console.log(`\n[integration] started container ${started.name} (${LH_IMAGE}) on ${host}:${port}`)
   }
 
@@ -53,11 +61,13 @@ export default async function globalSetup(): Promise<void> {
       break
     } catch (err) {
       if (Date.now() > deadline) {
-        const container = process.env.LH_IT_CONTAINER
+        const container = (globalThis as Record<string, unknown>).__LH_IT_CONTAINER__ as
+          | StartedTestContainer
+          | undefined
         throw new Error(
           `LittleHorse server at ${host}:${port} never became ready within 180s.\n` +
             `Underlying error: ${(err as Error).message}` +
-            (container ? `\nContainer logs:\n${containerLogs(container)}` : '')
+            (container ? `\nContainer logs:\n${await containerLogs(container)}` : '')
         )
       }
       await new Promise(resolve => setTimeout(resolve, 1000))

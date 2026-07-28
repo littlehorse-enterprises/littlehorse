@@ -161,9 +161,12 @@ start first:
 cd sdk-js && npm run test:integration
 ```
 
-`globalSetup` starts a uniquely named container on a free port and waits for
-it; `globalTeardown` removes it. Roughly 19s per run, ~14s of which is server
-boot. Env overrides:
+`globalSetup` starts a uniquely named container on a free port (via
+Testcontainers, as the Java side of this repo already uses) and waits for it;
+`globalTeardown` removes it. If the run is killed outright — Ctrl-C, CI
+timeout — teardown never fires and Testcontainers' Ryuk reaper removes the
+container instead (verified: reaped ~15s after a SIGKILL). Roughly 25s per
+run, most of it server boot. Env overrides:
 
 | Variable | Effect |
 |---|---|
