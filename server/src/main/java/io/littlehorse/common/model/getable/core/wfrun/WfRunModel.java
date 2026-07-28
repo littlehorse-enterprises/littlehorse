@@ -36,13 +36,13 @@ import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
-import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
 import io.littlehorse.sdk.common.proto.PendingInterrupt;
@@ -293,8 +293,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             WfRun previousValue,
             ReadOnlyMetadataManager metadataManager,
             ReadOnlyGetableManager getableManager,
-            OutputTopicConfigModel config) {
-        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            OutputTopicConfig.OutputTopicRecordingLevel recordingLevel) {
+        if (recordingLevel == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
 

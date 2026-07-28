@@ -14,6 +14,7 @@ import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventReques
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
@@ -21,7 +22,6 @@ import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.util.LHUtil;
@@ -89,7 +89,7 @@ public class CoreProcessorContext extends ProcessingContext {
     private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
     private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
     private PartitionMetricsCollector metricsCollector;
-    private final OutputTopicConfigModel outputTopicConfig;
+    private final OutputTopicConfig.OutputTopicRecordingLevel outputTopicRecordingLevel;
     private final CompletableFuture<Boolean> validOutputTopicFuture;
 
     public CoreProcessorContext(
@@ -126,12 +126,15 @@ public class CoreProcessorContext extends ProcessingContext {
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
-        this.outputTopicConfig = metadataManager.get(tenantId).getOutputTopicConfig();
-        if (outputTopicConfig != null
-                && outputTopicConfig.getDefaultRecordingLevel()
-                        == OutputTopicConfig.OutputTopicRecordingLevel.ALL_ENTITY_EVENTS) {
+        TenantModel storedTenant = metadataManager.get(tenantId);
+        if (storedTenant != null
+                && storedTenant.getOutputTopicConfig() != null
+                && storedTenant.getOutputTopicConfig().getDefaultRecordingLevel()
+                        != OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            outputTopicRecordingLevel = storedTenant.getOutputTopicConfig().getDefaultRecordingLevel();
             validOutputTopicFuture = outputTopicsExist();
         } else {
+            outputTopicRecordingLevel = OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS;
             validOutputTopicFuture = CompletableFuture.completedFuture(true);
         }
     }
@@ -253,8 +256,8 @@ public class CoreProcessorContext extends ProcessingContext {
         if (storageManager != null) {
             return storageManager;
         }
-        storageManager =
-                new GetableManager(coreStore, processorContext, config, currentCommand, this, outputTopicConfig);
+        storageManager = new GetableManager(
+                coreStore, processorContext, config, currentCommand, this, outputTopicRecordingLevel);
         return storageManager;
     }
 

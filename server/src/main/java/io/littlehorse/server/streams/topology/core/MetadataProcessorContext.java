@@ -71,12 +71,15 @@ public class MetadataProcessorContext extends ProcessingContext {
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
         this.lhConfig = lhConfig;
-        this.outputTopicConfig = metadataManager.get(tenantId).getOutputTopicConfig();
-        if (outputTopicConfig != null
-                && !(outputTopicConfig.getDefaultRecordingLevel()
+        TenantModel storedTenant = metadataManager.get(tenantId);
+        if (storedTenant != null
+                && storedTenant.getOutputTopicConfig() != null
+                && !(storedTenant.getOutputTopicConfig().getDefaultRecordingLevel()
                         == OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS)) {
+            this.outputTopicConfig = storedTenant.getOutputTopicConfig();
             this.outputTopicExistsFuture = outputTopicsExist();
         } else {
+            this.outputTopicConfig = null;
             this.outputTopicExistsFuture = CompletableFuture.completedFuture(true);
         }
     }

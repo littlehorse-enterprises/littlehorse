@@ -10,10 +10,10 @@ import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -35,7 +35,7 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final TenantScopedStore store;
     private final TagStorageManager tagStorageManager;
     private final CoreProcessorContext ctx;
-    private final OutputTopicConfigModel outputTopicConfig;
+    private final OutputTopicConfig.OutputTopicRecordingLevel outputTopicRecordingLevel;
     private final int maxRecordSizeInBytes;
 
     public GetableManager(
@@ -44,13 +44,13 @@ public class GetableManager extends ReadOnlyGetableManager {
             final LHServerConfig config,
             final CommandModel command,
             final CoreProcessorContext executionContext,
-            final OutputTopicConfigModel outputTopicConfig) {
+            final OutputTopicConfig.OutputTopicRecordingLevel outputTopicRecordingLevel) {
         super(store);
         this.store = store;
         this.command = command;
         this.tagStorageManager = new TagStorageManager(this.store, streamsContext, executionContext);
         this.ctx = executionContext;
-        this.outputTopicConfig = outputTopicConfig;
+        this.outputTopicRecordingLevel = outputTopicRecordingLevel;
         this.maxRecordSizeInBytes = config.getProducerMaxRequestSize();
     }
 
@@ -231,11 +231,11 @@ public class GetableManager extends ReadOnlyGetableManager {
             store.put(new StoredGetable<>(getable));
             tagStorageManager.store(getable.getIndexEntries(), entity.getTagsPresentBeforeUpdate());
 
-            if (outputTopicConfig != null && getable instanceof CoreOutputTopicGetable outputTopicCandidate) {
+            if (outputTopicRecordingLevel != null && getable instanceof CoreOutputTopicGetable outputTopicCandidate) {
                 U previouslyStoredProto = entity.getPreviouslyStoredProto();
 
                 if (outputTopicCandidate.shouldProduceToOutputTopic(
-                        previouslyStoredProto, ctx.metadataManager(), this, outputTopicConfig)) {
+                        previouslyStoredProto, ctx.metadataManager(), this, outputTopicRecordingLevel)) {
                     return Optional.of(new OutputTopicRecordModel(outputTopicCandidate, command.getTime()));
                 }
             }
