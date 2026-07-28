@@ -18,6 +18,8 @@ export const CONFIG_NAMES = [
   'LHC_CA_CERT',
   'LHC_CLIENT_CERT',
   'LHC_CLIENT_KEY',
+  'LHC_GRPC_KEEPALIVE_TIME_MS',
+  'LHC_GRPC_KEEPALIVE_TIMEOUT_MS',
 ] as const
 
 export type Config = {
@@ -40,6 +42,17 @@ function parseGrpcMaxReceiveMessageLength(config?: string): number | undefined {
   }
   return value
 }
+function parsePositiveMillis(config: string | undefined, name: string): number | undefined {
+  if (config === undefined || config === '') {
+    return undefined
+  }
+  const value = Number(config)
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`Invalid ${name} "${config}": expected a positive number of milliseconds`)
+  }
+  return value
+}
+
 export type ConfigName = (typeof CONFIG_NAMES)[number]
 
 const DEFAULT_CONFIG: Config = {
@@ -59,6 +72,8 @@ export class LHConfig {
   private clientKey?: string
   private resourceExhaustedRetryEnabled: boolean = true
   private grpcMaxReceiveMessageLength?: number
+  private keepaliveTimeMs?: number
+  private keepaliveTimeoutMs?: number
 
   private channelCredentials: ChannelCredentials
 
@@ -74,6 +89,11 @@ export class LHConfig {
     this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY)
     this.grpcMaxReceiveMessageLength = parseGrpcMaxReceiveMessageLength(
       mergedConfig.LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH
+    )
+    this.keepaliveTimeMs = parsePositiveMillis(mergedConfig.LHC_GRPC_KEEPALIVE_TIME_MS, 'LHC_GRPC_KEEPALIVE_TIME_MS')
+    this.keepaliveTimeoutMs = parsePositiveMillis(
+      mergedConfig.LHC_GRPC_KEEPALIVE_TIMEOUT_MS,
+      'LHC_GRPC_KEEPALIVE_TIMEOUT_MS'
     )
 
     if (this.protocol === 'TLS') {
@@ -107,6 +127,28 @@ export class LHConfig {
   }
 
   /**
+   * Instantiate LHConfig from an in-memory map of `LHC_*` properties.
+   * Unrecognized keys are ignored.
+   */
+  public static fromMap(config: Partial<Config>): LHConfig {
+    return new LHConfig(pickKnownConfig(config))
+  }
+
+  /**
+   * Starts a builder that can combine several config sources. Sources are
+   * merged in call order, so a later source overrides an earlier one (matches
+   * Java's `LHConfigBuilder`, which does `props.putAll(...)` per source).
+   */
+  public static newBuilder(): LHConfigBuilder {
+    return new LHConfigBuilder()
+  }
+
+  /** Returns every recognized config option name. */
+  public static configNames(): readonly ConfigName[] {
+    return CONFIG_NAMES
+  }
+
+  /**
    * Get gRPC client for littlehorse
    *
    * For more documentation about it's method please go to {@link https://littlehorse.io/docs/server}
@@ -123,13 +165,27 @@ export class LHConfig {
    * task worker to create per-host connections.
    */
   public createTransport(host: string, port: string | number): GrpcTransport {
+    const clientOptions = this.getClientOptions()
     return new GrpcTransport({
       host: `${host}:${port}`,
       channelCredentials: this.channelCredentials,
-      ...(this.grpcMaxReceiveMessageLength !== undefined && {
-        clientOptions: { 'grpc.max_receive_message_length': this.grpcMaxReceiveMessageLength },
-      }),
+      ...(Object.keys(clientOptions).length > 0 && { clientOptions }),
     })
+  }
+
+  /** gRPC channel options derived from the configured channel settings. */
+  public getClientOptions(): Record<string, number> {
+    const options: Record<string, number> = {}
+    if (this.grpcMaxReceiveMessageLength !== undefined) {
+      options['grpc.max_receive_message_length'] = this.grpcMaxReceiveMessageLength
+    }
+    if (this.keepaliveTimeMs !== undefined) {
+      options['grpc.keepalive_time_ms'] = this.keepaliveTimeMs
+    }
+    if (this.keepaliveTimeoutMs !== undefined) {
+      options['grpc.keepalive_timeout_ms'] = this.keepaliveTimeoutMs
+    }
+    return options
   }
 
   public createClientForHost(host: string, port: string | number, accessToken?: string): LHPublicClient {
@@ -180,5 +236,71 @@ export class LHConfig {
    */
   getTenantId(): string | undefined {
     return this.tenantId
+  }
+
+  /** Returns the configured bootstrap host. */
+  getApiBootstrapHost(): string | undefined {
+    return this.apiHost
+  }
+
+  /** Returns the configured bootstrap port. */
+  getApiBootstrapPort(): string | undefined {
+    return this.apiPort
+  }
+
+  /** Returns the configured API protocol (`PLAINTEXT` or `TLS`). */
+  getApiProtocol(): string | undefined {
+    return this.protocol
+  }
+
+  /** Returns the configured gRPC keepalive time in ms, if any. */
+  getKeepaliveTimeMs(): number | undefined {
+    return this.keepaliveTimeMs
+  }
+
+  /** Returns the configured gRPC keepalive timeout in ms, if any. */
+  getKeepaliveTimeoutMs(): number | undefined {
+    return this.keepaliveTimeoutMs
+  }
+}
+
+/** Keeps only recognized `LHC_*` keys with a non-empty value. */
+function pickKnownConfig(source: Record<string, string | undefined>): Config {
+  return CONFIG_NAMES.reduce<Config>((config, name) => {
+    const value = source[name]
+    if (value !== undefined && value !== '') {
+      config[name] = value
+    }
+    return config
+  }, {})
+}
+
+/**
+ * Combines multiple config sources. Each `loadFrom*` call merges into the
+ * accumulated config, so later sources override earlier ones.
+ */
+export class LHConfigBuilder {
+  private config: Config = {}
+
+  /** Loads recognized `LHC_*` variables from the environment. */
+  loadFromEnvVariables(env: Record<string, string | undefined> = process.env): this {
+    Object.assign(this.config, pickKnownConfig(env))
+    return this
+  }
+
+  /** Loads properties from a `littlehorse.config`-style file. */
+  loadFromPropertiesFile(path: string): this {
+    Object.assign(this.config, getPropertiesFile(path))
+    return this
+  }
+
+  /** Loads properties from an in-memory map. Unrecognized keys are ignored. */
+  loadFromMap(map: Partial<Config>): this {
+    Object.assign(this.config, pickKnownConfig(map))
+    return this
+  }
+
+  build(): LHConfig {
+    return LHConfig.fromMap(this.config)
   }
 }

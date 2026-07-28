@@ -1,4 +1,9 @@
+import { mkdtempSync, readFileSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
+import { z } from 'zod'
 import { Comparator } from '../proto/type_definition'
+import { CorrelatedEventConfig } from '../proto/external_event'
 import {
   ExponentialBackoffRetryPolicy,
   UTActionTrigger,
@@ -98,7 +103,15 @@ describe('wfsdk', () => {
 
     test.todo('register a WfSpec with the server — Java: Workflow#registerWfSpec')
     test.todo('check whether a WfSpec exists (optionally by major version) — Java: Workflow#doesWfSpecExist')
-    test.todo('save the compiled WfSpec to disk — Java: Workflow#compileAndSaveToDisk')
+    test('save the compiled WfSpec to disk — Java: Workflow#compileAndSaveToDisk', () => {
+      const dir = mkdtempSync(join(tmpdir(), 'lh-wfspec-'))
+      const nested = join(dir, 'does', 'not', 'exist')
+      const written = referenceWorkflows['basic']().compileAndSaveToDisk(nested)
+
+      // Filename matches Java: "<name>-wfspec.json".
+      expect(written).toBe(join(nested, 'golden-basic-wfspec.json'))
+      expect(JSON.parse(readFileSync(written, 'utf-8')).name).toBe('golden-basic')
+    })
 
     test('list TaskDef names required by the workflow — Java: Workflow#getRequiredTaskDefNames', () => {
       expect(referenceWorkflows['basic']().getRequiredTaskDefNames()).toEqual(new Set(['greet']))
@@ -123,8 +136,29 @@ describe('wfsdk', () => {
       )
     })
 
-    test.todo('collect ExternalEventDefs to auto-register — Java: Workflow#getExternalEventDefsToRegister')
-    test.todo('collect WorkflowEventDefs to auto-register — Java: Workflow#getWorkflowEventDefsToRegister')
+    test('collect ExternalEventDefs to auto-register — Java: Workflow#getExternalEventDefsToRegister', () => {
+      const wf = Workflow.newWorkflow('collect-eeds', t => {
+        t.waitForEvent('declared-event').registeredAs(z.object({ amount: z.number() }))
+        t.waitForEvent('undeclared-event')
+      })
+      const requests = wf.getExternalEventDefsToRegister()
+
+      // Only events with a declared payload type are auto-registered.
+      expect(requests.map(r => r.name)).toEqual(['declared-event'])
+      expect(requests[0].contentType?.returnType).toBeDefined()
+    })
+
+    test('collect WorkflowEventDefs to auto-register — Java: Workflow#getWorkflowEventDefsToRegister', () => {
+      const wf = Workflow.newWorkflow('collect-weds', t => {
+        const done = t.declareBool('done')
+        t.throwEvent('declared-wf-event', done).registeredAs(z.boolean())
+        t.throwEvent('undeclared-wf-event', done)
+      })
+      const requests = wf.getWorkflowEventDefsToRegister()
+
+      expect(requests.map(r => r.name)).toEqual(['declared-wf-event'])
+      expect(requests[0].contentType?.returnType).toBeDefined()
+    })
 
     test('set a parent WfSpec — Java: Workflow#setParent', () => {
       const wf = Workflow.newWorkflow('parent-test', t => {
@@ -546,13 +580,41 @@ describe('wfsdk', () => {
       provenByGolden('external-events')
     })
 
-    test.todo('declare the event payload type for auto-registration — Java: ExternalEventNodeOutput#registeredAs')
+    test('declare the event payload type for auto-registration — Java: ExternalEventNodeOutput#registeredAs', () => {
+      // Java takes a Class<?>; the JS analogue is a zod schema.
+      const wf = Workflow.newWorkflow('eed-registered-as', t => {
+        t.waitForEvent('payment').registeredAs(z.object({ amount: z.number() }))
+      })
+      const [request] = wf.getExternalEventDefsToRegister()
+      expect(request.name).toBe('payment')
+      expect(request.contentType?.returnType?.definedType.oneofKind).toBeDefined()
+    })
 
     test('correlate an event by id (optionally masked) — Java: ExternalEventNodeOutput#withCorrelationId', () => {
       provenByGolden('external-events')
     })
 
-    test.todo('configure correlated event behavior — Java: ExternalEventNodeOutput#withCorrelatedEventConfig')
+    test('configure correlated event behavior — Java: ExternalEventNodeOutput#withCorrelatedEventConfig', () => {
+      const explicit = CorrelatedEventConfig.create({ ttl: { secondsAfterCompletion: '600' } })
+      const wf = Workflow.newWorkflow('correlated-cfg', t => {
+        const orderId = t.declareStr('order-id')
+        t.waitForEvent('shipped')
+          .withCorrelationId(orderId)
+          .withCorrelatedEventConfig(explicit)
+          .registeredAs(z.string())
+      })
+      const [request] = wf.getExternalEventDefsToRegister()
+      expect(request.correlatedEventConfig).toEqual(explicit)
+
+      // Setting a correlation id alone attaches the default config (as Java does).
+      const defaulted = Workflow.newWorkflow('correlated-default', t => {
+        const orderId = t.declareStr('order-id')
+        t.waitForEvent('shipped').withCorrelationId(orderId).registeredAs(z.string())
+      })
+      expect(defaulted.getExternalEventDefsToRegister()[0].correlatedEventConfig).toEqual(
+        CorrelatedEventConfig.create()
+      )
+    })
   })
 
   describe('workflow events', () => {
@@ -560,7 +622,18 @@ describe('wfsdk', () => {
       provenByGolden('sleep-and-events')
     })
 
-    test.todo('declare the thrown event payload type for auto-registration — Java: ThrowEventNodeOutput#registeredAs')
+    test('declare the thrown event payload type for auto-registration — Java: ThrowEventNodeOutput#registeredAs', () => {
+      const wf = Workflow.newWorkflow('wed-registered-as', t => {
+        const ready = t.declareBool('ready')
+        t.throwEvent('milestone', ready).registeredAs(z.boolean())
+      })
+      const [request] = wf.getWorkflowEventDefsToRegister()
+      expect(request.name).toBe('milestone')
+      expect(request.contentType?.returnType?.definedType).toEqual({
+        oneofKind: 'primitiveType',
+        primitiveType: VariableType.BOOL,
+      })
+    })
   })
 
   describe('child threads', () => {

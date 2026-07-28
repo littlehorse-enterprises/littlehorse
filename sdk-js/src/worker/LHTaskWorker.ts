@@ -96,11 +96,13 @@ class ServerConnection {
       if (!this.running) return
       // Flow control: request the next task. We only ask for more work after
       // the previous response has been received and dispatched.
-      call.requests.send({
-        taskDefId: this.taskDefId,
-        clientId: this.clientId,
-        taskWorkerVersion: this.taskWorkerVersion,
-      }).catch(() => {})
+      call.requests
+        .send({
+          taskDefId: this.taskDefId,
+          clientId: this.clientId,
+          taskWorkerVersion: this.taskWorkerVersion,
+        })
+        .catch(() => {})
     }
 
     sendRequest()
@@ -154,9 +156,7 @@ class ServerConnection {
         time: now,
         status: TaskStatus.TASK_SUCCESS,
         attemptNumber: task.attemptNumber,
-        logOutput: context.getLogOutput()
-          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-          : undefined,
+        logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
         result: { oneofKind: 'output', output },
         totalCheckpoints: 0,
       }
@@ -168,9 +168,7 @@ class ServerConnection {
           time: now,
           status: TaskStatus.TASK_EXCEPTION,
           attemptNumber: task.attemptNumber,
-          logOutput: context.getLogOutput()
-            ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-            : undefined,
+          logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
           result: {
             oneofKind: 'exception',
             exception: {
@@ -189,9 +187,7 @@ class ServerConnection {
         time: now,
         status: TaskStatus.TASK_FAILED,
         attemptNumber: task.attemptNumber,
-        logOutput: context.getLogOutput()
-          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-          : undefined,
+        logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
         result: {
           oneofKind: 'error',
           error: {

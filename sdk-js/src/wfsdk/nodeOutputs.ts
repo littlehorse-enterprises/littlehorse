@@ -1,6 +1,11 @@
+import type { ZodTypeAny } from 'zod'
 import { ExponentialBackoffRetryPolicy } from '../proto/common_wfspec'
 import { LHPath_Selector } from '../proto/common_wfspec'
 import { LHErrorType } from '../proto/common_enums'
+import { CorrelatedEventConfig } from '../proto/external_event'
+import { PutExternalEventDefRequest, PutWorkflowEventDefRequest } from '../proto/service'
+import { ReturnType } from '../proto/type_definition'
+import { zodToTypeDef } from '../worker/zodSchema'
 import type { WorkflowThread, ThreadFunc } from './WorkflowThread'
 import type { WfRunVariable } from './variables'
 
@@ -63,6 +68,11 @@ export class UserTaskOutput extends NodeOutput {
 }
 
 export class ExternalEventNodeOutput extends NodeOutput {
+  /** Payload schema declared via registeredAs(); drives auto-registration. */
+  payloadSchema?: ZodTypeAny
+  correlatedEventConfig?: CorrelatedEventConfig
+  private registered = false
+
   constructor(
     nodeName: string,
     readonly externalEventDefName: string,
@@ -78,8 +88,77 @@ export class ExternalEventNodeOutput extends NodeOutput {
 
   withCorrelationId(correlationId: unknown, maskCorrelationKey?: boolean): ExternalEventNodeOutput {
     this.parent.addCorrelationIdToExtEvtNode(this, correlationId, maskCorrelationKey)
+    // Java attaches a default CorrelatedEventConfig as soon as a correlation
+    // id is set, unless one was configured explicitly.
+    this.correlatedEventConfig ??= CorrelatedEventConfig.create()
     return this
   }
+
+  /**
+   * Declares the event payload type so the ExternalEventDef can be registered
+   * alongside the WfSpec. Java takes a Class<?>; the JS equivalent is a zod
+   * schema, matching how the worker declares task/struct schemas.
+   */
+  registeredAs(payloadSchema: ZodTypeAny): ExternalEventNodeOutput {
+    this.payloadSchema = payloadSchema
+    if (!this.registered) {
+      this.registered = true
+      this.parent.workflow.addExternalEventDefToRegister(this)
+    }
+    return this
+  }
+
+  withCorrelatedEventConfig(config: CorrelatedEventConfig): ExternalEventNodeOutput {
+    this.correlatedEventConfig = config
+    return this
+  }
+
+  toPutExternalEventDefRequest(): PutExternalEventDefRequest {
+    return PutExternalEventDefRequest.create({
+      name: this.externalEventDefName,
+      contentType: schemaToReturnType(this.payloadSchema),
+      ...(this.correlatedEventConfig !== undefined && { correlatedEventConfig: this.correlatedEventConfig }),
+    })
+  }
+}
+
+/** Result of throwEvent(); allows declaring the payload type. */
+export class ThrowEventNodeOutput {
+  payloadSchema?: ZodTypeAny
+  private registered = false
+
+  constructor(
+    readonly workflowEventDefName: string,
+    readonly parent: WorkflowThread
+  ) {}
+
+  /** See ExternalEventNodeOutput#registeredAs — takes a zod schema, not a class. */
+  registeredAs(payloadSchema: ZodTypeAny): ThrowEventNodeOutput {
+    this.payloadSchema = payloadSchema
+    if (!this.registered) {
+      this.registered = true
+      this.parent.workflow.addWorkflowEventDefToRegister(this)
+    }
+    return this
+  }
+
+  toPutWorkflowEventDefRequest(): PutWorkflowEventDefRequest {
+    return PutWorkflowEventDefRequest.create({
+      name: this.workflowEventDefName,
+      contentType: schemaToReturnType(this.payloadSchema),
+    })
+  }
+}
+
+/**
+ * Mirrors Java BuilderUtil#javaTypeToReturnType: an absent payload type means
+ * a void event, so `return_type` is left unset.
+ */
+function schemaToReturnType(schema?: ZodTypeAny): ReturnType {
+  if (schema === undefined) {
+    return ReturnType.create()
+  }
+  return ReturnType.create({ returnType: zodToTypeDef(schema) })
 }
 
 export class WaitForConditionNodeOutput extends NodeOutput {}

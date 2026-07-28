@@ -9,6 +9,7 @@ export {
   ExternalEventNodeOutput,
   WaitForConditionNodeOutput,
   WaitForThreadsNodeOutput,
+  ThrowEventNodeOutput,
   SpawnedThread,
   SpawnedChildWf,
   FixedSpawnedThreads,

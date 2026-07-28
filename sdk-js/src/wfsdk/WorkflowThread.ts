@@ -36,6 +36,7 @@ import {
   SpawnedThreads,
   SpawnedThreadsIterator,
   TaskNodeOutput,
+  ThrowEventNodeOutput,
   UserTaskOutput,
   WaitForConditionNodeOutput,
   WaitForThreadsNodeOutput,
@@ -497,7 +498,7 @@ export class WorkflowThread {
 
   // ---------------------------------------------------------- workflow events
 
-  throwEvent(workflowEventDefName: string, content: LHValue): void {
+  throwEvent(workflowEventDefName: string, content: LHValue): ThrowEventNodeOutput {
     this.checkIfIsActive()
     this.workflow.addWorkflowEventDefName(workflowEventDefName)
     this.addNode(`throw-${workflowEventDefName}`, {
@@ -507,6 +508,7 @@ export class WorkflowThread {
         content: toVariableAssignment(content),
       },
     })
+    return new ThrowEventNodeOutput(workflowEventDefName, this)
   }
 
   // ------------------------------------------------------------ child threads

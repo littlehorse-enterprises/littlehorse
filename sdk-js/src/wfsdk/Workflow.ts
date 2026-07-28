@@ -1,4 +1,12 @@
-import { AllowedUpdateType, PutWfSpecRequest } from '../proto/service'
+import * as fs from 'fs'
+import * as path from 'path'
+import {
+  AllowedUpdateType,
+  PutExternalEventDefRequest,
+  PutWfSpecRequest,
+  PutWorkflowEventDefRequest,
+} from '../proto/service'
+import type { ExternalEventNodeOutput, ThrowEventNodeOutput } from './nodeOutputs'
 import { ThreadRetentionPolicy, WfSpec_ParentWfSpecReference, WorkflowRetentionPolicy } from '../proto/wf_spec'
 import { ExponentialBackoffRetryPolicy, VariableMutationType } from '../proto/common_wfspec'
 import { WorkflowThread, ThreadFunc } from './WorkflowThread'
@@ -16,6 +24,8 @@ export class Workflow {
   private readonly requiredExternalEventDefNames = new Set<string>()
   private readonly requiredChildWfSpecNames = new Set<string>()
   private readonly requiredWorkflowEventDefNames = new Set<string>()
+  private readonly externalEventDefsToRegister: ExternalEventNodeOutput[] = []
+  private readonly workflowEventDefsToRegister: ThrowEventNodeOutput[] = []
 
   readonly threadsStack: WorkflowThread[] = []
   defaultTaskTimeout?: number
@@ -60,6 +70,37 @@ export class Workflow {
 
   compileWfToJson(): string {
     return PutWfSpecRequest.toJsonString(this.compileWorkflow(), { prettySpaces: 2 })
+  }
+
+  /**
+   * Compiles the workflow and writes it to `<directory>/<name>-wfspec.json`,
+   * creating the directory if needed (filename matches the Java SDK).
+   */
+  compileAndSaveToDisk(directory: string): string {
+    const filePath = path.join(directory, `${this.name}-wfspec.json`)
+    fs.mkdirSync(directory, { recursive: true })
+    fs.writeFileSync(filePath, this.compileWfToJson())
+    return filePath
+  }
+
+  addExternalEventDefToRegister(node: ExternalEventNodeOutput): void {
+    this.externalEventDefsToRegister.push(node)
+  }
+
+  addWorkflowEventDefToRegister(node: ThrowEventNodeOutput): void {
+    this.workflowEventDefsToRegister.push(node)
+  }
+
+  /** ExternalEventDefs declared via `registeredAs()`, ready to be registered. */
+  getExternalEventDefsToRegister(): PutExternalEventDefRequest[] {
+    this.compileWorkflow()
+    return this.externalEventDefsToRegister.map(node => node.toPutExternalEventDefRequest())
+  }
+
+  /** WorkflowEventDefs declared via `registeredAs()`, ready to be registered. */
+  getWorkflowEventDefsToRegister(): PutWorkflowEventDefRequest[] {
+    this.compileWorkflow()
+    return this.workflowEventDefsToRegister.map(node => node.toPutWorkflowEventDefRequest())
   }
 
   addSubThread(subThreadName: string, subThreadFunc: ThreadFunc): string {
