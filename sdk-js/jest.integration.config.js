@@ -16,6 +16,7 @@ module.exports = {
   // The suite shares one server, so parallel files would collide on metadata
   // names and on tenant creation.
   maxWorkers: 1,
+  reporters: ['default', '<rootDir>/jest.reporter.js'],
   globalSetup: '<rootDir>/src/integration/globalSetup.ts',
   globalTeardown: '<rootDir>/src/integration/globalTeardown.ts',
 }
