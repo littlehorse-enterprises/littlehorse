@@ -1,4 +1,5 @@
 import { VariableValue, Struct, StructField } from '../proto/type_definition'
+import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { VarNameAndVal } from '../proto/task_run'
 import { ScheduledTask } from '../proto/service'
 
@@ -26,6 +27,10 @@ export function extractVariableValue(variable: VariableValue | undefined): unkno
       return JSON.parse(value.jsonObj)
     case 'jsonArr':
       return JSON.parse(value.jsonArr)
+    case 'utcTimestamp':
+      return Timestamp.toDate(value.utcTimestamp)
+    case 'wfRunId':
+      return value.wfRunId
     case 'struct':
       return extractStruct(value.struct)
     default:
@@ -65,6 +70,10 @@ export function toVariableValue(value: unknown): VariableValue {
 
   if (Buffer.isBuffer(value) || value instanceof Uint8Array) {
     return { value: { oneofKind: 'bytes', bytes: Buffer.from(value) } }
+  }
+
+  if (value instanceof Date) {
+    return { value: { oneofKind: 'utcTimestamp', utcTimestamp: Timestamp.fromDate(value) } }
   }
 
   if (Array.isArray(value)) {

@@ -20,6 +20,26 @@ export type TaskFunction = (...args: any[]) => any | Promise<any>
 const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
 const REPORT_TASK_RETRY_DELAY_MS = 2_000
+const CLOSE_DRAIN_TIMEOUT_MS = 30_000
+
+/** Why a worker is (un)healthy — mirrors Java's LHTaskWorkerHealthReason. */
+export enum LHTaskWorkerHealthReason {
+  HEALTHY = 'HEALTHY',
+  /** start() has not been called, or close() already ran. */
+  NOT_RUNNING = 'NOT_RUNNING',
+  /** Running, but not connected to any server host. */
+  NO_CONNECTIONS = 'NO_CONNECTIONS',
+  /** The most recent heartbeat/registration attempt failed. */
+  SERVER_REBALANCING = 'SERVER_REBALANCING',
+}
+
+/** Health snapshot of a task worker — mirrors Java's LHTaskWorkerHealth. */
+export interface LHTaskWorkerHealth {
+  healthy: boolean
+  reason: LHTaskWorkerHealthReason
+  /** Number of server hosts this worker is currently polling. */
+  connectedHosts: number
+}
 
 /**
  * Represents a connection to a single LH Server host for polling tasks.
@@ -32,6 +52,8 @@ class ServerConnection {
   private readonly transport: GrpcTransport
   private readonly client: LHPublicClient
   private pollPromise: Promise<void> | undefined
+  private pollAbort: AbortController | undefined
+  private inflight = 0
 
   constructor(
     host: string,
@@ -67,10 +89,25 @@ class ServerConnection {
     this.pollPromise = this.pollLoop()
   }
 
-  async close(): Promise<void> {
+  /** Number of tasks currently executing on this connection. */
+  getInflightCount(): number {
+    return this.inflight
+  }
+
+  async close(drainTimeoutMs = CLOSE_DRAIN_TIMEOUT_MS): Promise<void> {
     this.running = false
+    // Aborting the in-flight poll call is what actually unblocks the response
+    // iterator: without it, `for await (call.responses)` waits forever for a
+    // task that will never arrive and close() never returns.
+    this.pollAbort?.abort()
     if (this.pollPromise) {
       await this.pollPromise.catch(() => {})
+    }
+    // Let tasks that were already handed to us finish and report before the
+    // transport goes away, so results aren't lost on shutdown.
+    const deadline = Date.now() + drainTimeoutMs
+    while (this.inflight > 0 && Date.now() < deadline) {
+      await sleep(10)
     }
     this.transport.close()
   }
@@ -90,7 +127,8 @@ class ServerConnection {
   }
 
   private async doPoll(): Promise<void> {
-    const call = this.client.pollTask()
+    this.pollAbort = new AbortController()
+    const call = this.client.pollTask({ abort: this.pollAbort.signal })
 
     const sendRequest = () => {
       if (!this.running) return
@@ -111,9 +149,14 @@ class ServerConnection {
       for await (const response of call.responses) {
         if (response.result) {
           // Execute task in the background (don't await—allow the next poll)
-          this.executeAndReport(response.result).catch(err => {
-            console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
-          })
+          this.inflight++
+          this.executeAndReport(response.result)
+            .catch(err => {
+              console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
+            })
+            .finally(() => {
+              this.inflight--
+            })
         }
         if (!this.running) break
         sendRequest()
@@ -136,8 +179,30 @@ class ServerConnection {
     const context = new WorkerContext(task)
     const now = Timestamp.now()
 
+    let args: unknown[]
     try {
-      const args = extractTaskArgs(task)
+      args = extractTaskArgs(task)
+    } catch (err: any) {
+      // Failing to map the server's input variables is distinct from the task
+      // itself failing: the server must not retry this as a technical error.
+      return {
+        taskRunId: task.taskRunId,
+        time: now,
+        status: TaskStatus.TASK_INPUT_VAR_SUB_ERROR,
+        attemptNumber: task.attemptNumber,
+        logOutput: undefined,
+        result: {
+          oneofKind: 'error',
+          error: {
+            type: LHErrorType.VAR_SUB_ERROR,
+            message: err?.message ?? String(err),
+          },
+        },
+        totalCheckpoints: 0,
+      }
+    }
+
+    try {
       // Append WorkerContext as the last argument
       args.push(context)
 
@@ -264,6 +329,12 @@ export interface LHTaskWorkerOptions {
    * Optional version string for the task worker (recorded for debugging).
    */
   taskWorkerVersion?: string
+
+  /**
+   * How often to re-register with the server, which is also how quickly the
+   * worker notices a rebalance. Defaults to 15s.
+   */
+  heartbeatIntervalMs?: number
 }
 
 /**
@@ -287,6 +358,12 @@ export interface LHTaskWorker {
   close(): Promise<void>
   /** Returns whether the worker is currently running. */
   isRunning(): boolean
+  /** Returns whether the worker has been shut down (inverse of isRunning). */
+  isClosed(): boolean
+  /** Returns a health snapshot — Java: LHTaskWorker#healthStatus. */
+  healthStatus(): LHTaskWorkerHealth
+  /** Number of tasks currently executing across all connections. */
+  getInflightTaskCount(): number
 }
 
 /**
@@ -317,13 +394,17 @@ export function createTaskWorker(
   options: LHTaskWorkerOptions
 ): LHTaskWorker {
   const taskWorkerId = `worker-${taskDefName}-${randomBytes(8).toString('hex')}`
-  const bootstrapClient = config.getClient()
+  // Hold the bootstrap transport so close() can release it; config.getClient()
+  // would create one we could never shut down.
+  const bootstrapTransport = config.createTransport(config.getApiBootstrapHost()!, config.getApiBootstrapPort()!)
+  const bootstrapClient = config.createClientForTransport(bootstrapTransport)
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
   const taskWorkerVersion = options.taskWorkerVersion
   const connections = new Map<string, ServerConnection>()
   let running = false
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined
+  let lastHeartbeatFailed = false
 
   async function heartbeat(): Promise<void> {
     try {
@@ -367,7 +448,9 @@ export function createTaskWorker(
           connections.set(key, conn)
         }
       }
+      lastHeartbeatFailed = false
     } catch (err) {
+      lastHeartbeatFailed = true
       console.error('[LHTaskWorker] Failed to register with server:', err)
     }
   }
@@ -434,7 +517,7 @@ export function createTaskWorker(
         heartbeat().catch(err => {
           console.error('[LHTaskWorker] Heartbeat error:', err)
         })
-      }, HEARTBEAT_INTERVAL_MS)
+      }, options.heartbeatIntervalMs ?? HEARTBEAT_INTERVAL_MS)
     },
 
     async close(): Promise<void> {
@@ -454,10 +537,38 @@ export function createTaskWorker(
       }
       await Promise.all(closePromises)
       connections.clear()
+      bootstrapTransport.close()
     },
 
     isRunning(): boolean {
       return running
+    },
+
+    isClosed(): boolean {
+      return !running
+    },
+
+    healthStatus(): LHTaskWorkerHealth {
+      const connectedHosts = [...connections.values()].filter(conn => conn.isRunning()).length
+      let reason = LHTaskWorkerHealthReason.HEALTHY
+      if (!running) {
+        reason = LHTaskWorkerHealthReason.NOT_RUNNING
+      } else if (lastHeartbeatFailed) {
+        reason = LHTaskWorkerHealthReason.SERVER_REBALANCING
+      } else if (connectedHosts === 0) {
+        reason = LHTaskWorkerHealthReason.NO_CONNECTIONS
+      }
+      return {
+        healthy: reason === LHTaskWorkerHealthReason.HEALTHY,
+        reason,
+        connectedHosts,
+      }
+    },
+
+    getInflightTaskCount(): number {
+      let total = 0
+      for (const conn of connections.values()) total += conn.getInflightCount()
+      return total
     },
   }
 }
