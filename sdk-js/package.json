@@ -37,9 +37,10 @@
   "packageManager": "pnpm@10.19.0",
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --testPathIgnorePatterns \"/node_modules/\" \"src/integration\"",
     "lint": "prettier --check .",
-    "lint:fix": "prettier --write ."
+    "lint:fix": "prettier --write .",
+    "test:integration": "jest --config jest.integration.config.js"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",

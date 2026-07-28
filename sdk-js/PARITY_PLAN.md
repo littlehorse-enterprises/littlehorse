@@ -16,7 +16,7 @@ Passed = done, todo = missing, failed = broken. That output *is* the feature
 matrix (see below). Snapshot as of 2026-07-28: 224 passing / 28 todo. The
 wfsdk compiler (`src/wfsdk/`) is complete, the worker is hardened and tested
 against a fake server, and all 14 reference workflows match the Java goldens.
-**What remains is mostly OAuth, live-server integration, and soak** — see
+**What remains is mostly OAuth and soak/chaos** — see
 "Ordering and status".
 
 ## Background: what an SDK is here
@@ -55,6 +55,7 @@ conversion) and `usertask/` helpers.
 | `sdk-js/src/feature-matrix/referenceWorkflows.ts` | TS twins of the Java reference workflows |
 | `sdk-js/src/feature-matrix/wfsdk-golden.test.ts` | Conformance: every TS twin must compile to its golden |
 | `sdk-js/src/feature-matrix/fakeServer.ts` | In-process gRPC server used by the worker tests |
+| `sdk-js/src/integration/` | Tier-2 tests against a real `lh-standalone` (`npm run test:integration`) |
 | `sdk-js/src/wfsdk/` | The wfsdk port (Track A) |
 | `sdk-js/golden/*.json` | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
 | `sdk-js/golden/generator/` | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens |
@@ -116,7 +117,7 @@ start there.
 2. **Integration tests against a real server** — `lh-standalone` in Docker:
    register a WfSpec, run a workflow end-to-end with a JS worker, assert it
    completes with the right variable values. **Integration = "does it survive
-   contact with reality."**
+   contact with reality."** **Done** — see "Integration tests" below.
 3. **Soak/chaos tests for the worker** — sustained load over time; kill and
    restart the server mid-run; verify reconnect with no dropped or
    double-reported tasks. Worker bugs are overwhelmingly lifecycle bugs, not
@@ -143,12 +144,52 @@ regressions (50x), not to win.
    discovery, rebalance, reconnect, report-retry-without-duplicates, and
    graceful close. See "Fake server" below for how, and what it does not
    prove. Remaining: liveness reporting, a real concurrency ceiling, signature
-   and StructDef validation, checkpointing, user/group context, integration
-   tests against `lh-standalone`, and soak/chaos.
+   and StructDef validation, checkpointing, user/group context, and
+   soak/chaos.
 6. OAuth (client-credentials, refresh, `isOauth`). **Not started** — the
    single largest unimplemented feature left; Java has a whole `common/auth`
    package and sdk-js has none of it.
 7. Benchmarks. **Not started.**
+
+### Integration tests (tier 2, real server)
+
+`src/integration/` runs against a real `lh-standalone`. Kept out of `npm test`
+so the default suite stays Docker-free:
+
+```sh
+docker run -d --name lh-sdkjs-it -p 2023:2023 \
+  -e LHS_ADVERTISED_LISTENERS=PLAIN://localhost:2023 \
+  ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
+cd sdk-js && npm run test:integration
+```
+
+Two suites: `wfspec-acceptance` registers all 14 reference workflows and
+asserts the server accepts them; `execution` runs real WfRuns driven by JS
+workers and asserts on server-side status and variable values. The suite is
+hermetic — `globalSetup` creates a fresh tenant per run — and verified green
+against a from-scratch container.
+
+**Constraints this surfaced that no offline test could.** Each one was a real
+failure first:
+
+- **The advertised listener must be reachable.** Workers ask the server which
+  hosts to poll; without `LHS_ADVERTISED_LISTENERS`, they connect to the
+  bootstrap and then fail on the hosts they are handed.
+- **Metadata is immutable.** Re-registering a TaskDef with different input
+  vars fails with "already exists and is immutable", so reusing a namespace
+  makes runs order-dependent. Hence a tenant per run.
+- **A TaskDef's input vars must match the arity of the `execute()` call.**
+- **ExternalEventDefs, WorkflowEventDefs, UserTaskDefs and child WfSpecs must
+  exist before the WfSpec referencing them.**
+- **Nested object fields inside a StructDef must reference a separately
+  registered StructDef**; an `inlineStructDef` is rejected ("Forbidden JSON
+  type: JSON_OBJ ... use native equivalents").
+- **WfSpec registration is eventually consistent.** `putWfSpec` returns before
+  the spec is queryable, so an immediate `runWf` can fail with "Couldn't find
+  specified WfSpec" — reliably fast on a warm server, which is why it only
+  appears on a cold one. `awaitWfSpecReady()` in the harness handles it.
+- **Creating tenants from more than one test file in a run** produced "Tenant
+  not allowed" on the second file; one tenant per run avoids it.
 
 ### Fake server (worker tests)
 
