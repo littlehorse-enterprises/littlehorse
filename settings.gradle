@@ -26,7 +26,6 @@ include(
         'conditionals-while',
         'conditionals',
         'correlated-event',
-        'dashboard-e2e-fixtures',
         'exception-handler',
         'expressions',
         'external-event',

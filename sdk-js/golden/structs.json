@@ -1,0 +1,122 @@
+{
+  "name": "golden-structs",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-noop-TASK",
+            "variableMutations": [{
+              "lhsName": "customer",
+              "operation": "ASSIGN",
+              "rhsAssignment": {
+                "structBuilder": {
+                  "structDefId": {
+                    "name": "customer-struct",
+                    "version": -1
+                  },
+                  "value": {
+                    "fields": {
+                      "name": {
+                        "simpleValue": {
+                          "literalValue": {
+                            "str": "Ada"
+                          }
+                        }
+                      },
+                      "age": {
+                        "simpleValue": {
+                          "literalValue": {
+                            "int": "36"
+                          }
+                        }
+                      },
+                      "address": {
+                        "subStructure": {
+                          "fields": {
+                            "city": {
+                              "simpleValue": {
+                                "literalValue": {
+                                  "str": "London"
+                                }
+                              }
+                            },
+                            "zip": {
+                              "simpleValue": {
+                                "literalValue": {
+                                  "str": "NW1"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }]
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-noop-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "noop"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "customer",
+          "typeDef": {
+            "masked": false,
+            "structDefId": {
+              "name": "customer-struct",
+              "version": -1
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "pinned",
+          "typeDef": {
+            "masked": false,
+            "structDefId": {
+              "name": "customer-struct",
+              "version": 3
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

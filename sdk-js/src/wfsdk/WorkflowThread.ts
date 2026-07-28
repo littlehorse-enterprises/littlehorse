@@ -1,3 +1,4 @@
+import type { ZodTypeAny } from 'zod'
 import {
   Edge,
   ExternalEventNode,
@@ -41,6 +42,8 @@ import {
   WaitForConditionNodeOutput,
   WaitForThreadsNodeOutput,
 } from './nodeOutputs'
+import { InlineLHStructBuilder, LHStructBuilder } from './structBuilders'
+import { arrayOf, LHType, mapOf, structOf, toTypeDefinition } from './types'
 import { WfRunVariable } from './variables'
 import type { Workflow } from './Workflow'
 
@@ -177,6 +180,47 @@ export class WorkflowThread {
 
   declareJsonArr(name: string): WfRunVariable {
     return this.addVariable(name, VariableType.JSON_ARR)
+  }
+
+  /**
+   * Declares a native, element-typed LH array (an `InlineArrayDef`) — distinct
+   * from `declareJsonArr`, which is schemaless JSON.
+   */
+  declareArray(name: string, elementType: LHType): WfRunVariable {
+    return this.addTypedVariable(name, arrayOf(elementType))
+  }
+
+  /** Declares a native LH map with typed keys and values (an `InlineMapDef`). */
+  declareMap(name: string, keyType: LHType, valueType: LHType): WfRunVariable {
+    return this.addTypedVariable(name, mapOf(keyType, valueType))
+  }
+
+  /**
+   * Declares a variable typed by a registered StructDef, referenced by name
+   * (optionally pinned to a version) or by an `lhStruct(...)` zod schema.
+   */
+  declareStruct(name: string, structDef: string | ZodTypeAny, version?: number): WfRunVariable {
+    const type = typeof structDef === 'string' ? structOf(structDef, version) : structDef
+    return this.addTypedVariable(name, type)
+  }
+
+  private addTypedVariable(name: string, type: LHType): WfRunVariable {
+    this.checkIfIsActive()
+    const wfRunVariable = new WfRunVariable(name, toTypeDefinition(type), this)
+    this.wfRunVariables.push(wfRunVariable)
+    return wfRunVariable
+  }
+
+  // ------------------------------------------------------------------ structs
+
+  /** Builds a value conforming to a registered StructDef. */
+  buildStruct(structDefName: string, version?: number): LHStructBuilder {
+    return new LHStructBuilder(structDefName, version)
+  }
+
+  /** Builds a schemaless (inline) struct value. */
+  buildInlineStruct(): InlineLHStructBuilder {
+    return new InlineLHStructBuilder()
   }
 
   // ------------------------------------------------------------------- tasks

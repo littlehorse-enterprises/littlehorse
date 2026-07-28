@@ -169,6 +169,31 @@ export const referenceWorkflows: Record<string, () => Workflow> = {
       thread.waitForChildWf(shipping)
     }),
 
+  'arrays-and-maps': () =>
+    Workflow.newWorkflow('golden-arrays-and-maps', thread => {
+      thread.declareArray('str-array', VariableType.STR)
+      thread.declareArray('int-array', VariableType.INT)
+      thread.declareMap('str-to-int', VariableType.STR, VariableType.INT)
+      thread.declareMap('int-to-bool', VariableType.INT, VariableType.BOOL)
+      thread.execute('noop')
+    }),
+
+  structs: () =>
+    Workflow.newWorkflow('golden-structs', thread => {
+      const customer = thread.declareStruct('customer', 'customer-struct')
+      thread.declareStruct('pinned', 'customer-struct', 3)
+
+      customer.assign(
+        thread
+          .buildStruct('customer-struct')
+          .put('name', 'Ada')
+          .put('age', 36)
+          .put('address', thread.buildInlineStruct().put('city', 'London').put('zip', 'NW1'))
+      )
+
+      thread.execute('noop')
+    }),
+
   interrupts: () =>
     Workflow.newWorkflow('golden-interrupts', thread => {
       thread.registerInterruptHandler('cancel-requested', handler => {

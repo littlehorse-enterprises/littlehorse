@@ -1,0 +1,119 @@
+{
+  "name": "golden-arrays-and-maps",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-noop-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-noop-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "noop"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "str-array",
+          "typeDef": {
+            "masked": false,
+            "inlineArrayDef": {
+              "arrayType": {
+                "primitiveType": "STR",
+                "masked": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "int-array",
+          "typeDef": {
+            "masked": false,
+            "inlineArrayDef": {
+              "arrayType": {
+                "primitiveType": "INT",
+                "masked": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "str-to-int",
+          "typeDef": {
+            "masked": false,
+            "inlineMapDef": {
+              "keyType": {
+                "primitiveType": "STR",
+                "masked": false
+              },
+              "valueType": {
+                "primitiveType": "INT",
+                "masked": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }, {
+        "varDef": {
+          "name": "int-to-bool",
+          "typeDef": {
+            "masked": false,
+            "inlineMapDef": {
+              "keyType": {
+                "primitiveType": "INT",
+                "masked": false
+              },
+              "valueType": {
+                "primitiveType": "BOOL",
+                "masked": false
+              }
+            }
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

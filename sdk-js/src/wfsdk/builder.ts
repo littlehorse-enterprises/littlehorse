@@ -4,6 +4,7 @@ import { TypeDefinition, VariableValue } from '../proto/type_definition'
 import { VariableType } from '../proto/common_enums'
 import { CastExpressionImpl, LHExpressionImpl, LHFormatString, SizeOfExpressionImpl } from './expressions'
 import { NodeOutput } from './nodeOutputs'
+import { LHStructBuilder } from './structBuilders'
 import { WfRunVariable } from './variables'
 
 /**
@@ -121,6 +122,12 @@ export function toVariableAssignment(value: unknown): VariableAssignment {
       masked: false,
     })
     return out
+  }
+
+  if (value instanceof LHStructBuilder) {
+    return VariableAssignment.create({
+      source: { oneofKind: 'structBuilder', structBuilder: value.toProto() },
+    })
   }
 
   if (value instanceof SizeOfExpressionImpl) {

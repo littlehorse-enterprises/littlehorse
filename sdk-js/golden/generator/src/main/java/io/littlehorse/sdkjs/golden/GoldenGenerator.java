@@ -48,6 +48,8 @@ public class GoldenGenerator {
         workflows.put("sleep-and-events", sleepAndEvents());
         workflows.put("child-workflow", childWorkflow());
         workflows.put("interrupts", interrupts());
+        workflows.put("arrays-and-maps", arraysAndMaps());
+        workflows.put("structs", structs());
 
         for (Map.Entry<String, Workflow> entry : workflows.entrySet()) {
             Path out = outputDir.resolve(entry.getKey() + ".json");
@@ -231,6 +233,32 @@ public class GoldenGenerator {
             WfRunVariable orderId = wf.declareStr("order-id");
             SpawnedChildWf shipping = wf.runWf("shipping-wf", Map.of("order-id", orderId));
             wf.waitForChildWf(shipping);
+        });
+    }
+
+    /** Matrix: variables — native typed arrays and maps (not JSON_ARR/JSON_OBJ). */
+    private static Workflow arraysAndMaps() {
+        return new WorkflowImpl("golden-arrays-and-maps", wf -> {
+            wf.declareArray("str-array", String.class);
+            wf.declareArray("int-array", Long.class);
+            wf.declareMap("str-to-int", String.class, Long.class);
+            wf.declareMap("int-to-bool", Long.class, Boolean.class);
+            wf.execute("noop");
+        });
+    }
+
+    /** Matrix: structs — declareStruct plus struct and inline-struct builders. */
+    private static Workflow structs() {
+        return new WorkflowImpl("golden-structs", wf -> {
+            WfRunVariable customer = wf.declareStruct("customer", "customer-struct");
+            wf.declareStruct("pinned", "customer-struct", 3);
+
+            customer.assign(wf.buildStruct("customer-struct")
+                    .put("name", "Ada")
+                    .put("age", 36)
+                    .put("address", wf.buildInlineStruct().put("city", "London").put("zip", "NW1")));
+
+            wf.execute("noop");
         });
     }
 

@@ -23,7 +23,16 @@ import {
   WfRunVariableAccessLevel,
   WorkflowRetentionPolicy,
 } from '../proto/wf_spec'
-import { spawnedThreadsOf, ThreadFunc, Workflow, WorkflowThread } from '../wfsdk'
+import {
+  arrayOf,
+  spawnedThreadsOf,
+  ThreadFunc,
+  toTypeDefinition,
+  toVariableAssignment,
+  Workflow,
+  WorkflowThread,
+} from '../wfsdk'
+import { lhStruct } from '../worker'
 import { expectMatchesGolden } from './golden'
 import { referenceWorkflows } from './referenceWorkflows'
 
@@ -254,9 +263,56 @@ describe('wfsdk', () => {
       provenByGolden('variables')
     })
 
-    test.todo('declare a typed array variable — Java: WorkflowThread#declareArray')
-    test.todo('declare a typed map variable — Java: WorkflowThread#declareMap')
-    test.todo('declare a struct variable by StructDef name (and version) — Java: WorkflowThread#declareStruct')
+    test('declare a typed array variable — Java: WorkflowThread#declareArray', () => {
+      provenByGolden('arrays-and-maps')
+
+      // Native typed arrays are distinct from schemaless JSON_ARR...
+      const spec = compile(wf => {
+        wf.declareArray('nested', arrayOf(VariableType.STR))
+        wf.execute('noop')
+      })
+      expect(entrypointOf(spec).variableDefs[0].varDef?.typeDef?.definedType).toEqual({
+        oneofKind: 'inlineArrayDef',
+        inlineArrayDef: { arrayType: toTypeDefinition(arrayOf(VariableType.STR)) },
+      })
+
+      // ...and cannot hold schemaless JSON values (Java: LHTypeConstraintValidator).
+      expect(() =>
+        compile(wf => {
+          wf.declareArray('bad', VariableType.JSON_OBJ)
+        })
+      ).toThrow(/not allowed as a native array element type/)
+    })
+
+    test('declare a typed map variable — Java: WorkflowThread#declareMap', () => {
+      provenByGolden('arrays-and-maps')
+      expect(() =>
+        compile(wf => {
+          wf.declareMap('bad', VariableType.STR, VariableType.JSON_ARR)
+        })
+      ).toThrow(/not allowed as a native map value type/)
+    })
+
+    test('declare a struct variable by StructDef name (and version) — Java: WorkflowThread#declareStruct', () => {
+      provenByGolden('structs')
+
+      // A lhStruct()-annotated zod schema resolves to the same StructDefId;
+      // an unannotated schema is rejected rather than silently becoming JSON.
+      const schema = lhStruct('customer-struct', z.object({ name: z.string() }))
+      const spec = compile(wf => {
+        wf.declareStruct('from-schema', schema)
+        wf.execute('noop')
+      })
+      expect(entrypointOf(spec).variableDefs[0].varDef?.typeDef?.definedType).toEqual({
+        oneofKind: 'structDefId',
+        structDefId: { name: 'customer-struct', version: -1 },
+      })
+      expect(() =>
+        compile(wf => {
+          wf.declareStruct('plain', z.object({ name: z.string() }))
+        })
+      ).toThrow(/lhStruct/)
+    })
 
     test('declare a variable from a type or default value — Java: WorkflowThread#addVariable', () => {
       const spec = compile(wf => {
@@ -846,12 +902,48 @@ describe('wfsdk', () => {
   })
 
   describe('structs', () => {
-    test.todo(
-      'build a struct value for a registered StructDef (by name and version) — Java: WorkflowThread#buildStruct, LHStructBuilder#put'
-    )
-    test.todo(
-      'build an inline (schemaless) struct value — Java: WorkflowThread#buildInlineStruct, InlineLHStructBuilder#put'
-    )
-    test.todo('nest struct builders inside struct fields — Java: LHStructBuilder#put(String, InlineLHStructBuilder)')
+    test('build a struct value for a registered StructDef (by name and version) — Java: WorkflowThread#buildStruct, LHStructBuilder#put', () => {
+      provenByGolden('structs')
+
+      // Version defaults to -1 ("latest") and can be pinned explicitly.
+      const assignment = compileAssignment(wf => wf.buildStruct('customer-struct', 7).put('name', 'Ada'))
+      if (assignment.source.oneofKind !== 'structBuilder') throw new Error('expected a structBuilder')
+      expect(assignment.source.structBuilder.structDefId).toEqual({ name: 'customer-struct', version: 7 })
+      expect(assignment.source.structBuilder.value?.fields['name']).toEqual({
+        structValue: { oneofKind: 'simpleValue', simpleValue: toVariableAssignment('Ada') },
+      })
+    })
+
+    test('build an inline (schemaless) struct value — Java: WorkflowThread#buildInlineStruct, InlineLHStructBuilder#put', () => {
+      const assignment = compileAssignment(wf =>
+        wf.buildStruct('s').put('nested', wf.buildInlineStruct().put('city', 'London'))
+      )
+      if (assignment.source.oneofKind !== 'structBuilder') throw new Error('expected a structBuilder')
+      const nested = assignment.source.structBuilder.value?.fields['nested']
+      expect(nested?.structValue.oneofKind).toBe('subStructure')
+    })
+
+    test('nest struct builders inside struct fields — Java: LHStructBuilder#put(String, InlineLHStructBuilder)', () => {
+      provenByGolden('structs')
+
+      // Nesting is arbitrarily deep, and field order is preserved.
+      const assignment = compileAssignment(wf =>
+        wf
+          .buildStruct('s')
+          .put('a', wf.buildInlineStruct().put('b', wf.buildInlineStruct().put('c', 'deep')))
+          .put('z', 1)
+      )
+      if (assignment.source.oneofKind !== 'structBuilder') throw new Error('expected a structBuilder')
+      const fields = assignment.source.structBuilder.value!.fields
+      expect(Object.keys(fields)).toEqual(['a', 'z'])
+
+      const a = fields['a'].structValue
+      if (a.oneofKind !== 'subStructure') throw new Error('expected subStructure')
+      const b = a.subStructure.fields['b'].structValue
+      if (b.oneofKind !== 'subStructure') throw new Error('expected nested subStructure')
+      expect(b.subStructure.fields['c']).toEqual({
+        structValue: { oneofKind: 'simpleValue', simpleValue: toVariableAssignment('deep') },
+      })
+    })
   })
 })
