@@ -7,7 +7,6 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.server.auth.RequestAuthorizer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
@@ -73,7 +72,7 @@ public class LHServer {
         return contextKey.get();
     }
 
-    public LHServer(LHServerConfig config) throws LHMisconfigurationException {
+    public LHServer(LHServerConfig config) {
         this.metadataCache = new MetadataCache();
         this.config = config;
         this.networkThreadpool = Executors.newVirtualThreadPerTaskExecutor();
@@ -191,7 +190,7 @@ public class LHServer {
             }
 
         } catch (IOException exn) {
-            throw new LHMisconfigurationException("Failed overriding Streams Process ID", exn);
+            throw new IllegalStateException("Failed overriding Streams Process ID", exn);
         }
     }
 
