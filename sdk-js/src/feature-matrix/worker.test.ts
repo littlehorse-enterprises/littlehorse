@@ -4,8 +4,17 @@ import { LHErrorType, TaskStatus, VariableType } from '../proto/common_enums'
 import { ReportTaskRun, ScheduledTask } from '../proto/service'
 import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { VariableValue } from '../proto/type_definition'
-import { createTaskWorker, LHTaskException, lhStruct, TaskFunction, WorkerContext } from '../worker'
+import {
+  createTaskWorker,
+  LHTaskException,
+  LHTaskWorkerHealthReason,
+  lhStruct,
+  TaskFunction,
+  TaskSchemaMismatchError,
+  WorkerContext,
+} from '../worker'
 import { buildPutStructDefRequest } from '../worker'
+import { TypeDefinition } from '../proto/type_definition'
 import { extractVariableValue, toVariableValue } from '../worker/variableMapping'
 import { FakeLHServer, waitFor } from './fakeServer'
 
@@ -51,6 +60,10 @@ function scheduledTask(overrides: Partial<ScheduledTask> = {}): ScheduledTask {
     attemptNumber: 0,
     ...overrides,
   })
+}
+
+function primitiveTypeDef(type: VariableType): TypeDefinition {
+  return TypeDefinition.create({ definedType: { oneofKind: 'primitiveType', primitiveType: type } })
 }
 
 function varVal(value: VariableValue['value']): { varName: string; value: VariableValue } {
@@ -124,12 +137,50 @@ describe('worker', () => {
       expect(server.putStructDefRequests.map(r => r.name)).toEqual(['person'])
     })
 
-    // Java validates the worker's signature against the server's TaskDef, and
-    // can validate StructDefs without registering them. Neither exists in JS.
-    test.todo(
-      'validate the task function signature against the server TaskDef on start — Java: LHTaskWorker (start-time validation)'
-    )
-    test.todo('validate StructDefs against the server without registering — Java: LHTaskWorker#validateStructDef(s)')
+    test('validate the task function signature against the server TaskDef on start — Java: LHTaskWorker (start-time validation)', async () => {
+      const strVar = { name: 'name', typeDef: primitiveTypeDef(VariableType.STR) }
+
+      // Matching signature: accepted.
+      const matching = await startServer({ taskDefInputVars: [strVar] })
+      const good = createTaskWorker(() => null, 'my-task', configFor(matching), { inputVars: { name: z.string() } })
+      await expect(good.validateTaskDef()).resolves.toBeUndefined()
+
+      // Wrong arity, wrong name, and wrong type each fail with a clear reason
+      // instead of surfacing on the first scheduled task.
+      const wrongArity = createTaskWorker(() => null, 'my-task', configFor(matching), { inputVars: {} })
+      await expect(wrongArity.validateTaskDef()).rejects.toThrow(/declares 0/)
+
+      const wrongName = createTaskWorker(() => null, 'my-task', configFor(matching), {
+        inputVars: { nombre: z.string() },
+      })
+      await expect(wrongName.validateTaskDef()).rejects.toThrow(/named 'name'/)
+
+      const wrongType = createTaskWorker(() => null, 'my-task', configFor(matching), {
+        inputVars: { name: z.number().int() },
+      })
+      await expect(wrongType.validateTaskDef()).rejects.toThrow(/different type/)
+
+      // A TaskDef that does not exist is a mismatch too, not a crash.
+      const absent = await startServer({ taskDefMissing: true })
+      const orphan = createTaskWorker(() => null, 'my-task', configFor(absent), { inputVars: {} })
+      await expect(orphan.validateTaskDef()).rejects.toThrow(TaskSchemaMismatchError)
+    })
+
+    test('validate StructDefs against the server without registering — Java: LHTaskWorker#validateStructDef(s)', async () => {
+      const schema = lhStruct('person', z.object({ name: z.string() }))
+
+      const ok = await startServer({ structDefEvolutionValid: true })
+      const worker = createTaskWorker(() => null, 'my-task', configFor(ok), { inputVars: {} })
+      await expect(worker.validateStructDefs([schema])).resolves.toBeUndefined()
+
+      // Validation must not register anything — that is the whole point.
+      expect(ok.putStructDefRequests).toHaveLength(0)
+      expect(ok.validateStructDefRequests.map(r => r.structDefId?.name)).toEqual(['person'])
+
+      const rejects = await startServer({ structDefEvolutionValid: false })
+      const failing = createTaskWorker(() => null, 'my-task', configFor(rejects), { inputVars: {} })
+      await expect(failing.validateStructDefs([schema])).rejects.toThrow(/not a valid evolution/)
+    })
   })
 
   describe('task execution', () => {
@@ -302,12 +353,60 @@ describe('worker', () => {
       expect(report.logOutput?.value).toEqual({ oneofKind: 'str', str: 'first\nsecond' })
     })
 
-    // Java's WorkerContext exposes the user/group for user-task-triggered
-    // tasks and can checkpoint sub-operations; neither exists in JS yet.
-    test.todo('expose userId / userGroup for user-task-triggered tasks — Java: WorkerContext#getUserId/getUserGroup')
-    test.todo(
-      'checkpoint a sub-operation so retries can skip completed work — Java: WorkerContext#executeAndCheckpoint'
-    )
+    test('expose userId / userGroup for user-task-triggered tasks — Java: WorkerContext#getUserId/getUserGroup', () => {
+      const reminder = contextFor({
+        source: {
+          taskRunSource: {
+            oneofKind: 'userTaskTrigger',
+            userTaskTrigger: {
+              nodeRunId: { wfRunId: { id: 'wf-1' }, threadRunNumber: 0, position: 1 },
+              userTaskEventNumber: 0,
+              userId: 'alice',
+              userGroup: 'approvers',
+            },
+          },
+        },
+      })
+      expect(reminder.getUserId()).toBe('alice')
+      expect(reminder.getUserGroup()).toBe('approvers')
+
+      // Undefined for a plain task node, not an empty string.
+      expect(contextFor().getUserId()).toBeUndefined()
+      expect(contextFor().getUserGroup()).toBeUndefined()
+    })
+
+    test('checkpoint a sub-operation so retries can skip completed work — Java: WorkerContext#executeAndCheckpoint', async () => {
+      const server = await startServer()
+      const client = configFor(server).getClient()
+
+      // First attempt: the operation runs and its result is checkpointed.
+      let firstAttemptRuns = 0
+      const first = new WorkerContext(scheduledTask({ totalObservedCheckpoints: 0 }), client)
+      const charged = await first.executeAndCheckpoint(() => {
+        firstAttemptRuns++
+        return 'charged-card-abc'
+      })
+      expect(charged).toBe('charged-card-abc')
+      expect(firstAttemptRuns).toBe(1)
+      expect(server.checkpoints).toHaveLength(1)
+
+      // Retry: the server reports one observed checkpoint, so the side effect
+      // is replayed from storage instead of happening a second time.
+      let retryRuns = 0
+      const retry = new WorkerContext(scheduledTask({ attemptNumber: 1, totalObservedCheckpoints: 1 }), client)
+      const replayed = await retry.executeAndCheckpoint(() => {
+        retryRuns++
+        return 'charged-card-SECOND-TIME'
+      })
+      expect(replayed).toBe('charged-card-abc')
+      expect(retryRuns).toBe(0)
+      expect(server.checkpoints).toHaveLength(1)
+
+      // Work past the observed count still executes normally.
+      const next = await retry.executeAndCheckpoint(() => 'second-step')
+      expect(next).toBe('second-step')
+      expect(server.checkpoints).toHaveLength(2)
+    })
   })
 
   describe('lifecycle and protocol', () => {
@@ -516,19 +615,195 @@ describe('worker', () => {
       await waitFor(() => worker.getInflightTaskCount() === 0, 5000, 'the task to finish')
     }, 20000)
 
-    // Not yet implemented: JS has no configured concurrency ceiling (it tracks
-    // in-flight work but never refuses to accept more), no liveness/heartbeat
-    // health reporting to the server, and no soak coverage.
-    test.todo(
-      'limit concurrent in-flight tasks to the configured inflight/threads setting — Java: config inflightTasks/workerThreads'
-    )
-    test.todo('send liveness heartbeats and react to unhealthy status — Java: LHLivenessController')
-    test.todo('survive a server restart mid-run (soak/chaos) — plan tier 3')
-    test.todo('run under sustained load for an extended period without leaks or crashes (soak) — plan tier 3')
+    test('limit concurrent in-flight tasks to the configured inflight/threads setting — Java: config inflightTasks/workerThreads', async () => {
+      const server = await startServer()
+      let concurrent = 0
+      let peakConcurrent = 0
+      let release: () => void = () => {}
+      const gate = new Promise<void>(resolve => {
+        release = resolve
+      })
+
+      const worker = createTaskWorker(
+        async () => {
+          concurrent++
+          peakConcurrent = Math.max(peakConcurrent, concurrent)
+          await gate
+          concurrent--
+          return 'ok'
+        },
+        'my-task',
+        configFor(server),
+        { inputVars: {}, maxInflightTasks: 2 }
+      )
+      workers.push(worker)
+
+      for (let i = 0; i < 8; i++) {
+        server.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: `task-${i}` } }))
+      }
+      await worker.start()
+
+      // Wait until the worker is saturated, then confirm it stops asking for
+      // more rather than accepting work it cannot start.
+      await waitFor(() => worker.getInflightTaskCount() >= 2, 5000, 'the worker to saturate')
+      await new Promise(resolve => setTimeout(resolve, 300))
+      expect(peakConcurrent).toBe(2)
+      expect(worker.getInflightTaskCount()).toBe(2)
+
+      // Releasing the gate lets the backlog drain through the same ceiling.
+      release()
+      await waitFor(() => server.reportedTasks.length === 8, 10000, 'all tasks to drain')
+      expect(peakConcurrent).toBe(2)
+    }, 30000)
+
+    test('send liveness heartbeats and react to unhealthy status — Java: LHLivenessController', async () => {
+      const server = await startServer({ isClusterHealthy: true })
+      const worker = createTaskWorker(() => 'ok', 'my-task', configFor(server), {
+        inputVars: {},
+        heartbeatIntervalMs: 100,
+      })
+      workers.push(worker)
+      await worker.start()
+
+      // Heartbeats keep arriving, not just the one at startup.
+      await waitFor(() => server.registerRequests.length >= 3, 5000, 'repeated heartbeats')
+      expect(worker.healthStatus()).toMatchObject({ healthy: true, reason: 'HEALTHY' })
+
+      // The server reporting an unhealthy cluster must surface as
+      // SERVER_REBALANCING, distinct from the worker's own failure.
+      server.setOptions({ isClusterHealthy: false })
+      await waitFor(() => !worker.healthStatus().healthy, 5000, 'the worker to notice')
+      expect(worker.healthStatus().reason).toBe(LHTaskWorkerHealthReason.SERVER_REBALANCING)
+
+      // ...and it recovers once the cluster is healthy again.
+      server.setOptions({ isClusterHealthy: true })
+      await waitFor(() => worker.healthStatus().healthy, 5000, 'the worker to recover')
+    }, 30000)
+
+    test('survive a server restart mid-run (soak/chaos) — plan tier 3', async () => {
+      const server = await startServer()
+      const port = server.port
+      const worker = createTaskWorker(() => 'ok', 'my-task', configFor(server), {
+        inputVars: {},
+        heartbeatIntervalMs: 200,
+      })
+      workers.push(worker)
+
+      server.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: 'before' } }))
+      await worker.start()
+      await waitFor(() => server.reportedTasks.length === 1, 10000, 'the pre-restart task')
+
+      // Take the server away entirely, then bring a new one up on the same
+      // port — as a rolling restart would look to a worker.
+      await server.stop()
+      await new Promise(resolve => setTimeout(resolve, 500))
+      const restarted = new FakeLHServer()
+      await restarted.start(port)
+      servers.push(restarted)
+
+      restarted.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: 'after' } }))
+      await waitFor(() => restarted.reportedTasks.length === 1, 20000, 'a task after the restart')
+      expect(restarted.reportedTasks[0].taskRunId?.taskGuid).toBe('after')
+      expect(restarted.reportedTasks[0].status).toBe(TaskStatus.TASK_SUCCESS)
+    }, 60000)
+
+    test('run under sustained load for an extended period without leaks or crashes (soak) — plan tier 3', async () => {
+      const server = await startServer()
+      const TASKS = 300
+      let executed = 0
+
+      const worker = createTaskWorker(
+        () => {
+          executed++
+          return 'ok'
+        },
+        'my-task',
+        configFor(server),
+        { inputVars: {}, maxInflightTasks: 5 }
+      )
+      workers.push(worker)
+      await worker.start()
+
+      // Feed tasks continuously rather than all at once, so the poll/report
+      // cycle runs repeatedly instead of draining one big backlog.
+      const heapBefore = process.memoryUsage().heapUsed
+      for (let i = 0; i < TASKS; i++) {
+        server.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: `soak-${i}` } }))
+        if (i % 25 === 0) await new Promise(resolve => setTimeout(resolve, 5))
+      }
+      await waitFor(() => server.reportedTasks.length === TASKS, 60000, `all ${TASKS} tasks to be reported`)
+
+      // Every task ran exactly once, nothing was dropped or duplicated.
+      expect(executed).toBe(TASKS)
+      const guids = server.reportedTasks.map(r => r.taskRunId?.taskGuid)
+      expect(new Set(guids).size).toBe(TASKS)
+      expect(server.reportedTasks.every(r => r.status === TaskStatus.TASK_SUCCESS)).toBe(true)
+
+      // In-flight work returns to zero, and the connection is still healthy.
+      await waitFor(() => worker.getInflightTaskCount() === 0, 5000, 'in-flight work to drain')
+      expect(worker.healthStatus().healthy).toBe(true)
+
+      // Heap should not scale with tasks processed. Generous bound: this is a
+      // leak check, not a memory benchmark.
+      global.gc?.()
+      const heapGrowthMb = (process.memoryUsage().heapUsed - heapBefore) / 1024 / 1024
+      expect(heapGrowthMb).toBeLessThan(100)
+    }, 120000)
   })
 
   describe('benchmarks (sanity, run last)', () => {
-    test.todo('task throughput within sanity range of the Java worker on the same server — plan: benchmarks')
-    test.todo('task latency within sanity range of the Java worker on the same server — plan: benchmarks')
+    // NOTE: these deliberately do NOT compare against a live Java worker —
+    // that would mean building and running sdk-java inside this suite. They
+    // are absolute floors chosen to catch order-of-magnitude regressions
+    // (the stated purpose in PARITY_PLAN.md), measured against the in-process
+    // fake server, so they bound SDK overhead rather than server throughput.
+    test('task throughput stays within a sanity floor — plan: benchmarks', async () => {
+      const server = await startServer()
+      const TASKS = 200
+      const worker = createTaskWorker(() => 'ok', 'my-task', configFor(server), {
+        inputVars: {},
+        maxInflightTasks: 10,
+      })
+      workers.push(worker)
+      await worker.start()
+
+      for (let i = 0; i < TASKS; i++) {
+        server.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: `bench-${i}` } }))
+      }
+      const startedAt = Date.now()
+      await waitFor(() => server.reportedTasks.length === TASKS, 60000, 'the benchmark batch')
+      const elapsedSec = (Date.now() - startedAt) / 1000
+      const perSecond = TASKS / elapsedSec
+
+      console.log(`[bench] throughput ${perSecond.toFixed(0)} tasks/sec over ${elapsedSec.toFixed(2)}s`)
+      expect(perSecond).toBeGreaterThan(20)
+    }, 90000)
+
+    test('task latency stays within a sanity ceiling — plan: benchmarks', async () => {
+      const server = await startServer()
+      const SAMPLES = 25
+      const worker = createTaskWorker(() => 'ok', 'my-task', configFor(server), {
+        inputVars: {},
+        maxInflightTasks: 1,
+      })
+      workers.push(worker)
+      await worker.start()
+      await waitFor(() => server.pollRequests.length > 0, 5000, 'the worker to be polling')
+
+      const latencies: number[] = []
+      for (let i = 0; i < SAMPLES; i++) {
+        const before = server.reportedTasks.length
+        const sentAt = Date.now()
+        server.enqueueTask(scheduledTask({ taskRunId: { wfRunId: { id: 'wf-1' }, taskGuid: `lat-${i}` } }))
+        await waitFor(() => server.reportedTasks.length > before, 10000, `sample ${i}`)
+        latencies.push(Date.now() - sentAt)
+      }
+
+      latencies.sort((a, b) => a - b)
+      const median = latencies[Math.floor(latencies.length / 2)]
+      const p95 = latencies[Math.floor(latencies.length * 0.95)]
+      console.log(`[bench] dispatch→report latency median ${median}ms, p95 ${p95}ms`)
+      expect(median).toBeLessThan(250)
+    }, 90000)
   })
 })

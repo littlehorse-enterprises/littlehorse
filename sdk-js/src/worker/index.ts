@@ -1,6 +1,6 @@
-export { createTaskWorker, LHTaskException, LHTaskWorkerHealthReason } from './LHTaskWorker'
+export { createTaskWorker, LHTaskException, LHTaskWorkerHealthReason, TaskSchemaMismatchError } from './LHTaskWorker'
 export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions, LHTaskWorkerHealth } from './LHTaskWorker'
-export { WorkerContext } from './WorkerContext'
+export { WorkerContext, CheckpointContext } from './WorkerContext'
 export {
   lhStruct,
   lhMasked,

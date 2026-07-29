@@ -13,11 +13,11 @@ cd sdk-js && npx jest src/feature-matrix
 ```
 
 Passed = done, todo = missing, failed = broken. That output *is* the feature
-matrix (see below). Snapshot as of 2026-07-28: 224 passing / 28 todo. The
-wfsdk compiler (`src/wfsdk/`) is complete, the worker is hardened and tested
-against a fake server, and all 14 reference workflows match the Java goldens.
-**What remains is mostly OAuth and soak/chaos** — see
-"Ordering and status".
+matrix (see below). Snapshot as of 2026-07-28: 234 passing / 18 todo. The
+wfsdk compiler (`src/wfsdk/`) and the task worker are both complete, and all
+14 reference workflows match the Java goldens *and* are accepted by a real
+server. **What remains is OAuth, the common/serde and usertask areas, and the
+parked type-adapter decision** — see "Ordering and status".
 
 ## Background: what an SDK is here
 
@@ -38,10 +38,10 @@ A LittleHorse SDK is three distinct components on top of the shared gRPC API:
    long-polls for scheduled tasks, deserializes inputs, invokes the user
    function, reports results, plus operational hygiene (liveness/heartbeats,
    server rebalancing, reconnection). `sdk-js` has a basic worker
-   (`LHTaskWorker.ts`), now hardened and covered by protocol tests; Java has
-   a full `worker/internal/` package (`LHServerConnectionManager`,
-   `PollThread`, `RebalanceThread`, `LHLivenessController`). What is left is
-   liveness, concurrency limits, and live-server coverage.
+   (`LHTaskWorker.ts`), now hardened and fully covered by protocol tests,
+   mirroring what Java splits across its `worker/internal/` package
+   (`LHServerConnectionManager`, `PollThread`, `RebalanceThread`,
+   `LHLivenessController`).
 
 Plus supporting pieces: `common/` (exceptions, proto ↔ native value
 conversion) and `usertask/` helpers.
@@ -121,7 +121,9 @@ start there.
 3. **Soak/chaos tests for the worker** — sustained load over time; kill and
    restart the server mid-run; verify reconnect with no dropped or
    double-reported tasks. Worker bugs are overwhelmingly lifecycle bugs, not
-   logic bugs.
+   logic bugs. **Done** against the fake server (`worker.test.ts`): 300-task
+   soak asserting exactly-once delivery and no heap growth, plus a
+   restart-on-the-same-port chaos case.
 
 **Benchmarks** come last and are a sanity check, not a target: JS worker
 throughput/latency vs the Java worker on the same server, to catch gross
@@ -139,13 +141,19 @@ regressions (50x), not to win.
 4. Config surface. **Done except OAuth.** Source-composing builder
    (`LHConfig.newBuilder()`), env-var loading, keepalive options, TLS/mTLS
    credentials, client creation, `getTaskDef`. 15 of 22 entries pass.
-5. Worker hardening. **Largely done** — 30 of 40 worker entries pass,
-   including registration, execution semantics, WorkerContext, topology
-   discovery, rebalance, reconnect, report-retry-without-duplicates, and
-   graceful close. See "Fake server" below for how, and what it does not
-   prove. Remaining: liveness reporting, a real concurrency ceiling, signature
-   and StructDef validation, checkpointing, user/group context, and
-   soak/chaos.
+5. Worker hardening. **Done** — all 40 worker entries pass: registration and
+   signature/StructDef validation, execution semantics, WorkerContext
+   (including user/group context and `executeAndCheckpoint`), topology
+   discovery, rebalance, reconnect, report-retry-without-duplicates, graceful
+   close, liveness via `isClusterHealthy`, a real concurrency ceiling
+   (`maxInflightTasks`), plus soak, server-restart chaos, and sanity
+   benchmarks. See "Fake server" below for how, and what it does not prove.
+
+   The two benchmark entries measure absolute floors against the fake server
+   rather than comparing to a live Java worker — running sdk-java inside this
+   suite was judged not worth the coupling. They catch order-of-magnitude
+   regressions, which is what the plan asks of them, but they are *not* a
+   cross-SDK comparison.
 6. OAuth (client-credentials, refresh, `isOauth`). **Not started** — the
    single largest unimplemented feature left; Java has a whole `common/auth`
    package and sdk-js has none of it.

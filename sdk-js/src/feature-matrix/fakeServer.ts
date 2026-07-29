@@ -14,12 +14,19 @@ import {
   PutTaskDefRequest,
   PutWfSpecRequest,
   PutWorkflowEventDefRequest,
+  PutCheckpointRequest,
+  PutCheckpointResponse,
+  PutCheckpointResponse_FlowControlContinue,
   RegisterTaskWorkerRequest,
   RegisterTaskWorkerResponse,
   ReportTaskRun,
   ScheduledTask,
+  ValidateStructDefEvolutionRequest,
+  ValidateStructDefEvolutionResponse,
 } from '../proto/service'
-import { TaskDefId, WfSpecId } from '../proto/object_id'
+import { CheckpointId, TaskDefId, WfSpecId } from '../proto/object_id'
+import { VariableDef } from '../proto/common_wfspec'
+import { Checkpoint } from '../proto/task_run'
 
 /**
  * An in-process LittleHorse server for worker tests.
@@ -71,6 +78,13 @@ const SERVICE_DEFINITION = {
   getWfSpec: method('GetWfSpec', WfSpecId, WfSpec),
   putExternalEventDef: method('PutExternalEventDef', PutExternalEventDefRequest, ExternalEventDef),
   putWorkflowEventDef: method('PutWorkflowEventDef', PutWorkflowEventDefRequest, WorkflowEventDef),
+  putCheckpoint: method('PutCheckpoint', PutCheckpointRequest, PutCheckpointResponse),
+  getCheckpoint: method('GetCheckpoint', CheckpointId, Checkpoint),
+  validateStructDefEvolution: method(
+    'ValidateStructDefEvolution',
+    ValidateStructDefEvolutionRequest,
+    ValidateStructDefEvolutionResponse
+  ),
 } as unknown as grpc.ServiceDefinition
 
 export interface FakeServerOptions {
@@ -88,6 +102,12 @@ export interface FakeServerOptions {
   failReportTaskTimes?: number
   /** When set, GetLatestWfSpec / GetWfSpec fail with NOT_FOUND. */
   wfSpecMissing?: boolean
+  /** Reported in RegisterTaskWorkerResponse; drives worker health. */
+  isClusterHealthy?: boolean
+  /** Input vars GetTaskDef reports, for signature-validation tests. */
+  taskDefInputVars?: VariableDef[]
+  /** When false, ValidateStructDefEvolution reports the schema as invalid. */
+  structDefEvolutionValid?: boolean
 }
 
 export class FakeLHServer {
@@ -107,6 +127,9 @@ export class FakeLHServer {
   readonly putWorkflowEventDefRequests: PutWorkflowEventDefRequest[] = []
   readonly getLatestWfSpecRequests: GetLatestWfSpecRequest[] = []
   readonly getWfSpecRequests: WfSpecId[] = []
+  readonly validateStructDefRequests: ValidateStructDefEvolutionRequest[] = []
+  /** Checkpoints stored by PutCheckpoint, indexed by checkpoint number. */
+  readonly checkpoints: Checkpoint[] = []
 
   /** Tasks handed to the next poller(s). */
   private readonly pending: ScheduledTask[] = []
@@ -122,7 +145,11 @@ export class FakeLHServer {
     return this.boundPort
   }
 
-  async start(): Promise<number> {
+  /**
+   * @param fixedPort bind this exact port instead of an ephemeral one, so a
+   *   restart can reclaim the address a worker is already reconnecting to.
+   */
+  async start(fixedPort?: number): Promise<number> {
     this.server = new grpc.Server()
     this.server.addService(SERVICE_DEFINITION, {
       registerTaskWorker: this.handleRegisterTaskWorker,
@@ -136,10 +163,13 @@ export class FakeLHServer {
       getWfSpec: this.handleGetWfSpec,
       putExternalEventDef: this.handlePutExternalEventDef,
       putWorkflowEventDef: this.handlePutWorkflowEventDef,
+      putCheckpoint: this.handlePutCheckpoint,
+      getCheckpoint: this.handleGetCheckpoint,
+      validateStructDefEvolution: this.handleValidateStructDefEvolution,
     })
 
     this.boundPort = await new Promise<number>((resolve, reject) => {
-      this.server!.bindAsync('127.0.0.1:0', grpc.ServerCredentials.createInsecure(), (err, port) =>
+      this.server!.bindAsync(`127.0.0.1:${fixedPort ?? 0}`, grpc.ServerCredentials.createInsecure(), (err, port) =>
         err ? reject(err) : resolve(port)
       )
     })
@@ -208,6 +238,7 @@ export class FakeLHServer {
       null,
       RegisterTaskWorkerResponse.create({
         yourHosts: this.hosts().map(h => ({ host: h.host, port: h.port })),
+        ...(this.options.isClusterHealthy !== undefined && { isClusterHealthy: this.options.isClusterHealthy }),
       })
     )
   }
@@ -254,7 +285,7 @@ export class FakeLHServer {
       callback({ code: grpc.status.NOT_FOUND, details: 'TaskDef not found' })
       return
     }
-    callback(null, TaskDef.create({ id: { name: call.request.name } }))
+    callback(null, TaskDef.create({ id: { name: call.request.name }, inputVars: this.options.taskDefInputVars ?? [] }))
   }
 
   private handlePutTaskDef = (
@@ -275,6 +306,46 @@ export class FakeLHServer {
   ): void => {
     this.putStructDefRequests.push(call.request)
     callback(null, StructDef.create({ id: { name: call.request.name, version: 0 } }))
+  }
+
+  private handlePutCheckpoint = (
+    call: grpc.ServerUnaryCall<PutCheckpointRequest, PutCheckpointResponse>,
+    callback: grpc.sendUnaryData<PutCheckpointResponse>
+  ): void => {
+    const number = this.checkpoints.length
+    const checkpoint = Checkpoint.create({
+      id: { taskRun: call.request.taskRunId, checkpointNumber: number },
+      value: call.request.value,
+      logs: call.request.logs,
+    })
+    this.checkpoints.push(checkpoint)
+    callback(
+      null,
+      PutCheckpointResponse.create({
+        flowControlContinueType: PutCheckpointResponse_FlowControlContinue.CONTINUE_TASK,
+        createdCheckpoint: checkpoint,
+      })
+    )
+  }
+
+  private handleGetCheckpoint = (
+    call: grpc.ServerUnaryCall<CheckpointId, Checkpoint>,
+    callback: grpc.sendUnaryData<Checkpoint>
+  ): void => {
+    const checkpoint = this.checkpoints[call.request.checkpointNumber]
+    if (checkpoint === undefined) {
+      callback({ code: grpc.status.NOT_FOUND, details: 'no such checkpoint' })
+      return
+    }
+    callback(null, checkpoint)
+  }
+
+  private handleValidateStructDefEvolution = (
+    call: grpc.ServerUnaryCall<ValidateStructDefEvolutionRequest, ValidateStructDefEvolutionResponse>,
+    callback: grpc.sendUnaryData<ValidateStructDefEvolutionResponse>
+  ): void => {
+    this.validateStructDefRequests.push(call.request)
+    callback(null, ValidateStructDefEvolutionResponse.create({ isValid: this.options.structDefEvolutionValid ?? true }))
   }
 
   private handlePutWfSpec = (

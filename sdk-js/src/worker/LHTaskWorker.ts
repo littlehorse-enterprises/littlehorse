@@ -1,5 +1,6 @@
 import type { GrpcTransport } from '@protobuf-ts/grpc-transport'
-import { ReportTaskRun, ScheduledTask, PutStructDefRequest } from '../proto/service'
+import { ReportTaskRun, ScheduledTask, PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
+import { TypeDefinition } from '../proto/type_definition'
 import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { TaskDefId } from '../proto/object_id'
 import { TaskStatus, LHErrorType } from '../proto/common_enums'
@@ -7,7 +8,7 @@ import { LHConfig } from '../LHConfig'
 import type { LHPublicClient } from '../client'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
+import { toStructVariableValue, getStructName, zodToVariableDefs, buildPutStructDefRequest } from './zodSchema'
 import { randomBytes } from 'crypto'
 import { type ZodTypeAny } from 'zod'
 
@@ -21,6 +22,7 @@ const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
 const REPORT_TASK_RETRY_DELAY_MS = 2_000
 const CLOSE_DRAIN_TIMEOUT_MS = 30_000
+const DEFAULT_MAX_INFLIGHT_TASKS = 10
 
 /** Why a worker is (un)healthy — mirrors Java's LHTaskWorkerHealthReason. */
 export enum LHTaskWorkerHealthReason {
@@ -29,8 +31,10 @@ export enum LHTaskWorkerHealthReason {
   NOT_RUNNING = 'NOT_RUNNING',
   /** Running, but not connected to any server host. */
   NO_CONNECTIONS = 'NO_CONNECTIONS',
-  /** The most recent heartbeat/registration attempt failed. */
+  /** The server reported the cluster is not healthy (mid-rebalance). */
   SERVER_REBALANCING = 'SERVER_REBALANCING',
+  /** The worker's own registration call is failing. */
+  UNHEALTHY = 'UNHEALTHY',
 }
 
 /** Health snapshot of a task worker — mirrors Java's LHTaskWorkerHealth. */
@@ -54,6 +58,8 @@ class ServerConnection {
   private pollPromise: Promise<void> | undefined
   private pollAbort: AbortController | undefined
   private inflight = 0
+  /** True while we are deliberately not asking for work (at capacity). */
+  private awaitingCapacity = false
 
   constructor(
     host: string,
@@ -63,6 +69,7 @@ class ServerConnection {
     private readonly taskFunction: TaskFunction,
     private readonly taskWorkerVersion: string | undefined,
     private readonly config: LHConfig,
+    private readonly maxInflight: number,
     private readonly outputSchema?: ZodTypeAny
   ) {
     this.host = host
@@ -156,9 +163,21 @@ class ServerConnection {
             })
             .finally(() => {
               this.inflight--
+              // A slot freed up; if we stopped asking for work, resume.
+              if (this.awaitingCapacity) {
+                this.awaitingCapacity = false
+                sendRequest()
+              }
             })
         }
         if (!this.running) break
+
+        // Back-pressure: stop requesting work while at capacity, rather than
+        // accepting tasks we cannot start. The `finally` above resumes.
+        if (this.inflight >= this.maxInflight) {
+          this.awaitingCapacity = true
+          continue
+        }
         sendRequest()
       }
     } finally {
@@ -176,7 +195,8 @@ class ServerConnection {
   }
 
   private async executeTask(task: ScheduledTask): Promise<ReportTaskRun> {
-    const context = new WorkerContext(task)
+    // The client is passed so checkpointed operations can talk to the server.
+    const context = new WorkerContext(task, this.client)
     const now = Timestamp.now()
 
     let args: unknown[]
@@ -280,6 +300,14 @@ class ServerConnection {
   }
 }
 
+/** Thrown when a worker's signature disagrees with the server's TaskDef. */
+export class TaskSchemaMismatchError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'TaskSchemaMismatchError'
+  }
+}
+
 /**
  * Exception class for user-defined business exceptions.
  * When thrown from a task function, the task will be marked as TASK_EXCEPTION
@@ -335,6 +363,13 @@ export interface LHTaskWorkerOptions {
    * worker notices a rebalance. Defaults to 15s.
    */
   heartbeatIntervalMs?: number
+
+  /**
+   * Maximum tasks executing concurrently per server connection. The worker
+   * stops requesting work while at capacity. Defaults to 10 (Java's
+   * equivalent knobs are workerThreads / inflightTasks).
+   */
+  maxInflightTasks?: number
 }
 
 /**
@@ -352,6 +387,17 @@ export interface LHTaskWorker {
   registerTaskDef(): Promise<void>
   /** Registers a StructDef on the LH server. */
   registerStructDef(request: PutStructDefRequest): Promise<void>
+  /**
+   * Checks the worker's declared input vars against the server's TaskDef and
+   * throws TaskSchemaMismatchError on a mismatch — Java: LHTaskWorker
+   * start-time validation.
+   */
+  validateTaskDef(): Promise<void>
+  /**
+   * Asks the server whether these schemas are valid evolutions, without
+   * registering them — Java: LHTaskWorker#validateStructDef(s).
+   */
+  validateStructDefs(schemas: ZodTypeAny[], compatibilityType?: StructDefCompatibilityType): Promise<void>
   /** Starts the task worker (heartbeat loop + poll streams). */
   start(): Promise<void>
   /** Cleanly shuts down the task worker. */
@@ -401,10 +447,12 @@ export function createTaskWorker(
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
   const taskWorkerVersion = options.taskWorkerVersion
+  const maxInflightTasks = options.maxInflightTasks ?? DEFAULT_MAX_INFLIGHT_TASKS
   const connections = new Map<string, ServerConnection>()
   let running = false
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined
   let lastHeartbeatFailed = false
+  let clusterHealthy = true
 
   async function heartbeat(): Promise<void> {
     try {
@@ -442,6 +490,7 @@ export function createTaskWorker(
             taskFunction,
             taskWorkerVersion,
             config,
+            maxInflightTasks,
             outputSchema
           )
           conn.start()
@@ -449,6 +498,9 @@ export function createTaskWorker(
         }
       }
       lastHeartbeatFailed = false
+      // The server tells us when the cluster itself is unhealthy (e.g. mid
+      // rebalance); Java surfaces the same signal via LHLivenessController.
+      clusterHealthy = response.isClusterHealthy ?? true
     } catch (err) {
       lastHeartbeatFailed = true
       console.error('[LHTaskWorker] Failed to register with server:', err)
@@ -505,6 +557,71 @@ export function createTaskWorker(
       }
     },
 
+    async validateTaskDef(): Promise<void> {
+      // Java does this inside start(): fetch the server's TaskDef and check
+      // the worker's declared inputs against it, so a signature mismatch
+      // fails immediately instead of on the first scheduled task.
+      let serverTaskDef
+      try {
+        serverTaskDef = await bootstrapClient.getTaskDef({ name: taskDefName })
+      } catch (err: unknown) {
+        const code = (err as { code?: unknown })?.code
+        if (code === 'NOT_FOUND' || code === 5) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' does not exist on the server. Register it first (registerTaskDef()).`
+          )
+        }
+        throw err
+      }
+
+      const expected = serverTaskDef.inputVars
+      if (expected.length !== inputVars.length) {
+        throw new TaskSchemaMismatchError(
+          `TaskDef '${taskDefName}' expects ${expected.length} input var(s) ` +
+            `(${expected.map(v => v.name).join(', ') || 'none'}), but this worker declares ` +
+            `${inputVars.length} (${inputVars.map(v => v.name).join(', ') || 'none'}).`
+        )
+      }
+
+      for (let i = 0; i < expected.length; i++) {
+        const serverVar = expected[i]
+        const workerVar = inputVars[i]
+        if (serverVar.name !== workerVar.name) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' input var ${i} is named '${serverVar.name}', ` +
+              `but this worker declares '${workerVar.name}'.`
+          )
+        }
+        if (!TypeDefinition.equals(serverVar.typeDef, workerVar.typeDef)) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' input var '${serverVar.name}' has a different type on the server ` +
+              `than this worker declares.`
+          )
+        }
+      }
+    },
+
+    async validateStructDefs(
+      schemas: ZodTypeAny[],
+      compatibilityType: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES
+    ): Promise<void> {
+      // Asks the server whether the schema *could* be registered, without
+      // registering it — Java: LHTaskWorker#validateStructDef(s).
+      for (const schema of schemas) {
+        const request = buildPutStructDefRequest(schema, compatibilityType)
+        const response = await bootstrapClient.validateStructDefEvolution({
+          structDefId: { name: request.name, version: 0 },
+          structDef: request.structDef,
+          compatibilityType,
+        })
+        if (!response.isValid) {
+          throw new Error(
+            `StructDef '${request.name}' is not a valid evolution under ${StructDefCompatibilityType[compatibilityType]}.`
+          )
+        }
+      }
+    },
+
     async start(): Promise<void> {
       if (running) return
       running = true
@@ -553,8 +670,12 @@ export function createTaskWorker(
       let reason = LHTaskWorkerHealthReason.HEALTHY
       if (!running) {
         reason = LHTaskWorkerHealthReason.NOT_RUNNING
-      } else if (lastHeartbeatFailed) {
+      } else if (!clusterHealthy) {
+        // Java checks cluster health before worker health, so a rebalancing
+        // cluster is reported as such rather than as a worker fault.
         reason = LHTaskWorkerHealthReason.SERVER_REBALANCING
+      } else if (lastHeartbeatFailed) {
+        reason = LHTaskWorkerHealthReason.UNHEALTHY
       } else if (connectedHosts === 0) {
         reason = LHTaskWorkerHealthReason.NO_CONNECTIONS
       }

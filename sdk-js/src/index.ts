@@ -15,6 +15,8 @@ export {
   getStructDependencies,
   toStructVariableValue,
   LHTaskWorkerHealthReason,
+  TaskSchemaMismatchError,
+  CheckpointContext,
 } from './worker'
 export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions, LHTaskWorkerHealth } from './worker'
 export * from './wfsdk'
