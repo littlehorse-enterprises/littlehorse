@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.Node;
@@ -33,8 +33,7 @@ public class WfRunVariableImplTest {
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
         WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, wfThread);
 
-        LHMisconfigurationException e =
-                assertThrows(LHMisconfigurationException.class, () -> variable.jsonPath("&.myPath"));
+        LHWfSpecBuilderException e = assertThrows(LHWfSpecBuilderException.class, () -> variable.jsonPath("&.myPath"));
         assertThat(e.getMessage()).isEqualTo("JsonPath not allowed in a STR variable");
     }
 
