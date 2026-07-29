@@ -14,8 +14,8 @@ cd sdk-js && npx jest src/feature-matrix
 
 Passed = done, todo = missing, failed = broken. That output *is* the feature
 matrix (see below). Snapshot as of 2026-07-28: **191 of 191 entries pass —
-100% of the enumerated Java surface**, plus 61 supporting tests and 25
-integration tests against a real server.
+100% of the enumerated Java surface**, plus 61 supporting tests and 45 of 51
+integration checks against a real server (`npm run test:integration`).
 
 That number means every capability enumerated from the Java SDK's public API
 has a JS implementation and a test proving it. It does **not** mean the SDK is
@@ -197,12 +197,25 @@ run, most of it server boot. Env overrides:
 | `LH_IT_KEEP=1` | Leave the container up after the run, for debugging |
 | `LH_IT_IMAGE` | Test against a different image |
 
-Two suites: `wfspec-acceptance` registers all 14 reference workflows and
-asserts the server accepts them; `execution` runs real WfRuns driven by JS
-workers and asserts on server-side status and variable values. The suite is
-hermetic — a fresh container *and* a fresh tenant per run — which is
-deliberate: a warm server can pass tests a cold one fails, and this suite has
-done exactly that.
+Four suites, and like the feature matrix they are **enumerated** so "are we
+missing a test?" has an answer rather than a shrug:
+
+| Suite | Proves |
+|---|---|
+| `wfspec-acceptance` | the server accepts every reference workflow, and rejects an invalid one |
+| `execution` | real WfRuns driven by JS workers produce the right status and variable values |
+| `workflow-constructs` | **each wfsdk construct actually executes** — enumerated from the methods on `WorkflowThread` that produce runtime behavior |
+| `worker-runtime` | **behavior only the server can drive** — retries, timeouts, multi-worker sharing, checkpoint replay |
+
+The last two exist because acceptance is not execution: a spec can be valid
+and still behave wrong. The `workflow-constructs` enumeration is derived
+mechanically from `WorkflowThread`, so any construct there without an entry is
+a visible gap; `test.todo` marks coverage deliberately not built, each with a
+stated reason.
+
+The suite is hermetic — a fresh container *and* a fresh tenant per run — which
+is deliberate: a warm server can pass tests a cold one fails, and this suite
+has done exactly that.
 
 **Constraints this surfaced that no offline test could.** Each one was a real
 failure first:

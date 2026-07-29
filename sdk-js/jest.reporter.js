@@ -10,6 +10,8 @@
  */
 
 const AREA_LABELS = {
+  'workflow-constructs': 'workflow constructs execute',
+  'worker-runtime': 'worker behavior the server drives',
   wfsdk: 'wfsdk (workflow DSL)',
   worker: 'worker (task runtime)',
   config: 'config + client',
@@ -124,20 +126,29 @@ class MatrixReporter {
     if (integration.length > 0) {
       lines.push(bold('  Verified against a real LittleHorse server (tier 2)'))
       lines.push('')
-      integration.sort((a, b) => b[1].passed - a[1].passed)
+      integration.sort((a, b) => b[1].passed + b[1].todo - (a[1].passed + a[1].todo))
       let verified = 0
+      let todo = 0
       let failed = 0
       for (const [key, g] of integration) {
         verified += g.passed
+        todo += g.todo
         failed += g.failed
+        const total = g.passed + g.todo + g.failed
+        const pct = total === 0 ? 0 : Math.round((g.passed / total) * 100)
         const failedPart = g.failed > 0 ? red(`  ${g.failed} failed`) : ''
+        const todoPart = g.todo > 0 ? yellow(`${padStart(g.todo, 3)} todo`) : dim('        ')
         lines.push(
-          `  ${pad(AREA_LABELS[key] || key, labelWidth)}${green(padStart(g.passed, 4) + ' verified')}${failedPart}`
+          `  ${pad(AREA_LABELS[key] || key, labelWidth)}${green(padStart(g.passed, 4) + ' verified')}  ${todoPart}  ` +
+            `${bar(g.passed, total)} ${padStart(pct + '%', 4)}${failedPart}`
         )
       }
+      const grandTotal = verified + todo + failed
+      const pct = grandTotal === 0 ? 0 : Math.round((verified / grandTotal) * 100)
       lines.push('')
       lines.push(
-        `  ${pad('total', labelWidth)}${green(padStart(verified, 4) + ' verified')}` +
+        `  ${pad('against a real server', labelWidth)}${green(padStart(verified, 4) + ' verified')}  ` +
+          `${todo > 0 ? yellow(padStart(todo, 3) + ' todo') : dim('        ')}  ${bold(pct + '% covered')}` +
           (failed > 0 ? red(`  ${failed} FAILED`) : '')
       )
     }
