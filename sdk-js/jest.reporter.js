@@ -19,6 +19,9 @@ const AREA_LABELS = {
   usertask: 'usertask',
   'wfspec-acceptance': 'WfSpec accepted by server',
   execution: 'end-to-end execution',
+  cluster: 'rebalancing across a cluster',
+  tls: 'TLS to a real listener',
+  oauth: 'OAuth against a real issuer',
 }
 
 const SUPPORT_LABELS = {

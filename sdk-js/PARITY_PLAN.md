@@ -197,21 +197,35 @@ run, most of it server boot. Env overrides:
 | `LH_IT_KEEP=1` | Leave the container up after the run, for debugging |
 | `LH_IT_IMAGE` | Test against a different image |
 
-Four suites, and like the feature matrix they are **enumerated** so "are we
+`npm run test:integration:core` skips the three infrastructure-heavy suites
+(`cluster`, `tls`, `oauth`) for a fast inner loop. They dominate the runtime:
+a real `lh-server` on a fresh Kafka spends ~2 minutes in Kafka Streams restore
+before it serves, and each of those suites builds its own. The full run is
+~5 minutes; core is ~25s.
+
+Seven suites, and like the feature matrix they are **enumerated** so "are we
 missing a test?" has an answer rather than a shrug:
 
-| Suite | Proves |
-|---|---|
-| `wfspec-acceptance` | the server accepts every reference workflow, and rejects an invalid one |
-| `execution` | real WfRuns driven by JS workers produce the right status and variable values |
-| `workflow-constructs` | **each wfsdk construct actually executes** — enumerated from the methods on `WorkflowThread` that produce runtime behavior |
-| `worker-runtime` | **behavior only the server can drive** — retries, timeouts, multi-worker sharing, checkpoint replay |
+| Suite | Proves | Infra |
+|---|---|---|
+| `wfspec-acceptance` | the server accepts every reference workflow, and rejects an invalid one | shared standalone |
+| `execution` | real WfRuns driven by JS workers produce the right status and variable values | shared standalone |
+| `workflow-constructs` | **each wfsdk construct actually executes** — enumerated from the methods on `WorkflowThread` that produce runtime behavior | shared standalone |
+| `worker-runtime` | **behavior only the server can drive** — retries, timeouts, multi-worker sharing, checkpoint replay | shared standalone |
+| `cluster` | host discovery and **rebalancing**, which a single node cannot exhibit | own Kafka + N `lh-server` |
+| `tls` | a real TLS handshake, not just the credentials we build for one | own node + generated cert |
+| `oauth` | a real issuer mints the token and the server validates it by introspection | own node + Keycloak |
 
-The last two exist because acceptance is not execution: a spec can be valid
-and still behave wrong. The `workflow-constructs` enumeration is derived
-mechanically from `WorkflowThread`, so any construct there without an entry is
-a visible gap; `test.todo` marks coverage deliberately not built, each with a
-stated reason.
+`workflow-constructs` and `worker-runtime` exist because acceptance is not
+execution: a spec can be valid and still behave wrong. The
+`workflow-constructs` enumeration is derived mechanically from
+`WorkflowThread`, so any construct there without an entry is a visible gap;
+`test.todo` marks coverage deliberately not built, each with a stated reason.
+
+The last three build their own infrastructure (`cluster.ts`) because
+`lh-standalone` bundles its own Kafka — two standalones are two separate
+clusters, so rebalancing is not observable there at all, and its listener is
+fixed to plaintext with no authentication.
 
 The suite is hermetic — a fresh container *and* a fresh tenant per run — which
 is deliberate: a warm server can pass tests a cold one fails, and this suite
@@ -238,6 +252,39 @@ failure first:
   appears on a cold one. `awaitWfSpecReady()` in the harness handles it.
 - **Creating tenants from more than one test file in a run** produced "Tenant
   not allowed" on the second file; one tenant per run avoids it.
+- **A struct-typed task input needs a struct-typed `VariableDef`.** Declaring
+  it with a plain `z.object()` produces `JSON_OBJ`, and the server fails the
+  TaskRun on the mismatch rather than coercing — use `lhStruct()` on both
+  sides.
+- **A node that dies keeps being advertised in `yourHosts` for 54s+**, because
+  membership expires on a Kafka session timeout. A node that *joins* appears
+  in ~3s. So rebalance-on-join is a fast assertion; node loss can only be
+  tested as *recovery*, since RPCs genuinely fail while partitions reassign.
+- **An OAuth issuer must have one canonical issuer URL.** Both Keycloak and
+  mock-oauth2-server otherwise derive it from each request's `Host`, so a
+  token minted by the client via `localhost` is rejected when the server
+  introspects it via the Docker network alias. Keycloak can be pinned
+  (`KC_HOSTNAME` + `KC_HOSTNAME_STRICT=false` +
+  `KC_HOSTNAME_BACKCHANNEL_DYNAMIC=false`); mock-oauth2-server cannot, which
+  is why the test uses a real IdP.
+
+**SDK gaps the integration tier found**, each fixed rather than worked around
+in the test — the point of the tier is that writing the test is what exposes
+them:
+
+- **The worker could not authenticate.** It had no way to present a token, so
+  it was unusable against any secured server. It now takes an `accessToken` or
+  pulls one from the config's OAuth provider, refreshing through the existing
+  reconnect path.
+- **Requests had to be complete messages.** protobuf-ts requires every
+  repeated and map field to be present; omitting one failed deep inside
+  serialization with `Cannot read properties of undefined (reading 'length')`.
+  The client now accepts `PartialMessage` and normalizes through the message's
+  own `create()`, matching what Java's builders let you leave out.
+- **The integration harness had its own copy of `unwrap`** that predated the
+  serde unification and silently lacked a `STRUCT` case, so struct assertions
+  compared against raw protos. It now delegates to `varValToObj`, which is
+  what a user's task function actually receives.
 
 ### Fake server (worker tests)
 

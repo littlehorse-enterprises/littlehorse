@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { LHPublicClient } from '../client'
-import { Comparator } from '../proto/type_definition'
+import { Comparator, TypeDefinition } from '../proto/type_definition'
+import { buildPutStructDefRequest, getStructDependencies, lhStruct } from '../worker'
 import { LHStatus, VariableType } from '../proto/common_enums'
 import { VariableMutationType } from '../proto/common_wfspec'
 import { spawnedThreadsOf, Workflow } from '../wfsdk'
@@ -35,6 +36,11 @@ import {
 
 let client: LHPublicClient
 const workers: RunningWorker[] = []
+
+/** TypeDefinition for a plain STR field. */
+function strType(): TypeDefinition {
+  return TypeDefinition.create({ definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR } })
+}
 
 beforeAll(async () => {
   await requireServer()
@@ -374,17 +380,115 @@ describe('workflow constructs execute', () => {
   })
 
   describe('structs', () => {
-    // Struct execution needs a registered StructDef whose shape matches the
-    // builder, plus a nested StructDef for the sub-structure; the acceptance
-    // suite already proves that registration path. Left as a gap rather than
-    // duplicating that setup here.
-    test.todo('buildStruct assigns a struct-typed variable at runtime')
-    test.todo('a struct-typed task input deserializes into a typed object')
+    /**
+     * The user-facing struct path: zod schemas tagged with `lhStruct`, whose
+     * StructDefs are derived and registered by the SDK. Nested objects must be
+     * their own StructDef — the server rejects an inline one — which
+     * getStructDependencies handles by registering dependencies first.
+     */
+    const Address = lhStruct('rt-address', z.object({ city: z.string() }))
+    const Person = lhStruct('rt-person', z.object({ name: z.string(), address: Address }))
+
+    async function registerPersonStruct(): Promise<void> {
+      for (const dependency of getStructDependencies(Person)) {
+        await client.putStructDef(buildPutStructDefRequest(dependency))
+      }
+    }
+
+    test('buildStruct assigns a struct-typed variable at runtime', async () => {
+      await registerPersonStruct()
+
+      const wf = Workflow.newWorkflow(uniqueName('struct-assign'), thread => {
+        const person = thread.declareStruct('person', Person)
+        // The nested value is an inline sub-structure of the parent builder;
+        // only the declared *type* has to be a registered StructDef.
+        person.assign(
+          thread
+            .buildStruct('rt-person')
+            .put('name', 'ada')
+            .put('address', thread.buildInlineStruct().put('city', 'london'))
+        )
+      })
+
+      const { wfRun, finished } = await runToCompletion(wf)
+      expect(LHStatus[finished.status]).toBe('COMPLETED')
+
+      // Stored as a real struct, so it comes back structured — not as a JSON
+      // blob, and not as the raw proto.
+      expect(unwrap(await getVariable(client, wfRun.id!, 'person'))).toEqual({
+        name: 'ada',
+        address: { city: 'london' },
+      })
+    }, 90000)
+
+    test('a struct-typed task input deserializes into a typed object', async () => {
+      await registerPersonStruct()
+
+      let received: unknown
+      await track(
+        startWorker(
+          'struct-input',
+          (person: z.infer<typeof Person>) => {
+            received = person
+            return `${person.name}@${person.address.city}`
+          },
+          { person: Person }
+        )
+      )
+
+      const wf = Workflow.newWorkflow(uniqueName('struct-input-wf'), thread => {
+        const person = thread.declareStruct('person', Person)
+        person.assign(
+          thread
+            .buildStruct('rt-person')
+            .put('name', 'grace')
+            .put('address', thread.buildInlineStruct().put('city', 'arlington'))
+        )
+        const out = thread.declareStr('out')
+        out.assign(thread.execute('struct-input', person))
+      })
+
+      // The TaskDef's input var must be typed as the StructDef too: a plain
+      // z.object() would declare JSON_OBJ, and the server fails the TaskRun on
+      // the mismatch rather than coercing.
+      const name = await register(wf, { 'struct-input': { person: Person } })
+      const wfRun = await client.runWf({ wfSpecName: name, variables: {} })
+      const finished = await waitForWfRun(client, wfRun.id!, 60000)
+
+      expect(LHStatus[finished.status]).toBe('COMPLETED')
+      // The worker saw a plain object with real field access, not a string.
+      expect(received).toEqual({ name: 'grace', address: { city: 'arlington' } })
+      expect(unwrap(await getVariable(client, wfRun.id!, 'out'))).toBe('grace@arlington')
+    }, 90000)
   })
 
   describe('events thrown by workflows', () => {
-    // WorkflowEvents are observable through the output topic / event APIs,
-    // which this harness does not yet consume.
-    test.todo('throwEvent emits a WorkflowEvent observable from the server')
+    test('throwEvent emits a WorkflowEvent observable from the server', async () => {
+      const eventName = uniqueName('shipped').replace(/[^a-z0-9-]/g, '')
+      await client.putWorkflowEventDef({
+        name: eventName,
+        contentType: { returnType: strType() },
+      })
+
+      const wf = Workflow.newWorkflow(uniqueName('throw-event'), thread => {
+        thread.throwEvent(eventName, 'order-42')
+      })
+
+      const { wfRun, finished } = await runToCompletion(wf)
+      expect(LHStatus[finished.status]).toBe('COMPLETED')
+
+      const events = await client.listWorkflowEvents({ wfRunId: wfRun.id })
+      expect(events.results).toHaveLength(1)
+      expect(events.results[0].id?.workflowEventDefId?.name).toBe(eventName)
+      expect(unwrap(events.results[0].content)).toBe('order-42')
+
+      // awaitWorkflowEvent is the client-facing way to consume it, and must
+      // return the already-thrown event rather than blocking for a new one.
+      const awaited = await client.awaitWorkflowEvent({
+        wfRunId: wfRun.id,
+        eventDefIds: [{ name: eventName }],
+      })
+      expect(unwrap(awaited.content)).toBe('order-42')
+    }, 90000)
   })
 })

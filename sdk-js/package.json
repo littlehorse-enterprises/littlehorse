@@ -40,7 +40,8 @@
     "test": "jest",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test:integration": "jest --config jest.integration.config.js"
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:core": "jest --config jest.integration.config.js --testPathIgnorePatterns '/src/integration/(cluster|tls|oauth)\\.test\\.ts$'"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",

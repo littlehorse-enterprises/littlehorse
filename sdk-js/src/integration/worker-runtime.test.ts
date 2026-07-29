@@ -244,12 +244,12 @@ describe('worker behavior the server drives', () => {
     expect(taskRun.attempts[0].taskWorkerId.length).toBeGreaterThan(0)
   }, 90000)
 
-  // Needs a second server process to rebalance between; the fake-server suite
-  // covers the client's reaction to a changed host list, and the container
-  // harness runs a single standalone node.
-  test.todo('a worker rebalances across a multi-node cluster')
-  // Requires an lh-standalone configured for TLS and an OAuth issuer; the
-  // credentials themselves are covered by the config matrix.
-  test.todo('a worker connects over TLS to a real server')
-  test.todo('a worker authenticates with OAuth against a real issuer')
+  // Three former todos here now have real tests, but in their own files
+  // because they each need infrastructure this suite's single standalone
+  // container cannot provide:
+  //   - rebalancing across a multi-node cluster  → cluster.test.ts
+  //   - connecting over TLS                      → tls.test.ts
+  //   - authenticating with OAuth                → oauth.test.ts
+  // They are listed here so this enumeration stays a complete picture of
+  // server-driven worker behavior rather than only the cheap parts.
 })

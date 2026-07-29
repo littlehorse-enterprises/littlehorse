@@ -69,12 +69,16 @@ class ServerConnection {
     private readonly taskWorkerVersion: string | undefined,
     private readonly config: LHConfig,
     private readonly maxInflight: number,
-    private readonly outputSchema?: ZodTypeAny
+    private readonly outputSchema?: ZodTypeAny,
+    accessToken?: string
   ) {
     this.host = host
     this.port = port
     this.transport = config.createTransport(host, port)
-    this.client = config.createClientForTransport(this.transport)
+    // The token is bound at connection time. If it later expires the stream
+    // fails, the poll loop reconnects, and the heartbeat supplies a fresh one
+    // — so expiry self-heals through the existing reconnect path.
+    this.client = config.createClientForTransport(this.transport, accessToken)
   }
 
   get hostKey(): string {
@@ -369,6 +373,12 @@ export interface LHTaskWorkerOptions {
    * equivalent knobs are workerThreads / inflightTasks).
    */
   maxInflightTasks?: number
+
+  /**
+   * Bearer token for a listener that requires one. Usually unnecessary: when
+   * the config has OAuth credentials the worker mints and refreshes its own.
+   */
+  accessToken?: string
 }
 
 /**
@@ -444,7 +454,21 @@ export function createTaskWorker(
   // Hold the bootstrap transport so close() can release it; config.getClient()
   // would create one we could never shut down.
   const bootstrapTransport = config.createTransport(config.getApiBootstrapHost()!, config.getApiBootstrapPort()!)
-  const bootstrapClient = config.createClientForTransport(bootstrapTransport)
+
+  /**
+   * A credential for this worker's calls, if the listener needs one: an
+   * explicitly supplied token, else one minted from the configured OAuth
+   * provider (which caches and refreshes it).
+   */
+  async function currentAccessToken(): Promise<string | undefined> {
+    if (options.accessToken !== undefined) return options.accessToken
+    return config.getOauthProvider()?.getToken()
+  }
+
+  /** Bootstrap client carrying a current credential. */
+  async function bootstrap(): Promise<LHPublicClient> {
+    return config.createClientForTransport(bootstrapTransport, await currentAccessToken())
+  }
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
   const taskWorkerVersion = options.taskWorkerVersion ?? config.getTaskWorkerVersion()
@@ -457,7 +481,8 @@ export function createTaskWorker(
 
   async function heartbeat(): Promise<void> {
     try {
-      const response = await bootstrapClient.registerTaskWorker({
+      const accessToken = await currentAccessToken()
+      const response = await (await bootstrap()).registerTaskWorker({
         taskWorkerId,
         taskDefId: { name: taskDefName },
       })
@@ -492,7 +517,8 @@ export function createTaskWorker(
             taskWorkerVersion,
             config,
             maxInflightTasks,
-            outputSchema
+            outputSchema,
+            accessToken
           )
           conn.start()
           connections.set(key, conn)
@@ -519,7 +545,7 @@ export function createTaskWorker(
 
     async doesTaskDefExist(): Promise<boolean> {
       try {
-        await bootstrapClient.getTaskDef({ name: taskDefName })
+        await (await bootstrap()).getTaskDef({ name: taskDefName })
         return true
       } catch (err: any) {
         if (err?.code === 'NOT_FOUND') {
@@ -531,7 +557,7 @@ export function createTaskWorker(
 
     async registerTaskDef(): Promise<void> {
       try {
-        const result = await bootstrapClient.putTaskDef({
+        const result = await (await bootstrap()).putTaskDef({
           name: taskDefName,
           inputVars,
         })
@@ -547,7 +573,7 @@ export function createTaskWorker(
 
     async registerStructDef(request: PutStructDefRequest): Promise<void> {
       try {
-        const result = await bootstrapClient.putStructDef(request)
+        const result = await (await bootstrap()).putStructDef(request)
         console.log(`[LHTaskWorker] Registered StructDef: ${result.id?.name} v${result.id?.version}`)
       } catch (err: any) {
         if (err?.code === 'ALREADY_EXISTS') {
@@ -564,7 +590,7 @@ export function createTaskWorker(
       // fails immediately instead of on the first scheduled task.
       let serverTaskDef
       try {
-        serverTaskDef = await bootstrapClient.getTaskDef({ name: taskDefName })
+        serverTaskDef = await (await bootstrap()).getTaskDef({ name: taskDefName })
       } catch (err: unknown) {
         const code = (err as { code?: unknown })?.code
         if (code === 'NOT_FOUND' || code === 5) {
@@ -610,7 +636,7 @@ export function createTaskWorker(
       // registering it — Java: LHTaskWorker#validateStructDef(s).
       for (const schema of schemas) {
         const request = buildPutStructDefRequest(schema, compatibilityType)
-        const response = await bootstrapClient.validateStructDefEvolution({
+        const response = await (await bootstrap()).validateStructDefEvolution({
           structDefId: { name: request.name, version: 0 },
           structDef: request.structDef,
           compatibilityType,

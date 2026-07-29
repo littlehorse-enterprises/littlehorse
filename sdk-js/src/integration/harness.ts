@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { varValToObj } from '../common'
 import { LHConfig } from '../LHConfig'
 import type { LHPublicClient } from '../client'
 import { LHStatus } from '../proto/common_enums'
@@ -186,24 +187,14 @@ export async function getVariable(
   return variable.value
 }
 
-/** Unwraps a VariableValue into a plain JS value for assertions. */
+/**
+ * Unwraps a VariableValue into a plain JS value for assertions.
+ *
+ * Delegates to the SDK's own deserializer rather than reimplementing it, so
+ * assertions see exactly what a user's task function would receive — a private
+ * copy here would silently diverge (it did: it had no STRUCT case).
+ */
 export function unwrap(value: VariableValue | undefined): unknown {
   if (!value?.value) return undefined
-  const v = value.value
-  switch (v.oneofKind) {
-    case 'str':
-      return v.str
-    case 'int':
-      return Number(v.int)
-    case 'double':
-      return v.double
-    case 'bool':
-      return v.bool
-    case 'jsonObj':
-      return JSON.parse(v.jsonObj)
-    case 'jsonArr':
-      return JSON.parse(v.jsonArr)
-    default:
-      return v
-  }
+  return varValToObj(value)
 }
