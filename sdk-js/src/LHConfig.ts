@@ -7,6 +7,11 @@ import getPropertiesArgs, { ConfigArgs } from './utils/getPropertiesArgs'
 import { readFileSync } from 'fs'
 import type { LHPublicClient } from './client'
 import { promisifyClient } from './client'
+import { randomUUID } from 'crypto'
+import { LHMisconfigurationError } from './common/errors'
+import { OAuthCredentialsProvider } from './common/oauth'
+import { LHTypeAdapterRegistry } from './common/typeAdapters'
+import type { LHTypeAdapter } from './common/typeAdapters'
 
 export const CONFIG_NAMES = [
   'LHC_API_HOST',
@@ -20,6 +25,12 @@ export const CONFIG_NAMES = [
   'LHC_CLIENT_KEY',
   'LHC_GRPC_KEEPALIVE_TIME_MS',
   'LHC_GRPC_KEEPALIVE_TIMEOUT_MS',
+  'LHC_NUM_WORKER_THREADS',
+  'LHC_TASK_WORKER_ID',
+  'LHC_TASK_WORKER_VERSION',
+  'LHC_OAUTH_CLIENT_ID',
+  'LHC_OAUTH_CLIENT_SECRET',
+  'LHC_OAUTH_ACCESS_TOKEN_URL',
 ] as const
 
 export type Config = {
@@ -42,6 +53,23 @@ function parseGrpcMaxReceiveMessageLength(config?: string): number | undefined {
   }
   return value
 }
+function parsePositiveInt(config: string | undefined, name: string): number | undefined {
+  if (config === undefined || config === '') return undefined
+  const value = Number(config)
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new LHMisconfigurationError(`Invalid ${name} "${config}": expected a positive integer`)
+  }
+  return value
+}
+
+/** OAuth is all-or-nothing: a partial config is a misconfiguration. */
+function requireOauth(value: string | undefined, name: string): string {
+  if (!value) {
+    throw new LHMisconfigurationError(`${name} is required when configuring OAuth`)
+  }
+  return value
+}
+
 function parsePositiveMillis(config: string | undefined, name: string): number | undefined {
   if (config === undefined || config === '') {
     return undefined
@@ -74,6 +102,11 @@ export class LHConfig {
   private grpcMaxReceiveMessageLength?: number
   private keepaliveTimeMs?: number
   private keepaliveTimeoutMs?: number
+  private numWorkerThreads: number
+  private taskWorkerId: string
+  private taskWorkerVersion?: string
+  private oauth?: OAuthCredentialsProvider
+  private readonly typeAdapters = new LHTypeAdapterRegistry()
 
   private channelCredentials: ChannelCredentials
 
@@ -95,6 +128,23 @@ export class LHConfig {
       mergedConfig.LHC_GRPC_KEEPALIVE_TIMEOUT_MS,
       'LHC_GRPC_KEEPALIVE_TIMEOUT_MS'
     )
+    this.numWorkerThreads = parsePositiveInt(mergedConfig.LHC_NUM_WORKER_THREADS, 'LHC_NUM_WORKER_THREADS') ?? 8
+    // Java defaults the worker id to a random value so two workers on one host
+    // stay distinguishable in server-side logs.
+    this.taskWorkerId = mergedConfig.LHC_TASK_WORKER_ID || randomUUID()
+    this.taskWorkerVersion = mergedConfig.LHC_TASK_WORKER_VERSION
+
+    if (
+      mergedConfig.LHC_OAUTH_CLIENT_ID ||
+      mergedConfig.LHC_OAUTH_CLIENT_SECRET ||
+      mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL
+    ) {
+      this.oauth = new OAuthCredentialsProvider({
+        clientId: requireOauth(mergedConfig.LHC_OAUTH_CLIENT_ID, 'LHC_OAUTH_CLIENT_ID'),
+        clientSecret: requireOauth(mergedConfig.LHC_OAUTH_CLIENT_SECRET, 'LHC_OAUTH_CLIENT_SECRET'),
+        tokenEndpoint: requireOauth(mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL, 'LHC_OAUTH_ACCESS_TOKEN_URL'),
+      })
+    }
 
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : null
@@ -158,6 +208,18 @@ export class LHConfig {
    */
   public getClient(accessToken?: string): LHPublicClient {
     return this.createClientForHost(this.apiHost!, this.apiPort!, accessToken)
+  }
+
+  /**
+   * A client whose calls carry a freshly-minted OAuth bearer token. Separate
+   * from getClient() because acquiring a token is asynchronous, and making
+   * every client call async would be a breaking change for non-OAuth users.
+   */
+  public async getAuthenticatedClient(): Promise<LHPublicClient> {
+    if (this.oauth === undefined) {
+      return this.getClient()
+    }
+    return this.getClient(await this.oauth.getToken())
   }
 
   /**
@@ -256,6 +318,48 @@ export class LHConfig {
   /** Fetches a TaskDef by name through the configured client. */
   async getTaskDef(name: string) {
     return this.getClient().getTaskDef({ name })
+  }
+
+  /** Worker concurrency (Java: LHConfig#getWorkerThreads/getInflightTasks). */
+  getNumWorkerThreads(): number {
+    return this.numWorkerThreads
+  }
+
+  /** Stable id for this worker process (Java: LHConfig#getTaskWorkerId). */
+  getTaskWorkerId(): string {
+    return this.taskWorkerId
+  }
+
+  /** Optional worker version tag (Java: LHConfig#getTaskWorkerVersion). */
+  getTaskWorkerVersion(): string | undefined {
+    return this.taskWorkerVersion
+  }
+
+  /**
+   * Registers serde for a type the SDK does not know natively
+   * (Java: LHConfigBuilder#addTypeAdapter).
+   */
+  addTypeAdapter(adapter: LHTypeAdapter): this {
+    this.typeAdapters.add(adapter)
+    return this
+  }
+
+  /**
+   * The adapters available to the wfsdk and worker
+   * (Java: LHConfig#getTypeAdapterRegistry).
+   */
+  getTypeAdapterRegistry(): LHTypeAdapterRegistry {
+    return this.typeAdapters
+  }
+
+  /** Whether OAuth credentials are configured (Java: LHConfig#isOauth). */
+  isOauth(): boolean {
+    return this.oauth !== undefined
+  }
+
+  /** The OAuth provider, when configured. */
+  getOauthProvider(): OAuthCredentialsProvider | undefined {
+    return this.oauth
   }
 
   /** Returns the configured gRPC keepalive time in ms, if any. */

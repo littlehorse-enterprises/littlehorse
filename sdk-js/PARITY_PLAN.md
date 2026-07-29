@@ -13,11 +13,16 @@ cd sdk-js && npx jest src/feature-matrix
 ```
 
 Passed = done, todo = missing, failed = broken. That output *is* the feature
-matrix (see below). Snapshot as of 2026-07-28: 234 passing / 18 todo. The
-wfsdk compiler (`src/wfsdk/`) and the task worker are both complete, and all
-14 reference workflows match the Java goldens *and* are accepted by a real
-server. **What remains is OAuth, the common/serde and usertask areas, and the
-parked type-adapter decision** — see "Ordering and status".
+matrix (see below). Snapshot as of 2026-07-28: **191 of 191 entries pass —
+100% of the enumerated Java surface**, plus 61 supporting tests and 25
+integration tests against a real server.
+
+That number means every capability enumerated from the Java SDK's public API
+has a JS implementation and a test proving it. It does **not** mean the SDK is
+finished: the enumeration is a snapshot of Java's API as of this port, the
+integration suite covers a slice of behavior rather than everything, and areas
+like OAuth are proven against a stand-in issuer rather than a real one. Treat
+100% as "the port is complete and honest", not as "nothing left to do".
 
 ## Background: what an SDK is here
 
@@ -138,9 +143,10 @@ regressions (50x), not to win.
 3. wfsdk port — biggest gap, best oracle. **Done.** `src/wfsdk/` compiles all
    14 reference workflows to protos identical to the Java SDK's goldens, and
    every wfsdk matrix entry passes.
-4. Config surface. **Done except OAuth.** Source-composing builder
+4. Config surface. **Done.** Source-composing builder
    (`LHConfig.newBuilder()`), env-var loading, keepalive options, TLS/mTLS
-   credentials, client creation, `getTaskDef`. 15 of 22 entries pass.
+   credentials, client creation, `getTaskDef`, worker id/version/concurrency,
+   OAuth client-credentials with refresh, and the type adapter registry.
 5. Worker hardening. **Done** — all 40 worker entries pass: registration and
    signature/StructDef validation, execution semantics, WorkerContext
    (including user/group context and `executeAndCheckpoint`), topology
@@ -154,10 +160,19 @@ regressions (50x), not to win.
    suite was judged not worth the coupling. They catch order-of-magnitude
    regressions, which is what the plan asks of them, but they are *not* a
    cross-SDK comparison.
-6. OAuth (client-credentials, refresh, `isOauth`). **Not started** — the
-   single largest unimplemented feature left; Java has a whole `common/auth`
-   package and sdk-js has none of it.
-7. Benchmarks. **Not started.**
+6. OAuth (client-credentials, refresh, `isOauth`). **Done** —
+   `src/common/oauth.ts` fetches a token with HTTP Basic + the
+   `client_credentials` grant, caches it, refreshes inside a configurable skew
+   before expiry, and collapses concurrent refreshes into one request.
+   Verified against a stand-in issuer, **not** a real identity provider.
+7. common/ serde. **Done** — `src/common/serde.ts` is now the single
+   JS <-> VariableValue implementation (the wfsdk and worker previously had
+   their own copies), verified against `golden/fixtures/serde.json` emitted by
+   the Java SDK.
+8. usertask. **Done** — `src/usertask/` describes User Task forms with zod in
+   place of Java's annotated classes, compiling to the same
+   `PutUserTaskDefRequest`.
+9. Benchmarks. **Done** (sanity floors; see step 5's note).
 
 ### Integration tests (tier 2, real server)
 
@@ -229,14 +244,32 @@ parks until work exists (replying empty would deadlock the worker, which only
 re-asks after a response); and breaking a stream requires *emitting* an error
 — `destroy()` alone never reaches the client.
 
-### Open decision: type adapters
+### Resolved: type adapters
 
-Java's `LHTypeAdapter` registry handles serde for user-defined classes.
-sdk-js already solves that problem differently, with zod schemas
-(`src/worker/zodSchema.ts`, `lhStruct(...)`). The two `type adapters` entries
-in `config.test.ts` are therefore parked pending a call: mark them
-not-applicable-to-JS with a written rationale, or design a JS analogue. They
-are the only matrix entries that are not simply unimplemented work.
+Previously parked. Resolved by building the JS analogue rather than declaring
+it not-applicable: zod describes *schemas*, but not custom class instances,
+which would otherwise fall through to the generic object branch and come back
+as plain JSON. `LHConfig#addTypeAdapter` / `getTypeAdapterRegistry`
+(`src/common/typeAdapters.ts`) close that gap.
+
+One deliberate difference from Java: adapters apply automatically when
+*writing*, but decoding stays with the built-ins unless a caller asks for an
+adapter by name. An encoded value carries no marker saying which adapter
+produced it, and guessing wrong would silently return the wrong type.
+
+### Serde: one implementation, checked against Java
+
+`src/common/serde.ts` is the only JS <-> VariableValue conversion in the SDK.
+`golden/fixtures/serde.json` records how the *Java* SDK encodes representative
+values, and the common tests assert byte agreement. Two findings came out of
+building it, both invisible to any JS-only test:
+
+- Java **drops null object fields**, recursively, but keeps nulls inside
+  arrays. Plain `JSON.stringify` does neither, so `lhJsonStringify` exists.
+- Structural type-sniffing is unsafe in JS: an early version detected
+  `WfRunId` by shape and silently encoded the very common object
+  `{id: 'abc'}` as a WF_RUN_ID, discarding its other fields. WF_RUN_ID must
+  now be passed as an explicit `VariableValue`.
 
 ## Golden harness
 

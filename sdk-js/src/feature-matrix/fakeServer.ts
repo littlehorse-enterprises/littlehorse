@@ -15,6 +15,7 @@ import {
   PutWfSpecRequest,
   PutWorkflowEventDefRequest,
   PutCheckpointRequest,
+  PutUserTaskDefRequest,
   PutCheckpointResponse,
   PutCheckpointResponse_FlowControlContinue,
   RegisterTaskWorkerRequest,
@@ -27,6 +28,7 @@ import {
 import { CheckpointId, TaskDefId, WfSpecId } from '../proto/object_id'
 import { VariableDef } from '../proto/common_wfspec'
 import { Checkpoint } from '../proto/task_run'
+import { UserTaskDef } from '../proto/user_tasks'
 
 /**
  * An in-process LittleHorse server for worker tests.
@@ -78,6 +80,7 @@ const SERVICE_DEFINITION = {
   getWfSpec: method('GetWfSpec', WfSpecId, WfSpec),
   putExternalEventDef: method('PutExternalEventDef', PutExternalEventDefRequest, ExternalEventDef),
   putWorkflowEventDef: method('PutWorkflowEventDef', PutWorkflowEventDefRequest, WorkflowEventDef),
+  putUserTaskDef: method('PutUserTaskDef', PutUserTaskDefRequest, UserTaskDef),
   putCheckpoint: method('PutCheckpoint', PutCheckpointRequest, PutCheckpointResponse),
   getCheckpoint: method('GetCheckpoint', CheckpointId, Checkpoint),
   validateStructDefEvolution: method(
@@ -128,6 +131,9 @@ export class FakeLHServer {
   readonly getLatestWfSpecRequests: GetLatestWfSpecRequest[] = []
   readonly getWfSpecRequests: WfSpecId[] = []
   readonly validateStructDefRequests: ValidateStructDefEvolutionRequest[] = []
+  readonly putUserTaskDefRequests: PutUserTaskDefRequest[] = []
+  /** Authorization metadata from the most recent unary call, for auth tests. */
+  lastAuthorizationHeader?: string
   /** Checkpoints stored by PutCheckpoint, indexed by checkpoint number. */
   readonly checkpoints: Checkpoint[] = []
 
@@ -163,6 +169,7 @@ export class FakeLHServer {
       getWfSpec: this.handleGetWfSpec,
       putExternalEventDef: this.handlePutExternalEventDef,
       putWorkflowEventDef: this.handlePutWorkflowEventDef,
+      putUserTaskDef: this.handlePutUserTaskDef,
       putCheckpoint: this.handlePutCheckpoint,
       getCheckpoint: this.handleGetCheckpoint,
       validateStructDefEvolution: this.handleValidateStructDefEvolution,
@@ -292,6 +299,8 @@ export class FakeLHServer {
     call: grpc.ServerUnaryCall<PutTaskDefRequest, TaskDef>,
     callback: grpc.sendUnaryData<TaskDef>
   ): void => {
+    const authorization = call.metadata.get('authorization')[0]
+    this.lastAuthorizationHeader = authorization === undefined ? undefined : String(authorization)
     this.putTaskDefRequests.push(call.request)
     if (this.options.taskDefAlreadyExists) {
       callback({ code: grpc.status.ALREADY_EXISTS, details: 'TaskDef already exists' })
@@ -306,6 +315,14 @@ export class FakeLHServer {
   ): void => {
     this.putStructDefRequests.push(call.request)
     callback(null, StructDef.create({ id: { name: call.request.name, version: 0 } }))
+  }
+
+  private handlePutUserTaskDef = (
+    call: grpc.ServerUnaryCall<PutUserTaskDefRequest, UserTaskDef>,
+    callback: grpc.sendUnaryData<UserTaskDef>
+  ): void => {
+    this.putUserTaskDefRequests.push(call.request)
+    callback(null, UserTaskDef.create({ name: call.request.name, version: 0, fields: call.request.fields }))
   }
 
   private handlePutCheckpoint = (

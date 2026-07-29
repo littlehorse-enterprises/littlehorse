@@ -1,78 +1,14 @@
-import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { VariableAssignment, VariableAssignment_Expression } from '../proto/common_wfspec'
-import { TypeDefinition, VariableValue } from '../proto/type_definition'
-import { VariableType } from '../proto/common_enums'
+import { TypeDefinition } from '../proto/type_definition'
+import { objToVarVal } from '../common/serde'
 import { CastExpressionImpl, LHExpressionImpl, LHFormatString, SizeOfExpressionImpl } from './expressions'
 import { NodeOutput } from './nodeOutputs'
 import { LHStructBuilder } from './structBuilders'
 import { WfRunVariable } from './variables'
 
-/**
- * Converts a JS literal to a VariableValue (mirrors Java LHLibUtil.objToVarVal).
- *
- * JS has a single `number` type, so integer-valued numbers become INT and
- * everything else DOUBLE. Pass a bigint (or a WfRunVariable of type DOUBLE)
- * when an integer-valued DOUBLE literal is needed.
- */
-export function objToVarVal(value: unknown): VariableValue {
-  if (value === null || value === undefined) {
-    return VariableValue.create()
-  }
-  if (typeof value === 'number') {
-    if (Number.isInteger(value)) {
-      return VariableValue.create({ value: { oneofKind: 'int', int: String(value) } })
-    }
-    return VariableValue.create({ value: { oneofKind: 'double', double: value } })
-  }
-  if (typeof value === 'bigint') {
-    return VariableValue.create({ value: { oneofKind: 'int', int: String(value) } })
-  }
-  if (typeof value === 'string') {
-    return VariableValue.create({ value: { oneofKind: 'str', str: value } })
-  }
-  if (typeof value === 'boolean') {
-    return VariableValue.create({ value: { oneofKind: 'bool', bool: value } })
-  }
-  if (value instanceof Uint8Array) {
-    return VariableValue.create({ value: { oneofKind: 'bytes', bytes: value } })
-  }
-  if (value instanceof Date) {
-    return VariableValue.create({ value: { oneofKind: 'utcTimestamp', utcTimestamp: Timestamp.fromDate(value) } })
-  }
-  if (Array.isArray(value)) {
-    return VariableValue.create({ value: { oneofKind: 'jsonArr', jsonArr: JSON.stringify(value) } })
-  }
-  if (typeof value === 'object') {
-    return VariableValue.create({ value: { oneofKind: 'jsonObj', jsonObj: JSON.stringify(value) } })
-  }
-  throw new Error(`Cannot convert value of type ${typeof value} to a VariableValue`)
-}
-
-/** Maps a VariableValue's set field to its VariableType (Java LHLibUtil.fromValueCase). */
-export function variableTypeFromValue(value: VariableValue): VariableType {
-  switch (value.value.oneofKind) {
-    case 'str':
-      return VariableType.STR
-    case 'int':
-      return VariableType.INT
-    case 'double':
-      return VariableType.DOUBLE
-    case 'bool':
-      return VariableType.BOOL
-    case 'bytes':
-      return VariableType.BYTES
-    case 'utcTimestamp':
-      return VariableType.TIMESTAMP
-    case 'jsonObj':
-      return VariableType.JSON_OBJ
-    case 'jsonArr':
-      return VariableType.JSON_ARR
-    case 'wfRunId':
-      return VariableType.WF_RUN_ID
-    default:
-      throw new Error(`Cannot infer VariableType from value: ${value.value.oneofKind}`)
-  }
-}
+// Serde lives in common/ so the wfsdk and the worker cannot drift apart;
+// re-exported here because callers already import it from this module.
+export { objToVarVal, variableTypeOf as variableTypeFromValue } from '../common/serde'
 
 /**
  * Converts any LHValue (literal, WfRunVariable, NodeOutput, expression, format

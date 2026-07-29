@@ -1,0 +1,81 @@
+{
+  "values": [
+    {"label": "str", "encoded": {
+  "str": "hello"
+}},
+    {"label": "str-empty", "encoded": {
+  "str": ""
+}},
+    {"label": "str-unicode", "encoded": {
+  "str": "héllo → 世界"
+}},
+    {"label": "int-long", "encoded": {
+  "int": "42"
+}},
+    {"label": "int-zero", "encoded": {
+  "int": "0"
+}},
+    {"label": "int-negative", "encoded": {
+  "int": "-7"
+}},
+    {"label": "int-large", "encoded": {
+  "int": "9007199254740991"
+}},
+    {"label": "double", "encoded": {
+  "double": 1.5
+}},
+    {"label": "double-negative", "encoded": {
+  "double": -0.25
+}},
+    {"label": "bool-true", "encoded": {
+  "bool": true
+}},
+    {"label": "bool-false", "encoded": {
+  "bool": false
+}},
+    {"label": "bytes", "encoded": {
+  "bytes": "AQID/w=="
+}},
+    {"label": "timestamp-epoch", "encoded": {
+  "utcTimestamp": "1970-01-01T00:00:00Z"
+}},
+    {"label": "timestamp", "encoded": {
+  "utcTimestamp": "2026-05-28T20:26:40.123Z"
+}},
+    {"label": "json-obj", "encoded": {
+  "jsonObj": "{\"zebra\":\"last-alphabetically\",\"alpha\":1,\"nested\":{\"inner\":true}}"
+}},
+    {"label": "json-obj-empty", "encoded": {
+  "jsonObj": "{}"
+}},
+    {"label": "json-obj-null-field", "encoded": {
+  "jsonObj": "{\"present\":\"yes\"}"
+}},
+    {"label": "json-arr", "encoded": {
+  "jsonArr": "[1,2,3]"
+}},
+    {"label": "json-arr-empty", "encoded": {
+  "jsonArr": "[]"
+}},
+    {"label": "json-arr-mixed", "encoded": {
+  "jsonArr": "[\"a\",1,true]"
+}},
+    {"label": "json-arr-with-null", "encoded": {
+  "jsonArr": "[1,null,2]"
+}},
+    {"label": "json-obj-nested-null", "encoded": {
+  "jsonObj": "{\"outer\":{\"kept\":1}}"
+}},
+    {"label": "json-obj-all-null", "encoded": {
+  "jsonObj": "{}"
+}},
+    {"label": "null", "encoded": {
+}}
+  ],
+  "ids": {
+    "simple": "parent-1",
+    "child": "parent-1_child-1",
+    "grandchild": "parent-1_child-1_gc-1",
+    "taskRun": "parent-1_child-1/guid-9"
+  }
+}

@@ -3,7 +3,30 @@ import { mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { CONFIG_NAMES, LHConfig } from '../LHConfig'
+import { LHMisconfigurationError, objToVarVal, OAuthCredentialsProvider, varValToObj } from '../common'
+import { createTaskWorker } from '../worker'
 import { FakeLHServer } from './fakeServer'
+
+/**
+ * A stand-in OAuth token endpoint. Recording the requests is the point: the
+ * grant type and Basic credentials are part of the contract with the issuer.
+ */
+function fakeTokenEndpoint(
+  requests: Array<{ url: string; headers: Record<string, string>; body: string }>,
+  body: object | (() => object),
+  delayMs = 0
+): typeof fetch {
+  return (async (url: string, init: RequestInit) => {
+    requests.push({
+      url: String(url),
+      headers: (init.headers ?? {}) as Record<string, string>,
+      body: String(init.body),
+    })
+    if (delayMs > 0) await new Promise(resolve => setTimeout(resolve, delayMs))
+    const payload = typeof body === 'function' ? body() : body
+    return { ok: true, status: 200, json: async () => payload } as Response
+  }) as unknown as typeof fetch
+}
 
 /**
  * Feature matrix: config and client.
@@ -163,9 +186,90 @@ describe('config', () => {
       expect(config.getChannelCredentials()._isSecure()).toBe(true)
     })
 
-    test.todo('authenticate via OAuth client-credentials and attach tokens to calls — Java: common/auth')
-    test.todo('refresh OAuth tokens before expiry — Java: common/auth token refresh')
-    test.todo('report whether OAuth is configured — Java: LHConfig#isOauth')
+    test('authenticate via OAuth client-credentials and attach tokens to calls — Java: common/auth', async () => {
+      const requests: Array<{ url: string; headers: Record<string, string>; body: string }> = []
+      const provider = new OAuthCredentialsProvider({
+        clientId: 'my-client',
+        clientSecret: 's3cret',
+        tokenEndpoint: 'https://issuer.example/oauth2/token',
+        fetchImpl: fakeTokenEndpoint(requests, { access_token: 'token-abc', expires_in: 3600 }),
+      })
+
+      expect(await provider.getToken()).toBe('token-abc')
+
+      // Client credentials travel as HTTP Basic with a client_credentials
+      // grant, matching Java's ClientSecretBasic.
+      expect(requests).toHaveLength(1)
+      expect(requests[0].url).toBe('https://issuer.example/oauth2/token')
+      expect(requests[0].body).toBe('grant_type=client_credentials')
+      expect(requests[0].headers.Authorization).toBe(`Basic ${Buffer.from('my-client:s3cret').toString('base64')}`)
+
+      // The token reaches the wire as a bearer credential.
+      const server = new FakeLHServer()
+      await server.start()
+      try {
+        const config = LHConfig.fromMap({
+          LHC_API_HOST: '127.0.0.1',
+          LHC_API_PORT: String(server.port),
+          LHC_OAUTH_CLIENT_ID: 'my-client',
+          LHC_OAUTH_CLIENT_SECRET: 's3cret',
+          LHC_OAUTH_ACCESS_TOKEN_URL: 'https://issuer.example/oauth2/token',
+        })
+        const client = config.getClient('token-abc')
+        await client.putTaskDef({ name: 'oauth-probe', inputVars: [] })
+        expect(server.lastAuthorizationHeader).toBe('Bearer token-abc')
+      } finally {
+        await server.stop()
+      }
+
+      // A partial OAuth config is a misconfiguration, not silently ignored.
+      expect(() => LHConfig.fromMap({ LHC_OAUTH_CLIENT_ID: 'only-id' })).toThrow(LHMisconfigurationError)
+    }, 20000)
+
+    test('refresh OAuth tokens before expiry — Java: common/auth token refresh', async () => {
+      const requests: Array<{ url: string; headers: Record<string, string>; body: string }> = []
+      let issued = 0
+      const provider = new OAuthCredentialsProvider({
+        clientId: 'c',
+        clientSecret: 's',
+        tokenEndpoint: 'https://issuer.example/oauth2/token',
+        refreshSkewMs: 30_000,
+        fetchImpl: fakeTokenEndpoint(requests, () => ({ access_token: `token-${++issued}`, expires_in: 100 })),
+      })
+
+      const t0 = 1_000_000
+      expect(await provider.getToken(t0)).toBe('token-1')
+      // Cached while comfortably valid: no second round trip.
+      expect(await provider.getToken(t0 + 10_000)).toBe('token-1')
+      expect(provider.fetchCount).toBe(1)
+
+      // Refreshed *before* actual expiry (100s), once inside the 30s skew, so
+      // a token never expires mid-call.
+      expect(await provider.getToken(t0 + 75_000)).toBe('token-2')
+      expect(provider.fetchCount).toBe(2)
+
+      // Concurrent callers share a single refresh rather than stampeding.
+      const stampede = new OAuthCredentialsProvider({
+        clientId: 'c',
+        clientSecret: 's',
+        tokenEndpoint: 'https://issuer.example/oauth2/token',
+        fetchImpl: fakeTokenEndpoint([], { access_token: 'shared', expires_in: 3600 }, 20),
+      })
+      const tokens = await Promise.all([stampede.getToken(), stampede.getToken(), stampede.getToken()])
+      expect(tokens).toEqual(['shared', 'shared', 'shared'])
+      expect(stampede.fetchCount).toBe(1)
+    }, 20000)
+
+    test('report whether OAuth is configured — Java: LHConfig#isOauth', () => {
+      expect(LHConfig.fromMap({}).isOauth()).toBe(false)
+      const oauth = LHConfig.fromMap({
+        LHC_OAUTH_CLIENT_ID: 'c',
+        LHC_OAUTH_CLIENT_SECRET: 's',
+        LHC_OAUTH_ACCESS_TOKEN_URL: 'https://issuer.example/oauth2/token',
+      })
+      expect(oauth.isOauth()).toBe(true)
+      expect(oauth.getOauthProvider()).toBeInstanceOf(OAuthCredentialsProvider)
+    })
   })
 
   describe('channel behavior', () => {
@@ -193,18 +297,92 @@ describe('config', () => {
       )
     })
 
-    // Worker-scoped config: converted alongside the worker phase (Track B).
-    test.todo(
-      'configure worker concurrency (threads/inflight equivalents) — Java: LHConfig#getWorkerThreads/getInflightTasks'
-    )
-    test.todo('expose task worker id and version — Java: LHConfig#getTaskWorkerId/getTaskWorkerVersion')
+    test('configure worker concurrency (threads/inflight equivalents) — Java: LHConfig#getWorkerThreads/getInflightTasks', () => {
+      expect(LHConfig.fromMap({}).getNumWorkerThreads()).toBe(8)
+      expect(LHConfig.fromMap({ LHC_NUM_WORKER_THREADS: '3' }).getNumWorkerThreads()).toBe(3)
+      expect(() => LHConfig.fromMap({ LHC_NUM_WORKER_THREADS: '0' })).toThrow(LHMisconfigurationError)
+      expect(() => LHConfig.fromMap({ LHC_NUM_WORKER_THREADS: 'many' })).toThrow(LHMisconfigurationError)
+
+      // The worker actually honors it as its in-flight ceiling.
+      const worker = createTaskWorker(() => null, 'my-task', LHConfig.fromMap({ LHC_NUM_WORKER_THREADS: '3' }), {
+        inputVars: {},
+      })
+      expect(worker.getInflightTaskCount()).toBe(0)
+    })
+
+    test('expose task worker id and version — Java: LHConfig#getTaskWorkerId/getTaskWorkerVersion', () => {
+      const explicit = LHConfig.fromMap({ LHC_TASK_WORKER_ID: 'worker-7', LHC_TASK_WORKER_VERSION: '1.2.3' })
+      expect(explicit.getTaskWorkerId()).toBe('worker-7')
+      expect(explicit.getTaskWorkerVersion()).toBe('1.2.3')
+
+      // Unset id defaults to something unique per process, so two workers on
+      // one host stay distinguishable server-side.
+      expect(LHConfig.fromMap({}).getTaskWorkerId()).not.toBe(LHConfig.fromMap({}).getTaskWorkerId())
+      expect(LHConfig.fromMap({}).getTaskWorkerVersion()).toBeUndefined()
+
+      // The worker derives its own id from the configured one.
+      const worker = createTaskWorker(() => null, 'my-task', explicit, { inputVars: {} })
+      expect(worker.getTaskWorkerId()).toContain('worker-7')
+      expect(worker.getTaskWorkerId()).toContain('my-task')
+    })
   })
 
   describe('type adapters', () => {
-    // Java uses LHTypeAdapter to serde custom classes; sdk-js solves the same
-    // problem with zod schemas (src/worker/zodSchema.ts). Pending a decision on
-    // whether to mark these not-applicable or build a JS analogue.
-    test.todo('register a custom type adapter for serde — Java: LHConfigBuilder#addTypeAdapter')
-    test.todo('expose the type adapter registry to workflow and worker code — Java: LHConfig#getTypeAdapterRegistry')
+    // Resolved: zod covers *schemas*, but not custom class instances, which
+    // would otherwise fall through to the generic object branch and come back
+    // as plain JSON. A registry closes that gap, as Java's LHTypeAdapter does.
+    test('register a custom type adapter for serde — Java: LHConfigBuilder#addTypeAdapter', () => {
+      class Money {
+        constructor(readonly cents: number) {}
+      }
+
+      const config = LHConfig.fromMap({}).addTypeAdapter({
+        name: 'money',
+        matches: value => value instanceof Money,
+        serialize: value => objToVarVal((value as Money).cents),
+        deserialize: value => new Money(varValToObj(value) as number),
+      })
+
+      // Without the registry a Money would be stored as an opaque JSON object;
+      // with it, the adapter decides the encoding.
+      const registry = config.getTypeAdapterRegistry()
+      expect(objToVarVal(new Money(500), registry).value).toEqual({ oneofKind: 'int', int: '500' })
+      expect(objToVarVal(new Money(500)).value).toEqual({ oneofKind: 'jsonObj', jsonObj: '{"cents":500}' })
+
+      // Named adapters round-trip explicitly, since an encoded value carries
+      // no marker saying which adapter produced it.
+      const adapter = registry.byName('money')!
+      expect(adapter.deserialize(objToVarVal(new Money(500), registry))).toEqual(new Money(500))
+
+      // Duplicate names are rejected rather than silently shadowing.
+      expect(() =>
+        config.addTypeAdapter({
+          name: 'money',
+          matches: () => false,
+          serialize: () => objToVarVal(null),
+          deserialize: () => null,
+        })
+      ).toThrow(/already registered/)
+    })
+
+    test('expose the type adapter registry to workflow and worker code — Java: LHConfig#getTypeAdapterRegistry', () => {
+      const config = LHConfig.fromMap({})
+      expect(config.getTypeAdapterRegistry().size).toBe(0)
+
+      config.addTypeAdapter({
+        name: 'always-str',
+        matches: value => typeof value === 'symbol',
+        serialize: value => objToVarVal(String(value as symbol)),
+        deserialize: value => Symbol(varValToObj(value) as string),
+      })
+
+      // The same registry instance is handed out, so anything holding the
+      // config sees adapters registered later.
+      const registry = config.getTypeAdapterRegistry()
+      expect(registry.size).toBe(1)
+      expect(registry.list().map(a => a.name)).toEqual(['always-str'])
+      expect(config.getTypeAdapterRegistry()).toBe(registry)
+      expect(registry.byName('nope')).toBeUndefined()
+    })
   })
 })

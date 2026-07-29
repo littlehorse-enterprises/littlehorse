@@ -29,3 +29,11 @@ dependencies {
 application {
     mainClass = 'io.littlehorse.sdkjs.golden.GoldenGenerator'
 }
+
+// Emits the serde fixture (how Java encodes values as VariableValue).
+tasks.register('runSerde', JavaExec) {
+    group = 'application'
+    description = 'Generates sdk-js/golden/serde.json'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'io.littlehorse.sdkjs.golden.SerdeGoldenGenerator'
+}

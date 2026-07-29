@@ -22,7 +22,6 @@ const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
 const REPORT_TASK_RETRY_DELAY_MS = 2_000
 const CLOSE_DRAIN_TIMEOUT_MS = 30_000
-const DEFAULT_MAX_INFLIGHT_TASKS = 10
 
 /** Why a worker is (un)healthy — mirrors Java's LHTaskWorkerHealthReason. */
 export enum LHTaskWorkerHealthReason {
@@ -439,15 +438,17 @@ export function createTaskWorker(
   config: LHConfig,
   options: LHTaskWorkerOptions
 ): LHTaskWorker {
-  const taskWorkerId = `worker-${taskDefName}-${randomBytes(8).toString('hex')}`
+  // Config-provided ids/versions win; the random suffix keeps two workers for
+  // the same TaskDef on one host distinguishable.
+  const taskWorkerId = `${config.getTaskWorkerId()}-${taskDefName}-${randomBytes(4).toString('hex')}`
   // Hold the bootstrap transport so close() can release it; config.getClient()
   // would create one we could never shut down.
   const bootstrapTransport = config.createTransport(config.getApiBootstrapHost()!, config.getApiBootstrapPort()!)
   const bootstrapClient = config.createClientForTransport(bootstrapTransport)
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
-  const taskWorkerVersion = options.taskWorkerVersion
-  const maxInflightTasks = options.maxInflightTasks ?? DEFAULT_MAX_INFLIGHT_TASKS
+  const taskWorkerVersion = options.taskWorkerVersion ?? config.getTaskWorkerVersion()
+  const maxInflightTasks = options.maxInflightTasks ?? config.getNumWorkerThreads()
   const connections = new Map<string, ServerConnection>()
   let running = false
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined

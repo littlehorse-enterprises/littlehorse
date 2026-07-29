@@ -20,3 +20,6 @@ export {
 } from './worker'
 export type { LHTaskWorker, TaskFunction, LHTaskWorkerOptions, LHTaskWorkerHealth } from './worker'
 export * from './wfsdk'
+export * from './common'
+export { UserTaskSchema, userTaskSchema } from './usertask'
+export type { UserTaskFieldOptions, UserTaskFieldsInput } from './usertask'
