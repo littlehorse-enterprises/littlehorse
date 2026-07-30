@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -24,6 +25,22 @@ public class MapExample {
 
             // access a single entry by key
             wf.execute("consume-value", mapVar.get("apples"));
+
+            // put a single entry (inserts or overwrites)
+            mapVar.put("dragonfruit", 7L);
+
+            // put with a dynamic (variable-sourced) key
+            WfRunVariable keyVar = wf.declareStr("key-name").withDefault("elderberry");
+            mapVar.put(keyVar, 42L);
+
+            // build a map from scratch using MapBuilder
+            WfRunVariable builtMap = wf.declareMap("built-map", String.class, Long.class);
+            LHMapBuilder builder = wf.buildMap();
+            builder.put("x", 10L);
+            builder.put("y", 20L);
+            builtMap.assign(builder);
+
+            wf.execute("consume-map", mapVar);
         });
     }
 
