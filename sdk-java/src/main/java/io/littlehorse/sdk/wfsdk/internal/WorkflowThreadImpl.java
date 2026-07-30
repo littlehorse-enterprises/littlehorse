@@ -334,6 +334,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHMapBuilderImpl buildMap() {
+        return new LHMapBuilderImpl(this);
+    }
+
+    @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         parent.addTaskDefName(taskName);

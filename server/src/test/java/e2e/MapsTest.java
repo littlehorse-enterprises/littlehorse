@@ -13,6 +13,7 @@ import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -67,6 +68,18 @@ public class MapsTest {
 
     @LHWorkflow("map-array-value-wf")
     private Workflow mapArrayValueWf;
+
+    @LHWorkflow("map-put-wf")
+    private Workflow mapPutWf;
+
+    @LHWorkflow("map-put-overwrite-wf")
+    private Workflow mapPutOverwriteWf;
+
+    @LHWorkflow("map-put-dynamic-key-wf")
+    private Workflow mapPutDynamicKeyWf;
+
+    @LHWorkflow("map-builder-wf")
+    private Workflow mapBuilderWf;
 
     @LHWorkflow("map-nullable-wf")
     private Workflow mapNullableWf;
@@ -236,7 +249,7 @@ public class MapsTest {
                             .count();
                     assertThat(helloCount).isEqualTo(1);
 
-                    java.util.Map<String, Long> asJavaMap = new HashMap<>();
+                    Map<String, Long> asJavaMap = new HashMap<>();
                     entries.forEach(
                             e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
 
@@ -608,6 +621,140 @@ public class MapsTest {
         return new WorkflowImpl("map-array-value-wf", thread -> {
             // Map<STR, ARRAY<INT>> as a required input variable
             thread.declareMap("my-map", String.class, Long[].class).required();
+        });
+    }
+
+    @Test
+    public void shouldInsertNewKeyWithPut() {
+        workflowVerifier
+                .prepareRun(mapPutWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // Original map has "hello"->42, "world"->99. After put("new-key", 77) => 3 entries.
+                    assertThat(entries).hasSize(3);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("hello", 42L);
+                    assertThat(asJavaMap).containsEntry("world", 99L);
+                    assertThat(asJavaMap).containsEntry("new-key", 77L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldOverwriteExistingKeyWithPut() {
+        workflowVerifier
+                .prepareRun(mapPutOverwriteWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // put("hello", 999) should overwrite existing "hello"->42, keeping 2 entries.
+                    assertThat(entries).hasSize(2);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("hello", 999L);
+                    assertThat(asJavaMap).containsEntry("world", 99L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldPutWithDynamicVariableKey() {
+        workflowVerifier
+                .prepareRun(mapPutDynamicKeyWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // Starts with "hello"->42, "world"->99, then put(dynamicKey, 123) where dynamicKey="dynamic-key"
+                    assertThat(entries).hasSize(3);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("dynamic-key", 123L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldBuildMapWithMapBuilder() {
+        workflowVerifier
+                .prepareRun(mapBuilderWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    assertThat(entries).hasSize(2);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("alpha", 1L);
+                    assertThat(asJavaMap).containsEntry("beta", 2L);
+                })
+                .start();
+    }
+
+    @LHWorkflow("map-put-wf")
+    public Workflow buildMapPutWf() {
+        return new WorkflowImpl("map-put-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            // TODO: unnecessary task call because of mutation bug #2181
+            thread.execute("produce-map");
+            mapVar.put("new-key", 77L);
+        });
+    }
+
+    @LHWorkflow("map-put-overwrite-wf")
+    public Workflow buildMapPutOverwriteWf() {
+        return new WorkflowImpl("map-put-overwrite-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            // TODO: unnecessary task call because of mutation bug #2181
+            thread.execute("produce-map");
+            mapVar.put("hello", 999L);
+        });
+    }
+
+    @LHWorkflow("map-put-dynamic-key-wf")
+    public Workflow buildMapPutDynamicKeyWf() {
+        return new WorkflowImpl("map-put-dynamic-key-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable dynamicKey = thread.declareStr("dynamic-key");
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            TaskNodeOutput keyValue = thread.execute("produce-key-name");
+            dynamicKey.assign(keyValue);
+            // TODO: unnecessary task call because of mutation bug #2181
+            thread.execute("produce-key-name");
+            mapVar.put(dynamicKey, 123L);
+        });
+    }
+
+    @LHTaskMethod("produce-key-name")
+    public String produceKeyName() {
+        return "dynamic-key";
+    }
+
+    @LHWorkflow("map-builder-wf")
+    public Workflow buildMapBuilderWf() {
+        return new WorkflowImpl("map-builder-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            LHMapBuilder builder = thread.buildMap();
+            builder.put("alpha", 1L);
+            builder.put("beta", 2L);
+            mapVar.assign(builder);
         });
     }
 }
