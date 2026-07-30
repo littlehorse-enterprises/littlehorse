@@ -7,10 +7,13 @@
   - [Protobuf Changes](#protobuf-changes)
     - [`TypeDefinition` Changes (`InlineMapDef`)](#typedefinition-changes-inlinemapdef)
     - [`VariableValue` Changes (`Map`)](#variablevalue-changes-map)
+    - [`VariableAssignment` Changes (`MapBuilder`)](#variableassignment-changes-mapbuilder)
     - [Allowed Key Types](#allowed-key-types)
   - [Client-Side (SDK) Changes](#client-side-sdk-changes)
     - [Declaring a `Map` Variable](#declaring-a-map-variable)
     - [Accessing Entries](#accessing-entries)
+    - [Mutating Entries (`put`)](#mutating-entries-put)
+    - [Building Maps Inline (`buildMap` / `LHMapBuilder`)](#building-maps-inline-buildmap--lhmapbuilder)
     - [Type Inference from Native Language Maps](#type-inference-from-native-language-maps)
     - [Distinguishing native Maps from JSON\_OBJ](#distinguishing-native-maps-from-json_obj)
   - [Server-Side Changes](#server-side-changes)
@@ -142,6 +145,45 @@ message Map {
 
 Note the choice not to use protobuf's native `map<...>`: a protobuf map key must be an integral or string scalar, while a LittleHorse `Map` key is an arbitrary `VariableValue`. Using a `repeated Entry` keeps keys fully expressive and keeps wire-level ordering deterministic.
 
+### `VariableAssignment` Changes (`MapBuilder`)
+
+To support maps whose keys or values are resolved from runtime state (variables, task outputs, expressions), we add a new `MapBuilder` case to `VariableAssignment`, mirroring the existing `struct_builder` case:
+
+```proto
+message VariableAssignment {
+  oneof source {
+    // ... existing cases ...
+
+    // Builds a native Map using data available in the ThreadRun.
+    MapBuilder map_builder = 11;
+  }
+}
+
+// Builds a native Map using data available in the context of this ThreadRun.
+// This is the Map analog of StructBuilder, and permits dynamic (runtime-resolved)
+// keys and values, which a literal `Map` cannot express.
+message MapBuilder {
+  // A single dynamically-resolved key/value entry.
+  message Entry {
+    // Resolves to the key. Must resolve to a primitive type.
+    VariableAssignment key = 1;
+
+    // Resolves to the value.
+    VariableAssignment value = 2;
+  }
+
+  // The entries of the resulting Map. If two entries resolve to the same key
+  // at runtime, the last entry wins.
+  repeated Entry entries = 1;
+
+  // Optional authoritative key/value types for the resulting Map, mirroring
+  // `Map.map_type`. If absent, types are derived from the resolved entries.
+  optional InlineMapDef map_type = 2;
+}
+```
+
+At runtime the server evaluates each `Entry`'s `key` and `value` assignments inside the current `ThreadRun` context, then assembles the resulting `Map`. If two entries resolve to the same key, the last entry wins (last-write semantics).
+
 ### Allowed Key Types
 
 To keep `Map` semantics well-defined (uniqueness and equality of keys), keys are restricted to primitive `VariableType`s. `Struct`, `Array`, and `Map` keys are not permitted because evaluating the deep equality of complex key types can be expensive and error-prone.
@@ -182,6 +224,39 @@ wf.execute("report", wordCounts.get("hello"));
 ```
 
 At runtime, accessing a key that is not present resolves to `NULL` (consistent with how missing `Struct` fields behave), unless type-safety validation determines otherwise.
+
+### Mutating Entries (`put`)
+
+`WfRunVariable` gains a `put(key, value)` method that inserts or overwrites a single entry in a `Map` variable. It compiles to an `EXTEND` mutation whose RHS is a one-entry `MapBuilder`, so both `key` and `value` can be runtime-resolved (literals, variable references, or expressions):
+
+```java
+WfRunVariable wordCounts = wf.declareMap("word-counts", String.class, Integer.class);
+WfRunVariable theKey = wf.declareStr("the-key");
+
+// Insert/overwrite with a literal key.
+wordCounts.put("hello", 42);
+
+// Insert/overwrite with a variable key.
+wordCounts.put(theKey, 100);
+```
+
+`put` on a key that already exists replaces the previous value (consistent with `EXTEND` semantics).
+
+### Building Maps Inline (`buildMap` / `LHMapBuilder`)
+
+`WorkflowThread` gains a `buildMap()` factory that returns an `LHMapBuilder`. This is the `Map` analog of `LHStructBuilder` and lets workflows construct a multi-entry `Map` inline from dynamic data, then pass it anywhere a `VariableAssignment` is accepted (task input, variable assignment, etc.):
+
+```java
+// Construct a Map<STR, INT> at runtime from a mix of literals and variables.
+LHMapBuilder builtMap = wf.buildMap()
+    .put("hello", 1)
+    .put("world", taskOutputVar);
+
+wf.mutate(wordCounts, VariableMutationType.ASSIGN, builtMap);
+wf.execute("process-map", builtMap);
+```
+
+Under the hood, `LHMapBuilderImpl` accumulates `MapBuilder.Entry` protos. `BuilderUtil.assignVariable()` is extended to recognise `LHMapBuilder` instances and emit a `VariableAssignment` with a `map_builder` source.
 
 ### Type Inference from Native Language Maps
 
