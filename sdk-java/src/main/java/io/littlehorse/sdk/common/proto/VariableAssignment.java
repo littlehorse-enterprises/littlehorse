@@ -4192,9 +4192,7 @@ private static final long serialVersionUID = 0L;
   public static final int MAP_BUILDER_FIELD_NUMBER = 11;
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun. This is the
-   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-   * keys and values, which a `literal_value` Map cannot express.
+   * Builds a native Map using data available in the ThreadRun.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -4206,9 +4204,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun. This is the
-   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-   * keys and values, which a `literal_value` Map cannot express.
+   * Builds a native Map using data available in the ThreadRun.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -4223,9 +4219,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun. This is the
-   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-   * keys and values, which a `literal_value` Map cannot express.
+   * Builds a native Map using data available in the ThreadRun.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6504,9 +6498,7 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.MapBuilder, io.littlehorse.sdk.common.proto.MapBuilder.Builder, io.littlehorse.sdk.common.proto.MapBuilderOrBuilder> mapBuilderBuilder_;
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6518,9 +6510,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6542,9 +6532,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6564,9 +6552,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6584,9 +6570,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6613,9 +6597,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6638,9 +6620,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6650,9 +6630,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -6670,9 +6648,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Builds a native Map using data available in the ThreadRun. This is the
-     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-     * keys and values, which a `literal_value` Map cannot express.
+     * Builds a native Map using data available in the ThreadRun.
      * </pre>
      *
      * <code>.littlehorse.MapBuilder map_builder = 11;</code>
