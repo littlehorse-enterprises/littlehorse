@@ -189,6 +189,20 @@ describe('ExecuteWorkflowRun variables payload', () => {
     expect((await sentVariables())['ratio'].value).toEqual({ oneofKind: 'double', double: 1.5 })
   })
 
+  it('blocks submit when a DOUBLE variable is not a number', async () => {
+    const { fill, submit } = setup([
+      primitive('required-str', VariableType.STR, true),
+      primitive('ratio', VariableType.DOUBLE, false),
+    ])
+
+    fill('required-str', 'req')
+    fill('ratio', 'not-a-number')
+    submit()
+
+    await waitFor(() => expect(document.body.textContent).toContain('Must be a number'))
+    expect(runWfSpec).not.toHaveBeenCalled()
+  })
+
   it('never sends inherited variables', async () => {
     const { fill, submit, sentVariables } = setup([
       primitive('required-str', VariableType.STR, true),
