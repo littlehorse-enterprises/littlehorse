@@ -1,10 +1,16 @@
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { VariableType } from 'littlehorse-client/proto'
-import { HTMLInputTypeAttribute } from 'react'
+import { HTMLInputTypeAttribute, InputHTMLAttributes } from 'react'
 import { SelectBool } from './SelectBool'
 
-export const VariableTypeToFieldComponent = {
+export type PrimitiveFieldConfig = {
+  type: HTMLInputTypeAttribute
+  step?: InputHTMLAttributes<HTMLInputElement>['step']
+  component: React.ElementType
+}
+
+export const VariableTypeToFieldComponent: Record<VariableType, PrimitiveFieldConfig> = {
   [VariableType.JSON_OBJ]: { type: 'textarea', component: Textarea },
   [VariableType.JSON_ARR]: { type: 'textarea', component: Textarea },
   [VariableType.DOUBLE]: { type: 'number', step: 'any', component: Input },
@@ -14,4 +20,4 @@ export const VariableTypeToFieldComponent = {
   [VariableType.BYTES]: { type: 'text', component: Input },
   [VariableType.WF_RUN_ID]: { type: 'text', component: Input },
   [VariableType.TIMESTAMP]: { type: 'text', component: Input },
-} as const satisfies Record<VariableType, { type: HTMLInputTypeAttribute; step?: string; component: React.ElementType }>
+}

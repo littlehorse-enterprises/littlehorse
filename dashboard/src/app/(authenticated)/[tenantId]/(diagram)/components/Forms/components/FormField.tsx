@@ -2,7 +2,7 @@ import { Field, FieldError } from '@/components/ui/field'
 import { cn } from '@/components/utils'
 import { VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { CircleAlert } from 'lucide-react'
-import { FC, HTMLInputTypeAttribute } from 'react'
+import { FC, HTMLInputTypeAttribute, InputHTMLAttributes } from 'react'
 import { useFormContext } from 'react-hook-form'
 import FormLabel from './FormLabel'
 
@@ -12,7 +12,7 @@ interface FormFieldProps {
   formRequired?: boolean
   id: string
   type?: HTMLInputTypeAttribute
-  step?: string
+  step?: InputHTMLAttributes<HTMLInputElement>['step']
   variableType?: VariableType
   as: React.ElementType
   accessLevel?: WfRunVariableAccessLevel
