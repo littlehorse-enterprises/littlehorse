@@ -12,6 +12,7 @@ interface FormFieldProps {
   formRequired?: boolean
   id: string
   type?: HTMLInputTypeAttribute
+  step?: string
   variableType?: VariableType
   as: React.ElementType
   accessLevel?: WfRunVariableAccessLevel
@@ -26,6 +27,7 @@ const FormField: FC<FormFieldProps> = ({
   id,
   as,
   type,
+  step,
   accessLevel,
   variableType,
   masked,
@@ -52,6 +54,7 @@ const FormField: FC<FormFieldProps> = ({
         {...register(id, { required: formRequired ? `${label} is required` : false })}
         className={cn(errors[id] && 'border-destructive', 'w-fit')}
         type={type}
+        step={step}
         disabled={disabled}
       />
 

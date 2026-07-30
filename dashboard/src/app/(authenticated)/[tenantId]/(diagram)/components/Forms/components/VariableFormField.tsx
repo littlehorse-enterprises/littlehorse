@@ -109,7 +109,11 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
   }
 
   if (definedType.oneofKind === 'primitiveType') {
-    const { type, component } = VariableTypeToFieldComponent[definedType.primitiveType]
+    const { type, component, ...fieldProps } = VariableTypeToFieldComponent[definedType.primitiveType] as {
+      type: string
+      component: React.ElementType
+      step?: string
+    }
 
     return (
       <FormField
@@ -117,6 +121,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         as={component}
         id={name}
         type={type}
+        step={fieldProps.step}
         protoRequired={variable.required}
         accessLevel={variable.accessLevel}
         variableType={definedType.primitiveType}
