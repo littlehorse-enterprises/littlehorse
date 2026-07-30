@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -37,6 +38,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructFieldValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.MapBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
@@ -919,6 +921,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             case STRUCT_BUILDER:
                 val = buildStructValue(assn, txnCache);
                 break;
+            case MAP_BUILDER:
+                val = buildMapValue(assn, txnCache);
+                break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
@@ -945,6 +950,36 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         struct.setInlineStruct(buildInlineStructValue(
                 assn.getStructBuilder().getValue(), assn.getStructBuilder().getStructDefId(), txnCache));
         return new VariableValueModel(struct);
+    }
+
+    private VariableValueModel buildMapValue(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        MapBuilderModel builder = assn.getMapBuilder();
+        List<MapModel.MapEntryModel> entries = new ArrayList<>();
+
+        for (MapBuilderModel.MapBuilderEntryModel entry : builder.getEntries()) {
+            VariableValueModel key = assignVariable(entry.getKey(), txnCache);
+            VariableValueModel value = assignVariable(entry.getValue(), txnCache);
+            // last-wins on duplicate keys: find existing entry with same key, replace; else append
+            boolean found = false;
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getKey().equals(key)) {
+                    entries.set(i, new MapModel.MapEntryModel(key, value));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                entries.add(new MapModel.MapEntryModel(key, value));
+            }
+        }
+
+        MapModel out = new MapModel();
+        out.getEntries().addAll(entries);
+        if (builder.getMapType() != null) {
+            out.setMapType(builder.getMapType());
+        }
+        return new VariableValueModel(out);
     }
 
     private InlineStructModel buildInlineStructValue(
