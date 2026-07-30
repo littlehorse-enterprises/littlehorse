@@ -121,9 +121,7 @@ export interface VariableAssignment {
     } | {
         oneofKind: "mapBuilder";
         /**
-         * Builds a native Map using data available in the ThreadRun. This is the
-         * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-         * keys and values, which a `literal_value` Map cannot express.
+         * Builds a native Map using data available in the ThreadRun.
          *
          * @generated from protobuf field: littlehorse.MapBuilder map_builder = 11
          */
