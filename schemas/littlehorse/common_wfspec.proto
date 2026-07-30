@@ -95,7 +95,9 @@ message VariableAssignment {
     // Assign the size of the resolved operand value.
     // Valid for STR, ARRAY, and JSON_ARR values.
     SizeOf size_of = 10;
-    // Builds a native Map using data available in the ThreadRun.
+    // Builds a native Map using data available in the ThreadRun. This is the
+    // Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+    // keys and values, which a `literal_value` Map cannot express.
     MapBuilder map_builder = 11;
   }
 

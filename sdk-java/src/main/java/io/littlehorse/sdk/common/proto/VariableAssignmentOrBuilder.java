@@ -268,7 +268,9 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun.
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -277,7 +279,9 @@ public interface VariableAssignmentOrBuilder extends
   boolean hasMapBuilder();
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun.
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
@@ -286,7 +290,9 @@ public interface VariableAssignmentOrBuilder extends
   io.littlehorse.sdk.common.proto.MapBuilder getMapBuilder();
   /**
    * <pre>
-   * Builds a native Map using data available in the ThreadRun.
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
    * </pre>
    *
    * <code>.littlehorse.MapBuilder map_builder = 11;</code>
