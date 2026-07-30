@@ -95,6 +95,10 @@ message VariableAssignment {
     // Assign the size of the resolved operand value.
     // Valid for STR, ARRAY, and JSON_ARR values.
     SizeOf size_of = 10;
+    // Builds a native Map using data available in the ThreadRun. This is the
+    // Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+    // keys and values, which a `literal_value` Map cannot express.
+    MapBuilder map_builder = 11;
   }
 
   // If specified, the resolved value will be cast to this type before being used.
@@ -128,6 +132,28 @@ message InlineStructFieldValue {
     // Builds a nested sub-structure of a Struct.
     InlineStructBuilder sub_structure = 2;
   }
+}
+
+// Builds a native Map using data available in the context of this ThreadRun.
+// This is the Map analog of StructBuilder, and permits dynamic (runtime-resolved)
+// keys and values, which a literal `Map` cannot express.
+message MapBuilder {
+  // A single dynamically-resolved key/value entry.
+  message Entry {
+    // Resolves to the key. Must resolve to a primitive type.
+    VariableAssignment key = 1;
+
+    // Resolves to the value.
+    VariableAssignment value = 2;
+  }
+
+  // The entries of the resulting Map. If two entries resolve to the same key
+  // at runtime, the last entry wins.
+  repeated Entry entries = 1;
+
+  // Optional authoritative key/value types for the resulting Map, mirroring
+  // `Map.map_type`. If absent, types are derived from the resolved entries.
+  optional InlineMapDef map_type = 2;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.

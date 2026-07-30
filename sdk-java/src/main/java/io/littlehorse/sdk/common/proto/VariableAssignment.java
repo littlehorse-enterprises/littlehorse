@@ -3710,6 +3710,7 @@ private static final long serialVersionUID = 0L;
     EXPRESSION(6),
     STRUCT_BUILDER(9),
     SIZE_OF(10),
+    MAP_BUILDER(11),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -3734,6 +3735,7 @@ private static final long serialVersionUID = 0L;
         case 6: return EXPRESSION;
         case 9: return STRUCT_BUILDER;
         case 10: return SIZE_OF;
+        case 11: return MAP_BUILDER;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -4187,6 +4189,55 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf.getDefaultInstance();
   }
 
+  public static final int MAP_BUILDER_FIELD_NUMBER = 11;
+  /**
+   * <pre>
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   * @return Whether the mapBuilder field is set.
+   */
+  @java.lang.Override
+  public boolean hasMapBuilder() {
+    return sourceCase_ == 11;
+  }
+  /**
+   * <pre>
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   * @return The mapBuilder.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MapBuilder getMapBuilder() {
+    if (sourceCase_ == 11) {
+       return (io.littlehorse.sdk.common.proto.MapBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Builds a native Map using data available in the ThreadRun. This is the
+   * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+   * keys and values, which a `literal_value` Map cannot express.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MapBuilderOrBuilder getMapBuilderOrBuilder() {
+    if (sourceCase_ == 11) {
+       return (io.littlehorse.sdk.common.proto.MapBuilder) source_;
+    }
+    return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+  }
+
   public static final int TARGET_TYPE_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
   /**
@@ -4278,6 +4329,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 10) {
       output.writeMessage(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
     }
+    if (sourceCase_ == 11) {
+      output.writeMessage(11, (io.littlehorse.sdk.common.proto.MapBuilder) source_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -4324,6 +4378,10 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 10) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, (io.littlehorse.sdk.common.proto.VariableAssignment.SizeOf) source_);
+    }
+    if (sourceCase_ == 11) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(11, (io.littlehorse.sdk.common.proto.MapBuilder) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -4388,6 +4446,10 @@ private static final long serialVersionUID = 0L;
         if (!getSizeOf()
             .equals(other.getSizeOf())) return false;
         break;
+      case 11:
+        if (!getMapBuilder()
+            .equals(other.getMapBuilder())) return false;
+        break;
       case 0:
       default:
     }
@@ -4446,6 +4508,10 @@ private static final long serialVersionUID = 0L;
       case 10:
         hash = (37 * hash) + SIZE_OF_FIELD_NUMBER;
         hash = (53 * hash) + getSizeOf().hashCode();
+        break;
+      case 11:
+        hash = (37 * hash) + MAP_BUILDER_FIELD_NUMBER;
+        hash = (53 * hash) + getMapBuilder().hashCode();
         break;
       case 0:
       default:
@@ -4618,6 +4684,9 @@ private static final long serialVersionUID = 0L;
       if (sizeOfBuilder_ != null) {
         sizeOfBuilder_.clear();
       }
+      if (mapBuilderBuilder_ != null) {
+        mapBuilderBuilder_.clear();
+      }
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -4662,7 +4731,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000200) != 0)) {
+      if (((from_bitField0_ & 0x00000400) != 0)) {
         result.targetType_ = targetTypeBuilder_ == null
             ? targetType_
             : targetTypeBuilder_.build();
@@ -4703,6 +4772,10 @@ private static final long serialVersionUID = 0L;
       if (sourceCase_ == 10 &&
           sizeOfBuilder_ != null) {
         result.source_ = sizeOfBuilder_.build();
+      }
+      if (sourceCase_ == 11 &&
+          mapBuilderBuilder_ != null) {
+        result.source_ = mapBuilderBuilder_.build();
       }
     }
 
@@ -4765,6 +4838,10 @@ private static final long serialVersionUID = 0L;
         }
         case SIZE_OF: {
           mergeSizeOf(other.getSizeOf());
+          break;
+        }
+        case MAP_BUILDER: {
+          mergeMapBuilder(other.getMapBuilder());
           break;
         }
         case SOURCE_NOT_SET: {
@@ -4841,7 +4918,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   internalGetTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000200;
+              bitField0_ |= 0x00000400;
               break;
             } // case 58
             case 66: {
@@ -4865,6 +4942,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 10;
               break;
             } // case 82
+            case 90: {
+              input.readMessage(
+                  internalGetMapBuilderFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 11;
+              break;
+            } // case 90
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -6416,6 +6500,202 @@ private static final long serialVersionUID = 0L;
       return sizeOfBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MapBuilder, io.littlehorse.sdk.common.proto.MapBuilder.Builder, io.littlehorse.sdk.common.proto.MapBuilderOrBuilder> mapBuilderBuilder_;
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     * @return Whether the mapBuilder field is set.
+     */
+    @java.lang.Override
+    public boolean hasMapBuilder() {
+      return sourceCase_ == 11;
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     * @return The mapBuilder.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MapBuilder getMapBuilder() {
+      if (mapBuilderBuilder_ == null) {
+        if (sourceCase_ == 11) {
+          return (io.littlehorse.sdk.common.proto.MapBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 11) {
+          return mapBuilderBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    public Builder setMapBuilder(io.littlehorse.sdk.common.proto.MapBuilder value) {
+      if (mapBuilderBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        mapBuilderBuilder_.setMessage(value);
+      }
+      sourceCase_ = 11;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    public Builder setMapBuilder(
+        io.littlehorse.sdk.common.proto.MapBuilder.Builder builderForValue) {
+      if (mapBuilderBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        mapBuilderBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 11;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    public Builder mergeMapBuilder(io.littlehorse.sdk.common.proto.MapBuilder value) {
+      if (mapBuilderBuilder_ == null) {
+        if (sourceCase_ == 11 &&
+            source_ != io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.MapBuilder.newBuilder((io.littlehorse.sdk.common.proto.MapBuilder) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 11) {
+          mapBuilderBuilder_.mergeFrom(value);
+        } else {
+          mapBuilderBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 11;
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    public Builder clearMapBuilder() {
+      if (mapBuilderBuilder_ == null) {
+        if (sourceCase_ == 11) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 11) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        mapBuilderBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MapBuilder.Builder getMapBuilderBuilder() {
+      return internalGetMapBuilderFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MapBuilderOrBuilder getMapBuilderOrBuilder() {
+      if ((sourceCase_ == 11) && (mapBuilderBuilder_ != null)) {
+        return mapBuilderBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 11) {
+          return (io.littlehorse.sdk.common.proto.MapBuilder) source_;
+        }
+        return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Builds a native Map using data available in the ThreadRun. This is the
+     * Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
+     * keys and values, which a `literal_value` Map cannot express.
+     * </pre>
+     *
+     * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.MapBuilder, io.littlehorse.sdk.common.proto.MapBuilder.Builder, io.littlehorse.sdk.common.proto.MapBuilderOrBuilder> 
+        internalGetMapBuilderFieldBuilder() {
+      if (mapBuilderBuilder_ == null) {
+        if (!(sourceCase_ == 11)) {
+          source_ = io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
+        }
+        mapBuilderBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.MapBuilder, io.littlehorse.sdk.common.proto.MapBuilder.Builder, io.littlehorse.sdk.common.proto.MapBuilderOrBuilder>(
+                (io.littlehorse.sdk.common.proto.MapBuilder) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 11;
+      onChanged();
+      return mapBuilderBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> targetTypeBuilder_;
@@ -6431,7 +6711,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the targetType field is set.
      */
     public boolean hasTargetType() {
-      return ((bitField0_ & 0x00000200) != 0);
+      return ((bitField0_ & 0x00000400) != 0);
     }
     /**
      * <pre>
@@ -6470,7 +6750,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000200;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -6491,7 +6771,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000200;
+      bitField0_ |= 0x00000400;
       onChanged();
       return this;
     }
@@ -6507,7 +6787,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (targetTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000200) != 0) &&
+        if (((bitField0_ & 0x00000400) != 0) &&
           targetType_ != null &&
           targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getTargetTypeBuilder().mergeFrom(value);
@@ -6518,7 +6798,7 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.mergeFrom(value);
       }
       if (targetType_ != null) {
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
         onChanged();
       }
       return this;
@@ -6534,7 +6814,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public Builder clearTargetType() {
-      bitField0_ = (bitField0_ & ~0x00000200);
+      bitField0_ = (bitField0_ & ~0x00000400);
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -6554,7 +6834,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
-      bitField0_ |= 0x00000200;
+      bitField0_ |= 0x00000400;
       onChanged();
       return internalGetTargetTypeFieldBuilder().getBuilder();
     }
