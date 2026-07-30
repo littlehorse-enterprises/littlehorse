@@ -387,9 +387,7 @@ type VariableAssignment_SizeOf_ struct {
 }
 
 type VariableAssignment_MapBuilder struct {
-	// Builds a native Map using data available in the ThreadRun. This is the
-	// Map analog of `struct_builder`, and permits dynamic (runtime-resolved)
-	// keys and values, which a `literal_value` Map cannot express.
+	// Builds a native Map using data available in the ThreadRun.
 	MapBuilder *MapBuilder `protobuf:"bytes,11,opt,name=map_builder,json=mapBuilder,proto3,oneof"`
 }
 
