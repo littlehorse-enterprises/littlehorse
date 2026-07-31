@@ -20,6 +20,9 @@ export const Attempts = ({
 }) => {
   const attempt = attempts[attemptIndex]
   const attemptLength = attempts.length
+  if (!attempt) {
+    return null
+  }
   return (
     <div className="mb-4 mt-4 rounded-lg border border-gray-200 bg-gray-50">
       <Accordion type="single" collapsible defaultValue="attempts">
