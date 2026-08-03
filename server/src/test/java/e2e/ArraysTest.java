@@ -359,8 +359,6 @@ public class ArraysTest {
             WfRunVariable found = thread.declareBool("found");
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             found.assign(arrVar.doesContain(2L));
         });
     }
@@ -398,8 +396,6 @@ public class ArraysTest {
             WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             arrVar.assign(arrVar.extend(4L));
         });
     }
@@ -413,8 +409,6 @@ public class ArraysTest {
             arrVar.assign(produced);
             TaskNodeOutput producedOther = thread.execute("produce-array");
             other.assign(producedOther);
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             // Concatenate the two native Arrays.
             arrVar.assign(arrVar.extend(other));
         });
@@ -428,8 +422,6 @@ public class ArraysTest {
             // A single Array<INT> to append as a new element of the outer array.
             WfRunVariable toAppend =
                     thread.declareArray("to-append", Long.class).required();
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             // EXTEND a single Array<INT> onto the Array<Array<INT>>; it is appended as a new element.
             arrVar.assign(arrVar.extend(toAppend));
         });
@@ -441,8 +433,6 @@ public class ArraysTest {
             WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             arrVar.assign(arrVar.removeIfPresent(2L));
         });
     }
@@ -453,8 +443,6 @@ public class ArraysTest {
             WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
-            // TODO: Test contains unnecessary task call because of mutation bug #2181
-            thread.execute("produce-array");
             arrVar.assign(arrVar.removeIndex(1));
         });
     }
