@@ -30,8 +30,8 @@ public final class PlaceholderUtil {
             final String replacement = values.containsKey(placeholderKey) ? values.get(placeholderKey) : defaultValue;
 
             if (replacement == null) {
-                throw new IllegalArgumentException(
-                        "No value has been provided for the placeholder with key: " + placeholderKey);
+                throw new IllegalArgumentException("No value has been provided for the placeholder with key: "
+                        + placeholderKey + ". No default value supplied for the placeholder either.");
             }
 
             matcher.appendReplacement(resultingText, Matcher.quoteReplacement(replacement));
