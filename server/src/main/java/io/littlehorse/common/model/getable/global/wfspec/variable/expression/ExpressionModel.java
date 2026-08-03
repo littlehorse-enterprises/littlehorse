@@ -187,9 +187,9 @@ public class ExpressionModel extends LHSerializable<Expression> {
     }
 
     /**
-     * Given a ThreadRunModel representing a ThreadRun in a WfRun, returns true if
-     * the represented EdgeCondition is satisfied by the variables in that
-     * ThreadRun.
+     * Convenience wrapper that evaluates this condition against the variables currently
+     * persisted on the ThreadRun. Unlike {@link #isSatisfied(VariableAssignerFunc)}, it does
+     * not observe any in-flight write-ahead buffer of uncommitted mutations.
      *
      * @param threadRun is the ThreadRunModel representing the ThreadRun to evaluate
      *                  against.
