@@ -20,6 +20,7 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import java.util.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 
 @Slf4j
@@ -30,6 +31,7 @@ public class GetableManager extends ReadOnlyGetableManager {
     private final TagStorageManager tagStorageManager;
     private final CoreProcessorContext ctx;
     private final OutputTopicConfigModel outputTopicConfig;
+    private final int maxRecordSizeInBytes;
 
     public GetableManager(
             final TenantScopedStore store,
@@ -44,6 +46,7 @@ public class GetableManager extends ReadOnlyGetableManager {
         this.tagStorageManager = new TagStorageManager(this.store, streamsContext, executionContext);
         this.ctx = executionContext;
         this.outputTopicConfig = outputTopicConfig;
+        this.maxRecordSizeInBytes = config.getProducerMaxRequestSize();
     }
 
     /**
@@ -246,6 +249,7 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
 
+        verifySize(uncommittedChanges.values());
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();
@@ -278,5 +282,18 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         // Note: no need to call uncommittedChanges.clear() because on every
         // Command, we create a completely new GetableStorageManager.
+    }
+
+    public void verifySize(Collection<GetableToStore<?, ?>> entities) {
+        for (GetableToStore<?, ?> entity : entities) {
+            if (entity.getObjectToStore() != null) {
+                Message objectToStore = entity.getObjectToStore().toProto().build();
+                byte[] serialized = objectToStore.toByteArray();
+                if (serialized.length > maxRecordSizeInBytes) {
+                    throw new RecordTooLargeException("Record size " + serialized.length
+                            + " exceeds the maximum allowed size " + maxRecordSizeInBytes);
+                }
+            }
+        }
     }
 }

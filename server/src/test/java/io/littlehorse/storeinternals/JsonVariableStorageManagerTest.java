@@ -1,6 +1,7 @@
 package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -114,6 +115,7 @@ public class JsonVariableStorageManagerTest {
     }
 
     private void initializeDependencies() {
+        when(lhConfig.getProducerMaxRequestSize()).thenReturn(Integer.MAX_VALUE);
         storeWrapper =
                 TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), mock(Answers.RETURNS_DEEP_STUBS));
         getableManager = new GetableManager(

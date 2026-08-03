@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
@@ -200,7 +200,7 @@ public class WorkflowImpl extends Workflow {
     public String addSubThread(String subThreadName, ThreadFunc subThreadFunc) {
         for (Pair<String, ThreadFunc> pair : threadFuncs) {
             if (pair.getKey().equals(subThreadName)) {
-                throw new LHMisconfigurationException(String.format("Thread %s already exists", subThreadName));
+                throw new LHWfSpecBuilderException(String.format("Thread %s already exists", subThreadName));
             }
         }
         threadFuncs.add(Pair.of(subThreadName, subThreadFunc));
