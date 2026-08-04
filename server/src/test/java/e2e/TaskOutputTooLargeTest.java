@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -21,11 +22,15 @@ public class TaskOutputTooLargeTest {
 
     // Bigger than the default producer max request size (see LHServerConfig#getProducerMaxRequestSize()).
     private static final int TWO_MIB = 2 * 1024 * 1024;
+    private static final int SIX_HUNDRED_KIB = 600 * 1024;
 
     private WorkflowVerifier verifier;
 
     @LHWorkflow("task-output-size")
     private Workflow taskOutputSizeWf;
+
+    @LHWorkflow("task-run-size")
+    private Workflow taskRunSizeWf;
 
     @LHWorkflow("task-output-size")
     public Workflow getTaskOutputSizeWf() {
@@ -33,6 +38,16 @@ public class TaskOutputTooLargeTest {
             WfRunVariable payloadSize =
                     wf.addVariable("payload-size", VariableType.INT).required();
             wf.execute("return-bytes-of-size", payloadSize);
+        });
+    }
+
+    @LHWorkflow("task-run-size")
+    public Workflow getTaskRunSizeWf() {
+        return Workflow.newWorkflow("task-run-size", wf -> {
+            WfRunVariable payloadSize =
+                    wf.addVariable("payload-size", VariableType.INT).required();
+            TaskNodeOutput bytes = wf.execute("return-bytes-of-size", payloadSize);
+            wf.execute("receive-and-return-bytes", bytes);
         });
     }
 
@@ -52,8 +67,23 @@ public class TaskOutputTooLargeTest {
                 .start();
     }
 
+    @Test
+    void shouldNotAdvanceWhenTaskInputAndOutputExceedsMaxRecordSize() {
+        verifier.prepareRun(taskRunSizeWf, Arg.of("payload-size", SIX_HUNDRED_KIB))
+                .waitForStatus(LHStatus.ERROR)
+                .waitForTaskStatus(0, 1, TaskStatus.TASK_SUCCESS)
+                // the task gets executed, but the ReportTaskRun failed because of the max record size
+                .waitForTaskStatus(0, 2, TaskStatus.TASK_OUTPUT_SERDE_ERROR)
+                .start();
+    }
+
     @LHTaskMethod("return-bytes-of-size")
     public byte[] returnBytesOfSize(int size) {
         return new byte[size];
+    }
+
+    @LHTaskMethod("receive-and-return-bytes")
+    public byte[] receiveAndReturnBytes(byte[] bytes) {
+        return bytes;
     }
 }

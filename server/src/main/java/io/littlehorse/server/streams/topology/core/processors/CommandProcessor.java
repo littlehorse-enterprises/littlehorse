@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -33,6 +35,7 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -121,20 +124,23 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 command.type,
                 command.getCommandId(),
                 command.getPartitionKey());
+        Message response;
         try {
             metrics.observe(command);
-            Message response = command.process(executionContext, config);
+            response = command.process(executionContext, config);
             executionContext.endExecution();
-
-            if (command.hasResponse()) {
-                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
-                        command.getCommandId().get(), Message.class, new CompletableFuture<>());
-                completable.complete(response);
-            }
+        } catch (RecordTooLargeException e) {
+            throw new CoreCommandException(
+                    new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(e.getMessage()), e), command);
         } catch (KafkaException ke) {
             throw ke;
         } catch (Exception exn) {
             throw new CoreCommandException(exn, command);
+        }
+        if (command.hasResponse()) {
+            CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                    command.getCommandId().get(), Message.class, new CompletableFuture<>());
+            completable.complete(response);
         }
     }
 
