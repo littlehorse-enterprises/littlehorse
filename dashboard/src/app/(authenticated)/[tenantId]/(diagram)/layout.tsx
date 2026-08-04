@@ -1,7 +1,8 @@
 'use client'
 import { useState } from 'react'
 import { ReactFlowProvider } from 'reactflow'
-import { Modal, ModalProvider } from './context'
+import { Modal } from './context'
+import { ModalProvider } from './context/ModalProvider'
 
 export default function RootLayout({
   children,
