@@ -29,6 +29,7 @@ import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
 import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -978,6 +979,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         out.getEntries().addAll(entries);
         if (builder.getMapType() != null) {
             out.setMapType(builder.getMapType());
+        } else if (!entries.isEmpty()) {
+            // Native Maps must always carry a concrete type; derive it from the entries so no
+            // untyped Map is ever created at runtime.
+            MapModel.MapEntryModel first = entries.get(0);
+            out.setMapType(new InlineMapDefModel(
+                    first.getKey().getTypeDefinition(), first.getValue().getTypeDefinition()));
         }
         return new VariableValueModel(out);
     }
