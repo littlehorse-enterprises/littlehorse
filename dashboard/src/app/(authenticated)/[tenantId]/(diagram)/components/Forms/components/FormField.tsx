@@ -5,6 +5,7 @@ import { CircleAlert } from 'lucide-react'
 import { FC, HTMLInputTypeAttribute } from 'react'
 import { useFormContext } from 'react-hook-form'
 import FormLabel from './FormLabel'
+import type { PrimitiveFieldConfig } from './VariableTypeToFieldComponent'
 
 interface FormFieldProps {
   label: string
@@ -12,6 +13,8 @@ interface FormFieldProps {
   formRequired?: boolean
   id: string
   type?: HTMLInputTypeAttribute
+  inputMode?: PrimitiveFieldConfig['inputMode']
+  validate?: PrimitiveFieldConfig['validate']
   variableType?: VariableType
   as: React.ElementType
   accessLevel?: WfRunVariableAccessLevel
@@ -26,6 +29,8 @@ const FormField: FC<FormFieldProps> = ({
   id,
   as,
   type,
+  inputMode,
+  validate,
   accessLevel,
   variableType,
   masked,
@@ -49,9 +54,10 @@ const FormField: FC<FormFieldProps> = ({
 
       <As
         id={id}
-        {...register(id, { required: formRequired ? `${label} is required` : false })}
+        {...register(id, { required: formRequired ? `${label} is required` : false, validate })}
         className={cn(errors[id] && 'border-destructive', 'w-fit')}
         type={type}
+        inputMode={inputMode}
         disabled={disabled}
       />
 
