@@ -73,6 +73,40 @@ public class StructDefLifecycleTest {
     }
 
     @Test
+    void shouldUpdateDescriptionWithoutBumpingVersion() {
+        String structDefName = UUID.randomUUID().toString();
+        InlineStructDef schema = InlineStructDef.newBuilder()
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(schema)
+                .setDescription("Original description")
+                .build());
+
+        waitForStructDef(structDefName, 0);
+
+        StructDef result = client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(schema)
+                .setDescription("Updated description")
+                .build());
+
+        // Version must not be bumped — only description changed
+        assertThat(result.getId().getVersion()).isEqualTo(0);
+        assertThat(result.getDescription()).isEqualTo("Updated description");
+
+        StructDef fetched = client.getStructDef(
+                StructDefId.newBuilder().setName(structDefName).setVersion(0).build());
+        assertThat(fetched.getDescription()).isEqualTo("Updated description");
+    }
+
+    @Test
     void shouldBumpVersionWhenPuttingCompatibleStructDefChanges() {
         client.putStructDef(PutStructDefRequest.newBuilder()
                 .setName("car-0")
