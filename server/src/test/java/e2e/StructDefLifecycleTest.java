@@ -101,9 +101,13 @@ public class StructDefLifecycleTest {
         assertThat(result.getId().getVersion()).isEqualTo(0);
         assertThat(result.getDescription()).isEqualTo("Updated description");
 
-        StructDef fetched = client.getStructDef(
-                StructDefId.newBuilder().setName(structDefName).setVersion(0).build());
-        assertThat(fetched.getDescription()).isEqualTo("Updated description");
+        Awaitility.await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
+            StructDef fetched = client.getStructDef(StructDefId.newBuilder()
+                    .setName(structDefName)
+                    .setVersion(0)
+                    .build());
+            assertThat(fetched.getDescription()).isEqualTo("Updated description");
+        });
     }
 
     @Test
