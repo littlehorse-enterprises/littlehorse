@@ -52,7 +52,8 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.TypeDefinition keyType_;
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -64,7 +65,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -76,7 +78,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -90,7 +93,8 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.TypeDefinition valueType_;
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -102,7 +106,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -114,7 +119,8 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -486,7 +492,8 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> keyTypeBuilder_;
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -497,7 +504,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -512,7 +520,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -532,7 +541,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -550,7 +560,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -575,7 +586,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -592,7 +604,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -604,7 +617,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -619,7 +633,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -643,7 +658,8 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> valueTypeBuilder_;
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -654,7 +670,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -669,7 +686,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -689,7 +707,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -707,7 +726,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -732,7 +752,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -749,7 +770,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -761,7 +783,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -776,7 +799,8 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      * </pre>
      *
      * <code>.littlehorse.TypeDefinition value_type = 2;</code>

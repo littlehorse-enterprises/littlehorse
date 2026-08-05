@@ -1019,8 +1019,10 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.InlineMapDef mapType_;
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1032,8 +1034,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1045,8 +1049,10 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1785,8 +1791,10 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.InlineMapDef, io.littlehorse.sdk.common.proto.InlineMapDef.Builder, io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder> mapTypeBuilder_;
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1797,8 +1805,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1813,8 +1823,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1834,8 +1846,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1853,8 +1867,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1879,8 +1895,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1897,8 +1915,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1910,8 +1930,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1926,8 +1948,10 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional authoritative key/value types for the resulting Map, mirroring
-     * `Map.map_type`. If absent, types are derived from the resolved entries.
+     * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+     * If absent, the types are derived from the resolved entries at validation time; a
+     * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+     * no declared type) is rejected. The resulting Map always carries a concrete type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>

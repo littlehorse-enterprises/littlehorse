@@ -10,7 +10,6 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MapBuilder;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -97,8 +96,10 @@ public class MapBuilderModel extends LHSerializable<MapBuilder> {
      *
      * Precedence:
      * 1. If mapType != null, return TypeDefinitionModel wrapping it.
-     * 2. Else if entries is non-empty, derive from the first entry.
-     * 3. Else return wildcard map.
+     * 2. Else derive key/value types from the first entry.
+     *
+     * A native Map must always have concrete key/value types, so this throws rather than ever
+     * producing a wildcard/untyped Map.
      */
     public Optional<TypeDefinitionModel> resolveTypeDefinition(
             ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
@@ -107,18 +108,20 @@ public class MapBuilderModel extends LHSerializable<MapBuilder> {
             return Optional.of(new TypeDefinitionModel(mapType));
         }
 
-        if (!entries.isEmpty()) {
-            MapBuilderEntryModel first = entries.get(0);
-            Optional<TypeDefinitionModel> keyTypeOpt = first.getKey().getSourceType(manager, wfSpec, threadSpecName);
-            Optional<TypeDefinitionModel> valTypeOpt = first.getValue().getSourceType(manager, wfSpec, threadSpecName);
-            TypeDefinitionModel keyType = keyTypeOpt.orElse(new TypeDefinitionModel());
-            TypeDefinitionModel valType = valTypeOpt.orElse(new TypeDefinitionModel());
-            return Optional.of(new TypeDefinitionModel(new InlineMapDefModel(keyType, valType)));
+        if (entries.isEmpty()) {
+            throw new InvalidExpressionException(
+                    "Cannot build an untyped empty Map; declare the Map's key and value types (map_type).");
         }
 
-        // Empty builder, no mapType — wildcard map
-        return Optional.of(
-                new TypeDefinitionModel(new InlineMapDefModel(new TypeDefinitionModel(), new TypeDefinitionModel())));
+        MapBuilderEntryModel first = entries.get(0);
+        Optional<TypeDefinitionModel> keyTypeOpt = first.getKey().getSourceType(manager, wfSpec, threadSpecName);
+        Optional<TypeDefinitionModel> valTypeOpt = first.getValue().getSourceType(manager, wfSpec, threadSpecName);
+        if (keyTypeOpt.isEmpty() || valTypeOpt.isEmpty()) {
+            throw new InvalidExpressionException(
+                    "Cannot resolve Map key/value types from the entries; declare the Map's key and value types "
+                            + "(map_type).");
+        }
+        return Optional.of(new TypeDefinitionModel(new InlineMapDefModel(keyTypeOpt.get(), valTypeOpt.get())));
     }
 
     public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
@@ -126,35 +129,34 @@ public class MapBuilderModel extends LHSerializable<MapBuilder> {
         WfSpecModel wfSpec = threadSpec.wfSpec;
         String threadSpecName = threadSpec.getName();
 
+        // Resolves the concrete Map type or throws if it cannot be determined.
+        TypeDefinitionModel resolved = resolveTypeDefinition(manager, wfSpec, threadSpecName)
+                .orElseThrow(() -> new InvalidExpressionException("Cannot resolve Map type for MapBuilder"));
+
+        // Enforce native-Map typing rules: primitive non-JSON key, concrete non-JSON value.
+        try {
+            resolved.validateMapKeyTypes();
+        } catch (IllegalArgumentException e) {
+            throw new InvalidExpressionException(e.getMessage());
+        }
+
+        InlineMapDefModel resolvedMap = resolved.getInlineMapDef();
+        TypeDefinitionModel keyType = resolvedMap.getKeyType();
+        TypeDefinitionModel valueType = resolvedMap.getValueType();
+
         for (int i = 0; i < entries.size(); i++) {
             MapBuilderEntryModel entry = entries.get(i);
 
-            // Key must resolve to primitive type (skip if unknowable)
             Optional<TypeDefinitionModel> keyTypeOpt = entry.getKey().getSourceType(manager, wfSpec, threadSpecName);
-            if (keyTypeOpt.isPresent()) {
-                TypeDefinitionModel keyType = keyTypeOpt.get();
-                if (keyType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
-                        && keyType.getDefinedTypeCase() != DefinedTypeCase.DEFINEDTYPE_NOT_SET) {
-                    throw new InvalidExpressionException(
-                            "MapBuilder entry " + i + ": key must resolve to a primitive type, got " + keyType);
-                }
+            if (keyTypeOpt.isPresent() && !keyType.isCompatibleWith(keyTypeOpt.get())) {
+                throw new InvalidExpressionException("MapBuilder entry " + i + ": key type " + keyTypeOpt.get()
+                        + " is not compatible with Map key type " + keyType);
             }
 
-            // If mapType declared, validate key/value compatibility
-            if (mapType != null) {
-                if (keyTypeOpt.isPresent() && !mapType.getKeyType().isCompatibleWith(keyTypeOpt.get())) {
-                    throw new InvalidExpressionException("MapBuilder entry " + i + ": key type " + keyTypeOpt.get()
-                            + " is not compatible with declared key type " + mapType.getKeyType());
-                }
-
-                Optional<TypeDefinitionModel> valTypeOpt =
-                        entry.getValue().getSourceType(manager, wfSpec, threadSpecName);
-                if (valTypeOpt.isPresent() && !mapType.getValueType().isCompatibleWith(valTypeOpt.get())) {
-                    throw new InvalidExpressionException("MapBuilder entry " + i + ": value type "
-                            + valTypeOpt.get()
-                            + " is not compatible with declared value type "
-                            + mapType.getValueType());
-                }
+            Optional<TypeDefinitionModel> valTypeOpt = entry.getValue().getSourceType(manager, wfSpec, threadSpecName);
+            if (valTypeOpt.isPresent() && !valueType.isCompatibleWith(valTypeOpt.get())) {
+                throw new InvalidExpressionException("MapBuilder entry " + i + ": value type " + valTypeOpt.get()
+                        + " is not compatible with Map value type " + valueType);
             }
         }
     }

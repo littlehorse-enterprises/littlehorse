@@ -242,7 +242,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 if (mapBuilder.getMapType() != null) {
                     baseType = new TypeDefinitionModel(mapBuilder.getMapType());
                 } else {
-                    // unknowable without manager/wfSpec context
+                    // The concrete type of an unstamped MapBuilder can't be resolved here without a
+                    // metadata manager. Untyped/unresolvable map builders are rejected by
+                    // MapBuilderModel.validate() during WfSpec registration, so this is a safe fallback.
                     return true;
                 }
                 break;

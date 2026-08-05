@@ -610,8 +610,10 @@ type MapBuilder struct {
 	// The entries of the resulting Map. If two entries resolve to the same key
 	// at runtime, the last entry wins.
 	Entries []*MapBuilder_Entry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
-	// Optional authoritative key/value types for the resulting Map, mirroring
-	// `Map.map_type`. If absent, types are derived from the resolved entries.
+	// Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+	// If absent, the types are derived from the resolved entries at validation time; a
+	// MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+	// no declared type) is rejected. The resulting Map always carries a concrete type.
 	MapType *InlineMapDef `protobuf:"bytes,2,opt,name=map_type,json=mapType,proto3,oneof" json:"map_type,omitempty"`
 }
 

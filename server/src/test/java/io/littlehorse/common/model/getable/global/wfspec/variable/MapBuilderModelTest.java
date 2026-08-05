@@ -105,11 +105,11 @@ public class MapBuilderModelTest {
     }
 
     @Test
-    void resolveTypeDefinitionReturnsWildcardMapWhenEmptyAndNoMapType() throws InvalidExpressionException {
+    void resolveTypeDefinitionThrowsWhenEmptyAndNoMapType() {
         MapBuilderModel model = emptyBuilder();
-        Optional<TypeDefinitionModel> result = model.resolveTypeDefinition(null, null, null);
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getDefinedTypeCase()).isEqualTo(DefinedTypeCase.INLINE_MAP_DEF);
+        Assertions.assertThatThrownBy(() -> model.resolveTypeDefinition(null, null, null))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("untyped empty Map");
     }
 
     @Test
