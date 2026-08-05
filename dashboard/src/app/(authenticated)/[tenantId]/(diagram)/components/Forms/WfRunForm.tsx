@@ -57,8 +57,10 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
     [wfSpecVariables]
   )
 
+  const { dirtyFields } = methods.formState
+
   const handleSubmit = (data: FormValues) => {
-    onSubmit(data, { dirtyFields: methods.formState.dirtyFields as Record<string, boolean | undefined> })
+    onSubmit(data, { dirtyFields: dirtyFields as Record<string, boolean | undefined> })
   }
 
   return (
