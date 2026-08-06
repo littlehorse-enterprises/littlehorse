@@ -19,8 +19,6 @@ export const VARIABLE_TYPES = {
   map: 'Map',
 } as const
 
-export const VARIABLE_TYPE_ENTRIES = Object.entries(VARIABLE_TYPES)
-
 export const SEARCH_ENTITIES = [
   'WfSpec',
   'TaskDef',

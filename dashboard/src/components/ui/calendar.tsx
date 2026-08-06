@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 import 'react-day-picker/style.css'
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 function Calendar({ className, ...props }: CalendarProps) {
   return (

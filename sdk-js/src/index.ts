@@ -1,4 +1,5 @@
 export { LHConfig } from './LHConfig'
+export { isResourceExhausted } from './grpcRetry'
 export {
   createTaskWorker,
   LHTaskException,

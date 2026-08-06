@@ -1,29 +1,5 @@
-import { Array$ as LHArray, Map as LHMap, Struct, TaskAttempt, VariableValue } from 'littlehorse-client/proto'
-import { getVariableValue, variableValueToJSON } from './variables'
-
-export const structToJSONString = (struct: Struct): string => {
-  return JSON.stringify(variableValueToJSON(VariableValue.create({ value: { oneofKind: 'struct', struct } })))
-}
-
-export const structFromJSONString = (jsonStr: string): Struct => {
-  return Struct.fromJsonString(jsonStr)
-}
-
-export const arrayToJSONString = (array: LHArray): string => {
-  return JSON.stringify(variableValueToJSON(VariableValue.create({ value: { oneofKind: 'array', array } })))
-}
-
-export const arrayFromJSONString = (jsonStr: string): LHArray => {
-  return LHArray.fromJsonString(jsonStr)
-}
-
-export const mapToJSONString = (map: LHMap): string => {
-  return JSON.stringify(variableValueToJSON(VariableValue.create({ value: { oneofKind: 'map', map } })))
-}
-
-export const mapFromJSONString = (jsonStr: string): LHMap => {
-  return LHMap.fromJsonString(jsonStr)
-}
+import { TaskAttempt, VariableValue } from 'littlehorse-client/proto'
+import { getVariableValue } from './variables'
 
 export const getAttemptOutput = (output: VariableValue | undefined): string => {
   if (!output?.value || output.value.oneofKind === undefined) return 'No Output'

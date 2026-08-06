@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.getable.objectId.TaskRunIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
@@ -30,12 +31,14 @@ public class OneTaskQueueTest {
     private final RequestExecutionContext requestContext = mock();
     private final CoreProcessorContext mockProcessorContext = mock(Answers.RETURNS_DEEP_STUBS);
     private InMemoryGetableManager getableManager;
+    private final LHServerConfig config = mock();
 
     @BeforeEach
     public void setup() {
         when(mockClient.getTaskDefId()).thenReturn(taskName);
         when(requestContext.getableManager(streamsTaskId)).thenReturn(getableManager);
-        getableManager = new InMemoryGetableManager(mockProcessorContext);
+        when(config.getProducerMaxRequestSize()).thenReturn(Integer.MAX_VALUE);
+        getableManager = new InMemoryGetableManager(mockProcessorContext, config);
         when(requestContext.getableManager(streamsTaskId)).thenReturn(getableManager);
     }
 

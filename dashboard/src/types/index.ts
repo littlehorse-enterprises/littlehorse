@@ -1,6 +1,5 @@
-import { ThreadVarDef, TypeDefinition } from 'littlehorse-client/proto'
+import { TypeDefinition } from 'littlehorse-client/proto'
 import { DefaultSession } from 'next-auth'
-import { FieldValues, UseFormRegister } from 'react-hook-form'
 
 export type WhoAmI = {
   user: DefaultSession['user']
@@ -40,11 +39,4 @@ export type TaskDefData = {
   connectedWorkers: number | null
   /** null when queue depth is unavailable on this server */
   queueDepth: number | null
-}
-
-export type FormFieldProp = {
-  variables?: ThreadVarDef
-  custom?: boolean
-  formState: any
-  register: UseFormRegister<FieldValues>
 }

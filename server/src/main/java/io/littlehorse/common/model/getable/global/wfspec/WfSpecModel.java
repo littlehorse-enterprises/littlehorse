@@ -215,6 +215,13 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         }
     }
 
+    public Map<String, String> getVarToThreadSpecMap() {
+        if (!initializedVarToThreadSpec) {
+            initializeVarToThreadSpec();
+        }
+        return Map.copyOf(varToThreadSpec);
+    }
+
     public Pair<String, ThreadVarDefModel> lookupVarDef(String name) {
         if (!initializedVarToThreadSpec) {
             initializeVarToThreadSpec();

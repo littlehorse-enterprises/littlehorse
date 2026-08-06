@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "object_id.proto";
 import "type_definition.proto";
+import "workflow_migration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -69,6 +70,13 @@ message WfRun {
     // Not set until the parent `WfRun` is actually waiting for this `NodeRun`.
     optional NodeRunId waiting_node_run = 2;
   }
+
+  // reference to WorkflowMigrationPlanId
+  WorkflowMigrationPlanId workflow_migration_plan_id = 12;
+
+  // Map to determine how to reassign varaible values during Migration
+  // newThreadName -> MigrationVar
+  map<string, MigrationVars> migration_variables = 13;
 }
 
 // The type of a ThreadRUn.

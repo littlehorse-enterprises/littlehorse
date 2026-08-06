@@ -5,10 +5,25 @@ import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport 
 
 const elk = new ELK()
 
-export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = ({ nodeRuns, viewportKey }) => {
+export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[] | undefined =>
+  nodeRuns
+    ?.filter(nodeRun => nodeRun.nodeName === nodeId)
+    .sort((a, b) => {
+      const aPos = a.id?.position ?? 0
+      const bPos = b.id?.position ?? 0
+      return bPos - aPos
+    })
+
+type LayoutManagerProps = {
+  nodeRuns?: NodeRun[]
+  viewportKey: string
+  setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
+  onLayoutComplete?: (nodes: Node[]) => void
+}
+
+export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
-  const setNodes = useStore(store => store.setNodes)
   const setEdges = useStore(store => store.setEdges)
   const { fitView, setViewport } = useReactFlow()
 
@@ -61,13 +76,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         // Layout the original workflow nodes
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
-          const nodeRunsList = nodeRuns
-            ?.filter(nodeRun => nodeRun.nodeName === node.id)
-            .sort((a, b) => {
-              const aPos = a.id?.position ?? 0
-              const bPos = b.id?.position ?? 0
-              return bPos - aPos
-            })
+          const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
           if (node.type === 'cycle' && elkNode?.x !== undefined) {
             const initialNode = laidOutGraph.children?.find(n => n.id === node.data.outgoingEdges[0].sinkNodeName)
@@ -93,6 +102,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         })
         setNodes(laidOutNodes)
         setEdges(edges)
+        onLayoutComplete?.(laidOutNodes)
         setTimeout(() => {
           const saved = sessionStorage.getItem(viewportKey)
           if (saved) {
@@ -109,7 +119,7 @@ export const LayoutManager: FC<{ nodeRuns?: NodeRun[]; viewportKey: string }> = 
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges]
+    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
   useEffect(() => {

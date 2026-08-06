@@ -51,7 +51,6 @@ import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
@@ -682,6 +681,7 @@ public class BackendInternalComms implements Closeable {
             case WORKFLOW_EVENT:
             case WORKFLOW_EVENT_DEF:
             case SCHEDULED_WF_RUN:
+            case WORKFLOW_MIGRATION_PLAN:
             case UNRECOGNIZED:
         }
         return false;
@@ -888,7 +888,7 @@ public class BackendInternalComms implements Closeable {
 
     private HostInfo getHostForPartition(int partition) {
         if (partition >= config.getClusterPartitions()) {
-            throw new LHMisconfigurationException("Unrecognized partition");
+            throw new IllegalStateException("Unrecognized partition");
         }
 
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();

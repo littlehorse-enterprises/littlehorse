@@ -40,11 +40,18 @@ import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
-import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.ACLAction;
 import io.littlehorse.sdk.common.proto.ACLResource;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.Node;
+import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.ServerACLs;
 import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
+import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -190,13 +197,15 @@ public class TestUtil {
         spec.setId(new WfSpecIdModel(name, 0, 0));
         spec.setCreatedAt(new Date());
         spec.setEntrypointThreadName("entrypoint");
-        spec.setThreadSpecs(Map.of("entrypoint", threadSpec()));
+        ThreadSpecModel thread = threadSpec();
+        thread.wfSpec = spec;
+        spec.setThreadSpecs(Map.of("entrypoint", thread));
         return spec;
     }
 
     public static ThreadSpecModel threadSpec() {
         ThreadSpecModel threadSpecModel = new ThreadSpecModel();
-        threadSpecModel.setName("test-name");
+        threadSpecModel.setName("entrypoint");
         threadSpecModel.setNodes(Map.of("node-1", node()));
         return threadSpecModel;
     }

@@ -35,10 +35,11 @@ public class SagaExample {
             SpawnedThread sagaThread = wf.spawnThread(
                     bookFlightAndHotel(flightConfirmationNumber, hotelConfirmationNumber), "example-saga", null);
 
-            // If there is a failure, we abort it.
+            // If there is any failure (a business EXCEPTION or a technical ERROR such as the
+            // TASK_FAILURE thrown by book-hotel), we abort by compensating the flight booking.
             NodeOutput waitForThread = wf.waitForThreads(SpawnedThreads.of(sagaThread));
 
-            wf.handleException(waitForThread, null, abortFlight(flightConfirmationNumber));
+            wf.handleAnyFailure(waitForThread, abortFlight(flightConfirmationNumber));
         });
     }
 

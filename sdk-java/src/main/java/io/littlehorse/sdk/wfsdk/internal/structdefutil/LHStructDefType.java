@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,23 @@ public class LHStructDefType extends LHClassType {
      * @param typeAdapterRegistry The type adapter registry to use when generating StructDef definitions from Java classes.
      */
     public LHStructDefType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(clazz, typeAdapterRegistry);
+        this(clazz, typeAdapterRegistry, Map.of());
+    }
+
+    /**
+     * Constructor for LHStructDefType that resolves placeholders in the {@code @LHStructDef} name.
+     *
+     * <p>The name provided in the {@code @LHStructDef} annotation may contain placeholders in the form
+     * {@code ${PLACEHOLDER}}. Each placeholder is replaced by its corresponding value from the
+     * {@code placeholderValues} map, identically to how {@code @LHTaskMethod} placeholders are resolved.
+     *
+     * @param clazz The Java class representing the StructDef.
+     * @param typeAdapterRegistry The type adapter registry to use when generating StructDef definitions from Java classes.
+     * @param placeholderValues Placeholder values used to resolve {@code ${...}} placeholders in the StructDef name.
+     */
+    public LHStructDefType(
+            Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        super(clazz, typeAdapterRegistry, placeholderValues);
 
         if (!clazz.isAnnotationPresent(LHStructDef.class)) {
             throw new IllegalArgumentException(
@@ -71,25 +89,36 @@ public class LHStructDefType extends LHClassType {
     public TypeDefinition getTypeDefinition() {
         return TypeDefinition.newBuilder()
                 .setStructDefId(StructDefId.newBuilder()
-                        .setName(this.getStructDefAnnotation().value())
+                        .setName(this.getResolvedStructDefName())
                         .setVersion(-1)
                         .build())
                 .build();
     }
 
     public StructDefId getStructDefId() {
-        String structName = this.getStructDefAnnotation().value();
-
-        return StructDefId.newBuilder().setName(structName).setVersion(-1).build();
+        return StructDefId.newBuilder()
+                .setName(this.getResolvedStructDefName())
+                .setVersion(-1)
+                .build();
     }
 
     private LHStructDef getStructDefAnnotation() {
         return this.clazz.getAnnotation(LHStructDef.class);
     }
 
+    /**
+     * Resolves the {@code @LHStructDef} name, replacing any {@code ${...}} placeholders with the
+     * configured placeholder values.
+     *
+     * @return the resolved StructDef name
+     */
+    private String getResolvedStructDefName() {
+        return PlaceholderUtil.replacePlaceholders(this.getStructDefAnnotation().value(), this.placeholderValues);
+    }
+
     public PutStructDefRequest toPutStructDefRequest() {
         return PutStructDefRequest.newBuilder()
-                .setName(this.getStructDefAnnotation().value())
+                .setName(this.getResolvedStructDefName())
                 .setDescription(this.getStructDefAnnotation().description())
                 .setStructDef(this.getInlineStructDef())
                 .build();
@@ -99,7 +128,7 @@ public class LHStructDefType extends LHClassType {
         LHStructDef annotation = this.getStructDefAnnotation();
 
         StructDef.Builder structDef = StructDef.newBuilder();
-        structDef.setId(StructDefId.newBuilder().setName(annotation.value()));
+        structDef.setId(StructDefId.newBuilder().setName(this.getResolvedStructDefName()));
         structDef.setDescription(annotation.description());
         structDef.setStructDef(this.getInlineStructDef());
 

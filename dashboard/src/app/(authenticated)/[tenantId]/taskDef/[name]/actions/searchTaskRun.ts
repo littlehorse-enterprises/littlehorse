@@ -3,7 +3,7 @@ import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import { NodeRun, SearchTaskRunRequest, TaskRun, TaskRunId, TaskRunIdList } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   taskRun: TaskRun
   nodeRun?: NodeRun
 }

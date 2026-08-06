@@ -10,7 +10,7 @@ import {
   WorkflowEventIdList,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   workflowEvent: WorkflowEvent
   nodeRun: NodeRun | null
 }

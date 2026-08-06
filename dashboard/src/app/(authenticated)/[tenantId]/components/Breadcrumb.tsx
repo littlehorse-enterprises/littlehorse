@@ -12,7 +12,7 @@ import { cn } from '@/components/utils'
 import { FC, Fragment } from 'react'
 import LinkWithTenant from './LinkWithTenant'
 
-export type BreadcrumbNavItem = {
+type BreadcrumbNavItem = {
   label: string
   href?: string
 }

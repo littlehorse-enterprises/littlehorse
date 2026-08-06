@@ -3,16 +3,19 @@ package io.littlehorse.server.streams.topology.core.processors;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.LHTimer;
+import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.server.streams.ServerTopologyV2;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.Forwardable;
 import java.util.function.BiConsumer;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.Processor;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
+@Slf4j
 public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KIn, VIn, KOut, VOut> {
 
     private ProcessorContext<KOut, VOut> context;
@@ -42,6 +45,11 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processPassThrough);
     }
 
+    public static ProcessorOutputRouter<String, Forwardable, String, Forwardable>
+            createPassthroughCoreCommandMetadataRouter() {
+        return new ProcessorOutputRouter<>(ProcessorOutputRouter::processPassThrough);
+    }
+
     public static ProcessorOutputRouter<String, LHTimer, String, Object> createTimerProcessorRouter() {
         return new ProcessorOutputRouter<>(ProcessorOutputRouter::processTimerProcessorOutput);
     }
@@ -58,6 +66,8 @@ public class ProcessorOutputRouter<KIn, VIn, KOut, VOut> implements Processor<KI
             context.forward(timerRecord, timerProcessorName);
         } else if (payload instanceof OutputTopicRecordModel) {
             context.forward(record, outputTopicProcessorName);
+        } else if (payload instanceof MetadataCommandModel) {
+            context.forward(record, ServerTopologyV2.CORE_COMMAND_METADATA_PASSTHROUGH_PROCESSOR_NAME);
         } else {
             throw new IllegalArgumentException("Unknown payload type: " + payload.getClass());
         }

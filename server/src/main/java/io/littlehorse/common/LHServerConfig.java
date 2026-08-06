@@ -153,6 +153,8 @@ public class LHServerConfig extends ConfigBase {
 
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
+    //
+    public static final String X_MAX_BULK_JOB_COMMANDS_PER_TICK = "LHS_X_MAX_BULK_JOB_COMMANDS_PER_TICK";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
     // How long (in ms) to retain metric before deleting them
@@ -1111,6 +1113,10 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean isTimerStreamsEnabled() {
         return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "false"));
+    }
+
+    public long getMaxBulkJobCommandsPerTick() {
+        return Long.parseLong(getOrSetDefault(X_MAX_BULK_JOB_COMMANDS_PER_TICK, "10"));
     }
 
     public long getMetricWindowRetentionMs() {

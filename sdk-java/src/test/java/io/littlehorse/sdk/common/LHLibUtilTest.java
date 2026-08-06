@@ -515,4 +515,138 @@ public class LHLibUtilTest {
         VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, LHTypeAdapterRegistry.empty());
         Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
     }
+
+    @LHStructDef("${company}-customer")
+    public static class PlaceholderCustomer {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    @Test
+    void shouldResolvePlaceholdersWhenSerializingStructToStruct() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Alice");
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(struct.getStructDefId().getName()).isEqualTo("acme-customer");
+        Assertions.assertThat(
+                        struct.getStruct().getFieldsMap().get("name").getValue().getStr())
+                .isEqualTo("Alice");
+    }
+
+    @Test
+    void shouldResolvePlaceholdersWhenSerializingStructViaObjToVarVal() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Bob");
+
+        VariableValue val = LHLibUtil.objToVarVal(
+                pojo, PlaceholderCustomer.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(val.getStruct().getStructDefId().getName()).isEqualTo("acme-customer");
+    }
+
+    @Test
+    void shouldFailSerializingPlaceholderStructWithoutPlaceholderValues() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Carol");
+
+        Assertions.assertThatThrownBy(() -> LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("company");
+    }
+
+    @Test
+    void shouldRoundTripPlaceholderStructWithResolvedName() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Dave");
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        VariableValue structVal = VariableValue.newBuilder().setStruct(struct).build();
+
+        PlaceholderCustomer roundTripped = (PlaceholderCustomer) LHLibUtil.varValToObj(
+                structVal, PlaceholderCustomer.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(roundTripped.getName()).isEqualTo("Dave");
+    }
+
+    @LHStructDef("${company}-order")
+    public static class PlaceholderOrder {
+        private String orderId;
+        private PlaceholderCustomer customer;
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public PlaceholderCustomer getCustomer() {
+            return customer;
+        }
+
+        public void setCustomer(PlaceholderCustomer customer) {
+            this.customer = customer;
+        }
+    }
+
+    @Test
+    void shouldResolvePlaceholdersInNestedStruct() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Frank");
+
+        PlaceholderOrder order = new PlaceholderOrder();
+        order.setOrderId("order-1");
+        order.setCustomer(customer);
+
+        Struct struct = LHLibUtil.serializeToStruct(order, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        // Outer struct name is resolved.
+        Assertions.assertThat(struct.getStructDefId().getName()).isEqualTo("acme-order");
+
+        // Nested struct field is itself resolved to the correct StructDefId name.
+        VariableValue customerVal =
+                struct.getStruct().getFieldsMap().get("customer").getValue();
+        Assertions.assertThat(customerVal.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(customerVal.getStruct().getStructDefId().getName())
+                .isEqualTo("acme-customer");
+        Assertions.assertThat(customerVal
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("name")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Frank");
+    }
+
+    @Test
+    void shouldRoundTripNestedPlaceholderStruct() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Grace");
+
+        PlaceholderOrder order = new PlaceholderOrder();
+        order.setOrderId("order-2");
+        order.setCustomer(customer);
+
+        Struct struct = LHLibUtil.serializeToStruct(order, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        VariableValue structVal = VariableValue.newBuilder().setStruct(struct).build();
+
+        PlaceholderOrder roundTripped = (PlaceholderOrder) LHLibUtil.varValToObj(
+                structVal, PlaceholderOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(roundTripped.getOrderId()).isEqualTo("order-2");
+        Assertions.assertThat(roundTripped.getCustomer()).isNotNull();
+        Assertions.assertThat(roundTripped.getCustomer().getName()).isEqualTo("Grace");
+    }
 }

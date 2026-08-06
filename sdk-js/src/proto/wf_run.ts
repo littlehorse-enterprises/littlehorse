@@ -13,6 +13,8 @@ import { MessageType } from "@protobuf-ts/runtime";
 import { VariableValue } from "./type_definition";
 import { ExternalEventId } from "./object_id";
 import { NodeRunId } from "./object_id";
+import { MigrationVars } from "./workflow_migration";
+import { WorkflowMigrationPlanId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { LHStatus } from "./common_enums";
 import { WfSpecId } from "./object_id";
@@ -102,6 +104,21 @@ export interface WfRun {
      * @generated from protobuf field: optional littlehorse.WfRun.ParentTriggerReference parent_trigger = 11
      */
     parentTrigger?: WfRun_ParentTriggerReference;
+    /**
+     * reference to WorkflowMigrationPlanId
+     *
+     * @generated from protobuf field: littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12
+     */
+    workflowMigrationPlanId?: WorkflowMigrationPlanId;
+    /**
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -> MigrationVar
+     *
+     * @generated from protobuf field: map<string, littlehorse.MigrationVars> migration_variables = 13
+     */
+    migrationVariables: {
+        [key: string]: MigrationVars;
+    };
 }
 /**
  * Information about a parent `WfRun` which triggers a child.
@@ -543,7 +560,9 @@ class WfRun$Type extends MessageType<WfRun> {
             { no: 8, name: "thread_runs", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => ThreadRun },
             { no: 9, name: "pending_interrupts", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PendingInterrupt },
             { no: 10, name: "pending_failures", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PendingFailureHandler },
-            { no: 11, name: "parent_trigger", kind: "message", T: () => WfRun_ParentTriggerReference }
+            { no: 11, name: "parent_trigger", kind: "message", T: () => WfRun_ParentTriggerReference },
+            { no: 12, name: "workflow_migration_plan_id", kind: "message", T: () => WorkflowMigrationPlanId },
+            { no: 13, name: "migration_variables", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => MigrationVars } }
         ]);
     }
     create(value?: PartialMessage<WfRun>): WfRun {
@@ -554,6 +573,7 @@ class WfRun$Type extends MessageType<WfRun> {
         message.threadRuns = [];
         message.pendingInterrupts = [];
         message.pendingFailures = [];
+        message.migrationVariables = {};
         if (value !== undefined)
             reflectionMergePartial<WfRun>(this, message, value);
         return message;
@@ -596,6 +616,12 @@ class WfRun$Type extends MessageType<WfRun> {
                 case /* optional littlehorse.WfRun.ParentTriggerReference parent_trigger */ 11:
                     message.parentTrigger = WfRun_ParentTriggerReference.internalBinaryRead(reader, reader.uint32(), options, message.parentTrigger);
                     break;
+                case /* littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id */ 12:
+                    message.workflowMigrationPlanId = WorkflowMigrationPlanId.internalBinaryRead(reader, reader.uint32(), options, message.workflowMigrationPlanId);
+                    break;
+                case /* map<string, littlehorse.MigrationVars> migration_variables */ 13:
+                    this.binaryReadMap13(message.migrationVariables, reader, options);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -606,6 +632,22 @@ class WfRun$Type extends MessageType<WfRun> {
             }
         }
         return message;
+    }
+    private binaryReadMap13(map: WfRun["migrationVariables"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof WfRun["migrationVariables"] | undefined, val: WfRun["migrationVariables"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = MigrationVars.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.WfRun.migration_variables");
+            }
+        }
+        map[key ?? ""] = val ?? MigrationVars.create();
     }
     internalBinaryWrite(message: WfRun, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* littlehorse.WfRunId id = 1; */
@@ -641,6 +683,16 @@ class WfRun$Type extends MessageType<WfRun> {
         /* optional littlehorse.WfRun.ParentTriggerReference parent_trigger = 11; */
         if (message.parentTrigger)
             WfRun_ParentTriggerReference.internalBinaryWrite(message.parentTrigger, writer.tag(11, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12; */
+        if (message.workflowMigrationPlanId)
+            WorkflowMigrationPlanId.internalBinaryWrite(message.workflowMigrationPlanId, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.MigrationVars> migration_variables = 13; */
+        for (let k of globalThis.Object.keys(message.migrationVariables)) {
+            writer.tag(13, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            MigrationVars.internalBinaryWrite(message.migrationVariables[k], writer, options);
+            writer.join().join();
+        }
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

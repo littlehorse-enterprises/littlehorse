@@ -71,7 +71,6 @@ private static final long serialVersionUID = 0L;
     TRIGGERED_TASK_RUN(17),
     REASSIGNED_USER_TASK(18),
     CANCEL_USER_TASK(19),
-    BULK_JOB(20),
     TASK_ATTEMPT_RETRY_READY(21),
     RESCUE_THREAD_RUN(22),
     DELETE_TASK_WORKER_GROUP(23),
@@ -89,6 +88,7 @@ private static final long serialVersionUID = 0L;
     AGGREGATE_WINDOW_METRICS(35),
     DELETE_METRIC_WINDOW(36),
     UPDATE_COUNTED_TAG(37),
+    APPLY_WORKFLOW_MIGRATION_PLAN(38),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -122,7 +122,6 @@ private static final long serialVersionUID = 0L;
         case 17: return TRIGGERED_TASK_RUN;
         case 18: return REASSIGNED_USER_TASK;
         case 19: return CANCEL_USER_TASK;
-        case 20: return BULK_JOB;
         case 21: return TASK_ATTEMPT_RETRY_READY;
         case 22: return RESCUE_THREAD_RUN;
         case 23: return DELETE_TASK_WORKER_GROUP;
@@ -140,6 +139,7 @@ private static final long serialVersionUID = 0L;
         case 35: return AGGREGATE_WINDOW_METRICS;
         case 36: return DELETE_METRIC_WINDOW;
         case 37: return UPDATE_COUNTED_TAG;
+        case 38: return APPLY_WORKFLOW_MIGRATION_PLAN;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -724,37 +724,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.getDefaultInstance();
   }
 
-  public static final int BULK_JOB_FIELD_NUMBER = 20;
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return Whether the bulkJob field is set.
-   */
-  @java.lang.Override
-  public boolean hasBulkJob() {
-    return commandCase_ == 20;
-  }
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return The bulkJob.
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.BulkUpdateJob getBulkJob() {
-    if (commandCase_ == 20) {
-       return (io.littlehorse.common.proto.BulkUpdateJob) command_;
-    }
-    return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder() {
-    if (commandCase_ == 20) {
-       return (io.littlehorse.common.proto.BulkUpdateJob) command_;
-    }
-    return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-  }
-
   public static final int TASK_ATTEMPT_RETRY_READY_FIELD_NUMBER = 21;
   /**
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
@@ -1282,6 +1251,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.common.proto.UpdateCountedTag.getDefaultInstance();
   }
 
+  public static final int APPLY_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER = 38;
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return Whether the applyWorkflowMigrationPlan field is set.
+   */
+  @java.lang.Override
+  public boolean hasApplyWorkflowMigrationPlan() {
+    return commandCase_ == 38;
+  }
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return The applyWorkflowMigrationPlan.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan() {
+    if (commandCase_ == 38) {
+       return (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder() {
+    if (commandCase_ == 38) {
+       return (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1350,9 +1350,6 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 19) {
       output.writeMessage(19, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
     }
-    if (commandCase_ == 20) {
-      output.writeMessage(20, (io.littlehorse.common.proto.BulkUpdateJob) command_);
-    }
     if (commandCase_ == 21) {
       output.writeMessage(21, (io.littlehorse.common.proto.TaskAttemptRetryReady) command_);
     }
@@ -1403,6 +1400,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 37) {
       output.writeMessage(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
+    }
+    if (commandCase_ == 38) {
+      output.writeMessage(38, (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1484,10 +1484,6 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(19, (io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest) command_);
     }
-    if (commandCase_ == 20) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(20, (io.littlehorse.common.proto.BulkUpdateJob) command_);
-    }
     if (commandCase_ == 21) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(21, (io.littlehorse.common.proto.TaskAttemptRetryReady) command_);
@@ -1555,6 +1551,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 37) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(37, (io.littlehorse.common.proto.UpdateCountedTag) command_);
+    }
+    if (commandCase_ == 38) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(38, (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1647,10 +1647,6 @@ private static final long serialVersionUID = 0L;
         if (!getCancelUserTask()
             .equals(other.getCancelUserTask())) return false;
         break;
-      case 20:
-        if (!getBulkJob()
-            .equals(other.getBulkJob())) return false;
-        break;
       case 21:
         if (!getTaskAttemptRetryReady()
             .equals(other.getTaskAttemptRetryReady())) return false;
@@ -1718,6 +1714,10 @@ private static final long serialVersionUID = 0L;
       case 37:
         if (!getUpdateCountedTag()
             .equals(other.getUpdateCountedTag())) return false;
+        break;
+      case 38:
+        if (!getApplyWorkflowMigrationPlan()
+            .equals(other.getApplyWorkflowMigrationPlan())) return false;
         break;
       case 0:
       default:
@@ -1806,10 +1806,6 @@ private static final long serialVersionUID = 0L;
         hash = (37 * hash) + CANCEL_USER_TASK_FIELD_NUMBER;
         hash = (53 * hash) + getCancelUserTask().hashCode();
         break;
-      case 20:
-        hash = (37 * hash) + BULK_JOB_FIELD_NUMBER;
-        hash = (53 * hash) + getBulkJob().hashCode();
-        break;
       case 21:
         hash = (37 * hash) + TASK_ATTEMPT_RETRY_READY_FIELD_NUMBER;
         hash = (53 * hash) + getTaskAttemptRetryReady().hashCode();
@@ -1877,6 +1873,10 @@ private static final long serialVersionUID = 0L;
       case 37:
         hash = (37 * hash) + UPDATE_COUNTED_TAG_FIELD_NUMBER;
         hash = (53 * hash) + getUpdateCountedTag().hashCode();
+        break;
+      case 38:
+        hash = (37 * hash) + APPLY_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER;
+        hash = (53 * hash) + getApplyWorkflowMigrationPlan().hashCode();
         break;
       case 0:
       default:
@@ -2077,9 +2077,6 @@ private static final long serialVersionUID = 0L;
       if (cancelUserTaskBuilder_ != null) {
         cancelUserTaskBuilder_.clear();
       }
-      if (bulkJobBuilder_ != null) {
-        bulkJobBuilder_.clear();
-      }
       if (taskAttemptRetryReadyBuilder_ != null) {
         taskAttemptRetryReadyBuilder_.clear();
       }
@@ -2130,6 +2127,9 @@ private static final long serialVersionUID = 0L;
       }
       if (updateCountedTagBuilder_ != null) {
         updateCountedTagBuilder_.clear();
+      }
+      if (applyWorkflowMigrationPlanBuilder_ != null) {
+        applyWorkflowMigrationPlanBuilder_.clear();
       }
       commandCase_ = 0;
       command_ = null;
@@ -2253,10 +2253,6 @@ private static final long serialVersionUID = 0L;
           cancelUserTaskBuilder_ != null) {
         result.command_ = cancelUserTaskBuilder_.build();
       }
-      if (commandCase_ == 20 &&
-          bulkJobBuilder_ != null) {
-        result.command_ = bulkJobBuilder_.build();
-      }
       if (commandCase_ == 21 &&
           taskAttemptRetryReadyBuilder_ != null) {
         result.command_ = taskAttemptRetryReadyBuilder_.build();
@@ -2324,6 +2320,10 @@ private static final long serialVersionUID = 0L;
       if (commandCase_ == 37 &&
           updateCountedTagBuilder_ != null) {
         result.command_ = updateCountedTagBuilder_.build();
+      }
+      if (commandCase_ == 38 &&
+          applyWorkflowMigrationPlanBuilder_ != null) {
+        result.command_ = applyWorkflowMigrationPlanBuilder_.build();
       }
     }
 
@@ -2412,10 +2412,6 @@ private static final long serialVersionUID = 0L;
           mergeCancelUserTask(other.getCancelUserTask());
           break;
         }
-        case BULK_JOB: {
-          mergeBulkJob(other.getBulkJob());
-          break;
-        }
         case TASK_ATTEMPT_RETRY_READY: {
           mergeTaskAttemptRetryReady(other.getTaskAttemptRetryReady());
           break;
@@ -2482,6 +2478,10 @@ private static final long serialVersionUID = 0L;
         }
         case UPDATE_COUNTED_TAG: {
           mergeUpdateCountedTag(other.getUpdateCountedTag());
+          break;
+        }
+        case APPLY_WORKFLOW_MIGRATION_PLAN: {
+          mergeApplyWorkflowMigrationPlan(other.getApplyWorkflowMigrationPlan());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2638,13 +2638,6 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 19;
               break;
             } // case 154
-            case 162: {
-              input.readMessage(
-                  internalGetBulkJobFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              commandCase_ = 20;
-              break;
-            } // case 162
             case 170: {
               input.readMessage(
                   internalGetTaskAttemptRetryReadyFieldBuilder().getBuilder(),
@@ -2764,6 +2757,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 37;
               break;
             } // case 298
+            case 306: {
+              input.readMessage(
+                  internalGetApplyWorkflowMigrationPlanFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 38;
+              break;
+            } // case 306
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5270,148 +5270,6 @@ private static final long serialVersionUID = 0L;
     }
 
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder> bulkJobBuilder_;
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     * @return Whether the bulkJob field is set.
-     */
-    @java.lang.Override
-    public boolean hasBulkJob() {
-      return commandCase_ == 20;
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     * @return The bulkJob.
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.BulkUpdateJob getBulkJob() {
-      if (bulkJobBuilder_ == null) {
-        if (commandCase_ == 20) {
-          return (io.littlehorse.common.proto.BulkUpdateJob) command_;
-        }
-        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-      } else {
-        if (commandCase_ == 20) {
-          return bulkJobBuilder_.getMessage();
-        }
-        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    public Builder setBulkJob(io.littlehorse.common.proto.BulkUpdateJob value) {
-      if (bulkJobBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        command_ = value;
-        onChanged();
-      } else {
-        bulkJobBuilder_.setMessage(value);
-      }
-      commandCase_ = 20;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    public Builder setBulkJob(
-        io.littlehorse.common.proto.BulkUpdateJob.Builder builderForValue) {
-      if (bulkJobBuilder_ == null) {
-        command_ = builderForValue.build();
-        onChanged();
-      } else {
-        bulkJobBuilder_.setMessage(builderForValue.build());
-      }
-      commandCase_ = 20;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    public Builder mergeBulkJob(io.littlehorse.common.proto.BulkUpdateJob value) {
-      if (bulkJobBuilder_ == null) {
-        if (commandCase_ == 20 &&
-            command_ != io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance()) {
-          command_ = io.littlehorse.common.proto.BulkUpdateJob.newBuilder((io.littlehorse.common.proto.BulkUpdateJob) command_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          command_ = value;
-        }
-        onChanged();
-      } else {
-        if (commandCase_ == 20) {
-          bulkJobBuilder_.mergeFrom(value);
-        } else {
-          bulkJobBuilder_.setMessage(value);
-        }
-      }
-      commandCase_ = 20;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    public Builder clearBulkJob() {
-      if (bulkJobBuilder_ == null) {
-        if (commandCase_ == 20) {
-          commandCase_ = 0;
-          command_ = null;
-          onChanged();
-        }
-      } else {
-        if (commandCase_ == 20) {
-          commandCase_ = 0;
-          command_ = null;
-        }
-        bulkJobBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    public io.littlehorse.common.proto.BulkUpdateJob.Builder getBulkJobBuilder() {
-      return internalGetBulkJobFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder() {
-      if ((commandCase_ == 20) && (bulkJobBuilder_ != null)) {
-        return bulkJobBuilder_.getMessageOrBuilder();
-      } else {
-        if (commandCase_ == 20) {
-          return (io.littlehorse.common.proto.BulkUpdateJob) command_;
-        }
-        return io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder> 
-        internalGetBulkJobFieldBuilder() {
-      if (bulkJobBuilder_ == null) {
-        if (!(commandCase_ == 20)) {
-          command_ = io.littlehorse.common.proto.BulkUpdateJob.getDefaultInstance();
-        }
-        bulkJobBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.common.proto.BulkUpdateJob, io.littlehorse.common.proto.BulkUpdateJob.Builder, io.littlehorse.common.proto.BulkUpdateJobOrBuilder>(
-                (io.littlehorse.common.proto.BulkUpdateJob) command_,
-                getParentForChildren(),
-                isClean());
-        command_ = null;
-      }
-      commandCase_ = 20;
-      onChanged();
-      return bulkJobBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.common.proto.TaskAttemptRetryReady, io.littlehorse.common.proto.TaskAttemptRetryReady.Builder, io.littlehorse.common.proto.TaskAttemptRetryReadyOrBuilder> taskAttemptRetryReadyBuilder_;
     /**
      * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
@@ -7823,6 +7681,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 37;
       onChanged();
       return updateCountedTagBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder> applyWorkflowMigrationPlanBuilder_;
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     * @return Whether the applyWorkflowMigrationPlan field is set.
+     */
+    @java.lang.Override
+    public boolean hasApplyWorkflowMigrationPlan() {
+      return commandCase_ == 38;
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     * @return The applyWorkflowMigrationPlan.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan() {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        if (commandCase_ == 38) {
+          return (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 38) {
+          return applyWorkflowMigrationPlanBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    public Builder setApplyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest value) {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        applyWorkflowMigrationPlanBuilder_.setMessage(value);
+      }
+      commandCase_ = 38;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    public Builder setApplyWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.Builder builderForValue) {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        applyWorkflowMigrationPlanBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 38;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    public Builder mergeApplyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest value) {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        if (commandCase_ == 38 &&
+            command_ != io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.newBuilder((io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 38) {
+          applyWorkflowMigrationPlanBuilder_.mergeFrom(value);
+        } else {
+          applyWorkflowMigrationPlanBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 38;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    public Builder clearApplyWorkflowMigrationPlan() {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        if (commandCase_ == 38) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 38) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        applyWorkflowMigrationPlanBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.Builder getApplyWorkflowMigrationPlanBuilder() {
+      return internalGetApplyWorkflowMigrationPlanFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder() {
+      if ((commandCase_ == 38) && (applyWorkflowMigrationPlanBuilder_ != null)) {
+        return applyWorkflowMigrationPlanBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 38) {
+          return (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder> 
+        internalGetApplyWorkflowMigrationPlanFieldBuilder() {
+      if (applyWorkflowMigrationPlanBuilder_ == null) {
+        if (!(commandCase_ == 38)) {
+          command_ = io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
+        }
+        applyWorkflowMigrationPlanBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.Builder, io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 38;
+      onChanged();
+      return applyWorkflowMigrationPlanBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

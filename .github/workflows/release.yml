@@ -233,7 +233,12 @@ jobs:
 
       - name: Publish
         working-directory: ${{env.working-directory}}
-        run: pnpm publish --access public --no-git-checks
+        run: |
+          if [[ "${{ needs.prepare.outputs.prerelease }}" == "true" ]]; then
+            pnpm publish --access public --no-git-checks --tag next
+          else
+            pnpm publish --access public --no-git-checks
+          fi
 
   publish-sdk-dotnet:
     runs-on: ubuntu-latest

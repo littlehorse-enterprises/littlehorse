@@ -47,13 +47,14 @@ public class LHTaskParameter {
         LHClassType variableClassType;
 
         if (metadata.isLHArray()) {
-            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
+            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (metadata.isLHMap()) {
-            variableClassType = resolveMapType(parameter, typeAdapterRegistry);
+            variableClassType = resolveMapType(parameter, typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
             variableClassType = new LHStructDefId(structDefName.get());
         } else {
-            variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
+            variableClassType =
+                    LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry, resolvedPlaceholderValues);
         }
 
         this.variableDef = VariableDef.newBuilder()
@@ -78,14 +79,16 @@ public class LHTaskParameter {
         return parameter.getType();
     }
 
-    private static LHMapType resolveMapType(Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry) {
+    private static LHMapType resolveMapType(
+            Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         Type genericType = parameter.getParameterizedType();
 
         if (genericType instanceof ParameterizedType) {
             ParameterizedType paramType = (ParameterizedType) genericType;
             Type[] typeArgs = paramType.getActualTypeArguments();
             if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
-                return new LHMapType((Class<?>) typeArgs[0], (Class<?>) typeArgs[1], typeAdapterRegistry);
+                return new LHMapType(
+                        (Class<?>) typeArgs[0], (Class<?>) typeArgs[1], typeAdapterRegistry, placeholderValues);
             }
         }
 

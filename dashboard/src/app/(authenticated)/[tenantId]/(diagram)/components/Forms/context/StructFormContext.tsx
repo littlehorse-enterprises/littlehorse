@@ -14,7 +14,7 @@ import {
 export const DOT_REPLACEMENT_PATTERN = '*-/:DOT_REPLACE_PATTERN'
 export const STRUCT_FORM_FIELD_PREFIX = 'structValues'
 
-export type StructPath = string[]
+type StructPath = string[]
 export type VariableCase = Exclude<VariableValue['value']['oneofKind'], undefined>
 
 export interface StructFormContextValue {

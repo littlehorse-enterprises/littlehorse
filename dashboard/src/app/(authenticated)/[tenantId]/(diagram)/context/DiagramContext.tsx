@@ -8,7 +8,6 @@ export type ThreadType = {
   name: string
   number: number
 }
-export type NodeRunType = Node<NodeProto & { nodeRunsList: NodeRun[] }, NodeType>
 
 export type NodeInContext =
   | Node<NodeProto, NodeType>

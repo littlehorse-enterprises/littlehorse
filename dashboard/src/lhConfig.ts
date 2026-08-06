@@ -7,6 +7,7 @@ const CONFIG = {
   caCert: process.env.LHC_CA_CERT,
   clientCert: process.env.LHC_CLIENT_CERT,
   clientKey: process.env.LHC_CLIENT_KEY,
+  grpcMaxReceiveMessageLength: process.env.LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH,
 }
 
 export const getClient = ({ tenantId, accessToken }: { tenantId?: string; accessToken?: string }) => {

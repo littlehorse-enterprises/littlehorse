@@ -19,15 +19,21 @@ export function isResourceExhausted(error: unknown): boolean {
 
 /**
  * Computes how long to wait before retrying a RESOURCE_EXHAUSTED error. Honors
- * the server-provided `google.rpc.RetryInfo` when present, otherwise falls back
- * to a default delay.
+ * the server-provided `google.rpc.RetryInfo` when present. Errors without any
+ * server-sent status details are generated locally by grpc-js (e.g. a response
+ * over `grpc.max_receive_message_length`) and are never retried.
  */
 export function getRetryDelayMs(error: unknown): number | undefined {
   if (!isResourceExhausted(error)) {
     return undefined
   }
 
-  const fromMetadata = extractRetryDelayMsFromMetadata((error as RpcError).meta)
+  const meta = (error as RpcError).meta
+  if (getStatusDetails(meta) === undefined) {
+    return undefined
+  }
+
+  const fromMetadata = extractRetryDelayMsFromMetadata(meta)
   if (fromMetadata !== undefined) {
     return fromMetadata
   }

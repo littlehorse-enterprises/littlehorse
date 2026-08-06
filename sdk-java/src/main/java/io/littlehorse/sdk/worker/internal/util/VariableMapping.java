@@ -22,13 +22,24 @@ public class VariableMapping {
     private final Class<?> parameterJavaType;
     private final boolean expectsNativeLHArray;
     private final boolean expectsNativeLHMap;
+    private final Map<String, String> placeholderValues;
 
     public VariableMapping(
             VariableDef variableDef, LHTaskParameter lhTaskParameter, LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
+        this(variableDef, lhTaskParameter, typeAdapterRegistry, Map.of());
+    }
+
+    public VariableMapping(
+            VariableDef variableDef,
+            LHTaskParameter lhTaskParameter,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws TaskSchemaMismatchError {
         Objects.requireNonNull(variableDef, "VariableDef cannot be null");
         Objects.requireNonNull(lhTaskParameter, "LHTaskParameter cannot be null");
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
         this.variableName = variableDef.getName();
         this.parameterJavaType = lhTaskParameter.getParameterType();
         this.expectsNativeLHArray =
@@ -168,7 +179,7 @@ public class VariableMapping {
             if (expectsNativeLHMap && val.getValueCase() == VariableValue.ValueCase.MAP) {
                 return assignNativeMap(val);
             }
-            return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry);
+            return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry, this.placeholderValues);
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);

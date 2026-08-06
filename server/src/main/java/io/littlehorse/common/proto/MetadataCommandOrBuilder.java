@@ -309,5 +309,65 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.DeleteQuotaRequestOrBuilder getDeleteQuotaOrBuilder();
 
+  /**
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   * @return Whether the createBulkJob field is set.
+   */
+  boolean hasCreateBulkJob();
+  /**
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   * @return The createBulkJob.
+   */
+  io.littlehorse.sdk.common.proto.CreateBulkJobRequest getCreateBulkJob();
+  /**
+   * <code>.littlehorse.CreateBulkJobRequest create_bulk_job = 21;</code>
+   */
+  io.littlehorse.sdk.common.proto.CreateBulkJobRequestOrBuilder getCreateBulkJobOrBuilder();
+
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return Whether the bulkJobShardReport field is set.
+   */
+  boolean hasBulkJobShardReport();
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   * @return The bulkJobShardReport.
+   */
+  io.littlehorse.common.proto.BulkJobShardReport getBulkJobShardReport();
+  /**
+   * <code>.littlehorse.BulkJobShardReport bulk_job_shard_report = 22;</code>
+   */
+  io.littlehorse.common.proto.BulkJobShardReportOrBuilder getBulkJobShardReportOrBuilder();
+
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return Whether the deleteBulkJob field is set.
+   */
+  boolean hasDeleteBulkJob();
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   * @return The deleteBulkJob.
+   */
+  io.littlehorse.sdk.common.proto.DeleteBulkJobRequest getDeleteBulkJob();
+  /**
+   * <code>.littlehorse.DeleteBulkJobRequest delete_bulk_job = 23;</code>
+   */
+  io.littlehorse.sdk.common.proto.DeleteBulkJobRequestOrBuilder getDeleteBulkJobOrBuilder();
+
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
+   * @return Whether the putWorkflowMigrationPlan field is set.
+   */
+  boolean hasPutWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
+   * @return The putWorkflowMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequest getPutWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

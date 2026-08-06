@@ -1,8 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.JsonIndex;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
@@ -99,15 +99,15 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariableImpl jsonPath(String path) {
         if (jsonPath != null) {
-            throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
+            throw new LHWfSpecBuilderException("Cannot use jsonpath() twice on same var!");
         }
         if (typeDef.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
-            throw new LHMisconfigurationException(
+            throw new LHWfSpecBuilderException(
                     String.format("JsonPath not allowed in a %s variable", typeDef.getDefinedTypeCase()));
         }
         if (!typeDef.getPrimitiveType().equals(VariableType.JSON_OBJ)
                 && !typeDef.getPrimitiveType().equals(VariableType.JSON_ARR)) {
-            throw new LHMisconfigurationException(String.format(
+            throw new LHWfSpecBuilderException(String.format(
                     "JsonPath not allowed in a %s variable",
                     typeDef.getPrimitiveType().name()));
         }
@@ -119,7 +119,7 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariableImpl get(String key) {
         if (jsonPath != null) {
-            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+            throw new LHWfSpecBuilderException("Cannot use jsonPath() and get() on same var!");
         }
         switch (typeDef.getDefinedTypeCase()) {
             case STRUCT_DEF_ID:
@@ -127,12 +127,12 @@ class WfRunVariableImpl implements WfRunVariable {
             case PRIMITIVE_TYPE:
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
                         && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
-                    throw new LHMisconfigurationException(
+                    throw new LHWfSpecBuilderException(
                             "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
                 }
                 break;
             case INLINE_ARRAY_DEF:
-                throw new LHMisconfigurationException(
+                throw new LHWfSpecBuilderException(
                         "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
             case INLINE_MAP_DEF:
                 // Typed inline maps (e.g. declareMap("x", String.class, Long.class)) are allowed
@@ -150,7 +150,7 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariableImpl get(int index) {
         if (jsonPath != null) {
-            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+            throw new LHWfSpecBuilderException("Cannot use jsonPath() and get() on same var!");
         }
         switch (typeDef.getDefinedTypeCase()) {
             case STRUCT_DEF_ID:
@@ -158,7 +158,7 @@ class WfRunVariableImpl implements WfRunVariable {
             case PRIMITIVE_TYPE:
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
                         && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
-                    throw new LHMisconfigurationException(
+                    throw new LHWfSpecBuilderException(
                             "Can only use get() on JSON_OBJ, JSON_ARR, Map, or Struct variables");
                 }
                 break;
@@ -247,11 +247,11 @@ class WfRunVariableImpl implements WfRunVariable {
     @Override
     public WfRunVariable searchableOn(String fieldPath, VariableType fieldType) {
         if (!fieldPath.startsWith("$.")) {
-            throw new LHMisconfigurationException(String.format("Invalid JsonPath: %s", fieldPath));
+            throw new LHWfSpecBuilderException(String.format("Invalid JsonPath: %s", fieldPath));
         }
         if (!typeDef.getPrimitiveType().equals(VariableType.JSON_OBJ)
                 && !typeDef.getPrimitiveType().equals(VariableType.JSON_ARR)) {
-            throw new LHMisconfigurationException(String.format("Non-Json %s variable contains jsonIndex", name));
+            throw new LHWfSpecBuilderException(String.format("Non-Json %s variable contains jsonIndex", name));
         }
         this.jsonIndexes.add(JsonIndex.newBuilder()
                 .setFieldPath(fieldPath)

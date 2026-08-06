@@ -109,7 +109,7 @@ export const UserTaskNode: FC<{ node: UserTaskNodeProto }> = ({ node }) => {
   )
 }
 
-export const NodeTitleComponent: FC<{
+const NodeTitleComponent: FC<{
   title: string
   action: UTActionTrigger_UTATask | UTActionTrigger_UTACancel | UTActionTrigger_UTAReassign | undefined
 }> = ({ title, action }) => {
