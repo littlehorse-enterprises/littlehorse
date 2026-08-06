@@ -325,6 +325,21 @@ class WfRunVariableImpl implements WfRunVariable {
         activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
+    @Override
+    public void put(Serializable key, Serializable value) {
+        WorkflowThreadImpl activeThread = parent;
+
+        WorkflowThreadImpl lastThread = parent.getParent().getThreads().peek();
+
+        if (lastThread.isActive()) {
+            activeThread = lastThread;
+        }
+
+        LHMapBuilderImpl singleEntry = new LHMapBuilderImpl(activeThread);
+        singleEntry.put(key, value);
+        activeThread.mutate(this, VariableMutationType.EXTEND, singleEntry);
+    }
+
     public ThreadVarDef getSpec() {
         VariableDef.Builder varDef =
                 VariableDef.newBuilder().setTypeDef(typeDef).setName(this.getName());

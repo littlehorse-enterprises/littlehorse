@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -16,21 +17,37 @@ public class MapExample {
     private static final Logger log = LoggerFactory.getLogger(MapExample.class);
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-maps", wf -> {
-            WfRunVariable mapVar = wf.declareMap("my-map", String.class, Long.class)
-                    .withDefault(Map.of("apples", 3L, "bananas", 5L, "cherries", 12L));
+        return new WorkflowImpl("reserve-inventory", wf -> {
+            WfRunVariable inventory = wf.declareMap("inventory", String.class, Integer.class)
+                    .withDefault(Map.of("apples", 3, "bananas", 5, "cherries", 12));
+            WfRunVariable sku = wf.declareStr("sku").withDefault("apples");
+            WfRunVariable quantity = wf.declareInt("quantity").withDefault(2);
+            WfRunVariable available = wf.declareInt("available");
+            WfRunVariable remaining = wf.declareInt("remaining");
 
-            wf.execute("consume-map", mapVar);
+            available.assign(wf.execute("check-availability", inventory, sku));
 
-            // access a single entry by key
-            wf.execute("consume-value", mapVar.get("apples"));
+            wf.doIf(available.isGreaterThanEq(quantity), stockAvailable -> {
+                        remaining.assign(available.subtract(quantity));
+                        inventory.put(sku, remaining);
+
+                        LHMapBuilder reservation = stockAvailable.buildMap().put(sku, quantity);
+                        stockAvailable.execute("reserve-items", reservation);
+                        stockAvailable.execute("save-inventory", inventory);
+                    })
+                    .doElse(insufficientStock -> {
+                        insufficientStock.execute("notify-out-of-stock", sku, quantity, available);
+                    });
         });
     }
 
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
         MapWorker worker = new MapWorker();
         return List.of(
-                new LHTaskWorker(worker, "consume-map", config), new LHTaskWorker(worker, "consume-value", config));
+                new LHTaskWorker(worker, "check-availability", config),
+                new LHTaskWorker(worker, "reserve-items", config),
+                new LHTaskWorker(worker, "save-inventory", config),
+                new LHTaskWorker(worker, "notify-out-of-stock", config));
     }
 
     public static void main(String[] args) throws Exception {
