@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -29,7 +30,9 @@ public class MapExample {
 
             wf.doIf(available.isGreaterThanEq(quantity), stockAvailable -> {
                         remaining.assign(available.subtract(quantity));
-                        inventory.put(sku, remaining);
+                        LHMapBuilder update = stockAvailable.buildMap();
+                        update.put(sku, remaining);
+                        stockAvailable.mutate(inventory, VariableMutationType.EXTEND, update);
 
                         LHMapBuilder reservation = stockAvailable.buildMap().put(sku, quantity);
                         stockAvailable.execute("reserve-items", reservation);

@@ -10,6 +10,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.util.Arg;
@@ -711,7 +712,9 @@ public class MapsTest {
             mapVar.assign(produced);
             // TODO: unnecessary task call because of mutation bug #2181
             thread.execute("produce-map");
-            mapVar.put("new-key", 77L);
+            LHMapBuilder putBuilder = thread.buildMap();
+            putBuilder.put("new-key", 77L);
+            thread.mutate(mapVar, VariableMutationType.EXTEND, putBuilder);
         });
     }
 
@@ -723,7 +726,9 @@ public class MapsTest {
             mapVar.assign(produced);
             // TODO: unnecessary task call because of mutation bug #2181
             thread.execute("produce-map");
-            mapVar.put("hello", 999L);
+            LHMapBuilder overwriteBuilder = thread.buildMap();
+            overwriteBuilder.put("hello", 999L);
+            thread.mutate(mapVar, VariableMutationType.EXTEND, overwriteBuilder);
         });
     }
 
@@ -738,7 +743,9 @@ public class MapsTest {
             dynamicKey.assign(keyValue);
             // TODO: unnecessary task call because of mutation bug #2181
             thread.execute("produce-key-name");
-            mapVar.put(dynamicKey, 123L);
+            LHMapBuilder dynamicBuilder = thread.buildMap();
+            dynamicBuilder.put(dynamicKey, 123L);
+            thread.mutate(mapVar, VariableMutationType.EXTEND, dynamicBuilder);
         });
     }
 

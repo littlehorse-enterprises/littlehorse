@@ -140,16 +140,5 @@ public interface WfRunVariable extends LHExpression {
      */
     void assign(Serializable rhs);
 
-    /**
-     * Inserts or updates a single key/value entry in this Map variable.
-     *
-     * <p>Compiles to an {@code EXTEND} mutation with a single-entry {@code MapBuilder} RHS.
-     * Both key and value can be literals, variable references, or expressions.
-     *
-     * @param key the map key (must resolve to a primitive type at runtime)
-     * @param value the value to associate with the key
-     */
-    void put(Serializable key, Serializable value);
-
     // cast methods are provided by LHExpression
 }
