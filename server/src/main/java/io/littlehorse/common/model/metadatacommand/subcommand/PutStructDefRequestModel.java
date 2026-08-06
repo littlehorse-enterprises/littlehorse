@@ -19,6 +19,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefRequest> {
@@ -86,6 +87,14 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
             spec.setId(new StructDefIdModel(name, 0));
         } else {
             if (InlineStructDefUtil.equals(spec.getStructDef(), latestVersion.getStructDef())) {
+                boolean descriptionChanged = !Objects.equals(description, latestVersion.getDescription());
+
+                if (!descriptionChanged) {
+                    return latestVersion.toProto().build();
+                }
+
+                latestVersion.setDescription(description);
+                metadataManager.put(latestVersion);
                 return latestVersion.toProto().build();
             }
 
