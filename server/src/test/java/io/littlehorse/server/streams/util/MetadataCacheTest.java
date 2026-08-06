@@ -123,14 +123,14 @@ class MetadataCacheTest {
         var second = mockStoredGetable();
         cache.update("first", first);
         cache.update("second", second);
-        for (int i = 2; i < MetadataCache.MAX_ENTRIES; i++) {
+        for (int i = 2; i < MetadataCache.MAX_CAPACITY; i++) {
             cache.update("key-" + i, mockStoredGetable());
         }
 
         assertThat(cache.getOrUpdate("first", () -> null)).isSameAs(first);
         cache.update("overflow", mockStoredGetable());
 
-        assertThat(cache.size()).isEqualTo(MetadataCache.MAX_ENTRIES);
+        assertThat(cache.size()).isEqualTo(MetadataCache.MAX_CAPACITY);
         assertThat(cache.containsKey("first")).isTrue();
         assertThat(cache.containsKey("second")).isFalse();
         assertThat(cache.containsKey("overflow")).isTrue();

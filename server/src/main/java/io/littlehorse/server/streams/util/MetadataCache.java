@@ -7,10 +7,10 @@ import java.util.function.Supplier;
 
 public class MetadataCache extends LHCache<String, StoredGetable<? extends Message, ? extends MetadataGetable<?>>> {
 
-    static final int MAX_ENTRIES = 5_000;
+    static final int MAX_CAPACITY = 1_000;
 
     public MetadataCache() {
-        super(MAX_ENTRIES);
+        super(MAX_CAPACITY);
     }
 
     public StoredGetable<? extends Message, ? extends MetadataGetable<?>> getOrUpdate(
