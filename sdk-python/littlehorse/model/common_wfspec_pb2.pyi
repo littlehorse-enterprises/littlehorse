@@ -38,7 +38,7 @@ OR: VariableMutationType
 POW: VariableMutationType
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "target_type")
+    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "map_builder", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -76,6 +76,7 @@ class VariableAssignment(_message.Message):
     EXPRESSION_FIELD_NUMBER: _ClassVar[int]
     STRUCT_BUILDER_FIELD_NUMBER: _ClassVar[int]
     SIZE_OF_FIELD_NUMBER: _ClassVar[int]
+    MAP_BUILDER_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     lh_path: LHPath
@@ -86,8 +87,9 @@ class VariableAssignment(_message.Message):
     expression: VariableAssignment.Expression
     struct_builder: StructBuilder
     size_of: VariableAssignment.SizeOf
+    map_builder: MapBuilder
     target_type: _type_definition_pb2.TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., size_of: _Optional[_Union[VariableAssignment.SizeOf, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., size_of: _Optional[_Union[VariableAssignment.SizeOf, _Mapping]] = ..., map_builder: _Optional[_Union[MapBuilder, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class StructBuilder(_message.Message):
     __slots__ = ("struct_def_id", "value")
@@ -117,6 +119,21 @@ class InlineStructFieldValue(_message.Message):
     simple_value: VariableAssignment
     sub_structure: InlineStructBuilder
     def __init__(self, simple_value: _Optional[_Union[VariableAssignment, _Mapping]] = ..., sub_structure: _Optional[_Union[InlineStructBuilder, _Mapping]] = ...) -> None: ...
+
+class MapBuilder(_message.Message):
+    __slots__ = ("entries", "map_type")
+    class Entry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: VariableAssignment
+        value: VariableAssignment
+        def __init__(self, key: _Optional[_Union[VariableAssignment, _Mapping]] = ..., value: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+    ENTRIES_FIELD_NUMBER: _ClassVar[int]
+    MAP_TYPE_FIELD_NUMBER: _ClassVar[int]
+    entries: _containers.RepeatedCompositeFieldContainer[MapBuilder.Entry]
+    map_type: _type_definition_pb2.InlineMapDef
+    def __init__(self, entries: _Optional[_Iterable[_Union[MapBuilder.Entry, _Mapping]]] = ..., map_type: _Optional[_Union[_type_definition_pb2.InlineMapDef, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
     __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")

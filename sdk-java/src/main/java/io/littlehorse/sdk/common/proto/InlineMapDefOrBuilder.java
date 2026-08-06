@@ -12,7 +12,8 @@ public interface InlineMapDefOrBuilder extends
 
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -21,7 +22,8 @@ public interface InlineMapDefOrBuilder extends
   boolean hasKeyType();
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -30,7 +32,8 @@ public interface InlineMapDefOrBuilder extends
   io.littlehorse.sdk.common.proto.TypeDefinition getKeyType();
   /**
    * <pre>
-   * Type definition for each key in the map. Must resolve to a primitive type.
+   * Type definition for each key in the map. Must resolve to a concrete primitive type.
+   * Wildcard/unset key types are not permitted.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition key_type = 1;</code>
@@ -39,7 +42,8 @@ public interface InlineMapDefOrBuilder extends
 
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -48,7 +52,8 @@ public interface InlineMapDefOrBuilder extends
   boolean hasValueType();
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
@@ -57,7 +62,8 @@ public interface InlineMapDefOrBuilder extends
   io.littlehorse.sdk.common.proto.TypeDefinition getValueType();
   /**
    * <pre>
-   * Type definition for each value in the map.
+   * Type definition for each value in the map. Must be a concrete, non-JSON type.
+   * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
    * </pre>
    *
    * <code>.littlehorse.TypeDefinition value_type = 2;</code>
