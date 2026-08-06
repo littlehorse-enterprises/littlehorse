@@ -52,10 +52,13 @@ public class LHCache<K, V> {
 
     private static class BoundedLruMap<K, V> extends LinkedHashMap<K, V> {
 
+        private static final int INITIAL_CAPACITY = 16;
+        private static final float LOAD_FACTOR = 0.75f;
+
         private final int maxEntries;
 
         private BoundedLruMap(int maxEntries) {
-            super(16, 0.75f, true);
+            super(INITIAL_CAPACITY, LOAD_FACTOR, true);
             this.maxEntries = maxEntries;
         }
 
