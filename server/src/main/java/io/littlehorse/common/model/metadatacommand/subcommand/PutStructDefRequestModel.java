@@ -86,19 +86,17 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         if (latestVersion == null) {
             spec.setId(new StructDefIdModel(name, 0));
         } else {
-            if (InlineStructDefUtil.equals(spec.getStructDef(), latestVersion.getStructDef())) {
-                boolean descriptionChanged = !Objects.equals(description, latestVersion.getDescription());
+            boolean schemaChanged = !InlineStructDefUtil.equals(spec.getStructDef(), latestVersion.getStructDef());
+            boolean descriptionChanged = !Objects.equals(description, latestVersion.getDescription());
 
-                if (!descriptionChanged) {
-                    return latestVersion.toProto().build();
-                }
-
-                spec.setId(latestVersion.getObjectId().bumpVersion());
-                metadataManager.put(spec);
-                return spec.toProto().build();
+            if (!schemaChanged && !descriptionChanged) {
+                return latestVersion.toProto().build();
             }
 
-            verifyUpdateType(allowedUpdateType, spec.getStructDef(), latestVersion.getStructDef());
+            if (schemaChanged) {
+                verifyUpdateType(allowedUpdateType, spec.getStructDef(), latestVersion.getStructDef());
+            }
+
             spec.setId(latestVersion.getObjectId().bumpVersion());
         }
 
