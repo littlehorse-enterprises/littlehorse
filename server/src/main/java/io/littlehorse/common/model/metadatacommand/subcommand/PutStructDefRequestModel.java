@@ -93,9 +93,9 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
                     return latestVersion.toProto().build();
                 }
 
-                latestVersion.setDescription(description);
-                metadataManager.put(latestVersion);
-                return latestVersion.toProto().build();
+                spec.setId(latestVersion.getObjectId().bumpVersion());
+                metadataManager.put(spec);
+                return spec.toProto().build();
             }
 
             verifyUpdateType(allowedUpdateType, spec.getStructDef(), latestVersion.getStructDef());
