@@ -490,7 +490,8 @@ public class ArraysTest {
                 .atMost(Duration.ofMillis(500))
                 .ignoreExceptionsMatching(exn -> LHTestExceptionUtil.isNotFoundException(exn))
                 .until(() -> {
-                    client.getLatestWfSpec(GetLatestWfSpecRequest.newBuilder().setName(name).build());
+                    client.getLatestWfSpec(
+                            GetLatestWfSpecRequest.newBuilder().setName(name).build());
                     return true;
                 });
     }
