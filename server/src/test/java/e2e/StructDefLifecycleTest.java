@@ -73,7 +73,7 @@ public class StructDefLifecycleTest {
     }
 
     @Test
-    void shouldUpdateDescriptionWithoutBumpingVersion() {
+    void shouldUpdateDescriptionByBumpingVersion() {
         String structDefName = UUID.randomUUID().toString();
         InlineStructDef schema = InlineStructDef.newBuilder()
                 .putFields(
@@ -97,14 +97,17 @@ public class StructDefLifecycleTest {
                 .setDescription("Updated description")
                 .build());
 
-        // Version must not be bumped — only description changed
-        assertThat(result.getId().getVersion()).isEqualTo(0);
+        assertThat(result.getId().getVersion()).isEqualTo(1);
         assertThat(result.getDescription()).isEqualTo("Updated description");
+
+        StructDef originalVersion = client.getStructDef(
+                StructDefId.newBuilder().setName(structDefName).setVersion(0).build());
+        assertThat(originalVersion.getDescription()).isEqualTo("Original description");
 
         Awaitility.await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
             StructDef fetched = client.getStructDef(StructDefId.newBuilder()
                     .setName(structDefName)
-                    .setVersion(0)
+                    .setVersion(1)
                     .build());
             assertThat(fetched.getDescription()).isEqualTo("Updated description");
         });
