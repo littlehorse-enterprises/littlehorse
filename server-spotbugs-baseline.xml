@@ -10640,32 +10640,6 @@
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.LOCAL_NAME" value="trailer"/>
     <Property name="edu.umd.cs.findbugs.detect.DeadLocalStoreProperty.NO_LOADS" value="true"/>
   </BugInstance>
-  <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" instanceHash="c22ef5474d8312d423a0012b0867ce85" instanceOccurrenceNum="0" instanceOccurrenceMax="0" cweid="374">
-    <ShortMessage>May expose internal representation by incorporating reference to mutable object</ShortMessage>
-    <LongMessage>io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.bindTo(MeterRegistry) may expose internal representation by storing an externally mutable object into CommandProcessorMetrics.registry</LongMessage>
-    <Class classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" primary="true">
-      <SourceLine classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" start="12" end="79" sourcefile="CommandProcessorMetrics.java" sourcepath="io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java" relSourcepath="src/main/java/io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java">
-        <Message>At CommandProcessorMetrics.java:[lines 12-79]</Message>
-      </SourceLine>
-      <Message>In class io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics</Message>
-    </Class>
-    <Method classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" name="bindTo" signature="(Lio/micrometer/core/instrument/MeterRegistry;)V" isStatic="false" primary="true">
-      <SourceLine classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" start="25" end="40" startBytecode="0" endBytecode="315" sourcefile="CommandProcessorMetrics.java" sourcepath="io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java" relSourcepath="src/main/java/io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java"/>
-      <Message>In method io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.bindTo(MeterRegistry)</Message>
-    </Method>
-    <Field classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" name="registry" signature="Lio/micrometer/core/instrument/MeterRegistry;" isStatic="false" primary="true">
-      <SourceLine classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" sourcefile="CommandProcessorMetrics.java" sourcepath="io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java" relSourcepath="src/main/java/io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java">
-        <Message>In CommandProcessorMetrics.java</Message>
-      </SourceLine>
-      <Message>Field io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics.registry</Message>
-    </Field>
-    <LocalVariable name="registry" register="1" pc="2" role="LOCAL_VARIABLE_NAMED">
-      <Message>Local variable named registry</Message>
-    </LocalVariable>
-    <SourceLine classname="io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics" primary="true" start="25" end="25" startBytecode="2" endBytecode="2" sourcefile="CommandProcessorMetrics.java" sourcepath="io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java" relSourcepath="src/main/java/io/littlehorse/server/monitoring/metrics/CommandProcessorMetrics.java">
-      <Message>At CommandProcessorMetrics.java:[line 25]</Message>
-    </SourceLine>
-  </BugInstance>
   <BugInstance type="EI_EXPOSE_REP2" priority="2" rank="18" abbrev="EI2" category="MALICIOUS_CODE" instanceHash="38d81174438b0fb687dca4137c539659" instanceOccurrenceNum="0" instanceOccurrenceMax="0" cweid="374">
     <ShortMessage>May expose internal representation by incorporating reference to mutable object</ShortMessage>
     <LongMessage>new io.littlehorse.server.monitoring.metrics.InstanceState(KafkaStreams, BackendInternalComms) may expose internal representation by storing an externally mutable object into InstanceState.streams</LongMessage>
