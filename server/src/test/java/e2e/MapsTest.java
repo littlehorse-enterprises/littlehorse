@@ -470,8 +470,6 @@ public class MapsTest {
             WfRunVariable found = thread.declareBool("found");
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
             found.assign(mapVar.doesContain("hello"));
         });
     }
@@ -482,8 +480,6 @@ public class MapsTest {
             WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
             // Put a new entry: "new-key" -> 99
             mapVar.assign(mapVar.extend(thread.execute("produce-single-entry-map")));
         });
@@ -495,8 +491,6 @@ public class MapsTest {
             WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
             mapVar.assign(mapVar.removeKey("hello"));
         });
     }
@@ -530,8 +524,6 @@ public class MapsTest {
             WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
             // Merge in a full map: replaces "hello" and appends "brand-new".
             mapVar.assign(mapVar.extend(thread.execute("produce-overlapping-map")));
         });
