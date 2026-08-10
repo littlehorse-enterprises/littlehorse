@@ -24,7 +24,11 @@ COPY ./docker/standalone/kafka-entrypoint.sh /lh
 COPY ./docker/standalone/littlehorse-entrypoint.sh /lh
 COPY ./docker/standalone/dashboard-entrypoint.sh /lh
 COPY ./docker/standalone/docker-entrypoint.sh /lh
-COPY ./dashboard/.next/standalone /lh/dashboard
+# `outputFileTracingRoot` is the repository root, so the standalone build is emitted as
+# `.next/standalone/{dashboard,sdk-js}/` rather than flat. Copy it to /lh to keep that
+# shape -- the traced paths inside server.js are relative to it -- which lands the real
+# entrypoint at the /lh/dashboard/server.js that dashboard-entrypoint.sh already runs.
+COPY ./dashboard/.next/standalone /lh
 COPY ./dashboard/.next/static /lh/dashboard/.next/static
 COPY ./server/build/install/server/lib /lh/lib
 COPY ./server/build/install/server/server /lh/bin

@@ -1,9 +1,10 @@
 import { getToken } from 'next-auth/jwt'
 import nextAuth from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import type { NextRequestWithAuth } from 'next-auth/middleware'
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server'
 
-const withoutAuth = () => {
-  NextResponse.next()
+const withoutAuth = (_req: NextRequest, _event: NextFetchEvent) => {
+  return NextResponse.next()
 }
 
 const withAuth = nextAuth(async req => {
@@ -33,4 +34,11 @@ const withAuth = nextAuth(async req => {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|images|favicon.ico).*)'],
 }
-export default process.env.LHD_OAUTH_ENABLED === 'true' ? withAuth : withoutAuth
+
+export function proxy(req: NextRequest, event: NextFetchEvent) {
+  if (process.env.LHD_OAUTH_ENABLED === 'true') {
+    return withAuth(req as NextRequestWithAuth, event)
+  }
+
+  return withoutAuth(req, event)
+}
