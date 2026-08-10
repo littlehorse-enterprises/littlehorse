@@ -109,7 +109,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
   }
 
   if (definedType.oneofKind === 'primitiveType') {
-    const { type, component } = VariableTypeToFieldComponent[definedType.primitiveType]
+    const { type, inputMode, validate, component } = VariableTypeToFieldComponent[definedType.primitiveType]
 
     return (
       <FormField
@@ -117,6 +117,8 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         as={component}
         id={name}
         type={type}
+        inputMode={inputMode}
+        validate={validate}
         protoRequired={variable.required}
         accessLevel={variable.accessLevel}
         variableType={definedType.primitiveType}
