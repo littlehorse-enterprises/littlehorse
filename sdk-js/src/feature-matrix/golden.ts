@@ -1,3 +1,4 @@
+import { expect } from '@jest/globals'
 import * as fs from 'fs'
 import * as path from 'path'
 import { PutWfSpecRequest } from '../proto/service'

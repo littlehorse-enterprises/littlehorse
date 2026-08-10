@@ -1,3 +1,5 @@
+import { describe, expect, test } from '@jest/globals'
+import type { JsonValue } from '@protobuf-ts/runtime'
 import * as fs from 'fs'
 import * as path from 'path'
 import { VariableValue } from '../proto/type_definition'
@@ -44,10 +46,10 @@ const fixture: SerdeFixture = JSON.parse(
 )
 
 /** The Java-produced encoding for a fixture label, as proto JSON. */
-function javaEncoding(label: string): Record<string, unknown> {
+function javaEncoding(label: string): JsonValue {
   const entry = fixture.values.find(v => v.label === label)
   if (entry === undefined) throw new Error(`No fixture case labelled '${label}'`)
-  return entry.encoded
+  return entry.encoded as JsonValue
 }
 
 /** Asserts our encoding of `value` matches Java's for that fixture label. */
@@ -126,18 +128,21 @@ describe('common', () => {
             structDefId: { name: 'customer-struct', version: 0 },
             struct: {
               fields: {
-                name: { value: { value: { oneofKind: 'str', str: 'Ada' } } },
-                age: { value: { value: { oneofKind: 'int', int: '36' } } },
+                name: { value: { value: { oneofKind: 'str', str: 'Ada' } }, masked: false },
+                age: { value: { value: { oneofKind: 'int', int: '36' } }, masked: false },
                 address: {
                   value: {
                     value: {
                       oneofKind: 'struct',
                       struct: {
                         structDefId: { name: 'address-struct', version: 0 },
-                        struct: { fields: { city: { value: { value: { oneofKind: 'str', str: 'London' } } } } },
+                        struct: {
+                          fields: { city: { value: { value: { oneofKind: 'str', str: 'London' } }, masked: false } },
+                        },
                       },
                     },
                   },
+                  masked: false,
                 },
               },
             },

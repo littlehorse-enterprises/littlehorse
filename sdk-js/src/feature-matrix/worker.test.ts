@@ -1,7 +1,9 @@
+import { afterEach, describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
 import { LHConfig } from '../LHConfig'
 import { LHErrorType, TaskStatus, VariableType } from '../proto/common_enums'
 import { ReportTaskRun, ScheduledTask } from '../proto/service'
+import { VarNameAndVal } from '../proto/task_run'
 import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { VariableValue } from '../proto/type_definition'
 import {
@@ -66,8 +68,8 @@ function primitiveTypeDef(type: VariableType): TypeDefinition {
   return TypeDefinition.create({ definedType: { oneofKind: 'primitiveType', primitiveType: type } })
 }
 
-function varVal(value: VariableValue['value']): { varName: string; value: VariableValue } {
-  return { varName: 'arg', value: { value } }
+function varVal(value: VariableValue['value']): VarNameAndVal {
+  return { varName: 'arg', value: { value }, masked: false }
 }
 
 /** Runs one task through a real worker and returns what the server received. */
@@ -215,8 +217,8 @@ describe('worker', () => {
                 structDefId: { name: 'person', version: 0 },
                 struct: {
                   fields: {
-                    name: { value: { value: { oneofKind: 'str', str: 'Ada' } } },
-                    age: { value: { value: { oneofKind: 'int', int: '36' } } },
+                    name: { value: { value: { oneofKind: 'str', str: 'Ada' } }, masked: false },
+                    age: { value: { value: { oneofKind: 'int', int: '36' } }, masked: false },
                   },
                 },
               },

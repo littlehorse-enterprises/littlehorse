@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import { mkdtempSync, readFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
@@ -698,7 +699,7 @@ describe('wfsdk', () => {
     })
 
     test('configure correlated event behavior — Java: ExternalEventNodeOutput#withCorrelatedEventConfig', () => {
-      const explicit = CorrelatedEventConfig.create({ ttl: { secondsAfterCompletion: '600' } })
+      const explicit = CorrelatedEventConfig.create({ ttlSeconds: '600' })
       const wf = Workflow.newWorkflow('correlated-cfg', t => {
         const orderId = t.declareStr('order-id')
         t.waitForEvent('shipped')

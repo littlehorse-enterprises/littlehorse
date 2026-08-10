@@ -1,3 +1,4 @@
+import { beforeAll, describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
 import type { LHPublicClient } from '../client'
 import { StructDefCompatibilityType } from '../proto/service'

@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
 import { LHConfig } from '../LHConfig'
 import { VariableType } from '../proto/common_enums'

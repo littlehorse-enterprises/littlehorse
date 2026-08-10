@@ -482,7 +482,9 @@ export function createTaskWorker(
   async function heartbeat(): Promise<void> {
     try {
       const accessToken = await currentAccessToken()
-      const response = await (await bootstrap()).registerTaskWorker({
+      const response = await (
+        await bootstrap()
+      ).registerTaskWorker({
         taskWorkerId,
         taskDefId: { name: taskDefName },
       })
@@ -557,7 +559,9 @@ export function createTaskWorker(
 
     async registerTaskDef(): Promise<void> {
       try {
-        const result = await (await bootstrap()).putTaskDef({
+        const result = await (
+          await bootstrap()
+        ).putTaskDef({
           name: taskDefName,
           inputVars,
         })
@@ -636,7 +640,9 @@ export function createTaskWorker(
       // registering it — Java: LHTaskWorker#validateStructDef(s).
       for (const schema of schemas) {
         const request = buildPutStructDefRequest(schema, compatibilityType)
-        const response = await (await bootstrap()).validateStructDefEvolution({
+        const response = await (
+          await bootstrap()
+        ).validateStructDefEvolution({
           structDefId: { name: request.name, version: 0 },
           structDef: request.structDef,
           compatibilityType,

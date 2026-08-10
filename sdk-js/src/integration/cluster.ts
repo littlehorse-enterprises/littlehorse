@@ -17,8 +17,7 @@ import { allocatePort } from './container'
  */
 
 const KAFKA_IMAGE = process.env.LH_IT_KAFKA_IMAGE ?? 'apache/kafka:4.1.0'
-const LH_SERVER_IMAGE =
-  process.env.LH_IT_SERVER_IMAGE ?? 'ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master'
+const LH_SERVER_IMAGE = process.env.LH_IT_SERVER_IMAGE ?? 'ghcr.io/littlehorse-enterprises/littlehorse/lh-server:master'
 
 export interface ClusterNode {
   container: StartedTestContainer

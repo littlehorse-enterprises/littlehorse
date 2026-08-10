@@ -1,3 +1,4 @@
+import { afterAll, beforeAll, describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
 import type { LHPublicClient } from '../client'
 import { Comparator, TypeDefinition } from '../proto/type_definition'
@@ -362,9 +363,8 @@ describe('workflow constructs execute', () => {
       // The run parks on the user task until a human acts.
       expect(LHStatus[(await client.getWfRun(wfRun.id!)).status]).not.toBe('COMPLETED')
 
-      // wfRunId alone is not a valid search criterion; the server requires
-      // one of status/user_id/user_group/user_task_def_name.
-      const userTasks = await client.searchUserTaskRun({ userTaskDefName: formName, wfRunId: wfRun.id })
+      // Search by task def and assignee; the API has no wfRunId filter.
+      const userTasks = await client.searchUserTaskRun({ userTaskDefName: formName, userId: 'alice' })
       expect(userTasks.results.length).toBeGreaterThan(0)
 
       await client.completeUserTaskRun({
