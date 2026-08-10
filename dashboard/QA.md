@@ -71,15 +71,55 @@ Add `[skip test]` to a commit message only for docs-only changes.
 - [ ] No new `data-testid` churn where a text/role selector would do.
 - [ ] Fixtures changes are deterministic (no timing/ordering assumptions).
 
-## When manual QA is still required
+## Manual release QA
 
-Automated tests cover the deterministic paths. Do a manual pass for:
+Automated tests cover the deterministic paths. Before a release (or release candidate),
+one person runs the checklist below by hand — it covers what automation can't judge yet:
+visual quality, auth, performance under real data, and the shipped production image.
+During normal development, a manual pass is also expected the first time a brand-new page
+or interaction lands, before its E2E tests exist.
 
-- **Auth / OAuth (Keycloak) flows** — not yet in the E2E suite.
-- **Visual / layout / responsive** polish — until visual snapshots land (see below).
-- **Large / real-world data** — performance and virtualization with big WfSpecs and
-  high-volume WfRun lists.
-- **A brand-new page or interaction** the first time, before writing its E2E test.
+**Setup.** Run against the bits that will actually ship:
+
+```bash
+cd dashboard
+pnpm e2e:up                    # LittleHorse server + seeded fixtures on :2023
+docker build -t dash-rc .      # the production image (output: standalone)
+docker run --rm -p 3000:3000 -e LHC_API_HOST=host.docker.internal -e LHC_API_PORT=2023 dash-rc
+```
+
+Using the production image matters: the E2E suite currently runs against `next dev`, so
+the standalone build path is only exercised here.
+
+**Checklist.** Mark each item; a failure blocks the release until triaged.
+
+*Core flows (against the seeded fixtures):*
+- [ ] Metadata search lists the fixture WfSpecs; search-as-you-type narrows; pagination works.
+- [ ] `dashe2e-conditionals` WfSpec page: diagram lays out sanely, condition/else labels and
+      the mutation icon look right (not just present — readable, positioned, styled).
+- [ ] `dashe2e-basic-completed` WfRun: click through **every** sidebar tab (Overview / Node /
+      NodeRun); switch between NodeRuns and confirm no stale data or crash.
+- [ ] Execute WfRun modal: run `dashe2e-conditionals` filling **only required** fields, then
+      again including **optional** fields — confirm optional values actually reach the run
+      (regression area: optional variables were silently dropped in v1.2.0).
+- [ ] User task flow on `dashe2e-usertask-running`: assign/claim/complete via the UI.
+- [ ] Leave a WfRun page open >30s: polling refreshes data **without** clearing the selected
+      node or scroll position.
+- [ ] Copy buttons appear and work (requires localhost/HTTPS secure context).
+
+*Judgment areas (no automation):*
+- [ ] **Auth**: with Keycloak enabled (`LHD_OAUTH_ENABLED=true` + local Keycloak), login,
+      tenant selection, and logout all work; deep links redirect through auth correctly.
+- [ ] **Visual pass**: key pages at desktop and ~1280px width, light theme — no overflow,
+      truncation, or misaligned layout. Zoom the diagram in/out.
+- [ ] **Large data**: open a WfSpec with 50+ nodes and a WfRun with large variable values
+      (oversized JSON) — diagram stays responsive, large values expand into the modal
+      instead of breaking the sidebar.
+- [ ] **Second browser**: repeat 2–3 core flows in one non-Chromium browser (Safari or
+      Firefox) until the E2E browser matrix exists.
+
+*Sign-off:* record date, commit SHA, server image tag, and who ran it in the release notes
+or tracking issue.
 
 ## Flake policy
 

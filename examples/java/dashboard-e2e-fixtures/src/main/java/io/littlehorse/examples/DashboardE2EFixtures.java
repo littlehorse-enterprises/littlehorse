@@ -13,7 +13,6 @@ import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
@@ -97,8 +96,16 @@ public class DashboardE2EFixtures {
         workerThread.start();
 
         run(client, "dashe2e-basic", "dashe2e-basic-completed", Map.of("name", "Ada Lovelace"));
-        run(client, "dashe2e-conditionals", "dashe2e-cond-hi", Map.of("count", 42, "ratio", 3.14, "enabled", true, "label", "hello"));
-        run(client, "dashe2e-conditionals", "dashe2e-cond-lo", Map.of("count", 3, "ratio", 0.5, "enabled", false, "label", "world"));
+        run(
+                client,
+                "dashe2e-conditionals",
+                "dashe2e-cond-hi",
+                Map.of("count", 42, "ratio", 3.14, "enabled", true, "label", "hello"));
+        run(
+                client,
+                "dashe2e-conditionals",
+                "dashe2e-cond-lo",
+                Map.of("count", 3, "ratio", 0.5, "enabled", false, "label", "world"));
         run(client, "dashe2e-usertask", "dashe2e-usertask-running", Map.of("assignee", "ada"));
 
         // Wait for the runs that should reach a terminal state (the user-task run stays RUNNING).
@@ -113,7 +120,8 @@ public class DashboardE2EFixtures {
     }
 
     private static void run(LittleHorseBlockingStub client, String wfSpec, String id, Map<String, Object> vars) {
-        RunWfRequest.Builder req = RunWfRequest.newBuilder().setWfSpecName(wfSpec).setId(id);
+        RunWfRequest.Builder req =
+                RunWfRequest.newBuilder().setWfSpecName(wfSpec).setId(id);
         vars.forEach((k, v) -> req.putVariables(k, LHLibUtil.objToVarVal(v)));
         try {
             client.runWf(req.build());
@@ -124,7 +132,8 @@ public class DashboardE2EFixtures {
         }
     }
 
-    private static void awaitStatus(LittleHorseBlockingStub client, String id, LHStatus expected) throws InterruptedException {
+    private static void awaitStatus(LittleHorseBlockingStub client, String id, LHStatus expected)
+            throws InterruptedException {
         WfRunId wfRunId = WfRunId.newBuilder().setId(id).build();
         for (int i = 0; i < 60; i++) {
             LHStatus status = client.getWfRun(wfRunId).getStatus();
