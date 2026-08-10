@@ -1,10 +1,16 @@
 package io.littlehorse.sdk.worker.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -12,7 +18,11 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHType;
+import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.internal.util.VariableMapping;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -53,6 +63,10 @@ public class ScheduledTaskExecutorTest {
                                     .setValue(VariableValue.newBuilder().setStr("Leia"))
                                     .build())
                     .build();
+        }
+
+        public String primitiveInput(long value) {
+            return "value:" + value;
         }
     }
 
@@ -152,6 +166,30 @@ public class ScheduledTaskExecutorTest {
                         .getValue()
                         .getStr())
                 .isEqualTo("Leia");
+    }
+
+    @Test
+    void shouldFailFastWhenPrimitiveParamReceivesNullDuringInvoke() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method invokeMethod = ScheduledTaskExecutor.class.getDeclaredMethod(
+                "invoke", ScheduledTask.class, WorkerContext.class, List.class, Object.class, Method.class);
+        invokeMethod.setAccessible(true);
+
+        Method taskMethod = ReturnTasks.class.getMethod("primitiveInput", long.class);
+        VariableMapping mapping = mock(VariableMapping.class);
+        when(mapping.assign(any())).thenReturn(null);
+
+        assertThatThrownBy(() -> invokeMethod.invoke(
+                        executor,
+                        ScheduledTask.newBuilder().build(),
+                        null,
+                        List.of(mapping),
+                        new ReturnTasks(),
+                        taskMethod))
+                .isInstanceOf(InvocationTargetException.class)
+                .cause()
+                .isInstanceOf(InputVarSubstitutionException.class)
+                .hasMessageContaining("Primitive parameters cannot accept null");
     }
 
     private static TaskDef taskDefWithStructReturn(String structDefName) {
