@@ -12,7 +12,7 @@ context to start contributing cold.
 cd sdk-js && npx jest src/feature-matrix
 ```
 
-Passed = done, todo = missing, failed = broken. That output *is* the feature
+Passed = done, todo = missing, failed = broken. That output _is_ the feature
 matrix (see below). Snapshot as of 2026-07-28: **191 of 191 entries pass —
 100% of the enumerated Java surface**, plus 61 supporting tests and 45 of 51
 integration checks against a real server (`npm run test:integration`).
@@ -33,7 +33,7 @@ A LittleHorse SDK is three distinct components on top of the shared gRPC API:
    `grpcRetry`).
 2. **Workflow SDK (wfsdk)** — the DSL where users define workflows
    (`wf.execute(...)`, `wf.doIf(...)`). Key mental model: this code never
-   *runs* a workflow — it runs once, at registration time, to **compile** a
+   _runs_ a workflow — it runs once, at registration time, to **compile** a
    graph into a `PutWfSpecRequest` proto that the server executes. The wfsdk is
    a compiler from the host language into a proto spec. It was entirely
    missing from sdk-js when this effort started; the port now lives in
@@ -53,29 +53,29 @@ conversion) and `usertask/` helpers.
 
 ## Where everything lives
 
-| Path | What it is |
-|---|---|
-| `sdk-js/src/feature-matrix/*.test.ts` | The feature matrix: one test/`test.todo` per Java SDK capability, by area |
-| `sdk-js/src/feature-matrix/golden.ts` | `loadGolden` / `expectMatchesGolden` helpers |
-| `sdk-js/src/feature-matrix/referenceWorkflows.ts` | TS twins of the Java reference workflows |
-| `sdk-js/src/feature-matrix/wfsdk-golden.test.ts` | Conformance: every TS twin must compile to its golden |
-| `sdk-js/src/feature-matrix/fakeServer.ts` | In-process gRPC server used by the worker tests |
-| `sdk-js/src/integration/` | Tier-2 tests against a real `lh-standalone` (`npm run test:integration`) |
-| `sdk-js/src/wfsdk/` | The wfsdk port (Track A) |
-| `sdk-js/golden/*.json` | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
-| `sdk-js/golden/generator/` | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens |
-| `sdk-java/src/main/java/io/littlehorse/sdk/` | The reference implementation being ported |
+| Path                                              | What it is                                                                      |
+| ------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `sdk-js/src/feature-matrix/*.test.ts`             | The feature matrix: one test/`test.todo` per Java SDK capability, by area       |
+| `sdk-js/src/feature-matrix/golden.ts`             | `loadGolden` / `expectMatchesGolden` helpers                                    |
+| `sdk-js/src/feature-matrix/referenceWorkflows.ts` | TS twins of the Java reference workflows                                        |
+| `sdk-js/src/feature-matrix/wfsdk-golden.test.ts`  | Conformance: every TS twin must compile to its golden                           |
+| `sdk-js/src/feature-matrix/fakeServer.ts`         | In-process gRPC server used by the worker tests                                 |
+| `sdk-js/src/integration/`                         | Tier-2 tests against a real `lh-standalone` (`npm run test:integration`)        |
+| `sdk-js/src/wfsdk/`                               | The wfsdk port (Track A)                                                        |
+| `sdk-js/golden/*.json`                            | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
+| `sdk-js/golden/generator/`                        | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens         |
+| `sdk-java/src/main/java/io/littlehorse/sdk/`      | The reference implementation being ported                                       |
 
 ## Core principles
 
 - **The proto contract is the real gold standard, not the Java source.** All
   SDKs compile to the same protobufs and talk to the same server. The Java
-  source tells us *what* features exist and their edge-case semantics; the
-  protos define *correct*.
+  source tells us _what_ features exist and their edge-case semantics; the
+  protos define _correct_.
 - **Port semantics, not code.** Java idioms (annotation scanning, overloading,
   thread pools) must not be transliterated. The JS SDK should be idiomatic
   TypeScript (plain functions, options objects, event-loop async) that
-  preserves the same *protocol behavior*. The worker internals in particular
+  preserves the same _protocol behavior_. The worker internals in particular
   need a genuinely different async design, not a translation of
   `PollThread`.
 - **A feature is done only when a test proves it.** Nothing gets marked
@@ -92,7 +92,7 @@ it cannot rot out of sync:
   (`— Java: Class#method`).
 - Porting a feature means converting its `test.todo` into a real test **in
   the same change as the implementation**.
-- Running the suite *is* the matrix: **passed = done, todo = missing,
+- Running the suite _is_ the matrix: **passed = done, todo = missing,
   failed = broken.**
 - Never delete an entry; a removed todo must show up in a diff with a stated
   reason (e.g. genuinely not applicable to JS).
@@ -158,8 +158,9 @@ regressions (50x), not to win.
    The two benchmark entries measure absolute floors against the fake server
    rather than comparing to a live Java worker — running sdk-java inside this
    suite was judged not worth the coupling. They catch order-of-magnitude
-   regressions, which is what the plan asks of them, but they are *not* a
+   regressions, which is what the plan asks of them, but they are _not_ a
    cross-SDK comparison.
+
 6. OAuth (client-credentials, refresh, `isOauth`). **Done** —
    `src/common/oauth.ts` fetches a token with HTTP Basic + the
    `client_credentials` grant, caches it, refreshes inside a configurable skew
@@ -191,11 +192,11 @@ timeout — teardown never fires and Testcontainers' Ryuk reaper removes the
 container instead (verified: reaped ~15s after a SIGKILL). Roughly 25s per
 run, most of it server boot. Env overrides:
 
-| Variable | Effect |
-|---|---|
+| Variable                    | Effect                                                     |
+| --------------------------- | ---------------------------------------------------------- |
 | `LH_IT_HOST` / `LH_IT_PORT` | Use a server you manage; no container started (~3.5s runs) |
-| `LH_IT_KEEP=1` | Leave the container up after the run, for debugging |
-| `LH_IT_IMAGE` | Test against a different image |
+| `LH_IT_KEEP=1`              | Leave the container up after the run, for debugging        |
+| `LH_IT_IMAGE`               | Test against a different image                             |
 
 `npm run test:integration:core` skips the three infrastructure-heavy suites
 (`cluster`, `tls`, `oauth`) for a fast inner loop. They dominate the runtime:
@@ -206,15 +207,15 @@ before it serves, and each of those suites builds its own. The full run is
 Seven suites, and like the feature matrix they are **enumerated** so "are we
 missing a test?" has an answer rather than a shrug:
 
-| Suite | Proves | Infra |
-|---|---|---|
-| `wfspec-acceptance` | the server accepts every reference workflow, and rejects an invalid one | shared standalone |
-| `execution` | real WfRuns driven by JS workers produce the right status and variable values | shared standalone |
-| `workflow-constructs` | **each wfsdk construct actually executes** — enumerated from the methods on `WorkflowThread` that produce runtime behavior | shared standalone |
-| `worker-runtime` | **behavior only the server can drive** — retries, timeouts, multi-worker sharing, checkpoint replay | shared standalone |
-| `cluster` | host discovery and **rebalancing**, which a single node cannot exhibit | own Kafka + N `lh-server` |
-| `tls` | a real TLS handshake, not just the credentials we build for one | own node + generated cert |
-| `oauth` | a real issuer mints the token and the server validates it by introspection | own node + Keycloak |
+| Suite                 | Proves                                                                                                                     | Infra                     |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `wfspec-acceptance`   | the server accepts every reference workflow, and rejects an invalid one                                                    | shared standalone         |
+| `execution`           | real WfRuns driven by JS workers produce the right status and variable values                                              | shared standalone         |
+| `workflow-constructs` | **each wfsdk construct actually executes** — enumerated from the methods on `WorkflowThread` that produce runtime behavior | shared standalone         |
+| `worker-runtime`      | **behavior only the server can drive** — retries, timeouts, multi-worker sharing, checkpoint replay                        | shared standalone         |
+| `cluster`             | host discovery and **rebalancing**, which a single node cannot exhibit                                                     | own Kafka + N `lh-server` |
+| `tls`                 | a real TLS handshake, not just the credentials we build for one                                                            | own node + generated cert |
+| `oauth`               | a real issuer mints the token and the server validates it by introspection                                                 | own node + Keycloak       |
 
 `workflow-constructs` and `worker-runtime` exist because acceptance is not
 execution: a spec can be valid and still behave wrong. The
@@ -227,7 +228,7 @@ The last three build their own infrastructure (`cluster.ts`) because
 clusters, so rebalancing is not observable there at all, and its listener is
 fixed to plaintext with no authentication.
 
-The suite is hermetic — a fresh container *and* a fresh tenant per run — which
+The suite is hermetic — a fresh container _and_ a fresh tenant per run — which
 is deliberate: a warm server can pass tests a cold one fails, and this suite
 has done exactly that.
 
@@ -257,9 +258,9 @@ failure first:
   TaskRun on the mismatch rather than coercing — use `lhStruct()` on both
   sides.
 - **A node that dies keeps being advertised in `yourHosts` for 54s+**, because
-  membership expires on a Kafka session timeout. A node that *joins* appears
+  membership expires on a Kafka session timeout. A node that _joins_ appears
   in ~3s. So rebalance-on-join is a fast assertion; node loss can only be
-  tested as *recovery*, since RPCs genuinely fail while partitions reassign.
+  tested as _recovery_, since RPCs genuinely fail while partitions reassign.
 - **An OAuth issuer must have one canonical issuer URL.** Both Keycloak and
   mock-oauth2-server otherwise derive it from each request's `Host`, so a
   token minted by the client via `localhost` is rejected when the server
@@ -295,32 +296,32 @@ tests drive it to script scenarios that are otherwise hard to produce:
 delivering tasks to a long poll, reassigning hosts mid-run, breaking a poll
 stream with UNAVAILABLE, failing the first N `ReportTask` calls.
 
-**What it proves:** what the *client* does. **What it does not prove:** that
+**What it proves:** what the _client_ does. **What it does not prove:** that
 the real server agrees. Tier-2 integration tests against `lh-standalone` are
 still todo and are not replaced by this.
 
 Two notes for anyone extending it: `PollTask` is a long poll, so a request
 parks until work exists (replying empty would deadlock the worker, which only
-re-asks after a response); and breaking a stream requires *emitting* an error
+re-asks after a response); and breaking a stream requires _emitting_ an error
 — `destroy()` alone never reaches the client.
 
 ### Resolved: type adapters
 
 Previously parked. Resolved by building the JS analogue rather than declaring
-it not-applicable: zod describes *schemas*, but not custom class instances,
+it not-applicable: zod describes _schemas_, but not custom class instances,
 which would otherwise fall through to the generic object branch and come back
 as plain JSON. `LHConfig#addTypeAdapter` / `getTypeAdapterRegistry`
 (`src/common/typeAdapters.ts`) close that gap.
 
 One deliberate difference from Java: adapters apply automatically when
-*writing*, but decoding stays with the built-ins unless a caller asks for an
+_writing_, but decoding stays with the built-ins unless a caller asks for an
 adapter by name. An encoded value carries no marker saying which adapter
 produced it, and guessing wrong would silently return the wrong type.
 
 ### Serde: one implementation, checked against Java
 
 `src/common/serde.ts` is the only JS <-> VariableValue conversion in the SDK.
-`golden/fixtures/serde.json` records how the *Java* SDK encodes representative
+`golden/fixtures/serde.json` records how the _Java_ SDK encodes representative
 values, and the common tests assert byte agreement. Two findings came out of
 building it, both invisible to any JS-only test:
 
@@ -380,7 +381,7 @@ extend a reference workflow on both sides and regenerate → implement in
 
 Owns the worker (`src/worker/`), the config/common/usertask areas, and all
 server-facing test infrastructure. **Fully independent of Track A**: worker
-tests don't need the JS wfsdk, because the golden JSONs *are*
+tests don't need the JS wfsdk, because the golden JSONs _are_
 `PutWfSpecRequest` payloads — the integration rig can register them directly
 through the existing JS client (`PutWfSpecRequest.fromJsonString` →
 `putWfSpec`) or `lhctl`, then run workflows against a real server with a JS
@@ -396,7 +397,7 @@ Work items, roughly in order:
 2. **Worker lifecycle parity** — the worker todos (~38). Reference:
    `sdk-java/.../worker/internal/` (connection management across server
    hosts, rebalance protocol, liveness/heartbeats, reconnection). This is a
-   redesign for Node's event loop guided by Java's *protocol behavior* — do
+   redesign for Node's event loop guided by Java's _protocol behavior_ — do
    not transliterate the thread classes.
 3. **Config/common todos** (~30) — mostly unit-testable against `LHConfig`
    and the value-conversion helpers; the Java reference is named in each
