@@ -16,7 +16,11 @@ public class MapWorker {
     }
 
     @LHTaskMethod("consume-value")
-    public String consumeValue(long value) {
+    public String consumeValue(Long value) {
+        if (value == null) {
+            log.info("Value resolved to null");
+            return "value:absent";
+        }
         log.info("Consuming single map value: {}", value);
         return "value:" + value;
     }
