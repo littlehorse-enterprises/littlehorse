@@ -23,7 +23,7 @@ const SearchInput: FC<{
   placeholder: string
 }> = ({ prefix, setPrefix, placeholder }) => {
   const [localValue, setLocalValue] = useState<string>(prefix || '')
-  const timeoutRef = useRef<NodeJS.Timeout>()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     setLocalValue(prefix || '')
