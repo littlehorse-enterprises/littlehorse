@@ -1,3 +1,9 @@
 dist
 node_modules
 src/proto
+
+# Golden fixtures are raw sdk-java generator output — the byte-level oracle the
+# other SDKs are checked against. Formatting them makes the committed files stop
+# matching what the Java generator emits, which silently breaks any drift check
+# (Jest never notices, because loadGolden parses the JSON).
+golden
