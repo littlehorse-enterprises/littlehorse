@@ -16,6 +16,9 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
     return null
   }
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+  if (!nodeRun) {
+    return null
+  }
   const failures = nodeRun.failures
 
   return (
