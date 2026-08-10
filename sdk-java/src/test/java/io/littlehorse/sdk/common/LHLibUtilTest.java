@@ -475,10 +475,8 @@ public class LHLibUtilTest {
         Map<String, Long> items = Map.of("apples", 3L, "bananas", 5L);
 
         InlineMapDef mapType = InlineMapDef.newBuilder()
-                .setKeyType(TypeDefinition.newBuilder()
-                        .setPrimitiveType(VariableType.STR))
-                .setValueType(TypeDefinition.newBuilder()
-                        .setPrimitiveType(VariableType.INT))
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
                 .build();
 
         VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, mapType, LHTypeAdapterRegistry.empty());
