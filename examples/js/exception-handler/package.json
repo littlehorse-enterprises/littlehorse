@@ -1,0 +1,16 @@
+{
+  "name": "example-js-exception-handler",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "npx tsx src/index.ts"
+  },
+  "dependencies": {
+    "littlehorse-client": "file:../../../sdk-js",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}
