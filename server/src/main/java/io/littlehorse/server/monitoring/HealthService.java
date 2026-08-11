@@ -59,12 +59,13 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         this.numberOfPartitionPerTopic = config.partitionsByTopic();
 
         this.coreState = new InstanceState(coreStreams, internalComms);
+
         this.prom.bind(
                 coreStreams,
                 timerStreams,
                 taskQueueManager,
                 metadataCache,
-                new StandbyMetrics(standbyStores, config.getLHInstanceName()),
+                new StandbyMetrics(standbyStores, config.getLHInstanceName(), config.getTotalWriteBufferSize()),
                 coreState,
                 commandProcessorMetrics);
 

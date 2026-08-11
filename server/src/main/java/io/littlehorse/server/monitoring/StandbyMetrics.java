@@ -21,11 +21,14 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
     private MeterRegistry registry;
     private final ScheduledExecutorService mainExecutor;
     private final String instanceId;
+    private final long writeBufferManagerSize;
 
-    public StandbyMetrics(final Map<String, StandbyStoresOnInstance> standbyStores, String instanceId) {
+    public StandbyMetrics(
+            final Map<String, StandbyStoresOnInstance> standbyStores, String instanceId, long writeBufferManagerSize) {
         this.standbyStores = standbyStores;
         mainExecutor = Executors.newSingleThreadScheduledExecutor();
         this.instanceId = instanceId;
+        this.writeBufferManagerSize = writeBufferManagerSize;
     }
 
     @Override
@@ -48,6 +51,16 @@ public final class StandbyMetrics implements MeterBinder, Closeable {
                         .tag(STORE_NAME, storeName)
                         .tag(INSTANCE_ID, instanceId)
                         .register(registry));
+        if (writeBufferManagerSize > 0) {
+            Gauge.builder("kafka.stream.state.buffer.size.occupation.ratio", registry, reg -> {
+                        double total = reg.find("kafka.stream.state.size.all.mem.tables").gauges().stream()
+                                .filter(g -> "core".equals(g.getId().getTag("topology")))
+                                .mapToDouble(Gauge::value)
+                                .sum();
+                        return total / writeBufferManagerSize;
+                    })
+                    .register(registry);
+        }
     }
 
     @Override
