@@ -62,7 +62,9 @@ POLL_TASK_INTERVAL_SECONDS = 5
 GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
 
-def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
+def _resolved_signature(
+    func: Callable[..., Any],
+) -> tuple[inspect.Signature, Optional[Exception]]:
     """Return the signature of *func* with string annotations resolved.
 
     When ``from __future__ import annotations`` is used, all annotations
@@ -76,8 +78,8 @@ def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
     sig = signature(func)
     try:
         hints = get_type_hints(func, include_extras=True)
-    except Exception:
-        return sig
+    except Exception as error:
+        return sig, error
     new_params = []
     for name, param in sig.parameters.items():
         if name in hints and isinstance(param.annotation, str):
@@ -87,7 +89,10 @@ def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
     return_annotation = sig.return_annotation
     if isinstance(sig.return_annotation, str) and "return" in hints:
         return_annotation = hints["return"]
-    return sig.replace(parameters=new_params, return_annotation=return_annotation)
+    return (
+        sig.replace(parameters=new_params, return_annotation=return_annotation),
+        None,
+    )
 
 
 class WorkerContext:
@@ -275,7 +280,9 @@ class LHTask:
         self.task_def = task_def
 
         self._callable = callable
-        self._signature = _resolved_signature(callable)
+        self._signature, self._annotation_resolution_error = _resolved_signature(
+            callable
+        )
 
         self._validate_callable()
         self._validate_match()
@@ -299,6 +306,13 @@ class LHTask:
 
         for task_def_var, callable_param in zip(task_def_input_vars, callable_params):
             anno = callable_param.annotation
+            if isinstance(anno, str):
+                raise TaskSchemaMismatchException(
+                    f"Unable to resolve annotation for parameter '{callable_param.name}': "
+                    f"{anno!r}. Ensure types referenced by `from __future__ import "
+                    f"annotations` or forward references are importable. "
+                    f"Resolution error: {self._annotation_resolution_error}"
+                )
             if get_origin(anno) is Annotated:
                 anno = get_args(anno)[0]
 
@@ -791,7 +805,7 @@ def _create_task_def(
     task: Callable[..., Any], name: str, config: LHConfig, timeout: Optional[int] = None
 ) -> None:
     stub = config.stub()
-    task_signature = _resolved_signature(task)
+    task_signature, _ = _resolved_signature(task)
     input_vars = [
         _to_variable_def(param)
         for param in task_signature.parameters.values()

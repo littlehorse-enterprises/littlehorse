@@ -492,6 +492,53 @@ class TestLHTask(unittest.TestCase):
         }.items():
             test(variable_type, callable_type)
 
+    def test_callable_with_deferred_annotations_matches(self):
+        namespace = {"Any": Any}
+        exec(
+            "from __future__ import annotations\n"
+            "async def my_method(param: dict[str, Any]):\n"
+            "    pass\n",
+            namespace,
+        )
+        task_def = TaskDef(
+            input_vars=[
+                VariableDef(
+                    name="param",
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.JSON_OBJ, masked=False
+                    ),
+                ),
+            ]
+        )
+
+        LHTask(namespace["my_method"], task_def)
+
+    def test_unresolved_annotation_explains_how_to_fix_it(self):
+        namespace = {}
+        exec(
+            "from __future__ import annotations\n"
+            "async def my_method(param: MissingType):\n"
+            "    pass\n",
+            namespace,
+        )
+        task_def = TaskDef(
+            input_vars=[
+                VariableDef(
+                    name="param",
+                    type_def=TypeDefinition(
+                        primitive_type=VariableType.JSON_OBJ, masked=False
+                    ),
+                ),
+            ]
+        )
+
+        with self.assertRaisesRegex(
+            TaskSchemaMismatchException,
+            "Ensure types referenced by `from __future__ import annotations` or "
+            "forward references are importable",
+        ):
+            LHTask(namespace["my_method"], task_def)
+
 
 class TestLHLivenessController(unittest.TestCase):
     def test_keep_running_when_no_failure_detected(self):
