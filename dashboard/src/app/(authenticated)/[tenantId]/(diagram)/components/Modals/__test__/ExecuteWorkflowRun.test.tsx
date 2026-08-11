@@ -146,8 +146,8 @@ describe('ExecuteWorkflowRun variables payload', () => {
     expect((await sentVariables())['greeting'].value).toEqual({ oneofKind: 'str', str: 'howdy' })
   })
 
-  it('still sends a required variable the user leaves blank', async () => {
-    const { fill, submit, sentVariables } = setup([
+  it('blocks submit when a required variable is left blank', async () => {
+    const { fill, submit } = setup([
       primitive('required-str', VariableType.STR, true),
       primitive('required-blank', VariableType.STR, true),
     ])
@@ -155,8 +155,23 @@ describe('ExecuteWorkflowRun variables payload', () => {
     fill('required-str', 'req')
     submit()
 
+    await waitFor(() => expect(document.body.textContent).toContain('required-blank is required'))
+    expect(runWfSpec).not.toHaveBeenCalled()
+  })
+
+  it('sends a required variable the user left at its WfSpec default', async () => {
+    const { fill, submit, sentVariables } = setup([
+      primitive('required-str', VariableType.STR, true),
+      primitive('required-defaulted', VariableType.STR, true, {
+        defaultValue: { value: { oneofKind: 'str', str: 'from-wfspec' } },
+      }),
+    ])
+
+    fill('required-str', 'req')
+    submit()
+
     const variables = await sentVariables()
-    expect(variables['required-blank'].value).toEqual({ oneofKind: 'str', str: '' })
+    expect(variables['required-defaulted'].value).toEqual({ oneofKind: 'str', str: 'from-wfspec' })
   })
 
   it('sends JSON and Map values entered in a textarea', async () => {
