@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for defining metadata on fields and accessors of a StructDef field.
  */
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHStructField {
     /**
