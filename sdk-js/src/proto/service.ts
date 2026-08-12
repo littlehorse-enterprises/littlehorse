@@ -1529,6 +1529,52 @@ export interface ExternalEventDefIdList {
     bookmark?: Uint8Array;
 }
 /**
+ * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+ *
+ * @generated from protobuf message littlehorse.SearchWorkflowMigrationPlanRequest
+ */
+export interface SearchWorkflowMigrationPlanRequest {
+    /**
+     * Bookmark for cursor-based pagination; pass if applicable.
+     *
+     * @generated from protobuf field: optional bytes bookmark = 1
+     */
+    bookmark?: Uint8Array;
+    /**
+     * Maximum results to return in one request.
+     *
+     * @generated from protobuf field: optional int32 limit = 2
+     */
+    limit?: number;
+    /**
+     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     *
+     * @generated from protobuf field: optional string prefix = 3
+     */
+    prefix?: string;
+}
+/**
+ * EXPERIMENTAL: List of WorkflowMigrationPlan Id's.
+ *
+ * @generated from protobuf message littlehorse.WorkflowMigrationPlanIdList
+ */
+export interface WorkflowMigrationPlanIdList {
+    /**
+     * The resulting object id's.
+     *
+     * @generated from protobuf field: repeated littlehorse.WorkflowMigrationPlanId results = 1
+     */
+    results: WorkflowMigrationPlanId[];
+    /**
+     * The bookmark can be used for cursor-based pagination. If it is null, the server
+     * has returned all results. If it is set, you can pass it into your next request
+     * to resume searching where your previous request left off.
+     *
+     * @generated from protobuf field: optional bytes bookmark = 2
+     */
+    bookmark?: Uint8Array;
+}
+/**
  * Search for WorkflowEventDefs based on certain criteria.
  *
  * @generated from protobuf message littlehorse.SearchWorkflowEventDefRequest
@@ -6290,6 +6336,120 @@ class ExternalEventDefIdList$Type extends MessageType<ExternalEventDefIdList> {
  */
 export const ExternalEventDefIdList = new ExternalEventDefIdList$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class SearchWorkflowMigrationPlanRequest$Type extends MessageType<SearchWorkflowMigrationPlanRequest> {
+    constructor() {
+        super("littlehorse.SearchWorkflowMigrationPlanRequest", [
+            { no: 1, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
+            { no: 2, name: "limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "prefix", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SearchWorkflowMigrationPlanRequest>): SearchWorkflowMigrationPlanRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<SearchWorkflowMigrationPlanRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SearchWorkflowMigrationPlanRequest): SearchWorkflowMigrationPlanRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* optional bytes bookmark */ 1:
+                    message.bookmark = reader.bytes();
+                    break;
+                case /* optional int32 limit */ 2:
+                    message.limit = reader.int32();
+                    break;
+                case /* optional string prefix */ 3:
+                    message.prefix = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SearchWorkflowMigrationPlanRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* optional bytes bookmark = 1; */
+        if (message.bookmark !== undefined)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.bookmark);
+        /* optional int32 limit = 2; */
+        if (message.limit !== undefined)
+            writer.tag(2, WireType.Varint).int32(message.limit);
+        /* optional string prefix = 3; */
+        if (message.prefix !== undefined)
+            writer.tag(3, WireType.LengthDelimited).string(message.prefix);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.SearchWorkflowMigrationPlanRequest
+ */
+export const SearchWorkflowMigrationPlanRequest = new SearchWorkflowMigrationPlanRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class WorkflowMigrationPlanIdList$Type extends MessageType<WorkflowMigrationPlanIdList> {
+    constructor() {
+        super("littlehorse.WorkflowMigrationPlanIdList", [
+            { no: 1, name: "results", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => WorkflowMigrationPlanId },
+            { no: 2, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<WorkflowMigrationPlanIdList>): WorkflowMigrationPlanIdList {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.results = [];
+        if (value !== undefined)
+            reflectionMergePartial<WorkflowMigrationPlanIdList>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: WorkflowMigrationPlanIdList): WorkflowMigrationPlanIdList {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated littlehorse.WorkflowMigrationPlanId results */ 1:
+                    message.results.push(WorkflowMigrationPlanId.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* optional bytes bookmark */ 2:
+                    message.bookmark = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: WorkflowMigrationPlanIdList, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated littlehorse.WorkflowMigrationPlanId results = 1; */
+        for (let i = 0; i < message.results.length; i++)
+            WorkflowMigrationPlanId.internalBinaryWrite(message.results[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional bytes bookmark = 2; */
+        if (message.bookmark !== undefined)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.bookmark);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.WorkflowMigrationPlanIdList
+ */
+export const WorkflowMigrationPlanIdList = new WorkflowMigrationPlanIdList$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class SearchWorkflowEventDefRequest$Type extends MessageType<SearchWorkflowEventDefRequest> {
     constructor() {
         super("littlehorse.SearchWorkflowEventDefRequest", [
@@ -9653,6 +9813,7 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "GetWorkflowMigrationPlan", options: {}, I: WorkflowMigrationPlanId, O: WorkflowMigrationPlan },
     { name: "DeleteWorkflowMigrationPlan", options: {}, I: DeleteWorkflowMigrationPlanRequest, O: Empty },
     { name: "ApplyWorkflowMigrationPlan", options: {}, I: ApplyWorkflowMigrationPlanRequest, O: WfRun },
+    { name: "SearchWorkflowMigrationPlan", options: {}, I: SearchWorkflowMigrationPlanRequest, O: WorkflowMigrationPlanIdList },
     { name: "SearchCorrelatedEvent", options: {}, I: SearchCorrelatedEventRequest, O: CorrelatedEventIdList },
     { name: "SearchNodeRun", options: {}, I: SearchNodeRunRequest, O: NodeRunIdList },
     { name: "SearchTaskRun", options: {}, I: SearchTaskRunRequest, O: TaskRunIdList },

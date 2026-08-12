@@ -599,6 +599,24 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "prefix")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    prefix: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ...) -> None: ...
+
+class WorkflowMigrationPlanIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowMigrationPlanId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchWorkflowEventDefRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "prefix")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]

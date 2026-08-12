@@ -130,6 +130,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRe
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowMigrationPlanRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
@@ -157,6 +158,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowMigrationPlanReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -646,6 +648,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
     public void deleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest req, StreamObserver<Empty> ctx) {
         throw new LHApiException(Status.UNIMPLEMENTED, "DeleteWorkflowMigrationPlan is not yet implemented");
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWorkflowMigrationPlan(
+            SearchWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlanIdList> ctx) {
+        handleScan(
+                SearchWorkflowMigrationPlanRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWorkflowMigrationPlanReply.class);
     }
 
     @Override

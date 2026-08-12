@@ -186,6 +186,31 @@ are supported in lhctl. Leave the thread name (or variable name) empty to finish
 	},
 }
 
+var searchWorkflowMigrationPlanCmd = &cobra.Command{
+	Use:   "workflowMigrationPlan",
+	Short: "Search for WorkflowMigrationPlans",
+	Long: `Search for WorkflowMigrationPlans.
+
+Optionally provide a --prefix to search for WorkflowMigrationPlans whose name starts
+with that prefix. If no prefix is provided, all WorkflowMigrationPlans are returned.
+	`,
+	Run: func(cmd *cobra.Command, args []string) {
+		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
+		limit, _ := cmd.Flags().GetInt32("limit")
+		prefix, _ := cmd.Flags().GetString("prefix")
+
+		littlehorse.PrintResp(
+			getGlobalClient(cmd).SearchWorkflowMigrationPlan(
+				requestContext(cmd),
+				&lhproto.SearchWorkflowMigrationPlanRequest{
+					Bookmark: bookmark,
+					Limit:    &limit,
+					Prefix:   &prefix,
+				}),
+		)
+	},
+}
+
 // promptLine prints a prompt and returns the trimmed line entered by the user.
 func promptLine(reader *bufio.Reader, prompt string) string {
 	fmt.Print(prompt + ": ")
@@ -246,4 +271,6 @@ func init() {
 	getCmd.AddCommand(getWorkflowMigrationPlanCmd)
 	deleteCmd.AddCommand(deleteWorkflowMigrationPlanCmd)
 	applyCmd.AddCommand(applyWorkflowMigrationPlanCmd)
+	searchCmd.AddCommand(searchWorkflowMigrationPlanCmd)
+	searchWorkflowMigrationPlanCmd.Flags().String("prefix", "", "Prefix of name of WorkflowMigrationPlans to search for.")
 }
