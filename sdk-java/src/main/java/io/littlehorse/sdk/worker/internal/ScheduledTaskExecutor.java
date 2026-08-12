@@ -171,7 +171,19 @@ public class ScheduledTaskExecutor {
                     methodParamCount, inputs.size()));
         }
 
-        return taskMethod.invoke(executable, inputs.toArray());
+        Class<?>[] parameterTypes = taskMethod.getParameterTypes();
+        Object[] args = inputs.toArray();
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] == null && parameterTypes[i].isPrimitive()) {
+                throw new InputVarSubstitutionException(
+                        String.format(
+                                "Task method <%s> parameter #%d type <%s> received null. Primitive parameters cannot accept null. Use boxed type or ensure value is always present.",
+                                taskMethod.getName(), i, parameterTypes[i].getName()),
+                        null);
+            }
+        }
+
+        return taskMethod.invoke(executable, args);
     }
 
     /**

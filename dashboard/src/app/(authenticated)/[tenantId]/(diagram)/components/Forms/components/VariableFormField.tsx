@@ -120,6 +120,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         inputMode={inputMode}
         validate={validate}
         protoRequired={variable.required}
+        formRequired={variable.required}
         accessLevel={variable.accessLevel}
         variableType={definedType.primitiveType}
         masked={varDef.typeDef?.masked}
