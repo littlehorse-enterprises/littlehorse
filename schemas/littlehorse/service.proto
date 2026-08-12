@@ -224,6 +224,9 @@ service LittleHorse {
   // EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
   // destination WfSpec.
   rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
+
+  // EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+  rpc SearchWorkflowMigrationPlan(SearchWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlanIdList) {}
   
   // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
   // events that may be orphaned.
@@ -1144,6 +1147,28 @@ message SearchExternalEventDefRequest {
 message ExternalEventDefIdList {
   // The resulting object id's.
   repeated ExternalEventDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+message SearchWorkflowMigrationPlanRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+  optional string prefix = 3;
+}
+
+// EXPERIMENTAL: List of WorkflowMigrationPlan Id's.
+message WorkflowMigrationPlanIdList {
+  // The resulting object id's.
+  repeated WorkflowMigrationPlanId results = 1;
 
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request
