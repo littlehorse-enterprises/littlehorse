@@ -29,8 +29,8 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
     public InlineStructDefModel(InlineStructDefModel other) {
         if (other != null) {
-            other.fields.forEach((key, fieldDef) ->
-                    this.fields.put(key, LHSerializable.fromProto(fieldDef.toProto().build(), StructFieldDefModel.class, null)));
+            other.fields.forEach((key, fieldDef) -> this.fields.put(
+                    key, LHSerializable.fromProto(fieldDef.toProto().build(), StructFieldDefModel.class, null)));
         }
     }
 

@@ -132,12 +132,12 @@ public class IngressTypeUtils {
     /**
      * Pins authoritative field types onto inline-struct fields without a StructDef lookup.
      */
-    private static void applyExpectedTypeToInlineStructFields(
-            TypeDefinitionModel typeDef, StructModel struct) {
+    private static void applyExpectedTypeToInlineStructFields(TypeDefinitionModel typeDef, StructModel struct) {
         if (struct == null || struct.getInlineStruct() == null) return;
         if (typeDef.getInlineStructDef() == null) return;
 
-        Map<String, StructFieldDefModel> fieldDefs = typeDef.getInlineStructDef().getFields();
+        Map<String, StructFieldDefModel> fieldDefs =
+                typeDef.getInlineStructDef().getFields();
         Map<String, StructFieldModel> fieldValues = struct.getInlineStruct().getFields();
         if (fieldDefs == null || fieldValues == null) return;
 

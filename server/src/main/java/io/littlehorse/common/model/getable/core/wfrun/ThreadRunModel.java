@@ -969,18 +969,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
                 structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
-                TypeDefinitionModel nestedType =
-                        fieldDefs.get(fieldName).getFieldType();
+                TypeDefinitionModel nestedType = fieldDefs.get(fieldName).getFieldType();
                 StructModel nestedStruct = new StructModel();
                 if (nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
                     nestedStruct.setStructDefId(new StructDefIdModel());
-                    nestedStruct.setInlineStruct(
-                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
                 } else if (nestedType.getStructDefId() != null
                         && !nestedType.getStructDefId().getName().isEmpty()) {
                     nestedStruct.setStructDefId(nestedType.getStructDefId());
-                    nestedStruct.setInlineStruct(
-                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
                 } else {
                     throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
                 }
@@ -1000,13 +999,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     private InlineStructModel buildInlineStructValue(
-            InlineStructBuilderModel builder, InlineStructDefModel inlineStructDef, Map<String, VariableValueModel> txnCache)
+            InlineStructBuilderModel builder,
+            InlineStructDefModel inlineStructDef,
+            Map<String, VariableValueModel> txnCache)
             throws LHVarSubError {
         InlineStructModel inlineStruct = new InlineStructModel();
         Map<String, StructFieldModel> fields = new HashMap<>();
         Map<String, StructFieldDefModel> fieldDefs = inlineStructDef.getFields();
 
-        for (Map.Entry<String, InlineStructFieldValueModel> entry : builder.getFields().entrySet()) {
+        for (Map.Entry<String, InlineStructFieldValueModel> entry :
+                builder.getFields().entrySet()) {
             String fieldName = entry.getKey();
             InlineStructFieldValueModel fieldValue = entry.getValue();
             StructFieldModel structField = new StructFieldModel();
@@ -1020,14 +1022,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 StructModel nestedStruct = new StructModel();
                 if (nestedType != null && nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
                     nestedStruct.setStructDefId(new StructDefIdModel());
-                    nestedStruct.setInlineStruct(
-                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
                 } else if (nestedType != null
                         && nestedType.getStructDefId() != null
                         && !nestedType.getStructDefId().getName().isEmpty()) {
                     nestedStruct.setStructDefId(nestedType.getStructDefId());
-                    nestedStruct.setInlineStruct(
-                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
                 } else {
                     throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
                 }

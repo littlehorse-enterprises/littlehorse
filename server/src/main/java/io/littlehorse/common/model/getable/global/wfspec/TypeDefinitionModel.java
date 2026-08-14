@@ -16,9 +16,9 @@ import io.littlehorse.common.model.getable.global.structdef.StructValidationExce
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
-import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InlineStructReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BytesReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.DoubleReturnTypeStrategy;
+import io.littlehorse.common.model.getable.global.wfspec.variable.expression.InlineStructReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.IntReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonArrReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.JsonObjReturnTypeStrategy;
@@ -640,7 +640,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_STRUCT_DEF:
                 // An inline struct def with no fields is the value-side wildcard
                 // (produced by getTypeDefinition() for inline-typed struct values).
-                if (other.getInlineStructDef() == null || other.getInlineStructDef().getFields().isEmpty()) {
+                if (other.getInlineStructDef() == null
+                        || other.getInlineStructDef().getFields().isEmpty()) {
                     return true;
                 }
                 return this.getInlineStructDef().equals(other.getInlineStructDef());
@@ -670,7 +671,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 result = String.format("Map<%s, %s>", inlineMapDef.getKeyType(), inlineMapDef.getValueType());
                 break;
             case INLINE_STRUCT_DEF:
-                result = String.format("InlineStruct<%s>", inlineStructDef.getFields().keySet());
+                result = String.format(
+                        "InlineStruct<%s>", inlineStructDef.getFields().keySet());
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
