@@ -104,9 +104,9 @@ public class LHStructDefTypeTest {
         public String value;
     }
 
-    @LHStructDef("invalid-json-obj-holder")
+    @LHStructDef("inline-nested-pojo-holder")
     @Getter
-    class InvalidJsonObjHolder {
+    class InlineNestedPojoHolder {
         public UnannotatedNestedPojo nestedPojo;
     }
 
@@ -305,9 +305,14 @@ public class LHStructDefTypeTest {
 
     @Test
     public void shouldRejectStructDefFieldResolvingToJsonObj() {
-        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        // Unannotated POJOs inside a StructDef now become InlineStructDef (not JSON_OBJ),
+        // so construction must succeed and the field's type must be INLINE_STRUCT_DEF.
+        LHStructDefType holder = new LHStructDefType(InlineNestedPojoHolder.class, LHTypeAdapterRegistry.empty());
+        io.littlehorse.sdk.common.proto.StructFieldDef fieldDef =
+                holder.getInlineStructDef().getFieldsMap().get("nestedPojo");
+        assertThat(fieldDef).isNotNull();
+        assertThat(fieldDef.getFieldType().getDefinedTypeCase())
+                .isEqualTo(io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
     }
 
     @Test

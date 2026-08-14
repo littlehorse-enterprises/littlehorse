@@ -187,6 +187,11 @@ public class LHStructDefType extends LHClassType {
             if (coreType instanceof LHStructDefType) {
                 LHStructDefType propertyCoreType = (LHStructDefType) coreType;
                 propertyCoreType.detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (coreType instanceof LHInlineStructDefType) {
+                // Inline structs have no StructDefId of their own, but their fields may
+                // reference named StructDefs that still need topological ordering.
+                collectNamedDepsFromInlineStruct(
+                        (LHInlineStructDefType) coreType, visited, sortedList, tempMarked, currentPath);
             } else {
                 throw new IllegalArgumentException(
                         "Missing @LHStructDef annotation on non-primitive class used in an LHStructDef getter or setter: "
@@ -199,6 +204,24 @@ public class LHStructDefType extends LHClassType {
         tempMarked.remove(this);
         visited.add(this);
         sortedList.add(this);
+    }
+
+    private void collectNamedDepsFromInlineStruct(
+            LHInlineStructDefType inlineType,
+            Set<LHClassType> visited,
+            List<LHStructDefType> sortedList,
+            Set<LHClassType> tempMarked,
+            List<LHClassType> currentPath)
+            throws IntrospectionException {
+        for (LHStructProperty prop : inlineType.getStructProperties()) {
+            LHClassType coreType = prop.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
+            if (coreType instanceof LHStructDefType) {
+                ((LHStructDefType) coreType).detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (coreType instanceof LHInlineStructDefType) {
+                collectNamedDepsFromInlineStruct(
+                        (LHInlineStructDefType) coreType, visited, sortedList, tempMarked, currentPath);
+            }
+        }
     }
 
     private static String buildCircularDependencyExceptionMessage(List<LHClassType> classList) {

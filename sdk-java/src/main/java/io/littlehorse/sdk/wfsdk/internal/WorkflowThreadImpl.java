@@ -57,6 +57,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
@@ -590,6 +591,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
         return addStructVariable(
                 name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
+    }
+
+    @Override
+    public WfRunVariable declareInlineStruct(String name, Class<?> clazz) {
+        checkIfIsActive();
+        LHInlineStructDefType inlineType =
+                new LHInlineStructDefType(clazz, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues());
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, inlineType, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
     }
 
     @Override

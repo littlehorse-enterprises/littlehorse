@@ -221,6 +221,18 @@ public interface WorkflowThread {
     WfRunVariable declareStruct(String name, Class<?> clazz);
 
     /**
+     * Creates an inline-struct variable whose schema is derived directly from {@code clazz}
+     * without requiring an {@code @LHStructDef} annotation or prior StructDef registration.
+     * The variable's TypeDefinition carries a full {@code InlineStructDef} rather than a
+     * {@code StructDefId} reference.
+     *
+     * @param name  the variable name
+     * @param clazz the POJO class whose bean properties define the inline schema
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareInlineStruct(String name, Class<?> clazz);
+
+    /**
      * Creates a Struct variable based on your StructDef name. Uses latest version of the StructDef.
      *
      * To supply a specific StructDef version number, use {@link WorkflowThread#declareStruct(String, String, int)} and provide the version number as the third parameter.
