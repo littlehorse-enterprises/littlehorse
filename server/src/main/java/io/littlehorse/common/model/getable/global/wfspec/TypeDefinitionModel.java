@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
@@ -540,7 +541,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (value.getValueType()) {
             case STRUCT:
-                value.getStruct().validateAgainstStructDefId(this.getStructDefId(), readOnlyMetadataManager);
+                if (this.definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF) {
+                    try {
+                        this.inlineStructDef.validateAgainstSuperset(
+                                value.getStruct().getInlineStruct(), readOnlyMetadataManager);
+                    } catch (StructValidationException e) {
+                        throw new TypeValidationException(e, "Inline struct validation failed: " + e.getMessage());
+                    }
+                } else {
+                    value.getStruct().validateAgainstStructDefId(this.getStructDefId(), readOnlyMetadataManager);
+                }
                 break;
             case ARRAY:
                 TypeDefinitionModel expectedElementType =
@@ -628,6 +638,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 }
                 return this.getInlineMapDef().equals(other.getInlineMapDef());
             case INLINE_STRUCT_DEF:
+                // An inline struct def with no fields is the value-side wildcard
+                // (produced by getTypeDefinition() for inline-typed struct values).
+                if (other.getInlineStructDef() == null || other.getInlineStructDef().getFields().isEmpty()) {
+                    return true;
+                }
                 return this.getInlineStructDef().equals(other.getInlineStructDef());
             case DEFINEDTYPE_NOT_SET:
             default:

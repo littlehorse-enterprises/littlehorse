@@ -28,7 +28,9 @@ import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
 import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -967,15 +969,68 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
                 structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
-                io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel nestedType =
+                TypeDefinitionModel nestedType =
                         fieldDefs.get(fieldName).getFieldType();
-                if (nestedType.getStructDefId() == null) {
+                StructModel nestedStruct = new StructModel();
+                if (nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+                    nestedStruct.setStructDefId(new StructDefIdModel());
+                    nestedStruct.setInlineStruct(
+                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                } else if (nestedType.getStructDefId() != null
+                        && !nestedType.getStructDefId().getName().isEmpty()) {
+                    nestedStruct.setStructDefId(nestedType.getStructDefId());
+                    nestedStruct.setInlineStruct(
+                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                } else {
                     throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
                 }
+                structField.setValue(new VariableValueModel(nestedStruct));
+            } else {
+                throw new LHVarSubError(null, "Field '" + fieldName + "' is missing a value");
+            }
+
+            if (fieldDefs.containsKey(fieldName)) {
+                structField.setMasked(fieldDefs.get(fieldName).getFieldType().isMasked());
+            }
+            fields.put(fieldName, structField);
+        }
+
+        inlineStruct.setFields(fields);
+        return inlineStruct;
+    }
+
+    private InlineStructModel buildInlineStructValue(
+            InlineStructBuilderModel builder, InlineStructDefModel inlineStructDef, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        InlineStructModel inlineStruct = new InlineStructModel();
+        Map<String, StructFieldModel> fields = new HashMap<>();
+        Map<String, StructFieldDefModel> fieldDefs = inlineStructDef.getFields();
+
+        for (Map.Entry<String, InlineStructFieldValueModel> entry : builder.getFields().entrySet()) {
+            String fieldName = entry.getKey();
+            InlineStructFieldValueModel fieldValue = entry.getValue();
+            StructFieldModel structField = new StructFieldModel();
+
+            if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
+                structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
+            } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
+                TypeDefinitionModel nestedType = fieldDefs.containsKey(fieldName)
+                        ? fieldDefs.get(fieldName).getFieldType()
+                        : null;
                 StructModel nestedStruct = new StructModel();
-                nestedStruct.setStructDefId(nestedType.getStructDefId());
-                nestedStruct.setInlineStruct(
-                        buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                if (nestedType != null && nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+                    nestedStruct.setStructDefId(new StructDefIdModel());
+                    nestedStruct.setInlineStruct(
+                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                } else if (nestedType != null
+                        && nestedType.getStructDefId() != null
+                        && !nestedType.getStructDefId().getName().isEmpty()) {
+                    nestedStruct.setStructDefId(nestedType.getStructDefId());
+                    nestedStruct.setInlineStruct(
+                            buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                } else {
+                    throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
+                }
                 structField.setValue(new VariableValueModel(nestedStruct));
             } else {
                 throw new LHVarSubError(null, "Field '" + fieldName + "' is missing a value");

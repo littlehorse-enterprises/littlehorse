@@ -14,8 +14,10 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
@@ -142,7 +144,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public TypeDefinitionModel getTypeDefinition() {
         if (this.valueType == ValueCase.STRUCT) {
-            return new TypeDefinitionModel(this.struct.getStructDefId());
+            StructDefIdModel id = this.struct.getStructDefId();
+            if (id == null || id.getName() == null || id.getName().isEmpty()) {
+                // Inline-typed struct: no named StructDef. Return a wildcard so
+                // isCompatibleWith(INLINE_STRUCT_DEF) treats empty fields as "any".
+                return new TypeDefinitionModel(new InlineStructDefModel());
+            }
+            return new TypeDefinitionModel(id);
         } else if (this.valueType == ValueCase.ARRAY) {
             // If the ArrayModel has an authoritative element type, prefer it. This
             // is set at ingress (RunWf/Task returns) to avoid per-item checks later.

@@ -76,6 +76,10 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         return defaultValue != null || isNullable;
     }
 
+    public VariableValueModel getDefaultValue() {
+        return defaultValue;
+    }
+
     public boolean isRequired() {
         return !hasDefaultValue();
     }

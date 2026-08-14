@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
@@ -131,15 +132,23 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
-            // If InlineStruct is missing required field...
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
 
-            if (fieldDef.isRequired() && !inlineStruct.getFields().containsKey(fieldName)) {
-                throw new StructValidationException("Missing required field %s".formatted(fieldName));
-            } else if (inlineStruct.getFields().containsKey(fieldName)) {
+            if (!inlineStruct.getFields().containsKey(fieldName)) {
+                if (fieldDef.isRequired()) {
+                    throw new StructValidationException("Missing required field %s".formatted(fieldName));
+                }
+                // Apply default value for absent optional fields.
+                VariableValueModel defaultVal = fieldDef.getDefaultValue();
+                if (defaultVal != null) {
+                    StructFieldModel defaultField = new StructFieldModel();
+                    defaultField.setValue(defaultVal);
+                    defaultField.setMasked(fieldDef.getFieldType().isMasked());
+                    inlineStruct.getFields().put(fieldName, defaultField);
+                }
+            } else {
                 StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
-
                 try {
                     fieldDef.validateAgainst(fieldValue, metadataManager);
                 } catch (StructValidationException e) {

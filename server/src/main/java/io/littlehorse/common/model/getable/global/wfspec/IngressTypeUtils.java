@@ -93,6 +93,11 @@ public class IngressTypeUtils {
                     applyExpectedTypeToStructFields(typeDef, value.getStruct(), metadataManager);
                 }
                 break;
+            case INLINE_STRUCT_DEF:
+                if (value.getValueType() == VariableValue.ValueCase.STRUCT) {
+                    applyExpectedTypeToInlineStructFields(typeDef, value.getStruct());
+                }
+                break;
             default:
                 // Primitive types have no nested containers whose types need pinning.
                 break;
@@ -120,6 +125,28 @@ public class IngressTypeUtils {
             StructFieldModel fieldValue = entry.getValue();
             if (fieldDef != null && fieldValue != null && fieldValue.getValue() != null) {
                 applyExpectedType(fieldDef.getFieldType(), fieldValue.getValue(), metadataManager);
+            }
+        }
+    }
+
+    /**
+     * Pins authoritative field types onto inline-struct fields without a StructDef lookup.
+     */
+    private static void applyExpectedTypeToInlineStructFields(
+            TypeDefinitionModel typeDef, StructModel struct) {
+        if (struct == null || struct.getInlineStruct() == null) return;
+        if (typeDef.getInlineStructDef() == null) return;
+
+        Map<String, StructFieldDefModel> fieldDefs = typeDef.getInlineStructDef().getFields();
+        Map<String, StructFieldModel> fieldValues = struct.getInlineStruct().getFields();
+        if (fieldDefs == null || fieldValues == null) return;
+
+        for (Map.Entry<String, StructFieldModel> entry : fieldValues.entrySet()) {
+            StructFieldDefModel fieldDef = fieldDefs.get(entry.getKey());
+            StructFieldModel fieldValue = entry.getValue();
+            if (fieldDef != null && fieldValue != null && fieldValue.getValue() != null) {
+                // No metadataManager needed: field types are available inline.
+                applyExpectedType(fieldDef.getFieldType(), fieldValue.getValue(), null);
             }
         }
     }
