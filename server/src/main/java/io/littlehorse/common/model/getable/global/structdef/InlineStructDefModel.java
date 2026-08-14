@@ -14,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode(callSuper = false)
 public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
     @Getter

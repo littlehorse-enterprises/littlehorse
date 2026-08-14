@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InlineStructDefUtilTest {
 
@@ -29,6 +29,39 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel structDef2 = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
 
         assertThat(InlineStructDefUtil.equals(structDef1, structDef2)).isFalse();
+    }
+
+    @Test
+    public void testEqualityIsFieldOrderIndependent() {
+        InlineStructDef structDefA = InlineStructDef.newBuilder()
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .putFields(
+                        "year",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                                .build())
+                .build();
+
+        InlineStructDef structDefB = InlineStructDef.newBuilder()
+                .putFields(
+                        "year",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                                .build())
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        InlineStructDefModel model1 = InlineStructDefModel.fromProto(structDefA, InlineStructDefModel.class, null);
+        InlineStructDefModel model2 = InlineStructDefModel.fromProto(structDefB, InlineStructDefModel.class, null);
+        assertThat(InlineStructDefUtil.equals(model1, model2)).isTrue();
     }
 
     @Test

@@ -2,10 +2,8 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
-import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +22,7 @@ public class InlineStructDefUtil {
      * @return true if the underlying proto representations of the objects are equal, false otherwise
      */
     public static boolean equals(InlineStructDefModel left, InlineStructDefModel right) {
-        InlineStructDef.Builder copy = left.toProto();
-        InlineStructDef.Builder toCopy = right.toProto();
-
-        return Arrays.equals(copy.build().toByteArray(), toCopy.build().toByteArray());
+        return left.equals(right);
     }
 
     public static Set<String> getIncompatibleFields(
