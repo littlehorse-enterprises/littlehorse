@@ -5,6 +5,7 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -22,6 +23,15 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
     @Getter
     private Map<String, StructFieldDefModel> fields = new HashMap<>();
+
+    public InlineStructDefModel() {}
+
+    public InlineStructDefModel(InlineStructDefModel other) {
+        if (other != null) {
+            other.fields.forEach((key, fieldDef) ->
+                    this.fields.put(key, LHSerializable.fromProto(fieldDef.toProto().build(), StructFieldDefModel.class, null)));
+        }
+    }
 
     @Override
     public InlineStructDef.Builder toProto() {
@@ -71,6 +81,12 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                 }
 
                 field.getValue().validate(metadataManager);
+
+                // Recurse into nested inline struct defs for field-name validation
+                TypeDefinitionModel fieldType = field.getValue().getFieldType();
+                if (fieldType != null && fieldType.getInlineStructDef() != null) {
+                    fieldType.getInlineStructDef().validate(metadataManager);
+                }
             } catch (StructDefValidationException e) {
                 throw new StructDefValidationException(
                         e, String.format("StructDef field '%s' invalid: %s", field.getKey(), e.getMessage()));
