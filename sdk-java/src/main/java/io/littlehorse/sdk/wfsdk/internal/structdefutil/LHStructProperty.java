@@ -38,9 +38,13 @@ public class LHStructProperty {
     @Getter
     private final boolean isNullable;
 
-    private final LHStructDefType parentStructDef;
+    private final LHClassType parentStructDef;
 
     public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
+        this(pd, (LHClassType) parentStructDef);
+    }
+
+    LHStructProperty(PropertyDescriptor pd, LHClassType parentStructDef) {
         this.pd = Objects.requireNonNull(pd);
         this.parentStructDef = parentStructDef;
 
