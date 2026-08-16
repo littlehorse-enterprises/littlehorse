@@ -191,21 +191,31 @@ class InactiveThreadRunId(_message.Message):
     thread_run_number: int
     def __init__(self, wf_run_id: _Optional[_Union[WfRunId, _Mapping]] = ..., thread_run_number: _Optional[int] = ...) -> None: ...
 
+class QuotaId(_message.Message):
+    __slots__ = ("tenant", "principal")
+    TENANT_FIELD_NUMBER: _ClassVar[int]
+    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
+    tenant: TenantId
+    principal: PrincipalId
+    def __init__(self, tenant: _Optional[_Union[TenantId, _Mapping]] = ..., principal: _Optional[_Union[PrincipalId, _Mapping]] = ...) -> None: ...
+
 class MetricWindowId(_message.Message):
-    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "tenant_id", "window_start", "metric_type")
+    __slots__ = ("wf_spec_id", "task_def_id", "user_task_def_id", "quota_id", "tenant_id", "window_start", "metric_type")
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
     TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     USER_TASK_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    QUOTA_ID_FIELD_NUMBER: _ClassVar[int]
     TENANT_ID_FIELD_NUMBER: _ClassVar[int]
     WINDOW_START_FIELD_NUMBER: _ClassVar[int]
     METRIC_TYPE_FIELD_NUMBER: _ClassVar[int]
     wf_spec_id: WfSpecId
     task_def_id: TaskDefId
     user_task_def_id: UserTaskDefId
+    quota_id: QuotaId
     tenant_id: TenantId
     window_start: _timestamp_pb2.Timestamp
     metric_type: _common_enums_pb2.MetricWindowType
-    def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[UserTaskDefId, _Mapping]] = ..., tenant_id: _Optional[_Union[TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metric_type: _Optional[_Union[_common_enums_pb2.MetricWindowType, str]] = ...) -> None: ...
+    def __init__(self, wf_spec_id: _Optional[_Union[WfSpecId, _Mapping]] = ..., task_def_id: _Optional[_Union[TaskDefId, _Mapping]] = ..., user_task_def_id: _Optional[_Union[UserTaskDefId, _Mapping]] = ..., quota_id: _Optional[_Union[QuotaId, _Mapping]] = ..., tenant_id: _Optional[_Union[TenantId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., metric_type: _Optional[_Union[_common_enums_pb2.MetricWindowType, str]] = ...) -> None: ...
 
 class WorkflowMigrationPlanId(_message.Message):
     __slots__ = ("name",)
