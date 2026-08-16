@@ -14,10 +14,10 @@ const Node: FC<NodeProps<'startThread', StartThreadNode>> = ({ data }) => {
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="relative flex h-12 w-40 cursor-pointer items-center justify-center rounded-md border border-green-500 bg-green-200 px-6 text-center text-xs text-green-950">
+        <div className="flex w-40 cursor-pointer flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-center text-xs">
           <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          <Spool className="h-4 w-4 stroke-orange-500" strokeWidth={1.5} />
           <span className="truncate">{threadSpecName}</span>
-          <Spool className="absolute right-1 top-1 h-4 w-4 stroke-green-600" strokeWidth={1.5} />
           <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
         </div>
       </Fade>
