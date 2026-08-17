@@ -369,6 +369,8 @@ service LittleHorse {
   
   // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists quota usage metric windows for a quota and time range.
+  rpc ListQuotaUsageMetrics(ListQuotaUsageMetricsRequest) returns (MetricsList) {}
   // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
   // Gets a MetricWindow by its ID.

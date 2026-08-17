@@ -32,7 +32,15 @@ message MetricWindow {
   oneof metric {
     WfMetrics workflow = 2;
     TaskMetrics task = 3;
+    QuotaUsageMetrics quota_usage = 4;
   }
+}
+
+// Quota utilization aggregates for one quota during a time window.
+message QuotaUsageMetrics {
+  int32 requests_observed = 1;
+  int32 requests_throttled = 2;
+  int64 total_throttle_time_ms = 3;
 }
 
 // Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
@@ -84,6 +92,12 @@ message ListTaskMetricsRequest {
   TaskDefId task_def = 1;
   optional google.protobuf.Timestamp window_start = 2;
   optional google.protobuf.Timestamp window_end   = 3;
+}
+
+message ListQuotaUsageMetricsRequest {
+  QuotaId quota_id = 1;
+  optional google.protobuf.Timestamp window_start = 2;
+  optional google.protobuf.Timestamp window_end = 3;
 }
 
 message MetricsList {
