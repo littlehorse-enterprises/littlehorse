@@ -136,12 +136,17 @@ public class CommandProcessorTest {
         metricWindow.incrementCount("started");
         getMetricWindows().put(metricWindow);
 
+        // There is now a single punctuator; the work it does is gated by the punctuation timestamp,
+        // so the tick has to be advanced to make the metrics drain run twice.
+        long firstTick = System.currentTimeMillis();
+        long secondTick = firstTick + LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL.toMillis();
+
         // Force the flusher into MEMORY mode by triggering a first punctuation (catch-up with empty store)
-        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
+        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(firstTick);
         mockProcessorContext.resetForwards();
 
         // Now punctuate again — this time it reads from memory
-        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
+        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(secondTick);
 
         assertThat(mockProcessorContext.forwarded()).hasSize(2);
         Record<? extends String, ? extends CommandProcessorOutput> forwardedRecord =

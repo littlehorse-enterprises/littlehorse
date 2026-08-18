@@ -35,7 +35,6 @@ import io.littlehorse.server.streams.topology.core.background.PartitionBackgroun
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
@@ -86,8 +85,15 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private static final Duration BULK_JOB_INTERVAL = Duration.ofSeconds(1);
 
     private PartitionActionScheduler backgroundScheduler;
-    private Instant nextMetricsRun = Instant.EPOCH;
-    private Instant nextBulkJobRun = Instant.EPOCH;
+
+    /**
+     * Cadence gates for the punctuators that have not been migrated to background jobs yet. These
+     * are driven by the punctuation timestamp rather than {@code Instant.now()} so that the schedule
+     * is a pure function of the tick, which keeps it deterministic under test.
+     */
+    private long nextMetricsRunAt = Long.MIN_VALUE;
+
+    private long nextBulkJobRunAt = Long.MIN_VALUE;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -153,13 +159,12 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         backgroundScheduler.drain(
                 new PartitionActionApplier(ctx, nativeStore), ACTION_DRAIN_BUDGET, MAX_ACTIONS_PER_PUNCTUATION);
 
-        Instant now = Instant.now();
-        if (!now.isBefore(nextMetricsRun)) {
-            nextMetricsRun = now.plus(LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL);
+        if (timestamp >= nextMetricsRunAt) {
+            nextMetricsRunAt = timestamp + LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL.toMillis();
             collectPartitionMetrics(timestamp);
         }
-        if (!now.isBefore(nextBulkJobRun)) {
-            nextBulkJobRun = now.plus(BULK_JOB_INTERVAL);
+        if (timestamp >= nextBulkJobRunAt) {
+            nextBulkJobRunAt = timestamp + BULK_JOB_INTERVAL.toMillis();
             bulkJobPunctuator.punctuate(timestamp);
         }
     }

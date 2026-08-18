@@ -59,6 +59,7 @@ public final class PartitionActionScheduler implements Closeable {
     private final PartitionJobContext jobContext;
 
     private volatile boolean running;
+    private volatile boolean closed;
     private Thread worker;
 
     public PartitionActionScheduler(
@@ -82,6 +83,9 @@ public final class PartitionActionScheduler implements Closeable {
      * Starts the worker thread. Must be called from {@code Processor.init()}.
      */
     public void start() {
+        if (closed) {
+            throw new IllegalStateException("Cannot restart a closed PartitionActionScheduler");
+        }
         if (jobs.isEmpty()) {
             log.debug("No background jobs registered for partition {}; not starting a worker", taskId.partition());
             return;
@@ -99,7 +103,7 @@ public final class PartitionActionScheduler implements Closeable {
      * Called by the worker thread (via {@link PartitionJobContext}). Blocks when the queue is full.
      */
     void enqueue(PartitionAction action) throws InterruptedException {
-        if (!running) {
+        if (closed) {
             // Partition was revoked while the job was mid-flight; drop the effect on the floor.
             throw new InterruptedException("Partition " + taskId.partition() + " no longer owned");
         }
@@ -140,6 +144,7 @@ public final class PartitionActionScheduler implements Closeable {
 
     @Override
     public void close() {
+        closed = true;
         running = false;
         if (worker != null) {
             worker.interrupt();
@@ -148,7 +153,6 @@ public final class PartitionActionScheduler implements Closeable {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            worker = null;
         }
         // Anything still queued belongs to a partition we no longer own.
         List<PartitionAction> discarded = new ArrayList<>();
@@ -157,6 +161,21 @@ public final class PartitionActionScheduler implements Closeable {
             log.info(
                     "Discarded {} pending actions on revocation of partition {}", discarded.size(), taskId.partition());
         }
+    }
+
+    /**
+     * Visible for testing: how many actions are waiting to be applied.
+     */
+    int pendingCount() {
+        return pending.size();
+    }
+
+    /**
+     * Visible for testing: whether the worker thread is still alive.
+     */
+    boolean isWorkerAlive() {
+        Thread current = worker;
+        return current != null && current.isAlive();
     }
 
     private void loop() {
