@@ -154,6 +154,14 @@ public class LHServer {
         return config.getLHInstanceName();
     }
 
+    /**
+     * Exposes the IQv1-backed store provider so that per-partition background workers can perform
+     * reads off the Kafka Streams thread.
+     */
+    public CoreStoreProvider getCoreStoreProvider() {
+        return coreStoreProvider;
+    }
+
     /*
      * Sends a command to Kafka and simultaneously does a waitForProcessing() internal grpc call
      * that asynchronously waits for the command to be processed. It infers the request context from

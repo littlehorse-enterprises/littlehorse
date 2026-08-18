@@ -29,9 +29,14 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreCommandException;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
+import io.littlehorse.server.streams.topology.core.background.PartitionActionApplier;
+import io.littlehorse.server.streams.topology.core.background.PartitionActionScheduler;
+import io.littlehorse.server.streams.topology.core.background.PartitionBackgroundJob;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
@@ -68,6 +73,22 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private static final Duration BULK_JOB_PUNCTUATION_BUDGET = Duration.ofMillis(50);
     private final long bulkJobMaxCommandsPerPunctuation;
 
+    /**
+     * The single punctuation tick for this processor. Everything that used to have its own
+     * {@code ctx.schedule()} call now runs from here, gated by its own cadence.
+     */
+    private static final Duration PUNCTUATION_TICK = Duration.ofMillis(100);
+
+    /** Budget for applying actions produced by the per-partition background worker. */
+    private static final Duration ACTION_DRAIN_BUDGET = Duration.ofMillis(50);
+
+    private static final int MAX_ACTIONS_PER_PUNCTUATION = 500;
+    private static final Duration BULK_JOB_INTERVAL = Duration.ofSeconds(1);
+
+    private PartitionActionScheduler backgroundScheduler;
+    private Instant nextMetricsRun = Instant.EPOCH;
+    private Instant nextBulkJobRun = Instant.EPOCH;
+
     public CommandProcessor(
             LHServerConfig config,
             LHServer server,
@@ -95,19 +116,52 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         this.partitionDrain = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx);
         onPartitionClaimed();
-        ctx.schedule(
-                LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
-                PunctuationType.WALL_CLOCK_TIME,
-                this::collectPartitionMetrics);
 
         this.bulkJobPunctuator = new BulkJobPunctuator(
                 ctx, config, metadataCache, BULK_JOB_PUNCTUATION_BUDGET, bulkJobMaxCommandsPerPunctuation);
-        ctx.schedule(
-                Duration.ofSeconds(1),
-                PunctuationType.WALL_CLOCK_TIME,
-                timestamp -> bulkJobPunctuator.punctuate(timestamp));
+
+        // The per-partition worker thread. Jobs registered here run OFF the Streams thread and
+        // communicate back exclusively through PartitionActions.
+        this.backgroundScheduler =
+                new PartitionActionScheduler(ctx.taskId(), config, server.getCoreStoreProvider(), backgroundJobs());
+        this.backgroundScheduler.start();
+
+        // A single punctuator to rule them all.
+        ctx.schedule(PUNCTUATION_TICK, PunctuationType.WALL_CLOCK_TIME, this::punctuate);
 
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
+    }
+
+    /**
+     * TODO: migrate the remaining inline punctuators (partition metrics drain, bulk job scan) to
+     * {@link PartitionBackgroundJob}s so that this list is the only place work is registered.
+     */
+    private List<PartitionBackgroundJob> backgroundJobs() {
+        return List.of();
+    }
+
+    /**
+     * The unified punctuation. Runs on the Kafka Streams thread and does two things, in order:
+     *
+     * <ol>
+     *   <li>Applies whatever the background worker produced since the last tick, under a strict
+     *       time/count budget so a busy worker can never blow the transaction timeout.</li>
+     *   <li>Runs the not-yet-migrated punctuators inline, each gated by its own cadence.</li>
+     * </ol>
+     */
+    private void punctuate(long timestamp) {
+        backgroundScheduler.drain(
+                new PartitionActionApplier(ctx, nativeStore), ACTION_DRAIN_BUDGET, MAX_ACTIONS_PER_PUNCTUATION);
+
+        Instant now = Instant.now();
+        if (!now.isBefore(nextMetricsRun)) {
+            nextMetricsRun = now.plus(LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL);
+            collectPartitionMetrics(timestamp);
+        }
+        if (!now.isBefore(nextBulkJobRun)) {
+            nextBulkJobRun = now.plus(BULK_JOB_INTERVAL);
+            bulkJobPunctuator.punctuate(timestamp);
+        }
     }
 
     @Override
@@ -204,6 +258,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     @Override
     public void close() {
+        if (backgroundScheduler != null) {
+            backgroundScheduler.close();
+            backgroundScheduler = null;
+        }
         if (partitionIsClaimed) {
             this.partitionDrain.reset();
         }
