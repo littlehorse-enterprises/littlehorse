@@ -42,10 +42,4 @@ export const authOptions: AuthOptions = {
       }
     },
   },
-  events: {
-    signOut: async ({ token }: any) => {
-      const url = `${process.env.KEYCLOAK_ISSUER_URI}/protocol/openid-connect/logout?id_token_hint=${token.idToken}`
-      await fetch(url, { method: 'GET', headers: { Accept: 'application/json' } })
-    },
-  },
 }
