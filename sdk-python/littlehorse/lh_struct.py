@@ -84,7 +84,9 @@ class LHStructField:
 
     __slots__ = ("name", "masked", "description")
 
-    def __init__(self, name: str = "", masked: bool = False, description: str = "") -> None:
+    def __init__(
+        self, name: str = "", masked: bool = False, description: str = ""
+    ) -> None:
         self.name = name
         self.masked = masked
         self.description = description
