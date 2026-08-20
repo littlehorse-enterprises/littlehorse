@@ -44,9 +44,9 @@ public class InlineStructDefUtil {
             return false;
         }
 
-        for (String fieldName : leftFields.keySet()) {
-            String leftDesc = leftFields.get(fieldName).getDescription();
-            String rightDesc = rightFields.get(fieldName).getDescription();
+        for (Map.Entry<String, StructFieldDefModel> entry : leftFields.entrySet()) {
+            String leftDesc = entry.getValue().getDescription();
+            String rightDesc = rightFields.get(entry.getKey()).getDescription();
             if (!Objects.equals(leftDesc, rightDesc)) {
                 return false;
             }
