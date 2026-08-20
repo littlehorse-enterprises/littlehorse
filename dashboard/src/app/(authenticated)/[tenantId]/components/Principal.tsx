@@ -14,6 +14,19 @@ import { FC } from 'react'
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
 
+  const handleSignOut = async () => {
+    let logoutUrl: string | null = null
+
+    try {
+      const response = await fetch('/api/auth/federated-logout')
+      if (response.ok) logoutUrl = (await response.json()).url
+    } catch {}
+
+    await signOut({ redirect: !logoutUrl })
+
+    if (logoutUrl) window.location.href = logoutUrl
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm">
@@ -24,7 +37,7 @@ export const Principal: FC = () => {
       <DropdownMenuContent className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
+        <DropdownMenuItem onClick={handleSignOut} className="block w-full px-4 py-2 text-left text-sm">
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
