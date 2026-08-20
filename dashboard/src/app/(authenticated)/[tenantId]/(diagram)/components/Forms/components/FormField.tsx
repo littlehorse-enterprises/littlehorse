@@ -9,6 +9,7 @@ import type { PrimitiveFieldConfig } from './VariableTypeToFieldComponent'
 
 interface FormFieldProps {
   label: string
+  description?: string
   protoRequired?: boolean
   formRequired?: boolean
   id: string
@@ -24,6 +25,7 @@ interface FormFieldProps {
 
 const FormField: FC<FormFieldProps> = ({
   label,
+  description,
   protoRequired = false,
   formRequired = false,
   id,
@@ -46,6 +48,7 @@ const FormField: FC<FormFieldProps> = ({
     <Field>
       <FormLabel
         label={label}
+        description={description}
         variableType={variableType}
         accessLevel={accessLevel}
         required={protoRequired}

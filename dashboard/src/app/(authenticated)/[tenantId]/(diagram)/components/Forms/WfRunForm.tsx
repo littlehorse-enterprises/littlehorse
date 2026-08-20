@@ -67,7 +67,7 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="space-y-4">
+      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="min-w-0 space-y-4">
         <FormField
           label={'Custom WfRun Id'}
           as={Input}

@@ -11,6 +11,7 @@ import { STRUCT_FORM_FIELD_PREFIX, useStructFormContext, VariableCase } from '..
 import { FormValues } from '../WfRunForm'
 import FormField from './FormField'
 import FormLabel from './FormLabel'
+import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
 const StructDefParentContext = createContext<{ parentDisabled: boolean; nestedStructPath: string[] }>({
@@ -21,6 +22,7 @@ const StructDefParentContext = createContext<{ parentDisabled: boolean; nestedSt
 interface StructPrimitiveFieldProps {
   fieldName: string
   label: string
+  description?: string
   component: React.ElementType
   type: HTMLInputTypeAttribute | undefined
   variableType: VariableType
@@ -37,6 +39,7 @@ interface StructPrimitiveFieldProps {
 const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   fieldName,
   label,
+  description,
   component,
   type,
   variableType,
@@ -85,6 +88,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   return (
     <FormField
       label={label}
+      description={description}
       as={component}
       id={fieldId}
       type={type}
@@ -173,10 +177,18 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
             </Button>
           )}
         </div>
+        {structDef?.description && (
+          <OverflowText
+            prose
+            clampLines={1}
+            className="px-2 pb-2 text-xs text-muted-foreground"
+            text={structDef.description}
+          />
+        )}
       </div>
       <div className="flex flex-col gap-4 p-3">
         {Object.entries(structDef?.structDef?.fields ?? {}).map(
-          ([name, { fieldType, defaultValue: structFieldDefault }]) => {
+          ([name, { fieldType, defaultValue: structFieldDefault, description }]) => {
             const definedType = fieldType?.definedType
             if (!definedType) return
 
@@ -196,6 +208,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
                   key={name}
                   fieldName={name}
                   label={name}
+                  description={description}
                   component={component}
                   type={type}
                   protoRequired={!hasDefaultValue}

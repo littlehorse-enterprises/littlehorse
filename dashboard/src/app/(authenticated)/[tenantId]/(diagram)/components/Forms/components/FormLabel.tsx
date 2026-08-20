@@ -5,9 +5,11 @@ import { AccessLevelBadge, MaskedBadge, OptionalBadge, RequiredBadge, TypeBadge 
 import { FieldLabel } from '@/components/ui/field'
 import { StructDefId, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 
 interface FormLabelProps {
   label: string
+  description?: string
   variableType?: VariableType
   /** Pre-formatted type label for container types (e.g. `Map<String,Integer>`) that have no single VariableType. */
   typeLabel?: string
@@ -18,6 +20,7 @@ interface FormLabelProps {
 }
 const FormLabel: FC<FormLabelProps> = ({
   label,
+  description,
   variableType,
   typeLabel,
   structDefId,
@@ -26,23 +29,26 @@ const FormLabel: FC<FormLabelProps> = ({
   masked,
 }) => {
   return (
-    <FieldLabel className="flex gap-2">
-      <p className="font-semibold">{label}</p>
-      <div className="space-x-2">
-        {variableType && <TypeBadge>{VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}</TypeBadge>}
-        {typeLabel && <TypeBadge>{typeLabel}</TypeBadge>}
-        {structDefId && (
-          <TypeBadge>
-            <LinkWithTenant
-              className="underline"
-              href={routes.structDef.detail(structDefId.name, structDefId.version)}
-            >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
-          </TypeBadge>
-        )}
-        {accessLevel && <AccessLevelBadge accessLevel={accessLevel} />}
-        {masked && <MaskedBadge />}
-        {required ? <RequiredBadge /> : <OptionalBadge />}
+    <FieldLabel className="flex flex-col gap-2">
+      <div className="flex gap-2">
+        <p className="font-semibold">{label}</p>
+        <div className="space-x-2">
+          {variableType && <TypeBadge>{VARIABLE_CASE_LABELS[getVariableCaseFromType(variableType)]}</TypeBadge>}
+          {typeLabel && <TypeBadge>{typeLabel}</TypeBadge>}
+          {structDefId && (
+            <TypeBadge>
+              <LinkWithTenant
+                className="underline"
+                href={routes.structDef.detail(structDefId.name, structDefId.version)}
+              >{`Struct<${structDefId.name},${structDefId.version}>`}</LinkWithTenant>
+            </TypeBadge>
+          )}
+          {accessLevel && <AccessLevelBadge accessLevel={accessLevel} />}
+          {masked && <MaskedBadge />}
+          {required ? <RequiredBadge /> : <OptionalBadge />}
+        </div>
       </div>
+      {description && <OverflowText prose className="text-xs font-normal text-muted-foreground" text={description} />}
     </FieldLabel>
   )
 }
