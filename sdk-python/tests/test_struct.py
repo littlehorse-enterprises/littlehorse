@@ -720,5 +720,29 @@ class TestWorkerStructIntegration(unittest.TestCase):
         self.assertEqual(result.return_type.primitive_type, VariableType.STR)
 
 
+class TestLHStructFieldDescription(unittest.TestCase):
+    def test_description_is_set_on_struct_field_def(self):
+        @lh_struct_def(name="contact")
+        class Contact:
+            email: Annotated[str, LHStructField(description="The user's primary email")]
+            name: str
+
+        from littlehorse.lh_struct import class_to_inline_struct_def
+
+        inline = class_to_inline_struct_def(Contact)
+        self.assertEqual(inline.fields["email"].description, "The user's primary email")
+        self.assertFalse(inline.fields["name"].HasField("description"))
+
+    def test_empty_description_not_set(self):
+        @lh_struct_def(name="simple")
+        class Simple:
+            value: str
+
+        from littlehorse.lh_struct import class_to_inline_struct_def
+
+        inline = class_to_inline_struct_def(Simple)
+        self.assertFalse(inline.fields["value"].HasField("description"))
+
+
 if __name__ == "__main__":
     unittest.main()

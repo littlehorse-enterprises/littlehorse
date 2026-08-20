@@ -82,11 +82,12 @@ class LHStructField:
         vin: Annotated[str, LHStructField(masked=True)]
     """
 
-    __slots__ = ("name", "masked")
+    __slots__ = ("name", "masked", "description")
 
-    def __init__(self, name: str = "", masked: bool = False) -> None:
+    def __init__(self, name: str = "", masked: bool = False, description: str = "") -> None:
         self.name = name
         self.masked = masked
+        self.description = description
 
 
 class LHStructIgnore:
@@ -359,6 +360,7 @@ class _StructProperty:
         "default_value",
         "ignored",
         "masked",
+        "description",
     )
 
     def __init__(
@@ -370,6 +372,7 @@ class _StructProperty:
         self.python_name = python_name
         self.ignored = False
         self.masked = False
+        self.description = ""
         self.field_name = _snake_to_camel(python_name)
         self.default_value = default
 
@@ -385,6 +388,7 @@ class _StructProperty:
                     return
                 if isinstance(arg, LHStructField):
                     self.masked = arg.masked
+                    self.description = arg.description
                     if arg.name:
                         self.field_name = arg.name
 
@@ -416,6 +420,7 @@ class _StructProperty:
         return StructFieldDef(
             field_type=self.type_def,
             default_value=default_vv,
+            description=self.description if self.description else None,
         )
 
 
