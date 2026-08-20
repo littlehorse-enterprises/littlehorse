@@ -62,7 +62,7 @@ class Person:
 class ParkingTicketReport:
     vehicle_make: Annotated[str, LHStructField(description="The vehicle's manufacturer or brand name, ex: Suzuki")]
     vehicle_model: Annotated[str, LHStructField(description="The specific model and iteration of the vehicle, ex: Swift")]
-    license_plate_number: Annotated[str, LHStructField(description="The license plate number for the vehicle at the time of writing the report, ex; C90-ELE")]
+    license_plate_number: Annotated[str, LHStructField(description="The license plate number for the vehicle at the time of writing the report, ex: C90-ELE")]
 
 
 # ---------------------------------------------------------------------------

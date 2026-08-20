@@ -11,7 +11,7 @@ public class ParkingTicketReport
     [LHStructField(description: "The specific model and iteration of the vehicle, ex: Swift")]
     public string VehicleModel { get; set; } = string.Empty;
 
-    [LHStructField(description: "The license plate number for the vehicle at the time of writing the report, ex; C90-ELE")]
+    [LHStructField(description: "The license plate number for the vehicle at the time of writing the report, ex: C90-ELE")]
     public string LicensePlateNumber { get; set; } = string.Empty;
 
     public ParkingTicketReport()

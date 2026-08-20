@@ -20,7 +20,7 @@ public class ParkingTicketReport {
     private String vehicleModel;
 
     @LHStructField(
-            description = "The license plate number for the vehicle at the time of writing the report, ex; C90-ELE")
+            description = "The license plate number for the vehicle at the time of writing the report, ex: C90-ELE")
     private String licensePlateNumber;
 
     public ParkingTicketReport() {}
