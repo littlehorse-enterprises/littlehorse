@@ -9,10 +9,14 @@ import lombok.Setter;
 @Setter
 @LHStructDef("person")
 public class Person {
+
+    @LHStructField(description = "This is the first name of the person, i.e. their given name.")
     private String firstName;
+
+    @LHStructField(description = "This is the last name of the person, i.e. their family name.")
     private String lastName;
 
-    @LHStructField(masked = true, isNullable = true)
+    @LHStructField(description = "The home address of the person.", masked = true, isNullable = true)
     private Address homeAddress;
 
     public Person() {}

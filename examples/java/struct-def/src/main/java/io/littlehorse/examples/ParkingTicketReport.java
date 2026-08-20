@@ -1,6 +1,7 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,8 +10,14 @@ import lombok.Setter;
 @Setter
 @LHStructDef("parking-ticket-report")
 public class ParkingTicketReport {
+    @LHStructField(description = "The vehicle's manufacturer or brand name, ex: Suzuki")
     private String vehicleMake;
+
+    @LHStructField(description = "The specific model and iteration of the vehicle, ex: Swift")
     private String vehicleModel;
+
+    @LHStructField(
+            description = "The license plate number for the vehicle at the time of writing the report, ex; C90-ELE")
     private String licensePlateNumber;
 
     public ParkingTicketReport() {}
