@@ -2,6 +2,8 @@ module github.com/littlehorse-enterprises/littlehorse
 
 go 1.25.0
 
+toolchain go1.25.14
+
 require (
 	github.com/coreos/go-oidc/v3 v3.11.0
 	github.com/google/uuid v1.6.0
