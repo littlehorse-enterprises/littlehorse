@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef("address")
+@LHStructDef(value = "address", description = "A physical address, including street, city, planet, and postal code.")
 public class Address {
     @LHStructField(description = "The street number of the building.")
     private Integer houseNumber;

@@ -8,7 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef("parking-ticket-report")
+@LHStructDef(
+        value = "parking-ticket-report",
+        description =
+                "A parking ticket report capturing vehicle details and license plate at the time of the violation.")
 public class ParkingTicketReport {
     @LHStructField(description = "The vehicle's manufacturer or brand name, ex: Suzuki")
     private String vehicleMake;

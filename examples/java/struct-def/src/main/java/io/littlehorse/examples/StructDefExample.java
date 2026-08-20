@@ -76,7 +76,7 @@ public class StructDefExample {
     }
 
     private static void registerStructDef(LittleHorseBlockingStub client, Class<?> structDefClass) {
-        StructDefCompatibilityType compatibilityType = StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+        StructDefCompatibilityType compatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES;
 
         LHStructDefType structDefType = new LHStructDefType(structDefClass);
 

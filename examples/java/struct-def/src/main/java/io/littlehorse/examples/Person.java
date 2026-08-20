@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef("person")
+@LHStructDef(value = "person", description = "A person with a name and optional home address.")
 public class Person {
 
     @LHStructField(description = "This is the first name of the person, i.e. their given name.")
