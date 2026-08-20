@@ -4,12 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -471,9 +474,16 @@ public class LHLibUtilTest {
     void shouldSerializeMapAsNativeLHMapWhenRequested() {
         Map<String, Long> items = Map.of("apples", 3L, "bananas", 5L);
 
-        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, LHTypeAdapterRegistry.empty());
+        InlineMapDef mapType = InlineMapDef.newBuilder()
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .build();
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, mapType, LHTypeAdapterRegistry.empty());
 
         Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
+        Assertions.assertThat(val.getMap().hasMapType()).isTrue();
+        Assertions.assertThat(val.getMap().getMapType()).isEqualTo(mapType);
         Assertions.assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
 
         Map<String, Long> roundTripped = new HashMap<>();
@@ -486,8 +496,8 @@ public class LHLibUtilTest {
     @Test
     void shouldFailNativeMapSerializationForNonMapObject() {
         Assertions.assertThatThrownBy(
-                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", LHTypeAdapterRegistry.empty()))
-                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", null, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(LHSerdeException.class)
                 .hasMessageContaining("java.util.Map");
     }
 
@@ -512,7 +522,7 @@ public class LHLibUtilTest {
 
     @Test
     void shouldSerializeNullMapAsValueNotSet() {
-        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, LHTypeAdapterRegistry.empty());
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, null, LHTypeAdapterRegistry.empty());
         Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
     }
 
