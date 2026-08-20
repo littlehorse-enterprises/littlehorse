@@ -20,7 +20,7 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel structDef1 = makeCarStructDef();
         InlineStructDefModel structDef2 = makeCarStructDef();
 
-        assertThat(InlineStructDefUtil.equals(structDef1, structDef2)).isTrue();
+        assertThat(InlineStructDefUtil.schemasEqual(structDef1, structDef2)).isTrue();
     }
 
     @Test
@@ -28,7 +28,7 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel structDef1 = makeCarStructDef();
         InlineStructDefModel structDef2 = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
 
-        assertThat(InlineStructDefUtil.equals(structDef1, structDef2)).isFalse();
+        assertThat(InlineStructDefUtil.schemasEqual(structDef1, structDef2)).isFalse();
     }
 
     @Test
@@ -124,7 +124,7 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel withDesc =
                 makeCarStructDef(makeStructFieldWithDescription("model", VariableType.STR, "The car model name"));
 
-        assertThat(InlineStructDefUtil.equals(withoutDesc, withDesc)).isTrue();
+        assertThat(InlineStructDefUtil.schemasEqual(withoutDesc, withDesc)).isTrue();
     }
 
     @Test

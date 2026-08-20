@@ -86,7 +86,8 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         if (latestVersion == null) {
             spec.setId(new StructDefIdModel(name, 0));
         } else {
-            boolean schemaChanged = !InlineStructDefUtil.equals(spec.getStructDef(), latestVersion.getStructDef());
+            boolean schemaChanged =
+                    !InlineStructDefUtil.schemasEqual(spec.getStructDef(), latestVersion.getStructDef());
             boolean descriptionChanged = !Objects.equals(description, latestVersion.getDescription());
             boolean fieldDescriptionsChanged =
                     !InlineStructDefUtil.fieldDescriptionsEqual(spec.getStructDef(), latestVersion.getStructDef());

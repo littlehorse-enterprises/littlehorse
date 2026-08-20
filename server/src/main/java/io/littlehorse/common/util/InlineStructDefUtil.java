@@ -18,14 +18,14 @@ public class InlineStructDefUtil {
     private InlineStructDefUtil() {}
 
     /**
-     * Checks if two InlineStructDefModel objects are equal by comparing their underlying proto representations,
-     * excluding field-level descriptions (which are metadata, not schema).
+     * Checks if two InlineStructDefModel objects have the same schema by comparing their underlying
+     * proto representations, excluding field-level descriptions (which are metadata, not schema).
      *
      * @param left  the left InlineStructDefModel object
      * @param right the right InlineStructDefModel object
      * @return true if the schema (excluding field descriptions) is equal, false otherwise
      */
-    public static boolean equals(InlineStructDefModel left, InlineStructDefModel right) {
+    public static boolean schemasEqual(InlineStructDefModel left, InlineStructDefModel right) {
         InlineStructDef leftProto = withoutFieldDescriptions(left.toProto().build());
         InlineStructDef rightProto = withoutFieldDescriptions(right.toProto().build());
 
