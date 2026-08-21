@@ -42,6 +42,7 @@ export interface PrimitiveField<T = unknown> {
   readonly _tag: 'primitive'
   readonly variableType: VariableType
   readonly masked: boolean
+  readonly description?: string
   /** @internal Phantom property for type inference — never set at runtime. */
   readonly _phantom?: T
 }
@@ -53,6 +54,7 @@ export interface StructRefField<S extends LHStructSchema = LHStructSchema> {
   readonly _tag: 'struct'
   readonly schema: S
   readonly masked: boolean
+  readonly description?: string
 }
 
 /** A field in an `lhStruct` definition. */
@@ -145,6 +147,19 @@ export const lh = {
   masked<F extends PrimitiveField>(field: F): F {
     return { ...field, masked: true }
   },
+
+  /**
+   * Attaches a description to any field.
+   *
+   * ```ts
+   * const User = lhStruct('user', {
+   *   email: lh.described(lh.STR, 'The user\'s primary contact email'),
+   * })
+   * ```
+   */
+  described<F extends FieldDef>(field: F, description: string): F {
+    return { ...field, description }
+  },
 } as const
 
 // ── lhStruct factory ─────────────────────────────────────────────────
@@ -204,6 +219,7 @@ export function buildPutStructDefRequest(
     structDefFields[fieldName] = {
       fieldType: fieldDefToTypeDef(field),
       isNullable: false,
+      ...(field.description ? { description: field.description } : {}),
     }
   }
 
