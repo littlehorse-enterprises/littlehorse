@@ -1,8 +1,16 @@
 import { getStructDef } from '@/app/actions/getStructDef'
 import { getPrimitiveFormDefaultValue, getVariableCaseFromType } from '@/app/utils'
+import { TypeBadge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FieldGroup } from '@/components/ui/field'
-import { StructDefId, StructField, VariableType, VariableValue } from 'littlehorse-client/proto'
+import {
+  StructDefId,
+  StructField,
+  TypeDefinition,
+  VariableType,
+  VariableValue,
+  WfRunVariableAccessLevel,
+} from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
 import { createContext, FC, HTMLInputTypeAttribute, useContext, useEffect, useMemo, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
@@ -10,7 +18,9 @@ import useSWR from 'swr'
 import { STRUCT_FORM_FIELD_PREFIX, useStructFormContext, VariableCase } from '../context/StructFormContext'
 import { FormValues } from '../WfRunForm'
 import FormField from './FormField'
-import FormLabel from './FormLabel'
+import VariableFieldHeader from './VariableFieldHeader'
+import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
+import { routes } from '@/app/routes'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
@@ -25,7 +35,7 @@ interface StructPrimitiveFieldProps {
   description?: string
   component: React.ElementType
   type: HTMLInputTypeAttribute | undefined
-  variableType: VariableType
+  typeDef: TypeDefinition['definedType']
   variableCase: VariableCase
   structPath: string[]
   structDefId: StructDefId
@@ -42,7 +52,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   description,
   component,
   type,
-  variableType,
+  typeDef,
   variableCase,
   structPath,
   structDefId,
@@ -94,7 +104,7 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
       type={type}
       protoRequired={protoRequired}
       formRequired={formRequired}
-      variableType={variableType}
+      typeDef={typeDef}
       masked={masked}
       disabled={disabled}
     />
@@ -105,6 +115,8 @@ type StructDefGroupProps = {
   structDefId: StructDefId
   name: string
   required: boolean
+  accessLevel?: WfRunVariableAccessLevel
+  description?: string
   masked?: boolean
   defaultValue?: VariableValue
 }
@@ -113,6 +125,8 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
   structDefId,
   name: structName,
   required,
+  accessLevel,
+  description,
   masked,
   defaultValue,
 }) => {
@@ -160,11 +174,16 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
   })
 
   return (
-    <FieldGroup className="rounded-md border">
-      <div className="w-full border-b bg-gray-100">
-        <div className="flex items-center justify-between p-2">
-          <FormLabel label={structName} structDefId={structDefId} required={required} masked={masked} />
-          {!required && (
+    <div className="flex flex-col gap-2">
+      <VariableFieldHeader
+        name={structName}
+        description={description}
+        typeBadge={<TypeBadge>Struct</TypeBadge>}
+        accessLevel={accessLevel}
+        required={required}
+        masked={masked}
+        action={
+          !required && (
             <Button
               variant="outline"
               className="h-fit px-3 py-1 text-xs"
@@ -175,75 +194,79 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
             >
               {isDisabled ? 'Enter Value' : 'Set Null'}
             </Button>
+          )
+        }
+      />
+      <FieldGroup className="gap-2 rounded-md border">
+        <div className="flex w-full flex-col items-start gap-1 border-b bg-gray-100 p-2">
+          <LinkWithTenant
+            className="text-sm font-semibold underline"
+            href={routes.structDef.detail(structDefId.name, structDefId.version)}
+          >{`StructDef<${structDefId.name},v${structDefId.version}>`}</LinkWithTenant>
+          {structDef?.description && (
+            <OverflowText prose clampLines={1} className="text-xs text-muted-foreground" text={structDef.description} />
           )}
         </div>
-        {structDef?.description && (
-          <OverflowText
-            prose
-            clampLines={1}
-            className="px-2 pb-2 text-xs text-muted-foreground"
-            text={structDef.description}
-          />
-        )}
-      </div>
-      <div className="flex flex-col gap-4 p-3">
-        {Object.entries(structDef?.structDef?.fields ?? {}).map(
-          ([name, { fieldType, defaultValue: structFieldDefault, description }]) => {
-            const definedType = fieldType?.definedType
-            if (!definedType) return
+        <div className="flex flex-col gap-4 p-3">
+          {Object.entries(structDef?.structDef?.fields ?? {}).map(
+            ([name, { fieldType, defaultValue: structFieldDefault, description }]) => {
+              const definedType = fieldType?.definedType
+              if (!definedType) return
 
-            const inheritedDefaultValue = defaultStructFieldValues[name]?.value
-            const effectiveDefaultValue = inheritedDefaultValue ?? structFieldDefault
-            const hasDefaultValue = Boolean(effectiveDefaultValue)
+              const inheritedDefaultValue = defaultStructFieldValues[name]?.value
+              const effectiveDefaultValue = inheritedDefaultValue ?? structFieldDefault
+              const hasDefaultValue = Boolean(effectiveDefaultValue)
 
-            if (definedType.oneofKind === 'primitiveType') {
-              const variableType = definedType.primitiveType
-              if (variableType === undefined || variableType === null) return
+              if (definedType.oneofKind === 'primitiveType') {
+                const variableType = definedType.primitiveType
+                if (variableType === undefined || variableType === null) return
 
-              const { type, component } = VariableTypeToFieldComponent[variableType]
-              const variableCase = getVariableCaseFromType(variableType)
+                const { type, component } = VariableTypeToFieldComponent[variableType]
+                const variableCase = getVariableCaseFromType(variableType)
 
-              return (
-                <StructPrimitiveField
-                  key={name}
-                  fieldName={name}
-                  label={name}
-                  description={description}
-                  component={component}
-                  type={type}
-                  protoRequired={!hasDefaultValue}
-                  formRequired={!isDisabled}
-                  masked={Boolean(fieldType?.masked)}
-                  variableType={variableType}
-                  variableCase={variableCase as VariableCase}
-                  structPath={currentStructPath}
-                  structDefId={structDefId}
-                  disabled={parentDisabled || isDisabled}
-                  defaultValue={effectiveDefaultValue}
-                />
-              )
-            } else if (definedType.oneofKind === 'structDefId') {
-              return (
-                <StructDefParentContext.Provider
-                  key={definedType.structDefId.name}
-                  value={{
-                    parentDisabled: parentDisabled || isDisabled,
-                    nestedStructPath: currentStructPath,
-                  }}
-                >
-                  <StructDefGroup
-                    structDefId={definedType.structDefId}
-                    name={name}
-                    required={!hasDefaultValue}
-                    masked={fieldType?.masked}
+                return (
+                  <StructPrimitiveField
+                    key={name}
+                    fieldName={name}
+                    label={name}
+                    description={description}
+                    component={component}
+                    type={type}
+                    protoRequired={!hasDefaultValue}
+                    formRequired={!isDisabled}
+                    masked={Boolean(fieldType?.masked)}
+                    typeDef={definedType}
+                    variableCase={variableCase as VariableCase}
+                    structPath={currentStructPath}
+                    structDefId={structDefId}
+                    disabled={parentDisabled || isDisabled}
                     defaultValue={effectiveDefaultValue}
                   />
-                </StructDefParentContext.Provider>
-              )
+                )
+              } else if (definedType.oneofKind === 'structDefId') {
+                return (
+                  <StructDefParentContext.Provider
+                    key={definedType.structDefId.name}
+                    value={{
+                      parentDisabled: parentDisabled || isDisabled,
+                      nestedStructPath: currentStructPath,
+                    }}
+                  >
+                    <StructDefGroup
+                      structDefId={definedType.structDefId}
+                      name={name}
+                      required={!hasDefaultValue}
+                      description={description}
+                      masked={fieldType?.masked}
+                      defaultValue={effectiveDefaultValue}
+                    />
+                  </StructDefParentContext.Provider>
+                )
+              }
             }
-          }
-        )}
-      </div>
-    </FieldGroup>
+          )}
+        </div>
+      </FieldGroup>
+    </div>
   )
 }

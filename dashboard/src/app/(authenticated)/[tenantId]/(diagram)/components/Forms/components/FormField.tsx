@@ -1,10 +1,11 @@
 import { Field, FieldError } from '@/components/ui/field'
 import { cn } from '@/components/utils'
-import { VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { TypeDefinition, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { CircleAlert } from 'lucide-react'
 import { FC, HTMLInputTypeAttribute } from 'react'
 import { useFormContext } from 'react-hook-form'
-import FormLabel from './FormLabel'
+import VariableFieldHeader from './VariableFieldHeader'
+import { TypeDefinitionBadge } from './TypeDefinitionBadge'
 import type { PrimitiveFieldConfig } from './VariableTypeToFieldComponent'
 
 interface FormFieldProps {
@@ -16,7 +17,7 @@ interface FormFieldProps {
   type?: HTMLInputTypeAttribute
   inputMode?: PrimitiveFieldConfig['inputMode']
   validate?: PrimitiveFieldConfig['validate']
-  variableType?: VariableType
+  typeDef?: TypeDefinition['definedType']
   as: React.ElementType
   accessLevel?: WfRunVariableAccessLevel
   masked?: boolean
@@ -34,7 +35,7 @@ const FormField: FC<FormFieldProps> = ({
   inputMode,
   validate,
   accessLevel,
-  variableType,
+  typeDef,
   masked,
   disabled = false,
 }) => {
@@ -46,10 +47,10 @@ const FormField: FC<FormFieldProps> = ({
 
   return (
     <Field>
-      <FormLabel
-        label={label}
+      <VariableFieldHeader
+        name={label}
         description={description}
-        variableType={variableType}
+        typeBadge={<TypeDefinitionBadge typeDef={typeDef} />}
         accessLevel={accessLevel}
         required={protoRequired}
         masked={masked}

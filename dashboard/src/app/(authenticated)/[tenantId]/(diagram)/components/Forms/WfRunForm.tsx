@@ -73,10 +73,15 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
           as={Input}
           id="customWfRunId"
           type="text"
-          variableType={VariableType.STR}
+          typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
         />
         {wfSpec.parentWfSpec && (
-          <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
+          <FormField
+            label={'Parent WfRun Id'}
+            as={Input}
+            id="parentWfRunId"
+            typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
+          />
         )}
 
         {sortedVariables.map((variable: ThreadVarDef, index) => (
