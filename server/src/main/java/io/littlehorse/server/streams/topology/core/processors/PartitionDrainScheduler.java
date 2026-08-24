@@ -33,9 +33,19 @@ import org.apache.kafka.streams.processor.api.Record;
  * accumulators and forwarding them as repartition commands.
  *
  * <p>The historical metric-window replay that used to live here now runs off-thread in
- * {@link PartitionMetricsCatchUpJob}. What remains is work that is inherently bound to the Kafka
- * Streams thread, because it reads the {@link PartitionLocalBuffer}s that {@code process()} writes
- * to and which are explicitly not thread safe.
+ * {@link PartitionMetricsCatchUpJob}, and the BulkJob shard scan in {@code BulkJobScanJob}. What
+ * remains is deliberately NOT a background job, and will not become one:
+ *
+ * <ul>
+ *   <li>It reads {@link PartitionLocalBuffer}s, which are write-through caches over the core store.
+ *       The drain removes an entry from the buffer and deletes it from the store as two steps, and
+ *       command processing reads the buffer then falls back to the store. Those only compose
+ *       correctly because both run on the Streams thread — see the buffer's javadoc.</li>
+ *   <li>There is nothing expensive to offload. Everything here is bounded by one flush interval:
+ *       counted tags are fully drained on every tick, and metric windows are bounded by the number
+ *       of active specs in the last minute. Neither can grow into the kind of unbounded RocksDB scan
+ *       that motivated moving the other two.</li>
+ * </ul>
  */
 @Slf4j
 class PartitionDrainScheduler {
