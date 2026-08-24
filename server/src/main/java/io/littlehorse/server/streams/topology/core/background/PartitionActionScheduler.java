@@ -164,9 +164,10 @@ public final class PartitionActionScheduler implements Closeable {
     }
 
     /**
-     * Visible for testing: how many actions are waiting to be applied.
+     * Current action queue depth. This is the signal that the worker is outrunning the punctuator, so
+     * it is worth exporting as a gauge.
      */
-    int pendingCount() {
+    public int pendingCount() {
         return pending.size();
     }
 
@@ -213,6 +214,9 @@ public final class PartitionActionScheduler implements Closeable {
             job.run(jobContext);
         } catch (InterruptedException e) {
             throw e;
+        } catch (UncheckedInterruptedException e) {
+            // A job was interrupted while scheduling an action from inside shared model code.
+            throw e.getCause();
         } catch (InvalidStateStoreException | LHApiException e) {
             // Kafka Streams is rebalancing or restoring; this is expected and transient.
             log.debug("IQ store unavailable for job {} on partition {}; backing off", job.name(), taskId.partition());

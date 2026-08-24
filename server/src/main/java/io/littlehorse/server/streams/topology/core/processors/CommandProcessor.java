@@ -68,9 +68,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private final LHProcessingExceptionHandler exceptionHandler;
     private final CommandProcessorMetrics metrics;
-    private BulkJobPunctuator bulkJobPunctuator;
-    private static final Duration BULK_JOB_PUNCTUATION_BUDGET = Duration.ofMillis(50);
-    private final long bulkJobMaxCommandsPerPunctuation;
 
     /**
      * The single punctuation tick for this processor. Everything that used to have its own
@@ -82,19 +79,21 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private static final Duration ACTION_DRAIN_BUDGET = Duration.ofMillis(50);
 
     private static final int MAX_ACTIONS_PER_PUNCTUATION = 500;
-    private static final Duration BULK_JOB_INTERVAL = Duration.ofSeconds(1);
 
     private PartitionActionScheduler backgroundScheduler;
     private PartitionMetricsCatchUpJob metricsCatchUpJob;
+    private BulkJobScanJob bulkJobScanJob;
 
     /**
-     * Cadence gates for the punctuators that have not been migrated to background jobs yet. These
-     * are driven by the punctuation timestamp rather than {@code Instant.now()} so that the schedule
-     * is a pure function of the tick, which keeps it deterministic under test.
+     * Cadence gate for the only work that still runs inline on the Kafka Streams thread. It is driven
+     * by the punctuation timestamp rather than {@code Instant.now()} so the schedule is a pure
+     * function of the tick, which keeps it deterministic under test.
+     *
+     * <p>It exists because the unified tick ({@link #PUNCTUATION_TICK}) is much faster than the
+     * cadence this work wants; without it the drain would run 30x more often than it did when it had
+     * its own {@code ctx.schedule()}, and would forward correspondingly smaller batches.
      */
     private long nextMetricsRunAt = Long.MIN_VALUE;
-
-    private long nextBulkJobRunAt = Long.MIN_VALUE;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -112,7 +111,6 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.asyncWaiters = asyncWaiters;
         this.metricWindows = new PartitionLocalBuffer<>();
         this.countedTags = new PartitionLocalBuffer<>();
-        this.bulkJobMaxCommandsPerPunctuation = config.getMaxBulkJobCommandsPerTick();
     }
 
     @Override
@@ -122,12 +120,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         this.metricsCatchUpJob = new PartitionMetricsCatchUpJob(config);
+        this.bulkJobScanJob = new BulkJobScanJob(config);
         this.partitionDrain =
                 new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, metricsCatchUpJob::isComplete);
         onPartitionClaimed();
-
-        this.bulkJobPunctuator = new BulkJobPunctuator(
-                ctx, config, metadataCache, BULK_JOB_PUNCTUATION_BUDGET, bulkJobMaxCommandsPerPunctuation);
 
         // The per-partition worker thread. Jobs registered here run OFF the Streams thread and
         // communicate back exclusively through PartitionActions.
@@ -142,10 +138,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     /**
-     * The historical metric-window replay, which no longer runs on the Kafka Streams thread.
+     * All periodic work that does not need the Kafka Streams thread.
      */
     private List<PartitionBackgroundJob> backgroundJobs() {
-        return List.of(metricsCatchUpJob);
+        return List.of(metricsCatchUpJob, bulkJobScanJob);
     }
 
     /**
@@ -154,7 +150,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
      * <ol>
      *   <li>Applies whatever the background worker produced since the last tick, under a strict
      *       time/count budget so a busy worker can never blow the transaction timeout.</li>
-     *   <li>Runs the not-yet-migrated punctuators inline, each gated by its own cadence.</li>
+     *   <li>Flushes the partition-local buffers, which cannot leave this thread.</li>
      * </ol>
      */
     private void punctuate(long timestamp) {
@@ -163,11 +159,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
         if (timestamp >= nextMetricsRunAt) {
             nextMetricsRunAt = timestamp + LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL.toMillis();
-            collectPartitionMetrics(timestamp);
-        }
-        if (timestamp >= nextBulkJobRunAt) {
-            nextBulkJobRunAt = timestamp + BULK_JOB_INTERVAL.toMillis();
-            bulkJobPunctuator.punctuate(timestamp);
+            drainPartitionLocalBuffers();
         }
     }
 
@@ -276,7 +268,11 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         server.drainPartitionTaskQueue(ctx.taskId());
     }
 
-    private void collectPartitionMetrics(long timestamp) {
+    /**
+     * Flushes the partition-local metric and counted-tag buffers. Must stay on the Kafka Streams
+     * thread: the buffers it reads are written by {@code process()} and are not thread safe.
+     */
+    private void drainPartitionLocalBuffers() {
         ClusterScopedStore clusterScopedStore =
                 ClusterScopedStore.newInstance(ctx.getStateStore(ServerTopology.CORE_STORE), new BackgroundContext());
         partitionDrain.punctuate(clusterScopedStore);

@@ -31,7 +31,11 @@ public final class PartitionJobContext {
     private final PartitionActionScheduler scheduler;
     private final BackgroundContext executionContext = new BackgroundContext();
 
-    PartitionJobContext(
+    /**
+     * Normally created by {@link PartitionActionScheduler} for its worker thread. Public so that
+     * jobs living in other packages can be unit tested by driving {@code run()} synchronously.
+     */
+    public PartitionJobContext(
             int partition, LHServerConfig config, CoreStoreProvider storeProvider, PartitionActionScheduler scheduler) {
         this.partition = partition;
         this.config = config;
@@ -91,6 +95,20 @@ public final class PartitionJobContext {
 
     public void forward(Record<String, CommandProcessorOutput> record) throws InterruptedException {
         schedule(PartitionAction.forward(record));
+    }
+
+    /**
+     * Same as {@link #forward}, for call sites that cannot declare {@link InterruptedException} —
+     * for example a {@code Consumer} handed to shared model code. The scheduler unwraps the
+     * resulting {@link UncheckedInterruptedException} so revocation still unwinds cleanly.
+     */
+    public void forwardUnchecked(Record<String, CommandProcessorOutput> record) {
+        try {
+            forward(record);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new UncheckedInterruptedException(e);
+        }
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore() {
