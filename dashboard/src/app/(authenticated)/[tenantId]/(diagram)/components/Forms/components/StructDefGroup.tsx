@@ -12,6 +12,7 @@ import {
   WfRunVariableAccessLevel,
 } from 'littlehorse-client/proto'
 import { useParams } from 'next/navigation'
+import { ExternalLink } from 'lucide-react'
 import { createContext, FC, HTMLInputTypeAttribute, useContext, useEffect, useMemo, useState } from 'react'
 import { useFormContext, useWatch } from 'react-hook-form'
 import useSWR from 'swr'
@@ -200,12 +201,12 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
       <FieldGroup className="gap-2 rounded-md border">
         <div className="flex w-full flex-col items-start gap-1 border-b bg-gray-100 p-2">
           <LinkWithTenant
-            className="text-sm font-semibold underline"
+            className="flex w-full items-center gap-2 text-sm"
             href={routes.structDef.detail(structDefId.name, structDefId.version)}
-          >{`StructDef<${structDefId.name},v${structDefId.version}>`}</LinkWithTenant>
-          {structDef?.description && (
-            <OverflowText prose clampLines={1} className="text-xs text-muted-foreground" text={structDef.description} />
-          )}
+          >
+            <span>{`Struct<${structDefId.name},v${structDefId.version}>`}</span>
+            <ExternalLink aria-hidden="true" className="size-4 shrink-0" />
+          </LinkWithTenant>
         </div>
         <div className="flex flex-col gap-4 p-3">
           {Object.entries(structDef?.structDef?.fields ?? {}).map(
