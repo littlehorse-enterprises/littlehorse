@@ -25,9 +25,14 @@ import { routes } from '@/app/routes'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
-const StructDefParentContext = createContext<{ parentDisabled: boolean; nestedStructPath: string[] }>({
+const StructDefParentContext = createContext<{
+  parentDisabled: boolean
+  nestedStructPath: string[]
+  includeDefaultValues: boolean
+}>({
   parentDisabled: false,
   nestedStructPath: [],
+  includeDefaultValues: false,
 })
 
 interface StructPrimitiveFieldProps {
@@ -45,6 +50,7 @@ interface StructPrimitiveFieldProps {
   masked: boolean
   disabled: boolean
   defaultValue?: VariableValue
+  includeDefaultValue: boolean
 }
 
 const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
@@ -62,9 +68,10 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
   masked,
   disabled,
   defaultValue,
+  includeDefaultValue,
 }) => {
   const structForm = useStructFormContext()
-  const { control, setValue } = useFormContext<FormValues>()
+  const { control, getFieldState, setValue } = useFormContext<FormValues>()
   const fieldId = useMemo(() => [STRUCT_FORM_FIELD_PREFIX, ...structPath, fieldName].join('.'), [structPath, fieldName])
   const value = useWatch({ name: fieldId, control })
 
@@ -93,8 +100,25 @@ const StructPrimitiveField: FC<StructPrimitiveFieldProps> = ({
       return
     }
 
+    if (!includeDefaultValue && !getFieldState(fieldId).isDirty) {
+      structForm.clearFieldValue(structPath, fieldName)
+      return
+    }
+
     structForm.setPrimitiveFieldValue(structPath, structDefId, fieldName, variableCase, value)
-  }, [disabled, fieldId, fieldName, structDefId, structForm, structPath, value, variableCase, setValue])
+  }, [
+    disabled,
+    fieldId,
+    fieldName,
+    getFieldState,
+    includeDefaultValue,
+    structDefId,
+    structForm,
+    structPath,
+    value,
+    variableCase,
+    setValue,
+  ])
 
   return (
     <FormField
@@ -133,7 +157,11 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
 }) => {
   const tenantId = useParams().tenantId as string
   const { unregister } = useFormContext<FormValues>()
-  const { parentDisabled, nestedStructPath } = useContext(StructDefParentContext)
+  const {
+    parentDisabled,
+    nestedStructPath,
+    includeDefaultValues: parentIncludesDefaultValues,
+  } = useContext(StructDefParentContext)
   const structForm = useStructFormContext()
   const [isDisabled, setIsDisabled] = useState(parentDisabled)
 
@@ -142,6 +170,7 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
   }, [parentDisabled])
 
   const currentStructPath = useMemo(() => [...nestedStructPath, structName], [structName, nestedStructPath])
+  const includeDefaultValues = nestedStructPath.length === 0 ? required : parentIncludesDefaultValues
 
   useEffect(() => {
     const fieldPrefix = [STRUCT_FORM_FIELD_PREFIX, ...currentStructPath].join('.')
@@ -156,13 +185,13 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
       }
     }
 
-    structForm.registerStructPath(currentStructPath, structDefId)
+    structForm.registerStructPath(currentStructPath, structDefId, includeDefaultValues)
 
     return () => {
       structForm.unregisterStructPath(currentStructPath)
       unregister(fieldPrefix)
     }
-  }, [currentStructPath, isDisabled, structDefId, structForm, unregister])
+  }, [currentStructPath, includeDefaultValues, isDisabled, structDefId, structForm, unregister])
 
   const defaultStructFieldValues = useMemo<Record<string, StructField>>(() => {
     const union = defaultValue?.value
@@ -242,15 +271,17 @@ export const StructDefGroup: FC<StructDefGroupProps> = ({
                     structDefId={structDefId}
                     disabled={parentDisabled || isDisabled}
                     defaultValue={effectiveDefaultValue}
+                    includeDefaultValue={includeDefaultValues}
                   />
                 )
               } else if (definedType.oneofKind === 'structDefId') {
                 return (
                   <StructDefParentContext.Provider
-                    key={definedType.structDefId.name}
+                    key={name}
                     value={{
                       parentDisabled: parentDisabled || isDisabled,
                       nestedStructPath: currentStructPath,
+                      includeDefaultValues,
                     }}
                   >
                     <StructDefGroup
