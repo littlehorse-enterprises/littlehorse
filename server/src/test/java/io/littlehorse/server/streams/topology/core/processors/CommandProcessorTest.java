@@ -26,6 +26,7 @@ import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
@@ -39,6 +40,7 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,6 +88,16 @@ public class CommandProcessorTest {
         commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager, mock(), mock());
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
         globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
+        // init() spawns the per-partition background worker, which reads through this provider.
+        CoreStoreProvider coreStoreProvider = mock();
+        when(coreStoreProvider.nativeCoreStore(anyInt())).thenReturn(nativeInMemoryStore);
+        when(server.getCoreStoreProvider()).thenReturn(coreStoreProvider);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // Stops the background worker; without this each test leaks a thread for the whole suite.
+        commandProcessor.close();
     }
 
     @Test
@@ -136,17 +148,9 @@ public class CommandProcessorTest {
         metricWindow.incrementCount("started");
         getMetricWindows().put(metricWindow);
 
-        // There is now a single punctuator; the work it does is gated by the punctuation timestamp,
-        // so the tick has to be advanced to make the metrics drain run twice.
-        long firstTick = System.currentTimeMillis();
-        long secondTick = firstTick + LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL.toMillis();
-
-        // Force the flusher into MEMORY mode by triggering a first punctuation (catch-up with empty store)
-        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(firstTick);
-        mockProcessorContext.resetForwards();
-
-        // Now punctuate again — this time it reads from memory
-        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(secondTick);
+        // There is now a single punctuator, and the historical replay it used to have to run first
+        // lives on the background worker, so one tick is enough to flush the in-memory window.
+        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
 
         assertThat(mockProcessorContext.forwarded()).hasSize(2);
         Record<? extends String, ? extends CommandProcessorOutput> forwardedRecord =

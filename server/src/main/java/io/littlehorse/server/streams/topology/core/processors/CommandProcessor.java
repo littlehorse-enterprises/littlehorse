@@ -85,6 +85,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private static final Duration BULK_JOB_INTERVAL = Duration.ofSeconds(1);
 
     private PartitionActionScheduler backgroundScheduler;
+    private PartitionMetricsCatchUpJob metricsCatchUpJob;
 
     /**
      * Cadence gates for the punctuators that have not been migrated to background jobs yet. These
@@ -120,7 +121,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.ctx = ctx;
         this.nativeStore = ctx.getStateStore(ServerTopology.CORE_STORE);
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
-        this.partitionDrain = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx);
+        this.metricsCatchUpJob = new PartitionMetricsCatchUpJob(config);
+        this.partitionDrain =
+                new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, metricsCatchUpJob::isComplete);
         onPartitionClaimed();
 
         this.bulkJobPunctuator = new BulkJobPunctuator(
@@ -139,11 +142,10 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     }
 
     /**
-     * TODO: migrate the remaining inline punctuators (partition metrics drain, bulk job scan) to
-     * {@link PartitionBackgroundJob}s so that this list is the only place work is registered.
+     * The historical metric-window replay, which no longer runs on the Kafka Streams thread.
      */
     private List<PartitionBackgroundJob> backgroundJobs() {
-        return List.of();
+        return List.of(metricsCatchUpJob);
     }
 
     /**
