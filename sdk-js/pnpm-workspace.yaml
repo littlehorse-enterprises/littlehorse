@@ -5,5 +5,5 @@ minimumReleaseAgeExclude:
 
 overrides:
   '@babel/core@<=7.29.0': '>=7.29.6'
-  js-yaml@<=4.1.1: '>=4.2.0'
+  js-yaml@<=4.3.0: 4.3.1
   protobufjs@<=7.6.2: '>=7.6.3'
