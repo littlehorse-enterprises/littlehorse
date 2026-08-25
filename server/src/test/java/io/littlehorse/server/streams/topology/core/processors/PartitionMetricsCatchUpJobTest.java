@@ -67,8 +67,8 @@ public class PartitionMetricsCatchUpJobTest {
 
     private KeyValueStore<String, Bytes> nativeCoreStore;
     private ClusterScopedStore coreStore;
-    private PartitionActionApplier applier;
-    private PartitionActionScheduler scheduler;
+    private PartitionActionApplier<CommandProcessorOutput> applier;
+    private PartitionActionScheduler<CommandProcessorOutput> scheduler;
     private PartitionMetricsCatchUpJob job;
 
     @BeforeEach
@@ -76,7 +76,7 @@ public class PartitionMetricsCatchUpJobTest {
         nativeCoreStore = TestUtil.testStore(ServerTopology.CORE_STORE);
         nativeCoreStore.init(mockProcessorContext.getStateStoreContext(), nativeCoreStore);
         coreStore = ClusterScopedStore.newInstance(nativeCoreStore, context);
-        applier = new PartitionActionApplier(mockProcessorContext, nativeCoreStore);
+        applier = new PartitionActionApplier<>(mockProcessorContext, nativeCoreStore);
         when(storeProvider.nativeCoreStore(TASK_ID.partition())).thenReturn(nativeCoreStore);
         job = new PartitionMetricsCatchUpJob(config);
     }
@@ -187,7 +187,7 @@ public class PartitionMetricsCatchUpJobTest {
     // ------------------------------------------------------------------
 
     private void start() {
-        scheduler = new PartitionActionScheduler(TASK_ID, config, storeProvider, List.of(job));
+        scheduler = new PartitionActionScheduler<>(TASK_ID, config, storeProvider, List.of(job));
         scheduler.start();
     }
 

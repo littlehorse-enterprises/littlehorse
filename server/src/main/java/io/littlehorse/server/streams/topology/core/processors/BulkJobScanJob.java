@@ -55,7 +55,7 @@ import org.apache.kafka.streams.processor.api.Record;
  * because IQ reads the same local RocksDB instance the processor writes to.
  */
 @Slf4j
-public class BulkJobScanJob implements PartitionBackgroundJob {
+public class BulkJobScanJob implements PartitionBackgroundJob<CommandProcessorOutput> {
 
     private static final Duration INTERVAL = Duration.ofSeconds(1);
 
@@ -103,7 +103,7 @@ public class BulkJobScanJob implements PartitionBackgroundJob {
     }
 
     @Override
-    public void run(PartitionJobContext ctx) throws InterruptedException {
+    public void run(PartitionJobContext<CommandProcessorOutput> ctx) throws InterruptedException {
         final Instant deadline = clock.get().plus(scanBudget);
         final AtomicLong remainingCommandBudget = new AtomicLong(maxCommandsPerRun);
         final BooleanSupplier outOfBudget = () -> clock.get().isAfter(deadline) || remainingCommandBudget.get() == 0;
@@ -120,7 +120,7 @@ public class BulkJobScanJob implements PartitionBackgroundJob {
     /**
      * Oldest first, so a long-running job cannot be starved by newer ones.
      */
-    private List<ActiveBulkJobModel> findRunningJobs(PartitionJobContext ctx) {
+    private List<ActiveBulkJobModel> findRunningJobs(PartitionJobContext<CommandProcessorOutput> ctx) {
         ReadOnlyClusterScopedStore clusterStore = ctx.metadataStore();
         String startKey = GetableClassEnum.ACTIVE_BULK_JOB.getNumber() + "/";
         String endKey = startKey + "~";
@@ -137,7 +137,7 @@ public class BulkJobScanJob implements PartitionBackgroundJob {
     }
 
     private void advanceShard(
-            PartitionJobContext ctx,
+            PartitionJobContext<CommandProcessorOutput> ctx,
             ActiveBulkJobModel runningJob,
             BooleanSupplier outOfBudget,
             AtomicLong remainingCommandBudget)
@@ -178,7 +178,10 @@ public class BulkJobScanJob implements PartitionBackgroundJob {
     }
 
     private Record<String, CommandProcessorOutput> shardReport(
-            PartitionJobContext ctx, BulkJobModel job, BulkJobShardCursorModel cursor, TenantIdModel tenantId) {
+            PartitionJobContext<CommandProcessorOutput> ctx,
+            BulkJobModel job,
+            BulkJobShardCursorModel cursor,
+            TenantIdModel tenantId) {
         BulkJobShardReportModel report = new BulkJobShardReportModel(
                 job.getId(),
                 ctx.partition(),

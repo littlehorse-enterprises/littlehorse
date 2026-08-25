@@ -6,7 +6,6 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
-import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Record;
@@ -23,12 +22,12 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * <p><b>Writes</b> are not possible. A job can only {@link #schedule(PartitionAction)} an action,
  * which the punctuator later applies on the Streams thread.
  */
-public final class PartitionJobContext {
+public final class PartitionJobContext<VOut> {
 
     private final int partition;
     private final LHServerConfig config;
     private final CoreStoreProvider storeProvider;
-    private final PartitionActionScheduler scheduler;
+    private final PartitionActionScheduler<VOut> scheduler;
     private final BackgroundContext executionContext = new BackgroundContext();
 
     /**
@@ -36,7 +35,10 @@ public final class PartitionJobContext {
      * jobs living in other packages can be unit tested by driving {@code run()} synchronously.
      */
     public PartitionJobContext(
-            int partition, LHServerConfig config, CoreStoreProvider storeProvider, PartitionActionScheduler scheduler) {
+            int partition,
+            LHServerConfig config,
+            CoreStoreProvider storeProvider,
+            PartitionActionScheduler<VOut> scheduler) {
         this.partition = partition;
         this.config = config;
         this.storeProvider = storeProvider;
@@ -78,10 +80,18 @@ public final class PartitionJobContext {
     }
 
     /**
+     * Number of actions produced by this worker that the punctuator has not applied yet. Jobs whose
+     * next scan must not overlap the effects of the previous one use this as a barrier.
+     */
+    public int pendingActions() {
+        return scheduler.pendingCount();
+    }
+
+    /**
      * Enqueues an effect to be applied by the next punctuation. Blocks if the queue is full, which
      * is how backpressure reaches the job: the worker thread cannot outrun the Streams thread.
      */
-    public void schedule(PartitionAction action) throws InterruptedException {
+    public void schedule(PartitionAction<VOut> action) throws InterruptedException {
         scheduler.enqueue(action);
     }
 
@@ -93,7 +103,7 @@ public final class PartitionJobContext {
         schedule(PartitionAction.delete(tenantId, value));
     }
 
-    public void forward(Record<String, CommandProcessorOutput> record) throws InterruptedException {
+    public void forward(Record<String, ? extends VOut> record) throws InterruptedException {
         schedule(PartitionAction.forward(record));
     }
 
@@ -102,7 +112,7 @@ public final class PartitionJobContext {
      * for example a {@code Consumer} handed to shared model code. The scheduler unwraps the
      * resulting {@link UncheckedInterruptedException} so revocation still unwinds cleanly.
      */
-    public void forwardUnchecked(Record<String, CommandProcessorOutput> record) {
+    public void forwardUnchecked(Record<String, ? extends VOut> record) {
         try {
             forward(record);
         } catch (InterruptedException e) {

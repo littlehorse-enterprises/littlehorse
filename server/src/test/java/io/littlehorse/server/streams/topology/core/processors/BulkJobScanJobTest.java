@@ -93,8 +93,8 @@ public class BulkJobScanJobTest {
     private TenantScopedStore tenantGlobalStore;
     private TenantScopedStore tenantCoreStore;
 
-    private PartitionActionApplier applier;
-    private PartitionActionScheduler scheduler;
+    private PartitionActionApplier<CommandProcessorOutput> applier;
+    private PartitionActionScheduler<CommandProcessorOutput> scheduler;
     private BulkJobScanJob job;
 
     @BeforeEach
@@ -110,7 +110,7 @@ public class BulkJobScanJobTest {
         tenantGlobalStore = TenantScopedStore.newInstance(globalStore, tenantId, context);
         tenantCoreStore = TenantScopedStore.newInstance(coreStore, tenantId, context);
 
-        applier = new PartitionActionApplier(mockProcessorContext, coreStore);
+        applier = new PartitionActionApplier<>(mockProcessorContext, coreStore);
         job = newJob(UNLIMITED_TIME_BUDGET, UNLIMITED_COMMAND_BUDGET, Instant::now);
     }
 
@@ -377,11 +377,11 @@ public class BulkJobScanJobTest {
      * Lazily built so that {@link #scheduler} is shared by every call within a test, which is what
      * lets the budget clock observe the action queue.
      */
-    private PartitionJobContext jobContext() {
+    private PartitionJobContext<CommandProcessorOutput> jobContext() {
         if (scheduler == null) {
-            scheduler = new PartitionActionScheduler(TASK_ID, config, storeProvider, List.of());
+            scheduler = new PartitionActionScheduler<>(TASK_ID, config, storeProvider, List.of());
         }
-        return new PartitionJobContext(TASK_ID.partition(), config, storeProvider, scheduler);
+        return new PartitionJobContext<>(TASK_ID.partition(), config, storeProvider, scheduler);
     }
 
     private void seedRunningJob(String jobId, BulkDeleteWfRunModel deleteWfRun) {

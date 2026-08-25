@@ -50,7 +50,7 @@ import org.apache.kafka.streams.processor.api.Record;
  * {@link MetricsHintModel} and picks up from there on the next tick.
  */
 @Slf4j
-public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob {
+public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob<CommandProcessorOutput> {
 
     private static final Duration INTERVAL = Duration.ofMillis(200);
 
@@ -90,7 +90,7 @@ public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob {
     }
 
     @Override
-    public void run(PartitionJobContext ctx) throws InterruptedException {
+    public void run(PartitionJobContext<CommandProcessorOutput> ctx) throws InterruptedException {
         if (complete.get()) {
             return;
         }
@@ -143,7 +143,7 @@ public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob {
      * Emits the two aggregate commands (spec-level and tenant-level) for a window, plus the delete
      * that retires it from the partition-local store.
      */
-    private void scheduleAggregation(PartitionJobContext ctx, PartitionMetricWindowModel window)
+    private void scheduleAggregation(PartitionJobContext<CommandProcessorOutput> ctx, PartitionMetricWindowModel window)
             throws InterruptedException {
         // Each record gets its OWN copy of the window. The tenant-level aggregate is produced by
         // clearing the spec/task id on the window's id, and because actions are applied later on the

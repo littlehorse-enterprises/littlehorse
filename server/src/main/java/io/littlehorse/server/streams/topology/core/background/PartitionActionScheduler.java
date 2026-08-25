@@ -35,7 +35,7 @@ import org.apache.kafka.streams.processor.TaskId;
  * store this server no longer owns.
  */
 @Slf4j
-public final class PartitionActionScheduler implements Closeable {
+public final class PartitionActionScheduler<VOut> implements Closeable {
 
     /**
      * Bounded on purpose. A full queue blocks the worker, which is exactly the backpressure we want:
@@ -54,16 +54,19 @@ public final class PartitionActionScheduler implements Closeable {
     private static final Duration STORE_UNAVAILABLE_BACKOFF = Duration.ofSeconds(1);
 
     private final TaskId taskId;
-    private final BlockingQueue<PartitionAction> pending;
-    private final List<PartitionBackgroundJob> jobs;
-    private final PartitionJobContext jobContext;
+    private final BlockingQueue<PartitionAction<VOut>> pending;
+    private final List<PartitionBackgroundJob<VOut>> jobs;
+    private final PartitionJobContext<VOut> jobContext;
 
     private volatile boolean running;
     private volatile boolean closed;
     private Thread worker;
 
     public PartitionActionScheduler(
-            TaskId taskId, LHServerConfig config, CoreStoreProvider storeProvider, List<PartitionBackgroundJob> jobs) {
+            TaskId taskId,
+            LHServerConfig config,
+            CoreStoreProvider storeProvider,
+            List<PartitionBackgroundJob<VOut>> jobs) {
         this(taskId, config, storeProvider, jobs, DEFAULT_QUEUE_CAPACITY);
     }
 
@@ -71,12 +74,12 @@ public final class PartitionActionScheduler implements Closeable {
             TaskId taskId,
             LHServerConfig config,
             CoreStoreProvider storeProvider,
-            List<PartitionBackgroundJob> jobs,
+            List<PartitionBackgroundJob<VOut>> jobs,
             int queueCapacity) {
         this.taskId = taskId;
         this.jobs = List.copyOf(jobs);
         this.pending = new ArrayBlockingQueue<>(queueCapacity);
-        this.jobContext = new PartitionJobContext(taskId.partition(), config, storeProvider, this);
+        this.jobContext = new PartitionJobContext<>(taskId.partition(), config, storeProvider, this);
     }
 
     /**
@@ -102,7 +105,7 @@ public final class PartitionActionScheduler implements Closeable {
     /**
      * Called by the worker thread (via {@link PartitionJobContext}). Blocks when the queue is full.
      */
-    void enqueue(PartitionAction action) throws InterruptedException {
+    void enqueue(PartitionAction<VOut> action) throws InterruptedException {
         if (closed) {
             // Partition was revoked while the job was mid-flight; drop the effect on the floor.
             throw new InterruptedException("Partition " + taskId.partition() + " no longer owned");
@@ -111,16 +114,25 @@ public final class PartitionActionScheduler implements Closeable {
     }
 
     /**
+     * Number of actions waiting to be applied. This is the signal that the worker is outrunning the
+     * punctuator, and is also what lets a job implement a barrier: "do not start another scan until
+     * everything the previous one produced has taken effect".
+     */
+    public int pendingCount() {
+        return pending.size();
+    }
+
+    /**
      * Applies queued actions on the Kafka Streams thread, in FIFO order, until the queue is empty or
      * the budget runs out. Whatever is left over is picked up by the next punctuation.
      *
      * @return the number of actions applied.
      */
-    public int drain(PartitionActionApplier applier, Duration budget, int maxActions) {
+    public int drain(PartitionActionApplier<VOut> applier, Duration budget, int maxActions) {
         Instant deadline = Instant.now().plus(budget);
         int applied = 0;
         while (applied < maxActions) {
-            PartitionAction action = pending.poll();
+            PartitionAction<VOut> action = pending.poll();
             if (action == null) {
                 break;
             }
@@ -155,7 +167,7 @@ public final class PartitionActionScheduler implements Closeable {
             }
         }
         // Anything still queued belongs to a partition we no longer own.
-        List<PartitionAction> discarded = new ArrayList<>();
+        List<PartitionAction<VOut>> discarded = new ArrayList<>();
         pending.drainTo(discarded);
         if (!discarded.isEmpty()) {
             log.info(
@@ -163,20 +175,8 @@ public final class PartitionActionScheduler implements Closeable {
         }
     }
 
-    /**
-     * Current action queue depth. This is the signal that the worker is outrunning the punctuator, so
-     * it is worth exporting as a gauge.
-     */
-    public int pendingCount() {
-        return pending.size();
-    }
-
-    /**
-     * Visible for testing: whether the worker thread is still alive.
-     */
     boolean isWorkerAlive() {
-        Thread current = worker;
-        return current != null && current.isAlive();
+        return worker != null && worker.isAlive();
     }
 
     private void loop() {
@@ -186,7 +186,7 @@ public final class PartitionActionScheduler implements Closeable {
         while (running && !Thread.currentThread().isInterrupted()) {
             try {
                 boolean ranSomething = false;
-                for (PartitionBackgroundJob job : jobs) {
+                for (PartitionBackgroundJob<VOut> job : jobs) {
                     if (!running) {
                         break;
                     }
@@ -209,13 +209,12 @@ public final class PartitionActionScheduler implements Closeable {
         log.info("Background worker for partition {} exiting", taskId.partition());
     }
 
-    private void runOnce(PartitionBackgroundJob job) throws InterruptedException {
+    private void runOnce(PartitionBackgroundJob<VOut> job) throws InterruptedException {
         try {
             job.run(jobContext);
         } catch (InterruptedException e) {
             throw e;
         } catch (UncheckedInterruptedException e) {
-            // A job was interrupted while scheduling an action from inside shared model code.
             throw e.getCause();
         } catch (InvalidStateStoreException | LHApiException e) {
             // Kafka Streams is rebalancing or restoring; this is expected and transient.

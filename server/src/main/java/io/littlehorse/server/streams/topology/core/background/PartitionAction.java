@@ -2,7 +2,6 @@ package io.littlehorse.server.streams.topology.core.background;
 
 import io.littlehorse.common.Storeable;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
-import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import org.apache.kafka.streams.processor.api.Record;
 
 /**
@@ -17,13 +16,21 @@ import org.apache.kafka.streams.processor.api.Record;
  *
  * <p>Actions must be small, self-contained and cheap to apply: everything expensive (scans,
  * computation, decision making) belongs on the worker thread.
+ *
+ * <p>This interface is deliberately NOT sealed. Most jobs only need put/delete/forward, but some
+ * need an effect that also has to <i>read</i> a consistent view of the store — see
+ * {@code TimerCursorAdvanceAction}, which can only decide how far a cursor may safely move by
+ * looking at the Streams thread's own (non-stale) view. Such actions live next to the job that
+ * produces them and use {@link PartitionActionApplier#coreStore()}.
+ *
+ * @param <VOut> output value type of the processor that will apply this action.
  */
-public sealed interface PartitionAction {
+public interface PartitionAction<VOut> {
 
     /**
      * Applies this action. ONLY ever called on the Kafka Streams thread.
      */
-    void apply(PartitionActionApplier applier);
+    void apply(PartitionActionApplier<VOut> applier);
 
     /**
      * A short description used for logging and metrics.
@@ -33,28 +40,28 @@ public sealed interface PartitionAction {
     /**
      * Writes a Storeable into the core store. A {@code null} tenantId means cluster scope.
      */
-    static PartitionAction put(TenantIdModel tenantId, Storeable<?> value) {
-        return new Put(tenantId, value);
+    static <VOut> PartitionAction<VOut> put(TenantIdModel tenantId, Storeable<?> value) {
+        return new Put<>(tenantId, value);
     }
 
     /**
      * Deletes a Storeable from the core store. A {@code null} tenantId means cluster scope.
      */
-    static PartitionAction delete(TenantIdModel tenantId, Storeable<?> value) {
-        return new Delete(tenantId, value);
+    static <VOut> PartitionAction<VOut> delete(TenantIdModel tenantId, Storeable<?> value) {
+        return new Delete<>(tenantId, value);
     }
 
     /**
      * Forwards a fully-built record downstream. The record must already carry its metadata headers,
      * since the applier has no notion of the tenant/principal that produced it.
      */
-    static PartitionAction forward(Record<String, CommandProcessorOutput> record) {
-        return new Forward(record);
+    static <VOut> PartitionAction<VOut> forward(Record<String, ? extends VOut> record) {
+        return new Forward<>(record);
     }
 
-    record Put(TenantIdModel tenantId, Storeable<?> value) implements PartitionAction {
+    record Put<VOut>(TenantIdModel tenantId, Storeable<?> value) implements PartitionAction<VOut> {
         @Override
-        public void apply(PartitionActionApplier applier) {
+        public void apply(PartitionActionApplier<VOut> applier) {
             applier.put(tenantId, value);
         }
 
@@ -64,9 +71,9 @@ public sealed interface PartitionAction {
         }
     }
 
-    record Delete(TenantIdModel tenantId, Storeable<?> value) implements PartitionAction {
+    record Delete<VOut>(TenantIdModel tenantId, Storeable<?> value) implements PartitionAction<VOut> {
         @Override
-        public void apply(PartitionActionApplier applier) {
+        public void apply(PartitionActionApplier<VOut> applier) {
             applier.delete(tenantId, value);
         }
 
@@ -76,9 +83,9 @@ public sealed interface PartitionAction {
         }
     }
 
-    record Forward(Record<String, CommandProcessorOutput> record) implements PartitionAction {
+    record Forward<VOut>(Record<String, ? extends VOut> record) implements PartitionAction<VOut> {
         @Override
-        public void apply(PartitionActionApplier applier) {
+        public void apply(PartitionActionApplier<VOut> applier) {
             applier.forward(record);
         }
 

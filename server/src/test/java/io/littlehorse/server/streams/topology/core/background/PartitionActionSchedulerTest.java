@@ -68,14 +68,14 @@ public class PartitionActionSchedulerTest {
     private final TenantIdModel tenantId = new TenantIdModel(LHConstants.DEFAULT_TENANT);
 
     private KeyValueStore<String, Bytes> nativeCoreStore;
-    private PartitionActionApplier applier;
-    private PartitionActionScheduler scheduler;
+    private PartitionActionApplier<CommandProcessorOutput> applier;
+    private PartitionActionScheduler<CommandProcessorOutput> scheduler;
 
     @BeforeEach
     void setup() {
         nativeCoreStore = TestUtil.testStore(ServerTopology.CORE_STORE);
         nativeCoreStore.init(mockProcessorContext.getStateStoreContext(), nativeCoreStore);
-        applier = new PartitionActionApplier(mockProcessorContext, nativeCoreStore);
+        applier = new PartitionActionApplier<>(mockProcessorContext, nativeCoreStore);
     }
 
     @AfterEach
@@ -131,7 +131,7 @@ public class PartitionActionSchedulerTest {
     @Test
     void shouldStopWorkerAndNotifyJobsOnClose() {
         CountDownLatch revoked = new CountDownLatch(1);
-        PartitionBackgroundJob job = new PartitionBackgroundJob() {
+        PartitionBackgroundJob<CommandProcessorOutput> job = new PartitionBackgroundJob<>() {
             @Override
             public String name() {
                 return "revocation-aware";
@@ -143,7 +143,7 @@ public class PartitionActionSchedulerTest {
             }
 
             @Override
-            public void run(PartitionJobContext ctx) {}
+            public void run(PartitionJobContext<CommandProcessorOutput> ctx) {}
 
             @Override
             public void onPartitionRevoked() {
@@ -390,12 +390,14 @@ public class PartitionActionSchedulerTest {
     // Helpers
     // ------------------------------------------------------------------
 
-    private PartitionActionScheduler newScheduler(List<PartitionBackgroundJob> jobs) {
-        return new PartitionActionScheduler(TASK_ID, config, storeProvider, jobs);
+    private PartitionActionScheduler<CommandProcessorOutput> newScheduler(
+            List<PartitionBackgroundJob<CommandProcessorOutput>> jobs) {
+        return new PartitionActionScheduler<>(TASK_ID, config, storeProvider, jobs);
     }
 
-    private PartitionActionScheduler newScheduler(List<PartitionBackgroundJob> jobs, int queueCapacity) {
-        return new PartitionActionScheduler(TASK_ID, config, storeProvider, jobs, queueCapacity);
+    private PartitionActionScheduler<CommandProcessorOutput> newScheduler(
+            List<PartitionBackgroundJob<CommandProcessorOutput>> jobs, int queueCapacity) {
+        return new PartitionActionScheduler<>(TASK_ID, config, storeProvider, jobs, queueCapacity);
     }
 
     private static org.awaitility.core.ConditionFactory await() {
@@ -414,8 +416,8 @@ public class PartitionActionSchedulerTest {
         return new Record<>(key, output, System.currentTimeMillis());
     }
 
-    private PartitionBackgroundJob job(String name, Duration interval, JobBody body) {
-        return new PartitionBackgroundJob() {
+    private PartitionBackgroundJob<CommandProcessorOutput> job(String name, Duration interval, JobBody body) {
+        return new PartitionBackgroundJob<CommandProcessorOutput>() {
             @Override
             public String name() {
                 return name;
@@ -427,7 +429,7 @@ public class PartitionActionSchedulerTest {
             }
 
             @Override
-            public void run(PartitionJobContext ctx) throws InterruptedException {
+            public void run(PartitionJobContext<CommandProcessorOutput> ctx) throws InterruptedException {
                 body.run(ctx);
             }
         };
@@ -435,7 +437,7 @@ public class PartitionActionSchedulerTest {
 
     @FunctionalInterface
     private interface JobBody {
-        void run(PartitionJobContext ctx) throws InterruptedException;
+        void run(PartitionJobContext<CommandProcessorOutput> ctx) throws InterruptedException;
     }
 
     /**

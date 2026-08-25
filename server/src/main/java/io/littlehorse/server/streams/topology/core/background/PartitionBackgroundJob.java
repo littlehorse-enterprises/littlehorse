@@ -14,7 +14,7 @@ import java.time.Duration;
  * <p>Jobs must be interruption-aware: on partition revocation the worker thread is interrupted, and
  * a job is expected to unwind promptly by propagating {@link InterruptedException}.
  */
-public interface PartitionBackgroundJob {
+public interface PartitionBackgroundJob<VOut> {
 
     /**
      * Used for logging/metrics.
@@ -30,7 +30,7 @@ public interface PartitionBackgroundJob {
     /**
      * Runs one tick of the job.
      */
-    void run(PartitionJobContext ctx) throws InterruptedException;
+    void run(PartitionJobContext<VOut> ctx) throws InterruptedException;
 
     /**
      * Called on the worker thread when the partition is being revoked, so the job can drop any

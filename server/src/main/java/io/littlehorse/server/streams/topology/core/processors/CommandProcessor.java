@@ -12,6 +12,7 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.GetableClassEnum;
+import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
@@ -20,6 +21,7 @@ import io.littlehorse.server.streams.store.LHIterKeyValue;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
+import io.littlehorse.server.streams.storeinternals.TimerIteratorHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
@@ -80,9 +82,16 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private static final int MAX_ACTIONS_PER_PUNCTUATION = 500;
 
-    private PartitionActionScheduler backgroundScheduler;
+    private PartitionActionScheduler<CommandProcessorOutput> backgroundScheduler;
     private PartitionMetricsCatchUpJob metricsCatchUpJob;
     private BulkJobScanJob bulkJobScanJob;
+    private TimerScanJob timerScanJob;
+
+    /**
+     * Resume point of the timer scan. Owned here rather than by {@code TimerCoreProcessor} because
+     * this processor owns the task's only background thread, and the scan runs on it.
+     */
+    private final TimerCursor timerCursor = new TimerCursor();
 
     /**
      * Cadence gate for the only work that still runs inline on the Kafka Streams thread. It is driven
@@ -121,6 +130,8 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.globalStore = ctx.getStateStore(ServerTopology.GLOBAL_METADATA_STORE);
         this.metricsCatchUpJob = new PartitionMetricsCatchUpJob(config);
         this.bulkJobScanJob = new BulkJobScanJob(config);
+        this.timerScanJob = new TimerScanJob(timerCursor, config);
+        seedTimerCursor();
         this.partitionDrain =
                 new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, metricsCatchUpJob::isComplete);
         onPartitionClaimed();
@@ -128,7 +139,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         // The per-partition worker thread. Jobs registered here run OFF the Streams thread and
         // communicate back exclusively through PartitionActions.
         this.backgroundScheduler =
-                new PartitionActionScheduler(ctx.taskId(), config, server.getCoreStoreProvider(), backgroundJobs());
+                new PartitionActionScheduler<>(ctx.taskId(), config, server.getCoreStoreProvider(), backgroundJobs());
         this.backgroundScheduler.start();
 
         // A single punctuator to rule them all.
@@ -140,8 +151,25 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     /**
      * All periodic work that does not need the Kafka Streams thread.
      */
-    private List<PartitionBackgroundJob> backgroundJobs() {
-        return List.of(metricsCatchUpJob, bulkJobScanJob);
+    private List<PartitionBackgroundJob<CommandProcessorOutput>> backgroundJobs() {
+        return List.of(metricsCatchUpJob, bulkJobScanJob, timerScanJob);
+    }
+
+    /**
+     * Picks the timer scan back up where the previous owner of this partition left off. Without the
+     * hint the first scan would have to walk every tombstone left by every timer ever delivered.
+     *
+     * <p>Seeds unconditionally: a cursor carried over from a partition this instance used to own
+     * would silently skip every timer already matured on the new one.
+     */
+    private void seedTimerCursor() {
+        ClusterScopedStore coreStore = ClusterScopedStore.newInstance(nativeStore, new BackgroundContext());
+        TimerIteratorHintModel hint =
+                coreStore.get(TimerIteratorHintModel.TIMER_ITERATOR_HINT_KEY, TimerIteratorHintModel.class);
+        timerCursor.seed(
+                hint == null
+                        ? 0L
+                        : LHLibUtil.fromProtoTs(hint.getLastProcessedTimer()).getTime());
     }
 
     /**
@@ -155,7 +183,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
      */
     private void punctuate(long timestamp) {
         backgroundScheduler.drain(
-                new PartitionActionApplier(ctx, nativeStore), ACTION_DRAIN_BUDGET, MAX_ACTIONS_PER_PUNCTUATION);
+                new PartitionActionApplier<>(ctx, nativeStore), ACTION_DRAIN_BUDGET, MAX_ACTIONS_PER_PUNCTUATION);
 
         if (timestamp >= nextMetricsRunAt) {
             nextMetricsRunAt = timestamp + LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL.toMillis();
