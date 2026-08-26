@@ -32,19 +32,31 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
     // ELK routed against deterministic node footprints (nodeDimensions.ts),
     // which over-reserve width for boxed nodes, so a route can stop short of
     // the drawn border. Close the gap by extending/trimming each terminal
-    // segment ALONG ITS OWN AXIS to the real measured handle coordinate —
-    // never by adding points: a new point in another direction would break
-    // the right angles and flip the arrowhead's orientation.
+    // segment ALONG ITS OWN AXIS to the real handle coordinate — and ONLY
+    // when ELK attached on the same side the handle actually faces. ELK is
+    // free to attach a back edge to the far border; snapping such an endpoint
+    // to the handle would drag the path straight through the node and flip
+    // the arrowhead.
     const snapped = route.map(p => ({ ...p }))
     if (snapped.length >= 2) {
       const [p0, p1] = [snapped[0], snapped[1]]
-      if (Math.abs(p0.y - p1.y) <= 1)
-        p0.x = sourceX // horizontal start segment
-      else if (Math.abs(p0.x - p1.x) <= 1) p0.y = sourceY // vertical start segment
+      if (Math.abs(p0.y - p1.y) <= 1) {
+        // horizontal departure: exits Right border when traveling +x
+        const exitSide = p1.x > p0.x ? Position.Right : Position.Left
+        if (exitSide === sourcePosition) p0.x = sourceX
+      } else if (Math.abs(p0.x - p1.x) <= 1) {
+        const exitSide = p1.y > p0.y ? Position.Bottom : Position.Top
+        if (exitSide === sourcePosition) p0.y = sourceY
+      }
       const [pn, pm] = [snapped[snapped.length - 1], snapped[snapped.length - 2]]
-      if (Math.abs(pn.y - pm.y) <= 1)
-        pn.x = targetX // horizontal end segment
-      else if (Math.abs(pn.x - pm.x) <= 1) pn.y = targetY // vertical end segment
+      if (Math.abs(pn.y - pm.y) <= 1) {
+        // horizontal arrival: enters Left border when traveling +x
+        const entrySide = pn.x > pm.x ? Position.Left : Position.Right
+        if (entrySide === targetPosition) pn.x = targetX
+      } else if (Math.abs(pn.x - pm.x) <= 1) {
+        const entrySide = pn.y > pm.y ? Position.Top : Position.Bottom
+        if (entrySide === targetPosition) pn.y = targetY
+      }
     }
     edgePath = routeToPath(snapped)
     const labelPoint = routeLabelPoint(snapped)
