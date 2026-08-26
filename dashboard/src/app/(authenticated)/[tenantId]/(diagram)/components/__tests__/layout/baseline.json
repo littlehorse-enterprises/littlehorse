@@ -1,9 +1,7 @@
 {
   "big-0--rw-c29cq-150.json::entrypoint": {
-    "defects": {
-      "missing-handle": 2
-    },
-    "crossings": 6
+    "defects": {},
+    "crossings": 0
   },
   "big-0--rw-c29cq-150.json::child150x0_e4mh": {
     "defects": {},
@@ -70,20 +68,16 @@
     "crossings": 0
   },
   "branch-0--rw-c29cq-93.json::entrypoint": {
-    "defects": {
-      "missing-handle": 4
-    },
-    "crossings": 18
+    "defects": {},
+    "crossings": 0
   },
   "branch-0--rw-c29cq-93.json::exn-handler-6-rw-decline-TASK-rw-declined": {
     "defects": {},
     "crossings": 0
   },
   "branch-1--rw-c29cq-74.json::entrypoint": {
-    "defects": {
-      "missing-handle": 3
-    },
-    "crossings": 7
+    "defects": {},
+    "crossings": 0
   },
   "branch-1--rw-c29cq-74.json::child74x0_8r1x": {
     "defects": {},
@@ -154,30 +148,20 @@
     "crossings": 0
   },
   "loop-0--rw-c29cq-129.json::entrypoint": {
-    "defects": {
-      "edge-through-node": 1,
-      "label-covers-node": 1,
-      "missing-handle": 5
-    },
-    "crossings": 21
+    "defects": {},
+    "crossings": 0
   },
   "loop-1--rw-c29cq-36.json::entrypoint": {
-    "defects": {
-      "missing-handle": 6
-    },
-    "crossings": 17
+    "defects": {},
+    "crossings": 0
   },
   "loop-2--rw-c29cq-24.json::entrypoint": {
-    "defects": {
-      "missing-handle": 3
-    },
-    "crossings": 11
+    "defects": {},
+    "crossings": 0
   },
   "loop-branchy-0--rw-c29cq-14.json::entrypoint": {
-    "defects": {
-      "missing-handle": 3
-    },
-    "crossings": 15
+    "defects": {},
+    "crossings": 0
   },
   "loop-branchy-0--rw-c29cq-14.json::each14_n7yk": {
     "defects": {},
@@ -192,10 +176,8 @@
     "crossings": 0
   },
   "loop-branchy-1--rw-c29cq-113.json::entrypoint": {
-    "defects": {
-      "missing-handle": 5
-    },
-    "crossings": 20
+    "defects": {},
+    "crossings": 0
   },
   "loop-branchy-1--rw-c29cq-113.json::exn-handler-1-rw-crash-TASK-FAILURE_TYPE_ERROR": {
     "defects": {},
@@ -210,10 +192,8 @@
     "crossings": 0
   },
   "spawn-0--rw-c29cq-153.json::entrypoint": {
-    "defects": {
-      "missing-handle": 1
-    },
-    "crossings": 1
+    "defects": {},
+    "crossings": 0
   },
   "spawn-0--rw-c29cq-153.json::exn-handler-1-rw-crash-TASK-FAILURE_TYPE_ERROR": {
     "defects": {},
@@ -264,10 +244,8 @@
     "crossings": 0
   },
   "usertask-loop-0--rw-c29cq-121.json::entrypoint": {
-    "defects": {
-      "missing-handle": 1
-    },
-    "crossings": 1
+    "defects": {},
+    "crossings": 0
   },
   "usertask-loop-0--rw-c29cq-121.json::child121x0_9gpu": {
     "defects": {},
@@ -278,10 +256,8 @@
     "crossings": 0
   },
   "usertask-loop-1--rw-c29cq-3.json::entrypoint": {
-    "defects": {
-      "missing-handle": 2
-    },
-    "crossings": 3
+    "defects": {},
+    "crossings": 0
   },
   "usertask-loop-1--rw-c29cq-3.json::exn-handler-13-rw-crash-TASK-FAILURE_TYPE_ERROR": {
     "defects": {},

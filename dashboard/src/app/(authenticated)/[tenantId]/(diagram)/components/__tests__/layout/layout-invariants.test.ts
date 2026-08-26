@@ -20,8 +20,8 @@
 import { readFileSync, readdirSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { PutWfSpecRequest } from 'littlehorse-client/proto'
-import { buildScene } from './layoutModel'
-import { checkScene, countByType } from './invariants'
+import { buildScene } from '../../layoutHarness/layoutModel'
+import { checkScene, countByType } from '../../layoutHarness/invariants'
 
 const FIXTURE_DIR = join(__dirname, 'fixtures')
 const BASELINE_PATH = join(__dirname, 'baseline.json')
@@ -74,7 +74,9 @@ describe('diagram layout invariants', () => {
         if (allowed === undefined) {
           // A new fixture/thread must enter through a baseline regeneration,
           // so its starting defect count is a reviewed, committed fact.
-          throw new Error(`no baseline entry for ${caseKey} — run with UPDATE_LAYOUT_BASELINE=1 and commit baseline.json`)
+          throw new Error(
+            `no baseline entry for ${caseKey} — run with UPDATE_LAYOUT_BASELINE=1 and commit baseline.json`
+          )
         }
         for (const [type, count] of Object.entries(counts)) {
           const budget = allowed.defects[type] ?? 0
@@ -84,9 +86,7 @@ describe('diagram layout invariants', () => {
               .slice(0, 8)
               .map(d => `  ${d.detail}`)
               .join('\n')
-            throw new Error(
-              `${caseKey}: ${type} regressed — ${count} > baseline ${budget}\n${examples}`
-            )
+            throw new Error(`${caseKey}: ${type} regressed — ${count} > baseline ${budget}\n${examples}`)
           }
         }
       })

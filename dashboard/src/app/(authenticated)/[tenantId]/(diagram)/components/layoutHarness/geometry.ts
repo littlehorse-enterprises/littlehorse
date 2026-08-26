@@ -94,12 +94,7 @@ const toAxisSegments = (poly: Polyline, epsilon = 0.5): AxisSegment[] => {
  * than `minOverlap` px. This is the "two edges drawn on top of each other"
  * defect — crossing at a point is not counted, sharing a lane is.
  */
-export const collinearOverlapLength = (
-  a: Polyline,
-  b: Polyline,
-  laneTolerance = 2,
-  minOverlap = 8
-): number => {
+export const collinearOverlapLength = (a: Polyline, b: Polyline, laneTolerance = 2, minOverlap = 8): number => {
   const segsA = toAxisSegments(a)
   const segsB = toAxisSegments(b)
   let total = 0

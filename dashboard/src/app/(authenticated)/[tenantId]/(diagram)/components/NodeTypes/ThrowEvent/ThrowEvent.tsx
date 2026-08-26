@@ -22,8 +22,8 @@ const Node: FC<NodeProps<'throwEvent', ThrowEventNode>> = ({ data }) => {
               <CircleArrowOutUpRightIcon className="h-4 w-4 fill-transparent stroke-purple-500" />
             </div>
           </div>
-          <Handle type="source" position={Position.Right} className="h-2 w-2 bg-transparent" />
-          <Handle type="target" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="h-2 w-2 bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
           <div className="absolute flex w-full items-center justify-center whitespace-nowrap text-center">
             <div className="block">{eventDefId.name}</div>
           </div>

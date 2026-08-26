@@ -4,8 +4,9 @@ import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
+import { routeLabelPoint, routeToPath, type RoutePoint } from './elkRoute'
 
-type EdgeData = EdgeProto & { isElseEdge?: boolean }
+type EdgeData = EdgeProto & { isElseEdge?: boolean; elkRoute?: RoutePoint[] }
 
 const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   id,
@@ -19,15 +20,30 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   style,
   ...rest
 }) => {
-  const [edgePath, labelX, labelY] = getSmoothStepPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-    borderRadius: 0,
-  })
+  // Prefer the orthogonal route ELK computed for this edge — it respects the
+  // configured edge-edge and edge-node clearances, which a path re-derived
+  // from handle positions cannot. The smooth-step fallback only covers the
+  // frames before the first layout pass has attached routes.
+  const route = data?.elkRoute
+  let edgePath: string
+  let labelX: number
+  let labelY: number
+  if (route !== undefined && route.length >= 2) {
+    edgePath = routeToPath(route)
+    const labelPoint = routeLabelPoint(route)
+    labelX = labelPoint.x
+    labelY = labelPoint.y
+  } else {
+    ;[edgePath, labelX, labelY] = getSmoothStepPath({
+      sourceX,
+      sourceY,
+      sourcePosition,
+      targetX,
+      targetY,
+      targetPosition,
+      borderRadius: 0,
+    })
+  }
 
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {

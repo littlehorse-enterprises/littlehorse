@@ -18,8 +18,8 @@ const Node: FC<NodeProps<'userTask', UserTaskNode>> = ({ data }) => {
         <div className="flex cursor-pointer flex-col items-center rounded-md border-[1px] border-blue-500 bg-blue-200 px-2 pt-1 text-xs ">
           <UserIcon className="h-4 w-4 text-blue-500" />
           {userTaskDefName}
-          <Handle type="source" position={Position.Right} className="bg-transparent" />
-          <Handle type="target" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
         </div>
       </Fade>
     </>

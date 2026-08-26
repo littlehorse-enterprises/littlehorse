@@ -8,7 +8,14 @@
  * backwards is.
  */
 import { Scene } from './layoutModel'
-import { collinearOverlapLength, crossingCount, inflate, polylineIntersectsRect, rectCenter, rectsIntersect } from './geometry'
+import {
+  collinearOverlapLength,
+  crossingCount,
+  inflate,
+  polylineIntersectsRect,
+  rectCenter,
+  rectsIntersect,
+} from './geometry'
 
 export type DefectType =
   | 'node-overlaps-node' // two node boxes intersect

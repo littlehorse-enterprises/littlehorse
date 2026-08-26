@@ -24,8 +24,8 @@ const Node: FC<NodeProps<'task', TaskNode>> = node => {
         >
           <SettingsIcon className="h-4 w-4 fill-orange-500" />
           {getTaskName(taskToExecute)}
-          <Handle type="source" position={Position.Right} className="bg-transparent" />
-          <Handle type="target" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
         </div>
       </Fade>
     </>

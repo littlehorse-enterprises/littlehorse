@@ -20,8 +20,8 @@ const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>>
             <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
             <div className="absolute inset-[2px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
           </div>
-          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
         </div>
       </Fade>
     </>

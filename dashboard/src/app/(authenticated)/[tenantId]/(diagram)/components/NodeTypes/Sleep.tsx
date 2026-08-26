@@ -19,8 +19,8 @@ const Node: FC<NodeProps<'sleep', SleepNode>> = ({ data }) => {
             <ClockIcon className="h-4 w-4 fill-none stroke-gray-500" />
           </div>
 
-          <Handle type="target" position={Position.Left} className="bg-transparent" />
-          <Handle type="source" position={Position.Right} className="bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
         </div>
       </Fade>
     </>

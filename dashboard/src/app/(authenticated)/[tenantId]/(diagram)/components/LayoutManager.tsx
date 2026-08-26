@@ -1,7 +1,8 @@
-import ELK from 'elkjs/lib/elk.bundled.js'
+import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
+import type { RoutePoint } from './EdgeTypes/elkRoute'
 
 const elk = new ELK()
 
@@ -13,6 +14,27 @@ export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[]
       const bPos = b.id?.position ?? 0
       return bPos - aPos
     })
+
+/** The layout options are shared with the headless layout tests. */
+export const ELK_LAYOUT_OPTIONS = {
+  'elk.algorithm': 'layered',
+  'elk.direction': 'RIGHT',
+  'elk.spacing.nodeNode': '75',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '120',
+  'elk.spacing.edgeEdge': '25',
+  'elk.spacing.edgeNode': '40',
+  'elk.layered.spacing.edgeNodeBetweenLayers': '40',
+  'elk.layered.spacing.edgeEdgeBetweenLayers': '25',
+  'elk.edgeRouting': 'ORTHOGONAL',
+  'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
+  'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
+  'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+  'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
+  'elk.layered.unnecessaryBendpoints': 'true',
+  'elk.padding': '[top=50,left=50,bottom=50,right=50]',
+  'elk.separateConnectedComponents': 'false',
+  'org.eclipse.elk.layered.mergeEdges': 'false',
+}
 
 type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
@@ -38,33 +60,16 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
 
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[]) => {
-      const elkGraph = {
+      const elkGraph: ElkNode = {
         id: 'root',
-        layoutOptions: {
-          'elk.algorithm': 'layered',
-          'elk.direction': 'RIGHT',
-          'elk.spacing.nodeNode': '150',
-          'elk.layered.spacing.nodeNodeBetweenLayers': '200',
-          'elk.spacing.edgeEdge': '100',
-          'elk.spacing.edgeNode': '100',
-          'elk.edgeRouting': 'ORTHOGONAL',
-          'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
-          'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
-          'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
-          'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
-          'elk.layered.unnecessaryBendpoints': 'true',
-          'elk.layered.compaction.postCompaction.strategy': 'EDGE_LENGTH',
-          'elk.padding': '[top=100,left=100,bottom=100,right=100]',
-          'elk.separateConnectedComponents': 'false',
-          'org.eclipse.elk.layered.mergeEdges': 'false',
-        },
+        layoutOptions: ELK_LAYOUT_OPTIONS,
         children: nodes.map(node => ({
           id: node.id,
           width: node.width ?? 150,
           height: node.height ?? 50,
         })),
         edges: edges.map(edge => ({
-          id: `${edge.source}-${edge.target}`,
+          id: edge.id,
           sources: [edge.source],
           targets: [edge.target],
         })),
@@ -72,24 +77,24 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
 
       try {
         const laidOutGraph = await elk.layout(elkGraph)
-        const hasCycles = nodes.some(node => node.type === 'cycle')
-        // Layout the original workflow nodes
+
+        // ELK routed every edge orthogonally, respecting the edge-edge and
+        // edge-node clearances configured above. Keep those routes: node
+        // positions may NOT be adjusted after this point, or the routes (and
+        // their clearances) stop being true.
+        const routeById = new Map<string, RoutePoint[]>(
+          (laidOutGraph.edges ?? []).flatMap(edge => {
+            const section = edge.sections?.[0]
+            if (!section) return []
+            const points = [section.startPoint, ...(section.bendPoints ?? []), section.endPoint]
+            return [[edge.id, points.map(p => ({ x: p.x, y: p.y }))]]
+          })
+        )
+
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
           const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
-          if (node.type === 'cycle' && elkNode?.x !== undefined) {
-            const initialNode = laidOutGraph.children?.find(n => n.id === node.data.outgoingEdges[0].sinkNodeName)
-            const cycleNodeX = elkNode.x - initialNode?.x!
-            elkNode.x = (initialNode?.x! + cycleNodeX) / 2
-          }
-
-          if (node.type === 'exit' && hasCycles) {
-            const initialNode = laidOutGraph.children?.find(n => n.id.includes('ENTRYPOINT'))
-            if (elkNode && initialNode?.y !== undefined && elkNode.y !== initialNode.y) {
-              elkNode.y = initialNode.y
-            }
-          }
           return {
             ...node,
             data: { ...node.data, fade, nodeRunsList },
@@ -101,7 +106,12 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
           }
         })
         setNodes(laidOutNodes)
-        setEdges(edges)
+        setEdges(
+          edges.map(edge => ({
+            ...edge,
+            data: { ...edge.data, elkRoute: routeById.get(edge.id) },
+          }))
+        )
         onLayoutComplete?.(laidOutNodes)
         setTimeout(() => {
           const saved = sessionStorage.getItem(viewportKey)

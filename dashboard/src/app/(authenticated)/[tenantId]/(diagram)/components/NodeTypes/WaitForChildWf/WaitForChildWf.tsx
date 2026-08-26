@@ -19,7 +19,7 @@ const Node: FC<NodeProps<'waitForChildWf', WaitForChildWfNode>> = ({ data }) => 
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
         <div className="flex cursor-pointer items-center">
-          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
           <div className="flex flex-col items-center">
             <div className="relative grid h-10 w-10 place-items-center">
               <div
@@ -52,7 +52,7 @@ const Node: FC<NodeProps<'waitForChildWf', WaitForChildWfNode>> = ({ data }) => 
               </div>
             </div>
           </div>
-          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
+          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
         </div>
       </Fade>
     </>
