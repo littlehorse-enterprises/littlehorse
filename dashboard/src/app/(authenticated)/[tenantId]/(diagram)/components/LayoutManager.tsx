@@ -48,6 +48,15 @@ type LayoutManagerProps = {
   layoutKey: string
   viewportKey: string
   setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
+  /**
+   * The parent's useEdgesState setter. Routes MUST be written through the
+   * controlled `edges` prop, exactly like node positions: writing them only
+   * into reactflow's internal store looks right until the next parent
+   * re-render, when the route-less prop re-syncs the store and every edge
+   * falls back to the naive path — the diagram visibly "reshuffles" on the
+   * first click.
+   */
+  setEdges: (edges: Edge[] | ((edges: Edge[]) => Edge[])) => void
   onLayoutComplete?: (nodes: Node[]) => void
 }
 
@@ -56,11 +65,11 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   layoutKey,
   viewportKey,
   setNodes,
+  setEdges,
   onLayoutComplete,
 }) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
-  const setEdges = useStore(store => store.setEdges)
   const { fitView, setViewport } = useReactFlow()
 
   useOnViewportChange({
@@ -151,7 +160,11 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   const laidOutKey = useRef<string | null>(null)
   useEffect(() => {
     if (laidOutKey.current === layoutKey) return
-    if (nodes.length === 0) return
+    // ELK's inputs are deterministic (nodeDimensions), but waiting for
+    // reactflow's first measurement pass guarantees the instance is live, so
+    // the post-layout fitView/viewport restore isn't a no-op on a cold load.
+    const ready = nodes.length > 0 && nodes.every(node => node.width !== undefined && node.height !== undefined)
+    if (!ready) return
     laidOutKey.current = layoutKey
     onLoad(nodes, edges)
   }, [layoutKey, nodes, edges, onLoad])

@@ -276,6 +276,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             nodeRuns={threadNodeRuns}
             viewportKey={viewportKey}
             setNodes={setNodes}
+            setEdges={setEdges}
             onLayoutComplete={applyDefaultSelection}
           />
         </div>

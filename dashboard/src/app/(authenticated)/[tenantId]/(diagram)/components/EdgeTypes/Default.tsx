@@ -29,8 +29,29 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   let labelX: number
   let labelY: number
   if (route !== undefined && route.length >= 2) {
-    edgePath = routeToPath(route)
-    const labelPoint = routeLabelPoint(route)
+    // ELK routed against deterministic node footprints (nodeDimensions.ts),
+    // which over-reserve width for boxed nodes; the rendered node can be
+    // narrower, leaving a visible gap between its border and the route's
+    // endpoint. Snap the endpoints to the REAL handle positions reactflow
+    // measured — a short straight stub bridges estimate and reality exactly.
+    const snapped = [...route]
+    const first = snapped[0]
+    const last = snapped[snapped.length - 1]
+    // Keep stubs axis-aligned: extend along the route's own first/last lane
+    // rather than jogging to the handle's exact center, so the orthogonal
+    // look survives the snap.
+    if (Math.abs(first.x - sourceX) > 1 && Math.abs(first.y - sourceY) < 8) {
+      snapped.unshift({ x: sourceX, y: first.y })
+    } else if (Math.abs(first.x - sourceX) > 1 || Math.abs(first.y - sourceY) > 1) {
+      snapped.unshift({ x: sourceX, y: sourceY })
+    }
+    if (Math.abs(last.x - targetX) > 1 && Math.abs(last.y - targetY) < 8) {
+      snapped.push({ x: targetX, y: last.y })
+    } else if (Math.abs(last.x - targetX) > 1 || Math.abs(last.y - targetY) > 1) {
+      snapped.push({ x: targetX, y: targetY })
+    }
+    edgePath = routeToPath(snapped)
+    const labelPoint = routeLabelPoint(snapped)
     labelX = labelPoint.x
     labelY = labelPoint.y
   } else {
