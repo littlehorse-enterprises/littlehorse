@@ -24,6 +24,8 @@ export type DefectType =
   | 'forward-edge-goes-backwards' // a non-loop edge flows right-to-left
   | 'label-covers-node' // an edge label chip sits on a node
   | 'missing-handle' // extractEdges addressed a handle the component never renders
+  | 'node-unreachable' // a non-entrypoint node has no incoming edge (graph transform lost edges)
+  | 'node-dead-end' // a non-exit node has no outgoing edge (graph transform lost edges)
 
 export interface Defect {
   type: DefectType
@@ -107,6 +109,21 @@ export const checkScene = (scene: Scene): Verdict => {
   for (const edge of edges) {
     if (edge.missingSourceHandle) defects.push({ type: 'missing-handle', detail: `${edge.id} (source)` })
     if (edge.missingTargetHandle) defects.push({ type: 'missing-handle', detail: `${edge.id} (target)` })
+  }
+
+  // 7. Connectivity survives the graph transforms: getCycleNodes rewrites
+  //    edges, and a rewrite that drops one leaves a node floating (observed
+  //    live: empty-body while loops lost both forward edges, orphaning the
+  //    loop-end nop). Every node keeps a way in and a way out.
+  const hasIncoming = new Set(edges.map(e => e.target))
+  const hasOutgoing = new Set(edges.map(e => e.source))
+  for (const node of nodes) {
+    if (node.type !== 'entrypoint' && !hasIncoming.has(node.id)) {
+      defects.push({ type: 'node-unreachable', detail: node.id })
+    }
+    if (node.type !== 'exit' && !hasOutgoing.has(node.id)) {
+      defects.push({ type: 'node-dead-end', detail: node.id })
+    }
   }
 
   // Metric only: transversal crossings between edge pairs.

@@ -87,6 +87,18 @@
     "defects": {},
     "crossings": 0
   },
+  "empty-body-loop--rw-c29cq-97.json::entrypoint": {
+    "defects": {},
+    "crossings": 0
+  },
+  "empty-body-loop--rw-c29cq-97.json::exn-handler-1-rw-decline-TASK-rw-declined": {
+    "defects": {},
+    "crossings": 0
+  },
+  "empty-body-loop--rw-c29cq-97.json::each97_yrf1": {
+    "defects": {},
+    "crossings": 0
+  },
   "event-0--rw-c29cq-13.json::entrypoint": {
     "defects": {},
     "crossings": 0
