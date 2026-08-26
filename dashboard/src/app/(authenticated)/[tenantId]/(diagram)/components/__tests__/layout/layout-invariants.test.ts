@@ -59,6 +59,15 @@ describe('diagram layout invariants', () => {
         const scene = await buildScene(threadSpec)
         expect(scene.nodes.length).toBeGreaterThan(0)
 
+        // Layout must be a pure function of the graph: a re-layout (remount,
+        // HMR, selection change) may never move anything. Proven, not assumed.
+        const rerun = await buildScene(threadSpec)
+        const geometry = (s: typeof scene) => ({
+          nodes: s.nodes.map(n => ({ id: n.id, rect: n.rect })),
+          edges: s.edges.map(e => ({ id: e.id, polyline: e.polyline })),
+        })
+        expect(geometry(rerun)).toEqual(geometry(scene))
+
         const { defects, crossings } = checkScene(scene)
         const counts = countByType(defects)
         measured[caseKey] = { defects: counts, crossings }

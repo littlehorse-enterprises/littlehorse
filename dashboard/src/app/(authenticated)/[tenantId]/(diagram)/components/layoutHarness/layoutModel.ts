@@ -16,6 +16,7 @@ import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { Position, getSmoothStepPath } from 'reactflow'
 import { ThreadSpec } from 'littlehorse-client/proto'
 import { ELK_LAYOUT_OPTIONS } from '../LayoutManager'
+import { nodeDimensions } from '../nodeDimensions'
 import { extractEdges } from '../EdgeTypes/extractEdges'
 import { routeLabelPoint, routeToPath } from '../EdgeTypes/elkRoute'
 import { extractNodes, getCycleNodes } from '../NodeTypes/extractNodes'
@@ -23,31 +24,6 @@ import { nopSourceHandlePlacements } from '../NodeTypes/nopHandleLayout'
 import { Polyline, Pt, Rect, pathToPolyline } from './geometry'
 
 const elk = new ELK()
-
-/**
- * Rendered node dimensions by type, from the component sources:
- * h-6/w-6 = 24, h-8/w-8 = 32, h-10/w-10 = 40; boxed nodes (task, userTask,
- * externalEvent, ...) use LayoutManager's fallback footprint of 150x50 —
- * the same numbers ELK is given for them, so model and layout agree.
- */
-const DIMS: Record<string, { w: number; h: number }> = {
-  entrypoint: { w: 24, h: 24 },
-  exit: { w: 24, h: 24 },
-  nop: { w: 32, h: 32 },
-  cycle: { w: 40, h: 40 },
-  sleep: { w: 40, h: 40 },
-  startThread: { w: 40, h: 40 },
-  waitForThreads: { w: 40, h: 40 },
-  runChildWf: { w: 40, h: 40 },
-  waitForChildWf: { w: 40, h: 40 },
-  startMultipleThreads: { w: 40, h: 40 },
-  task: { w: 150, h: 50 },
-  userTask: { w: 150, h: 50 },
-  externalEvent: { w: 150, h: 50 },
-  throwEvent: { w: 150, h: 50 },
-  waitForCondition: { w: 150, h: 50 },
-}
-const dimsFor = (type: string) => DIMS[type] ?? { w: 150, h: 50 }
 
 export interface SceneNode {
   id: string
@@ -140,7 +116,7 @@ export const buildScene = async (threadSpec: ThreadSpec): Promise<Scene> => {
     id: 'root',
     layoutOptions: ELK_LAYOUT_OPTIONS,
     children: rfNodes.map(node => {
-      const { w, h } = dimsFor(node.type ?? 'task')
+      const { w, h } = nodeDimensions(node.type, node.id)
       return { id: node.id, width: w, height: h }
     }),
     edges: rfEdges.map(edge => ({ id: edge.id, sources: [edge.source], targets: [edge.target] })),
@@ -158,7 +134,7 @@ export const buildScene = async (threadSpec: ThreadSpec): Promise<Scene> => {
 
   const sceneNodes: SceneNode[] = rfNodes.map(node => {
     const elkNode = positioned.get(node.id)
-    const { w, h } = dimsFor(node.type ?? 'task')
+    const { w, h } = nodeDimensions(node.type, node.id)
     return { id: node.id, type: node.type ?? 'task', rect: { x: elkNode?.x ?? 0, y: elkNode?.y ?? 0, w, h } }
   })
   const byId = new Map(sceneNodes.map(node => [node.id, node]))

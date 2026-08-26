@@ -3,6 +3,7 @@ import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
 import type { RoutePoint } from './EdgeTypes/elkRoute'
+import { nodeDimensions } from './nodeDimensions'
 
 const elk = new ELK()
 
@@ -76,11 +77,13 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
       const elkGraph: ElkNode = {
         id: 'root',
         layoutOptions: ELK_LAYOUT_OPTIONS,
-        children: nodes.map(node => ({
-          id: node.id,
-          width: node.width ?? 150,
-          height: node.height ?? 50,
-        })),
+        children: nodes.map(node => {
+          // Deterministic footprints (see nodeDimensions.ts): layout must not
+          // depend on live-measured DOM sizes, or any re-layout after a
+          // remount/HMR/selection reshuffles an already-displayed diagram.
+          const { w, h } = nodeDimensions(node.type, node.id)
+          return { id: node.id, width: w, height: h }
+        }),
         edges: edges.map(edge => ({
           id: edge.id,
           sources: [edge.source],
@@ -148,9 +151,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   const laidOutKey = useRef<string | null>(null)
   useEffect(() => {
     if (laidOutKey.current === layoutKey) return
-    // Wait until reactflow has measured every node — ELK needs real widths.
-    const allMeasured = nodes.length > 0 && nodes.every(node => node.width !== undefined && node.height !== undefined)
-    if (!allMeasured) return
+    if (nodes.length === 0) return
     laidOutKey.current = layoutKey
     onLoad(nodes, edges)
   }, [layoutKey, nodes, edges, onLoad])
