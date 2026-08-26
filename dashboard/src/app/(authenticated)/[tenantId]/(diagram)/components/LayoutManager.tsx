@@ -1,6 +1,6 @@
 import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
 import type { RoutePoint } from './EdgeTypes/elkRoute'
 
@@ -38,12 +38,25 @@ export const ELK_LAYOUT_OPTIONS = {
 
 type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
+  /**
+   * Identity of the graph currently displayed (spec/run/thread). Layout runs
+   * exactly once per key: reruns triggered by anything else — selection
+   * changes, modals opening, node re-measurement on container resize — must
+   * not re-layout or touch the user's viewport.
+   */
+  layoutKey: string
   viewportKey: string
   setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
   onLayoutComplete?: (nodes: Node[]) => void
 }
 
-export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
+export const LayoutManager: FC<LayoutManagerProps> = ({
+  nodeRuns,
+  layoutKey,
+  viewportKey,
+  setNodes,
+  onLayoutComplete,
+}) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const setEdges = useStore(store => store.setEdges)
@@ -132,15 +145,14 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
     [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
+  const laidOutKey = useRef<string | null>(null)
   useEffect(() => {
-    if (
-      nodes.some(
-        (node: Node & { isLaidOut?: boolean }) =>
-          node.width !== undefined && node.height !== undefined && !node.isLaidOut
-      )
-    ) {
-      onLoad(nodes, edges)
-    }
-  }, [nodes, edges, onLoad])
+    if (laidOutKey.current === layoutKey) return
+    // Wait until reactflow has measured every node — ELK needs real widths.
+    const allMeasured = nodes.length > 0 && nodes.every(node => node.width !== undefined && node.height !== undefined)
+    if (!allMeasured) return
+    laidOutKey.current = layoutKey
+    onLoad(nodes, edges)
+  }, [layoutKey, nodes, edges, onLoad])
   return <></>
 }

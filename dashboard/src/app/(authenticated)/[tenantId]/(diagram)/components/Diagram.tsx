@@ -272,6 +272,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             <Controls />
           </ReactFlow>
           <LayoutManager
+            layoutKey={resetKey}
             nodeRuns={threadNodeRuns}
             viewportKey={viewportKey}
             setNodes={setNodes}
