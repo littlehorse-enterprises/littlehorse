@@ -30,25 +30,21 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   let labelY: number
   if (route !== undefined && route.length >= 2) {
     // ELK routed against deterministic node footprints (nodeDimensions.ts),
-    // which over-reserve width for boxed nodes; the rendered node can be
-    // narrower, leaving a visible gap between its border and the route's
-    // endpoint. Snap the endpoints to the REAL handle positions reactflow
-    // measured — a short straight stub bridges estimate and reality exactly.
-    const snapped = [...route]
-    const first = snapped[0]
-    const last = snapped[snapped.length - 1]
-    // Keep stubs axis-aligned: extend along the route's own first/last lane
-    // rather than jogging to the handle's exact center, so the orthogonal
-    // look survives the snap.
-    if (Math.abs(first.x - sourceX) > 1 && Math.abs(first.y - sourceY) < 8) {
-      snapped.unshift({ x: sourceX, y: first.y })
-    } else if (Math.abs(first.x - sourceX) > 1 || Math.abs(first.y - sourceY) > 1) {
-      snapped.unshift({ x: sourceX, y: sourceY })
-    }
-    if (Math.abs(last.x - targetX) > 1 && Math.abs(last.y - targetY) < 8) {
-      snapped.push({ x: targetX, y: last.y })
-    } else if (Math.abs(last.x - targetX) > 1 || Math.abs(last.y - targetY) > 1) {
-      snapped.push({ x: targetX, y: targetY })
+    // which over-reserve width for boxed nodes, so a route can stop short of
+    // the drawn border. Close the gap by extending/trimming each terminal
+    // segment ALONG ITS OWN AXIS to the real measured handle coordinate —
+    // never by adding points: a new point in another direction would break
+    // the right angles and flip the arrowhead's orientation.
+    const snapped = route.map(p => ({ ...p }))
+    if (snapped.length >= 2) {
+      const [p0, p1] = [snapped[0], snapped[1]]
+      if (Math.abs(p0.y - p1.y) <= 1)
+        p0.x = sourceX // horizontal start segment
+      else if (Math.abs(p0.x - p1.x) <= 1) p0.y = sourceY // vertical start segment
+      const [pn, pm] = [snapped[snapped.length - 1], snapped[snapped.length - 2]]
+      if (Math.abs(pn.y - pm.y) <= 1)
+        pn.x = targetX // horizontal end segment
+      else if (Math.abs(pn.x - pm.x) <= 1) pn.y = targetY // vertical end segment
     }
     edgePath = routeToPath(snapped)
     const labelPoint = routeLabelPoint(snapped)
