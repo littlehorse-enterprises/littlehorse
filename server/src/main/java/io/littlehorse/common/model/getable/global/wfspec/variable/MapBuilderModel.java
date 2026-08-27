@@ -8,8 +8,10 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.MapBuilder;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
@@ -113,15 +115,14 @@ public class MapBuilderModel extends LHSerializable<MapBuilder> {
                     "Cannot build an untyped empty Map; declare the Map's key and value types (map_type).");
         }
 
-        MapBuilderEntryModel first = entries.get(0);
-        Optional<TypeDefinitionModel> keyTypeOpt = first.getKey().getSourceType(manager, wfSpec, threadSpecName);
-        Optional<TypeDefinitionModel> valTypeOpt = first.getValue().getSourceType(manager, wfSpec, threadSpecName);
-        if (keyTypeOpt.isEmpty() || valTypeOpt.isEmpty()) {
+        ResolvedEntryTypes firstEntryTypes = resolveEntryTypes(0, manager, wfSpec, threadSpecName);
+        if (firstEntryTypes.keyType().isEmpty() || firstEntryTypes.valueType().isEmpty()) {
             throw new InvalidExpressionException(
                     "Cannot resolve Map key/value types from the entries; declare the Map's key and value types "
                             + "(map_type).");
         }
-        return Optional.of(new TypeDefinitionModel(new InlineMapDefModel(keyTypeOpt.get(), valTypeOpt.get())));
+        return Optional.of(new TypeDefinitionModel(new InlineMapDefModel(
+                firstEntryTypes.keyType().get(), firstEntryTypes.valueType().get())));
     }
 
     public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
@@ -145,21 +146,75 @@ public class MapBuilderModel extends LHSerializable<MapBuilder> {
         TypeDefinitionModel valueType = resolvedMap.getValueType();
 
         for (int i = 0; i < entries.size(); i++) {
-            MapBuilderEntryModel entry = entries.get(i);
+            ResolvedEntryTypes entryTypes = resolveEntryTypes(i, manager, wfSpec, threadSpecName);
 
-            Optional<TypeDefinitionModel> keyTypeOpt = entry.getKey().getSourceType(manager, wfSpec, threadSpecName);
-            if (keyTypeOpt.isPresent() && !keyType.isCompatibleWith(keyTypeOpt.get())) {
-                throw new InvalidExpressionException("MapBuilder entry " + i + ": key type " + keyTypeOpt.get()
+            if (entryTypes.keyType().isPresent()
+                    && !keyType.isCompatibleWith(entryTypes.keyType().get())) {
+                throw new InvalidExpressionException("MapBuilder entry " + i + ": key type "
+                        + entryTypes.keyType().get()
                         + " is not compatible with Map key type " + keyType);
             }
 
-            Optional<TypeDefinitionModel> valTypeOpt = entry.getValue().getSourceType(manager, wfSpec, threadSpecName);
-            if (valTypeOpt.isPresent() && !valueType.isCompatibleWith(valTypeOpt.get())) {
-                throw new InvalidExpressionException("MapBuilder entry " + i + ": value type " + valTypeOpt.get()
+            if (entryTypes.valueType().isPresent()
+                    && !valueType.isCompatibleWith(entryTypes.valueType().get())) {
+                throw new InvalidExpressionException("MapBuilder entry " + i + ": value type "
+                        + entryTypes.valueType().get()
                         + " is not compatible with Map value type " + valueType);
             }
         }
     }
+
+    private ResolvedEntryTypes resolveEntryTypes(
+            int entryIndex, ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
+            throws InvalidExpressionException {
+        MapBuilderEntryModel entry = entries.get(entryIndex);
+        Optional<TypeDefinitionModel> keyType;
+        try {
+            keyType = resolvePostCastType(entry.getKey(), manager, wfSpec, threadSpecName);
+        } catch (InvalidExpressionException exception) {
+            throw new InvalidExpressionException("MapBuilder entry " + entryIndex + ": key " + exception.getMessage());
+        }
+
+        Optional<TypeDefinitionModel> valueType;
+        try {
+            valueType = resolvePostCastType(entry.getValue(), manager, wfSpec, threadSpecName);
+        } catch (InvalidExpressionException exception) {
+            throw new InvalidExpressionException(
+                    "MapBuilder entry " + entryIndex + ": value " + exception.getMessage());
+        }
+
+        return new ResolvedEntryTypes(keyType, valueType);
+    }
+
+    private Optional<TypeDefinitionModel> resolvePostCastType(
+            VariableAssignmentModel assignment,
+            ReadOnlyMetadataManager manager,
+            WfSpecModel wfSpec,
+            String threadSpecName)
+            throws InvalidExpressionException {
+        Optional<TypeDefinitionModel> sourceType = assignment.getSourceType(manager, wfSpec, threadSpecName);
+        TypeDefinitionModel targetType = assignment.getTargetType();
+        if (targetType == null) {
+            return sourceType;
+        }
+
+        if (targetType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
+            throw new InvalidExpressionException("cast target must be a primitive type");
+        }
+
+        if (sourceType.isPresent()) {
+            TypeDefinitionModel resolvedSourceType = sourceType.get();
+            if (resolvedSourceType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE
+                    || !TypeCastingUtils.canCastTo(
+                            resolvedSourceType.getPrimitiveType(), targetType.getPrimitiveType())) {
+                throw new InvalidExpressionException("cannot cast from " + resolvedSourceType + " to " + targetType);
+            }
+        }
+
+        return Optional.of(targetType);
+    }
+
+    private record ResolvedEntryTypes(Optional<TypeDefinitionModel> keyType, Optional<TypeDefinitionModel> valueType) {}
 
     public static final class MapBuilderEntryModel extends LHSerializable<MapBuilder.Entry> {
 
