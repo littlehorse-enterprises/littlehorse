@@ -151,6 +151,12 @@ export interface StructFieldDef {
      * @generated from protobuf field: bool is_nullable = 3
      */
     isNullable: boolean;
+    /**
+     * Optional human-readable description of this field's purpose.
+     *
+     * @generated from protobuf field: optional string description = 4
+     */
+    description?: string;
 }
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -733,7 +739,8 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
         super("littlehorse.StructFieldDef", [
             { no: 1, name: "field_type", kind: "message", T: () => TypeDefinition },
             { no: 2, name: "default_value", kind: "message", T: () => VariableValue },
-            { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 4, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<StructFieldDef>): StructFieldDef {
@@ -757,6 +764,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
                 case /* bool is_nullable */ 3:
                     message.isNullable = reader.bool();
                     break;
+                case /* optional string description */ 4:
+                    message.description = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -778,6 +788,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
         /* bool is_nullable = 3; */
         if (message.isNullable !== false)
             writer.tag(3, WireType.Varint).bool(message.isNullable);
+        /* optional string description = 4; */
+        if (message.description !== undefined)
+            writer.tag(4, WireType.LengthDelimited).string(message.description);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

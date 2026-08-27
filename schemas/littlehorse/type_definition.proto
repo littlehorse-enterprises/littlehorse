@@ -74,6 +74,9 @@ message StructFieldDef {
 
   // If true, then the field is treated as nullable, and its value may be set to null.
   bool is_nullable = 3;
+
+  // Optional human-readable description of this field's purpose.
+  optional string description = 4;
 }
 
 // VariableValue is a structure containing a value in LittleHorse. It can be
