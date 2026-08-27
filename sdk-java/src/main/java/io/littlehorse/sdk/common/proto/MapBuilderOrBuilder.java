@@ -61,8 +61,10 @@ public interface MapBuilderOrBuilder extends
 
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -71,8 +73,10 @@ public interface MapBuilderOrBuilder extends
   boolean hasMapType();
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -81,8 +85,10 @@ public interface MapBuilderOrBuilder extends
   io.littlehorse.sdk.common.proto.InlineMapDef getMapType();
   /**
    * <pre>
-   * Optional authoritative key/value types for the resulting Map, mirroring
-   * `Map.map_type`. If absent, types are derived from the resolved entries.
+   * Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+   * If absent, the types are derived from the resolved entries at validation time; a
+   * MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+   * no declared type) is rejected. The resulting Map always carries a concrete type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>

@@ -105,11 +105,29 @@ public class MapBuilderModelTest {
     }
 
     @Test
-    void resolveTypeDefinitionReturnsWildcardMapWhenEmptyAndNoMapType() throws InvalidExpressionException {
+    void resolveTypeDefinitionUsesEntryCastTargets() throws InvalidExpressionException {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.INT), makeVarDef("myVal", VariableType.STR));
+        WfSpecModel wfSpec = makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = new MapBuilderModel();
+        model.getEntries()
+                .add(makeEntry(assignmentModel("myKey", VariableType.STR), assignmentModel("myVal", VariableType.INT)));
+
+        TypeDefinitionModel result =
+                model.resolveTypeDefinition(null, wfSpec, "entrypoint").orElseThrow();
+        Assertions.assertThat(result.getInlineMapDef().getKeyType().getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+        Assertions.assertThat(result.getInlineMapDef().getValueType().getPrimitiveType())
+                .isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void resolveTypeDefinitionThrowsWhenEmptyAndNoMapType() {
         MapBuilderModel model = emptyBuilder();
-        Optional<TypeDefinitionModel> result = model.resolveTypeDefinition(null, null, null);
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getDefinedTypeCase()).isEqualTo(DefinedTypeCase.INLINE_MAP_DEF);
+        Assertions.assertThatThrownBy(() -> model.resolveTypeDefinition(null, null, null))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("untyped empty Map");
     }
 
     @Test
@@ -128,7 +146,7 @@ public class MapBuilderModelTest {
         model.getEntries().add(makeEntry(keyAssn, valAssn));
 
         ThreadSpecModel threadSpec = makeThreadSpec("entrypoint");
-        WfSpecModel wfSpec = makeWfSpec("entrypoint", threadSpec);
+        makeWfSpec("entrypoint", threadSpec);
 
         Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
                 .isInstanceOf(InvalidExpressionException.class)
@@ -141,7 +159,7 @@ public class MapBuilderModelTest {
         ThreadVarDefModel keyVar = makeVarDef("myKey", VariableType.STR);
         ThreadVarDefModel valVar = makeVarDef("myVal", VariableType.STR); // STR, not INT
         ThreadSpecModel threadSpec = makeThreadSpec("entrypoint", keyVar, valVar);
-        WfSpecModel wfSpec = makeWfSpec("entrypoint", threadSpec);
+        makeWfSpec("entrypoint", threadSpec);
 
         InlineMapDefModel mapType = new InlineMapDefModel(
                 new TypeDefinitionModel(VariableType.STR), new TypeDefinitionModel(VariableType.INT));
@@ -152,6 +170,82 @@ public class MapBuilderModelTest {
         Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
                 .isInstanceOf(InvalidExpressionException.class)
                 .hasMessageContaining("value type");
+    }
+
+    @Test
+    void validateAcceptsEntryCastsToDeclaredMapType() throws InvalidExpressionException {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.INT), makeVarDef("myVal", VariableType.STR));
+        makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = builderWithMapType(VariableType.STR, VariableType.INT);
+        model.getEntries()
+                .add(makeEntry(assignmentModel("myKey", VariableType.STR), assignmentModel("myVal", VariableType.INT)));
+
+        Assertions.assertThatCode(() -> model.validate(null, null, threadSpec)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void validateRejectsUnsupportedEntryCast() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.BOOL), makeVarDef("myVal", VariableType.INT));
+        makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = builderWithMapType(VariableType.INT, VariableType.INT);
+        model.getEntries().add(makeEntry(assignmentModel("myKey", VariableType.INT), assignmentModel("myVal", null)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("entry 0")
+                .hasMessageContaining("key cannot cast from BOOL to INT");
+    }
+
+    @Test
+    void validateRejectsNonPrimitiveCastTarget() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.STR), makeVarDef("myVal", VariableType.INT));
+        makeWfSpec("entrypoint", threadSpec);
+
+        VariableAssignmentModel keyAssignment = assignmentModel("myKey", null);
+        keyAssignment.setTargetType(new TypeDefinitionModel(new InlineMapDefModel(
+                new TypeDefinitionModel(VariableType.STR), new TypeDefinitionModel(VariableType.INT))));
+        MapBuilderModel model = builderWithMapType(VariableType.STR, VariableType.INT);
+        model.getEntries().add(makeEntry(keyAssignment, assignmentModel("myVal", null)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("entry 0")
+                .hasMessageContaining("key cast target must be a primitive type");
+    }
+
+    @Test
+    void validateRejectsUnsupportedValueCast() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.STR), makeVarDef("myVal", VariableType.BOOL));
+        makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = builderWithMapType(VariableType.STR, VariableType.INT);
+        model.getEntries().add(makeEntry(assignmentModel("myKey", null), assignmentModel("myVal", VariableType.INT)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("entry 0")
+                .hasMessageContaining("value cannot cast from BOOL to INT");
+    }
+
+    @Test
+    void validateRejectsCastTargetIncompatibleWithDeclaredMapType() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.INT), makeVarDef("myVal", VariableType.INT));
+        makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = builderWithMapType(VariableType.BOOL, VariableType.INT);
+        model.getEntries().add(makeEntry(assignmentModel("myKey", VariableType.STR), assignmentModel("myVal", null)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("key type STR")
+                .hasMessageContaining("Map key type BOOL");
     }
 
     private ThreadVarDefModel makeVarDef(String name, VariableType type) {
@@ -178,15 +272,17 @@ public class MapBuilderModelTest {
     }
 
     private MapBuilderModel.MapBuilderEntryModel entryModel(String keyVar, String valVar) {
-        VariableAssignmentModel k = new VariableAssignmentModel();
-        k.setRhsSourceType(SourceCase.VARIABLE_NAME);
-        k.setVariableName(keyVar);
+        return makeEntry(assignmentModel(keyVar, null), assignmentModel(valVar, null));
+    }
 
-        VariableAssignmentModel v = new VariableAssignmentModel();
-        v.setRhsSourceType(SourceCase.VARIABLE_NAME);
-        v.setVariableName(valVar);
-
-        return makeEntry(k, v);
+    private VariableAssignmentModel assignmentModel(String variableName, VariableType targetType) {
+        VariableAssignmentModel assignment = new VariableAssignmentModel();
+        assignment.setRhsSourceType(SourceCase.VARIABLE_NAME);
+        assignment.setVariableName(variableName);
+        if (targetType != null) {
+            assignment.setTargetType(new TypeDefinitionModel(targetType));
+        }
+        return assignment;
     }
 
     private MapBuilderModel.MapBuilderEntryModel makeEntry(VariableAssignmentModel key, VariableAssignmentModel val) {

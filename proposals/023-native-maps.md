@@ -9,6 +9,7 @@
     - [`VariableValue` Changes (`Map`)](#variablevalue-changes-map)
     - [`VariableAssignment` Changes (`MapBuilder`)](#variableassignment-changes-mapbuilder)
     - [Allowed Key Types](#allowed-key-types)
+    - [`MapBuilder` (Dynamic Map Construction)](#mapbuilder-dynamic-map-construction)
   - [Client-Side (SDK) Changes](#client-side-sdk-changes)
     - [Declaring a `Map` Variable](#declaring-a-map-variable)
     - [Accessing Entries](#accessing-entries)
@@ -135,13 +136,18 @@ message Map {
   // `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
   repeated Entry entries = 1;
 
-  // Optional, authoritative key/value types for this map. Stored alongside the
-  // entries for ease of access on the server, mirroring `Array.element_type`.
-  // If absent, the types may be unknown and must be derived from entries or
-  // treated as wildcard.
+  // Authoritative key/value types for this map. Stored alongside the entries for
+  // ease of access on the server, mirroring `Array.element_type`.
+  //
+  // Native Maps are always typed: this field is `optional` only for wire-compatibility
+  // with Maps persisted before typing was enforced. When absent (legacy data), the server
+  // infers the type from the entries on read; empty legacy Maps are typed on assignment.
+  // New Maps must always carry a concrete key/value type.
   optional InlineMapDef map_type = 2;
 }
 ```
+
+Every native `Map` is always typed. A `Map` may never exist without a known key/value type at any point in its lifecycle. The `map_type` field is `optional` purely for wire-compatibility with `Map`s that were persisted before typing was enforced; when such legacy data is read back, the server infers `map_type` from the first entry (an empty legacy `Map` is left untyped and pinned to a concrete type on its next assignment). All newly created `Map`s — whether produced by the SDK, a task output, or a `MapBuilder` — carry a concrete `InlineMapDef`.
 
 Note the choice not to use protobuf's native `map<...>`: a protobuf map key must be an integral or string scalar, while a LittleHorse `Map` key is an arbitrary `VariableValue`. Using a `repeated Entry` keeps keys fully expressive and keeps wire-level ordering deterministic.
 
@@ -294,6 +300,15 @@ When a metadata object referencing an `InlineMapDef` is registered, the server v
 4. If either type references a `StructDef`, the `StructDef` must exist and its version is pinned.
 
 At ingress points (`RunWf`, task output assignment, `ThrowEvent`), the server stamps the `InlineMapDef` onto the `MapModel` (via `IngressTypeUtils`), then validates every `Entry`'s key against `key_type` and every value against `value_type`, failing with a `TypeValidationException` on mismatch (consistent with `Array`/`Struct` handling).
+
+#### Always-Typed
+
+The server enforces that no `Map` is ever created without a concrete key/value type:
+
+- Creation boundaries (SDK stamping, task output, `MapBuilder` resolution) attach a concrete `InlineMapDef` before the `Map` enters the engine. A `MapBuilder` that cannot resolve a concrete type — e.g. an empty builder with no declared `map_type` — is rejected at `WfSpec` registration.
+- Migrate-on-read: when a `MapModel` is deserialized from a pre-typing `Map` (`!hasMapType()`), the server backfills `map_type` from the first entry's key/value `TypeDefinition`. An empty legacy `Map` remains untyped until its next assignment, at which point it is pinned to a concrete type.
+
+This keeps the wildcard/untyped representation out of the engine entirely for all newly created data, while remaining backwards compatible with `Map`s persisted before the invariant existed.
 
 ### Mutations
 

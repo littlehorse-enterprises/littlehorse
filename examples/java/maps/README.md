@@ -1,4 +1,4 @@
-## Running MapExample
+## MapExample: a typed-Map inventory workflow
 
 This example uses a typed Map to reserve inventory. The workflow:
 
@@ -44,10 +44,21 @@ Request more than is available to exercise the out-of-stock path:
 lhctl run reserve-inventory sku apples quantity 10
 ```
 
-Inspect the run and task/node outputs:
+The `my-map` input variable is a typed `Map<STR, INT>`. Provide it as a JSON object; keys and
+values are coerced to the declared key/value types. Override `lookup-key` to pick a different item:
 
 ```
-# Show the workflow run
+# Provide your own inventory and look up "grapes"
+lhctl run example-maps my-map '{"apples": 10, "grapes": 7}' lookup-key grapes
+
+# Key "apples" (default lookup-key) is absent -> report-missing branch runs
+lhctl run example-maps my-map '{"jacob": 5}'
+```
+
+## Inspecting a run
+
+```
+# Show the workflow run and its variables (my-map, total-count, apples-qty, ...)
 lhctl get wfRun <wf_run_id>
 
 # List all node runs for the workflow

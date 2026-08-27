@@ -240,7 +240,7 @@ public class VariableAssignmentModelTest {
     }
 
     @Test
-    void mapBuilderGetSourceTypeEmptyBuilderReturnsWildcardMap() throws Exception {
+    void mapBuilderGetSourceTypeEmptyBuilderThrows() throws Exception {
         VariableAssignment proto = VariableAssignment.newBuilder()
                 .setMapBuilder(MapBuilder.newBuilder())
                 .build();
@@ -252,10 +252,9 @@ public class VariableAssignmentModelTest {
         threadSpec.setWfSpec(wfSpec);
 
         VariableAssignmentModel model = VariableAssignmentModel.fromProto(proto, ctx);
-        Optional<TypeDefinitionModel> result = model.getSourceType(null, wfSpec, "entrypoint");
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getDefinedTypeCase())
-                .isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_MAP_DEF);
+        Assertions.assertThatThrownBy(() -> model.getSourceType(null, wfSpec, "entrypoint"))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("untyped empty Map");
     }
 
     @Test

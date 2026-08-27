@@ -234,7 +234,9 @@ class WfRunVariableImpl implements WfRunVariable {
                     && defaultVal != null
                     && defaultVal instanceof java.util.Map) {
                 this.defaultValue = LHLibUtil.objToVarValAsNativeMap(
-                        defaultVal, parent.getParent().getTypeAdapterRegistry());
+                        defaultVal,
+                        typeDef.getInlineMapDef(),
+                        parent.getParent().getTypeAdapterRegistry());
             } else {
                 this.defaultValue =
                         LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());

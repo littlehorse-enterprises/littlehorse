@@ -10,7 +10,7 @@ export const VariableAssignment: FC<{ variableAssigment: VariableAssignmentProto
   const onClick = useCallback(() => {
     setModal({ type: 'variableAssignment', data: variableAssigment })
     setShowModal(true)
-  }, [setModal, setShowModal])
+  }, [variableAssigment, setModal, setShowModal])
 
   return (
     <p className="flex-grow cursor-pointer truncate bg-black pl-2 font-mono text-gray-200" onClick={onClick}>
