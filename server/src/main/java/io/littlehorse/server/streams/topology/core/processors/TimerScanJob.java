@@ -84,7 +84,12 @@ class TimerScanJob implements PartitionBackgroundJob<CommandProcessorOutput> {
                 .range(TimerCursor.storeKeyBound(from), TimerCursor.storeKeyBound(scanEnd), LHTimer.class)) {
             while (iter.hasNext()) {
                 LHTimer timer = iter.next().getValue();
-                ctx.schedule(new MatureTimerAction(timer, timerTopic));
+                // One timer per batch. Delivery is self-contained (the delete and the forward are a
+                // single action), and the cursor advance below is verified independently, so there
+                // is nothing to gain from grouping timers — and grouping thousands of them would
+                // put one enormous unit on the Streams thread.
+                ctx.stage(new MatureTimerAction(timer, timerTopic));
+                ctx.submit();
                 scheduled++;
 
                 if (scheduled >= MAX_TIMERS_PER_SCAN || Instant.now().isAfter(deadline)) {
@@ -101,6 +106,7 @@ class TimerScanJob implements PartitionBackgroundJob<CommandProcessorOutput> {
             }
         }
 
-        ctx.schedule(new TimerCursorAdvanceAction(cursor, proposedCursor));
+        ctx.stage(new TimerCursorAdvanceAction(cursor, proposedCursor));
+        ctx.submit();
     }
 }

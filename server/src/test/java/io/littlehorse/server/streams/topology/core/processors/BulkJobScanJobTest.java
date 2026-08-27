@@ -95,6 +95,7 @@ public class BulkJobScanJobTest {
 
     private PartitionActionApplier<CommandProcessorOutput> applier;
     private PartitionActionScheduler<CommandProcessorOutput> scheduler;
+    private PartitionJobContext<CommandProcessorOutput> jobContext;
     private BulkJobScanJob job;
 
     @BeforeEach
@@ -175,7 +176,7 @@ public class BulkJobScanJobTest {
         job.run(jobContext());
 
         // The job has produced its effects, but the Streams thread has not applied them yet.
-        assertThat(scheduler.pendingCount()).isEqualTo(2);
+        assertThat(scheduler.pendingActionCount()).isEqualTo(2);
         assertThat(mockProcessorContext.forwarded()).isEmpty();
         assertThat(tenantCoreStore.get(cursorKey, BulkJobShardCursorModel.class))
                 .isNull();
@@ -228,12 +229,13 @@ public class BulkJobScanJobTest {
         seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdB, wfRunCreatedAtB);
         seedMatchingWfRunTag(WF_SPEC_NAME, wfRunIdC, wfRunCreatedAtC);
 
-        // First pass: the budget is exhausted as soon as two deletes have been queued, so the scan
-        // yields mid-way and persists its position. Note this observes the ACTION QUEUE rather than
-        // the forwards, because nothing reaches the ProcessorContext until the drain.
+        // First pass: the budget is exhausted as soon as two deletes have been staged, so the scan
+        // yields mid-way and persists its position. Note this observes the STAGED batch rather than
+        // the forwards: a shard advance is one atomic unit, so nothing is even submitted to the
+        // queue until the pass finishes, let alone applied.
         Instant base = Instant.now();
         Supplier<Instant> budgetExhaustedAfterTwoDeletes =
-                () -> scheduler.pendingCount() >= 2 ? base.plus(Duration.ofHours(1)) : base;
+                () -> jobContext().stagedCount() >= 2 ? base.plus(Duration.ofHours(1)) : base;
         runAndApply(newJob(Duration.ofMinutes(1), UNLIMITED_COMMAND_BUDGET, budgetExhaustedAfterTwoDeletes));
 
         // Exactly the first two WfRuns are deleted and the shard is reported as not yet complete.
@@ -374,14 +376,17 @@ public class BulkJobScanJobTest {
     }
 
     /**
-     * Lazily built so that {@link #scheduler} is shared by every call within a test, which is what
-     * lets the budget clock observe the action queue.
+     * Lazily built and reused within a test, so that {@link #scheduler} is shared by every call and
+     * the budget clock can observe the batch the job is staging.
      */
     private PartitionJobContext<CommandProcessorOutput> jobContext() {
         if (scheduler == null) {
             scheduler = new PartitionActionScheduler<>(TASK_ID, config, storeProvider, List.of());
         }
-        return new PartitionJobContext<>(TASK_ID.partition(), config, storeProvider, scheduler);
+        if (jobContext == null) {
+            jobContext = new PartitionJobContext<>(TASK_ID.partition(), config, storeProvider, scheduler);
+        }
+        return jobContext;
     }
 
     private void seedRunningJob(String jobId, BulkDeleteWfRunModel deleteWfRun) {

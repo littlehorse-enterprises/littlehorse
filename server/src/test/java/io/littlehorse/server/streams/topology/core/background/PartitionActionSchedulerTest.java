@@ -44,8 +44,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * Unit tests for the per-partition background worker.
  *
  * <p>These tests exercise the two halves of the threading contract independently: the worker thread
- * producing actions, and the (simulated) Kafka Streams thread draining them. Every assertion that
- * depends on the worker uses Awaitility rather than sleeps, so the suite stays fast.
+ * staging and submitting actions, and the (simulated) Kafka Streams thread draining them. Every
+ * assertion that depends on the worker uses Awaitility rather than sleeps, so the suite stays fast.
  */
 @ExtendWith(MockitoExtension.class)
 public class PartitionActionSchedulerTest {
@@ -166,12 +166,13 @@ public class PartitionActionSchedulerTest {
                 List.of(job("flooder", Duration.ofMillis(1), ctx -> {
                     while (true) {
                         ctx.forward(forwardRecord("never-drained"));
+                        ctx.submit();
                     }
                 })),
                 2);
         scheduler.start();
-        // The worker fills the queue and then blocks forever inside enqueue().
-        await().until(() -> scheduler.pendingCount() >= 2);
+        // The worker fills the queue and then blocks forever inside submit().
+        await().until(() -> scheduler.pendingBatchCount() >= 2);
 
         scheduler.close();
 
@@ -187,24 +188,25 @@ public class PartitionActionSchedulerTest {
         scheduler = newScheduler(List.of(job("producer", Duration.ofHours(1), ctx -> {
             for (int i = 0; i < 5; i++) {
                 ctx.forward(forwardRecord("key-" + i));
+                ctx.submit();
             }
         })));
         scheduler.start();
-        await().until(() -> scheduler.pendingCount() == 5);
+        await().until(() -> scheduler.pendingActionCount() == 5);
 
         scheduler.close();
 
-        assertThat(scheduler.pendingCount()).isZero();
+        assertThat(scheduler.pendingActionCount()).isZero();
         assertThat(mockProcessorContext.forwarded()).isEmpty();
     }
 
     @Test
-    void shouldRejectEnqueueAfterClose() {
+    void shouldRejectSubmitAfterClose() {
         scheduler = newScheduler(List.of());
         scheduler.start();
         scheduler.close();
 
-        assertThatThrownBy(() -> scheduler.enqueue(PartitionAction.forward(forwardRecord("late"))))
+        assertThatThrownBy(() -> scheduler.submitBatch(List.of(PartitionAction.forward(forwardRecord("late")))))
                 .isInstanceOf(InterruptedException.class)
                 .hasMessageContaining("no longer owned");
     }
@@ -217,6 +219,7 @@ public class PartitionActionSchedulerTest {
                 List.of(job("producer", Duration.ofHours(1), ctx -> {
                     for (int i = 0; i < totalActions; i++) {
                         ctx.forward(forwardRecord("key-" + i));
+                        ctx.submit();
                     }
                 })),
                 capacity);
@@ -225,7 +228,7 @@ public class PartitionActionSchedulerTest {
         // The worker can never get ahead of the punctuator by more than the queue capacity.
         List<String> applied = new ArrayList<>();
         await().untilAsserted(() -> {
-            assertThat(scheduler.pendingCount()).isLessThanOrEqualTo(capacity);
+            assertThat(scheduler.pendingBatchCount()).isLessThanOrEqualTo(capacity);
             scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
             applied.clear();
             applied.addAll(forwardedKeys());
@@ -236,6 +239,94 @@ public class PartitionActionSchedulerTest {
                 .containsExactlyElementsOf(IntStream.range(0, totalActions)
                         .mapToObj(i -> "key-" + i)
                         .toList());
+    }
+
+    // ------------------------------------------------------------------
+    // Batching: a submitted batch is the unit of atomicity
+    // ------------------------------------------------------------------
+
+    /**
+     * The whole point of batching. A job's atomic unit must land inside one punctuation — and
+     * therefore one Kafka transaction — even when the punctuator has no budget left.
+     */
+    @Test
+    void shouldApplyAWholeBatchEvenWhenTheBudgetIsAlreadyExhausted() throws Exception {
+        scheduler = newScheduler(List.of());
+        scheduler.submitBatch(List.of(
+                PartitionAction.forward(forwardRecord("a")),
+                PartitionAction.forward(forwardRecord("b")),
+                PartitionAction.forward(forwardRecord("c"))));
+
+        int applied = scheduler.drain(applier, Duration.ZERO, UNLIMITED_ACTIONS);
+
+        assertThat(applied).isEqualTo(3);
+        assertThat(forwardedKeys()).containsExactly("a", "b", "c");
+        assertThat(scheduler.pendingActionCount()).isZero();
+    }
+
+    @Test
+    void shouldNotSplitABatchWhenMaxActionsFallsInsideIt() throws Exception {
+        scheduler = newScheduler(List.of());
+        scheduler.submitBatch(
+                List.of(PartitionAction.forward(forwardRecord("a")), PartitionAction.forward(forwardRecord("b"))));
+        scheduler.submitBatch(List.of(PartitionAction.forward(forwardRecord("c"))));
+
+        // maxActions=1 falls inside the first batch; it is still applied whole, and the second
+        // batch is deferred rather than being partially applied.
+        int applied = scheduler.drain(applier, UNLIMITED_BUDGET, 1);
+
+        assertThat(applied).isEqualTo(2);
+        assertThat(forwardedKeys()).containsExactly("a", "b");
+        assertThat(scheduler.pendingActionCount()).isEqualTo(1);
+    }
+
+    @Test
+    void shouldAutoSubmitWhateverARunLeavesStaged() {
+        scheduler = newScheduler(List.of(job("forgetful", Duration.ofHours(1), ctx -> {
+            ctx.forward(forwardRecord("staged-only"));
+            // Never calls submit(); the scheduler does it when run() returns.
+        })));
+        scheduler.start();
+
+        await().until(() -> scheduler.pendingActionCount() == 1);
+    }
+
+    /**
+     * A run that dies half way through must not leave a partial unit behind: the staged actions are
+     * dropped so the next run redoes the whole thing.
+     */
+    @Test
+    void shouldDiscardStagedActionsWhenARunThrows() {
+        scheduler = newScheduler(List.of(job("half-done", Duration.ofHours(1), ctx -> {
+            ctx.forward(forwardRecord("first"));
+            ctx.forward(forwardRecord("second"));
+            throw new IllegalStateException("boom");
+        })));
+        scheduler.start();
+
+        await().untilAsserted(() -> assertThat(scheduler.isWorkerAlive()).isTrue());
+        assertThat(scheduler.pendingActionCount()).isZero();
+        scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
+        assertThat(mockProcessorContext.forwarded()).isEmpty();
+    }
+
+    /**
+     * Batches already submitted before the failure are unaffected — only the staged remainder is
+     * dropped.
+     */
+    @Test
+    void shouldKeepBatchesSubmittedBeforeARunFailed() {
+        scheduler = newScheduler(List.of(job("partial", Duration.ofHours(1), ctx -> {
+            ctx.forward(forwardRecord("committed"));
+            ctx.submit();
+            ctx.forward(forwardRecord("staged"));
+            throw new IllegalStateException("boom");
+        })));
+        scheduler.start();
+
+        await().until(() -> scheduler.pendingActionCount() == 1);
+        scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
+        assertThat(forwardedKeys()).containsExactly("committed");
     }
 
     // ------------------------------------------------------------------
@@ -254,9 +345,7 @@ public class PartitionActionSchedulerTest {
     @Test
     void shouldApplyActionsInFifoOrder() throws Exception {
         scheduler = newScheduler(List.of());
-        for (int i = 0; i < 5; i++) {
-            scheduler.enqueue(PartitionAction.forward(forwardRecord("key-" + i)));
-        }
+        submitOnePerBatch(5);
 
         int applied = scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
 
@@ -267,57 +356,56 @@ public class PartitionActionSchedulerTest {
     @Test
     void shouldStopAtMaxActionsAndLeaveTheRestQueued() throws Exception {
         scheduler = newScheduler(List.of());
-        for (int i = 0; i < 5; i++) {
-            scheduler.enqueue(PartitionAction.forward(forwardRecord("key-" + i)));
-        }
+        submitOnePerBatch(5);
 
         int applied = scheduler.drain(applier, UNLIMITED_BUDGET, 2);
 
         assertThat(applied).isEqualTo(2);
-        assertThat(scheduler.pendingCount()).isEqualTo(3);
+        assertThat(scheduler.pendingActionCount()).isEqualTo(3);
         assertThat(forwardedKeys()).containsExactly("key-0", "key-1");
     }
 
     @Test
     void shouldResumeWhereItLeftOffOnTheNextDrain() throws Exception {
         scheduler = newScheduler(List.of());
-        for (int i = 0; i < 4; i++) {
-            scheduler.enqueue(PartitionAction.forward(forwardRecord("key-" + i)));
-        }
+        submitOnePerBatch(4);
 
         scheduler.drain(applier, UNLIMITED_BUDGET, 2);
         scheduler.drain(applier, UNLIMITED_BUDGET, 2);
 
-        assertThat(scheduler.pendingCount()).isZero();
+        assertThat(scheduler.pendingActionCount()).isZero();
         assertThat(forwardedKeys()).containsExactly("key-0", "key-1", "key-2", "key-3");
     }
 
     @Test
     void shouldYieldAfterExhaustingTheTimeBudget() throws Exception {
         scheduler = newScheduler(List.of());
-        for (int i = 0; i < 5; i++) {
-            scheduler.enqueue(PartitionAction.forward(forwardRecord("key-" + i)));
-        }
+        submitOnePerBatch(5);
 
-        // An already-expired budget still applies one action, so the queue can never stall.
+        // An already-expired budget still applies one batch, so the queue can never stall.
         int applied = scheduler.drain(applier, Duration.ZERO, UNLIMITED_ACTIONS);
 
         assertThat(applied).isEqualTo(1);
-        assertThat(scheduler.pendingCount()).isEqualTo(4);
+        assertThat(scheduler.pendingActionCount()).isEqualTo(4);
     }
 
+    /**
+     * An action that throws now aborts the punctuation rather than being swallowed. That is what
+     * makes a batch all-or-nothing: Kafka Streams rolls the transaction back, and because the batch
+     * is only dequeued once every action has landed, it is still there to be retried.
+     */
     @Test
-    void shouldKeepDrainingWhenAnActionThrows() throws Exception {
+    void shouldPropagateActionFailureAndLeaveTheBatchQueuedForRetry() throws Exception {
         scheduler = newScheduler(List.of());
-        scheduler.enqueue(PartitionAction.forward(forwardRecord("before")));
-        scheduler.enqueue(PartitionAction.put(null, new ExplodingStoreable()));
-        scheduler.enqueue(PartitionAction.forward(forwardRecord("after")));
+        scheduler.submitBatch(List.of(
+                PartitionAction.forward(forwardRecord("before")),
+                PartitionAction.put(null, new ExplodingStoreable()),
+                PartitionAction.forward(forwardRecord("after"))));
 
-        int applied = scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
+        assertThatThrownBy(() -> scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS))
+                .isInstanceOf(RuntimeException.class);
 
-        // The poisoned action is counted as applied and swallowed: the Streams thread survives.
-        assertThat(applied).isEqualTo(3);
-        assertThat(forwardedKeys()).containsExactly("before", "after");
+        assertThat(scheduler.pendingActionCount()).isEqualTo(3);
     }
 
     // ------------------------------------------------------------------
@@ -330,7 +418,7 @@ public class PartitionActionSchedulerTest {
         tag.setCount(7L);
         scheduler = newScheduler(List.of(job("writer", Duration.ofHours(1), ctx -> ctx.put(null, tag))));
         scheduler.start();
-        await().until(() -> scheduler.pendingCount() == 1);
+        await().until(() -> scheduler.pendingActionCount() == 1);
 
         scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
 
@@ -348,7 +436,7 @@ public class PartitionActionSchedulerTest {
 
         scheduler = newScheduler(List.of(job("deleter", Duration.ofHours(1), ctx -> ctx.delete(null, tag))));
         scheduler.start();
-        await().until(() -> scheduler.pendingCount() == 1);
+        await().until(() -> scheduler.pendingActionCount() == 1);
 
         scheduler.drain(applier, UNLIMITED_BUDGET, UNLIMITED_ACTIONS);
 
@@ -400,6 +488,12 @@ public class PartitionActionSchedulerTest {
         return new PartitionActionScheduler<>(TASK_ID, config, storeProvider, jobs, queueCapacity);
     }
 
+    private void submitOnePerBatch(int count) throws InterruptedException {
+        for (int i = 0; i < count; i++) {
+            scheduler.submitBatch(List.of(PartitionAction.forward(forwardRecord("key-" + i))));
+        }
+    }
+
     private static org.awaitility.core.ConditionFactory await() {
         return Awaitility.await().atMost(AWAIT_TIMEOUT).pollInterval(Duration.ofMillis(10));
     }
@@ -441,8 +535,8 @@ public class PartitionActionSchedulerTest {
     }
 
     /**
-     * A Storeable that blows up during serialization, used to prove that a bad action cannot take
-     * down the Kafka Streams thread. {@code getStoreKey()} deliberately still works, since
+     * A Storeable that blows up during serialization, used to drive the failure path in
+     * {@code drain()}. {@code getStoreKey()} deliberately still works, since
      * {@link PartitionAction#describe()} needs it for the error log.
      */
     private static final class ExplodingStoreable extends Storeable<PartitionCountedTag> {

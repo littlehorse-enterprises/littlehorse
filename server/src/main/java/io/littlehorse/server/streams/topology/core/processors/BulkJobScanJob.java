@@ -165,7 +165,7 @@ public class BulkJobScanJob implements PartitionBackgroundJob<CommandProcessorOu
         }
 
         cursor = job.tryToComplete(
-                record -> ctx.forwardUnchecked(uncheckedCast(record)),
+                record -> ctx.forward(uncheckedCast(record)),
                 config,
                 tenantId,
                 coreStore,
@@ -175,6 +175,10 @@ public class BulkJobScanJob implements PartitionBackgroundJob<CommandProcessorOu
 
         ctx.forward(shardReport(ctx, job, cursor, tenantId));
         ctx.put(tenantId, cursor);
+        // One shard advance is one atomic unit: the delete commands, the shard report and the
+        // cursor must land together. A report claiming the shard is complete, applied without the
+        // deletes that back it up, would retire WfRuns that were never touched.
+        ctx.submit();
     }
 
     private Record<String, CommandProcessorOutput> shardReport(

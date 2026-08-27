@@ -141,7 +141,11 @@ public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob<Comman
 
     /**
      * Emits the two aggregate commands (spec-level and tenant-level) for a window, plus the delete
-     * that retires it from the partition-local store.
+     * that retires it from the partition-local store, as one atomic unit.
+     *
+     * <p>The three must land together. Applying only the spec-level aggregate under-counts the
+     * tenant rollup; applying the aggregates without the delete leaves the window to be replayed and
+     * counted twice.
      */
     private void scheduleAggregation(PartitionJobContext<CommandProcessorOutput> ctx, PartitionMetricWindowModel window)
             throws InterruptedException {
@@ -152,6 +156,7 @@ public class PartitionMetricsCatchUpJob implements PartitionBackgroundJob<Comman
         ctx.forward(aggregateRecord(copyOf(window), false));
         ctx.forward(aggregateRecord(copyOf(window), true));
         ctx.delete(null, window);
+        ctx.submit();
     }
 
     private PartitionMetricWindowModel copyOf(PartitionMetricWindowModel window) {

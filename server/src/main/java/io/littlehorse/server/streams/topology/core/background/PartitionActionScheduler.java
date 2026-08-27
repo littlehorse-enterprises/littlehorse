@@ -13,35 +13,42 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
 
 /**
- * Owns the single background thread dedicated to one Kafka partition, plus the FIFO queue of
- * {@link PartitionAction}s that thread produces.
+ * Owns the single background thread dedicated to one Kafka partition, plus the FIFO queue of action
+ * batches that thread produces.
  *
  * <p>The threading contract is the whole point of this class:
  * <ul>
  *   <li>The <b>worker thread</b> runs every {@link PartitionBackgroundJob} in a loop. It may block,
- *       scan and compute freely. It reads state through IQv1 and produces actions.</li>
+ *       scan and compute freely. It reads state through IQv1 and submits batches of actions.</li>
  *   <li>The <b>Kafka Streams thread</b> only ever calls {@link #drain}, from the single unified
- *       punctuator, applying actions in the order they were produced under a time/count budget.</li>
+ *       punctuator, applying whole batches in the order they were produced.</li>
  * </ul>
+ *
+ * <p><b>A batch is the unit of atomicity.</b> Kafka Streams never commits in the middle of a
+ * punctuation, so every action in a batch lands in the same transaction. Jobs rely on that: the
+ * metrics replay emits two aggregates and a delete per window, and applying only some of those
+ * would double-count or lose the window entirely.
  *
  * <p>One instance exists per partition assignment: it is created in {@code Processor.init()} and
  * closed in {@code Processor.close()}. That lifecycle is what makes rebalances safe — on revocation
- * the instance is discarded along with any actions it had queued, so nothing is ever applied to a
+ * the instance is discarded along with any batches it had queued, so nothing is ever applied to a
  * store this server no longer owns.
  */
 @Slf4j
 public final class PartitionActionScheduler<VOut> implements Closeable {
 
     /**
-     * Bounded on purpose. A full queue blocks the worker, which is exactly the backpressure we want:
-     * the background thread must never be allowed to outrun the punctuator's ability to commit.
+     * Bounded on purpose. A full queue blocks the worker in {@code submit()}, which is exactly the
+     * backpressure we want: the background thread must never outrun the punctuator's ability to
+     * commit.
      */
-    private static final int DEFAULT_QUEUE_CAPACITY = 10_000;
+    private static final int DEFAULT_QUEUE_CAPACITY = 1_000;
 
     /**
      * How long the worker sleeps when no job is due.
@@ -54,7 +61,8 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
     private static final Duration STORE_UNAVAILABLE_BACKOFF = Duration.ofSeconds(1);
 
     private final TaskId taskId;
-    private final BlockingQueue<PartitionAction<VOut>> pending;
+    private final BlockingQueue<List<PartitionAction<VOut>>> pending;
+    private final AtomicInteger pendingActions = new AtomicInteger();
     private final List<PartitionBackgroundJob<VOut>> jobs;
     private final PartitionJobContext<VOut> jobContext;
 
@@ -103,14 +111,16 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
     }
 
     /**
-     * Called by the worker thread (via {@link PartitionJobContext}). Blocks when the queue is full.
+     * Called by the worker thread (via {@link PartitionJobContext#submit()}). Blocks when the queue
+     * is full.
      */
-    void enqueue(PartitionAction<VOut> action) throws InterruptedException {
+    void submitBatch(List<PartitionAction<VOut>> batch) throws InterruptedException {
         if (closed) {
-            // Partition was revoked while the job was mid-flight; drop the effect on the floor.
+            // Partition was revoked while the job was mid-flight; drop the effects on the floor.
             throw new InterruptedException("Partition " + taskId.partition() + " no longer owned");
         }
-        pending.put(action);
+        pending.put(batch);
+        pendingActions.addAndGet(batch.size());
     }
 
     /**
@@ -118,38 +128,54 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
      * punctuator, and is also what lets a job implement a barrier: "do not start another scan until
      * everything the previous one produced has taken effect".
      */
-    public int pendingCount() {
+    public int pendingActionCount() {
+        return pendingActions.get();
+    }
+
+    /**
+     * Number of batches waiting to be applied.
+     */
+    public int pendingBatchCount() {
         return pending.size();
     }
 
     /**
-     * Applies queued actions on the Kafka Streams thread, in FIFO order, until the queue is empty or
+     * Applies queued batches on the Kafka Streams thread, in FIFO order, until the queue is empty or
      * the budget runs out. Whatever is left over is picked up by the next punctuation.
+     *
+     * <p>The budget is only ever evaluated <i>between</i> batches, never inside one — that is what
+     * keeps a job's atomic unit inside a single transaction. At least one batch is always applied,
+     * so a batch larger than the budget cannot stall the queue forever.
      *
      * @return the number of actions applied.
      */
     public int drain(PartitionActionApplier<VOut> applier, Duration budget, int maxActions) {
         Instant deadline = Instant.now().plus(budget);
         int applied = 0;
-        while (applied < maxActions) {
-            PartitionAction<VOut> action = pending.poll();
-            if (action == null) {
+        while (true) {
+            if (applied > 0 && (applied >= maxActions || Instant.now().isAfter(deadline))) {
                 break;
             }
-            try {
+            List<PartitionAction<VOut>> batch = pending.peek();
+            if (batch == null) {
+                break;
+            }
+            // Dequeue only once every action has landed. If one throws, the exception leaves
+            // drain(), the punctuation fails and Kafka Streams aborts the transaction; the batch is
+            // still queued, so it is retried next tick against the rolled-back state.
+            for (PartitionAction<VOut> action : batch) {
                 action.apply(applier);
-            } catch (Exception e) {
-                // An action must never take down the Streams thread. Log loudly and keep going;
-                // jobs are expected to be idempotent so the work will be redone next tick.
-                log.error("Failed to apply {} on partition {}", action.describe(), taskId.partition(), e);
             }
-            applied++;
-            if (Instant.now().isAfter(deadline)) {
-                break;
-            }
+            pending.poll();
+            pendingActions.addAndGet(-batch.size());
+            applied += batch.size();
         }
-        if (applied == maxActions || !pending.isEmpty()) {
-            log.debug("Partition {}: applied {} actions, {} still queued", taskId.partition(), applied, pending.size());
+        if (applied > 0 && !pending.isEmpty()) {
+            log.debug(
+                    "Partition {}: applied {} actions, {} batches still queued",
+                    taskId.partition(),
+                    applied,
+                    pending.size());
         }
         return applied;
     }
@@ -167,11 +193,14 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
             }
         }
         // Anything still queued belongs to a partition we no longer own.
-        List<PartitionAction<VOut>> discarded = new ArrayList<>();
+        List<List<PartitionAction<VOut>>> discarded = new ArrayList<>();
         pending.drainTo(discarded);
+        pendingActions.set(0);
         if (!discarded.isEmpty()) {
             log.info(
-                    "Discarded {} pending actions on revocation of partition {}", discarded.size(), taskId.partition());
+                    "Discarded {} pending action batches on revocation of partition {}",
+                    discarded.size(),
+                    taskId.partition());
         }
     }
 
@@ -212,16 +241,26 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
     private void runOnce(PartitionBackgroundJob<VOut> job) throws InterruptedException {
         try {
             job.run(jobContext);
+            // Submit whatever the run staged but did not submit itself.
+            jobContext.submit();
         } catch (InterruptedException e) {
+            jobContext.discardStaged();
             throw e;
-        } catch (UncheckedInterruptedException e) {
-            throw e.getCause();
         } catch (InvalidStateStoreException | LHApiException e) {
             // Kafka Streams is rebalancing or restoring; this is expected and transient.
+            jobContext.discardStaged();
             log.debug("IQ store unavailable for job {} on partition {}; backing off", job.name(), taskId.partition());
             Thread.sleep(STORE_UNAVAILABLE_BACKOFF.toMillis());
         } catch (Exception e) {
-            log.error("Background job {} failed on partition {}", job.name(), taskId.partition(), e);
+            // A run that failed part-way through produces nothing, rather than a half-finished unit.
+            int dropped = jobContext.stagedCount();
+            jobContext.discardStaged();
+            log.error(
+                    "Background job {} failed on partition {}, discarding {} staged action(s)",
+                    job.name(),
+                    taskId.partition(),
+                    dropped,
+                    e);
         }
     }
 }

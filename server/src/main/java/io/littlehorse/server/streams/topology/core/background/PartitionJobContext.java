@@ -7,6 +7,8 @@ import io.littlehorse.server.streams.stores.ReadOnlyClusterScopedStore;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -16,19 +18,33 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  *
  * <p><b>Reads</b> go through IQv1 ({@link CoreStoreProvider}), pinned to this worker's partition.
  * They are therefore safe to perform off the Kafka Streams thread, at the cost of seeing only
- * committed state — a job may not immediately observe the effect of an action it just scheduled.
+ * committed state — a job may not immediately observe the effect of an action it just staged.
  * Jobs must be written to tolerate that: make them idempotent and resumable (cursor style).
  *
- * <p><b>Writes</b> are not possible. A job can only {@link #schedule(PartitionAction)} an action,
- * which the punctuator later applies on the Streams thread.
+ * <p><b>Writes</b> are not possible. A job {@link #stage(PartitionAction)}s actions and then
+ * {@link #submit()}s them; the punctuator applies each submitted batch in full, on the Streams
+ * thread, within a single punctuation.
  */
 public final class PartitionJobContext<VOut> {
+
+    /**
+     * Guards against a job building an atomic unit too large to apply in one punctuation. Exceeding
+     * this is a design error in the job — it needs a finer {@link #submit()} granularity — so the run
+     * fails loudly rather than putting the Kafka transaction at risk.
+     */
+    private static final int MAX_BATCH_SIZE = 1_000;
 
     private final int partition;
     private final LHServerConfig config;
     private final CoreStoreProvider storeProvider;
     private final PartitionActionScheduler<VOut> scheduler;
     private final BackgroundContext executionContext = new BackgroundContext();
+
+    /**
+     * Actions staged since the last {@link #submit()}. Only ever touched by the worker thread, and
+     * invisible to the punctuator until submitted.
+     */
+    private final List<PartitionAction<VOut>> stagedBatch = new ArrayList<>();
 
     /**
      * Normally created by {@link PartitionActionScheduler} for its worker thread. Public so that
@@ -80,45 +96,69 @@ public final class PartitionJobContext<VOut> {
     }
 
     /**
-     * Number of actions produced by this worker that the punctuator has not applied yet. Jobs whose
+     * Number of actions submitted by this worker that the punctuator has not applied yet. Jobs whose
      * next scan must not overlap the effects of the previous one use this as a barrier.
      */
     public int pendingActions() {
-        return scheduler.pendingCount();
+        return scheduler.pendingActionCount();
     }
 
     /**
-     * Enqueues an effect to be applied by the next punctuation. Blocks if the queue is full, which
-     * is how backpressure reaches the job: the worker thread cannot outrun the Streams thread.
+     * Stages an effect. Nothing is visible to the punctuator, and no backpressure is applied, until
+     * {@link #submit()}.
      */
-    public void schedule(PartitionAction<VOut> action) throws InterruptedException {
-        scheduler.enqueue(action);
-    }
-
-    public void put(TenantIdModel tenantId, Storeable<?> value) throws InterruptedException {
-        schedule(PartitionAction.put(tenantId, value));
-    }
-
-    public void delete(TenantIdModel tenantId, Storeable<?> value) throws InterruptedException {
-        schedule(PartitionAction.delete(tenantId, value));
-    }
-
-    public void forward(Record<String, ? extends VOut> record) throws InterruptedException {
-        schedule(PartitionAction.forward(record));
-    }
-
-    /**
-     * Same as {@link #forward}, for call sites that cannot declare {@link InterruptedException} —
-     * for example a {@code Consumer} handed to shared model code. The scheduler unwraps the
-     * resulting {@link UncheckedInterruptedException} so revocation still unwinds cleanly.
-     */
-    public void forwardUnchecked(Record<String, ? extends VOut> record) {
-        try {
-            forward(record);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new UncheckedInterruptedException(e);
+    public void stage(PartitionAction<VOut> action) {
+        if (stagedBatch.size() >= MAX_BATCH_SIZE) {
+            throw new IllegalStateException("Staged batch exceeded " + MAX_BATCH_SIZE
+                    + " actions; this job must call submit() at a finer granularity");
         }
+        stagedBatch.add(action);
+    }
+
+    public void put(TenantIdModel tenantId, Storeable<?> value) {
+        stage(PartitionAction.put(tenantId, value));
+    }
+
+    public void delete(TenantIdModel tenantId, Storeable<?> value) {
+        stage(PartitionAction.delete(tenantId, value));
+    }
+
+    public void forward(Record<String, ? extends VOut> record) {
+        stage(PartitionAction.forward(record));
+    }
+
+    /**
+     * Hands the staged batch to the punctuator, which applies it in full within a single punctuation
+     * — and therefore within a single Kafka Streams transaction.
+     *
+     * <p>Call this wherever the effects staged so far form a consistent unit. A job that never calls
+     * it gets exactly one batch per run, which the scheduler submits on its behalf.
+     *
+     * <p>This is the only blocking call a job makes: it waits while the scheduler's queue is full,
+     * which is how backpressure reaches the worker.
+     */
+    public void submit() throws InterruptedException {
+        if (stagedBatch.isEmpty()) {
+            return;
+        }
+        scheduler.submitBatch(List.copyOf(stagedBatch));
+        stagedBatch.clear();
+    }
+
+    /**
+     * Actions staged but not yet submitted. Useful to a job that wants to bound its own unit size,
+     * and to tests that drive {@code run()} directly and need to observe progress mid-scan.
+     */
+    public int stagedCount() {
+        return stagedBatch.size();
+    }
+
+    /**
+     * Called by the scheduler when a run throws. The effects of a failed run are dropped wholesale
+     * rather than applied half-finished.
+     */
+    void discardStaged() {
+        stagedBatch.clear();
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> nativeCoreStore() {
