@@ -201,6 +201,39 @@ public class MapBuilderModelTest {
     }
 
     @Test
+    void validateRejectsNonPrimitiveCastTarget() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.STR), makeVarDef("myVal", VariableType.INT));
+        makeWfSpec("entrypoint", threadSpec);
+
+        VariableAssignmentModel keyAssignment = assignmentModel("myKey", null);
+        keyAssignment.setTargetType(new TypeDefinitionModel(new InlineMapDefModel(
+                new TypeDefinitionModel(VariableType.STR), new TypeDefinitionModel(VariableType.INT))));
+        MapBuilderModel model = builderWithMapType(VariableType.STR, VariableType.INT);
+        model.getEntries().add(makeEntry(keyAssignment, assignmentModel("myVal", null)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("entry 0")
+                .hasMessageContaining("key cast target must be a primitive type");
+    }
+
+    @Test
+    void validateRejectsUnsupportedValueCast() {
+        ThreadSpecModel threadSpec = makeThreadSpec(
+                "entrypoint", makeVarDef("myKey", VariableType.STR), makeVarDef("myVal", VariableType.BOOL));
+        makeWfSpec("entrypoint", threadSpec);
+
+        MapBuilderModel model = builderWithMapType(VariableType.STR, VariableType.INT);
+        model.getEntries().add(makeEntry(assignmentModel("myKey", null), assignmentModel("myVal", VariableType.INT)));
+
+        Assertions.assertThatThrownBy(() -> model.validate(null, null, threadSpec))
+                .isInstanceOf(InvalidExpressionException.class)
+                .hasMessageContaining("entry 0")
+                .hasMessageContaining("value cannot cast from BOOL to INT");
+    }
+
+    @Test
     void validateRejectsCastTargetIncompatibleWithDeclaredMapType() {
         ThreadSpecModel threadSpec = makeThreadSpec(
                 "entrypoint", makeVarDef("myKey", VariableType.INT), makeVarDef("myVal", VariableType.INT));
