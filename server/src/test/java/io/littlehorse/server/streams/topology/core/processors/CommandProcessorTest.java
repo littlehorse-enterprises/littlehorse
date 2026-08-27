@@ -31,6 +31,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +41,7 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,8 +91,14 @@ public class CommandProcessorTest {
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
         globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
         // init() spawns the per-partition background worker, which reads through this provider.
+        // Resolved lazily: TestCoreProcessorContext re-registers its own stores into the mock
+        // context, and the worker must see the same ones the processor writes to.
         CoreStoreProvider coreStoreProvider = mock();
-        when(coreStoreProvider.nativeCoreStore(anyInt())).thenReturn(nativeInMemoryStore);
+        when(coreStoreProvider.nativeCoreStore(anyInt()))
+                .thenAnswer(invocation -> mockProcessorContext.getStateStore(ServerTopology.CORE_STORE));
+        lenient()
+                .when(coreStoreProvider.getNativeGlobalStore())
+                .thenAnswer(invocation -> mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE));
         when(server.getCoreStoreProvider()).thenReturn(coreStoreProvider);
     }
 
@@ -134,7 +142,13 @@ public class CommandProcessorTest {
         defaultStore.put(scheduledTask);
         clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(2)).onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any());
+        // Rehydration now runs on the background worker instead of blocking init(), so the offers
+        // arrive shortly after rather than before init() returns.
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(5))
+                .pollInterval(Duration.ofMillis(10))
+                .untilAsserted(() -> verify(server, times(2))
+                        .onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any()));
     }
 
     @Test

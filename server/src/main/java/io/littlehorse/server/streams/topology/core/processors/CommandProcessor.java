@@ -7,24 +7,15 @@ import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
-import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.proto.Command;
-import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
-import io.littlehorse.server.streams.store.LHIterKeyValue;
-import io.littlehorse.server.streams.store.LHKeyValueIterator;
-import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.storeinternals.TimerIteratorHintModel;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
-import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.BackgroundContext;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -86,6 +77,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
     private PartitionMetricsCatchUpJob metricsCatchUpJob;
     private BulkJobScanJob bulkJobScanJob;
     private TimerScanJob timerScanJob;
+    private TenantRehydrationJob tenantRehydrationJob;
 
     /**
      * Resume point of the timer scan. Owned here rather than by {@code TimerCoreProcessor} because
@@ -131,6 +123,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.metricsCatchUpJob = new PartitionMetricsCatchUpJob(config);
         this.bulkJobScanJob = new BulkJobScanJob(config);
         this.timerScanJob = new TimerScanJob(timerCursor, config);
+        this.tenantRehydrationJob = new TenantRehydrationJob(ctx.taskId(), server);
         seedTimerCursor();
         this.partitionDrain =
                 new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, metricsCatchUpJob::isComplete);
@@ -152,7 +145,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
      * All periodic work that does not need the Kafka Streams thread.
      */
     private List<PartitionBackgroundJob<CommandProcessorOutput>> backgroundJobs() {
-        return List.of(metricsCatchUpJob, bulkJobScanJob, timerScanJob);
+        return List.of(metricsCatchUpJob, bulkJobScanJob, timerScanJob, tenantRehydrationJob);
     }
 
     /**
@@ -240,47 +233,19 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 countedTags);
     }
 
+    /**
+     * Re-offers this partition's scheduled tasks to workers after a claim. It only touches the
+     * in-memory task queue, which is lock-guarded, so unlike the other jobs it needs no
+     * PartitionActions.
+     */
     public void onPartitionClaimed() {
         if (partitionIsClaimed) {
             throw new RuntimeException("Re-claiming partition! Yikes!");
         }
         partitionIsClaimed = true;
+        // Clear anything this instance still holds for the partition before the background job
+        // starts refilling it.
         server.drainPartitionTaskQueue(ctx.taskId());
-        ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
-        try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
-                GetableClassEnum.TENANT.getNumber() + "/",
-                GetableClassEnum.TENANT.getNumber() + "/~",
-                StoredGetable.class)) {
-            storedTenants.forEachRemaining(getable -> {
-                TenantModel storedTenant = ((StoredGetable<Tenant, TenantModel>) getable.getValue()).getStoredObject();
-                rehydrateTenant(storedTenant);
-            });
-        }
-    }
-
-    private void rehydrateTenant(TenantModel tenant) {
-        TenantScopedStore coreDefaultStore =
-                TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
-
-        TaskQueueHintModel hint =
-                coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
-
-        if (hint == null) {
-            log.warn("Could not find task queue hint, may need to iterate over many tombstones");
-        }
-        String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
-        String endKey = "~";
-        try (LHKeyValueIterator<ScheduledTaskModel> iter =
-                coreDefaultStore.range(startKey, endKey, ScheduledTaskModel.class)) {
-            while (iter.hasNext()) {
-                LHIterKeyValue<ScheduledTaskModel> next = iter.next();
-                ScheduledTaskModel scheduledTask = next.getValue();
-                log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
-                // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
-                server.onTaskScheduled(
-                        ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask.getTaskRunId(), tenant.getId());
-            }
-        }
     }
 
     @Override
