@@ -202,6 +202,30 @@ per probe. An over-broad toggle — one that removes more than the feature — i
 the one way to fool the pair, and it is visible in review because the fixtures
 it produces are materialized files in the pull request.
 
+**The coverage guarantee (the supporting check).** Probe coverage gets the
+same enumeration discipline the matrix got — which methods have a probe is
+never left to memory:
+
+- Each probe declares which surface members it covers
+  (`covers: ['WorkflowThread#spawnThread', …]`), machine-readable like the
+  matrix citations.
+- A conformance test diffs `java-surface.json` (already committed and
+  drift-gated by Design 1) against the union of all probe `covers` plus a
+  probe-exemption list. Any public member with neither a probe nor a written
+  excuse is a red build. Exemption kinds carry reasons — e.g.
+  `NO_COMPILED_OUTPUT` for members with no proto effect (getters,
+  registration helpers), `NEGATIVE_CONSTRAINT` for throw-behavior entries
+  whose evidence is a validator assertion rather than a fixture delta.
+- The same test iterates the probe registry, so a probe cannot exist without
+  its three assertions running; a registry entry with missing fixtures is
+  itself a failure.
+- **Rollout ratchet:** until every probe exists, a checked-in backlog file
+  lists the not-yet-probed members, and the test asserts the actual missing
+  set equals the backlog *exactly*. Converting a probe forces deleting its
+  backlog line in the same PR; the backlog can never silently grow (a new
+  Java method is caught by Design 1 first); and "we'll probe it later" is
+  visible, diffable debt rather than a silent gap.
+
 ## Design 3: the reference workflows, demoted honestly
 
 Once probes carry the per-feature evidence, the 14 reference workflows stop
