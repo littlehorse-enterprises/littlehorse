@@ -3,11 +3,6 @@
 - Status: **Draft**
 - Scope: `sdk-js`, `sdk-js/golden/generator`, CI
 
-> This directory is the complete record of the sdk-js parity effort. It
-> replaces three former documents that lived in `sdk-js/`
-> (`PARITY_PLAN.md`, `SYSTEM_REVIEW.md`, `FUTURE_WORK.md`); everything they
-> recorded lives on, reorganized, across the files below.
-
 ## The files
 
 | File                               | What it covers                                                                                    |
