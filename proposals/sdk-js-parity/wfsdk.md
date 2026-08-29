@@ -175,7 +175,7 @@ differs in the compiled output is, by construction, that feature's entire
 effect.
 
 Both variants are compiled **by sdk-java** in the generator and emitted as two
-small fixtures (e.g. `golden/probes/spawnthread-inputvars.base.json` and
+small fixtures (e.g. `golden/probes/spawn-thread-input-vars.base.json` and
 `.feature.json`). The matrix test then makes three assertions, none of which
 contains a hand-authored expected value:
 
@@ -220,7 +220,9 @@ never left to memory:
   whose evidence is a validator assertion rather than a fixture delta.
 - The same test iterates the probe registry, so a probe cannot exist without
   its three assertions running; a registry entry with missing fixtures is
-  itself a failure.
+  itself a failure, and a fixture on disk with no registry entry (a Java-side
+  probe whose TS twin was never written, or a renamed probe's leftovers) fails
+  too — the fixture set must equal the registry exactly, in both directions.
 - **Rollout ratchet:** until every probe exists, a checked-in backlog file
   lists the not-yet-probed members, and the test asserts the actual missing
   set equals the backlog *exactly*. Converting a probe forces deleting its
@@ -241,8 +243,9 @@ through a conditional consumer. The coverage guarantee runs in
 (`PROBE_COVERS`), never-probe members carry reasons in
 `harness/probeExemptions.ts` (20, all `NO_COMPILED_OUTPUT`), and the ratchet
 holds **57 covered / 20 exempt / 67 backlogged** of the 144-member surface
-(`harness/probeBacklog.ts`). Verified failable: a copied-over fixture reddens
-the twin match, and deleting a backlog line reddens the ratchet.
+(`harness/probeBacklog.ts`). Verified failable three ways: a copied-over fixture reddens the twin match,
+deleting a backlog line reddens the ratchet, and a stray fixture file reddens
+the orphan check.
 
 ## Design 3: the reference workflows, demoted honestly
 
@@ -262,6 +265,14 @@ narrower jobs they are genuinely good at:
 2. **Realistic payloads for the integration tier.** The server-acceptance suite
    registers every reference workflow against a real server, proving realistic
    *compositions* are accepted — not just minimal probes.
+
+**As built (2026-08-28):** the bare many-to-one pattern is retired. One honest
+remainder: eight hybrid entries (declareArray, declareMap, declareStruct,
+buildStruct and the struct-builder puts, complete, the comparison and cast
+groups) still pair a reference-golden citation with a hand-focused assertion.
+Their symbols sit in the probe backlog; as each gains a probe, its hybrid
+drops the golden citation and the references' feature-vouching role goes to
+zero.
 
 ## Design 4: randomized dual-compile (endgame)
 
@@ -291,7 +302,10 @@ Stated so nobody discovers it later:
   that a Java member needs no JS counterpart. Reviewed like code; dead entries
   fail the suite.
 - **Probe authoring** (Design 2) — a usage statement, not an expectation;
-  vacuity is machine-caught, over-broadness is visible in fixture diffs.
+  vacuity is machine-caught, over-broadness is visible in fixture diffs. Its
+  two ledgers — `probeExemptions.ts` (never-probe, with reasons) and
+  `probeBacklog.ts` (visible debt) — are machine-checked for ghosts, overlaps,
+  and staleness.
 - **The generator's grammar** (Design 4) — what it knows how to generate;
   incompleteness shows up in the printed coverage numbers rather than
   silently.
