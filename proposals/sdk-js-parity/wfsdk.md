@@ -11,7 +11,7 @@
 - [Why the wfsdk is provable at all](#why-the-wfsdk-is-provable-at-all)
 - [What exists today](#what-exists-today)
 - [Known weaknesses (found by our own audit)](#known-weaknesses-found-by-our-own-audit)
-- [Design 1: the freshness check](#design-1-the-freshness-check)
+- [Design 1: the freshness check — implemented](#design-1-the-freshness-check--implemented)
 - [Design 2: probe pairs (micro-goldens)](#design-2-probe-pairs-micro-goldens)
 - [Design 3: the reference workflows, demoted honestly](#design-3-the-reference-workflows-demoted-honestly)
 - [Design 4: randomized dual-compile (endgame)](#design-4-randomized-dual-compile-endgame)
@@ -45,8 +45,8 @@ So for this layer, both doctrine questions get byte-grade answers:
 ## What exists today
 
 **The enumeration lives in the test suite.** The Java surface was walked into
-one test per capability in `sdk-js/src/feature-matrix/`, each naming the Java
-method it covers inside its own title:
+one test per capability in `sdk-js/src/feature-matrix/areas/`, each naming the
+Java method it covers inside its own title:
 
 ```ts
 test('conditionally execute a body — Java: WorkflowThread#doIf', () => { … })
@@ -62,7 +62,8 @@ surface.
 (`sdk-js/golden/generator`, gradle module `:sdk-js-golden-generator`) uses real
 sdk-java to compile 14 reference workflows and serialize them into
 `sdk-js/golden/*.json`. TypeScript twins of the same workflows
-(`referenceWorkflows.ts`) must compile to byte-identical protos, asserted by
+(`src/feature-matrix/harness/referenceWorkflows.ts`) must compile to
+byte-identical protos, asserted by
 `expectMatchesGolden` (JSON comparison first for a readable diff, proto
 equality second as the authoritative check). Regeneration:
 
@@ -88,10 +89,12 @@ the probe rollout below is what forces those gaps closed.
 Recorded with their current statuses in [audit.md](./audit.md); the designs
 below exist to close them.
 
-1. **The enumeration was hand-written once and nothing keeps it fresh.** An
+1. **The enumeration was hand-written once and nothing kept it fresh.** An
    audit found public Java methods with no entry — one of them
-   (`UserTaskOutput#withOnCancellationException`) is even *implemented* in JS
-   with zero tests. When Java adds a method, nothing turns red. → Design 1.
+   (`UserTaskOutput#withOnCancellationException`) was even *implemented* in JS
+   with zero tests, and a new Java method turned nothing red.
+   **Closed 2026-08-28** by Design 1 below; the day-one triage it forced is
+   recorded there.
 2. **Many tests lean on fixtures that may not exercise their feature.** 57
    entries are a bare "the whole workflow matches its golden" assertion,
    resolving to only 12 distinct fixtures. Live example: the "spawn a child

@@ -3,7 +3,8 @@
 - Status: **Draft** (runtime implemented and tested; the judgment-removal
   designs below are planned)
 - Scope: `sdk-js/src/worker/`, the fake server in
-  `sdk-js/src/feature-matrix/`, and the worker-facing integration suites
+  `sdk-js/src/feature-matrix/harness/`, and the worker-facing integration
+  suites
 - Parent: [README.md](./README.md) · Real-server details:
   [integration.md](./integration.md)
 
