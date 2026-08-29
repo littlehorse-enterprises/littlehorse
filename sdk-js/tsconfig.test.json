@@ -3,6 +3,6 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["src/**/*.test.ts", "src/feature-matrix/golden.ts"],
+  "include": ["src/**/*.test.ts", "src/feature-matrix/harness/golden.ts"],
   "exclude": []
 }

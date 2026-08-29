@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
-import { expectMatchesGolden } from './golden'
-import { referenceWorkflows } from './referenceWorkflows'
+import { expectMatchesGolden } from '../harness/golden'
+import { referenceWorkflows } from '../harness/referenceWorkflows'
 
 /**
  * Golden conformance tests: each reference workflow (referenceWorkflows.ts)

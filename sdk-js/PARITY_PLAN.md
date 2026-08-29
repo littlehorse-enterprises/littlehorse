@@ -53,18 +53,18 @@ conversion) and `usertask/` helpers.
 
 ## Where everything lives
 
-| Path                                              | What it is                                                                      |
-| ------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `sdk-js/src/feature-matrix/*.test.ts`             | The feature matrix: one test/`test.todo` per Java SDK capability, by area       |
-| `sdk-js/src/feature-matrix/golden.ts`             | `loadGolden` / `expectMatchesGolden` helpers                                    |
-| `sdk-js/src/feature-matrix/referenceWorkflows.ts` | TS twins of the Java reference workflows                                        |
-| `sdk-js/src/feature-matrix/wfsdk-golden.test.ts`  | Conformance: every TS twin must compile to its golden                           |
-| `sdk-js/src/feature-matrix/fakeServer.ts`         | In-process gRPC server used by the worker tests                                 |
-| `sdk-js/src/integration/`                         | Tier-2 tests against a real `lh-standalone` (`npm run test:integration`)        |
-| `sdk-js/src/wfsdk/`                               | The wfsdk port (Track A)                                                        |
-| `sdk-js/golden/*.json`                            | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
-| `sdk-js/golden/generator/`                        | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens         |
-| `sdk-java/src/main/java/io/littlehorse/sdk/`      | The reference implementation being ported                                       |
+| Path                                                         | What it is                                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `sdk-js/src/feature-matrix/areas/*.test.ts`                  | The feature matrix: one test/`test.todo` per Java SDK capability, by area       |
+| `sdk-js/src/feature-matrix/harness/golden.ts`                | `loadGolden` / `expectMatchesGolden` helpers                                    |
+| `sdk-js/src/feature-matrix/harness/referenceWorkflows.ts`    | TS twins of the Java reference workflows                                        |
+| `sdk-js/src/feature-matrix/conformance/wfsdk-golden.test.ts` | Conformance: every TS twin must compile to its golden                           |
+| `sdk-js/src/feature-matrix/harness/fakeServer.ts`            | In-process gRPC server used by the worker tests                                 |
+| `sdk-js/src/integration/`                                    | Tier-2 tests against a real `lh-standalone` (`npm run test:integration`)        |
+| `sdk-js/src/wfsdk/`                                          | The wfsdk port (Track A)                                                        |
+| `sdk-js/golden/*.json`                                       | Golden files: the Java SDK's compiled `PutWfSpecRequest` per reference workflow |
+| `sdk-js/golden/generator/`                                   | Java program (gradle `:sdk-js-golden-generator`) that emits the goldens         |
+| `sdk-java/src/main/java/io/littlehorse/sdk/`                 | The reference implementation being ported                                       |
 
 ## Core principles
 
@@ -87,9 +87,15 @@ The feature matrix lives **in the test suite**, not in a separate document, so
 it cannot rot out of sync:
 
 - The full Java public API was enumerated up front as Jest `test.todo(...)`
-  entries in `src/feature-matrix/`, organized by area (`wfsdk`, `worker`,
+  entries in `src/feature-matrix/areas/`, one file per area (`wfsdk`, `worker`,
   `config`, `common`, `usertask`). Each entry names the Java API it maps to
   (`— Java: Class#method`).
+- The directory layout is load-bearing, not cosmetic: `areas/` holds the
+  enumerated entries and **is the denominator** the parity percentage is
+  computed over; `harness/` holds the machinery they run on (fake server,
+  golden loader, reference workflows) and `conformance/` the suites that prove
+  that machinery. `jest.reporter.js` decides what counts by directory, so a
+  suite placed outside `areas/` cannot silently move the number on the banner.
 - Porting a feature means converting its `test.todo` into a real test **in
   the same change as the implementation**.
 - Running the suite _is_ the matrix: **passed = done, todo = missing,
@@ -137,7 +143,7 @@ regressions (50x), not to win.
 ## Ordering and status
 
 1. Feature enumeration as `test.todo` entries (the matrix). **Done:**
-   `src/feature-matrix/*.test.ts`.
+   `src/feature-matrix/areas/*.test.ts`.
 2. Golden-test harness (proto comparison infrastructure + Java golden-file
    generation). **Done** — see "Golden harness" below.
 3. wfsdk port — biggest gap, best oracle. **Done.** `src/wfsdk/` compiles all
@@ -289,7 +295,7 @@ them:
 
 ### Fake server (worker tests)
 
-`src/feature-matrix/fakeServer.ts` is an in-process gRPC server that speaks
+`src/feature-matrix/harness/fakeServer.ts` is an in-process gRPC server that speaks
 the real LittleHorse wire protocol on an ephemeral port, built from the
 generated protobuf-ts message types (no extra dependency, no Docker). Worker
 tests drive it to script scenarios that are otherwise hard to produce:
@@ -346,7 +352,7 @@ building it, both invisible to any JS-only test:
   (output verified deterministic across runs).
 - **Golden files:** `sdk-js/golden/*.json` — the Java SDK's
   `compileWfToJson()` output, checked in.
-- **JS side:** `src/feature-matrix/golden.ts` provides `loadGolden` (strict —
+- **JS side:** `src/feature-matrix/harness/golden.ts` provides `loadGolden` (strict —
   unknown fields fail, which detects stale JS proto codegen) and
   `expectMatchesGolden` (JSON diff for readability, then proto equality as
   the authoritative check). `golden.test.ts` is the harness self-test: every
@@ -413,7 +419,7 @@ Work items, roughly in order:
 
 ### Coordination rules
 
-- The matrix files in `src/feature-matrix/` are the only shared surface.
+- The matrix files in `src/feature-matrix/areas/` are the only shared surface.
   Convert todos only alongside the implementing change; conflicts there are
   test-file-only and resolve trivially.
 - Track A alone touches `src/wfsdk/` + goldens; Track B alone touches

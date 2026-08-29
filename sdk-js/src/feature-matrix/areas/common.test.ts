@@ -2,10 +2,10 @@ import { describe, expect, test } from '@jest/globals'
 import type { JsonValue } from '@protobuf-ts/runtime'
 import * as fs from 'fs'
 import * as path from 'path'
-import { VariableValue } from '../proto/type_definition'
-import { VariableType } from '../proto/common_enums'
-import { TaskRunId, WfRunId } from '../proto/object_id'
-import { Timestamp } from '../proto/google/protobuf/timestamp'
+import { VariableValue } from '../../proto/type_definition'
+import { VariableType } from '../../proto/common_enums'
+import { TaskRunId, WfRunId } from '../../proto/object_id'
+import { Timestamp } from '../../proto/google/protobuf/timestamp'
 import {
   InputVarSubstitutionError,
   LHError,
@@ -19,8 +19,8 @@ import {
   varValToObj,
   wfRunIdFromString,
   wfRunIdToString,
-} from '../common'
-import { LHTaskException, TaskSchemaMismatchError } from '../worker'
+} from '../../common'
+import { LHTaskException, TaskSchemaMismatchError } from '../../worker'
 
 /**
  * Feature matrix: common serde and utilities.
@@ -42,7 +42,7 @@ interface SerdeFixture {
 }
 
 const fixture: SerdeFixture = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, '../../golden/fixtures/serde.json'), 'utf-8')
+  fs.readFileSync(path.resolve(__dirname, '../../../golden/fixtures/serde.json'), 'utf-8')
 )
 
 /** The Java-produced encoding for a fixture label, as proto JSON. */

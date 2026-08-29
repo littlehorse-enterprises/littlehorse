@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
-import { PutWfSpecRequest } from '../proto/service'
-import { listGoldens, loadGolden } from './golden'
+import { PutWfSpecRequest } from '../../proto/service'
+import { listGoldens, loadGolden } from '../harness/golden'
 
 /**
  * Harness self-test: proves the golden pipeline works end-to-end before the

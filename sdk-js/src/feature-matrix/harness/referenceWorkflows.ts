@@ -1,7 +1,7 @@
-import { Comparator } from '../proto/type_definition'
-import { VariableMutationType } from '../proto/common_wfspec'
-import { VariableType } from '../proto/common_enums'
-import { Workflow, spawnedThreadsOf } from '../wfsdk'
+import { Comparator } from '../../proto/type_definition'
+import { VariableMutationType } from '../../proto/common_wfspec'
+import { VariableType } from '../../proto/common_enums'
+import { Workflow, spawnedThreadsOf } from '../../wfsdk'
 
 /**
  * TypeScript equivalents of the Java reference workflows in

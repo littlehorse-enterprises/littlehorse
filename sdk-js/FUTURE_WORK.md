@@ -115,7 +115,7 @@ concurrency or duration (dropped tasks, double reports, leaks, deadlocks at
 high in-flight counts). Load is the only way to surface those, and differential
 testing at 1 task/sec will not.
 
-**What exists today** (all in `src/feature-matrix/worker.test.ts`, all against
+**What exists today** (all in `src/feature-matrix/areas/worker.test.ts`, all against
 the **fake** server):
 
 - 300-task soak asserting exactly-once delivery and no heap growth

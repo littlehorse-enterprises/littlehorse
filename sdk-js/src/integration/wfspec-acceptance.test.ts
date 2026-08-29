@@ -4,7 +4,7 @@ import type { LHPublicClient } from '../client'
 import { StructDefCompatibilityType } from '../proto/service'
 import { VariableType } from '../proto/common_enums'
 import { TypeDefinition } from '../proto/type_definition'
-import { referenceWorkflows } from '../feature-matrix/referenceWorkflows'
+import { referenceWorkflows } from '../feature-matrix/harness/referenceWorkflows'
 import { Workflow } from '../wfsdk'
 import { registerRequiredTaskDefs, requireServer, tenantClient } from './harness'
 

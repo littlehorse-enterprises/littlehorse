@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
-import { LHConfig } from '../LHConfig'
-import { VariableType } from '../proto/common_enums'
-import { LHMisconfigurationError } from '../common'
-import { userTaskSchema, UserTaskSchema } from '../usertask'
-import { FakeLHServer } from './fakeServer'
+import { LHConfig } from '../../LHConfig'
+import { VariableType } from '../../proto/common_enums'
+import { LHMisconfigurationError } from '../../common'
+import { userTaskSchema, UserTaskSchema } from '../../usertask'
+import { FakeLHServer } from '../harness/fakeServer'
 
 /**
  * Feature matrix: user task schemas.

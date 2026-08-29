@@ -3,10 +3,10 @@ import { execFileSync } from 'child_process'
 import { mkdtempSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
-import { CONFIG_NAMES, LHConfig } from '../LHConfig'
-import { LHMisconfigurationError, objToVarVal, OAuthCredentialsProvider, varValToObj } from '../common'
-import { createTaskWorker } from '../worker'
-import { FakeLHServer } from './fakeServer'
+import { CONFIG_NAMES, LHConfig } from '../../LHConfig'
+import { LHMisconfigurationError, objToVarVal, OAuthCredentialsProvider, varValToObj } from '../../common'
+import { createTaskWorker } from '../../worker'
+import { FakeLHServer } from '../harness/fakeServer'
 
 /**
  * A stand-in OAuth token endpoint. Recording the requests is the point: the

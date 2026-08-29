@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, test } from '@jest/globals'
 import { z } from 'zod'
-import { LHConfig } from '../LHConfig'
-import { LHErrorType, TaskStatus, VariableType } from '../proto/common_enums'
-import { ReportTaskRun, ScheduledTask } from '../proto/service'
-import { VarNameAndVal } from '../proto/task_run'
-import { Timestamp } from '../proto/google/protobuf/timestamp'
-import { VariableValue } from '../proto/type_definition'
+import { LHConfig } from '../../LHConfig'
+import { LHErrorType, TaskStatus, VariableType } from '../../proto/common_enums'
+import { ReportTaskRun, ScheduledTask } from '../../proto/service'
+import { VarNameAndVal } from '../../proto/task_run'
+import { Timestamp } from '../../proto/google/protobuf/timestamp'
+import { VariableValue } from '../../proto/type_definition'
 import {
   createTaskWorker,
   LHTaskException,
@@ -14,11 +14,11 @@ import {
   TaskFunction,
   TaskSchemaMismatchError,
   WorkerContext,
-} from '../worker'
-import { buildPutStructDefRequest } from '../worker'
-import { TypeDefinition } from '../proto/type_definition'
-import { extractVariableValue, toVariableValue } from '../worker/variableMapping'
-import { FakeLHServer, waitFor } from './fakeServer'
+} from '../../worker'
+import { buildPutStructDefRequest } from '../../worker'
+import { TypeDefinition } from '../../proto/type_definition'
+import { extractVariableValue, toVariableValue } from '../../worker/variableMapping'
+import { FakeLHServer, waitFor } from '../harness/fakeServer'
 
 /**
  * Feature matrix: task worker.

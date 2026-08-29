@@ -3,8 +3,8 @@ import { mkdtempSync, readFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { z } from 'zod'
-import { Comparator } from '../proto/type_definition'
-import { CorrelatedEventConfig } from '../proto/external_event'
+import { Comparator } from '../../proto/type_definition'
+import { CorrelatedEventConfig } from '../../proto/external_event'
 import {
   ExponentialBackoffRetryPolicy,
   UTActionTrigger,
@@ -13,9 +13,9 @@ import {
   VariableAssignment_Expression,
   VariableMutation,
   VariableMutationType,
-} from '../proto/common_wfspec'
-import { LHErrorType, VariableType } from '../proto/common_enums'
-import { AllowedUpdateType, PutWfSpecRequest } from '../proto/service'
+} from '../../proto/common_wfspec'
+import { LHErrorType, VariableType } from '../../proto/common_enums'
+import { AllowedUpdateType, PutWfSpecRequest } from '../../proto/service'
 import {
   FailureHandlerDef_LHFailureType,
   Node,
@@ -23,7 +23,7 @@ import {
   WaitForThreadsStrategy,
   WfRunVariableAccessLevel,
   WorkflowRetentionPolicy,
-} from '../proto/wf_spec'
+} from '../../proto/wf_spec'
 import {
   arrayOf,
   spawnedThreadsOf,
@@ -32,12 +32,12 @@ import {
   toVariableAssignment,
   Workflow,
   WorkflowThread,
-} from '../wfsdk'
-import { lhStruct } from '../worker'
-import { LHConfig } from '../LHConfig'
-import { FakeLHServer } from './fakeServer'
-import { expectMatchesGolden } from './golden'
-import { referenceWorkflows } from './referenceWorkflows'
+} from '../../wfsdk'
+import { lhStruct } from '../../worker'
+import { LHConfig } from '../../LHConfig'
+import { FakeLHServer } from '../harness/fakeServer'
+import { expectMatchesGolden } from '../harness/golden'
+import { referenceWorkflows } from '../harness/referenceWorkflows'
 
 /**
  * Feature matrix: wfsdk (workflow definition DSL).

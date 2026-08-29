@@ -1,9 +1,9 @@
 import { expect } from '@jest/globals'
 import * as fs from 'fs'
 import * as path from 'path'
-import { PutWfSpecRequest } from '../proto/service'
+import { PutWfSpecRequest } from '../../proto/service'
 
-const GOLDEN_DIR = path.resolve(__dirname, '../../golden')
+const GOLDEN_DIR = path.resolve(__dirname, '../../../golden')
 
 /**
  * Loads a golden PutWfSpecRequest produced by the Java SDK (see

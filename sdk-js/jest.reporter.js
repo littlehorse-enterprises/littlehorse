@@ -1,9 +1,9 @@
 /**
  * Summarizes a run by area instead of just totals.
  *
- * The feature matrix (src/feature-matrix/) is this project's status artifact:
- * passed = a Java SDK capability we've ported and proven, todo = one we
- * haven't. A bare "224 passed" hides that, so this prints per-area parity and
+ * The feature matrix (src/feature-matrix/areas/) is this project's status
+ * artifact: passed = a Java SDK capability we've ported and proven, todo = one
+ * we haven't. A bare "224 passed" hides that, so this prints per-area parity and
  * separates matrix coverage from the supporting tests that back it up.
  *
  * See sdk-js/PARITY_PLAN.md.
@@ -42,12 +42,16 @@ function basename(filePath) {
   return file.replace(/\.test\.ts$/, '')
 }
 
+/**
+ * Under feature-matrix/, the *directory* decides what a suite counts as:
+ * areas/ holds the enumerated Java capabilities and is the denominator the
+ * parity percentage is computed over; conformance/ and harness/ support it.
+ * Keying off the directory rather than the filename means adding a suite
+ * cannot silently change what the banner claims.
+ */
 function classify(filePath) {
-  if (filePath.includes('/feature-matrix/')) {
-    const name = basename(filePath)
-    if (SUPPORT_LABELS[name]) return { kind: 'support', key: name }
-    return { kind: 'matrix', key: name }
-  }
+  if (filePath.includes('/feature-matrix/areas/')) return { kind: 'matrix', key: basename(filePath) }
+  if (filePath.includes('/feature-matrix/')) return { kind: 'support', key: basename(filePath) }
   if (filePath.includes('/integration/')) return { kind: 'integration', key: basename(filePath) }
   return { kind: 'support', key: 'unit (config, retry, utils)' }
 }

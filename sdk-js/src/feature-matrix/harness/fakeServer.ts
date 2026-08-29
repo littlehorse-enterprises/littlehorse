@@ -1,10 +1,10 @@
 import * as grpc from '@grpc/grpc-js'
-import { Empty } from '../proto/google/protobuf/empty'
-import { StructDef } from '../proto/struct_def'
-import { TaskDef } from '../proto/task_def'
-import { WfSpec } from '../proto/wf_spec'
-import { ExternalEventDef } from '../proto/external_event'
-import { WorkflowEventDef } from '../proto/workflow_event'
+import { Empty } from '../../proto/google/protobuf/empty'
+import { StructDef } from '../../proto/struct_def'
+import { TaskDef } from '../../proto/task_def'
+import { WfSpec } from '../../proto/wf_spec'
+import { ExternalEventDef } from '../../proto/external_event'
+import { WorkflowEventDef } from '../../proto/workflow_event'
 import {
   GetLatestWfSpecRequest,
   PollTaskRequest,
@@ -24,11 +24,11 @@ import {
   ScheduledTask,
   ValidateStructDefEvolutionRequest,
   ValidateStructDefEvolutionResponse,
-} from '../proto/service'
-import { CheckpointId, TaskDefId, WfSpecId } from '../proto/object_id'
-import { VariableDef } from '../proto/common_wfspec'
-import { Checkpoint } from '../proto/task_run'
-import { UserTaskDef } from '../proto/user_tasks'
+} from '../../proto/service'
+import { CheckpointId, TaskDefId, WfSpecId } from '../../proto/object_id'
+import { VariableDef } from '../../proto/common_wfspec'
+import { Checkpoint } from '../../proto/task_run'
+import { UserTaskDef } from '../../proto/user_tasks'
 
 /**
  * An in-process LittleHorse server for worker tests.
