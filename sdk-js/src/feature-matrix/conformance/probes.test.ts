@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
+import { listProbeGoldens } from '../harness/golden'
 import { loadJavaSurface, surfaceKeys } from '../harness/citations'
 import { PROBE_COVERS, probePairs, probeSingles, provenByProbe, provenBySingleProbe } from '../harness/probes'
 import { PROBE_BACKLOG } from '../harness/probeBacklog'
@@ -35,6 +36,14 @@ describe('probe registry', () => {
     for (const covers of Object.values(PROBE_COVERS)) {
       expect(covers.length).toBeGreaterThan(0)
     }
+  })
+
+  test('the fixtures on disk are exactly the registry — no orphans, no leftovers', () => {
+    // A fixture with no registry entry is a stale artifact (a Java-side probe
+    // whose TS twin was never written, or a renamed probe's leftovers) that
+    // would otherwise rot silently.
+    const expected = [...pairNames.flatMap(name => [`${name}.base`, `${name}.feature`]), ...singleNames].sort()
+    expect(listProbeGoldens()).toEqual(expected)
   })
 })
 
