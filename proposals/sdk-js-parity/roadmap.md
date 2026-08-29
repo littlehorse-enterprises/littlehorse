@@ -37,11 +37,11 @@ Ordered by leverage. Each item names the file where its full design lives.
    [wfsdk.md](./wfsdk.md), Design 1 for what it found on day one. One tail
    remains, folded into item 2: the CI drift gate must also regenerate
    `golden/fixtures/java-surface.json` and fail on any difference.
-7. **Probe pairs** ([wfsdk.md](./wfsdk.md), Design 2) — Java-backed
-   base/feature fixture pairs become the per-feature evidence, retiring the
-   57 bare fixture-citation tests and making vacuous coverage mechanically
-   impossible. Extend reference workflows only where probe triage discovers a
-   feature no fixture exercises.
+7. ~~**Probe pairs**~~ — **done (2026-08-28)**; see [wfsdk.md](./wfsdk.md),
+   Design 2 "as built". The 57 bare fixture-citation tests are retired, and
+   the coverage ratchet holds 57 covered / 20 exempt / 67 backlogged. Working
+   down the backlog is ongoing, mechanical, and self-enforcing: each new probe
+   must delete its backlog line in the same change.
 
 ## Then: the worker's oracle
 

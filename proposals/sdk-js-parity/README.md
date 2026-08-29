@@ -113,13 +113,13 @@ When this proposal family is fully implemented, the following are all true:
 2. **Every expected value traces to a file Java generated or a record the
    server wrote.** No assertion in the parity suites rests on what a test
    author believed the right answer to be.
-3. **Judgment survives in exactly three reviewable files** — the wfsdk
-   exemption list, the client config allowlist, and the worker scenario grid —
-   each one small enough to read in a pull request, each entry carrying its
-   reason.
-4. **The parity banner's "100%" divides by a computed denominator.** Today it
-   divides the enumeration by itself; the enumeration was hand-written once
-   and is known to have missed things.
+3. **Judgment survives only in small reviewable ledgers** — the wfsdk
+   exemption lists and probe backlog, the client config allowlist, and the
+   worker scenario grid — each readable in a pull request, each entry carrying
+   its reason.
+4. **The parity banner's percentage divides by a computed denominator.**
+   Live for the wfsdk since 2026-08-28 (the freshness check); before that it
+   divided a hand-written enumeration by itself.
 5. **CI runs all of it on every pull request**, including a drift gate that
    regenerates every Java-derived file and fails on any difference — so none
    of the saved facts can silently go stale.
@@ -127,7 +127,7 @@ When this proposal family is fully implemented, the following are all true:
 ## Where things stand
 
 The suite currently reports **192 done / 2 todo (99%)** on the enumerated
-surface offline (257 tests + 2 todos total, ~12s, no Docker) plus 55
+surface offline (535 tests + 2 todos total, ~12s, no Docker) plus 55
 integration tests against real servers — and since 2026-08-28 that denominator
 is **computed** from sdk-java's reflected public surface by the freshness
 check, not remembered from a hand-written list (ideal-state point 1 is live

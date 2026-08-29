@@ -12,7 +12,7 @@
 - [What exists today](#what-exists-today)
 - [Known weaknesses (found by our own audit)](#known-weaknesses-found-by-our-own-audit)
 - [Design 1: the freshness check — implemented](#design-1-the-freshness-check--implemented)
-- [Design 2: probe pairs (micro-goldens)](#design-2-probe-pairs-micro-goldens)
+- [Design 2: probe pairs (micro-goldens) — implemented](#design-2-probe-pairs-micro-goldens--implemented)
 - [Design 3: the reference workflows, demoted honestly](#design-3-the-reference-workflows-demoted-honestly)
 - [Design 4: randomized dual-compile (endgame)](#design-4-randomized-dual-compile-endgame)
 - [What remains judgment, on purpose](#what-remains-judgment-on-purpose)
@@ -100,7 +100,9 @@ below exist to close them.
    resolving to only 12 distinct fixtures. Live example: the "spawn a child
    thread with input variables" test passes while the fixture records
    `"variables": {}` on every spawn node — the feature is absent from the
-   fixture, so the byte-comparison is satisfied trivially. → Designs 2 and 3.
+   fixture, so the byte-comparison is satisfied trivially.
+   **Closed 2026-08-28** by Design 2 below: the bare pattern is retired, and
+   the spawnThread inputVars fixture now records the feature for real.
 
 ## Design 1: the freshness check — **implemented**
 
@@ -160,7 +162,7 @@ before trusting it. Still pending from this design: wiring the surface
 regeneration into the CI drift gate, which lands with the CI job
 ([roadmap.md](./roadmap.md), item 2).
 
-## Design 2: probe pairs (micro-goldens)
+## Design 2: probe pairs (micro-goldens) — **implemented**
 
 The per-feature evidence, replacing "somewhere in a big fixture" with an
 isolated, Java-anchored proof per feature.
@@ -225,6 +227,22 @@ never left to memory:
   backlog line in the same PR; the backlog can never silently grow (a new
   Java method is caught by Design 1 first); and "we'll probe it later" is
   visible, diffable debt rather than a silent gap.
+
+**As built (2026-08-28):** 54 probe pairs plus one single-fixture probe
+(`workflow-minimal`, shared by the untoggleable `newWorkflow`/`compileWorkflow`
+entries) — 109 Java-generated fixtures in `golden/probes/`, from
+`ProbeGenerator.java` (`./gradlew :sdk-js-golden-generator:runProbes`). All 55
+TypeScript twins (`harness/probes.ts`) compiled byte-identical to their Java
+fixtures on the first run, both variants. The 57 former bare entries now call
+`provenByProbe(...)`/`provenBySingleProbe(...)`; one pair (`do-if`) is shared
+by the `condition` and `doIf` entries, since a condition only manifests
+through a conditional consumer. The coverage guarantee runs in
+`conformance/probes.test.ts`: covers declarations live beside the registry
+(`PROBE_COVERS`), never-probe members carry reasons in
+`harness/probeExemptions.ts` (20, all `NO_COMPILED_OUTPUT`), and the ratchet
+holds **57 covered / 20 exempt / 67 backlogged** of the 144-member surface
+(`harness/probeBacklog.ts`). Verified failable: a copied-over fixture reddens
+the twin match, and deleting a backlog line reddens the ratchet.
 
 ## Design 3: the reference workflows, demoted honestly
 
