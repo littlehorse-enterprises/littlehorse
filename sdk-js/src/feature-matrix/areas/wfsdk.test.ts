@@ -276,6 +276,10 @@ describe('wfsdk', () => {
       }).withUpdateType(AllowedUpdateType.NO_UPDATES)
       expect(wf.compileWorkflow().allowedUpdates).toBe(AllowedUpdateType.NO_UPDATES)
     })
+
+    // Surfaced by the freshness check (conformance/surface.test.ts): public in
+    // sdk-java, absent from sdk-js (no placeholder support at all).
+    test.todo('resolve ${...} placeholders in StructDef names — Java: Workflow#getPlaceholderValues')
   })
 
   describe('variables', () => {
@@ -597,7 +601,7 @@ describe('wfsdk', () => {
       provenByGolden('expressions')
     })
 
-    test('comparisons: isLessThan / isGreaterThan / isLessThanEq / isGreaterThanEq — Java: LHExpression, WfRunVariable', () => {
+    test('comparisons: isLessThan / isGreaterThan / isLessThanEq / isGreaterThanEq — Java: LHExpression#isLessThan, LHExpression#isGreaterThan, WfRunVariable#isLessThanEq, WfRunVariable#isGreaterThanEq', () => {
       const cases: Array<[(wf: WorkflowThread) => unknown, Comparator]> = [
         [wf => wf.declareInt('a').isLessThan(5), Comparator.LESS_THAN],
         [wf => wf.declareInt('b').isGreaterThan(5), Comparator.GREATER_THAN],
@@ -610,13 +614,13 @@ describe('wfsdk', () => {
       }
     })
 
-    test('comparisons: isEqualTo / isNotEqualTo — Java: LHExpression#isEqualTo', () => {
+    test('comparisons: isEqualTo / isNotEqualTo — Java: LHExpression#isEqualTo, LHExpression#isNotEqualTo', () => {
       provenByGolden('conditionals')
       const expr = expressionOf(compileAssignment(wf => wf.declareInt('x').isNotEqualTo(5)))
       expect(expr.operation).toEqual({ oneofKind: 'comparator', comparator: Comparator.NOT_EQUALS })
     })
 
-    test('membership: doesContain / doesNotContain — Java: LHExpression#doesContain', () => {
+    test('membership: doesContain / doesNotContain — Java: LHExpression#doesContain, LHExpression#doesNotContain', () => {
       // Note operand order: doesContain(x) compiles to (x IN this).
       const expr = expressionOf(compileAssignment(wf => wf.declareJsonArr('haystack').doesContain('needle')))
       expect(expr.operation).toEqual({ oneofKind: 'comparator', comparator: Comparator.IN })
@@ -626,7 +630,7 @@ describe('wfsdk', () => {
       expect(negated.operation).toEqual({ oneofKind: 'comparator', comparator: Comparator.NOT_IN })
     })
 
-    test('membership: isIn / isNotIn — Java: LHExpression#isIn', () => {
+    test('membership: isIn / isNotIn — Java: LHExpression#isIn, LHExpression#isNotIn', () => {
       const expr = expressionOf(compileAssignment(wf => wf.declareStr('item').isIn(['a', 'b'])))
       expect(expr.operation).toEqual({ oneofKind: 'comparator', comparator: Comparator.IN })
       expect(expr.lhs?.source).toEqual({ oneofKind: 'variableName', variableName: 'item' })
@@ -635,7 +639,7 @@ describe('wfsdk', () => {
       expect(negated.operation).toEqual({ oneofKind: 'comparator', comparator: Comparator.NOT_IN })
     })
 
-    test('boolean combinators: and / or — Java: LHExpression#and', () => {
+    test('boolean combinators: and / or — Java: LHExpression#and, LHExpression#or', () => {
       const and = expressionOf(compileAssignment(wf => wf.declareBool('p').and(wf.declareBool('q'))))
       expect(and.operation).toEqual({ oneofKind: 'mutationType', mutationType: VariableMutationType.AND })
 
@@ -851,6 +855,10 @@ describe('wfsdk', () => {
     test('register an interrupt handler for an external event — Java: WorkflowThread#registerInterruptHandler', () => {
       provenByGolden('interrupts')
     })
+
+    // Surfaced by the freshness check (conformance/surface.test.ts): public in
+    // sdk-java, absent from sdk-js.
+    test.todo('declare the payload type of an interrupt event — Java: InterruptHandler#withEventType')
   })
 
   describe('failure handling', () => {
@@ -904,6 +912,17 @@ describe('wfsdk', () => {
 
     test('attach notes to a user task (string, variable, or format string) — Java: UserTaskOutput#withNotes', () => {
       provenByGolden('user-tasks')
+    })
+
+    test('raise a named exception if the user task is cancelled — Java: UserTaskOutput#withOnCancellationException', () => {
+      // Implemented since the port but never tested anywhere — the first
+      // catch of the freshness check (see proposals/sdk-js-parity/audit.md).
+      const spec = compile(wf => {
+        wf.assignUserTask('approve', 'alice', null).withOnCancellationException('approval-cancelled')
+      })
+      const node = nodeOf(spec, '1-approve-USER_TASK')
+      if (node.node.oneofKind !== 'userTask') throw new Error('expected userTask node')
+      expect(node.node.userTask.onCancellationExceptionName).toEqual(toVariableAssignment('approval-cancelled'))
     })
 
     test('reassign a user task after a deadline — Java: WorkflowThread#reassignUserTask', () => {

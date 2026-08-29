@@ -6,7 +6,7 @@
  * we haven't. A bare "224 passed" hides that, so this prints per-area parity and
  * separates matrix coverage from the supporting tests that back it up.
  *
- * See sdk-js/PARITY_PLAN.md.
+ * See proposals/sdk-js-parity/.
  */
 
 const AREA_LABELS = {
@@ -27,6 +27,7 @@ const AREA_LABELS = {
 const SUPPORT_LABELS = {
   golden: 'golden harness (goldens parse + round-trip)',
   'wfsdk-golden': 'golden conformance (TS output == Java output)',
+  surface: 'freshness (Java surface vs matrix citations)',
 }
 
 const useColor = process.stdout.isTTY && process.env.NO_COLOR === undefined
@@ -175,11 +176,11 @@ class MatrixReporter {
 
     lines.push('')
     if (matrix.length > 0) {
-      lines.push(dim('  todo = a Java capability not yet ported/proven. See sdk-js/PARITY_PLAN.md'))
+      lines.push(dim('  todo = a Java capability not yet ported/proven. See proposals/sdk-js-parity/'))
       lines.push(dim('  List them: npx jest src/feature-matrix --verbose'))
     } else if (integration.length > 0) {
       lines.push(dim('  Proves the real server accepts and executes what the SDK produces,'))
-      lines.push(dim('  which the offline suites cannot. See sdk-js/PARITY_PLAN.md'))
+      lines.push(dim('  which the offline suites cannot. See proposals/sdk-js-parity/'))
     }
     lines.push('')
 

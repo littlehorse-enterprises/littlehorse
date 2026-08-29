@@ -1,0 +1,187 @@
+{
+  "types": {
+    "ExternalEventNodeOutput": {
+      "registeredAs": { "overloads": 1, "deprecated": false },
+      "timeout": { "overloads": 1, "deprecated": false },
+      "withCorrelatedEventConfig": { "overloads": 1, "deprecated": false },
+      "withCorrelationId": { "overloads": 2, "deprecated": false }
+    },
+    "IfElseBody": {
+      "body": { "overloads": 1, "deprecated": false }
+    },
+    "InlineLHStructBuilder": {
+      "put": { "overloads": 2, "deprecated": false }
+    },
+    "InterruptHandler": {
+      "withEventType": { "overloads": 1, "deprecated": false }
+    },
+    "LHExpression": {
+      "add": { "overloads": 1, "deprecated": false },
+      "and": { "overloads": 1, "deprecated": false },
+      "castTo": { "overloads": 1, "deprecated": false },
+      "castToBool": { "overloads": 1, "deprecated": false },
+      "castToBytes": { "overloads": 1, "deprecated": false },
+      "castToDouble": { "overloads": 1, "deprecated": false },
+      "castToInt": { "overloads": 1, "deprecated": false },
+      "castToStr": { "overloads": 1, "deprecated": false },
+      "castToWfRunId": { "overloads": 1, "deprecated": false },
+      "divide": { "overloads": 1, "deprecated": false },
+      "doesContain": { "overloads": 1, "deprecated": false },
+      "doesNotContain": { "overloads": 1, "deprecated": false },
+      "extend": { "overloads": 1, "deprecated": false },
+      "isEqualTo": { "overloads": 1, "deprecated": false },
+      "isGreaterThan": { "overloads": 1, "deprecated": false },
+      "isIn": { "overloads": 1, "deprecated": false },
+      "isLessThan": { "overloads": 1, "deprecated": false },
+      "isNotEqualTo": { "overloads": 1, "deprecated": false },
+      "isNotIn": { "overloads": 1, "deprecated": false },
+      "multiply": { "overloads": 1, "deprecated": false },
+      "or": { "overloads": 1, "deprecated": false },
+      "pow": { "overloads": 1, "deprecated": false },
+      "removeIfPresent": { "overloads": 1, "deprecated": false },
+      "removeIndex": { "overloads": 2, "deprecated": false },
+      "removeKey": { "overloads": 1, "deprecated": false },
+      "size": { "overloads": 1, "deprecated": false },
+      "subtract": { "overloads": 1, "deprecated": false }
+    },
+    "LHFormatString": {},
+    "LHStructBuilder": {
+      "put": { "overloads": 2, "deprecated": false }
+    },
+    "NodeOutput": {
+      "get": { "overloads": 1, "deprecated": false },
+      "jsonPath": { "overloads": 1, "deprecated": false }
+    },
+    "SpawnedChildWf": {},
+    "SpawnedThread": {
+      "getThreadNumberVariable": { "overloads": 1, "deprecated": false }
+    },
+    "SpawnedThreads": {
+      "buildNode": { "overloads": 1, "deprecated": false },
+      "of": { "overloads": 1, "deprecated": false }
+    },
+    "TaskNodeOutput": {
+      "timeout": { "overloads": 1, "deprecated": false },
+      "withExponentialBackoff": { "overloads": 1, "deprecated": false },
+      "withRetries": { "overloads": 1, "deprecated": false }
+    },
+    "ThreadFunc": {
+      "threadFunction": { "overloads": 1, "deprecated": false }
+    },
+    "ThrowEventNodeOutput": {
+      "registeredAs": { "overloads": 1, "deprecated": false }
+    },
+    "UserTaskOutput": {
+      "withNotes": { "overloads": 3, "deprecated": false },
+      "withOnCancellationException": { "overloads": 2, "deprecated": false }
+    },
+    "WaitForConditionNodeOutput": {},
+    "WaitForThreadsNodeOutput": {
+      "handleAnyFailureOnChild": { "overloads": 1, "deprecated": false },
+      "handleErrorOnChild": { "overloads": 1, "deprecated": false },
+      "handleExceptionOnChild": { "overloads": 1, "deprecated": false }
+    },
+    "WfRunVariable": {
+      "asInherited": { "overloads": 1, "deprecated": false },
+      "asPublic": { "overloads": 1, "deprecated": false },
+      "assign": { "overloads": 1, "deprecated": false },
+      "get": { "overloads": 2, "deprecated": false },
+      "isGreaterThanEq": { "overloads": 1, "deprecated": false },
+      "isLessThanEq": { "overloads": 1, "deprecated": false },
+      "jsonPath": { "overloads": 1, "deprecated": false },
+      "masked": { "overloads": 1, "deprecated": false },
+      "required": { "overloads": 1, "deprecated": false },
+      "searchable": { "overloads": 1, "deprecated": false },
+      "searchableOn": { "overloads": 1, "deprecated": false },
+      "withAccessLevel": { "overloads": 1, "deprecated": false },
+      "withDefault": { "overloads": 1, "deprecated": false }
+    },
+    "Workflow": {
+      "compileAndSaveToDisk": { "overloads": 1, "deprecated": false },
+      "compileWfToJson": { "overloads": 1, "deprecated": false },
+      "compileWorkflow": { "overloads": 2, "deprecated": false },
+      "doesWfSpecExist": { "overloads": 2, "deprecated": false },
+      "getDefaultTaskTimeout": { "overloads": 1, "deprecated": false },
+      "getExternalEventDefsToRegister": { "overloads": 1, "deprecated": false },
+      "getName": { "overloads": 1, "deprecated": false },
+      "getPlaceholderValues": { "overloads": 1, "deprecated": false },
+      "getRequiredChildWfSpecNames": { "overloads": 1, "deprecated": false },
+      "getRequiredExternalEventDefNames": { "overloads": 1, "deprecated": false },
+      "getRequiredTaskDefNames": { "overloads": 1, "deprecated": false },
+      "getRequiredWorkflowEventDefNames": { "overloads": 1, "deprecated": false },
+      "getTypeAdapterRegistry": { "overloads": 1, "deprecated": false },
+      "getWorkflowEventDefsToRegister": { "overloads": 1, "deprecated": false },
+      "newWorkflow": { "overloads": 2, "deprecated": false },
+      "registerWfSpec": { "overloads": 2, "deprecated": false },
+      "setDefaultTaskExponentialBackoffPolicy": { "overloads": 1, "deprecated": false },
+      "setDefaultTaskRetries": { "overloads": 1, "deprecated": false },
+      "setDefaultTaskTimeout": { "overloads": 1, "deprecated": false },
+      "setParent": { "overloads": 1, "deprecated": false },
+      "withDefaultThreadRetentionPolicy": { "overloads": 1, "deprecated": false },
+      "withRetentionPolicy": { "overloads": 1, "deprecated": false },
+      "withUpdateType": { "overloads": 1, "deprecated": false }
+    },
+    "WorkflowIfStatement": {
+      "doElse": { "overloads": 1, "deprecated": false },
+      "doElseIf": { "overloads": 1, "deprecated": false }
+    },
+    "WorkflowThread": {
+      "add": { "overloads": 1, "deprecated": false },
+      "addVariable": { "overloads": 1, "deprecated": false },
+      "assignUserTask": { "overloads": 1, "deprecated": false },
+      "buildInlineStruct": { "overloads": 1, "deprecated": false },
+      "buildStruct": { "overloads": 2, "deprecated": false },
+      "cancelUserTaskRunAfter": { "overloads": 1, "deprecated": false },
+      "cancelUserTaskRunAfterAssignment": { "overloads": 1, "deprecated": false },
+      "complete": { "overloads": 2, "deprecated": false },
+      "condition": { "overloads": 1, "deprecated": false },
+      "declareArray": { "overloads": 1, "deprecated": false },
+      "declareBool": { "overloads": 1, "deprecated": false },
+      "declareBytes": { "overloads": 1, "deprecated": false },
+      "declareDouble": { "overloads": 1, "deprecated": false },
+      "declareInt": { "overloads": 1, "deprecated": false },
+      "declareJsonArr": { "overloads": 1, "deprecated": false },
+      "declareJsonObj": { "overloads": 1, "deprecated": false },
+      "declareMap": { "overloads": 1, "deprecated": false },
+      "declareStr": { "overloads": 1, "deprecated": false },
+      "declareStruct": { "overloads": 3, "deprecated": false },
+      "declareTimestamp": { "overloads": 1, "deprecated": false },
+      "divide": { "overloads": 1, "deprecated": false },
+      "doIf": { "overloads": 2, "deprecated": false },
+      "doIfElse": { "overloads": 2, "deprecated": false },
+      "doWhile": { "overloads": 1, "deprecated": false },
+      "execute": { "overloads": 3, "deprecated": false },
+      "extend": { "overloads": 1, "deprecated": false },
+      "fail": { "overloads": 2, "deprecated": false },
+      "format": { "overloads": 1, "deprecated": false },
+      "handleAnyFailure": { "overloads": 1, "deprecated": false },
+      "handleError": { "overloads": 2, "deprecated": false },
+      "handleException": { "overloads": 2, "deprecated": false },
+      "multiply": { "overloads": 1, "deprecated": false },
+      "mutate": { "overloads": 1, "deprecated": false },
+      "pow": { "overloads": 1, "deprecated": false },
+      "reassignUserTask": { "overloads": 1, "deprecated": false },
+      "registerInterruptHandler": { "overloads": 1, "deprecated": false },
+      "releaseToGroupOnDeadline": { "overloads": 1, "deprecated": false },
+      "removeIfPresent": { "overloads": 1, "deprecated": false },
+      "removeIndex": { "overloads": 1, "deprecated": false },
+      "removeKey": { "overloads": 1, "deprecated": false },
+      "runWf": { "overloads": 2, "deprecated": false },
+      "scheduleReminderTask": { "overloads": 2, "deprecated": false },
+      "scheduleReminderTaskOnAssignment": { "overloads": 2, "deprecated": false },
+      "sleepSeconds": { "overloads": 1, "deprecated": false },
+      "sleepUntil": { "overloads": 1, "deprecated": false },
+      "spawnThread": { "overloads": 1, "deprecated": false },
+      "spawnThreadForEach": { "overloads": 2, "deprecated": false },
+      "subtract": { "overloads": 1, "deprecated": false },
+      "throwEvent": { "overloads": 1, "deprecated": false },
+      "waitForAnyOf": { "overloads": 1, "deprecated": false },
+      "waitForChildWf": { "overloads": 1, "deprecated": false },
+      "waitForCondition": { "overloads": 1, "deprecated": false },
+      "waitForEvent": { "overloads": 1, "deprecated": false },
+      "waitForFirstOf": { "overloads": 1, "deprecated": false },
+      "waitForThreads": { "overloads": 1, "deprecated": false },
+      "withRetentionPolicy": { "overloads": 1, "deprecated": false }
+    }
+  }
+}

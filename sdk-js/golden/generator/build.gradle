@@ -37,3 +37,11 @@ tasks.register('runSerde', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'io.littlehorse.sdkjs.golden.SerdeGoldenGenerator'
 }
+
+// Emits sdk-java's public wfsdk API surface (the freshness-check denominator).
+tasks.register('runSurface', JavaExec) {
+    group = 'application'
+    description = 'Generates sdk-js/golden/java-surface.json'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'io.littlehorse.sdkjs.golden.SurfaceGenerator'
+}
