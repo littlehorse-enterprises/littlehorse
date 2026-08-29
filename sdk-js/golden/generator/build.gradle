@@ -45,3 +45,11 @@ tasks.register('runSurface', JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     mainClass = 'io.littlehorse.sdkjs.golden.SurfaceGenerator'
 }
+
+// Emits the per-feature probe-pair fixtures (base/feature micro-goldens).
+tasks.register('runProbes', JavaExec) {
+    group = 'application'
+    description = 'Generates sdk-js/golden/probes/*.json'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'io.littlehorse.sdkjs.golden.ProbeGenerator'
+}

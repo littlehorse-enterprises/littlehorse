@@ -19,6 +19,15 @@ export function loadGolden(name: string): PutWfSpecRequest {
   return PutWfSpecRequest.fromJsonString(json, { ignoreUnknownFields: false })
 }
 
+/** Names of the probe-pair fixtures (relative to golden/probes/). */
+export function listProbeGoldens(): string[] {
+  return fs
+    .readdirSync(path.join(GOLDEN_DIR, 'probes'))
+    .filter(f => f.endsWith('.json'))
+    .map(f => f.replace(/\.json$/, ''))
+    .sort()
+}
+
 export function listGoldens(): string[] {
   return fs
     .readdirSync(GOLDEN_DIR)

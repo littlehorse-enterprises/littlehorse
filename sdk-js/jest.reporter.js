@@ -27,6 +27,7 @@ const AREA_LABELS = {
 const SUPPORT_LABELS = {
   golden: 'golden harness (goldens parse + round-trip)',
   'wfsdk-golden': 'golden conformance (TS output == Java output)',
+  probes: 'probe pairs (base+feature ≡ Java, and they differ)',
   surface: 'freshness (Java surface vs matrix citations)',
 }
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals'
 import { PutWfSpecRequest } from '../../proto/service'
-import { listGoldens, loadGolden } from '../harness/golden'
+import { listGoldens, listProbeGoldens, loadGolden } from '../harness/golden'
 
 /**
  * Harness self-test: proves the golden pipeline works end-to-end before the
@@ -23,6 +23,29 @@ describe('golden harness', () => {
 
   test.each(goldens)('golden "%s" survives a proto JSON round-trip', name => {
     const wfSpec = loadGolden(name)
+    const roundTripped = PutWfSpecRequest.fromJsonString(JSON.stringify(PutWfSpecRequest.toJson(wfSpec)))
+    expect(PutWfSpecRequest.equals(wfSpec, roundTripped)).toBe(true)
+  })
+})
+
+/**
+ * The probe-pair fixtures (golden/probes/) are PutWfSpecRequests too, so the
+ * same unknown-fields tripwire and round-trip guarantee apply to them.
+ */
+describe('probe fixtures', () => {
+  const probes = listProbeGoldens()
+
+  test('probe fixtures exist', () => {
+    expect(probes.length).toBeGreaterThan(0)
+  })
+
+  test.each(probes)('probe "%s" parses with no unknown fields', name => {
+    const wfSpec = loadGolden(`probes/${name}`)
+    expect(wfSpec.name).toBe(`probe-${name.replace(/\.(base|feature)$/, '')}`)
+  })
+
+  test.each(probes)('probe "%s" survives a proto JSON round-trip', name => {
+    const wfSpec = loadGolden(`probes/${name}`)
     const roundTripped = PutWfSpecRequest.fromJsonString(JSON.stringify(PutWfSpecRequest.toJson(wfSpec)))
     expect(PutWfSpecRequest.equals(wfSpec, roundTripped)).toBe(true)
   })

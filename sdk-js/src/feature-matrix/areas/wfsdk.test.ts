@@ -37,6 +37,7 @@ import { lhStruct } from '../../worker'
 import { LHConfig } from '../../LHConfig'
 import { FakeLHServer } from '../harness/fakeServer'
 import { expectMatchesGolden } from '../harness/golden'
+import { provenByProbe, provenBySingleProbe } from '../harness/probes'
 import { referenceWorkflows } from '../harness/referenceWorkflows'
 
 /**
@@ -101,11 +102,11 @@ function expressionOf(assignment: VariableAssignment): VariableAssignment_Expres
 describe('wfsdk', () => {
   describe('workflow lifecycle', () => {
     test('create a workflow from a name and entrypoint thread function — Java: Workflow.newWorkflow', () => {
-      provenByGolden('basic')
+      provenBySingleProbe('workflow-minimal')
     })
 
     test('compile a workflow to a PutWfSpecRequest — Java: Workflow#compileWorkflow', () => {
-      provenByGolden('basic')
+      provenBySingleProbe('workflow-minimal')
     })
 
     test('compile a workflow to JSON — Java: Workflow#compileWfToJson', () => {
@@ -284,35 +285,35 @@ describe('wfsdk', () => {
 
   describe('variables', () => {
     test('declare a STR variable — Java: WorkflowThread#declareStr', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-str')
     })
 
     test('declare an INT variable — Java: WorkflowThread#declareInt', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-int')
     })
 
     test('declare a DOUBLE variable — Java: WorkflowThread#declareDouble', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-double')
     })
 
     test('declare a BOOL variable — Java: WorkflowThread#declareBool', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-bool')
     })
 
     test('declare a BYTES variable — Java: WorkflowThread#declareBytes', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-bytes')
     })
 
     test('declare a TIMESTAMP variable — Java: WorkflowThread#declareTimestamp', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-timestamp')
     })
 
     test('declare a JSON_OBJ variable — Java: WorkflowThread#declareJsonObj', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-json-obj')
     })
 
     test('declare a JSON_ARR variable — Java: WorkflowThread#declareJsonArr', () => {
-      provenByGolden('variables')
+      provenByProbe('declare-json-arr')
     })
 
     test('declare a typed array variable — Java: WorkflowThread#declareArray', () => {
@@ -377,27 +378,27 @@ describe('wfsdk', () => {
     })
 
     test('give a variable a default value — Java: WfRunVariable#withDefault', () => {
-      provenByGolden('variables')
+      provenByProbe('var-with-default')
     })
 
     test('mark a variable required as workflow input — Java: WfRunVariable#required', () => {
-      provenByGolden('variables')
+      provenByProbe('var-required')
     })
 
     test('mark a variable searchable (indexed) — Java: WfRunVariable#searchable', () => {
-      provenByGolden('variables')
+      provenByProbe('var-searchable')
     })
 
     test('index a JSON field of a variable for search — Java: WfRunVariable#searchableOn', () => {
-      provenByGolden('variables')
+      provenByProbe('var-searchable-on')
     })
 
     test('mask a variable value in logs/API output — Java: WfRunVariable#masked', () => {
-      provenByGolden('variables')
+      provenByProbe('var-masked')
     })
 
     test('set variable access level PUBLIC_VAR — Java: WfRunVariable#asPublic', () => {
-      provenByGolden('variables')
+      provenByProbe('var-as-public')
     })
 
     test('set variable access level INHERITED_VAR — Java: WfRunVariable#asInherited', () => {
@@ -417,7 +418,7 @@ describe('wfsdk', () => {
     })
 
     test('read a nested JSON field via jsonPath — Java: WfRunVariable#jsonPath', () => {
-      provenByGolden('conditionals')
+      provenByProbe('var-json-path')
     })
 
     test('read a struct/JSON field via get(field) — Java: WfRunVariable#get(String)', () => {
@@ -438,13 +439,13 @@ describe('wfsdk', () => {
     })
 
     test('assign an expression result to a variable — Java: WfRunVariable#assign', () => {
-      provenByGolden('expressions')
+      provenByProbe('var-assign')
     })
   })
 
   describe('task nodes', () => {
     test('execute a task by TaskDef name with args — Java: WorkflowThread#execute(String, ...)', () => {
-      provenByGolden('basic')
+      provenByProbe('execute-args')
     })
 
     test('execute a task whose name comes from a variable (dynamic task) — Java: WorkflowThread#execute(WfRunVariable, ...)', () => {
@@ -473,7 +474,7 @@ describe('wfsdk', () => {
     })
 
     test('set per-node simple retries — Java: TaskNodeOutput#withRetries', () => {
-      provenByGolden('failure-handling')
+      provenByProbe('task-with-retries')
     })
 
     test('set a per-node exponential backoff retry policy — Java: TaskNodeOutput#withExponentialBackoff', () => {
@@ -502,27 +503,28 @@ describe('wfsdk', () => {
 
   describe('control flow', () => {
     test('build a condition from lhs/comparator/rhs — Java: WorkflowThread#condition', () => {
-      provenByGolden('conditionals')
+      // a condition manifests only through a conditional consumer; probe shared with doIf
+      provenByProbe('do-if')
     })
 
     test('conditionally execute a body — Java: WorkflowThread#doIf', () => {
-      provenByGolden('conditionals')
+      provenByProbe('do-if')
     })
 
     test('chain an else-if branch — Java: WorkflowIfStatement#doElseIf', () => {
-      provenByGolden('conditionals')
+      provenByProbe('do-else-if')
     })
 
     test('chain an else branch — Java: WorkflowIfStatement#doElse', () => {
-      provenByGolden('conditionals')
+      provenByProbe('do-else')
     })
 
     test('if/else in one call — Java: WorkflowThread#doIfElse', () => {
-      provenByGolden('conditionals')
+      provenByProbe('do-if-else')
     })
 
     test('loop while a condition holds — Java: WorkflowThread#doWhile', () => {
-      provenByGolden('while-loop')
+      provenByProbe('do-while')
     })
 
     test('complete the thread early (optionally with output) — Java: WorkflowThread#complete', () => {
@@ -537,37 +539,37 @@ describe('wfsdk', () => {
     })
 
     test('fail the thread with a named failure and message — Java: WorkflowThread#fail', () => {
-      provenByGolden('failure-handling')
+      provenByProbe('fail')
     })
 
     test('sleep for N seconds — Java: WorkflowThread#sleepSeconds', () => {
-      provenByGolden('sleep-and-events')
+      provenByProbe('sleep-seconds')
     })
 
     test('sleep until a timestamp variable — Java: WorkflowThread#sleepUntil', () => {
-      provenByGolden('sleep-and-events')
+      provenByProbe('sleep-until')
     })
 
     test('block until an expression becomes true — Java: WorkflowThread#waitForCondition', () => {
-      provenByGolden('sleep-and-events')
+      provenByProbe('wait-for-condition')
     })
   })
 
   describe('expressions and mutations', () => {
     test('arithmetic: add — Java: LHExpression#add', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-add')
     })
 
     test('arithmetic: subtract — Java: LHExpression#subtract', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-subtract')
     })
 
     test('arithmetic: multiply — Java: LHExpression#multiply', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-multiply')
     })
 
     test('arithmetic: divide — Java: LHExpression#divide', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-divide')
     })
 
     test('arithmetic: pow — Java: LHExpression#pow', () => {
@@ -589,7 +591,7 @@ describe('wfsdk', () => {
     })
 
     test('remove an array element by index — Java: LHExpression#removeIndex', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-remove-index')
     })
 
     test('remove a map/JSON key — Java: LHExpression#removeKey', () => {
@@ -598,7 +600,7 @@ describe('wfsdk', () => {
     })
 
     test('size of a collection/string — Java: LHExpression#size', () => {
-      provenByGolden('expressions')
+      provenByProbe('expr-size')
     })
 
     test('comparisons: isLessThan / isGreaterThan / isLessThanEq / isGreaterThanEq — Java: LHExpression#isLessThan, LHExpression#isGreaterThan, WfRunVariable#isLessThanEq, WfRunVariable#isGreaterThanEq', () => {
@@ -671,21 +673,21 @@ describe('wfsdk', () => {
     })
 
     test('mutate a variable with an explicit VariableMutationType — Java: WorkflowThread#mutate', () => {
-      provenByGolden('expressions')
+      provenByProbe('mutate')
     })
 
     test('build a format string from variables — Java: WorkflowThread#format', () => {
-      provenByGolden('expressions')
+      provenByProbe('format')
     })
   })
 
   describe('external events', () => {
     test('wait for an external event — Java: WorkflowThread#waitForEvent', () => {
-      provenByGolden('external-events')
+      provenByProbe('wait-for-event')
     })
 
     test('set a timeout on an external event wait — Java: ExternalEventNodeOutput#timeout', () => {
-      provenByGolden('external-events')
+      provenByProbe('external-event-timeout')
     })
 
     test('declare the event payload type for auto-registration — Java: ExternalEventNodeOutput#registeredAs', () => {
@@ -699,7 +701,7 @@ describe('wfsdk', () => {
     })
 
     test('correlate an event by id (optionally masked) — Java: ExternalEventNodeOutput#withCorrelationId', () => {
-      provenByGolden('external-events')
+      provenByProbe('external-event-correlation')
     })
 
     test('configure correlated event behavior — Java: ExternalEventNodeOutput#withCorrelatedEventConfig', () => {
@@ -727,7 +729,7 @@ describe('wfsdk', () => {
 
   describe('workflow events', () => {
     test('throw a workflow event with content — Java: WorkflowThread#throwEvent', () => {
-      provenByGolden('sleep-and-events')
+      provenByProbe('throw-event')
     })
 
     test('declare the thrown event payload type for auto-registration — Java: ThrowEventNodeOutput#registeredAs', () => {
@@ -746,15 +748,15 @@ describe('wfsdk', () => {
 
   describe('child threads', () => {
     test('spawn a child thread with input variables — Java: WorkflowThread#spawnThread', () => {
-      provenByGolden('child-threads')
+      provenByProbe('spawn-thread-input-vars')
     })
 
     test('spawn one thread per element of an array variable — Java: WorkflowThread#spawnThreadForEach', () => {
-      provenByGolden('child-threads')
+      provenByProbe('spawn-thread-for-each')
     })
 
     test('wait for all spawned threads — Java: WorkflowThread#waitForThreads', () => {
-      provenByGolden('child-threads')
+      provenByProbe('wait-for-threads')
     })
 
     test('wait for any of the spawned threads — Java: WorkflowThread#waitForAnyOf', () => {
@@ -778,7 +780,7 @@ describe('wfsdk', () => {
     })
 
     test('combine spawned threads into one handle — Java: SpawnedThreads.of', () => {
-      provenByGolden('child-threads')
+      provenByProbe('spawned-threads-of')
     })
 
     test('access the spawned thread-number variable — Java: SpawnedThread#getThreadNumberVariable', () => {
@@ -843,17 +845,17 @@ describe('wfsdk', () => {
 
   describe('child workflows', () => {
     test('run a child workflow with inputs — Java: WorkflowThread#runWf', () => {
-      provenByGolden('child-workflow')
+      provenByProbe('run-wf-inputs')
     })
 
     test('wait for a spawned child workflow — Java: WorkflowThread#waitForChildWf', () => {
-      provenByGolden('child-workflow')
+      provenByProbe('wait-for-child-wf')
     })
   })
 
   describe('interrupts', () => {
     test('register an interrupt handler for an external event — Java: WorkflowThread#registerInterruptHandler', () => {
-      provenByGolden('interrupts')
+      provenByProbe('interrupt-handler')
     })
 
     // Surfaced by the freshness check (conformance/surface.test.ts): public in
@@ -863,7 +865,7 @@ describe('wfsdk', () => {
 
   describe('failure handling', () => {
     test('handle any technical ERROR on a node — Java: WorkflowThread#handleError(NodeOutput, ThreadFunc)', () => {
-      provenByGolden('failure-handling')
+      provenByProbe('handle-error-any')
     })
 
     test('handle a specific LHErrorType on a node — Java: WorkflowThread#handleError(NodeOutput, LHErrorType, ThreadFunc)', () => {
@@ -891,11 +893,11 @@ describe('wfsdk', () => {
     })
 
     test('handle a named business EXCEPTION on a node — Java: WorkflowThread#handleException(NodeOutput, String, ThreadFunc)', () => {
-      provenByGolden('failure-handling')
+      provenByProbe('handle-exception-named')
     })
 
     test('handle any failure (error or exception) on a node — Java: WorkflowThread#handleAnyFailure', () => {
-      provenByGolden('failure-handling')
+      provenByProbe('handle-any-failure')
     })
   })
 
@@ -907,11 +909,11 @@ describe('wfsdk', () => {
     }
 
     test('assign a user task to a user and/or group — Java: WorkflowThread#assignUserTask', () => {
-      provenByGolden('user-tasks')
+      provenByProbe('assign-user-task')
     })
 
     test('attach notes to a user task (string, variable, or format string) — Java: UserTaskOutput#withNotes', () => {
-      provenByGolden('user-tasks')
+      provenByProbe('user-task-notes')
     })
 
     test('raise a named exception if the user task is cancelled — Java: UserTaskOutput#withOnCancellationException', () => {
@@ -936,11 +938,11 @@ describe('wfsdk', () => {
     })
 
     test('release an assigned task back to its group on deadline — Java: WorkflowThread#releaseToGroupOnDeadline', () => {
-      provenByGolden('user-tasks')
+      provenByProbe('release-to-group-on-deadline')
     })
 
     test('schedule a reminder task after a delay — Java: WorkflowThread#scheduleReminderTask', () => {
-      provenByGolden('user-tasks')
+      provenByProbe('schedule-reminder-task')
     })
 
     test('schedule a reminder task on assignment — Java: WorkflowThread#scheduleReminderTaskOnAssignment', () => {
@@ -954,7 +956,7 @@ describe('wfsdk', () => {
     })
 
     test('cancel a user task run after a delay — Java: WorkflowThread#cancelUserTaskRunAfter', () => {
-      provenByGolden('user-tasks')
+      provenByProbe('cancel-user-task-run-after')
     })
 
     test('cancel a user task run after assignment plus delay — Java: WorkflowThread#cancelUserTaskRunAfterAssignment', () => {
