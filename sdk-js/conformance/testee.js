@@ -17,8 +17,8 @@ const { ThreadSpec, Node, Edge, EntrypointNode, ExitNode, SleepNode } = require(
 const { VariableAssignment } = require('../dist/proto/common_wfspec.js')
 const { VariableValue } = require('../dist/proto/type_definition.js')
 
-const node = (spec) => Node.create(spec)
-const edgeTo = (sink) => Edge.create({ sinkNodeName: sink })
+const node = spec => Node.create(spec)
+const edgeTo = sink => Edge.create({ sinkNodeName: sink })
 const workflow = (caseId, nodes) =>
   PutWfSpecRequest.create({
     name: `probe-${caseId}`,
@@ -28,7 +28,7 @@ const workflow = (caseId, nodes) =>
 
 /** Each case: variant 'base' | 'feature' → PutWfSpecRequest. */
 const CASES = {
-  'sleep-seconds': (variant) => {
+  'sleep-seconds': variant => {
     if (variant === 'base')
       return workflow('sleep-seconds', {
         '0-entrypoint-ENTRYPOINT': node({
@@ -72,8 +72,14 @@ if (args[0] === 'list') {
 if (args[0] === 'compile' && args[1] === '--case' && args[3] === '--variant') {
   const [, , caseId, , variant] = args
   const build = CASES[caseId]
-  if (!build) { console.error(`unknown case: ${caseId}`); process.exit(2) }
-  if (!['base', 'feature'].includes(variant)) { console.error(`variant must be base|feature: ${variant}`); process.exit(2) }
+  if (!build) {
+    console.error(`unknown case: ${caseId}`)
+    process.exit(2)
+  }
+  if (!['base', 'feature'].includes(variant)) {
+    console.error(`variant must be base|feature: ${variant}`)
+    process.exit(2)
+  }
   const json = PutWfSpecRequest.toJson(build(variant), { emitDefaultValues: true })
   console.log(JSON.stringify(json, null, 2))
   process.exit(0)
