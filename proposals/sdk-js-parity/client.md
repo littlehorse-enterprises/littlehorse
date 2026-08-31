@@ -7,7 +7,7 @@
 
 The client layer is the part of the SDK that **talks to the server**: it makes
 the calls, carries the settings and credentials those calls need, and
-translates values between JavaScript and the wire. This file assumes no
+translates values between JavaScript and the network. This file assumes no
 knowledge of how SDKs are built — the context is explained as it appears.
 
 ## Contents
@@ -41,7 +41,10 @@ code; a compiler reads the contract and **generates** it, in any language. The
 generated calling object is called a **stub** (Java's term) or a **client**
 (the JS ecosystem's term) — same thing: an object with all the server's
 methods, where each method body just packages your arguments, sends them, and
-unpacks the reply. The server's shape, without the server.
+unpacks the reply. The server's shape, without the server. The messages
+themselves travel as **protobuf** — a compact binary format, also defined by
+the contract — which is why "do both SDKs produce the same bytes?" is a
+meaningful question throughout this proposal family.
 
 One consequence matters for everything below: each SDK carries a **generated
 snapshot** of the contract, produced at some point in time. Java's snapshot is
@@ -55,7 +58,7 @@ rebuilt automatically on every build; ours is checked into the repo
 | ------------------------ | ----------------------------------------------------------------------------- |
 | the generated stub       | every RPC method (`runWf`, `getWfRun`, …) — machine-made from `service.proto` |
 | `client.ts`              | a thin wrapper making stub calls nicer to use (details below)                 |
-| `LHConfig.ts`            | settings: which server, which tenant, TLS certs, login credentials, timeouts  |
+| `LHConfig.ts`            | settings: which server, which tenant, TLS certificates, login credentials    |
 | `grpcRetry.ts`           | automatic retry when the server says "busy, try again"                        |
 | `common/oauth.ts`        | machine login — turns a client id + secret into a token, and keeps it fresh   |
 | `common/serde.ts`        | the value translator: JavaScript values ↔ wire format (shared with all layers) |
@@ -76,23 +79,27 @@ only possible failure is **staleness**: the contract gains a field or a
 method, Java's auto-rebuilt snapshot picks it up, and our checked-in snapshot
 lags behind.
 
-What staleness looks like, concretely: suppose the contract gains a field and
-Java's golden generator starts writing it into a fixture —
-`"retryPriority": 5`. Our older generated code has never heard of that name.
-Many parsers would silently *drop* the unknown field — and then our tests
+What staleness looks like, concretely: suppose the contract gains a field,
+and Java starts writing it into a **golden fixture** — one of the checked-in
+reference files our tests compare against, produced by running real sdk-java
+(the wfsdk's whole oracle; see [wfsdk.md](./wfsdk.md)). The fixture now says
+`"retryPriority": 5`, and our older generated code has never heard of that
+name. Many parsers would silently *drop* the unknown field — and then our tests
 would keep passing while we were blind to it. So the golden loader parses
 strictly:
 
 ```ts
-// harness/golden.ts — if a fixture mentions a field our generated code
-// doesn't know, this THROWS, and the suite goes red with "unknown field".
+// harness/golden.ts (the helper that reads fixture files) — if a fixture
+// mentions a field our generated code doesn't know, this THROWS, and the
+// suite goes red with "unknown field".
 PutWfSpecRequest.fromJsonString(json, { ignoreUnknownFields: false })
 ```
 
 Stale codegen becomes a crash instead of a silent shrug. Two more guards
 complete the story:
 
-- **A regenerate-and-compare gate in CI** (planned): rerun the proto code
+- **A regenerate-and-compare gate in CI** — the automatic checks every
+  proposed change must pass before merging — (planned): rerun the proto code
   generator and fail if the output differs from what is checked in. Unlike the
   tripwire — which only fires when a fixture happens to carry the new field —
   this catches contract drift unconditionally.
@@ -104,17 +111,21 @@ complete the story:
 ## The hand-written part
 
 **`LHConfig` — the settings.** Where the SDK learns which server to call
-(host and port), which tenant to act in, whether to use TLS and with which
-certificates, and how to log in. Settings come from environment variables,
+(host and port), which **tenant** to act in (a tenant is an isolated workspace
+on a shared server, keeping different teams' workflows apart), whether to
+encrypt the connection (**TLS**) and with which certificates, how to log in,
+and connection keep-alive tuning. Settings come from environment variables,
 properties files, or in-memory maps, merged by a builder in call order (later
 sources win) — mirroring Java's config builder.
 
 **`client.ts` — the wrapper.** Two jobs. First, it turns stub calls into
 plain Promises, so every RPC is a one-line `await`. Second, it fixes a real
-usability gap the integration tier discovered: our generated code demanded
+usability gap found by the integration tier (the suites that run against a
+real server — [integration.md](./integration.md)): our generated code demanded
 that every list- and map-typed field be present on every request, and omitting
-one crashed deep inside serialization with an unhelpful error — while Java's
-builders happily default missing fields. The wrapper now accepts partial
+one crashed deep inside serialization — the packing of a request into bytes —
+with an unhelpful error, while Java's builders happily default missing
+fields. The wrapper now accepts partial
 requests and fills in the blanks, restoring what Java users take for granted.
 
 **`grpcRetry.ts` — polite retry.** When the server answers "resource
@@ -124,8 +135,9 @@ example, a reply bigger than the configured size limit) are never retried,
 because retrying cannot fix them.
 
 **`common/oauth.ts` — machine login.** Services don't type passwords; they
-present a **client id and secret** to an identity provider and receive a
-short-lived **token**, which rides along on every RPC. Our implementation
+present a **client id and secret** to an identity provider (the login
+service — Keycloak, in our tests) and receive a short-lived **token**,
+which rides along on every RPC. Our implementation
 fetches the token, caches it, refreshes it shortly *before* it expires (so it
 never dies mid-call), and collapses concurrent refreshes into a single
 request. It is proven against a **real** identity provider (Keycloak), not a
@@ -143,7 +155,7 @@ and a wrong guess silently returns the wrong type.
 ## The shared translator: serde
 
 "Serde" = **ser**ialize / **de**serialize: converting a JavaScript value to
-the wire format and back. There is exactly **one** serde implementation in the
+the wire format (the protobuf encoding from the contract, above) and back. There is exactly **one** serde implementation in the
 SDK (`common/serde.ts`), used by the wfsdk and the worker alike —
 deliberately, so the two can never disagree about encoding.
 
@@ -164,7 +176,7 @@ no JS-only test could have seen:
 
 One known gap, still open: the *decoder* has no case for the native typed
 `ARRAY`/`MAP` value kinds, so such values round-trip through the server
-correctly but come back as `undefined`. Found by running the examples; tracked
+correctly but come back as `undefined`. Found by running the sample programs in `examples/js/`; tracked
 in [roadmap.md](./roadmap.md). It is also this family's favorite cautionary
 tale: the serde checklist was written by hand once, missed two kinds, and
 every consumer inherited the blind spot — the exact failure mode the derived
@@ -174,16 +186,20 @@ checklists elsewhere in this system exist to prevent.
 
 User Tasks are workflow steps a *human* completes — an approval, a form. The
 server needs to know the form's fields and types. Java describes them with an
-annotated class; JS has no annotations, so we describe them with **zod**
-schemas (the same library the SDK already uses everywhere a type must exist at
-runtime), plus display labels. Fields must be primitives a form can render —
-struct and collection fields are rejected outright rather than silently
-becoming JSON blobs.
+annotated class; JS has no annotations, so we describe them with **zod** — a
+small library for describing data shapes in code ("this field is a string,
+that one an integer"), and the SDK's standard stand-in wherever Java would use
+a class to describe a type — plus display labels. Fields must be primitives
+(plain single values: text, numbers, booleans) that a form can render; struct
+and collection fields are rejected outright rather than silently becoming
+JSON blobs.
 
 ## How this layer is tested today
 
-- **33 matrix entries** (22 config/client, 7 serde, 4 usertask), each naming
-  the Java capability it proves in its test title.
+- **33 matrix entries** (22 config/client, 7 serde, 4 usertask). The matrix
+  is this family's parity suite — one test per Java capability, each naming
+  that capability in its title, so running the suite is reading the status
+  ([README.md](./README.md)).
 - **Behavior evidence:** unit tests against scripted responses for the
   wrapper, retry, and OAuth logic; the serde fixture for encoding; and the
   real-infrastructure suites — an actual TLS handshake and an actual identity
@@ -201,7 +217,7 @@ In order of cheapness:
 
 1. **The config-key comparison.** Both SDKs read settings from named
    environment variables, and both lists are extractable constants — so a test
-   can compare them. This mechanizes a real bug the audit found: Java reads
+   can compare them. This mechanizes a real bug the audit found ([audit.md](./audit.md) #5): Java reads
    worker settings from `LHW_`-prefixed names (`LHW_TASK_WORKER_ID`, …), but
    sdk-js invented `LHC_`-prefixed spellings — so a Java user migrating a
    working config to JS would have those settings **silently ignored**. The
@@ -209,15 +225,16 @@ In order of cheapness:
    then makes the mistake unrepeatable. One subtlety: assert *containment plus
    an allowlist*, not equality — sdk-js legitimately has one key Java lacks,
    and every deliberate divergence should be a written entry with a reason,
-   not a cause to weaken the check. (Same pass: decide the in-flight-tasks
-   default — ours is 8, Java's is 2, and Java should win as the stated gold
-   standard.)
+   not a cause to weaken the check. (Same pass: decide the default for in-flight tasks — how many tasks a
+   worker executes at once. Ours is 8, Java's is 2, and Java should win as
+   the stated gold standard.)
 2. **The regenerate-and-compare CI gate and the meta-test** described above —
    the staleness guards for the generated part.
 3. **Extend the freshness check to this layer** — add Java's `LHConfig`,
    `LHConfigBuilder`, and the auth classes to the shipped machinery
-   (`SurfaceGenerator.java`'s class list, the citation parser's scope, a small
-   exemption list). One prerequisite the wfsdk didn't have: several
+   (`SurfaceGenerator.java`'s class list, the scope of the citation parser —
+   the tool that reads the `— Java: …` tags out of our test titles — and a
+   small exemption list). One prerequisite the wfsdk didn't have: several
    config-area test titles cite prose rather than symbols (`— Java:
    common/auth`, `LHConfigBuilder source ordering`, slash-composites like
    `getWorkerThreads/getInflightTasks`). Those titles need normalizing to
