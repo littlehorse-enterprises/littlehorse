@@ -1,0 +1,11 @@
+{
+  "cases": [
+    {
+      "id": "sleep-seconds",
+      "title": "pause the thread for a fixed number of seconds",
+      "level": "required",
+      "covers": ["WorkflowThread#sleepSeconds"],
+      "variants": ["base", "feature"]
+    }
+  ]
+}

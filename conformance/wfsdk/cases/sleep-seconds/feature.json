@@ -1,0 +1,42 @@
+{
+  "name": "probe-sleep-seconds",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-sleep-SLEEP",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-sleep-SLEEP": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "sleep": {
+            "rawSeconds": {
+              "literalValue": {
+                "int": "30"
+              }
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}
