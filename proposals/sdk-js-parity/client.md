@@ -118,8 +118,10 @@ becoming JSON.
 ## Coverage today, and the planned checks
 
 Today: 22 config/client entries, 7 serde entries, and 4 usertask entries in
-the matrix, each citing its Java source. The planned mechanical checks, in
-order of cheapness:
+the matrix, each citing its Java source. Note the scope boundary: the shipped
+freshness check (wfsdk.md, Design 1) covers the wfsdk's 21 types only — the
+client-layer classes are not yet under any coverage-completeness check. The
+planned mechanical checks, in order of cheapness:
 
 1. **The config-key comparison** — Java's recognized environment keys versus
    ours, asserted as *containment plus an explicit allowlist* (not equality:
@@ -132,8 +134,16 @@ order of cheapness:
    8, matching .NET; Java uses 2 and, as the stated gold standard, should
    win).
 2. **The RPC meta-test and CI drift gate** described above.
-3. **Extending the freshness check** ([wfsdk.md](./wfsdk.md), Design 1) to
-   Java's `LHConfig` and related classes — the same reflection script with more
-   classes listed, and a much smaller exemption list than the wfsdk needs.
+3. **Extending the freshness check** ([wfsdk.md](./wfsdk.md), Design 1 —
+   shipped for the wfsdk on 2026-08-28) to Java's `LHConfig`, `LHConfigBuilder`
+   and the auth classes. The machinery makes this additive: new entries in
+   `SurfaceGenerator.java`'s class list (the surface JSON's `types` map extends
+   naturally), the same classes added to the citation parser's scope, and a
+   much smaller exemption list than the wfsdk needed. One prerequisite the
+   wfsdk didn't have: several config-area test titles cite prose rather than
+   symbols (`— Java: common/auth`, `LHConfigBuilder source ordering`,
+   slash-composites like `getWorkerThreads/getInflightTasks`) — those titles
+   need normalizing to `Class#method` form, or alias-table entries, before the
+   set difference can run clean.
 
 Judgment residue for this layer, kept in writing: the config-key allowlist.
