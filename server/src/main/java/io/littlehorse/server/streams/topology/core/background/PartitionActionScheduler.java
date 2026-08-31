@@ -7,6 +7,7 @@ import java.io.Closeable;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,26 +20,15 @@ import org.apache.kafka.streams.errors.InvalidStateStoreException;
 import org.apache.kafka.streams.processor.TaskId;
 
 /**
- * Owns the single background thread dedicated to one Kafka partition, plus the FIFO queue of action
- * batches that thread produces.
+ * Background runtime for the {@link PartitionBackgroundJob}s of a single Kafka Streams task.
  *
- * <p>The threading contract is the whole point of this class:
- * <ul>
- *   <li>The <b>worker thread</b> runs every {@link PartitionBackgroundJob} in a loop. It may block,
- *       scan and compute freely. It reads state through IQv1 and submits batches of actions.</li>
- *   <li>The <b>Kafka Streams thread</b> only ever calls {@link #drain}, from the single unified
- *       punctuator, applying whole batches in the order they were produced.</li>
- * </ul>
+ * <p>A "background thread" here is a single daemon thread, separate from the StreamThread, that
+ * runs each registered job on its own interval. It reads state stores through Interactive Queries and never
+ * writes: instead it schedules batches of {@link PartitionAction}s into a bounded FIFO queue.
+ * {@link PartitionAction}s scheduled here are later applied on the CommandProcessor's punctuator.
+ * The whole point is to keep expensive work such as range scans off the StreamThread.
  *
- * <p><b>A batch is the unit of atomicity.</b> Kafka Streams never commits in the middle of a
- * punctuation, so every action in a batch lands in the same transaction. Jobs rely on that: the
- * metrics replay emits two aggregates and a delete per window, and applying only some of those
- * would double-count or lose the window entirely.
- *
- * <p>One instance exists per partition assignment: it is created in {@code Processor.init()} and
- * closed in {@code Processor.close()}. That lifecycle is what makes rebalances safe — on revocation
- * the instance is discarded along with any batches it had queued, so nothing is ever applied to a
- * store this server no longer owns.
+ * @param <VOut> the output value type of the actions produced by the jobs.
  */
 @Slf4j
 public final class PartitionActionScheduler<VOut> implements Closeable {
@@ -47,6 +37,9 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
      * Bounded on purpose. A full queue blocks the worker in {@code submit()}, which is exactly the
      * backpressure we want: the background thread must never outrun the punctuator's ability to
      * commit.
+     */
+    /**
+     * Maximum number of batches that can be queued on a single batch. Hard limit
      */
     private static final int DEFAULT_QUEUE_CAPACITY = 1_000;
 
