@@ -1,13 +1,19 @@
 {
   "sdk": "java",
-  "corpusRevision": "31bddf21f",
+  "corpusRevision": "c0f8c40eb",
   "summary": {
-    "PASS": 1,
+    "PASS": 2,
     "FAIL": 0,
     "SKIP": 0,
     "MISSING": 0
   },
   "outcomes": {
+    "workflow-minimal": {
+      "outcome": "PASS",
+      "variants": {
+        "feature": "PASS"
+      }
+    },
     "sleep-seconds": {
       "outcome": "PASS",
       "variants": {

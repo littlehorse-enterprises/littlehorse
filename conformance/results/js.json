@@ -1,13 +1,17 @@
 {
   "sdk": "js",
-  "corpusRevision": "31bddf21f",
+  "corpusRevision": "c0f8c40eb",
   "summary": {
     "PASS": 1,
     "FAIL": 0,
-    "SKIP": 0,
+    "SKIP": 1,
     "MISSING": 0
   },
   "outcomes": {
+    "workflow-minimal": {
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
     "sleep-seconds": {
       "outcome": "PASS",
       "variants": {

@@ -1,5 +1,7 @@
 {
   "capabilities": [
+    "Workflow#newWorkflow",
+    "Workflow#compileWorkflow",
     "WorkflowThread#sleepSeconds"
   ]
 }

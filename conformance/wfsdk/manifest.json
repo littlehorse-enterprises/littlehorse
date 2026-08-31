@@ -1,6 +1,13 @@
 {
   "cases": [
     {
+      "id": "workflow-minimal",
+      "title": "create and compile the smallest possible workflow",
+      "level": "required",
+      "covers": ["Workflow#newWorkflow", "Workflow#compileWorkflow"],
+      "variants": ["feature"]
+    },
+    {
       "id": "sleep-seconds",
       "title": "pause the thread for a fixed number of seconds",
       "level": "required",
