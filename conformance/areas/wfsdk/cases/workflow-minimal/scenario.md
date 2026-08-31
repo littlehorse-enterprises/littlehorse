@@ -8,4 +8,4 @@ Single-variant case: "having a workflow at all" cannot be subtracted from a
 workflow, so there is no base fixture. The fixture pins the builder's
 automatic behavior: R2 (entrypoint node), R4 (automatic exit), R5
 (entrypoint thread name), R6 (workflow defaults), R7 (thread structure) —
-see [../../builder-rules.md](../../builder-rules.md).
+see [../../rules.md](../../rules.md).

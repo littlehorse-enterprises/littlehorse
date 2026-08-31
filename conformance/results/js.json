@@ -1,22 +1,169 @@
 {
   "sdk": "js",
-  "corpusRevision": "c0f8c40eb",
+  "corpusRevision": "c4002f685+dirty",
   "summary": {
-    "PASS": 1,
+    "PASS": 19,
     "FAIL": 0,
-    "SKIP": 1,
+    "SKIP": 3,
     "MISSING": 0
   },
   "outcomes": {
     "workflow-minimal": {
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "area": "wfsdk",
+      "outcome": "PASS",
+      "units": {
+        "feature": "PASS"
+      }
     },
     "sleep-seconds": {
+      "area": "wfsdk",
       "outcome": "PASS",
-      "variants": {
+      "units": {
         "base": "PASS",
         "feature": "PASS"
+      }
+    },
+    "str-basic": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "str-empty": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "str-unicode": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "int-answer": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "int-zero": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "int-negative": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "int-max-safe": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "int-beyond-double": {
+      "area": "serde",
+      "outcome": "SKIP",
+      "excuse": "todo",
+      "units": {
+        "convert": "FAIL"
+      }
+    },
+    "double-half": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "double-negative": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "double-whole": {
+      "area": "serde",
+      "outcome": "SKIP",
+      "excuse": "todo",
+      "units": {
+        "convert": "FAIL"
+      }
+    },
+    "bool-true": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "bool-false": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "bytes-basic": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "timestamp-millis": {
+      "area": "serde",
+      "outcome": "SKIP",
+      "excuse": "todo",
+      "units": {
+        "convert": "FAIL"
+      }
+    },
+    "json-obj-single": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "json-obj-empty": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "json-arr-single": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "json-arr-empty": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
+      }
+    },
+    "null-value": {
+      "area": "serde",
+      "outcome": "PASS",
+      "units": {
+        "convert": "PASS"
       }
     }
   }

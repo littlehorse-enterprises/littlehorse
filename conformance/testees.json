@@ -1,10 +1,10 @@
 {
   "java": {
-    "command": ["sdk-java/conformance-testee/build/install/sdk-java-conformance-testee/bin/sdk-java-conformance-testee"],
-    "build": "./gradlew :sdk-java-conformance-testee:installDist"
+    "command": ["sdk-java/conformance/build/install/sdk-java-conformance/bin/sdk-java-conformance"],
+    "build": "./gradlew :sdk-java-conformance:installDist"
   },
   "js": {
-    "command": ["node", "sdk-js/conformance/testee.js"],
-    "build": "npm --prefix sdk-js run build"
+    "command": ["node", "sdk-js/conformance/build/testee.js"],
+    "build": "npm --prefix sdk-js run build && npm --prefix sdk-js run build:conformance"
   }
 }

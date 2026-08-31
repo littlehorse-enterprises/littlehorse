@@ -109,3 +109,18 @@ as names. Key order and whitespace are free — comparison is semantic
 (`runner/compare.mjs`, which also treats `null` as field-absent per proto3
 JSON).
 *Enforced by the runner on every case.*
+
+## Minting
+
+This area's canon — `surface.json` and every fixture under `cases/` — is
+minted by the reference testee's wfsdk module,
+[`WfsdkAreaMint.java`](../../../sdk-java/conformance/src/main/java/io/littlehorse/sdk/conformance/WfsdkAreaMint.java),
+which mints from the case definitions in `WfsdkArea.java` — the same
+ones that answer the exam's `compile` verb — so the answers and the canon
+can never drift. Regenerate —
+only ever inside a PR, where the diff is the review surface — with:
+
+```
+./gradlew :sdk-java-conformance:installDist
+sdk-java/conformance/build/install/sdk-java-conformance/bin/sdk-java-conformance mint conformance
+```

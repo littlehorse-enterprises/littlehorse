@@ -1,7 +1,0 @@
-# Corpus-level bookkeeping for the surface coverage ratchet
-# (conformance/runner/freshness.mjs). Every capability in surface.json must
-# be covered by a case's `covers` OR listed here with a reason — and an
-# entry whose capability gains a case must be deleted (the check fails on
-# stale excuses).
-todo: []            # capabilities awaiting a case (tracked debt)
-not_applicable: []  # capabilities with no compiled-output effect (rare)

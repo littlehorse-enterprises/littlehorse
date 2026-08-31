@@ -1,16 +1,11 @@
-// Semantic equality for proto-JSON: objects compare by content (key order
-// irrelevant), arrays element-wise, scalars strictly. Two proto3-JSON rules
-// are normalized in, so different serializers judge equal when the messages
-// are equal:
-//   - null means "field absent" (protobuf-ts emits null for unset message
-//     fields; protobuf-java omits them) — both normalize to absent.
-// Both the canon and every testee emit default values, so deep structural
-// equality of the normalized forms IS proto message equality.
+// Deep equality of the normalized forms IS proto message equality: canon and
+// every testee emit default values, and null normalizes to absent.
 export function semanticDiff(expected, actual, path = '$') {
   return diff(stripAbsent(expected), stripAbsent(actual), path)
 }
 
-/** Remove null-valued properties recursively: proto3 JSON null = absent. */
+/** proto3 JSON: null means "field absent" (protobuf-ts emits null for unset
+ * message fields; protobuf-java omits them). */
 export function stripAbsent(value) {
   if (Array.isArray(value)) return value.map(stripAbsent)
   if (value !== null && typeof value === 'object')

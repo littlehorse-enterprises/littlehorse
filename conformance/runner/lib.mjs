@@ -12,15 +12,11 @@ export function readJson(path) {
 }
 
 /**
- * Parser for the ONE yaml shape the suite uses (ledgers and exemptions):
- *
+ * Parses the one yaml shape ledgers and exemptions use:
  *   todo:                     todo: []
  *     - id: some-case         not_applicable: []
  *       reason: why
- *
- * Anything outside that shape is an error — these files are ratcheted
- * records, not general documents, and a silently misread excuse is worse
- * than a crash.
+ * Anything else errors — a silently misread excuse is worse than a crash.
  */
 export function readLedgerYaml(path) {
   const out = {}
@@ -57,16 +53,18 @@ export function readLedgerYaml(path) {
 
 /** Revision of the last commit that touched the corpus, "+dirty" if edited since. */
 export function corpusRevision() {
-  const rev = execFileSync('git', ['log', '-1', '--format=%h', '--', 'conformance/wfsdk'], {
-    cwd: REPO_ROOT, encoding: 'utf8',
-  }).trim()
-  const dirty = execFileSync('git', ['status', '--porcelain', '--', 'conformance/wfsdk'], {
+  // path may have no committed history yet (e.g. mid-rename) → repo HEAD
+  const rev =
+    execFileSync('git', ['log', '-1', '--format=%h', '--', 'conformance/areas'], {
+      cwd: REPO_ROOT, encoding: 'utf8',
+    }).trim() ||
+    execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: REPO_ROOT, encoding: 'utf8' }).trim()
+  const dirty = execFileSync('git', ['status', '--porcelain', '--', 'conformance/areas'], {
     cwd: REPO_ROOT, encoding: 'utf8',
   }).trim()
   return dirty ? `${rev}+dirty` : rev
 }
 
-/** Run a testee verb; returns {ok, stdout, stderr}. */
 export function runTestee(command, args) {
   const [bin, ...baseArgs] = command
   const binPath = resolve(REPO_ROOT, bin)

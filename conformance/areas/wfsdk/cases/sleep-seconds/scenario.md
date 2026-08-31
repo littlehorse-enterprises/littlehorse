@@ -10,4 +10,4 @@ The delta must be exactly one sleep node per R9: named per R1
 (`1-sleep-SLEEP`), spliced by R3 between entrypoint and the automatic exit
 (R4 — now `2-exit-EXIT`), carrying the literal per R8
 (`rawSeconds.literalValue.int: "30"`). See
-[../../builder-rules.md](../../builder-rules.md).
+[../../rules.md](../../rules.md).

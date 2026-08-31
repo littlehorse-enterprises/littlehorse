@@ -1,4 +1,8 @@
 todo:
-  - id: workflow-minimal
-    reason: js builder port in flight — bootstrap testee cannot take this case
+  - id: int-beyond-double
+    reason: toVariableValue takes a JS number, lossy above 2^53 — BigInt input support undecided
+  - id: double-whole
+    reason: JS numbers carry no int/double distinction (whole doubles convert as INT) — typed-input API undecided
+  - id: timestamp-millis
+    reason: toVariableValue has no Date branch (falls through to jsonObj) — mapping Date to UTC_TIMESTAMP is an API decision
 not_applicable: []

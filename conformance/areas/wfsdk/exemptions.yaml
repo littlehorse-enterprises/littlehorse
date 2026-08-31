@@ -1,0 +1,5 @@
+# Surface capabilities excused from needing a case; freshness ratchets both
+# ways, so a stale entry fails. todo = awaiting a case; not_applicable = no
+# compiled-output effect (with the reason).
+todo: []
+not_applicable: []
