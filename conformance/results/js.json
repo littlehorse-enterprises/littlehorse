@@ -1,0 +1,19 @@
+{
+  "sdk": "js",
+  "corpusRevision": "31bddf21f",
+  "summary": {
+    "PASS": 1,
+    "FAIL": 0,
+    "SKIP": 0,
+    "MISSING": 0
+  },
+  "outcomes": {
+    "sleep-seconds": {
+      "outcome": "PASS",
+      "variants": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    }
+  }
+}
