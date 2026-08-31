@@ -34,7 +34,8 @@
     "build": "tsc",
     "test": "jest",
     "lint": "prettier --check .",
-    "lint:fix": "prettier --write ."
+    "lint:fix": "prettier --write .",
+    "build:conformance": "tsc -p conformance"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
