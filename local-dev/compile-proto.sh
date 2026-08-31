@@ -21,7 +21,7 @@ ENV PROTO_GEN_GO_GRPC        1.3.0
 ENV PROTO_GEN_PYTHON         1.75.1
 ENV PROTO_GEN_JS             2.11.1
 
-ENV GO_VERSION                1.24.2
+ENV GO_VERSION                1.25.14
 ENV NODE_VERSION              22
 
 ENV GOBIN /usr/local/bin

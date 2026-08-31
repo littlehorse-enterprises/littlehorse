@@ -73,6 +73,29 @@ public class StructDefLifecycleTest {
     }
 
     @Test
+    void shouldStoreStructFieldDefDescription() {
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("car-12")
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .setDescription("The car model name")
+                                        .build()))
+                .build());
+
+        waitForStructDef("car-12", null);
+
+        StructDef structDef =
+                client.getStructDef(StructDefId.newBuilder().setName("car-12").build());
+
+        assertThat(structDef.getStructDef().getFieldsMap().get("model").getDescription())
+                .isEqualTo("The car model name");
+    }
+
+    @Test
     void shouldUpdateDescriptionByBumpingVersion() {
         String structDefName = UUID.randomUUID().toString();
         InlineStructDef schema = InlineStructDef.newBuilder()
