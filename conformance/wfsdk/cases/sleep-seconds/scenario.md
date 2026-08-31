@@ -1,11 +1,13 @@
 # sleep-seconds
 
-Build a workflow named `probe-sleep-seconds` whose entrypoint thread does
-nothing else.
+Build a workflow named `probe-sleep-seconds` (R10) whose entrypoint thread:
 
-- **base**: the empty thread — entrypoint wired straight to exit.
-- **feature**: the same thread with one call that pauses it for a literal
-  30 seconds (sdk-java: `wf.sleepSeconds(30)`).
+- **base**: does nothing — entrypoint wired straight to exit.
+- **feature**: makes one call pausing the thread for a literal 30 seconds
+  (sdk-java: `wf.sleepSeconds(30)`).
 
-The delta must be exactly one SLEEP node carrying the literal as
-`sleep.rawSeconds.literalValue.int`, spliced between entrypoint and exit.
+The delta must be exactly one sleep node per R9: named per R1
+(`1-sleep-SLEEP`), spliced by R3 between entrypoint and the automatic exit
+(R4 — now `2-exit-EXIT`), carrying the literal per R8
+(`rawSeconds.literalValue.int: "30"`). See
+[../../builder-rules.md](../../builder-rules.md).

@@ -21,6 +21,8 @@ conformance/
 ├── wfsdk/             THE CORPUS (frozen canon — changes need review)
 │   ├── manifest.json  one entry per case: id, title, level, covers, variants
 │   ├── surface.json   reference SDK capabilities the corpus must cover
+│   ├── builder-rules.md  the cross-case recipe: every rule a builder must
+│   │                  implement, each pinned to the fixture enforcing it
 │   ├── exemptions.yaml  capabilities excused from needing a case, with reasons
 │   └── cases/<id>/    scenario.md + base.json + feature.json
 ├── ledgers/<sdk>.yaml per-SDK excuses: todo (debt) / not_applicable (never)
