@@ -62,7 +62,7 @@ conformance/
 │   └── matrix.mjs           regenerates MATRIX.md from results/ + ledgers/
 ├── testees.json             registry: sdk → the command that invokes its
 │                            testee (the seam between suite and SDKs)
-├── wfsdk/
+├── areas/wfsdk/       (one directory per corpus area)
 │   ├── manifest.json        the case registry: one entry per case — stable
 │   │                        id, title, capability keys, level
 │   ├── surface.json         the reference SDK's reflected public
