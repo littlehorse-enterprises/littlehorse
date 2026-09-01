@@ -3,7 +3,7 @@ package io.littlehorse.sdk.conformance;
 import java.nio.file.Path;
 
 /**
- * CLI dispatch for sdk-java's testee (contract: conformance/README.md).
+ * CLI dispatch for sdk-java's testee (contract: sdk-conformance/README.md).
  * compile/convert answer from CLI input alone — the exam path; mint is the
  * canon path, only ever run inside a PR where the diff is the review.
  */

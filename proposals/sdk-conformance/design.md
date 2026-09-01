@@ -47,7 +47,7 @@ message," judged against a frozen file. Two properties follow:
 One new top-level directory in the monorepo:
 
 ```text
-conformance/
+sdk-conformance/
 ├── README.md                the suite's own doc: what it is, how to run it,
 │                            and the normative testee contract an SDK
 │                            implements to join (the Test262 lesson: specify
@@ -91,7 +91,7 @@ conformance/
 
 Split deliberately, per the research:
 
-- **The runner lives in the suite** (`conformance/runner/`) — SDK-neutral
+- **The runner lives in the suite** (`sdk-conformance/runner/`) — SDK-neutral
   orchestration in plain Node, no other toolchain required. It shells
   programs and compares JSON; it never builds anyone's SDK.
 - **Each testee lives in its SDK's own directory**, built by that SDK's own
@@ -163,7 +163,7 @@ One entry in `manifest.json` per case:
 ## The testee contract
 
 The entire cost of joining the suite. Specified normatively in
-`conformance/README.md`; an SDK provides one small command-line program:
+`sdk-conformance/README.md`; an SDK provides one small command-line program:
 
 ```text
 testee list
@@ -237,7 +237,7 @@ and frozen from then on. Three consequences:
   compiled output, **Java's column goes red** — the suite detects drift in
   the gold standard itself, which no bilateral scheme can.
 - **A deliberate canon change is a reviewed event.** Regenerate via the
-  generator task in a PR to `conformance/wfsdk/`; the fixture diff is the
+  generator task in a PR to `sdk-conformance/wfsdk/`; the fixture diff is the
   review surface (the sass-spec flow: the reference regenerates, humans
   approve the diff). Canon and ledger PRs require a second reviewer
   ([adoption.md](./adoption.md), governance).

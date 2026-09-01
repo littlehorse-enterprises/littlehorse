@@ -1,7 +1,7 @@
 # Proposal: The LittleHorse SDK Conformance Suite — Overview
 
 - Status: **Draft — for review before implementation**
-- Scope: a new top-level `conformance/` directory; small hooks in each
+- Scope: a new top-level `sdk-conformance/` directory; small hooks in each
   participating SDK
 - Companion documents: [research.md](./research.md) · [design.md](./design.md)
   · [adoption.md](./adoption.md)

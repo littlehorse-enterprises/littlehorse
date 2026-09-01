@@ -38,7 +38,7 @@ const DECLARED: Record<string, VariableType> = { int: VariableType.INT, double: 
 
 export function caseIds(): string[] {
   // runtime __dirname is conformance/build/ → repo root is three up
-  const manifestPath = join(__dirname, '..', '..', '..', 'conformance', 'areas', 'serde', 'manifest.json')
+  const manifestPath = join(__dirname, '..', '..', '..', 'sdk-conformance', 'areas', 'serde', 'manifest.json')
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8')) as { cases: Array<{ id: string }> }
   return manifest.cases.map(c => c.id)
 }

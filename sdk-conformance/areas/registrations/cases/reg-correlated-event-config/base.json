@@ -1,0 +1,18 @@
+{
+  "externalEventDefs": [
+{
+  "name": "payment-received",
+  "contentType": {
+    "returnType": {
+      "primitiveType": "STR",
+      "masked": false
+    }
+  }
+}
+  ],
+  "workflowEventDefs": [  ],
+  "requiredTaskDefNames": [],
+  "requiredExternalEventDefNames": ["payment-received"],
+  "requiredChildWfSpecNames": [],
+  "requiredWorkflowEventDefNames": []
+}

@@ -1,6 +1,6 @@
 /**
  * Random dual-compile generator — implements the normative contract in
- * conformance/FUZZ.md exactly (PRNG, draw order, op table). No canon: the
+ * sdk-conformance/FUZZ.md exactly (PRNG, draw order, op table). No canon: the
  * runner cross-compares SDK outputs for the same seed.
  */
 import { Workflow, type WfRunVariable } from '../../dist/wfsdk'

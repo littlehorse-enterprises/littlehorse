@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * wfsdk case definitions + the exam's `compile` answers. WfsdkAreaMint
  * mints from these same definitions, so answers and canon cannot drift.
- * Recipe: conformance/areas/wfsdk/rules.md. Authoring rules: same workflow
+ * Recipe: sdk-conformance/areas/wfsdk/rules.md. Authoring rules: same workflow
  * name in both variants; base is the feature's nearest do-nothing
  * neighbor; one feature per case; input maps carry at most ONE entry
  * (Map.of has no iteration order).

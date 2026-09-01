@@ -107,16 +107,16 @@ jobs:
           npm --prefix sdk-js run build:conformance
 
       - name: Corpus Freshness
-        run: node conformance/runner/freshness.mjs
+        run: node sdk-conformance/runner/freshness.mjs
 
       - name: Grade
-        run: node conformance/runner/run.mjs
+        run: node sdk-conformance/runner/run.mjs
 
       - name: Matrix Staleness
-        run: node conformance/runner/matrix.mjs --check
+        run: node sdk-conformance/runner/matrix.mjs --check
 
       - name: Random Dual-Compile
-        run: node conformance/runner/fuzz.mjs 50 16
+        run: node sdk-conformance/runner/fuzz.mjs 50 16
 
   tests-sdk-python:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}

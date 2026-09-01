@@ -1,5 +1,5 @@
 /**
- * CLI dispatch (contract: conformance/README.md). Build first:
+ * CLI dispatch (contract: sdk-conformance/README.md). Build first:
  *   npm --prefix sdk-js run build && npm --prefix sdk-js run build:conformance
  */
 import { readFileSync } from 'node:fs'

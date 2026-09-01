@@ -20,7 +20,7 @@ import java.util.function.Function;
  * registrations case definitions + the exam's `registrations` answers: the
  * side-registration protos and required-names sets a workflow produces
  * besides its WfSpec. RegistrationsAreaMint mints from these same
- * definitions. Recipe: conformance/areas/registrations/rules.md.
+ * definitions. Recipe: sdk-conformance/areas/registrations/rules.md.
  */
 public final class RegistrationsArea {
 
