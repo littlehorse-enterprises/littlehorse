@@ -8,8 +8,8 @@
     - [`TypeDefinition` Changes (`InlineMapDef`)](#typedefinition-changes-inlinemapdef)
     - [`VariableValue` Changes (`Map`)](#variablevalue-changes-map)
     - [`VariableAssignment` Changes (`MapBuilder`)](#variableassignment-changes-mapbuilder)
+    - [`LHPath` and `VariableMutation` Changes](#lhpath-and-variablemutation-changes)
     - [Allowed Key Types](#allowed-key-types)
-    - [`MapBuilder` (Dynamic Map Construction)](#mapbuilder-dynamic-map-construction)
   - [Client-Side (SDK) Changes](#client-side-sdk-changes)
     - [Declaring a `Map` Variable](#declaring-a-map-variable)
     - [Accessing Entries](#accessing-entries)
@@ -19,6 +19,7 @@
     - [Distinguishing native Maps from JSON\_OBJ](#distinguishing-native-maps-from-json_obj)
   - [Server-Side Changes](#server-side-changes)
     - [Type Validation](#type-validation)
+      - [Always-Typed](#always-typed)
     - [Mutations](#mutations)
     - [Path Access](#path-access)
     - [Casting](#casting)
@@ -94,16 +95,10 @@ message InlineMapDef {
 }
 ```
 
-Because `key_type` and `value_type` are themselves `TypeDefinition`s, `Map`s nest naturally: e.g. `Map<STR, Array<INT>>` or `Map<INT, Struct<Customer>>`. (Constraints on key types are discussed [below](#allowed-key-types).)
-
 ### `VariableValue` Changes (`Map`)
-
-We add a new case to the `value` oneof in [`variable.proto`](../schemas/littlehorse/variable.proto), mirroring `Array`:
 
 ```proto
 message VariableValue {
-  reserved 1;
-
   oneof value {
     string json_obj = 2;
     string json_arr = 3;
@@ -190,6 +185,44 @@ message MapBuilder {
 
 At runtime the server evaluates each `Entry`'s `key` and `value` assignments inside the current `ThreadRun` context, then assembles the resulting `Map`. If two entries resolve to the same key, the last entry wins (last-write semantics).
 
+### `LHPath` and `VariableMutation` Changes
+
+To update a Map entry selected at runtime, such as `wordCounts.put(theKey, value)`, we will complete the typed mutation path design from [Proposal 011](./011-type-safe-structpaths.md) by adding an `LHPath` option for the left-hand side of a `VariableMutation`. The deprecated JSONPath field remains for wire compatibility:
+
+```proto
+message VariableMutation {
+  // ... existing fields ...
+
+  oneof lhs_path {
+    // DEPRECATED: use lhs_lh_path.
+    string lhs_json_path = 2;
+
+    // Resolves to the nested value to mutate.
+    LHPath lhs_lh_path = 7;
+  }
+}
+```
+
+Existing `LHPath` selectors represent static Struct fields and Array indexes. The `dynamic` selector resolves a `VariableAssignment` at runtime, so paths can select Map entries, Array elements, and JSON properties without encoding the selected value into the WfSpec:
+
+```proto
+message LHPath {
+  message Selector {
+    oneof selector_type {
+      string key = 1;
+      int32 index = 2;
+
+      // Resolves a selector value at runtime.
+      VariableAssignment dynamic = 3;
+    }
+  }
+
+  repeated Selector path = 1;
+}
+```
+
+The existing `key` and `index` fields remain unchanged for backwards compatibility. SDKs use `dynamic` when compiling runtime-selected paths. The server validates and interprets the resolved value by container: native Maps require the declared key type, native Arrays require `INT`, JSON accepts `STR` property names or `INT` indexes, and Struct fields remain static.
+
 ### Allowed Key Types
 
 To keep `Map` semantics well-defined (uniqueness and equality of keys), keys are restricted to primitive `VariableType`s. `Struct`, `Array`, and `Map` keys are not permitted because evaluating the deep equality of complex key types can be expensive and error-prone.
@@ -233,7 +266,13 @@ At runtime, accessing a key that is not present resolves to `NULL` (consistent w
 
 ### Mutating Entries (`put`)
 
-`WfRunVariable` gains a `put(key, value)` method that inserts or overwrites a single entry in a `Map` variable. It compiles to an `EXTEND` mutation whose RHS is a one-entry `MapBuilder`, so both `key` and `value` can be runtime-resolved (literals, variable references, or expressions):
+`WfRunVariable` gains a `put(key, value)` method that inserts or overwrites a single entry in a `Map` variable. It is syntactic sugar for assigning the value at the selected Map key and compiles to one `ASSIGN` mutation:
+
+- `lhs_name` identifies the Map variable.
+- `lhs_lh_path` ends in a `dynamic` selector containing the key assignment.
+- `rhs_assignment` contains the value assignment.
+
+Both the key and value can therefore be runtime-resolved literals, variable references, task outputs, or expressions:
 
 ```java
 WfRunVariable wordCounts = wf.declareMap("word-counts", String.class, Integer.class);
@@ -246,21 +285,23 @@ wordCounts.put("hello", 42);
 wordCounts.put(theKey, 100);
 ```
 
-`put` on a key that already exists replaces the previous value (consistent with `EXTEND` semantics).
-
 ### Building Maps Inline (`buildMap` / `LHMapBuilder`)
 
-`WorkflowThread` gains a `buildMap()` factory that returns an `LHMapBuilder`. This is the `Map` analog of `LHStructBuilder` and lets workflows construct a multi-entry `Map` inline from dynamic data, then pass it anywhere a `VariableAssignment` is accepted (task input, variable assignment, etc.):
+`WorkflowThread` gains a `buildMap()` factory that returns an `LHMapBuilder`:
 
 ```java
 // Construct a Map<STR, INT> at runtime from a mix of literals and variables.
+WfRunVariable wordCounts = wf.declareMap("word-counts", String.class, Integer.class);
+
 LHMapBuilder builtMap = wf.buildMap()
     .put("hello", 1)
     .put("world", taskOutputVar);
 
-wf.mutate(wordCounts, VariableMutationType.ASSIGN, builtMap);
+wordCounts.assign(builtMap);
 wf.execute("process-map", builtMap);
 ```
+
+The above example assigns an `LHMapBuilder` constructed Map to a Map variable.
 
 Under the hood, `LHMapBuilderImpl` accumulates `MapBuilder.Entry` protos. `BuilderUtil.assignVariable()` is extended to recognise `LHMapBuilder` instances and emit a `VariableAssignment` with a `map_builder` source.
 
@@ -314,7 +355,7 @@ This keeps the wildcard/untyped representation out of the engine entirely for al
 
 The following `VariableMutationType` operations are supported on `Map` values:
 
-- **`ASSIGN`**: replace the entire map.
+- **`ASSIGN`**: replace the entire Map when no LHS path is present, or assign one nested value when `lhs_lh_path` is present.
 - **`EXTEND`**: combines two maps. The RHS must be a `Map`. If a key already exists in the LHS map, the value is replaced with the value from the RHS map; otherwise, every entry is appended.
 - **`REMOVE_KEY`**: remove an entry by key. The RHS must be compatible with the map's key type.
 
@@ -322,7 +363,10 @@ Operations that do not apply (`ADD`, `SUBTRACT`, `MULTIPLY`, `DIVIDE`, `POW`, `R
 
 ### Path Access
 
-A `Map` integrates with `LHPath` via the `KEY` selector. Given a `Map<STR, INT>` variable `wordCounts`, the path `.get("hello")` resolves to the `INT` value associated with key `"hello"`. At the type level, `getNestedType()` returns the map's `value_type` when it encounters a `KEY` selector on an `INLINE_MAP_DEF`.
+`Map` values use `LHPath` to access individual entries:
+
+- **Static key:** `wordCounts.get("hello")` selects the value stored under the `"hello"` key of a `Map<STR, INT>`.
+- **Dynamic key:** `wordCounts.put(theKey, value)` uses a `dynamic` selector so the key can come from a workflow variable or expression at runtime.
 
 ### Casting
 
@@ -405,4 +449,10 @@ LittleHorse supports types that JSON has no native representation for. Inside an
 
 ## Backwards Compatibility
 
-This change is fully backwards compatible. It only adds new protobuf features and fields, and does not affect old ones. It also adds new functionality to the SDKs for distinguishing InlineMapDefs/Maps from JSON_OBJs, and none of that functionality breaks old clients who depend on JSON_OBJs.
+This change is wire-compatible:
+
+- New protobuf fields do not renumber or change existing fields.
+- Servers continue to accept the deprecated `lhs_json_path` representation sent by older clients.
+- An `ASSIGN` without an LHS path still replaces the whole variable.
+- Map `EXTEND` still merges every entry from its RHS.
+- Java `put()` is a new API but depends on `ASSIGN` under the hood. No breaking proto changes.
