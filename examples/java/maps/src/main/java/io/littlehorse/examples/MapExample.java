@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * Inventory example that showcases LittleHorse typed Maps:
  *   1. Passing a whole Map as input to a Task.
  *   2. Reading a single entry in the DSL with map.get(dynamicKey).
- *   3. Branching on map.doesContain(key).
+ *   3. Branching on a value retrieved from a Map.
  *   4. Declaring and mutating a Map WfRunVariable.
  */
 public class MapExample {
