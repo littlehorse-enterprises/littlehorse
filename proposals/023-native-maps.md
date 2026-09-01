@@ -10,6 +10,7 @@
     - [`VariableAssignment` Changes (`MapBuilder`)](#variableassignment-changes-mapbuilder)
     - [`LHPath` and `VariableMutation` Changes](#lhpath-and-variablemutation-changes)
     - [Allowed Key Types](#allowed-key-types)
+    - [`MapBuilder` (Dynamic Map Construction)](#mapbuilder-dynamic-map-construction)
   - [Client-Side (SDK) Changes](#client-side-sdk-changes)
     - [Declaring a `Map` Variable](#declaring-a-map-variable)
     - [Accessing Entries](#accessing-entries)
