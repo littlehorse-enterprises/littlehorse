@@ -10,7 +10,6 @@
     - [`VariableAssignment` Changes (`MapBuilder`)](#variableassignment-changes-mapbuilder)
     - [`LHPath` and `VariableMutation` Changes](#lhpath-and-variablemutation-changes)
     - [Allowed Key Types](#allowed-key-types)
-    - [`MapBuilder` (Dynamic Map Construction)](#mapbuilder-dynamic-map-construction)
   - [Client-Side (SDK) Changes](#client-side-sdk-changes)
     - [Declaring a `Map` Variable](#declaring-a-map-variable)
     - [Accessing Entries](#accessing-entries)
@@ -96,10 +95,16 @@ message InlineMapDef {
 }
 ```
 
+Because `key_type` and `value_type` are themselves `TypeDefinition`s, `Map`s nest naturally: e.g. `Map<STR, Array<INT>>` or `Map<INT, Struct<Customer>>`. (Constraints on key types are discussed [below](#allowed-key-types).)
+
 ### `VariableValue` Changes (`Map`)
+
+We add a new case to the `value` oneof in [`variable.proto`](../schemas/littlehorse/variable.proto), mirroring `Array`:
 
 ```proto
 message VariableValue {
+  reserved 1; 
+  
   oneof value {
     string json_obj = 2;
     string json_arr = 3;
