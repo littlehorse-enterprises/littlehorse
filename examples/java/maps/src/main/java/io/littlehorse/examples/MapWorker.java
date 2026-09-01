@@ -2,7 +2,6 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
-import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +9,10 @@ import org.slf4j.LoggerFactory;
 public class MapWorker {
     private static final Logger log = LoggerFactory.getLogger(MapWorker.class);
 
-    @LHTaskMethod("check-availability")
-    public int checkAvailability(@LHType(isLHMap = true) Map<String, Integer> inventory, String sku) {
-        return inventory.getOrDefault(sku, 0);
+    @LHTaskMethod("get-inventory")
+    @LHType(isLHMap = true)
+    public Map<String, Integer> getInventory() {
+        return Map.of("apples", 3, "bananas", 5, "cherries", 12);
     }
 
     @LHTaskMethod("reserve-items")

@@ -2,14 +2,12 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Inventory example that showcases LittleHorse typed Maps:
  *   1. Passing a whole Map as input to a Task.
- *   2. Reading a single entry in the DSL with map.get(literalKey).
+ *   2. Reading a single entry in the DSL with map.get(dynamicKey).
  *   3. Branching on map.doesContain(key).
  *   4. Declaring and mutating a Map WfRunVariable.
  */
@@ -26,27 +24,27 @@ public class MapExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("reserve-inventory", wf -> {
-            WfRunVariable inventory = wf.declareMap("inventory", String.class, Integer.class)
-                    .withDefault(Map.of("apples", 3, "bananas", 5, "cherries", 12));
-            WfRunVariable sku = wf.declareStr("sku").withDefault("apples");
-            WfRunVariable quantity = wf.declareInt("quantity").withDefault(2);
-            WfRunVariable available = wf.declareInt("available");
-            WfRunVariable remaining = wf.declareInt("remaining");
+            WfRunVariable inventory = wf.declareMap("inventory", String.class, Integer.class);
+            WfRunVariable itemToReserve = wf.declareStr("item-to-reserve").withDefault("apples");
+            WfRunVariable quantityToReserve =
+                    wf.declareInt("quantity-to-reserve").withDefault(2);
+            WfRunVariable availableQuantity = wf.declareInt("available-quantity");
+            WfRunVariable remainingQuantity = wf.declareInt("remaining-quantity");
 
-            available.assign(wf.execute("check-availability", inventory, sku));
+            inventory.assign(wf.execute("get-inventory"));
 
-            wf.doIf(available.isGreaterThanEq(quantity), stockAvailable -> {
-                        remaining.assign(available.subtract(quantity));
-                        LHMapBuilder update = stockAvailable.buildMap();
-                        update.put(sku, remaining);
-                        stockAvailable.mutate(inventory, VariableMutationType.EXTEND, update);
+            availableQuantity.assign(inventory.get(itemToReserve));
 
-                        LHMapBuilder reservation = stockAvailable.buildMap().put(sku, quantity);
-                        stockAvailable.execute("reserve-items", reservation);
-                        stockAvailable.execute("save-inventory", inventory);
+            wf.doIf(availableQuantity.isGreaterThanEq(quantityToReserve), ifBody -> {
+                        remainingQuantity.assign(availableQuantity.subtract(quantityToReserve));
+                        inventory.put(itemToReserve, remainingQuantity);
+
+                        LHMapBuilder reservation = ifBody.buildMap().put(itemToReserve, quantityToReserve);
+                        ifBody.execute("reserve-items", reservation);
+                        ifBody.execute("save-inventory", inventory);
                     })
-                    .doElse(insufficientStock -> {
-                        insufficientStock.execute("notify-out-of-stock", sku, quantity, available);
+                    .doElse(elseBody -> {
+                        elseBody.execute("notify-out-of-stock", itemToReserve, quantityToReserve, availableQuantity);
                     });
         });
     }
@@ -54,7 +52,7 @@ public class MapExample {
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
         MapWorker worker = new MapWorker();
         return List.of(
-                new LHTaskWorker(worker, "check-availability", config),
+                new LHTaskWorker(worker, "get-inventory", config),
                 new LHTaskWorker(worker, "reserve-items", config),
                 new LHTaskWorker(worker, "save-inventory", config),
                 new LHTaskWorker(worker, "notify-out-of-stock", config));

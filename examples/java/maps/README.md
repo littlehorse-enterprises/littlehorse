@@ -14,45 +14,24 @@ Start the workers and register the `reserve-inventory` workflow:
 ./gradlew example-maps:run
 ```
 
-In another terminal, start a workflow run with `lhctl`.
-
-The `inventory` input is a typed `Map<STR, INT>`. This run reserves two apples from
-the default inventory and saves the remaining quantity:
+In another terminal, start a workflow run with `lhctl`. The workflow loads its typed
+`Map<STR, INT>` inventory from the `get-inventory` task, then reserves two apples and
+saves the remaining quantity:
 
 ```
 lhctl run reserve-inventory
 ```
 
-Choose a SKU and quantity:
+Choose an item and quantity:
 
 ```
-lhctl run reserve-inventory sku bananas quantity 4
-```
-
-Or provide the inventory snapshot for this reservation:
-
-```
-lhctl run reserve-inventory \
-  inventory '{"coffee": 20, "tea": 8}' \
-  sku coffee \
-  quantity 6
+lhctl run reserve-inventory item-to-reserve bananas quantity-to-reserve 4
 ```
 
 Request more than is available to exercise the out-of-stock path:
 
 ```
-lhctl run reserve-inventory sku apples quantity 10
-```
-
-The `my-map` input variable is a typed `Map<STR, INT>`. Provide it as a JSON object; keys and
-values are coerced to the declared key/value types. Override `lookup-key` to pick a different item:
-
-```
-# Provide your own inventory and look up "grapes"
-lhctl run example-maps my-map '{"apples": 10, "grapes": 7}' lookup-key grapes
-
-# Key "apples" (default lookup-key) is absent -> report-missing branch runs
-lhctl run example-maps my-map '{"jacob": 5}'
+lhctl run reserve-inventory item-to-reserve apples quantity-to-reserve 10
 ```
 
 ## Inspecting a run
