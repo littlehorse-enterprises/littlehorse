@@ -79,6 +79,9 @@ public class MapsTest {
     @LHWorkflow("map-put-dynamic-key-wf")
     private Workflow mapPutDynamicKeyWf;
 
+    @LHWorkflow("map-put-coerced-value-wf")
+    private Workflow mapPutCoercedValueWf;
+
     @LHWorkflow("map-builder-wf")
     private Workflow mapBuilderWf;
 
@@ -699,6 +702,46 @@ public class MapsTest {
     }
 
     @Test
+    public void shouldCoerceValueWhenPuttingMissingKey() {
+        workflowVerifier
+                .prepareRun(mapPutCoercedValueWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getMap().getEntriesList()).hasSize(1);
+                    assertThat(variableValue.getMap().getEntries(0).getValue().getDouble())
+                            .isEqualTo(7.0);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldRejectPutWithIncompatibleKeyTypeAtRegistration() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-key-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable key = thread.declareInt("key");
+            mapVar.put(key, 42L);
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
+            if (!(exn instanceof StatusRuntimeException)) return false;
+            return ((StatusRuntimeException) exn).getStatus().getCode() == Status.Code.INVALID_ARGUMENT;
+        });
+    }
+
+    @Test
+    public void shouldRejectPutWithIncompatibleValueTypeAtRegistration() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-value-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            mapVar.put("key", "not-a-long");
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
+            if (!(exn instanceof StatusRuntimeException)) return false;
+            return ((StatusRuntimeException) exn).getStatus().getCode() == Status.Code.INVALID_ARGUMENT;
+        });
+    }
+
+    @Test
     public void shouldBuildMapWithMapBuilder() {
         workflowVerifier
                 .prepareRun(mapBuilderWf)
@@ -723,11 +766,7 @@ public class MapsTest {
             WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
-            LHMapBuilder putBuilder = thread.buildMap();
-            putBuilder.put("new-key", 77L);
-            thread.mutate(mapVar, VariableMutationType.EXTEND, putBuilder);
+            mapVar.put("new-key", 77L);
         });
     }
 
@@ -737,11 +776,7 @@ public class MapsTest {
             WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-map");
-            LHMapBuilder overwriteBuilder = thread.buildMap();
-            overwriteBuilder.put("hello", 999L);
-            thread.mutate(mapVar, VariableMutationType.EXTEND, overwriteBuilder);
+            mapVar.put("hello", 999L);
         });
     }
 
@@ -754,11 +789,16 @@ public class MapsTest {
             mapVar.assign(produced);
             TaskNodeOutput keyValue = thread.execute("produce-key-name");
             dynamicKey.assign(keyValue);
-            // TODO: unnecessary task call because of mutation bug #2181
-            thread.execute("produce-key-name");
-            LHMapBuilder dynamicBuilder = thread.buildMap();
-            dynamicBuilder.put(dynamicKey, 123L);
-            thread.mutate(mapVar, VariableMutationType.EXTEND, dynamicBuilder);
+            mapVar.put(dynamicKey, 123L);
+        });
+    }
+
+    @LHWorkflow("map-put-coerced-value-wf")
+    public Workflow buildMapPutCoercedValueWf() {
+        return new WorkflowImpl("map-put-coerced-value-wf", thread -> {
+            WfRunVariable mapVar =
+                    thread.declareMap("my-map", String.class, Double.class).withDefault(Map.of());
+            mapVar.put("ratio", 7L);
         });
     }
 

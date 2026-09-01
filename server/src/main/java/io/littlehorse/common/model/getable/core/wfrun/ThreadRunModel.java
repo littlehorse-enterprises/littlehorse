@@ -935,7 +935,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 val = val.jsonPath(assn.getJsonPath());
                 break;
             case LH_PATH:
-                val = val.get(assn.getLhPath());
+                val = val.get(assn.getLhPath(), assn.getLhPath().resolveDynamicSelectors(this, txnCache));
                 break;
             case PATH_NOT_SET:
         }

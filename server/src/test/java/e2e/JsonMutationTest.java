@@ -28,6 +28,9 @@ public class JsonMutationTest {
     @LHWorkflow("json-mutation-workflow")
     private Workflow workflow;
 
+    @LHWorkflow("json-dynamic-get-workflow")
+    private Workflow dynamicGetWorkflow;
+
     @Test
     void shouldRemoveKeyFromJsonVar() {
         Arg workflowInputVariable = Arg.of("my-obj", Map.of("foo", "bar", "baz", 2));
@@ -66,6 +69,17 @@ public class JsonMutationTest {
                 .start();
     }
 
+    @Test
+    void shouldGetJsonPropertyByDynamicSelector() {
+        workflowVerifier
+                .prepareRun(dynamicGetWorkflow)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "picked", variableValue -> {
+                    assertThat(variableValue.getInt()).isEqualTo(42L);
+                })
+                .start();
+    }
+
     @LHWorkflow("json-mutation-workflow")
     public Workflow buildWorkflow() {
         return new WorkflowImpl("json-mutation-workflow", thread -> {
@@ -73,6 +87,16 @@ public class JsonMutationTest {
 
             thread.execute("ae-simple");
             thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
+        });
+    }
+
+    @LHWorkflow("json-dynamic-get-workflow")
+    public Workflow buildDynamicGetWorkflow() {
+        return new WorkflowImpl("json-dynamic-get-workflow", thread -> {
+            WfRunVariable myObj = thread.declareJsonObj("my-obj").withDefault(Map.of("answer", 42L));
+            WfRunVariable key = thread.declareStr("key").withDefault("answer");
+            WfRunVariable picked = thread.declareInt("picked");
+            picked.assign(myObj.get(key));
         });
     }
 

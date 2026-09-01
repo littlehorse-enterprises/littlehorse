@@ -453,7 +453,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
                     break;
                 case INLINE_ARRAY_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
                         throw new InvalidExpressionException(String.format(
                                 "Expected numeric index selector for Array type, got key selector '%s'",
                                 selector.getKey()));
@@ -461,9 +462,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
                 case INLINE_MAP_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
-                        throw new InvalidExpressionException(String.format(
-                                "Expected key selector for Map type, got index selector '%d'", selector.getIndex()));
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                        throw new InvalidExpressionException(
+                                "Expected key selector for Map type, got an unset selector");
                     }
                     currentTypeDef = currentTypeDef.getInlineMapDef().getValueType();
                     break;
