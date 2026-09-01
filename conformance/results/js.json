@@ -1,342 +1,540 @@
 {
   "sdk": "js",
-  "corpusRevision": "33270969f",
+  "corpusRevision": "74dfb0543",
   "summary": {
-    "PASS": 19,
+    "PASS": 147,
     "FAIL": 0,
-    "SKIP": 120,
+    "SKIP": 0,
     "MISSING": 0
   },
   "outcomes": {
     "add-variable": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "assign-user-task": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "build-inline-struct": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "build-struct": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "cancel-user-task-after-assignment": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "cancel-user-task-run-after": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-array": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-bool": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-bytes": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-double": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-int": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-json-arr": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-json-obj": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-map": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-str": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-struct": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "declare-timestamp": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "do-else": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "do-else-if": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "do-if": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "do-if-else": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "do-while": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "execute-args": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-add": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-and": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-bool": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-bytes": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-double": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-int": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-str": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-cast-to-wf-run-id": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-divide": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-does-contain": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-does-not-contain": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-extend": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-equal-to": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-greater-than": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-in": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-less-than": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-not-equal-to": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-is-not-in": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-multiply": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-or": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-pow": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-remove-if-present": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-remove-index": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-remove-key": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-size": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "expr-subtract": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "external-event-correlation": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "external-event-timeout": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "fail": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "format": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "handle-any-failure": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "handle-error-any": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "handle-exception-named": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "interrupt-handler": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "mutate": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "node-output-get": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "node-output-json-path": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "reassign-user-task": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "release-to-group-on-deadline": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "run-wf-inputs": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "schedule-reminder-on-assignment": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "schedule-reminder-task": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "sleep-seconds": {
       "area": "wfsdk",
@@ -348,203 +546,323 @@
     },
     "sleep-until": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "spawn-thread-for-each": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "spawn-thread-input-vars": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "spawned-thread-number": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "spawned-threads-of": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "task-exponential-backoff": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "task-timeout": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "task-with-retries": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "throw-event": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "user-task-notes": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "user-task-on-cancellation-exception": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-as-inherited": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-as-public": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-assign": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-get-field": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-is-greater-than-eq": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-is-less-than-eq": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-json-path": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-masked": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-required": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-searchable": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-searchable-on": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-with-access-level": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "var-with-default": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-any-of": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-child-wf": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-condition": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-event": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-first-of": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-for-threads": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-threads-handle-any-failure-on-child": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-threads-handle-error-on-child": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wait-threads-handle-exception-on-child": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-default-task-backoff": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-default-task-retries": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-default-task-timeout": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-default-thread-retention": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-retention-policy": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-set-parent": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wf-update-type": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "workflow-minimal": {
       "area": "wfsdk",
@@ -555,58 +873,91 @@
     },
     "wt-add": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-complete": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-divide": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-extend": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-multiply": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-pow": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-remove-if-present": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-remove-index": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-remove-key": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-retention-policy": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "wt-subtract": {
       "area": "wfsdk",
-      "outcome": "SKIP",
-      "excuse": "todo"
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
     },
     "str-basic": {
       "area": "serde",
@@ -659,10 +1010,9 @@
     },
     "int-beyond-double": {
       "area": "serde",
-      "outcome": "SKIP",
-      "excuse": "todo",
+      "outcome": "PASS",
       "units": {
-        "convert": "FAIL"
+        "convert": "PASS"
       }
     },
     "double-half": {
@@ -681,10 +1031,9 @@
     },
     "double-whole": {
       "area": "serde",
-      "outcome": "SKIP",
-      "excuse": "todo",
+      "outcome": "PASS",
       "units": {
-        "convert": "FAIL"
+        "convert": "PASS"
       }
     },
     "bool-true": {
@@ -710,10 +1059,9 @@
     },
     "timestamp-millis": {
       "area": "serde",
-      "outcome": "SKIP",
-      "excuse": "todo",
+      "outcome": "PASS",
       "units": {
-        "convert": "FAIL"
+        "convert": "PASS"
       }
     },
     "json-obj-single": {
@@ -749,6 +1097,70 @@
       "outcome": "PASS",
       "units": {
         "convert": "PASS"
+      }
+    },
+    "reg-external-event": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-correlated-event-config": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-workflow-event": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-interrupt-event-type": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-task-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-external-event-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-child-wf-spec-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-workflow-event-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
       }
     }
   }

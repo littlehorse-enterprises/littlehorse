@@ -1,8 +1,8 @@
 {
   "sdk": "java",
-  "corpusRevision": "33270969f",
+  "corpusRevision": "74dfb0543",
   "summary": {
-    "PASS": 139,
+    "PASS": 147,
     "FAIL": 0,
     "SKIP": 0,
     "MISSING": 0
@@ -1097,6 +1097,70 @@
       "outcome": "PASS",
       "units": {
         "convert": "PASS"
+      }
+    },
+    "reg-external-event": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-correlated-event-config": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-workflow-event": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "reg-interrupt-event-type": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-task-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-external-event-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-child-wf-spec-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "req-workflow-event-def-names": {
+      "area": "registrations",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
       }
     }
   }
