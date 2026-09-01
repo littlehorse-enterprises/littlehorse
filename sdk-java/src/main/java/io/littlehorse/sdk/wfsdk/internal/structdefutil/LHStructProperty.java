@@ -79,7 +79,10 @@ public class LHStructProperty {
             }
 
             if (isNativeMap() && val instanceof Map) {
-                return LHLibUtil.objToVarValAsNativeMap(val, typeAdapterRegistry);
+                return LHLibUtil.objToVarValAsNativeMap(
+                        val,
+                        resolveMapType(typeAdapterRegistry).getTypeDefinition().getInlineMapDef(),
+                        typeAdapterRegistry);
             }
 
             return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);

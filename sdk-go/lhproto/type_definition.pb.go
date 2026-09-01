@@ -301,9 +301,11 @@ type InlineMapDef struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Type definition for each key in the map. Must resolve to a primitive type.
+	// Type definition for each key in the map. Must resolve to a concrete primitive type.
+	// Wildcard/unset key types are not permitted.
 	KeyType *TypeDefinition `protobuf:"bytes,1,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	// Type definition for each value in the map.
+	// Type definition for each value in the map. Must be a concrete, non-JSON type.
+	// Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
 	ValueType *TypeDefinition `protobuf:"bytes,2,opt,name=value_type,json=valueType,proto3" json:"value_type,omitempty"`
 }
 
@@ -731,9 +733,13 @@ type Map struct {
 	// protobuf only permits scalar (string/integer/bool) keys, whereas a LittleHorse
 	// `Map` key is a full `VariableValue` (which may be a `WF_RUN_ID`, `TIMESTAMP`, etc.).
 	Entries []*Map_Entry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
-	// Optional, authoritative key/value types for this map.
+	// Authoritative key/value types for this map.
 	// Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-	// If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+	//
+	// Native Maps are always typed: this field is `optional` only for wire-compatibility with
+	// Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+	// type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+	// always carry a concrete key/value type.
 	MapType *InlineMapDef `protobuf:"bytes,2,opt,name=map_type,json=mapType,proto3,oneof" json:"map_type,omitempty"`
 }
 
