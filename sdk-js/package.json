@@ -35,7 +35,9 @@
     "test": "jest",
     "lint": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "build:conformance": "tsc -p conformance"
+    "build:conformance": "tsc -p conformance",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:core": "jest --config jest.integration.config.js --testPathIgnorePatterns '/src/integration/(cluster|tls|oauth)\\.test\\.ts$'"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
@@ -48,7 +50,8 @@
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "testcontainers": "^12.0.4"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.12.5",
