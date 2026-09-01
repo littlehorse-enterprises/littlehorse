@@ -1,3 +1,5 @@
+import { Timestamp } from '../proto/google/protobuf/timestamp'
+import { VariableType } from '../proto/common_enums'
 import { VariableValue, Struct, StructField } from '../proto/type_definition'
 import { VarNameAndVal } from '../proto/task_run'
 import { ScheduledTask } from '../proto/service'
@@ -43,9 +45,26 @@ export function extractTaskArgs(task: ScheduledTask): unknown[] {
 /**
  * Converts a JavaScript value to a VariableValue proto object.
  */
-export function toVariableValue(value: unknown): VariableValue {
+export function toVariableValue(value: unknown, declaredType?: VariableType): VariableValue {
   if (value === null || value === undefined) {
     return { value: { oneofKind: undefined } }
+  }
+
+  // the declared type disambiguates what the value alone cannot: JS numbers
+  // carry no int/double distinction (Java resolves this via Long vs Double)
+  if (declaredType === VariableType.DOUBLE && typeof value === 'number') {
+    return { value: { oneofKind: 'double', double: value } }
+  }
+  if (declaredType === VariableType.INT && (typeof value === 'number' || typeof value === 'bigint')) {
+    return { value: { oneofKind: 'int', int: value.toString() } }
+  }
+
+  if (typeof value === 'bigint') {
+    return { value: { oneofKind: 'int', int: value.toString() } }
+  }
+
+  if (value instanceof Date) {
+    return { value: { oneofKind: 'utcTimestamp', utcTimestamp: Timestamp.fromDate(value) } }
   }
 
   if (typeof value === 'string') {
