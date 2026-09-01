@@ -1,19 +1,342 @@
 {
   "sdk": "js",
-  "corpusRevision": "9b21e2ff7",
+  "corpusRevision": "33270969f",
   "summary": {
     "PASS": 19,
     "FAIL": 0,
-    "SKIP": 3,
+    "SKIP": 120,
     "MISSING": 0
   },
   "outcomes": {
-    "workflow-minimal": {
+    "add-variable": {
       "area": "wfsdk",
-      "outcome": "PASS",
-      "units": {
-        "feature": "PASS"
-      }
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "assign-user-task": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "build-inline-struct": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "build-struct": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "cancel-user-task-after-assignment": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "cancel-user-task-run-after": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-array": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-bool": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-bytes": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-double": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-int": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-json-arr": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-json-obj": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-map": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-str": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-struct": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "declare-timestamp": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "do-else": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "do-else-if": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "do-if": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "do-if-else": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "do-while": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "execute-args": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-add": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-and": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-bool": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-bytes": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-double": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-int": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-str": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-cast-to-wf-run-id": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-divide": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-does-contain": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-does-not-contain": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-extend": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-equal-to": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-greater-than": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-in": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-less-than": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-not-equal-to": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-is-not-in": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-multiply": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-or": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-pow": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-remove-if-present": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-remove-index": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-remove-key": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-size": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "expr-subtract": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "external-event-correlation": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "external-event-timeout": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "fail": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "format": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "handle-any-failure": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "handle-error-any": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "handle-exception-named": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "interrupt-handler": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "mutate": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "node-output-get": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "node-output-json-path": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "reassign-user-task": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "release-to-group-on-deadline": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "run-wf-inputs": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "schedule-reminder-on-assignment": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "schedule-reminder-task": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
     },
     "sleep-seconds": {
       "area": "wfsdk",
@@ -22,6 +345,268 @@
         "base": "PASS",
         "feature": "PASS"
       }
+    },
+    "sleep-until": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "spawn-thread-for-each": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "spawn-thread-input-vars": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "spawned-thread-number": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "spawned-threads-of": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "task-exponential-backoff": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "task-timeout": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "task-with-retries": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "throw-event": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "user-task-notes": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "user-task-on-cancellation-exception": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-as-inherited": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-as-public": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-assign": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-get-field": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-is-greater-than-eq": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-is-less-than-eq": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-json-path": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-masked": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-required": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-searchable": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-searchable-on": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-with-access-level": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "var-with-default": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-any-of": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-child-wf": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-condition": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-event": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-first-of": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-for-threads": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-threads-handle-any-failure-on-child": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-threads-handle-error-on-child": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wait-threads-handle-exception-on-child": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-default-task-backoff": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-default-task-retries": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-default-task-timeout": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-default-thread-retention": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-retention-policy": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-set-parent": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wf-update-type": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "workflow-minimal": {
+      "area": "wfsdk",
+      "outcome": "PASS",
+      "units": {
+        "feature": "PASS"
+      }
+    },
+    "wt-add": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-complete": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-divide": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-extend": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-multiply": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-pow": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-remove-if-present": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-remove-index": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-remove-key": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-retention-policy": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "wt-subtract": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
     },
     "str-basic": {
       "area": "serde",
