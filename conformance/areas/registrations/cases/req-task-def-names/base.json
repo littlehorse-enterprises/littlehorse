@@ -1,8 +1,0 @@
-{
-  "externalEventDefs": [  ],
-  "workflowEventDefs": [  ],
-  "requiredTaskDefNames": [],
-  "requiredExternalEventDefNames": [],
-  "requiredChildWfSpecNames": [],
-  "requiredWorkflowEventDefNames": []
-}

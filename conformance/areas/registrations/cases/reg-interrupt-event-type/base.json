@@ -1,8 +1,0 @@
-{
-  "externalEventDefs": [  ],
-  "workflowEventDefs": [  ],
-  "requiredTaskDefNames": ["cancel","main-step"],
-  "requiredExternalEventDefNames": ["cancel-requested"],
-  "requiredChildWfSpecNames": [],
-  "requiredWorkflowEventDefNames": []
-}
