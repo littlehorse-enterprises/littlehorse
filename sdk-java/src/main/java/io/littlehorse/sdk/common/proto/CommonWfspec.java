@@ -190,61 +190,64 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "\002 \001(\0132\031.littlehorse.InlineMapDefH\000\210\001\001\032e\n" +
       "\005Entry\022,\n\003key\030\001 \001(\0132\037.littlehorse.Variab" +
       "leAssignment\022.\n\005value\030\002 \001(\0132\037.littlehors" +
-      "e.VariableAssignmentB\013\n\t_map_type\"\244\003\n\020Va" +
+      "e.VariableAssignmentB\013\n\t_map_type\"\343\003\n\020Va" +
       "riableMutation\022\020\n\010lhs_name\030\001 \001(\t\022\032\n\rlhs_" +
-      "json_path\030\002 \001(\tH\001\210\001\001\0224\n\toperation\030\003 \001(\0162" +
-      "!.littlehorse.VariableMutationType\0229\n\016rh" +
-      "s_assignment\030\004 \001(\0132\037.littlehorse.Variabl" +
-      "eAssignmentH\000\0223\n\rliteral_value\030\005 \001(\0132\032.l" +
-      "ittlehorse.VariableValueH\000\022E\n\013node_outpu" +
-      "t\030\006 \001(\0132..littlehorse.VariableMutation.N" +
-      "odeOutputSourceH\000\032V\n\020NodeOutputSource\022\022\n" +
-      "\010jsonpath\030\n \001(\tH\000\022&\n\007lh_path\030\013 \001(\0132\023.lit" +
-      "tlehorse.LHPathH\000B\006\n\004pathB\013\n\trhs_valueB\020" +
-      "\n\016_lhs_json_path\"\211\002\n\013VariableDef\022,\n\004type" +
-      "\030\001 \001(\0162\031.littlehorse.VariableTypeH\000\210\001\001\022\014" +
-      "\n\004name\030\002 \001(\t\0226\n\rdefault_value\030\003 \001(\0132\032.li" +
-      "ttlehorse.VariableValueH\001\210\001\001\022\031\n\014masked_v" +
-      "alue\030\004 \001(\010H\002\210\001\001\0222\n\010type_def\030\005 \001(\0132\033.litt" +
-      "lehorse.TypeDefinitionH\003\210\001\001B\007\n\005_typeB\020\n\016" +
-      "_default_valueB\017\n\r_masked_valueB\013\n\t_type" +
-      "_def\"\357\004\n\017UTActionTrigger\0224\n\004task\030\001 \001(\0132$" +
-      ".littlehorse.UTActionTrigger.UTATaskH\000\0228" +
-      "\n\006cancel\030\002 \001(\0132&.littlehorse.UTActionTri" +
-      "gger.UTACancelH\000\022<\n\010reassign\030\003 \001(\0132(.lit" +
-      "tlehorse.UTActionTrigger.UTAReassignH\000\0226" +
-      "\n\rdelay_seconds\030\005 \001(\0132\037.littlehorse.Vari" +
-      "ableAssignment\0221\n\004hook\030\006 \001(\0162#.littlehor" +
-      "se.UTActionTrigger.UTHook\032\013\n\tUTACancel\032`" +
-      "\n\007UTATask\022#\n\004task\030\001 \001(\0132\025.littlehorse.Ta" +
-      "skNode\0220\n\tmutations\030\002 \003(\0132\035.littlehorse." +
-      "VariableMutation\032\231\001\n\013UTAReassign\0225\n\007user" +
-      "_id\030\001 \001(\0132\037.littlehorse.VariableAssignme" +
-      "ntH\000\210\001\001\0228\n\nuser_group\030\002 \001(\0132\037.littlehors" +
-      "e.VariableAssignmentH\001\210\001\001B\n\n\010_user_idB\r\n" +
-      "\013_user_group\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024" +
-      "\n\020ON_TASK_ASSIGNED\020\001B\010\n\006action\"c\n\035Expone" +
-      "ntialBackoffRetryPolicy\022\030\n\020base_interval" +
-      "_ms\030\001 \001(\005\022\024\n\014max_delay_ms\030\002 \001(\003\022\022\n\nmulti" +
-      "plier\030\003 \001(\002\"\311\002\n\010TaskNode\022-\n\013task_def_id\030" +
-      "\001 \001(\0132\026.littlehorse.TaskDefIdH\000\0227\n\014dynam" +
-      "ic_task\030\006 \001(\0132\037.littlehorse.VariableAssi" +
-      "gnmentH\000\022\027\n\017timeout_seconds\030\002 \001(\005\022\017\n\007ret" +
-      "ries\030\003 \001(\005\022L\n\023exponential_backoff\030\005 \001(\0132" +
-      "*.littlehorse.ExponentialBackoffRetryPol" +
-      "icyH\001\210\001\001\0222\n\tvariables\030\004 \003(\0132\037.littlehors" +
-      "e.VariableAssignmentB\021\n\017task_to_executeB" +
-      "\026\n\024_exponential_backoff\"q\n\006LHPath\022*\n\004pat" +
-      "h\030\001 \003(\0132\034.littlehorse.LHPath.Selector\032;\n" +
-      "\010Selector\022\r\n\003key\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H" +
-      "\000B\017\n\rselector_type*\262\001\n\024VariableMutationT" +
-      "ype\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010" +
-      "SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021" +
-      "REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n" +
-      "\nREMOVE_KEY\020\010\022\007\n\003AND\020\t\022\006\n\002OR\020\n\022\007\n\003POW\020\013B" +
-      "M\n\037io.littlehorse.sdk.common.protoP\001Z\t.;" +
-      "lhproto\252\002\034LittleHorse.Sdk.Common.Protob\006" +
-      "proto3"
+      "json_path\030\002 \001(\tH\001\210\001\001\022-\n\013lhs_lh_path\030\007 \001(" +
+      "\0132\023.littlehorse.LHPathH\002\210\001\001\0224\n\toperation" +
+      "\030\003 \001(\0162!.littlehorse.VariableMutationTyp" +
+      "e\0229\n\016rhs_assignment\030\004 \001(\0132\037.littlehorse." +
+      "VariableAssignmentH\000\0223\n\rliteral_value\030\005 " +
+      "\001(\0132\032.littlehorse.VariableValueH\000\022E\n\013nod" +
+      "e_output\030\006 \001(\0132..littlehorse.VariableMut" +
+      "ation.NodeOutputSourceH\000\032V\n\020NodeOutputSo" +
+      "urce\022\022\n\010jsonpath\030\n \001(\tH\000\022&\n\007lh_path\030\013 \001(" +
+      "\0132\023.littlehorse.LHPathH\000B\006\n\004pathB\013\n\trhs_" +
+      "valueB\020\n\016_lhs_json_pathB\016\n\014_lhs_lh_path\"" +
+      "\211\002\n\013VariableDef\022,\n\004type\030\001 \001(\0162\031.littleho" +
+      "rse.VariableTypeH\000\210\001\001\022\014\n\004name\030\002 \001(\t\0226\n\rd" +
+      "efault_value\030\003 \001(\0132\032.littlehorse.Variabl" +
+      "eValueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H\002\210\001\001\0222" +
+      "\n\010type_def\030\005 \001(\0132\033.littlehorse.TypeDefin" +
+      "itionH\003\210\001\001B\007\n\005_typeB\020\n\016_default_valueB\017\n" +
+      "\r_masked_valueB\013\n\t_type_def\"\357\004\n\017UTAction" +
+      "Trigger\0224\n\004task\030\001 \001(\0132$.littlehorse.UTAc" +
+      "tionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001(\0132&." +
+      "littlehorse.UTActionTrigger.UTACancelH\000\022" +
+      "<\n\010reassign\030\003 \001(\0132(.littlehorse.UTAction" +
+      "Trigger.UTAReassignH\000\0226\n\rdelay_seconds\030\005" +
+      " \001(\0132\037.littlehorse.VariableAssignment\0221\n" +
+      "\004hook\030\006 \001(\0162#.littlehorse.UTActionTrigge" +
+      "r.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n\004task" +
+      "\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmutatio" +
+      "ns\030\002 \003(\0132\035.littlehorse.VariableMutation\032" +
+      "\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037.littl" +
+      "ehorse.VariableAssignmentH\000\210\001\001\0228\n\nuser_g" +
+      "roup\030\002 \001(\0132\037.littlehorse.VariableAssignm" +
+      "entH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\".\n\006U" +
+      "THook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASSIGNE" +
+      "D\020\001B\010\n\006action\"c\n\035ExponentialBackoffRetry" +
+      "Policy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n\014max_" +
+      "delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311\002\n\010T" +
+      "askNode\022-\n\013task_def_id\030\001 \001(\0132\026.littlehor" +
+      "se.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(\0132\037.l" +
+      "ittlehorse.VariableAssignmentH\000\022\027\n\017timeo" +
+      "ut_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n\023exp" +
+      "onential_backoff\030\005 \001(\0132*.littlehorse.Exp" +
+      "onentialBackoffRetryPolicyH\001\210\001\001\0222\n\tvaria" +
+      "bles\030\004 \003(\0132\037.littlehorse.VariableAssignm" +
+      "entB\021\n\017task_to_executeB\026\n\024_exponential_b" +
+      "ackoff\"\245\001\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.little" +
+      "horse.LHPath.Selector\032o\n\010Selector\022\r\n\003key" +
+      "\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H\000\0222\n\007dynamic\030\003 \001" +
+      "(\0132\037.littlehorse.VariableAssignmentH\000B\017\n" +
+      "\rselector_type*\262\001\n\024VariableMutationType\022" +
+      "\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBT" +
+      "RACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMO" +
+      "VE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREM" +
+      "OVE_KEY\020\010\022\007\n\003AND\020\t\022\006\n\002OR\020\n\022\007\n\003POW\020\013BM\n\037i" +
+      "o.littlehorse.sdk.common.protoP\001Z\t.;lhpr" +
+      "oto\252\002\034LittleHorse.Sdk.Common.Protob\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -324,7 +327,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_VariableMutation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableMutation_descriptor,
-        new java.lang.String[] { "LhsName", "LhsJsonPath", "Operation", "RhsAssignment", "LiteralValue", "NodeOutput", "RhsValue", });
+        new java.lang.String[] { "LhsName", "LhsJsonPath", "LhsLhPath", "Operation", "RhsAssignment", "LiteralValue", "NodeOutput", "RhsValue", });
     internal_static_littlehorse_VariableMutation_NodeOutputSource_descriptor =
       internal_static_littlehorse_VariableMutation_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_VariableMutation_NodeOutputSource_fieldAccessorTable = new
@@ -384,7 +387,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_LHPath_Selector_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LHPath_Selector_descriptor,
-        new java.lang.String[] { "Key", "Index", "SelectorType", });
+        new java.lang.String[] { "Key", "Index", "Dynamic", "SelectorType", });
     descriptor.resolveAllFeaturesImmutable();
     io.littlehorse.sdk.common.proto.CommonEnums.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();

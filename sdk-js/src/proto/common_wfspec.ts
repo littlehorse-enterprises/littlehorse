@@ -365,6 +365,13 @@ export interface VariableMutation {
      */
     lhsJsonPath?: string;
     /**
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     *
+     * @generated from protobuf field: optional littlehorse.LHPath lhs_lh_path = 7
+     */
+    lhsLhPath?: LHPath;
+    /**
      * Defines the operation that we are executing.
      *
      * @generated from protobuf field: littlehorse.VariableMutationType operation = 3
@@ -756,6 +763,14 @@ export interface LHPath_Selector {
          * @generated from protobuf field: int32 index = 2
          */
         index: number;
+    } | {
+        oneofKind: "dynamic";
+        /**
+         * A selector value resolved from the current ThreadRun context.
+         *
+         * @generated from protobuf field: littlehorse.VariableAssignment dynamic = 3
+         */
+        dynamic: VariableAssignment;
     } | {
         oneofKind: undefined;
     };
@@ -1501,6 +1516,7 @@ class VariableMutation$Type extends MessageType<VariableMutation> {
         super("littlehorse.VariableMutation", [
             { no: 1, name: "lhs_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "lhs_json_path", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 7, name: "lhs_lh_path", kind: "message", T: () => LHPath },
             { no: 3, name: "operation", kind: "enum", T: () => ["littlehorse.VariableMutationType", VariableMutationType] },
             { no: 4, name: "rhs_assignment", kind: "message", oneof: "rhsValue", T: () => VariableAssignment },
             { no: 5, name: "literal_value", kind: "message", oneof: "rhsValue", T: () => VariableValue },
@@ -1526,6 +1542,9 @@ class VariableMutation$Type extends MessageType<VariableMutation> {
                     break;
                 case /* optional string lhs_json_path */ 2:
                     message.lhsJsonPath = reader.string();
+                    break;
+                case /* optional littlehorse.LHPath lhs_lh_path */ 7:
+                    message.lhsLhPath = LHPath.internalBinaryRead(reader, reader.uint32(), options, message.lhsLhPath);
                     break;
                 case /* littlehorse.VariableMutationType operation */ 3:
                     message.operation = reader.int32();
@@ -1578,6 +1597,9 @@ class VariableMutation$Type extends MessageType<VariableMutation> {
         /* littlehorse.VariableMutation.NodeOutputSource node_output = 6; */
         if (message.rhsValue.oneofKind === "nodeOutput")
             VariableMutation_NodeOutputSource.internalBinaryWrite(message.rhsValue.nodeOutput, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.LHPath lhs_lh_path = 7; */
+        if (message.lhsLhPath)
+            LHPath.internalBinaryWrite(message.lhsLhPath, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -2159,7 +2181,8 @@ class LHPath_Selector$Type extends MessageType<LHPath_Selector> {
     constructor() {
         super("littlehorse.LHPath.Selector", [
             { no: 1, name: "key", kind: "scalar", oneof: "selectorType", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "index", kind: "scalar", oneof: "selectorType", T: 5 /*ScalarType.INT32*/ }
+            { no: 2, name: "index", kind: "scalar", oneof: "selectorType", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "dynamic", kind: "message", oneof: "selectorType", T: () => VariableAssignment }
         ]);
     }
     create(value?: PartialMessage<LHPath_Selector>): LHPath_Selector {
@@ -2186,6 +2209,12 @@ class LHPath_Selector$Type extends MessageType<LHPath_Selector> {
                         index: reader.int32()
                     };
                     break;
+                case /* littlehorse.VariableAssignment dynamic */ 3:
+                    message.selectorType = {
+                        oneofKind: "dynamic",
+                        dynamic: VariableAssignment.internalBinaryRead(reader, reader.uint32(), options, (message.selectorType as any).dynamic)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2204,6 +2233,9 @@ class LHPath_Selector$Type extends MessageType<LHPath_Selector> {
         /* int32 index = 2; */
         if (message.selectorType.oneofKind === "index")
             writer.tag(2, WireType.Varint).int32(message.selectorType.index);
+        /* littlehorse.VariableAssignment dynamic = 3; */
+        if (message.selectorType.oneofKind === "dynamic")
+            VariableAssignment.internalBinaryWrite(message.selectorType.dynamic, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
