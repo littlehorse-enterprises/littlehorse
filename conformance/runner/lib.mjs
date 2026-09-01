@@ -24,7 +24,9 @@ export function readLedgerYaml(path) {
   let currentEntry = null
   const lines = readFileSync(path, 'utf8').split('\n')
   for (const [i, raw] of lines.entries()) {
-    const line = raw.replace(/#.*$/, '').trimEnd()
+    // yaml comments start the line or follow whitespace — a bare # inside a
+    // value (capability ids like Workflow#newWorkflow) is content
+    const line = raw.replace(/(^|\s)#.*$/, '$1').trimEnd()
     if (line.trim() === '') continue
     const loc = `${path}:${i + 1}`
     let m
