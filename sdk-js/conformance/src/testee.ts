@@ -2,13 +2,52 @@
  * CLI dispatch (contract: conformance/README.md). Build first:
  *   npm --prefix sdk-js run build && npm --prefix sdk-js run build:conformance
  */
+import { readFileSync } from 'node:fs'
 import * as wfsdk from './wfsdkArea'
 import * as serde from './serdeArea'
+import * as registrations from './registrationsArea'
 
 const args = process.argv.slice(2)
+if (args[0] === 'compile-all') {
+  const out: Record<string, unknown> = {}
+  for (const id of wfsdk.caseIds()) {
+    const variants = id === 'workflow-minimal' ? ['feature'] : ['base', 'feature']
+    for (const variant of variants) out[`${id}/${variant}`] = JSON.parse(wfsdk.compile(id, variant))
+  }
+  console.log(JSON.stringify(out))
+  process.exit(0)
+}
+if (args[0] === 'convert-batch') {
+  const lines = readFileSync(0, 'utf8').split('\n').filter(Boolean)
+  const out: Record<string, unknown> = {}
+  for (const line of lines) {
+    const req = JSON.parse(line) as { id: string; type: string; value?: string }
+    out[req.id] = JSON.parse(serde.convert(req.type, req.value))
+  }
+  console.log(JSON.stringify(out))
+  process.exit(0)
+}
+if (args[0] === 'registrations' && args[1] === '--case' && args[3] === '--variant') {
+  try {
+    console.log(registrations.answer(args[2], args[4]))
+    process.exit(0)
+  } catch (e) {
+    console.error((e as Error).message)
+    process.exit(2)
+  }
+}
+if (args[0] === 'registrations-all') {
+  const out: Record<string, unknown> = {}
+  for (const id of registrations.caseIds()) {
+    for (const variant of ['base', 'feature']) out[`${id}/${variant}`] = JSON.parse(registrations.answer(id, variant))
+  }
+  console.log(JSON.stringify(out))
+  process.exit(0)
+}
 if (args[0] === 'list') {
   for (const id of wfsdk.caseIds()) console.log(id)
   for (const id of serde.caseIds()) console.log(id)
+  for (const id of registrations.caseIds()) console.log(id)
   process.exit(0)
 }
 if (args[0] === 'compile' && args[1] === '--case' && args[3] === '--variant') {

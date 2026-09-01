@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { toVariableValue } from '../../dist/worker/variableMapping'
 import { VariableValue } from '../../dist/proto/type_definition'
+import { VariableType } from '../../dist/proto/common_enums'
 
 /** Maps a typed input (rules.md S1) to a native value. */
 function nativeFromTyped(type: string, value: string | undefined): unknown {
@@ -13,6 +14,8 @@ function nativeFromTyped(type: string, value: string | undefined): unknown {
     case 'str':
       return value
     case 'int':
+      // BigInt keeps int64 inputs exact beyond 2^53
+      return BigInt(value ?? '0')
     case 'double':
       return Number(value)
     case 'bool':
@@ -31,6 +34,8 @@ function nativeFromTyped(type: string, value: string | undefined): unknown {
   }
 }
 
+const DECLARED: Record<string, VariableType> = { int: VariableType.INT, double: VariableType.DOUBLE }
+
 export function caseIds(): string[] {
   // runtime __dirname is conformance/build/ → repo root is three up
   const manifestPath = join(__dirname, '..', '..', '..', 'conformance', 'areas', 'serde', 'manifest.json')
@@ -39,6 +44,6 @@ export function caseIds(): string[] {
 }
 
 export function convert(type: string, value: string | undefined): string {
-  const converted = toVariableValue(nativeFromTyped(type, value))
+  const converted = toVariableValue(nativeFromTyped(type, value), DECLARED[type])
   return JSON.stringify(VariableValue.toJson(converted, { emitDefaultValues: true }), null, 2)
 }
