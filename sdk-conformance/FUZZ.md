@@ -12,7 +12,17 @@ Not a corpus area — no fixtures, no manifest, no ledgers. Run with:
 ```
 node sdk-conformance/runner/fuzz.mjs            # seeds 1..20, 12 ops each
 node sdk-conformance/runner/fuzz.mjs 50 16      # 50 seeds, 16 ops
+node sdk-conformance/runner/fuzz.mjs --register # also register each agreed
+                                                # workflow with the server at
+                                                # LHC_API_HOST/PORT and require
+                                                # acceptance (canon validation)
 ```
+
+`--register` extends the testee verb with a trailing `--register` flag: the
+testee must register the compiled workflow (creating the fixed `task-<n>`,
+`branch-<n>`, and `evt-<n>` defs the op table references if absent) and exit
+nonzero if the server rejects it. Optional — only the js testee implements
+it today.
 
 ## The generator contract (normative)
 

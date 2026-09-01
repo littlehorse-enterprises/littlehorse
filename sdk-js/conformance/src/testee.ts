@@ -9,6 +9,7 @@ import * as registrations from './registrationsArea'
 import * as fuzz from './fuzz'
 
 const args = process.argv.slice(2)
+let registrationPending = false
 if (args[0] === 'compile-all') {
   const out: Record<string, unknown> = {}
   for (const id of wfsdk.caseIds()) {
@@ -46,8 +47,27 @@ if (args[0] === 'registrations-all') {
   process.exit(0)
 }
 if (args[0] === 'fuzz' && args[1] === '--seed' && args[3] === '--ops') {
-  console.log(fuzz.compile(Number(args[2]), Number(args[4])))
-  process.exit(0)
+  const seed = Number(args[2])
+  const ops = Number(args[4])
+  const out = fuzz.compile(seed, ops)
+  if (args[5] === '--register') {
+    // keep the process alive for the async registration; the handlers below
+    // are the only exits on this path
+    registrationPending = true
+    fuzz
+      .register(seed, ops)
+      .then(() => {
+        console.log(out)
+        process.exit(0)
+      })
+      .catch(e => {
+        console.error(`server rejected fuzz-${seed}: ${(e as Error).message}`)
+        process.exit(3)
+      })
+  } else {
+    console.log(out)
+    process.exit(0)
+  }
 }
 if (args[0] === 'list') {
   for (const id of wfsdk.caseIds()) console.log(id)
@@ -74,5 +94,7 @@ if (args[0] === 'convert' && args[1] === '--type') {
     process.exit(2)
   }
 }
-console.error('usage: testee list | compile --case ID --variant base|feature | convert --type T [--value V]')
-process.exit(2)
+if (!registrationPending) {
+  console.error('usage: testee list | compile --case ID --variant base|feature | convert --type T [--value V]')
+  process.exit(2)
+}

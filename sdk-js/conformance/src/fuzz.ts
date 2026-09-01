@@ -3,6 +3,7 @@
  * sdk-conformance/FUZZ.md exactly (PRNG, draw order, op table). No canon: the
  * runner cross-compares SDK outputs for the same seed.
  */
+import { LHConfig } from '../../dist'
 import { Workflow, type WfRunVariable } from '../../dist/wfsdk'
 import { PutWfSpecRequest } from '../../dist/proto/service'
 import { Comparator } from '../../dist/proto/type_definition'
@@ -20,9 +21,9 @@ function mulberry32(seed: number) {
   }
 }
 
-export function compile(seed: number, ops: number): string {
+function build(seed: number, ops: number): Workflow {
   const nextInt = mulberry32(seed)
-  const wf = Workflow.newWorkflow(`fuzz-${seed}`, thread => {
+  return Workflow.newWorkflow(`fuzz-${seed}`, thread => {
     const intVars: WfRunVariable[] = []
     for (let i = 0; i < ops; i++) {
       const k = nextInt(8)
@@ -62,5 +63,35 @@ export function compile(seed: number, ops: number): string {
       }
     }
   })
-  return JSON.stringify(PutWfSpecRequest.toJson(wf.compileWorkflow(), { emitDefaultValues: true }), null, 2)
+}
+
+export function compile(seed: number, ops: number): string {
+  return JSON.stringify(
+    PutWfSpecRequest.toJson(build(seed, ops).compileWorkflow(), { emitDefaultValues: true }),
+    null,
+    2
+  )
+}
+
+/**
+ * Registers the seed's workflow with a real server (canon validation: both
+ * SDKs agreeing on a proto says nothing about the server ACCEPTING it).
+ * Pre-registers the fixed task and event defs the op table can reference.
+ */
+export async function register(seed: number, ops: number): Promise<void> {
+  const config = LHConfig.from({})
+  const client = config.getClient()
+  const swallowExisting = async (p: Promise<unknown>) => {
+    try {
+      await p
+    } catch (e) {
+      if (!String(e).includes('ALREADY_EXISTS')) throw e
+    }
+  }
+  for (let n = 0; n < 5; n++) {
+    await swallowExisting(client.putTaskDef({ name: `task-${n}` }))
+    await swallowExisting(client.putTaskDef({ name: `branch-${n}` }))
+    await swallowExisting(client.putExternalEventDef({ name: `evt-${n}` }))
+  }
+  await client.putWfSpec(build(seed, ops).compileWorkflow())
 }
