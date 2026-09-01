@@ -40,7 +40,14 @@ sdk-conformance/
 
 ## Running the suite
 
-Build the testees with their own toolchains, then run the graders:
+Build the testees with their own toolchains, then run everything with one
+command:
+
+```bash
+node sdk-conformance/runner/all.mjs
+```
+
+Or run the gates individually:
 
 ```bash
 ./gradlew :sdk-java-conformance:installDist
