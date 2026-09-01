@@ -1216,8 +1216,9 @@ public class WorkflowThread
     /// <param name="inputs">
     /// The inputs that we will pass into the entrypoint ThreadRun.
     /// </param>
+    /// <param name="childId">The optional ID to assign to the child WfRun.</param>
     /// <returns>A SpawnedChildWf which allows us to later wait for the child WfRun.</returns>
-    public SpawnedChildWf RunWf(string wfSpecName, Dictionary<string, object> inputs)
+    public SpawnedChildWf RunWf(string wfSpecName, Dictionary<string, object> inputs, object? childId = null)
     {
         CheckIfWorkflowThreadIsActive();
 
@@ -1230,6 +1231,10 @@ public class WorkflowThread
         foreach (var keyValuePair in inputs)
         {
             node.Inputs.Add(keyValuePair.Key, AssignVariableHelper(keyValuePair.Value));
+        }
+        if (childId != null)
+        {
+            node.ChildId = AssignVariableHelper(childId);
         }
 
         string nodeName = AddNode("run-" + wfSpecName, Node.NodeOneofCase.RunChildWf, node);

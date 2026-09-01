@@ -1594,7 +1594,7 @@ func (t *WorkflowThread) spawnThread(
 // runWfImpl accepts either a static wfSpec name (string) or a dynamic
 // spec (VariableAssignment-compatible value) and constructs a RunChildWfNode
 // accordingly.
-func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
+func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]interface{}, childID ...interface{}) *SpawnedChildWf {
 	t.checkIfIsActive()
 
 	runNodeProto := &lhproto.RunChildWfNode{
@@ -1642,6 +1642,13 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 			}
 			runNodeProto.Inputs[k] = assn
 		}
+	}
+	if len(childID) > 0 {
+		assn, err := t.assignVariable(childID[0])
+		if err != nil {
+			t.throwError(tracerr.Wrap(err))
+		}
+		runNodeProto.ChildId = assn
 	}
 
 	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")

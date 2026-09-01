@@ -348,8 +348,8 @@ func (s *SpawnedChildWf) BuildNode() *lhproto.WaitForChildWfNode {
 // a handle to wait on it later. wfSpecName may be a string or any expression that
 // can be converted to a STRING at runtime (e.g., a WfRunVariable or other
 // VariableAssignment-compatible value).
-func (t *WorkflowThread) RunWf(wfSpecName interface{}, inputs map[string]interface{}) *SpawnedChildWf {
-	return t.runWfImpl(wfSpecName, inputs)
+func (t *WorkflowThread) RunWf(wfSpecName interface{}, inputs map[string]interface{}, childID ...interface{}) *SpawnedChildWf {
+	return t.runWfImpl(wfSpecName, inputs, childID...)
 }
 
 // WaitForChildWf waits for a previously spawned child workflow to complete and

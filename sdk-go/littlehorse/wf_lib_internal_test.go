@@ -2009,3 +2009,16 @@ func TestRunWfDynamicVar(t *testing.T) {
 		t.Errorf("expected wf spec to be provided via variable 'spec'")
 	}
 }
+
+func TestRunWfWithChildID(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
+		childID := t.AddVariable("child-id", lhproto.VariableType_STR)
+		t.RunWf("child-spec", nil, childID)
+	}, "my-workflow")
+
+	putWf, err := wf.Compile()
+	assert.Nil(t, err)
+
+	runNode := putWf.ThreadSpecs[putWf.EntrypointThreadName].Nodes["1-run-child-spec-RUN_CHILD_WF"].GetRunChildWf()
+	assert.Equal(t, "child-id", runNode.GetChildId().GetVariableName())
+}

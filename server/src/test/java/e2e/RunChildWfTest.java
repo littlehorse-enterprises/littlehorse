@@ -215,6 +215,47 @@ public class RunChildWfTest {
     }
 
     @Test
+    void shouldUseSpecifiedChildWfRunId() {
+        String child = "child-id-" + randomString();
+        String parent = "parent-id-" + randomString();
+        String childId = "specified-child-" + randomString();
+
+        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
+        Workflow.newWorkflow(parent, wf -> {
+                    wf.runWf(child, Map.of()).withChildId(childId);
+                })
+                .registerWfSpec(client);
+
+        WfRun parentWfRun = client.runWf(RunWfRequest.newBuilder().setWfSpecName(parent).build());
+        WfRun childWfRun = client.getWfRun(WfRunId.newBuilder()
+                .setId(childId)
+                .setParentWfRunId(parentWfRun.getId())
+                .build());
+
+        Assertions.assertThat(childWfRun.getId().getId()).isEqualTo(childId);
+    }
+
+    @Test
+    void shouldFailWhenChildWfRunIdAlreadyExists() {
+        String child = "child-duplicate-id-" + randomString();
+        String parent = "parent-duplicate-id-" + randomString();
+        String childId = "duplicate-child-" + randomString();
+
+        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
+        Workflow parentWf = Workflow.newWorkflow(parent, wf -> {
+                    wf.runWf(child, Map.of()).withChildId(childId);
+                    wf.runWf(child, Map.of()).withChildId(childId);
+                });
+        parentWf.registerWfSpec(client);
+
+        verifier.prepareRun(parentWf)
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 2, nodeRun -> Assertions.assertThat(nodeRun.getFailures(0).getFailureName())
+                        .isEqualTo("VAR_SUB_ERROR"))
+                .start();
+    }
+
+    @Test
     void shouldRunDynamicChildWorkflow() {
         final String childSuffix = UUID.randomUUID().toString();
         final String invalidChildSuffix = UUID.randomUUID().toString();
