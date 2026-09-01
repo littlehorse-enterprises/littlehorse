@@ -1,0 +1,62 @@
+{
+  "name": "probe-wait-for-condition",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-wait-for-condition-WAIT_FOR_CONDITION",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-wait-for-condition-WAIT_FOR_CONDITION": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "waitForCondition": {
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "ready"
+                },
+                "rhs": {
+                  "literalValue": {
+                    "bool": true
+                  }
+                },
+                "comparator": "EQUALS"
+              }
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [{
+        "varDef": {
+          "name": "ready",
+          "typeDef": {
+            "primitiveType": "BOOL",
+            "masked": false
+          }
+        },
+        "required": false,
+        "searchable": false,
+        "jsonIndexes": [],
+        "accessLevel": "PRIVATE_VAR"
+      }],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}
