@@ -3,7 +3,7 @@
 // exit 1 on any gate failure. Contract: conformance/README.md.
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { CONFORMANCE, readJson, readLedgerYaml, corpusRevision, runTestee, fail, ok } from './lib.mjs'
+import { CONFORMANCE, readJson, readLedgerYaml, corpusRevision, runTestee, runTesteeStdin, fail, ok } from './lib.mjs'
 import { semanticDiff } from './compare.mjs'
 
 const wfsdkManifest = readJson(resolve(CONFORMANCE, 'areas', 'wfsdk', 'manifest.json'))
@@ -15,16 +15,33 @@ const allCaseIds = new Set([...wfsdkManifest.cases, ...serdeManifest.cases].map(
 function attempt(config, units) {
   let firstFailure = null
   const outcomes = {}
-  for (const { name, args, expected } of units) {
-    const res = runTestee(config.command, args)
-    if (!res.ok) { outcomes[name] = 'FAIL'; firstFailure ??= { unit: name, diffs: [`testee error: ${res.stderr.trim()}`] }; continue }
-    let actual
-    try { actual = JSON.parse(res.stdout) } catch (e) { outcomes[name] = 'FAIL'; firstFailure ??= { unit: name, diffs: [`stdout is not JSON: ${e.message}`] }; continue }
+  for (const { name, args, expected, pre } of units) {
+    let actual = pre
+    if (actual === undefined) {
+      const res = runTestee(config.command, args)
+      if (!res.ok) { outcomes[name] = 'FAIL'; firstFailure ??= { unit: name, diffs: [`testee error: ${res.stderr.trim()}`] }; continue }
+      try { actual = JSON.parse(res.stdout) } catch (e) { outcomes[name] = 'FAIL'; firstFailure ??= { unit: name, diffs: [`stdout is not JSON: ${e.message}`] }; continue }
+    }
     const diffs = semanticDiff(expected, actual)
     outcomes[name] = diffs.length ? 'FAIL' : 'PASS'
     if (diffs.length) firstFailure ??= { unit: name, diffs }
   }
   return { outcomes, firstFailure }
+}
+
+// Optional accelerator verbs: one process answers everything. A testee
+// without them falls back to one spawn per unit.
+function batchAnswers(config, serdeManifest) {
+  const all = runTestee(config.command, ['compile-all'])
+  let wfsdk = null
+  if (all.ok) { try { wfsdk = JSON.parse(all.stdout) } catch { wfsdk = null } }
+  const input = serdeManifest.cases
+    .map((c) => JSON.stringify({ id: c.id, type: c.input.type, value: c.input.value }))
+    .join('\n')
+  const conv = runTesteeStdin(config.command, ['convert-batch'], input)
+  let serde = null
+  if (conv.ok) { try { serde = JSON.parse(conv.stdout) } catch { serde = null } }
+  return { wfsdk, serde }
 }
 
 for (const [sdk, config] of Object.entries(testees)) {
@@ -36,6 +53,7 @@ for (const [sdk, config] of Object.entries(testees)) {
   for (const id of excused.keys())
     if (!allCaseIds.has(id)) fail(`${sdk}: ledger excuses unknown case "${id}"`)
 
+  const batch = batchAnswers(config, serdeManifest)
   const listed = runTestee(config.command, ['list'])
   if (!listed.ok) { fail(`${sdk}: testee 'list' failed: ${listed.stderr.trim()}`); continue }
   const implemented = new Set(listed.stdout.split('\n').map((s) => s.trim()).filter(Boolean))
@@ -70,12 +88,13 @@ for (const [sdk, config] of Object.entries(testees)) {
       name: variant,
       args: ['compile', '--case', c.id, '--variant', variant],
       expected: readJson(resolve(CONFORMANCE, 'areas', 'wfsdk', 'cases', c.id, `${variant}.json`)),
+      pre: batch.wfsdk?.[`${c.id}/${variant}`],
     })))
   }
   for (const c of serdeManifest.cases) {
     const args = ['convert', '--type', c.input.type]
     if (c.input.value !== undefined) args.push('--value', String(c.input.value))
-    grade('serde', c, [{ name: 'convert', args, expected: readJson(resolve(CONFORMANCE, 'areas', 'serde', 'cases', `${c.id}.json`)) }])
+    grade('serde', c, [{ name: 'convert', args, expected: readJson(resolve(CONFORMANCE, 'areas', 'serde', 'cases', `${c.id}.json`)), pre: batch.serde?.[c.id] }])
   }
 
   const summary = { PASS: 0, FAIL: 0, SKIP: 0, MISSING: 0 }

@@ -48,7 +48,9 @@ public final class SerdeAreaMint {
                     .append(", \"level\": \"required\", \"input\": {\"type\": ")
                     .append(gson.toJson(type));
             if (value != null) manifest.append(", \"value\": ").append(gson.toJson(value));
-            manifest.append("}}").append(++i < SerdeArea.cases().size() ? "," : "").append("\n");
+            manifest.append("}}")
+                    .append(++i < SerdeArea.cases().size() ? "," : "")
+                    .append("\n");
 
             Files.writeString(
                     serdeDir.resolve("cases").resolve(id + ".json"),

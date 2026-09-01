@@ -39,6 +39,46 @@ public class ConformanceTestee {
             }
             return;
         }
+        if (args.length == 1 && args[0].equals("compile-all")) {
+            StringBuilder out = new StringBuilder("{");
+            boolean first = true;
+            for (String id : WfsdkArea.caseIds()) {
+                for (String variant : WfsdkArea.singles().containsKey(id)
+                        ? new String[] {"feature"}
+                        : new String[] {"base", "feature"}) {
+                    if (!first) out.append(",");
+                    first = false;
+                    out.append("\"")
+                            .append(id)
+                            .append("/")
+                            .append(variant)
+                            .append("\":")
+                            .append(WfsdkArea.compile(id, variant));
+                }
+            }
+            System.out.println(out.append("}"));
+            return;
+        }
+        if (args.length == 1 && args[0].equals("convert-batch")) {
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            StringBuilder out = new StringBuilder("{");
+            boolean first = true;
+            try (java.util.Scanner in = new java.util.Scanner(System.in)) {
+                while (in.hasNextLine()) {
+                    String line = in.nextLine().trim();
+                    if (line.isEmpty()) continue;
+                    java.util.Map<?, ?> req = gson.fromJson(line, java.util.Map.class);
+                    if (!first) out.append(",");
+                    first = false;
+                    out.append("\"")
+                            .append(req.get("id"))
+                            .append("\":")
+                            .append(SerdeArea.convert((String) req.get("type"), (String) req.get("value")));
+                }
+            }
+            System.out.println(out.append("}"));
+            return;
+        }
         if (args.length == 2 && args[0].equals("mint")) {
             WfsdkAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("wfsdk"));
             SerdeAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("serde"));

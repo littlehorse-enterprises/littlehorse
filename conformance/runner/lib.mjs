@@ -83,6 +83,20 @@ export function runTestee(command, args) {
   return { ok: false, stdout: '', stderr: `testee binary not found: ${bin} — build it first (see conformance/README.md)` }
 }
 
+/** Like runTestee, with data piped to the testee's stdin. */
+export function runTesteeStdin(command, args, input) {
+  const [bin, ...baseArgs] = command
+  const binPath = resolve(REPO_ROOT, bin)
+  try {
+    const stdout = execFileSync(bin.includes('/') ? binPath : bin, [...baseArgs, ...args], {
+      cwd: REPO_ROOT, encoding: 'utf8', input, stdio: ['pipe', 'pipe', 'pipe'],
+    })
+    return { ok: true, stdout }
+  } catch (err) {
+    return { ok: false, stdout: err.stdout ?? '', stderr: err.stderr ?? String(err) }
+  }
+}
+
 export function fail(msg) {
   console.error(`\x1b[31m✗ ${msg}\x1b[0m`)
   process.exitCode = 1

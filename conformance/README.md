@@ -89,6 +89,12 @@ testee convert --type <t> [--value <v>]
 
 `list` must cover every area's cases the SDK implements.
 
+Two optional accelerator verbs let one process answer everything (the
+runner probes for them and falls back to per-case spawns): `compile-all`
+prints `{"<case>/<variant>": <proto JSON>, ...}` for every implemented
+wfsdk case, and `convert-batch` reads one `{"id","type","value"}` JSON
+object per stdin line and prints `{"<id>": <VariableValue JSON>, ...}`.
+
 Comparison is semantic: the runner parses both sides and compares content,
 so key order and whitespace never matter. Emit default values (the canon
 does), and emit int64 fields as JSON strings per proto3 JSON.
