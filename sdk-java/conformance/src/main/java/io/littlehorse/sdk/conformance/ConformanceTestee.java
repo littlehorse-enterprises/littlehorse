@@ -13,6 +13,7 @@ public class ConformanceTestee {
         if (args.length == 1 && args[0].equals("list")) {
             WfsdkArea.caseIds().forEach(System.out::println);
             SerdeArea.caseIds().forEach(System.out::println);
+            RegistrationsArea.caseIds().forEach(System.out::println);
             return;
         }
         if (args.length == 5 && args[0].equals("compile") && args[1].equals("--case") && args[3].equals("--variant")) {
@@ -79,9 +80,34 @@ public class ConformanceTestee {
             System.out.println(out.append("}"));
             return;
         }
+        if (args.length == 5 && args[0].equals("registrations") && args[1].equals("--case") && args[3].equals("--variant")) {
+            try {
+                System.out.println(RegistrationsArea.answer(args[2], args[4]));
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage());
+                System.exit(2);
+            }
+            return;
+        }
+        if (args.length == 1 && args[0].equals("registrations-all")) {
+            StringBuilder out = new StringBuilder("{");
+            boolean first = true;
+            for (String id : RegistrationsArea.caseIds()) {
+                for (String variant : new String[] {"base", "feature"}) {
+                    if (!first) out.append(",");
+                    first = false;
+                    out.append("\"").append(id).append("/").append(variant).append("\":")
+                            .append(RegistrationsArea.answer(id, variant));
+                }
+            }
+            out.append("}");
+            System.out.println(out);
+            return;
+        }
         if (args.length == 2 && args[0].equals("mint")) {
             WfsdkAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("wfsdk"));
             SerdeAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("serde"));
+            RegistrationsAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("registrations"));
             return;
         }
         System.err.println(

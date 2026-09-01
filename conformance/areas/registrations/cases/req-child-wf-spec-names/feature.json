@@ -1,0 +1,8 @@
+{
+  "externalEventDefs": [  ],
+  "workflowEventDefs": [  ],
+  "requiredTaskDefNames": ["noop"],
+  "requiredExternalEventDefNames": [],
+  "requiredChildWfSpecNames": ["child-wf"],
+  "requiredWorkflowEventDefNames": []
+}

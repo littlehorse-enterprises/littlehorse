@@ -26,7 +26,8 @@ conformance/
 │   │                  implement, each pinned to the fixture enforcing it
 │   ├── exemptions.yaml  capabilities excused from needing a case, with reasons
 │   └── cases/<id>/    scenario.md + base.json + feature.json
-│   └── serde/         area 2: value → VariableValue conversion
+│   ├── serde/         area 2: value → VariableValue conversion
+│   └── registrations/ area 3: side-registration protos + required names
 │   ├── rules.md       the typed-input recipe (see it for everything below)
 │   ├── manifest.json  minted: one entry per case — id, level, typed input
 │   ├── surface.json      minted: the VariableValue oneof arms (the denominator)
@@ -80,6 +81,11 @@ testee compile --case <id> --variant <base|feature>
     builder, and print the compiled PutWfSpecRequest as proto JSON to
     stdout. Nothing else may be written to stdout. Exit 0 on success,
     nonzero with a message on stderr on error.
+
+testee registrations --case <id> --variant <base|feature>
+    Build the case's workflow, compile it, and print the registrations
+    document (registrations/rules.md, G1): the side-registration protos
+    and required-names sets. Same stdout/exit discipline.
 
 testee convert --type <t> [--value <v>]
     Map the typed input (serde/rules.md, S1) to a native value, run
@@ -135,7 +141,7 @@ definition and a file disagree, the file wins — report the bug here.
   [areas/](./areas/) carrying the five standard files (`rules.md`,
   `manifest.json`, `surface.json`, `exemptions.yaml`, `cases/`). Areas are
   *discovered* from the directory listing, and an area the runner cannot
-  grade fails freshness. v1 has two: `wfsdk` and `serde`.
+  grade fails freshness. there are three: `wfsdk`, `serde`, and `registrations`.
 - **arm** — one alternative of a proto `oneof` field. The serde area's
   surface is the list of `VariableValue`'s arms (`str`, `int`,
   `utcTimestamp`, …): every encoding a value can have.

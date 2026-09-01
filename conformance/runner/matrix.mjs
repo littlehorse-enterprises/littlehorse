@@ -7,9 +7,11 @@ import { CONFORMANCE, readJson, fail, ok } from './lib.mjs'
 
 const wfsdkManifest = readJson(resolve(CONFORMANCE, 'areas', 'wfsdk', 'manifest.json'))
 const serdeManifest = readJson(resolve(CONFORMANCE, 'areas', 'serde', 'manifest.json'))
+const registrationsManifest = readJson(resolve(CONFORMANCE, 'areas', 'registrations', 'manifest.json'))
 const rows = [
   ...wfsdkManifest.cases.map((c) => ({ area: 'wfsdk', ...c })),
   ...serdeManifest.cases.map((c) => ({ area: 'serde', ...c })),
+  ...registrationsManifest.cases.map((c) => ({ area: 'registrations', ...c })),
 ]
 const sdks = readdirSync(resolve(CONFORMANCE, 'results'))
   .filter((f) => f.endsWith('.json'))

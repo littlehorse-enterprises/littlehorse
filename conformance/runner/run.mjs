@@ -8,9 +8,12 @@ import { semanticDiff } from './compare.mjs'
 
 const wfsdkManifest = readJson(resolve(CONFORMANCE, 'areas', 'wfsdk', 'manifest.json'))
 const serdeManifest = readJson(resolve(CONFORMANCE, 'areas', 'serde', 'manifest.json'))
+const registrationsManifest = readJson(resolve(CONFORMANCE, 'areas', 'registrations', 'manifest.json'))
 const testees = readJson(resolve(CONFORMANCE, 'testees.json'))
 const revision = corpusRevision()
-const allCaseIds = new Set([...wfsdkManifest.cases, ...serdeManifest.cases].map((c) => c.id))
+const allCaseIds = new Set(
+  [...wfsdkManifest.cases, ...serdeManifest.cases, ...registrationsManifest.cases].map((c) => c.id),
+)
 
 function attempt(config, units) {
   let firstFailure = null
@@ -41,7 +44,10 @@ function batchAnswers(config, serdeManifest) {
   const conv = runTesteeStdin(config.command, ['convert-batch'], input)
   let serde = null
   if (conv.ok) { try { serde = JSON.parse(conv.stdout) } catch { serde = null } }
-  return { wfsdk, serde }
+  const regs = runTestee(config.command, ['registrations-all'])
+  let registrations = null
+  if (regs.ok) { try { registrations = JSON.parse(regs.stdout) } catch { registrations = null } }
+  return { wfsdk, serde, registrations }
 }
 
 for (const [sdk, config] of Object.entries(testees)) {
@@ -95,6 +101,15 @@ for (const [sdk, config] of Object.entries(testees)) {
     const args = ['convert', '--type', c.input.type]
     if (c.input.value !== undefined) args.push('--value', String(c.input.value))
     grade('serde', c, [{ name: 'convert', args, expected: readJson(resolve(CONFORMANCE, 'areas', 'serde', 'cases', `${c.id}.json`)), pre: batch.serde?.[c.id] }])
+  }
+
+  for (const c of registrationsManifest.cases) {
+    grade('registrations', c, c.variants.map((variant) => ({
+      name: variant,
+      args: ['registrations', '--case', c.id, '--variant', variant],
+      expected: readJson(resolve(CONFORMANCE, 'areas', 'registrations', 'cases', c.id, `${variant}.json`)),
+      pre: batch.registrations?.[`${c.id}/${variant}`],
+    })))
   }
 
   const summary = { PASS: 0, FAIL: 0, SKIP: 0, MISSING: 0 }

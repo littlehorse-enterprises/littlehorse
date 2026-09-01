@@ -9,7 +9,7 @@ import { semanticDiff } from './compare.mjs'
 // ═══════════════════════════════════════════════ area conventions
 // A directory under areas/ IS an area; one the grader cannot grade would
 // render as covered while examining nothing.
-const KNOWN_AREAS = ['wfsdk', 'serde']
+const KNOWN_AREAS = ['wfsdk', 'serde', 'registrations']
 const discoveredAreas = readdirSync(resolve(CONFORMANCE, 'areas'), { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
@@ -30,48 +30,62 @@ if (process.exitCode === 1) {
   process.exit(1)
 }
 
-// ═══════════════════════════════════════════════════════════ wfsdk area
-const WFSDK = resolve(CONFORMANCE, 'areas', 'wfsdk')
-const wfsdkManifest = readJson(resolve(WFSDK, 'manifest.json'))
-const surface = readJson(resolve(WFSDK, 'surface.json'))
-const wfsdkExemptions = readLedgerYaml(resolve(WFSDK, 'exemptions.yaml'))
+const summaries = []
+const idsByArea = {}
 
-const declared = wfsdkManifest.cases.map((c) => c.id)
-const onDisk = readdirSync(resolve(WFSDK, 'cases'), { withFileTypes: true })
-  .filter((d) => d.isDirectory())
-  .map((d) => d.name)
-for (const id of declared) if (!onDisk.includes(id)) fail(`wfsdk case "${id}" is in manifest.json but has no cases/${id}/ directory`)
-for (const id of onDisk) if (!declared.includes(id)) fail(`wfsdk cases/${id}/ exists but is not in manifest.json`)
-if (new Set(declared).size !== declared.length) fail('duplicate case ids in wfsdk manifest.json')
+/**
+ * Pair-style area (wfsdk, registrations): cases/<id>/ directories holding
+ * scenario.md + variant fixtures; covers reconciled against surface.json
+ * capabilities and exemptions.yaml, ratcheted both ways.
+ */
+function checkPairArea(area) {
+  const DIR = resolve(CONFORMANCE, 'areas', area)
+  const manifest = readJson(resolve(DIR, 'manifest.json'))
+  const capabilities = readJson(resolve(DIR, 'surface.json')).capabilities
+  const exemptions = readLedgerYaml(resolve(DIR, 'exemptions.yaml'))
 
-for (const c of wfsdkManifest.cases) {
-  const dir = resolve(WFSDK, 'cases', c.id)
-  if (!existsSync(resolve(dir, 'scenario.md'))) fail(`wfsdk case "${c.id}" has no scenario.md`)
-  if (!['required', 'recommended'].includes(c.level)) fail(`wfsdk case "${c.id}" has invalid level "${c.level}"`)
-  const fixtures = {}
-  for (const variant of c.variants) {
-    const f = resolve(dir, `${variant}.json`)
-    if (!existsSync(f)) { fail(`wfsdk case "${c.id}" declares variant "${variant}" but ${variant}.json is missing`); continue }
-    try { fixtures[variant] = readJson(f) } catch (e) { fail(`wfsdk case "${c.id}" ${variant}.json does not parse: ${e.message}`) }
+  const declared = manifest.cases.map((c) => c.id)
+  idsByArea[area] = declared
+  const onDisk = readdirSync(resolve(DIR, 'cases'), { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+  for (const id of declared) if (!onDisk.includes(id)) fail(`${area} case "${id}" is in manifest.json but has no cases/${id}/ directory`)
+  for (const id of onDisk) if (!declared.includes(id)) fail(`${area} cases/${id}/ exists but is not in manifest.json`)
+  if (new Set(declared).size !== declared.length) fail(`duplicate case ids in ${area} manifest.json`)
+
+  for (const c of manifest.cases) {
+    const dir = resolve(DIR, 'cases', c.id)
+    if (!existsSync(resolve(dir, 'scenario.md'))) fail(`${area} case "${c.id}" has no scenario.md`)
+    if (!['required', 'recommended'].includes(c.level)) fail(`${area} case "${c.id}" has invalid level "${c.level}"`)
+    const fixtures = {}
+    for (const variant of c.variants) {
+      const f = resolve(dir, `${variant}.json`)
+      if (!existsSync(f)) { fail(`${area} case "${c.id}" declares variant "${variant}" but ${variant}.json is missing`); continue }
+      try { fixtures[variant] = readJson(f) } catch (e) { fail(`${area} case "${c.id}" ${variant}.json does not parse: ${e.message}`) }
+    }
+    for (const f of readdirSync(dir)) {
+      const m = f.match(/^(.+)\.json$/)
+      if (m && !c.variants.includes(m[1])) fail(`${area} case "${c.id}" has undeclared fixture ${f}`)
+    }
+    // vacuity guard: a pair whose fixtures are identical demonstrates nothing
+    if (fixtures.base && fixtures.feature && semanticDiff(fixtures.base, fixtures.feature).length === 0)
+      fail(`${area} case "${c.id}" is vacuous: base.json and feature.json are semantically identical`)
   }
-  for (const f of readdirSync(dir)) {
-    const m = f.match(/^(.+)\.json$/)
-    if (m && !c.variants.includes(m[1])) fail(`wfsdk case "${c.id}" has undeclared fixture ${f}`)
+
+  const covered = new Set(manifest.cases.flatMap((c) => c.covers))
+  const excused = new Map([...exemptions.todo, ...exemptions.not_applicable].map((e) => [e.id, e]))
+  for (const key of covered) if (!capabilities.includes(key)) fail(`${area} case covers "${key}" which is not in surface.json`)
+  for (const key of capabilities) {
+    if (!covered.has(key) && !excused.has(key)) fail(`${area} capability "${key}" has no case and no exemptions.yaml entry`)
+    if (covered.has(key) && excused.has(key)) fail(`stale excuse: "${key}" is exempted but a ${area} case now covers it — delete its exemptions.yaml line`)
   }
-  // vacuity guard: a pair whose fixtures are identical demonstrates nothing
-  if (fixtures.base && fixtures.feature && semanticDiff(fixtures.base, fixtures.feature).length === 0)
-    fail(`wfsdk case "${c.id}" is vacuous: base.json and feature.json are semantically identical`)
+  for (const key of excused.keys()) if (!capabilities.includes(key)) fail(`${area} exemption for "${key}" which is not in surface.json`)
+
+  summaries.push(`${area} ${manifest.cases.length} case(s) cover ${covered.size}/${capabilities.length} capabilities (${excused.size} excused)`)
 }
 
-const capabilities = surface.capabilities
-const covered = new Set(wfsdkManifest.cases.flatMap((c) => c.covers))
-const excusedCaps = new Map([...wfsdkExemptions.todo, ...wfsdkExemptions.not_applicable].map((e) => [e.id, e]))
-for (const key of covered) if (!capabilities.includes(key)) fail(`wfsdk case covers "${key}" which is not in surface.json`)
-for (const key of capabilities) {
-  if (!covered.has(key) && !excusedCaps.has(key)) fail(`surface capability "${key}" has no case and no exemptions.yaml entry`)
-  if (covered.has(key) && excusedCaps.has(key)) fail(`stale excuse: "${key}" is exempted but a case now covers it — delete its exemptions.yaml line`)
-}
-for (const key of excusedCaps.keys()) if (!capabilities.includes(key)) fail(`wfsdk exemption for "${key}" which is not in surface.json`)
+checkPairArea('wfsdk')
+checkPairArea('registrations')
 
 // ═══════════════════════════════════════════════════════════ serde area
 const SERDE = resolve(CONFORMANCE, 'areas', 'serde')
@@ -81,6 +95,7 @@ const serdeExemptions = readLedgerYaml(resolve(SERDE, 'exemptions.yaml'))
 const INPUT_TYPES = ['str', 'int', 'double', 'bool', 'bytes', 'timestamp', 'json-obj', 'json-arr', 'null']
 
 const serdeIds = serdeManifest.cases.map((c) => c.id)
+idsByArea.serde = serdeIds
 const serdeOnDisk = readdirSync(resolve(SERDE, 'cases')).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''))
 for (const id of serdeIds) if (!serdeOnDisk.includes(id)) fail(`serde case "${id}" is in manifest.json but cases/${id}.json is missing`)
 for (const id of serdeOnDisk) if (!serdeIds.includes(id)) fail(`serde cases/${id}.json exists but is not in manifest.json`)
@@ -117,8 +132,14 @@ for (const arm of arms) {
   if (coveredArms.has(arm) && excusedArms.has(arm)) fail(`stale excuse: arm "${arm}" is exempted but a case now covers it — delete its serde exemptions.yaml line`)
 }
 for (const arm of excusedArms.keys()) if (!arms.includes(arm)) fail(`serde exemption for "${arm}" which is not in surface.json`)
+summaries.push(`serde ${serdeManifest.cases.length} case(s) cover ${coveredArms.size}/${arms.length} arms (${excusedArms.size} excused)`)
 
-for (const id of serdeIds) if (declared.includes(id)) fail(`case id "${id}" exists in both areas — ids must be unique across the corpus`)
+const seen = new Map()
+for (const [area, ids] of Object.entries(idsByArea)) {
+  for (const id of ids) {
+    if (seen.has(id)) fail(`case id "${id}" exists in both ${seen.get(id)} and ${area} — ids must be unique across the corpus`)
+    seen.set(id, area)
+  }
+}
 
-if (process.exitCode !== 1)
-  ok(`corpus fresh: wfsdk ${wfsdkManifest.cases.length} case(s) cover ${covered.size}/${capabilities.length} capabilities (${excusedCaps.size} excused); serde ${serdeManifest.cases.length} case(s) cover ${coveredArms.size}/${arms.length} arms (${excusedArms.size} excused)`)
+if (process.exitCode !== 1) ok(`corpus fresh: ${summaries.join('; ')}`)
