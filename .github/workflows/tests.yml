@@ -50,6 +50,71 @@ jobs:
       - name: Tests
         run: go test ./sdk-go/...
 
+  tests-sdk-js:
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        working-directory: ./sdk-js
+        run: npm ci
+
+      - name: Validate Formatting
+        working-directory: ./sdk-js
+        run: npm run lint
+
+      - name: Build
+        working-directory: ./sdk-js
+        run: npm run build && npm run build:conformance
+
+      - name: Tests
+        working-directory: ./sdk-js
+        run: npm test
+
+  conformance:
+    # Report-only for now: the suite publishes evidence and must not gate
+    # anyone's merge until teams opt in.
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "corretto"
+          java-version: 25
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Testees
+        run: |
+          ./gradlew :sdk-java-conformance:installDist
+          npm --prefix sdk-js ci
+          npm --prefix sdk-js run build
+          npm --prefix sdk-js run build:conformance
+
+      - name: Corpus Freshness
+        run: node conformance/runner/freshness.mjs
+
+      - name: Grade
+        run: node conformance/runner/run.mjs
+
+      - name: Matrix Staleness
+        run: node conformance/runner/matrix.mjs --check
+
   tests-sdk-python:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     strategy:
