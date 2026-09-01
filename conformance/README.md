@@ -65,6 +65,9 @@ node conformance/runner/matrix.mjs
 `freshness` and `run` exit nonzero on any gate failure; `matrix.mjs --check`
 fails if MATRIX.md is stale relative to results/.
 
+`runner/fuzz.mjs` cross-compares seeded random workflows across all
+testees — no canon involved; see [FUZZ.md](./FUZZ.md).
+
 ## The testee contract (normative)
 
 To join the suite an SDK registers one command in `testees.json`. The

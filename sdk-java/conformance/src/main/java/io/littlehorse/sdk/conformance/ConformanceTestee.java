@@ -104,6 +104,10 @@ public class ConformanceTestee {
             System.out.println(out);
             return;
         }
+        if (args.length == 5 && args[0].equals("fuzz") && args[1].equals("--seed") && args[3].equals("--ops")) {
+            System.out.println(Fuzz.compile(Integer.parseInt(args[2]), Integer.parseInt(args[4])));
+            return;
+        }
         if (args.length == 2 && args[0].equals("mint")) {
             WfsdkAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("wfsdk"));
             SerdeAreaMint.mint(Path.of(args[1]).resolve("areas").resolve("serde"));

@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs'
 import * as wfsdk from './wfsdkArea'
 import * as serde from './serdeArea'
 import * as registrations from './registrationsArea'
+import * as fuzz from './fuzz'
 
 const args = process.argv.slice(2)
 if (args[0] === 'compile-all') {
@@ -42,6 +43,10 @@ if (args[0] === 'registrations-all') {
     for (const variant of ['base', 'feature']) out[`${id}/${variant}`] = JSON.parse(registrations.answer(id, variant))
   }
   console.log(JSON.stringify(out))
+  process.exit(0)
+}
+if (args[0] === 'fuzz' && args[1] === '--seed' && args[3] === '--ops') {
+  console.log(fuzz.compile(Number(args[2]), Number(args[4])))
   process.exit(0)
 }
 if (args[0] === 'list') {

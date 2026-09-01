@@ -115,6 +115,9 @@ jobs:
       - name: Matrix Staleness
         run: node conformance/runner/matrix.mjs --check
 
+      - name: Random Dual-Compile
+        run: node conformance/runner/fuzz.mjs 50 16
+
   tests-sdk-python:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     strategy:
