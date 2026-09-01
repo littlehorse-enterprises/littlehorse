@@ -171,9 +171,15 @@ export class LHConfig {
     return new LHConfig(config)
   }
 
+  /**
+   * Environment variables are read as the base layer and explicit args win —
+   * mirroring the Java SDK, whose no-arg LHConfig reads LHC_* from the
+   * environment.
+   */
   public static from(args: Partial<ConfigArgs>): LHConfig {
+    const envConfig = pickKnownConfig(process.env as Partial<Config>)
     const config = getPropertiesArgs(args)
-    return new LHConfig(config)
+    return new LHConfig({ ...envConfig, ...config })
   }
 
   /**

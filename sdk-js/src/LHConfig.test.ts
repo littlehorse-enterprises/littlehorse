@@ -131,3 +131,23 @@ describe('LHConfig', () => {
     ).toThrow(/LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH/)
   })
 })
+
+describe('LHConfig.from environment layering', () => {
+  afterEach(() => {
+    delete process.env.LHC_API_HOST
+    delete process.env.LHC_API_PORT
+  })
+
+  it('reads LHC_* environment variables as the base layer', () => {
+    process.env.LHC_API_HOST = 'env-host'
+    process.env.LHC_API_PORT = '9999'
+    const config = LHConfig.from({})
+    expect(`${config.getApiBootstrapHost()}:${config.getApiBootstrapPort()}`).toBe('env-host:9999')
+  })
+
+  it('lets explicit args override the environment', () => {
+    process.env.LHC_API_HOST = 'env-host'
+    const config = LHConfig.from({ apiHost: 'arg-host' })
+    expect(`${config.getApiBootstrapHost()}:${config.getApiBootstrapPort()}`).toBe('arg-host:2023')
+  })
+})
