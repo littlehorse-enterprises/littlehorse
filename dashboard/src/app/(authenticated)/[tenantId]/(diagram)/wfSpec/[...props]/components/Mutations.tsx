@@ -1,6 +1,6 @@
 'use client'
 
-import { lhPathToString } from '@/app/utils/lhPath'
+import { lhPathToString, variableMutationLhsToString } from '@/app/utils/variables'
 import { Badge, IdentifierBadge } from '@/components/ui/badge'
 import { ThreadSpec, VariableMutation } from 'littlehorse-client/proto'
 import { FC, useMemo } from 'react'
@@ -37,7 +37,7 @@ export const Mutations: FC<Props> = ({ nodes }) => {
             key={`${mutation.lhsName}-${index}`}
             className="flex flex-wrap items-center gap-1 rounded-md border border-gray-100 px-3 py-2"
           >
-            <IdentifierBadge name={mutation.lhsName} />
+            <IdentifierBadge name={variableMutationLhsToString(mutation)} />
             <Badge className="bg-green-300">{mutation.operation}</Badge>
             <MutationRhS rhsValue={mutation.rhsValue} />
           </li>

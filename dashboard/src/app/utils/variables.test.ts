@@ -17,6 +17,7 @@ import {
   getVariableDefType,
   getVariableFilterValue,
   getVariableValue,
+  variableMutationLhsToString,
 } from './variables'
 import { normalizeUtcTimestampString } from './timestamp'
 
@@ -332,6 +333,37 @@ describe('getVariable', () => {
       },
     }
     expect(getVariable(variable)).toEqual('NULL')
+  })
+})
+
+describe('variableMutationLhsToString', () => {
+  it('formats a root variable target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory' })).toEqual('inventory')
+  })
+
+  it('formats a legacy JSONPath target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory', lhsJsonPath: '$.apples' })).toEqual(
+      'inventory.apples'
+    )
+  })
+
+  it('formats a typed LHPath target', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'apples' } }] },
+      })
+    ).toEqual('inventory.apples')
+  })
+
+  it('prefers a typed LHPath over a legacy JSONPath', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsJsonPath: '$.legacy',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'typed' } }] },
+      })
+    ).toEqual('inventory.typed')
   })
 })
 
