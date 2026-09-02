@@ -45,6 +45,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+      int number) {
+    switch (number) {
+      case 13:
+        return internalGetMigrationVariables();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -1479,12 +1491,149 @@ private static final long serialVersionUID = 0L;
     return parentTrigger_ == null ? io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance() : parentTrigger_;
   }
 
-  public static final int THREAD_RUN_QUEUE_FIELD_NUMBER = 12;
+  public static final int WORKFLOW_MIGRATION_PLAN_ID_FIELD_NUMBER = 12;
+  private io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId workflowMigrationPlanId_;
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return Whether the workflowMigrationPlanId field is set.
+   */
+  @java.lang.Override
+  public boolean hasWorkflowMigrationPlanId() {
+    return ((bitField0_ & 0x00000020) != 0);
+  }
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return The workflowMigrationPlanId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId() {
+    return workflowMigrationPlanId_ == null ? io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance() : workflowMigrationPlanId_;
+  }
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder getWorkflowMigrationPlanIdOrBuilder() {
+    return workflowMigrationPlanId_ == null ? io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance() : workflowMigrationPlanId_;
+  }
+
+  public static final int MIGRATION_VARIABLES_FIELD_NUMBER = 13;
+  private static final class MigrationVariablesDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_MigrationVariablesEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.MigrationVars.getDefaultInstance());
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> migrationVariables_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  internalGetMigrationVariables() {
+    if (migrationVariables_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          MigrationVariablesDefaultEntryHolder.defaultEntry);
+    }
+    return migrationVariables_;
+  }
+  public int getMigrationVariablesCount() {
+    return internalGetMigrationVariables().getMap().size();
+  }
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  @java.lang.Override
+  public boolean containsMigrationVariables(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetMigrationVariables().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getMigrationVariablesMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> getMigrationVariables() {
+    return getMigrationVariablesMap();
+  }
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> getMigrationVariablesMap() {
+    return internalGetMigrationVariables().getMap();
+  }
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> map =
+        internalGetMigrationVariables().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> map =
+        internalGetMigrationVariables().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
+  public static final int THREAD_RUN_QUEUE_FIELD_NUMBER = 14;
   @SuppressWarnings("serial")
   private com.google.protobuf.Internal.IntList threadRunQueue_ =
       emptyIntList();
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @return A list containing the threadRunQueue.
    */
   @java.lang.Override
@@ -1493,14 +1642,14 @@ private static final long serialVersionUID = 0L;
     return threadRunQueue_;
   }
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @return The count of threadRunQueue.
    */
   public int getThreadRunQueueCount() {
     return threadRunQueue_.size();
   }
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @param index The index of the element to return.
    * @return The threadRunQueue at the given index.
    */
@@ -1557,8 +1706,17 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000010) != 0)) {
       output.writeMessage(11, getParentTrigger());
     }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      output.writeMessage(12, getWorkflowMigrationPlanId());
+    }
+    com.google.protobuf.GeneratedMessage
+      .serializeStringMapTo(
+        output,
+        internalGetMigrationVariables(),
+        MigrationVariablesDefaultEntryHolder.defaultEntry,
+        13);
     if (getThreadRunQueueList().size() > 0) {
-      output.writeUInt32NoTag(98);
+      output.writeUInt32NoTag(114);
       output.writeUInt32NoTag(threadRunQueueMemoizedSerializedSize);
     }
     for (int i = 0; i < threadRunQueue_.size(); i++) {
@@ -1616,6 +1774,20 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getParentTrigger());
+    }
+    if (((bitField0_ & 0x00000020) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(12, getWorkflowMigrationPlanId());
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> entry
+         : internalGetMigrationVariables().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+      migrationVariables__ = MigrationVariablesDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(13, migrationVariables__);
     }
     {
       int dataSize = 0;
@@ -1682,6 +1854,13 @@ private static final long serialVersionUID = 0L;
       if (!getParentTrigger()
           .equals(other.getParentTrigger())) return false;
     }
+    if (hasWorkflowMigrationPlanId() != other.hasWorkflowMigrationPlanId()) return false;
+    if (hasWorkflowMigrationPlanId()) {
+      if (!getWorkflowMigrationPlanId()
+          .equals(other.getWorkflowMigrationPlanId())) return false;
+    }
+    if (!internalGetMigrationVariables().equals(
+        other.internalGetMigrationVariables())) return false;
     if (!getThreadRunQueueList()
         .equals(other.getThreadRunQueueList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
@@ -1734,6 +1913,14 @@ private static final long serialVersionUID = 0L;
     if (hasParentTrigger()) {
       hash = (37 * hash) + PARENT_TRIGGER_FIELD_NUMBER;
       hash = (53 * hash) + getParentTrigger().hashCode();
+    }
+    if (hasWorkflowMigrationPlanId()) {
+      hash = (37 * hash) + WORKFLOW_MIGRATION_PLAN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getWorkflowMigrationPlanId().hashCode();
+    }
+    if (!internalGetMigrationVariables().getMap().isEmpty()) {
+      hash = (37 * hash) + MIGRATION_VARIABLES_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetMigrationVariables().hashCode();
     }
     if (getThreadRunQueueCount() > 0) {
       hash = (37 * hash) + THREAD_RUN_QUEUE_FIELD_NUMBER;
@@ -1852,6 +2039,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.WfRunOuterClass.internal_static_littlehorse_WfRun_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 13:
+          return internalGetMigrationVariables();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 13:
+          return internalGetMutableMigrationVariables();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -1882,6 +2091,7 @@ private static final long serialVersionUID = 0L;
         internalGetPendingInterruptsFieldBuilder();
         internalGetPendingFailuresFieldBuilder();
         internalGetParentTriggerFieldBuilder();
+        internalGetWorkflowMigrationPlanIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1943,6 +2153,12 @@ private static final long serialVersionUID = 0L;
         parentTriggerBuilder_.dispose();
         parentTriggerBuilder_ = null;
       }
+      workflowMigrationPlanId_ = null;
+      if (workflowMigrationPlanIdBuilder_ != null) {
+        workflowMigrationPlanIdBuilder_.dispose();
+        workflowMigrationPlanIdBuilder_ = null;
+      }
+      internalGetMutableMigrationVariables().clear();
       threadRunQueue_ = emptyIntList();
       return this;
     }
@@ -2055,6 +2271,15 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000010;
       }
       if (((from_bitField0_ & 0x00000800) != 0)) {
+        result.workflowMigrationPlanId_ = workflowMigrationPlanIdBuilder_ == null
+            ? workflowMigrationPlanId_
+            : workflowMigrationPlanIdBuilder_.build();
+        to_bitField0_ |= 0x00000020;
+      }
+      if (((from_bitField0_ & 0x00001000) != 0)) {
+        result.migrationVariables_ = internalGetMigrationVariables().build(MigrationVariablesDefaultEntryHolder.defaultEntry);
+      }
+      if (((from_bitField0_ & 0x00002000) != 0)) {
         threadRunQueue_.makeImmutable();
         result.threadRunQueue_ = threadRunQueue_;
       }
@@ -2198,11 +2423,17 @@ private static final long serialVersionUID = 0L;
       if (other.hasParentTrigger()) {
         mergeParentTrigger(other.getParentTrigger());
       }
+      if (other.hasWorkflowMigrationPlanId()) {
+        mergeWorkflowMigrationPlanId(other.getWorkflowMigrationPlanId());
+      }
+      internalGetMutableMigrationVariables().mergeFrom(
+          other.internalGetMigrationVariables());
+      bitField0_ |= 0x00001000;
       if (!other.threadRunQueue_.isEmpty()) {
         if (threadRunQueue_.isEmpty()) {
           threadRunQueue_ = other.threadRunQueue_;
           threadRunQueue_.makeImmutable();
-          bitField0_ |= 0x00000800;
+          bitField0_ |= 0x00002000;
         } else {
           ensureThreadRunQueueIsMutable();
           threadRunQueue_.addAll(other.threadRunQueue_);
@@ -2332,13 +2563,29 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000400;
               break;
             } // case 90
-            case 96: {
+            case 98: {
+              input.readMessage(
+                  internalGetWorkflowMigrationPlanIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000800;
+              break;
+            } // case 98
+            case 106: {
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+              migrationVariables__ = input.readMessage(
+                  MigrationVariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutableMigrationVariables().ensureBuilderMap().put(
+                  migrationVariables__.getKey(), migrationVariables__.getValue());
+              bitField0_ |= 0x00001000;
+              break;
+            } // case 106
+            case 112: {
               int v = input.readInt32();
               ensureThreadRunQueueIsMutable();
               threadRunQueue_.addInt(v);
               break;
-            } // case 96
-            case 98: {
+            } // case 112
+            case 114: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
               ensureThreadRunQueueIsMutable();
@@ -2347,7 +2594,7 @@ private static final long serialVersionUID = 0L;
               }
               input.popLimit(limit);
               break;
-            } // case 98
+            } // case 114
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -4636,15 +4883,367 @@ private static final long serialVersionUID = 0L;
       return parentTriggerBuilder_;
     }
 
+    private io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId workflowMigrationPlanId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder> workflowMigrationPlanIdBuilder_;
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     * @return Whether the workflowMigrationPlanId field is set.
+     */
+    public boolean hasWorkflowMigrationPlanId() {
+      return ((bitField0_ & 0x00000800) != 0);
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     * @return The workflowMigrationPlanId.
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId() {
+      if (workflowMigrationPlanIdBuilder_ == null) {
+        return workflowMigrationPlanId_ == null ? io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance() : workflowMigrationPlanId_;
+      } else {
+        return workflowMigrationPlanIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public Builder setWorkflowMigrationPlanId(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId value) {
+      if (workflowMigrationPlanIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        workflowMigrationPlanId_ = value;
+      } else {
+        workflowMigrationPlanIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public Builder setWorkflowMigrationPlanId(
+        io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder builderForValue) {
+      if (workflowMigrationPlanIdBuilder_ == null) {
+        workflowMigrationPlanId_ = builderForValue.build();
+      } else {
+        workflowMigrationPlanIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public Builder mergeWorkflowMigrationPlanId(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId value) {
+      if (workflowMigrationPlanIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000800) != 0) &&
+          workflowMigrationPlanId_ != null &&
+          workflowMigrationPlanId_ != io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance()) {
+          getWorkflowMigrationPlanIdBuilder().mergeFrom(value);
+        } else {
+          workflowMigrationPlanId_ = value;
+        }
+      } else {
+        workflowMigrationPlanIdBuilder_.mergeFrom(value);
+      }
+      if (workflowMigrationPlanId_ != null) {
+        bitField0_ |= 0x00000800;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public Builder clearWorkflowMigrationPlanId() {
+      bitField0_ = (bitField0_ & ~0x00000800);
+      workflowMigrationPlanId_ = null;
+      if (workflowMigrationPlanIdBuilder_ != null) {
+        workflowMigrationPlanIdBuilder_.dispose();
+        workflowMigrationPlanIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder getWorkflowMigrationPlanIdBuilder() {
+      bitField0_ |= 0x00000800;
+      onChanged();
+      return internalGetWorkflowMigrationPlanIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder getWorkflowMigrationPlanIdOrBuilder() {
+      if (workflowMigrationPlanIdBuilder_ != null) {
+        return workflowMigrationPlanIdBuilder_.getMessageOrBuilder();
+      } else {
+        return workflowMigrationPlanId_ == null ?
+            io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance() : workflowMigrationPlanId_;
+      }
+    }
+    /**
+     * <pre>
+     * reference to WorkflowMigrationPlanId
+     * </pre>
+     *
+     * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder> 
+        internalGetWorkflowMigrationPlanIdFieldBuilder() {
+      if (workflowMigrationPlanIdBuilder_ == null) {
+        workflowMigrationPlanIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder>(
+                getWorkflowMigrationPlanId(),
+                getParentForChildren(),
+                isClean());
+        workflowMigrationPlanId_ = null;
+      }
+      return workflowMigrationPlanIdBuilder_;
+    }
+
+    private static final class MigrationVariablesConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder, io.littlehorse.sdk.common.proto.MigrationVars> {
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.MigrationVars build(io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.MigrationVars) { return (io.littlehorse.sdk.common.proto.MigrationVars) val; }
+        return ((io.littlehorse.sdk.common.proto.MigrationVars.Builder) val).build();
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> defaultEntry() {
+        return MigrationVariablesDefaultEntryHolder.defaultEntry;
+      }
+    };
+    private static final MigrationVariablesConverter migrationVariablesConverter = new MigrationVariablesConverter();
+
+    private com.google.protobuf.MapFieldBuilder<
+        java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder, io.littlehorse.sdk.common.proto.MigrationVars, io.littlehorse.sdk.common.proto.MigrationVars.Builder> migrationVariables_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder, io.littlehorse.sdk.common.proto.MigrationVars, io.littlehorse.sdk.common.proto.MigrationVars.Builder>
+        internalGetMigrationVariables() {
+      if (migrationVariables_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(migrationVariablesConverter);
+      }
+      return migrationVariables_;
+    }
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder, io.littlehorse.sdk.common.proto.MigrationVars, io.littlehorse.sdk.common.proto.MigrationVars.Builder>
+        internalGetMutableMigrationVariables() {
+      if (migrationVariables_ == null) {
+        migrationVariables_ = new com.google.protobuf.MapFieldBuilder<>(migrationVariablesConverter);
+      }
+      bitField0_ |= 0x00001000;
+      onChanged();
+      return migrationVariables_;
+    }
+    public int getMigrationVariablesCount() {
+      return internalGetMigrationVariables().ensureBuilderMap().size();
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    @java.lang.Override
+    public boolean containsMigrationVariables(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMigrationVariables().ensureBuilderMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMigrationVariablesMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> getMigrationVariables() {
+      return getMigrationVariablesMap();
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> getMigrationVariablesMap() {
+      return internalGetMigrationVariables().getImmutableMap();
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder> map = internalGetMutableMigrationVariables().ensureBuilderMap();
+      return map.containsKey(key) ? migrationVariablesConverter.build(map.get(key)) : defaultValue;
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder> map = internalGetMutableMigrationVariables().ensureBuilderMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return migrationVariablesConverter.build(map.get(key));
+    }
+    public Builder clearMigrationVariables() {
+      bitField0_ = (bitField0_ & ~0x00001000);
+      internalGetMutableMigrationVariables().clear();
+      return this;
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    public Builder removeMigrationVariables(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutableMigrationVariables().ensureBuilderMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+        getMutableMigrationVariables() {
+      bitField0_ |= 0x00001000;
+      return internalGetMutableMigrationVariables().ensureMessageMap();
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    public Builder putMigrationVariables(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.MigrationVars value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutableMigrationVariables().ensureBuilderMap()
+          .put(key, value);
+      bitField0_ |= 0x00001000;
+      return this;
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    public Builder putAllMigrationVariables(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars> e : values.entrySet()) {
+        if (e.getKey() == null || e.getValue() == null) {
+          throw new NullPointerException();
+        }
+      }
+      internalGetMutableMigrationVariables().ensureBuilderMap()
+          .putAll(values);
+      bitField0_ |= 0x00001000;
+      return this;
+    }
+    /**
+     * <pre>
+     * Map to determine how to reassign varaible values during Migration
+     * newThreadName -&gt; MigrationVar
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+     */
+    public io.littlehorse.sdk.common.proto.MigrationVars.Builder putMigrationVariablesBuilderIfAbsent(
+        java.lang.String key) {
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder> builderMap = internalGetMutableMigrationVariables().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.MigrationVarsOrBuilder entry = builderMap.get(key);
+      if (entry == null) {
+        entry = io.littlehorse.sdk.common.proto.MigrationVars.newBuilder();
+        builderMap.put(key, entry);
+      }
+      if (entry instanceof io.littlehorse.sdk.common.proto.MigrationVars) {
+        entry = ((io.littlehorse.sdk.common.proto.MigrationVars) entry).toBuilder();
+        builderMap.put(key, entry);
+      }
+      return (io.littlehorse.sdk.common.proto.MigrationVars.Builder) entry;
+    }
+
     private com.google.protobuf.Internal.IntList threadRunQueue_ = emptyIntList();
     private void ensureThreadRunQueueIsMutable() {
       if (!threadRunQueue_.isModifiable()) {
         threadRunQueue_ = makeMutableCopy(threadRunQueue_);
       }
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00002000;
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @return A list containing the threadRunQueue.
      */
     public java.util.List<java.lang.Integer>
@@ -4653,14 +5252,14 @@ private static final long serialVersionUID = 0L;
       return threadRunQueue_;
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @return The count of threadRunQueue.
      */
     public int getThreadRunQueueCount() {
       return threadRunQueue_.size();
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @param index The index of the element to return.
      * @return The threadRunQueue at the given index.
      */
@@ -4668,7 +5267,7 @@ private static final long serialVersionUID = 0L;
       return threadRunQueue_.getInt(index);
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @param index The index to set the value at.
      * @param value The threadRunQueue to set.
      * @return This builder for chaining.
@@ -4678,12 +5277,12 @@ private static final long serialVersionUID = 0L;
 
       ensureThreadRunQueueIsMutable();
       threadRunQueue_.setInt(index, value);
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00002000;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @param value The threadRunQueue to add.
      * @return This builder for chaining.
      */
@@ -4691,12 +5290,12 @@ private static final long serialVersionUID = 0L;
 
       ensureThreadRunQueueIsMutable();
       threadRunQueue_.addInt(value);
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00002000;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @param values The threadRunQueue to add.
      * @return This builder for chaining.
      */
@@ -4705,17 +5304,17 @@ private static final long serialVersionUID = 0L;
       ensureThreadRunQueueIsMutable();
       com.google.protobuf.AbstractMessageLite.Builder.addAll(
           values, threadRunQueue_);
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00002000;
       onChanged();
       return this;
     }
     /**
-     * <code>repeated int32 thread_run_queue = 12;</code>
+     * <code>repeated int32 thread_run_queue = 14;</code>
      * @return This builder for chaining.
      */
     public Builder clearThreadRunQueue() {
       threadRunQueue_ = emptyIntList();
-      bitField0_ = (bitField0_ & ~0x00000800);
+      bitField0_ = (bitField0_ & ~0x00002000);
       onChanged();
       return this;
     }

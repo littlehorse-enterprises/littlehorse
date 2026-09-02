@@ -3,7 +3,7 @@ import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import { NodeRun, SearchTaskRunRequest, TaskRun, TaskRunId, TaskRunIdList } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   taskRun: TaskRun
   nodeRun?: NodeRun
 }
@@ -58,9 +58,12 @@ export const searchTaskRun = async ({
 
   const taskRunWithDetails: runDetails[] = await Promise.all(hydrateWithTaskRunDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...taskRunIdListRest } = taskRunIdList
   return {
-    ...taskRunIdList,
-    bookmarkAsString: taskRunIdList.bookmark ? Buffer.from(taskRunIdList.bookmark).toString('base64') : undefined,
+    ...taskRunIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: taskRunWithDetails,
   }
 }

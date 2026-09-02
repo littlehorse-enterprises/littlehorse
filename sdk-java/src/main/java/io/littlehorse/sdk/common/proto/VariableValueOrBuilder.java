@@ -283,5 +283,32 @@ public interface VariableValueOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ArrayOrBuilder getArrayOrBuilder();
 
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   * @return Whether the map field is set.
+   */
+  boolean hasMap();
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   * @return The map.
+   */
+  io.littlehorse.sdk.common.proto.Map getMap();
+  /**
+   * <pre>
+   * A Map object.
+   * </pre>
+   *
+   * <code>.littlehorse.Map map = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.MapOrBuilder getMapOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

@@ -388,17 +388,103 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
 
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return Whether the workflowMigrationPlanId field is set.
+   */
+  boolean hasWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return The workflowMigrationPlanId.
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder getWorkflowMigrationPlanIdOrBuilder();
+
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  int getMigrationVariablesCount();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  boolean containsMigrationVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getMigrationVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariables();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariablesMap();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars defaultValue);
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
+      java.lang.String key);
+
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @return A list containing the threadRunQueue.
    */
   java.util.List<java.lang.Integer> getThreadRunQueueList();
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @return The count of threadRunQueue.
    */
   int getThreadRunQueueCount();
   /**
-   * <code>repeated int32 thread_run_queue = 12;</code>
+   * <code>repeated int32 thread_run_queue = 14;</code>
    * @param index The index of the element to return.
    * @return The threadRunQueue at the given index.
    */

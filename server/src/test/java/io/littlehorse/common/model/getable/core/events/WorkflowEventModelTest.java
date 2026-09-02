@@ -29,6 +29,7 @@ public class WorkflowEventModelTest {
 
     @Test
     public void shouldStoreNewWorkflowEvent() {
+        mockProcessor.taskId();
         WfRunIdModel wfRunId = TestUtil.wfRun(UUID.randomUUID().toString()).getId();
         VariableValueModel content = TestUtil.variableValue();
         WorkflowEventIdModel eventId = new WorkflowEventIdModel(wfRunId, workflowEventDefId, 1);

@@ -1,6 +1,7 @@
 'use client'
 import {
   getTypedVariableValue,
+  getTypedVariableValueFromTypeDef,
   getVariableCaseFromTypeDef,
   VARIABLE_CASE_LABELS,
   VariableValueCase,
@@ -96,11 +97,17 @@ export default function CreateCorrelatedEventDialog({
 
       setIsCreating(true)
 
+      // Convert using the EED's declared return type when available so container types
+      // (Map/Array) accept the same friendly JSON the dashboard displays; fall back to the
+      // primitive string path for legacy defs without a typeDef.
+      const returnType = spec.typeInformation?.returnType
       await putCorrelatedEvent({
         tenantId,
         key,
         externalEventDefName: spec.id?.name ?? '',
-        content: getTypedVariableValue(contentType, contentValue),
+        content: returnType
+          ? getTypedVariableValueFromTypeDef(returnType, contentValue)
+          : getTypedVariableValue(contentType, contentValue),
       })
 
       toast.success('Correlated event created successfully')

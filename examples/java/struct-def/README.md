@@ -43,20 +43,22 @@ lhctl get structdef person 0
 
 ### Running a workflow
 
-Let's run the `StructDefExample.java` application again to:
-* Run our workflow
-* Pass in a `Struct` object to the workflow as an input variable
-
-In a separate terminal, we'll run the same command again but this time with some arguments that we'll pass into our Workflow.
+Now that the `StructDef`s, `TaskDef`s, and `WfSpec` are registered (and the workers
+from the previous step are still running), you can run the workflow directly with
+`lhctl`, passing the `ParkingTicketReport` `Struct` as a JSON input variable:
 
 ```
-./gradlew example-struct-def:run --args 'BARC Speeder 1HGCM82633A004352'
+lhctl run issue-parking-ticket ticket-report '{"vehicleMake": "BARC", "vehicleModel": "Speeder", "licensePlateNumber": "1HGCM82633A004352"}'
 ```
 
-To showcase nullable Struct fields, run with a plate that starts with `NOADDR`:
+`lhctl` looks up the registered `StructDef` for the `ticket-report` variable and
+coerces each JSON field against its declared type. The JSON keys are the `StructDef`
+field names (`vehicleMake`, `vehicleModel`, `licensePlateNumber`).
+
+To showcase nullable Struct fields, use a plate that starts with `NOADDR`:
 
 ```
-./gradlew example-struct-def:run --args 'Starfighter Naboo NOADDR-42'
+lhctl run issue-parking-ticket ticket-report '{"vehicleMake": "Starfighter", "vehicleModel": "Naboo", "licensePlateNumber": "NOADDR-42"}'
 ```
 
 In this branch, `MyWorker#getCarOwner` returns a `Person` with `homeAddress = null`.
@@ -80,4 +82,3 @@ lhctl get taskRun <wf_run_id> <task_run_global_id>
 Additional `StructDef` functionality and demos are coming soon, including:
 - Examples of `StructDef` evolution
 - Examples of `Struct` validation failures
-- `lhctl` support for passing Structs as input variables when running workflows

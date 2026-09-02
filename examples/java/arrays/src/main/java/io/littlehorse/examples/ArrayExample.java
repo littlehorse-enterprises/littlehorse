@@ -17,11 +17,10 @@ public class ArrayExample {
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl("example-arrays", wf -> {
-            // declare a typed LH Array variable (elements are Long)
-            WfRunVariable arrVar = wf.declareArray("my-array", Long.class);
+            WfRunVariable arrVar = wf.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
 
             NodeOutput produced = wf.execute("produce-array");
-            arrVar.assign(produced);
+            arrVar.assign(arrVar.extend(produced));
 
             wf.execute("consume-array", arrVar);
         });

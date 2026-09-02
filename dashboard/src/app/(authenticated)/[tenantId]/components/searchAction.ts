@@ -77,7 +77,7 @@ export interface SearchResult {
   results: any
 }
 
-export type WfSpecList = SearchResult & {
+type WfSpecList = SearchResult & {
   type: 'WfSpec'
   results: WfSpecId[]
 }
@@ -102,7 +102,7 @@ type WorkflowEventDefList = SearchResult & {
   results: Pick<WfSpecIdList, 'results'>
 }
 
-export type StructDefList = SearchResult & {
+type StructDefList = SearchResult & {
   type: 'StructDef'
   results: Pick<WfSpecIdList, 'results'>
 }

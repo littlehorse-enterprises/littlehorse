@@ -28,6 +28,14 @@ final class LHTypeConstraintValidator {
             case INLINE_ARRAY_DEF:
                 return findForbiddenJsonPrimitive(
                         typeDefinition.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                VariableType keyForbidden = findForbiddenJsonPrimitive(
+                        typeDefinition.getInlineMapDef().getKeyType());
+                if (keyForbidden != null) {
+                    return keyForbidden;
+                }
+                return findForbiddenJsonPrimitive(
+                        typeDefinition.getInlineMapDef().getValueType());
             default:
                 return null;
         }

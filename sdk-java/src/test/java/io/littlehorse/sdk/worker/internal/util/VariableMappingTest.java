@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -42,6 +44,18 @@ public class VariableMappingTest {
 
         @LHTaskMethod("native-array-param-string")
         public void nativeArrayParamString(@LHType(name = "numbers", isLHArray = true) String[] numbers) {}
+
+        @LHTaskMethod("native-map-param")
+        public void nativeMapParam(@LHType(name = "items", isLHMap = true) Map<String, Long> items) {}
+
+        @LHTaskMethod("native-map-param-wrong-value")
+        public void nativeMapParamWrongValue(@LHType(name = "items", isLHMap = true) Map<String, String> items) {}
+
+        @LHTaskMethod("primitive-int-param")
+        public void primitiveIntParam(@LHType(name = "count") long count) {}
+
+        @LHTaskMethod("boxed-int-param")
+        public void boxedIntParam(@LHType(name = "count") Long count) {}
     }
 
     @Test
@@ -150,5 +164,117 @@ public class VariableMappingTest {
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("Array<INT>")
                 .hasMessageContaining("Array<STR>");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldAssignNativeMapInput() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("items")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineMapDef(InlineMapDef.newBuilder()
+                                        .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .setValueType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-map-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder()
+                        .setVarName("items")
+                        .setValue(VariableValue.newBuilder()
+                                .setMap(io.littlehorse.sdk.common.proto.Map.newBuilder()
+                                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                                .setKey(VariableValue.newBuilder()
+                                                        .setStr("apples"))
+                                                .setValue(VariableValue.newBuilder()
+                                                        .setInt(3L)))
+                                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                                .setKey(VariableValue.newBuilder()
+                                                        .setStr("bananas"))
+                                                .setValue(VariableValue.newBuilder()
+                                                        .setInt(5L))))))
+                .build();
+
+        Object assigned = mapping.assign(scheduledTask);
+        Map<Object, Object> result = (Map<Object, Object>) assigned;
+        assertThat(result).hasSize(2);
+        assertThat(result).containsKey("apples");
+        assertThat(result).containsKey("bananas");
+        assertThat(((Number) result.get("apples")).longValue()).isEqualTo(3L);
+        assertThat(((Number) result.get("bananas")).longValue()).isEqualTo(5L);
+    }
+
+    @Test
+    void shouldFailInlineMapWhenValueTypeMismatches() {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("items")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineMapDef(InlineMapDef.newBuilder()
+                                        .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .setValueType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-map-param-wrong-value");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThatThrownBy(() -> new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("Map<STR, INT>")
+                .hasMessageContaining("Map<STR, STR>");
+    }
+
+    @Test
+    void shouldFailWhenPrimitiveParameterResolvesToNull() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("count")
+                        .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "primitive-int-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder().setVarName("count").setValue(VariableValue.newBuilder()))
+                .build();
+
+        assertThatThrownBy(() -> mapping.assign(scheduledTask))
+                .isInstanceOf(InputVarSubstitutionException.class)
+                .hasMessageContaining("count")
+                .hasMessageContaining("primitive")
+                .hasMessageContaining("long");
+    }
+
+    @Test
+    void shouldAllowNullForBoxedParameter() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("count")
+                        .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "boxed-int-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder().setVarName("count").setValue(VariableValue.newBuilder()))
+                .build();
+
+        assertThat(mapping.assign(scheduledTask)).isNull();
     }
 }

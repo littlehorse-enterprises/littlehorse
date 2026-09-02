@@ -11,7 +11,6 @@ option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
-
 // A Variable is an instance of a variable assigned to a WfRun.
 message Variable {
   // ID of this Variable. Note that the VariableId contains the relevant

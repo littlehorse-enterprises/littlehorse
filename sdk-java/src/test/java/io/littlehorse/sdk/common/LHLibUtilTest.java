@@ -4,12 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -465,5 +468,195 @@ public class LHLibUtilTest {
         NullableFieldStruct pojo = (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
 
         assertThat(pojo.getNullableField()).isNull();
+    }
+
+    @Test
+    void shouldSerializeMapAsNativeLHMapWhenRequested() {
+        Map<String, Long> items = Map.of("apples", 3L, "bananas", 5L);
+
+        InlineMapDef mapType = InlineMapDef.newBuilder()
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .build();
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, mapType, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
+        Assertions.assertThat(val.getMap().hasMapType()).isTrue();
+        Assertions.assertThat(val.getMap().getMapType()).isEqualTo(mapType);
+        Assertions.assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
+
+        Map<String, Long> roundTripped = new HashMap<>();
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : val.getMap().getEntriesList()) {
+            roundTripped.put(entry.getKey().getStr(), entry.getValue().getInt());
+        }
+        Assertions.assertThat(roundTripped).containsEntry("apples", 3L).containsEntry("bananas", 5L);
+    }
+
+    @Test
+    void shouldFailNativeMapSerializationForNonMapObject() {
+        Assertions.assertThatThrownBy(
+                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", null, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("java.util.Map");
+    }
+
+    @Test
+    void shouldDeserializeNativeLHMapToJavaMap() {
+        VariableValue nativeMap = VariableValue.newBuilder()
+                .setMap(io.littlehorse.sdk.common.proto.Map.newBuilder()
+                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                .setKey(VariableValue.newBuilder().setStr("x"))
+                                .setValue(VariableValue.newBuilder().setInt(10L)))
+                        .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                                .setKey(VariableValue.newBuilder().setStr("y"))
+                                .setValue(VariableValue.newBuilder().setInt(20L))))
+                .build();
+
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> out =
+                (Map<Object, Object>) LHLibUtil.varValToObj(nativeMap, Map.class, LHTypeAdapterRegistry.empty());
+
+        Assertions.assertThat(out).containsEntry("x", 10L).containsEntry("y", 20L);
+    }
+
+    @Test
+    void shouldSerializeNullMapAsValueNotSet() {
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, null, LHTypeAdapterRegistry.empty());
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+    }
+
+    @LHStructDef("${company}-customer")
+    public static class PlaceholderCustomer {
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
+    @Test
+    void shouldResolvePlaceholdersWhenSerializingStructToStruct() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Alice");
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(struct.getStructDefId().getName()).isEqualTo("acme-customer");
+        Assertions.assertThat(
+                        struct.getStruct().getFieldsMap().get("name").getValue().getStr())
+                .isEqualTo("Alice");
+    }
+
+    @Test
+    void shouldResolvePlaceholdersWhenSerializingStructViaObjToVarVal() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Bob");
+
+        VariableValue val = LHLibUtil.objToVarVal(
+                pojo, PlaceholderCustomer.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(val.getStruct().getStructDefId().getName()).isEqualTo("acme-customer");
+    }
+
+    @Test
+    void shouldFailSerializingPlaceholderStructWithoutPlaceholderValues() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Carol");
+
+        Assertions.assertThatThrownBy(() -> LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("company");
+    }
+
+    @Test
+    void shouldRoundTripPlaceholderStructWithResolvedName() {
+        PlaceholderCustomer pojo = new PlaceholderCustomer();
+        pojo.setName("Dave");
+
+        Struct struct = LHLibUtil.serializeToStruct(pojo, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        VariableValue structVal = VariableValue.newBuilder().setStruct(struct).build();
+
+        PlaceholderCustomer roundTripped = (PlaceholderCustomer) LHLibUtil.varValToObj(
+                structVal, PlaceholderCustomer.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(roundTripped.getName()).isEqualTo("Dave");
+    }
+
+    @LHStructDef("${company}-order")
+    public static class PlaceholderOrder {
+        private String orderId;
+        private PlaceholderCustomer customer;
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public PlaceholderCustomer getCustomer() {
+            return customer;
+        }
+
+        public void setCustomer(PlaceholderCustomer customer) {
+            this.customer = customer;
+        }
+    }
+
+    @Test
+    void shouldResolvePlaceholdersInNestedStruct() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Frank");
+
+        PlaceholderOrder order = new PlaceholderOrder();
+        order.setOrderId("order-1");
+        order.setCustomer(customer);
+
+        Struct struct = LHLibUtil.serializeToStruct(order, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        // Outer struct name is resolved.
+        Assertions.assertThat(struct.getStructDefId().getName()).isEqualTo("acme-order");
+
+        // Nested struct field is itself resolved to the correct StructDefId name.
+        VariableValue customerVal =
+                struct.getStruct().getFieldsMap().get("customer").getValue();
+        Assertions.assertThat(customerVal.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        Assertions.assertThat(customerVal.getStruct().getStructDefId().getName())
+                .isEqualTo("acme-customer");
+        Assertions.assertThat(customerVal
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("name")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Frank");
+    }
+
+    @Test
+    void shouldRoundTripNestedPlaceholderStruct() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Grace");
+
+        PlaceholderOrder order = new PlaceholderOrder();
+        order.setOrderId("order-2");
+        order.setCustomer(customer);
+
+        Struct struct = LHLibUtil.serializeToStruct(order, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        VariableValue structVal = VariableValue.newBuilder().setStruct(struct).build();
+
+        PlaceholderOrder roundTripped = (PlaceholderOrder) LHLibUtil.varValToObj(
+                structVal, PlaceholderOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        Assertions.assertThat(roundTripped.getOrderId()).isEqualTo("order-2");
+        Assertions.assertThat(roundTripped.getCustomer()).isNotNull();
+        Assertions.assertThat(roundTripped.getCustomer().getName()).isEqualTo("Grace");
     }
 }

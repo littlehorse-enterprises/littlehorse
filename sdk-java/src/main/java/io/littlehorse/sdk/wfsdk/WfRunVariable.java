@@ -18,7 +18,7 @@ public interface WfRunVariable extends LHExpression {
     WfRunVariable jsonPath(String path);
 
     /**
-     * Valid only for output of JSON_OBJ or Struct types. Returns a new WfRunVariable handle
+     * Valid only for output of JSON_OBJ, Struct, or Map types. Returns a new WfRunVariable handle
      * which points to the sub-element referred to by the field.
      *
      * Note: You can call this method consecutively to get values from nested objects.

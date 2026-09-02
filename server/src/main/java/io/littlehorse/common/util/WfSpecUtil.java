@@ -4,12 +4,15 @@ import com.google.protobuf.Timestamp;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public class WfSpecUtil {
@@ -28,11 +31,21 @@ public class WfSpecUtil {
         sanitize(copy, date);
         WfSpec.Builder toCopy = right.toProto();
         sanitize(toCopy, date);
-        return Arrays.equals(copy.build().toByteArray(), toCopy.build().toByteArray());
+        return copy.build().equals(toCopy.build());
     }
 
     private static void sanitize(WfSpec.Builder spec, Timestamp date) {
         spec.setId(WfSpecId.newBuilder().setName(spec.getId().getName())).setCreatedAt(date);
+        sortFrozenVariables(spec);
+    }
+
+    private static void sortFrozenVariables(WfSpec.Builder spec) {
+        List<ThreadVarDef> frozenVariables = new ArrayList<>(spec.getFrozenVariablesList());
+        frozenVariables.sort(
+                Comparator.comparing(variable -> variable.getVarDef().getName()));
+
+        spec.clearFrozenVariables();
+        frozenVariables.forEach(spec::addFrozenVariables);
     }
 
     /**

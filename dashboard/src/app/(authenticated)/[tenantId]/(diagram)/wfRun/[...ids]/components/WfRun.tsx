@@ -21,7 +21,7 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId: wfRunId!, tenantId }), {
     fallbackData: wfRunData,
   })
-  const { wfSpec, wfRun, variables } = data ?? wfRunData
+  const { wfSpec, wfRun, variables, variablesTooLarge } = data ?? wfRunData
 
   const initialThread = useMemo<ThreadType>(() => {
     const tr = wfRun.threadRuns.find(t => t.number === wfRun.greatestThreadrunNumber)
@@ -64,7 +64,13 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
       {wfRun.id && (
         <>
-          <Variables variableDefs={variableDefs} variables={variables} thread={selectedThread} wfRunId={wfRun.id} />
+          <Variables
+            variableDefs={variableDefs}
+            variables={variables}
+            variablesTooLarge={variablesTooLarge}
+            thread={selectedThread}
+            wfRunId={wfRun.id}
+          />
           <Separator className="mb-4 mt-4" />
           <ChildWorkflows parentWfRunId={wfRun.id} spec={wfSpec} />
         </>

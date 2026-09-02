@@ -19,6 +19,7 @@ import io.littlehorse.server.streams.topology.core.processors.ProcessorOutputRou
 import io.littlehorse.server.streams.topology.core.processors.TimerCommandProcessor;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.utils.Bytes;
@@ -33,6 +34,7 @@ import org.apache.kafka.streams.state.Stores;
  * The ServerTopologyV2 class is responsible for constructing storied architecture concerning the
  * server's topology architecture of dependencies in operations and configurations on peripher function models injection server topology concepts.
  */
+@Slf4j
 public class ServerTopologyV2 extends Topology {
 
     public static final String COMMAND_PROCESSOR_NAME = ServerTopology.CORE_PROCESSOR;
@@ -48,12 +50,15 @@ public class ServerTopologyV2 extends Topology {
     public static final String ROUTER_PROCESSOR_NAME = "router-processor";
     public static final String REPARTITION_PASSTHROUGH_PROCESSOR = "passthrough-repartition-processor";
     public static final String OUTPUTTOPIC_PASSTHROUGH_PROCESSOR = "passthrough-outputtopic-processor";
+    public static final String CORE_COMMAND_METADATA_PASSTHROUGH_PROCESSOR_NAME =
+            "core-command-metadata-passthrough-processor";
     public static final String OUTPUTTOPIC_SINK_NAME = "outputtopic-sink";
     public static final String TIMER_WITHOUT_FORWARD_PROCESSOR_NAME = "timer-without-forward-processor";
     public static final String CORE_STORE_NAME = ServerTopology.CORE_STORE;
     public static final String GLOBAL_METADATA_STORE_NAME = ServerTopology.GLOBAL_METADATA_STORE;
     public static final String GLOBAL_METADATA_SOURCE_NAME = ServerTopology.GLOBAL_METADATA_SOURCE;
     public static final String GLOBAL_METADATA_PROCESSOR_NAME = ServerTopology.GLOBAL_METADATA_PROCESSOR;
+    public static final String COMMAND_METADATA_PASSTHROUGH_PROCESSOR = "passthrough-core-command-metadata-processor";
 
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> commandProcessorSupplier;
     private final ProcessorSupplier<String, CommandProcessorOutput, String, Forwardable> routerProcessorSupplier;
@@ -62,6 +67,7 @@ public class ServerTopologyV2 extends Topology {
     private final ProcessorSupplier<String, LHTimer, String, Object> timerProcessorSupplier;
     private final ProcessorSupplier<String, Command, String, CommandProcessorOutput> timerCommandProcessorSupplier;
     private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughRepartitionProcessor;
+    private final ProcessorSupplier<String, Forwardable, String, Forwardable> passthroughCommandProcessorSupplier;
     private final ProcessorSupplier<String, LHTimer, String, Object> timerWithoutForwardProcessorSupplier;
     private final ProcessorSupplier<String, MetadataCommand, String, CommandProcessorOutput> metadataProcessorSupplier;
     private final String coreCommandTopic;
@@ -82,7 +88,6 @@ public class ServerTopologyV2 extends Topology {
         if (cpo.payload == null) {
             return null;
         }
-
         return cpo.payload.toBytes();
     };
 
@@ -102,6 +107,7 @@ public class ServerTopologyV2 extends Topology {
         this.routerProcessorTimer2Supplier = ProcessorOutputRouter::createTimerProcessorRouter;
         this.timerProcessorSupplier = () -> new TimerCoreProcessor(true);
         this.passthroughRepartitionProcessor = ProcessorOutputRouter::createPassthroughRepartitionRouter;
+        this.passthroughCommandProcessorSupplier = ProcessorOutputRouter::createPassthroughCoreCommandMetadataRouter;
         this.timerCommandProcessorSupplier = () -> new TimerCommandProcessor(
                 config, server, metadataCache, globalTaskQueueManager, asyncWaiters, commandProcessorMetrics);
         this.metadataStoreBuilder = Stores.keyValueStoreBuilder(
@@ -177,6 +183,16 @@ public class ServerTopologyV2 extends Topology {
                 Serdes.String().serializer(),
                 sinkValueSerializer,
                 REPARTITION_PASSTHROUGH_PROCESSOR);
+        serverTopology.addProcessor(
+                CORE_COMMAND_METADATA_PASSTHROUGH_PROCESSOR_NAME,
+                passthroughCommandProcessorSupplier,
+                ROUTER_PROCESSOR_NAME);
+        serverTopology.addSink(
+                COMMAND_METADATA_PASSTHROUGH_PROCESSOR,
+                metadataTopic,
+                Serdes.String().serializer(),
+                sinkValueSerializer,
+                CORE_COMMAND_METADATA_PASSTHROUGH_PROCESSOR_NAME);
 
         serverTopology.addSink(
                 OUTPUTTOPIC_SINK_NAME,

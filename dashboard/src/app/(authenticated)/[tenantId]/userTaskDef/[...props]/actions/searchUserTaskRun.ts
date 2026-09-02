@@ -9,7 +9,7 @@ import {
   UserTaskRunIdList,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   userTaskRun: UserTaskRun
   nodeRun: NodeRun
 }
@@ -48,11 +48,12 @@ export const searchUserTaskRun = async ({
 
   const userTaskRunWithDetails: runDetails[] = await Promise.all(hydrateWithUserTaskRunDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...userTaskRunIdListRest } = userTaskRunIdList
   return {
-    ...userTaskRunIdList,
-    bookmarkAsString: userTaskRunIdList.bookmark
-      ? Buffer.from(userTaskRunIdList.bookmark).toString('base64')
-      : undefined,
+    ...userTaskRunIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: userTaskRunWithDetails,
   }
 }

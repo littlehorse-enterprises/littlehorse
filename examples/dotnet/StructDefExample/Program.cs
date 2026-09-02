@@ -64,7 +64,7 @@ public class Program
 
     private static async Task RegisterStructDefs(LittleHorseClient client, ILogger logger)
     {
-        var types = new[] { typeof(Address), typeof(Person), typeof(ParkingTicketReport) };
+        var types = new[] { typeof(ParkingTicketReport), typeof(Address), typeof(Person) };
 
         foreach (var type in types)
         {
@@ -101,14 +101,7 @@ public class Program
         var logger = loggerFactory.CreateLogger<Program>();
         var config = GetLHConfig(loggerFactory);
 
-        if (args.Length == 0)
-        {
-            await RunWorkers(config, logger);
-        }
-        else
-        {
-            await RunWorkflow(config, args, logger);
-        }
+        await RunWorkers(config, logger);
     }
 
     private static async Task RunWorkers(LHConfig config, ILogger logger)
@@ -133,32 +126,5 @@ public class Program
         };
 
         await Task.WhenAll(workers.Select(worker => worker.Start()));
-    }
-
-    private static async Task RunWorkflow(LHConfig config, string[] args, ILogger logger)
-    {
-        if (args.Length < 3)
-        {
-            logger.LogError("Expected 3 args: vehicleMake vehicleModel licensePlateNumber");
-            return;
-        }
-
-        var client = config.GetGrpcClientInstance();
-        string vehicleMake = args[0];
-        string vehicleModel = args[1];
-        string licensePlateNumber = args[2];
-
-        var report = new ParkingTicketReport(vehicleMake, vehicleModel, licensePlateNumber);
-
-        logger.LogInformation("Generated parking ticket report from arguments:\n{Report}", report);
-
-        await client.RunWfAsync(new RunWfRequest
-        {
-            WfSpecName = "issue-parking-ticket",
-            Variables =
-            {
-                { "ticket-report", LHMappingHelper.ObjectToVariableValue(report) }
-            }
-        });
     }
 }

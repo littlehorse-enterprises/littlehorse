@@ -76,4 +76,33 @@ public interface StructFieldDefOrBuilder extends
    * @return The isNullable.
    */
   boolean getIsNullable();
+
+  /**
+   * <pre>
+   * Optional human-readable description of this field's purpose.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return Whether the description field is set.
+   */
+  boolean hasDescription();
+  /**
+   * <pre>
+   * Optional human-readable description of this field's purpose.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return The description.
+   */
+  java.lang.String getDescription();
+  /**
+   * <pre>
+   * Optional human-readable description of this field's purpose.
+   * </pre>
+   *
+   * <code>optional string description = 4;</code>
+   * @return The bytes for description.
+   */
+  com.google.protobuf.ByteString
+      getDescriptionBytes();
 }

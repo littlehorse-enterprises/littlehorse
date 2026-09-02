@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,6 +16,7 @@ import java.util.Objects;
 public abstract class LHClassType {
     protected Class<?> clazz;
     protected LHTypeAdapterRegistry typeAdapterRegistry;
+    protected Map<String, String> placeholderValues = Map.of();
 
     /**
      * @deprecated Use {@link #fromJavaClass(Class, LHTypeAdapterRegistry)} instead, which allows for proper handling of type adapters.
@@ -34,6 +36,20 @@ public abstract class LHClassType {
      * @return an LHClassType representing the provided Java class
      */
     public static LHClassType fromJavaClass(Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry) {
+        return fromJavaClass(classType, typeAdapterRegistry, Map.of());
+    }
+
+    /**
+     * Creates an LHClassType from a given Java class, resolving any placeholders in the referenced
+     * {@code @LHStructDef} name(s) using the provided placeholder values.
+     *
+     * @param classType the Java class to convert to an LHClassType
+     * @param typeAdapterRegistry the LHTypeAdapterRegistry to use for handling type adapters
+     * @param placeholderValues placeholder values used to resolve {@code ${...}} placeholders in StructDef names
+     * @return an LHClassType representing the provided Java class
+     */
+    public static LHClassType fromJavaClass(
+            Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
         } else if (void.class.equals(classType) || Void.class.equals(classType)) {
@@ -42,7 +58,7 @@ public abstract class LHClassType {
         } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
-            return new LHStructDefType(classType, typeAdapterRegistry);
+            return new LHStructDefType(classType, typeAdapterRegistry, placeholderValues);
         }
         return new LHPrimitiveType(classType, typeAdapterRegistry);
     }
@@ -60,12 +76,27 @@ public abstract class LHClassType {
     protected LHClassType() {}
 
     protected LHClassType(Class<?> clazz, LHTypeAdapterRegistry lhTypeAdapterRegistry) {
+        this(clazz, lhTypeAdapterRegistry, Map.of());
+    }
+
+    protected LHClassType(
+            Class<?> clazz, LHTypeAdapterRegistry lhTypeAdapterRegistry, Map<String, String> placeholderValues) {
         this.clazz = Objects.requireNonNull(clazz);
         this.typeAdapterRegistry = Objects.requireNonNull(lhTypeAdapterRegistry);
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
     }
 
     public Class<?> getClassType() {
         return this.clazz;
+    }
+
+    /**
+     * Returns the placeholder values used to resolve {@code ${...}} placeholders in StructDef names.
+     *
+     * @return the placeholder values (never null)
+     */
+    public Map<String, String> getPlaceholderValues() {
+        return this.placeholderValues;
     }
 
     /**
@@ -80,7 +111,7 @@ public abstract class LHClassType {
             coreType = coreType.getComponentType();
         }
 
-        return LHClassType.fromJavaClass(coreType, typeAdapterRegistry);
+        return LHClassType.fromJavaClass(coreType, typeAdapterRegistry, placeholderValues);
     }
 
     public LHClassType getComponentType(LHTypeAdapterRegistry typeAdapterRegistry) {
@@ -89,7 +120,7 @@ public abstract class LHClassType {
                     + clazz.getName() + " is not an array.");
         }
         Class<?> componentType = clazz.getComponentType();
-        return LHClassType.fromJavaClass(componentType, typeAdapterRegistry);
+        return LHClassType.fromJavaClass(componentType, typeAdapterRegistry, placeholderValues);
     }
 
     @Override

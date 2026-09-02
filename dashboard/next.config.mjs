@@ -1,10 +1,15 @@
+import { fileURLToPath } from 'node:url'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  outputFileTracingRoot: fileURLToPath(new URL('..', import.meta.url)),
   env: {
     NEXT_PUBLIC_VERSION: 'v0.0.0-dev',
   },
   webpack: config => {
+    config.ignoreWarnings = [...(config.ignoreWarnings ?? []), { module: /@protobufjs\/inquire/ }]
+
     // Grab the existing rule that handles SVG imports
     const fileLoaderRule = config.module.rules.find(rule => rule.test?.test?.('.svg'))
 
@@ -28,10 +33,7 @@ const nextConfig = {
     fileLoaderRule.exclude = /\.svg$/i
     return config
   },
-  experimental: {
-    instrumentationHook: true,
-    serverComponentsExternalPackages: ['@opentelemetry/instrumentation'],
-  },
+  serverExternalPackages: ['@opentelemetry/instrumentation'],
 }
 
 export default nextConfig

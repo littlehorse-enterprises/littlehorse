@@ -1,4 +1,5 @@
 from .acls_pb2 import *
+from .bulk_job_pb2 import *
 from .common_enums_pb2 import *
 from .common_wfspec_pb2 import *
 from .external_event_pb2 import *
@@ -18,3 +19,4 @@ from .variable_pb2 import *
 from .wf_run_pb2 import *
 from .wf_spec_pb2 import *
 from .workflow_event_pb2 import *
+from .workflow_migration_pb2 import *

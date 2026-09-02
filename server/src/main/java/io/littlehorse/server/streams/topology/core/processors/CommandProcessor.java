@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import com.google.protobuf.Message;
+import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -29,9 +31,11 @@ import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.LHProcessingExceptionHandler;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -60,6 +64,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
 
     private final LHProcessingExceptionHandler exceptionHandler;
     private final CommandProcessorMetrics metrics;
+    private BulkJobPunctuator bulkJobPunctuator;
+    private static final Duration BULK_JOB_PUNCTUATION_BUDGET = Duration.ofMillis(50);
+    private final long bulkJobMaxCommandsPerPunctuation;
 
     public CommandProcessor(
             LHServerConfig config,
@@ -77,6 +84,7 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         this.asyncWaiters = asyncWaiters;
         this.metricWindows = new PartitionLocalBuffer<>();
         this.countedTags = new PartitionLocalBuffer<>();
+        this.bulkJobMaxCommandsPerPunctuation = config.getMaxBulkJobCommandsPerTick();
     }
 
     @Override
@@ -91,6 +99,13 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 LHConstants.PARTITION_METRICS_PUNCTUATOR_INTERVAL,
                 PunctuationType.WALL_CLOCK_TIME,
                 this::collectPartitionMetrics);
+
+        this.bulkJobPunctuator = new BulkJobPunctuator(
+                ctx, config, metadataCache, BULK_JOB_PUNCTUATION_BUDGET, bulkJobMaxCommandsPerPunctuation);
+        ctx.schedule(
+                Duration.ofSeconds(1),
+                PunctuationType.WALL_CLOCK_TIME,
+                timestamp -> bulkJobPunctuator.punctuate(timestamp));
 
         log.info("Completed the init() process on partition {}", ctx.taskId().partition());
     }
@@ -109,20 +124,23 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 command.type,
                 command.getCommandId(),
                 command.getPartitionKey());
+        Message response;
         try {
             metrics.observe(command);
-            Message response = command.process(executionContext, config);
+            response = command.process(executionContext, config);
             executionContext.endExecution();
-
-            if (command.hasResponse()) {
-                CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
-                        command.getCommandId().get(), Message.class, new CompletableFuture<>());
-                completable.complete(response);
-            }
+        } catch (RecordTooLargeException e) {
+            throw new CoreCommandException(
+                    new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(e.getMessage()), e), command);
         } catch (KafkaException ke) {
             throw ke;
         } catch (Exception exn) {
             throw new CoreCommandException(exn, command);
+        }
+        if (command.hasResponse()) {
+            CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
+                    command.getCommandId().get(), Message.class, new CompletableFuture<>());
+            completable.complete(response);
         }
     }
 

@@ -13,6 +13,7 @@ export const CONFIG_NAMES = [
   'LHC_API_PORT',
   'LHC_API_PROTOCOL',
   'LHC_GRPC_RESOURCE_EXHAUSTED_RETRY',
+  'LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH',
   'LHC_TENANT_ID',
   'LHC_CA_CERT',
   'LHC_CLIENT_CERT',
@@ -25,6 +26,19 @@ export type Config = {
 
 function isResourceExhaustedRetryEnabled(config?: string): boolean {
   return config?.toLowerCase() !== 'false'
+}
+
+function parseGrpcMaxReceiveMessageLength(config?: string): number | undefined {
+  if (config === undefined || config === '') {
+    return undefined
+  }
+  const value = Number(config)
+  if (!Number.isInteger(value) || (value <= 0 && value !== -1)) {
+    throw new Error(
+      `Invalid LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH "${config}": expected a positive number of bytes, or -1 for unlimited`
+    )
+  }
+  return value
 }
 export type ConfigName = (typeof CONFIG_NAMES)[number]
 
@@ -44,6 +58,7 @@ export class LHConfig {
   private clientCert?: string
   private clientKey?: string
   private resourceExhaustedRetryEnabled: boolean = true
+  private grpcMaxReceiveMessageLength?: number
 
   private channelCredentials: ChannelCredentials
 
@@ -57,6 +72,9 @@ export class LHConfig {
     this.clientCert = mergedConfig.LHC_CLIENT_CERT
     this.clientKey = mergedConfig.LHC_CLIENT_KEY
     this.resourceExhaustedRetryEnabled = isResourceExhaustedRetryEnabled(mergedConfig.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY)
+    this.grpcMaxReceiveMessageLength = parseGrpcMaxReceiveMessageLength(
+      mergedConfig.LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH
+    )
 
     if (this.protocol === 'TLS') {
       const rootCa = this.caCert ? readFileSync(this.caCert) : null
@@ -108,6 +126,9 @@ export class LHConfig {
     return new GrpcTransport({
       host: `${host}:${port}`,
       channelCredentials: this.channelCredentials,
+      ...(this.grpcMaxReceiveMessageLength !== undefined && {
+        clientOptions: { 'grpc.max_receive_message_length': this.grpcMaxReceiveMessageLength },
+      }),
     })
   }
 
@@ -124,6 +145,13 @@ export class LHConfig {
 
   getResourceExhaustedRetryEnabled(): boolean {
     return this.resourceExhaustedRetryEnabled
+  }
+
+  /**
+   * Returns the configured max gRPC receive message length in bytes, if any.
+   */
+  getGrpcMaxReceiveMessageLength(): number | undefined {
+    return this.grpcMaxReceiveMessageLength
   }
 
   private getMetadata(accessToken?: string): RpcMetadata {

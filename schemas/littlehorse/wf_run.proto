@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
 import "object_id.proto";
 import "type_definition.proto";
+import "workflow_migration.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -70,7 +71,14 @@ message WfRun {
     optional NodeRunId waiting_node_run = 2;
   }
 
-  repeated int32 thread_run_queue = 12;
+  // reference to WorkflowMigrationPlanId
+  WorkflowMigrationPlanId workflow_migration_plan_id = 12;
+
+  // Map to determine how to reassign varaible values during Migration
+  // newThreadName -> MigrationVar
+  map<string, MigrationVars> migration_variables = 13;
+
+  repeated int32 thread_run_queue = 14;
 
 }
 
