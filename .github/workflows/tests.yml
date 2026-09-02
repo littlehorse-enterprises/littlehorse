@@ -92,6 +92,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          # full history: the runner stamps results with the last commit
+          # that touched sdk-conformance/areas, which a shallow clone hides
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v5
