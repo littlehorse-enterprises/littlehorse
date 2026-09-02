@@ -60,23 +60,28 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
 
       - name: Install Dependencies
         working-directory: ./sdk-js
-        run: npm ci
+        run: pnpm install
 
       - name: Validate Formatting
         working-directory: ./sdk-js
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Build
         working-directory: ./sdk-js
-        run: npm run build && npm run build:conformance
+        run: pnpm run build && pnpm run build:conformance
 
       - name: Tests
         working-directory: ./sdk-js
-        run: npm test
+        run: pnpm test
 
   conformance:
     # Report-only for now: the suite publishes evidence and must not gate
@@ -97,14 +102,19 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
 
       - name: Build Testees
         run: |
           ./gradlew :sdk-java-conformance:installDist
-          npm --prefix sdk-js ci
-          npm --prefix sdk-js run build
-          npm --prefix sdk-js run build:conformance
+          pnpm --dir sdk-js install
+          pnpm --dir sdk-js run build
+          pnpm --dir sdk-js run build:conformance
 
       - name: Corpus Freshness
         run: node sdk-conformance/runner/freshness.mjs
