@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -17,17 +18,49 @@ public class InlineStructDefUtil {
     private InlineStructDefUtil() {}
 
     /**
-     * Checks if two InlineStructDefModel objects are equal by comparing their underlying proto representations.
+     * Checks if two InlineStructDefModel objects have the same schema by comparing their underlying
+     * proto representations, excluding field-level descriptions (which are metadata, not schema).
      *
      * @param left  the left InlineStructDefModel object
      * @param right the right InlineStructDefModel object
-     * @return true if the underlying proto representations of the objects are equal, false otherwise
+     * @return true if the schema (excluding field descriptions) is equal, false otherwise
      */
-    public static boolean equals(InlineStructDefModel left, InlineStructDefModel right) {
-        InlineStructDef.Builder copy = left.toProto();
-        InlineStructDef.Builder toCopy = right.toProto();
+    public static boolean schemasEqual(InlineStructDefModel left, InlineStructDefModel right) {
+        InlineStructDef leftProto = withoutFieldDescriptions(left.toProto().build());
+        InlineStructDef rightProto = withoutFieldDescriptions(right.toProto().build());
 
-        return Arrays.equals(copy.build().toByteArray(), toCopy.build().toByteArray());
+        return Arrays.equals(leftProto.toByteArray(), rightProto.toByteArray());
+    }
+
+    /**
+     * Returns true when the field descriptions are identical across both InlineStructDefModels.
+     * Used to detect description-only changes that bump the version without a schema compatibility check.
+     */
+    public static boolean fieldDescriptionsEqual(InlineStructDefModel left, InlineStructDefModel right) {
+        Map<String, StructFieldDefModel> leftFields = left.getFields();
+        Map<String, StructFieldDefModel> rightFields = right.getFields();
+
+        if (!leftFields.keySet().equals(rightFields.keySet())) {
+            return false;
+        }
+
+        for (Map.Entry<String, StructFieldDefModel> entry : leftFields.entrySet()) {
+            String leftDesc = entry.getValue().getDescription();
+            String rightDesc = rightFields.get(entry.getKey()).getDescription();
+            if (!Objects.equals(leftDesc, rightDesc)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static InlineStructDef withoutFieldDescriptions(InlineStructDef proto) {
+        InlineStructDef.Builder b = proto.toBuilder();
+        proto.getFieldsMap()
+                .forEach((name, fieldDef) -> b.putFields(
+                        name, fieldDef.toBuilder().clearDescription().build()));
+        return b.build();
     }
 
     public static Set<String> getIncompatibleFields(

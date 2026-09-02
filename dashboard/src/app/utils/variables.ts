@@ -103,6 +103,10 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
       return getValueFromVariableName(variable.source, variable.path)
     case 'sizeOf':
       return `${getVariable(variable.source.sizeOf.operand!, depth + 1)}.size()`
+    case 'mapBuilder':
+      return `{${variable.source.mapBuilder.entries
+        .map((e) => `${getVariable(e.key!, depth + 1)}: ${getVariable(e.value!, depth + 1)}`)
+        .join(', ')}}`
     default:
       return ''
   }
