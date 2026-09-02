@@ -26,9 +26,6 @@ importers:
       '@protobuf-ts/runtime-rpc':
         specifier: ^2.11.1
         version: 2.11.1
-      zod:
-        specifier: ^4.3.6
-        version: 4.4.3
     devDependencies:
       '@jest/globals':
         specifier: ^30.4.1
@@ -66,6 +63,9 @@ importers:
       typescript:
         specifier: 5.3.3
         version: 5.3.3
+      zod:
+        specifier: ^4.3.6
+        version: 4.4.3
 
 packages:
 
