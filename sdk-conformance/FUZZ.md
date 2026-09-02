@@ -7,6 +7,21 @@ call sequence independently, and the runner compares the SDKs' outputs to
 each other. Divergence means one builder's composition behavior drifted in
 a way no hand-written case anticipated.
 
+Two numbers control a run: seeds and ops.
+
+- A seed is the starting value for the random number generator. The
+  generator is deterministic, so the same seed always produces the same
+  sequence of draws. Give every SDK seed 7 and each one independently
+  builds the exact same "random" workflow, named `fuzz-7`. One seed means
+  one workflow, so running seeds 1..20 tests 20 distinct workflows.
+- Ops is how many random build steps make up each workflow. Each op is
+  one draw from the table below: declare a variable, run a task, sleep,
+  wait for an event, and so on. More ops means longer, more tangled
+  workflows, which stresses how builder calls compose.
+
+So `fuzz.mjs 50 16` builds 50 different workflows of 16 random steps
+each, and requires every SDK to compile all 50 identically.
+
 It is not a corpus area. There are no fixtures, no manifest, and no
 ledgers. Run it with:
 
