@@ -334,25 +334,38 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Validates that any InlineMapDef in this TypeDefinition has a primitive key type.
-     * Map keys must be primitive VariableTypes (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID).
-     * Non-primitive key types (STRUCT, ARRAY, MAP, JSON_OBJ, JSON_ARR, BYTES) are rejected.
+     * Validates that any InlineMapDef in this TypeDefinition is fully typed: its key type must be a
+     * concrete primitive VariableType (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID) and its value
+     * type must be concrete. Native Maps are a first-class LittleHorse type and may never carry
+     * JSON (JSON_OBJ / JSON_ARR) or wildcard/unset key or value types at any nesting depth.
      *
-     * @throws IllegalArgumentException if a map key type is not primitive.
+     * @throws IllegalArgumentException if a map key/value type is missing, wildcard, non-primitive
+     *     (for keys), or JSON.
      */
     public void validateMapKeyTypes() {
-        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
+            if (inlineMapDef == null) {
+                throw new IllegalArgumentException("Native Map is missing its key/value type definition");
+            }
             TypeDefinitionModel keyType = inlineMapDef.getKeyType();
-            if (keyType != null && !keyType.isNull() && !keyType.isPrimitive()) {
+            TypeDefinitionModel valueType = inlineMapDef.getValueType();
+
+            if (keyType == null || keyType.isNull()) {
+                throw new IllegalArgumentException("Native Map key type must be defined");
+            }
+            if (!keyType.isPrimitive()) {
                 throw new IllegalArgumentException(
                         "Map key type must be a primitive VariableType, but got: " + keyType);
             }
-            if (keyType != null) {
-                keyType.validateMapKeyTypes();
+
+            if (valueType == null || valueType.isNull()) {
+                throw new IllegalArgumentException("Native Map value type must be defined");
             }
-            if (inlineMapDef.getValueType() != null) {
-                inlineMapDef.getValueType().validateMapKeyTypes();
+            if (valueType.isJson()) {
+                throw new IllegalArgumentException(
+                        "Native Maps cannot contain JSON values; JSON is not an LH native type. Got: " + valueType);
             }
+            valueType.validateMapKeyTypes();
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && inlineArrayDef != null) {
             if (inlineArrayDef.getArrayType() != null) {
                 inlineArrayDef.getArrayType().validateMapKeyTypes();
