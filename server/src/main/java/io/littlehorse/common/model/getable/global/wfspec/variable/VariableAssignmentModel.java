@@ -48,6 +48,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
     private ExpressionModel expression;
     private StructBuilderModel structBuilder;
     private SizeOfModel sizeOf;
+    private MapBuilderModel mapBuilder;
     private TypeDefinitionModel targetType;
 
     public Class<VariableAssignment> getProtoBaseClass() {
@@ -95,6 +96,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case SIZE_OF:
                 sizeOf = LHSerializable.fromProto(p.getSizeOf(), SizeOfModel.class, context);
                 break;
+            case MAP_BUILDER:
+                mapBuilder = MapBuilderModel.fromProto(p.getMapBuilder(), context);
+                break;
             case SOURCE_NOT_SET:
                 // nothing to do;
         }
@@ -137,6 +141,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             case SIZE_OF:
                 out.setSizeOf(sizeOf.toProto());
                 break;
+            case MAP_BUILDER:
+                out.setMapBuilder(mapBuilder.toProto());
+                break;
             case SOURCE_NOT_SET:
                 // not possible.
         }
@@ -162,6 +169,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             }
         } else if (rhsSourceType == SourceCase.STRUCT_BUILDER) {
             out.addAll(structBuilder.getRequiredWfRunVarNames());
+        } else if (rhsSourceType == SourceCase.MAP_BUILDER) {
+            out.addAll(mapBuilder.getRequiredWfRunVarNames());
         }
         return out;
     }
@@ -183,6 +192,9 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
         if (rhsSourceType == SourceCase.SIZE_OF) {
             out.addAll(sizeOf.getOperand().getRequiredWfRunVarNames());
+        }
+        if (rhsSourceType == SourceCase.MAP_BUILDER) {
+            out.addAll(mapBuilder.getRequiredNodeNames());
         }
         return out;
     }
@@ -225,6 +237,16 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
                 break;
             case SIZE_OF:
                 baseType = new TypeDefinitionModel(VariableType.INT);
+                break;
+            case MAP_BUILDER:
+                if (mapBuilder.getMapType() != null) {
+                    baseType = new TypeDefinitionModel(mapBuilder.getMapType());
+                } else {
+                    // The concrete type of an unstamped MapBuilder can't be resolved here without a
+                    // metadata manager. Untyped/unresolvable map builders are rejected by
+                    // MapBuilderModel.validate() during WfSpec registration, so this is a safe fallback.
+                    return true;
+                }
                 break;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
@@ -327,6 +349,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
                 typeDef = new TypeDefinitionModel(VariableType.INT);
                 break;
+            case MAP_BUILDER:
+                typeDef = mapBuilder
+                        .resolveTypeDefinition(manager, wfSpec, threadSpecName)
+                        .orElse(null);
+                break;
             case SOURCE_NOT_SET:
                 // Poorly behaved clients (i.e. someone building a WfSpec by hand) could pass in
                 // protobuf that does not set the source type. Instead of throwing an IllegalStateException
@@ -355,6 +382,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             expression.validate(source, manager, threadSpec);
         } else if (structBuilder != null) {
             structBuilder.validate(source, manager, threadSpec);
+        } else if (mapBuilder != null) {
+            mapBuilder.validate(source, manager, threadSpec);
         } else {
             Optional<TypeDefinitionModel> sourceType = getSourceType(manager, threadSpec.wfSpec, threadSpec.getName());
             if (sourceType.isEmpty()
@@ -383,6 +412,8 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(sizeOf.getOperand().getRequiredVariableNames());
         } else if (structBuilder != null) {
             out.addAll(structBuilder.getRequiredVariableNames());
+        } else if (mapBuilder != null) {
+            out.addAll(mapBuilder.getRequiredVariableNames());
         }
         return out;
     }

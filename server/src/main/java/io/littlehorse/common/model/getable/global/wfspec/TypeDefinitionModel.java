@@ -334,25 +334,38 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Validates that any InlineMapDef in this TypeDefinition has a primitive key type.
-     * Map keys must be primitive VariableTypes (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID).
-     * Non-primitive key types (STRUCT, ARRAY, MAP, JSON_OBJ, JSON_ARR, BYTES) are rejected.
+     * Validates that any InlineMapDef in this TypeDefinition is fully typed: its key type must be a
+     * concrete primitive VariableType (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID) and its value
+     * type must be concrete. Native Maps are a first-class LittleHorse type and may never carry
+     * JSON (JSON_OBJ / JSON_ARR) or wildcard/unset key or value types at any nesting depth.
      *
-     * @throws IllegalArgumentException if a map key type is not primitive.
+     * @throws IllegalArgumentException if a map key/value type is missing, wildcard, non-primitive
+     *     (for keys), or JSON.
      */
     public void validateMapKeyTypes() {
-        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
+            if (inlineMapDef == null) {
+                throw new IllegalArgumentException("Native Map is missing its key/value type definition");
+            }
             TypeDefinitionModel keyType = inlineMapDef.getKeyType();
-            if (keyType != null && !keyType.isNull() && !keyType.isPrimitive()) {
+            TypeDefinitionModel valueType = inlineMapDef.getValueType();
+
+            if (keyType == null || keyType.isNull()) {
+                throw new IllegalArgumentException("Native Map key type must be defined");
+            }
+            if (!keyType.isPrimitive()) {
                 throw new IllegalArgumentException(
                         "Map key type must be a primitive VariableType, but got: " + keyType);
             }
-            if (keyType != null) {
-                keyType.validateMapKeyTypes();
+
+            if (valueType == null || valueType.isNull()) {
+                throw new IllegalArgumentException("Native Map value type must be defined");
             }
-            if (inlineMapDef.getValueType() != null) {
-                inlineMapDef.getValueType().validateMapKeyTypes();
+            if (valueType.isJson()) {
+                throw new IllegalArgumentException(
+                        "Native Maps cannot contain JSON values; JSON is not an LH native type. Got: " + valueType);
             }
+            valueType.validateMapKeyTypes();
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && inlineArrayDef != null) {
             if (inlineArrayDef.getArrayType() != null) {
                 inlineArrayDef.getArrayType().validateMapKeyTypes();
@@ -524,6 +537,48 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case VALUE_NOT_SET:
                 return;
             default:
+        }
+    }
+
+    /**
+     * Returns true if this type may replace {@code formerlyFrozen} as the declared type of a
+     * frozen (PUBLIC_VAR / required entrypoint) variable across WfSpec revisions.
+     *
+     * <p>Unlike {@link #equals(Object)}, a StructDef-typed variable may advance to a newer
+     * StructDef version, since StructDef versions evolve superset-compatibly. The fundamental
+     * shape (primitive kind, struct name, array/map structure, masking) must stay identical.
+     */
+    public boolean isFrozenCompatibleWith(TypeDefinitionModel formerlyFrozen) {
+        if (this.masked != formerlyFrozen.masked) {
+            return false;
+        }
+        if (this.definedTypeCase != formerlyFrozen.definedTypeCase) {
+            return false;
+        }
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                return this.primitiveType == formerlyFrozen.primitiveType;
+            case STRUCT_DEF_ID:
+                // Same struct; allow moving forward to a newer (superset) StructDef version.
+                return this.structDefId.getName().equals(formerlyFrozen.structDefId.getName())
+                        && this.structDefId.getVersion() >= formerlyFrozen.structDefId.getVersion();
+            case INLINE_ARRAY_DEF:
+                return this.inlineArrayDef
+                        .getArrayType()
+                        .isFrozenCompatibleWith(
+                                formerlyFrozen.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                return this.inlineMapDef
+                                .getKeyType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getKeyType())
+                        && this.inlineMapDef
+                                .getValueType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getValueType());
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                return this.equals(formerlyFrozen);
         }
     }
 

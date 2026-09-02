@@ -10,6 +10,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.util.Arg;
@@ -123,6 +124,27 @@ public class MapsTest {
                 .thenVerifyVariable(0, "my-map", variableValue -> {
                     assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
                     assertThat(variableValue.getMap().getEntriesList()).hasSize(2);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldStampMapTypeOnTaskProducedMap() {
+        workflowVerifier
+                .prepareRun(filledMapWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    // A native Map must always carry a concrete key/value type. The task worker stamps
+                    // map_type from the task method's generic return type (Map<String, Long>).
+                    assertThat(variableValue.getMap().hasMapType()).isTrue();
+                    assertThat(variableValue.getMap().getMapType().getKeyType().getPrimitiveType())
+                            .isEqualTo(VariableType.STR);
+                    assertThat(variableValue
+                                    .getMap()
+                                    .getMapType()
+                                    .getValueType()
+                                    .getPrimitiveType())
+                            .isEqualTo(VariableType.INT);
                 })
                 .start();
     }

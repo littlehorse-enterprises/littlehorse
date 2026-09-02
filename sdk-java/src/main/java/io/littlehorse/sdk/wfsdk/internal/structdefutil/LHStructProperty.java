@@ -38,6 +38,9 @@ public class LHStructProperty {
     @Getter
     private final boolean isNullable;
 
+    @Getter
+    private final String description;
+
     private final LHStructDefType parentStructDef;
 
     public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
@@ -48,6 +51,7 @@ public class LHStructProperty {
         this.masked = findIsMasked();
         this.ignored = findIsIgnored();
         this.isNullable = findIsNullable();
+        this.description = findDescription();
     }
 
     public VariableValue getValueFrom(Object o) throws LHSerdeException {
@@ -75,7 +79,10 @@ public class LHStructProperty {
             }
 
             if (isNativeMap() && val instanceof Map) {
-                return LHLibUtil.objToVarValAsNativeMap(val, typeAdapterRegistry);
+                return LHLibUtil.objToVarValAsNativeMap(
+                        val,
+                        resolveMapType(typeAdapterRegistry).getTypeDefinition().getInlineMapDef(),
+                        typeAdapterRegistry);
             }
 
             return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
@@ -133,6 +140,10 @@ public class LHStructProperty {
         Optional<VariableValue> defaultValue = this.getDefaultValue();
         if (defaultValue.isPresent()) {
             fieldDef.setDefaultValue(defaultValue.get());
+        }
+
+        if (description != null && !description.isBlank()) {
+            fieldDef.setDescription(description);
         }
 
         return fieldDef.build();
@@ -307,6 +318,14 @@ public class LHStructProperty {
         if (lhStructField == null) return false;
 
         return lhStructField.isNullable();
+    }
+
+    private String findDescription() {
+        LHStructField lhStructField = getAnnotation(LHStructField.class);
+
+        if (lhStructField == null) return "";
+
+        return lhStructField.description();
     }
 
     private boolean hasReadMethod() {
