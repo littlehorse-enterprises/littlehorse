@@ -2013,7 +2013,7 @@ func TestRunWfDynamicVar(t *testing.T) {
 func TestRunWfWithChildID(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		childID := t.AddVariable("child-id", lhproto.VariableType_STR)
-		t.RunWf("child-spec", nil, childID)
+		t.RunWf("child-spec", nil).WithChildId(childID)
 	}, "my-workflow")
 
 	putWf, err := wf.Compile()

@@ -97,7 +97,7 @@ public class WorkflowThreadRunWfTest
         void EntryPointAction(WorkflowThread wf)
         {
             var childId = wf.DeclareStr("child-id");
-            wf.RunWf("child-wf", new Dictionary<string, object>{}, childId);
+            wf.RunWf("child-wf", new Dictionary<string, object>{}).WithChildId(childId);
         }
 
         var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
