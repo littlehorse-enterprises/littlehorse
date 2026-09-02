@@ -80,7 +80,10 @@ public class ConformanceTestee {
             System.out.println(out.append("}"));
             return;
         }
-        if (args.length == 5 && args[0].equals("registrations") && args[1].equals("--case") && args[3].equals("--variant")) {
+        if (args.length == 5
+                && args[0].equals("registrations")
+                && args[1].equals("--case")
+                && args[3].equals("--variant")) {
             try {
                 System.out.println(RegistrationsArea.answer(args[2], args[4]));
             } catch (IllegalArgumentException e) {
@@ -96,7 +99,11 @@ public class ConformanceTestee {
                 for (String variant : new String[] {"base", "feature"}) {
                     if (!first) out.append(",");
                     first = false;
-                    out.append("\"").append(id).append("/").append(variant).append("\":")
+                    out.append("\"")
+                            .append(id)
+                            .append("/")
+                            .append(variant)
+                            .append("\":")
                             .append(RegistrationsArea.answer(id, variant));
                 }
             }
