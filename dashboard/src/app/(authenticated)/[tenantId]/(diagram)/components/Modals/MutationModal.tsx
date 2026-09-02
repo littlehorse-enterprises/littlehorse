@@ -1,7 +1,7 @@
 import { IdentifierBadge } from '@/components/ui/badge'
 import { variableMutationLhsToString } from '@/app/utils/variables'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { VariableMutation } from 'littlehorse-client/proto'
+import { VariableMutation, VariableMutationType } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
@@ -24,7 +24,7 @@ export const MutationModal: FC<Modal<VariableMutation>> = ({ data }) => {
           </div>
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Operation</small>
-            {operation}
+            {VariableMutationType[operation]}
           </div>
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Value</small>
