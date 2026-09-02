@@ -337,6 +337,23 @@ empirical measurement of how cheaply an SDK can be brought to green
 against a frozen exam, data the org can then plan with instead of
 guessing.
 
+**Config resolution (v1.x).** Client configuration is a translation like
+any other: a set of sources (`LHC_*` environment variables, a properties
+file, explicit arguments) resolves to one effective config, and every SDK
+must resolve it the same way. That makes it a natural fourth area: a
+`resolve` testee verb prints the resolved config as JSON, and the shared
+`LHC_*` key list is the denominator. The need is proven, not hypothetical:
+sdk-java layered environment variables under explicit arguments while
+sdk-js ignored the environment entirely, and neither SDK's own unit tests
+could see the disagreement, because each SDK's tests only check its own
+opinion (found and fixed during v1). Retry behavior splits across tiers:
+its defaults are config, the retry decision table (error code plus
+RetryInfo in, retry plus delay out) could be a small data area of its own,
+and live retry timing belongs to the runtime area below, adjudicated by
+the server. Purely language-local glue, such as how a runtime constructs
+its TLS credential objects, stays in unit tests; the cross-SDK contract is
+which mode the inputs select, and that is config.
+
 **Runtime conformance (v2).** The worker layer could join as a second case
 type: a deliberately small inventory of scenario cases (task execution,
 retries, interrupts, user tasks) whose outcomes are adjudicated by the
