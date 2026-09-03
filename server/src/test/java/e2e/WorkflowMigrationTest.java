@@ -38,6 +38,7 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -59,6 +60,7 @@ import org.junit.jupiter.api.Test;
  *
  */
 @LHTest(externalEventNames = {"migration-test-event"})
+@Tag("slow")
 public class WorkflowMigrationTest {
 
     private LittleHorseBlockingStub client;
