@@ -75,6 +75,9 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     public InactiveThreadRun.Builder toProto() {
         InactiveThreadRun.Builder out = InactiveThreadRun.newBuilder();
         out.setThreadRun(this.threadRun.toProto());
+        if (id != null) {
+            out.setId(id.toProto());
+        }
 
         if (queued != null) {
             out.setQueued(queued.toProto());
@@ -90,6 +93,9 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         InactiveThreadRun p = (InactiveThreadRun) proto;
         this.threadRun = ThreadRunModel.fromProto(p.getThreadRun(), context);
+        if (p.hasId()) {
+            this.id = InactiveThreadRunIdModel.fromProto(p.getId(), InactiveThreadRunIdModel.class, context);
+        }
 
         switch (p.getInactiveReasonCase()) {
             case ARCHIVED -> this.archived = ArchivedThreadRunInfoModel.fromProto(p.getArchived(), context);

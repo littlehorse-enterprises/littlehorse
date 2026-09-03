@@ -10,6 +10,7 @@ import { WireType } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { InactiveThreadRunId } from "./object_id";
 import { VariableValue } from "./type_definition";
 import { ExternalEventId } from "./object_id";
 import { NodeRunId } from "./object_id";
@@ -292,6 +293,10 @@ export interface InactiveThreadRun {
     } | {
         oneofKind: undefined;
     };
+    /**
+     * @generated from protobuf field: littlehorse.InactiveThreadRunId id = 4
+     */
+    id?: InactiveThreadRunId;
 }
 /**
  * @generated from protobuf message littlehorse.ArchivedThreadRunInfo
@@ -991,7 +996,8 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
         super("littlehorse.InactiveThreadRun", [
             { no: 1, name: "thread_run", kind: "message", T: () => ThreadRun },
             { no: 2, name: "archived", kind: "message", oneof: "inactiveReason", T: () => ArchivedThreadRunInfo },
-            { no: 3, name: "queued", kind: "message", oneof: "inactiveReason", T: () => QueuedThreadRunInfo }
+            { no: 3, name: "queued", kind: "message", oneof: "inactiveReason", T: () => QueuedThreadRunInfo },
+            { no: 4, name: "id", kind: "message", T: () => InactiveThreadRunId }
         ]);
     }
     create(value?: PartialMessage<InactiveThreadRun>): InactiveThreadRun {
@@ -1021,6 +1027,9 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
                         queued: QueuedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveReason as any).queued)
                     };
                     break;
+                case /* littlehorse.InactiveThreadRunId id */ 4:
+                    message.id = InactiveThreadRunId.internalBinaryRead(reader, reader.uint32(), options, message.id);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1042,6 +1051,9 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
         /* littlehorse.QueuedThreadRunInfo queued = 3; */
         if (message.inactiveReason.oneofKind === "queued")
             QueuedThreadRunInfo.internalBinaryWrite(message.inactiveReason.queued, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InactiveThreadRunId id = 4; */
+        if (message.id)
+            InactiveThreadRunId.internalBinaryWrite(message.id, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

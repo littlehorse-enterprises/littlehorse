@@ -108,14 +108,16 @@ class ThreadRun(_message.Message):
     def __init__(self, wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., number: _Optional[int] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., thread_spec_name: _Optional[str] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., error_message: _Optional[str] = ..., child_thread_ids: _Optional[_Iterable[int]] = ..., parent_thread_id: _Optional[int] = ..., halt_reasons: _Optional[_Iterable[_Union[ThreadHaltReason, _Mapping]]] = ..., interrupt_trigger_id: _Optional[_Union[_object_id_pb2.ExternalEventId, _Mapping]] = ..., failure_being_handled: _Optional[_Union[FailureBeingHandled, _Mapping]] = ..., current_node_position: _Optional[int] = ..., handled_failed_children: _Optional[_Iterable[int]] = ..., type: _Optional[_Union[ThreadType, str]] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class InactiveThreadRun(_message.Message):
-    __slots__ = ("thread_run", "archived", "queued")
+    __slots__ = ("thread_run", "archived", "queued", "id")
     THREAD_RUN_FIELD_NUMBER: _ClassVar[int]
     ARCHIVED_FIELD_NUMBER: _ClassVar[int]
     QUEUED_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
     thread_run: ThreadRun
     archived: ArchivedThreadRunInfo
     queued: QueuedThreadRunInfo
-    def __init__(self, thread_run: _Optional[_Union[ThreadRun, _Mapping]] = ..., archived: _Optional[_Union[ArchivedThreadRunInfo, _Mapping]] = ..., queued: _Optional[_Union[QueuedThreadRunInfo, _Mapping]] = ...) -> None: ...
+    id: _object_id_pb2.InactiveThreadRunId
+    def __init__(self, thread_run: _Optional[_Union[ThreadRun, _Mapping]] = ..., archived: _Optional[_Union[ArchivedThreadRunInfo, _Mapping]] = ..., queued: _Optional[_Union[QueuedThreadRunInfo, _Mapping]] = ..., id: _Optional[_Union[_object_id_pb2.InactiveThreadRunId, _Mapping]] = ...) -> None: ...
 
 class ArchivedThreadRunInfo(_message.Message):
     __slots__ = ()

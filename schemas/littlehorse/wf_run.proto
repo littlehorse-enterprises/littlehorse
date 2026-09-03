@@ -175,6 +175,8 @@ message InactiveThreadRun {
     QueuedThreadRunInfo queued = 3;
   }
 
+  InactiveThreadRunId id = 4;
+
 }
 
 message ArchivedThreadRunInfo {}

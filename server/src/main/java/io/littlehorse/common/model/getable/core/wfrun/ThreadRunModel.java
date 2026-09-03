@@ -381,13 +381,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
         trigger.setClaimed(true);
+
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
         haltReason.pendingInterrupt = new PendingInterruptHaltReasonModel();
         haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
 
-        // This also stops the children
         halt(haltReason);
 
         // Now make sure that the parent WfRun has the info necessary to launch the
@@ -460,6 +460,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         reason.setThreadRun(this);
         if (isTerminated()) return;
 
+        if (wfRun.getThreadRunQueue().contains(number)) {
+            haltReasons.add(reason);
+            setStatus(LHStatus.HALTED);
+            return;
+        }
+
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
         haltReasons.add(reason);
@@ -473,10 +479,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         childHaltReason.parentHalted.parentThreadId = number;
 
         for (int childId : childThreadIds) {
-
-            // if the child thread run is in the threadRun queue skip halting.
-            if (wfRun.getThreadRunQueue().contains(childId)) continue;
-
             ThreadRunModel child = wfRun.getThreadRun(childId);
 
             // In almost all cases, we want to stop all children.
@@ -518,7 +520,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
         boolean allChildrenHalted = true;
         for (int childId : childThreadIds) {
-            if (wfRun.getThreadRunQueue().contains(childId)) continue;
             if (!wfRun.getThreadRun(childId).maybeFinishHaltingProcess()) {
                 allChildrenHalted = false;
             }
@@ -666,14 +667,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
             for (int childId : childThreadIds) {
-                if (wfRun.getThreadRunQueue().contains(childId)) continue;
-                ThreadRunModel child = wfRun.getThreadRun(childId);
                 ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
                 hr.type = ReasonCase.PARENT_HALTED;
                 hr.parentHalted = new ParentHaltedModel();
                 hr.parentHalted.parentThreadId = number;
+                ThreadRunModel child = wfRun.getThreadRun(childId);
                 child.halt(hr);
-                if (child.getCurrentNodeRun().isInProgress()) {
+                if (!wfRun.getThreadRunQueue().contains(childId)
+                        && child.getCurrentNodeRun().isInProgress()) {
                     child.getCurrentNodeRun().maybeHalt(processorContext);
                 }
             }

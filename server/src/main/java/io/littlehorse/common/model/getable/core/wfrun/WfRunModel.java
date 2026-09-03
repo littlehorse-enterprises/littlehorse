@@ -670,18 +670,18 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean maybeDequeThreadRun() {
-        if (threadRunQueue.isEmpty()) return false;
+        if (isTerminated() || threadRunQueue.isEmpty()) return false;
 
+        boolean threadRunActivated = false;
         int maxThreadsPerWfRun = this.executionContext.serverConfig().getMaxThreadRunsPerWfRun();
         int numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
-        boolean threadRunActivated = false;
         GetableManager getableManager =
                 this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
         if (numberOfThreadRunsInMem >= maxThreadsPerWfRun) return false;
 
         List<Integer> deferred = new ArrayList<>();
         while (maxThreadsPerWfRun > numberOfThreadRunsInMem && !threadRunQueue.isEmpty()) {
-            int threadRunNumber = threadRunQueue.poll();
+            int threadRunNumber = threadRunQueue.removeFirst();
             InactiveThreadRunIdModel inactiveThreadRunId = new InactiveThreadRunIdModel(this.id, threadRunNumber);
             InactiveThreadRunModel inactiveThreadRun = getableManager.get(inactiveThreadRunId);
             if (inactiveThreadRun == null || inactiveThreadRun.getQueued() == null) {
@@ -691,23 +691,37 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
             ThreadRunModel queuedThreadRun = inactiveThreadRun.getThreadRun();
             queuedThreadRun.setWfRun(this);
-
-            ThreadRunModel parent = getThreadRun(queuedThreadRun.getParentThreadId());
-
-            if (parent.getStatus() != LHStatus.RUNNING) {
+            resolveQueuedThreadRunHaltReasons(queuedThreadRun);
+            if (!queuedThreadRun.getHaltReasons().isEmpty()) {
                 deferred.add(threadRunNumber);
                 continue;
             }
 
-            QueuedThreadRunInfoModel info = inactiveThreadRun.getQueued();
-            this.startQueuedThreadRun(queuedThreadRun, info.getInputVars());
+            activateQueuedThreadRun(inactiveThreadRun);
             threadRunActivated = true;
             getableManager.delete(inactiveThreadRunId);
 
             numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
         }
-        threadRunQueue.addAll(deferred);
+        threadRunQueue.addAll(0, deferred);
         return threadRunActivated;
+    }
+
+    private boolean resolveQueuedThreadRunHaltReasons(ThreadRunModel threadRun) {
+        boolean reasonRemoved = threadRun.getHaltReasons().removeIf(reason -> switch (reason.getType()) {
+            case PARENT_HALTED, INTERRUPTED, HANDLING_FAILURE -> reason.isResolved();
+            default -> false;
+        });
+        if (reasonRemoved && threadRun.getHaltReasons().isEmpty()) {
+            threadRun.setStatus(LHStatus.STARTING);
+        }
+        return reasonRemoved;
+    }
+
+    private void activateQueuedThreadRun(InactiveThreadRunModel inactiveThreadRun) {
+        inactiveThreadRun.getThreadRun().setWfRun(this);
+        this.startQueuedThreadRun(
+                inactiveThreadRun.getThreadRun(), inactiveThreadRun.getQueued().getInputVars());
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
@@ -862,13 +876,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (req.threadRunNumber > getGreatestThreadRunNumber() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
-
         ThreadRunModel thread = getThreadRun(req.threadRunNumber);
-
-        for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
-            ThreadHaltReasonModel thr = thread.haltReasons.get(i);
-            if (thr.type == ReasonCase.MANUAL_HALT) {
-                thread.haltReasons.remove(i);
+        thread.haltReasons.removeIf(reason -> reason.type == ReasonCase.MANUAL_HALT);
+        if (threadRunQueue.contains(req.threadRunNumber)) {
+            if (thread.haltReasons.isEmpty()) {
+                thread.setStatus(LHStatus.STARTING);
             }
         }
         this.advance(new Date());
