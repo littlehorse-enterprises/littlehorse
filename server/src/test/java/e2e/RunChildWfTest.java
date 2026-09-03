@@ -226,6 +226,11 @@ public class RunChildWfTest {
                 })
                 .registerWfSpec(client);
 
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder().setName(parent).build());
+            return true;
+        });
+
         WfRun parentWfRun =
                 client.runWf(RunWfRequest.newBuilder().setWfSpecName(parent).build());
         WfRun childWfRun = client.getWfRun(WfRunId.newBuilder()
@@ -248,6 +253,10 @@ public class RunChildWfTest {
             wf.runWf(child, Map.of()).withChildId(childId);
         });
         parentWf.registerWfSpec(client);
+        Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
+            client.getWfSpec(WfSpecId.newBuilder().setName(parent).build());
+            return true;
+        });
 
         verifier.prepareRun(parentWf)
                 .waitForStatus(LHStatus.ERROR)
