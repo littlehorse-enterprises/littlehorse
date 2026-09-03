@@ -86,8 +86,27 @@ public class RunChildWfNodeRunModel extends SubNodeRun<RunChildWfNodeRun> {
         WfSpecModel childSpec = runWfNode.getWfSpecToRun(nodeRun, ctx.metadataManager());
         this.wfSpecId = childSpec.getId();
 
-        this.childWfRunId =
-                new WfRunIdModel(LHUtil.generateGuid(), nodeRun.getId().getWfRunId());
+        try {
+            String childId = runWfNode.getChildId() == null
+                    ? LHUtil.generateGuid()
+                    : nodeRun.getThreadRun()
+                            .assignVariable(runWfNode.getChildId())
+                            .asStr()
+                            .getStrVal();
+            this.childWfRunId = new WfRunIdModel(childId, nodeRun.getId().getWfRunId());
+        } catch (LHVarSubError exn) {
+            throw new NodeFailureException(new FailureModel(exn.getMessage(), LHConstants.VAR_SUB_ERROR));
+        }
+
+        if (!LHUtil.isValidLHName(childWfRunId.getId())) {
+            throw new NodeFailureException(
+                    new FailureModel("Child WfRun ID must be a valid hostname", LHConstants.VAR_SUB_ERROR));
+        }
+
+        if (ctx.getableManager().get(childWfRunId) != null) {
+            throw new NodeFailureException(new FailureModel(
+                    "Child WfRun with id " + childWfRunId.getId() + " already exists", LHConstants.VAR_SUB_ERROR));
+        }
 
         WfRunModel out = new WfRunModel(ctx);
         out.setId(childWfRunId);
