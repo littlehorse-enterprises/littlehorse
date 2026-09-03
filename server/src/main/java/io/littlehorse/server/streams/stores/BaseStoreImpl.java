@@ -42,14 +42,14 @@ abstract class BaseStoreImpl extends ReadOnlyBaseStoreImpl implements BaseStore 
         if (metadataCache != null) {
             metadataCache.evict(fullKey);
         }
-        nativeStore.delete(fullKey);
+        nativeStore.put(fullKey, null);
 
         String legacyKey = LHUtil.toLegacyFormat(fullKey);
         if (legacyKey != null) {
             if (metadataCache != null) {
                 metadataCache.evict(legacyKey);
             }
-            nativeStore.delete(legacyKey);
+            nativeStore.put(legacyKey, null);
         }
     }
 }
