@@ -1643,7 +1643,6 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 			runNodeProto.Inputs[k] = assn
 		}
 	}
-
 	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")
 	node.Node = &lhproto.Node_RunChildWf{
 		RunChildWf: runNodeProto,
@@ -1652,6 +1651,7 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 	return &SpawnedChildWf{
 		sourceNodeName: nodeName,
 		thread:         t,
+		runNode:        runNodeProto,
 	}
 }
 
