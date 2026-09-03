@@ -871,7 +871,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
         ThreadRunModel thread = getThreadRun(req.threadRunNumber);
-        thread.haltReasons.removeIf(reason -> reason.type == ReasonCase.MANUAL_HALT);
+
+        for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
+            ThreadHaltReasonModel thr = thread.haltReasons.get(i);
+            if (thr.type == ReasonCase.MANUAL_HALT) {
+                thread.haltReasons.remove(i);
+            }
+        }
         if (threadRunQueue.contains(req.threadRunNumber)) {
             if (thread.haltReasons.isEmpty()) {
                 thread.setStatus(LHStatus.STARTING);
