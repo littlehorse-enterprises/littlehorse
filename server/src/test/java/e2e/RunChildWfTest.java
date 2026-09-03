@@ -258,6 +258,28 @@ public class RunChildWfTest {
     }
 
     @Test
+    void shouldFailWhenChildWfRunIdIsNotAValidHostname() {
+        String child = "child-invalid-id-" + randomString();
+        String parent = "parent-invalid-id-" + randomString();
+
+        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
+        Workflow parentWf = Workflow.newWorkflow(parent, wf -> {
+            wf.runWf(child, Map.of()).withChildId("invalid_child_id");
+        });
+        parentWf.registerWfSpec(client);
+
+        verifier.prepareRun(parentWf)
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    Assertions.assertThat(nodeRun.getFailures(0).getFailureName())
+                            .isEqualTo("VAR_SUB_ERROR");
+                    Assertions.assertThat(nodeRun.getFailures(0).getMessage())
+                            .isEqualTo("Child WfRun ID must be a valid hostname");
+                })
+                .start();
+    }
+
+    @Test
     void shouldRunDynamicChildWorkflow() {
         final String childSuffix = UUID.randomUUID().toString();
         final String invalidChildSuffix = UUID.randomUUID().toString();
