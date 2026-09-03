@@ -2895,6 +2895,37 @@ public final class LittleHorseGrpc {
     return getListTaskMetricsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricsList> getListQuotaUsageMetricsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "ListQuotaUsageMetrics",
+      requestType = io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.MetricsList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest,
+      io.littlehorse.sdk.common.proto.MetricsList> getListQuotaUsageMetricsMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList> getListQuotaUsageMetricsMethod;
+    if ((getListQuotaUsageMetricsMethod = LittleHorseGrpc.getListQuotaUsageMetricsMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getListQuotaUsageMetricsMethod = LittleHorseGrpc.getListQuotaUsageMetricsMethod) == null) {
+          LittleHorseGrpc.getListQuotaUsageMetricsMethod = getListQuotaUsageMetricsMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest, io.littlehorse.sdk.common.proto.MetricsList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "ListQuotaUsageMetrics"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.MetricsList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("ListQuotaUsageMetrics"))
+              .build();
+        }
+      }
+    }
+    return getListQuotaUsageMetricsMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.ListWfMetricsRequest,
       io.littlehorse.sdk.common.proto.MetricsList> getListWfMetricsMethod;
 
@@ -4354,6 +4385,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Lists quota usage metric windows for a quota and time range.
+     * </pre>
+     */
+    default void listQuotaUsageMetrics(io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getListQuotaUsageMetricsMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
@@ -5599,6 +5640,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Lists quota usage metric windows for a quota and time range.
+     * </pre>
+     */
+    public void listQuotaUsageMetrics(io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getListQuotaUsageMetricsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
@@ -6755,6 +6807,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Lists quota usage metric windows for a quota and time range.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricsList listQuotaUsageMetrics(io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getListQuotaUsageMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
@@ -7881,6 +7943,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.MetricsList listTaskMetrics(io.littlehorse.sdk.common.proto.ListTaskMetricsRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getListTaskMetricsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Lists quota usage metric windows for a quota and time range.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.MetricsList listQuotaUsageMetrics(io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getListQuotaUsageMetricsMethod(), getCallOptions(), request);
     }
 
     /**
@@ -9107,6 +9179,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Lists quota usage metric windows for a quota and time range.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.MetricsList> listQuotaUsageMetrics(
+        io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getListQuotaUsageMetricsMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Lists available metric windows for a given WfSpecId and time range.
      * </pre>
      */
@@ -9344,20 +9427,21 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 89;
   private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 90;
   private static final int METHODID_LIST_TASK_METRICS = 91;
-  private static final int METHODID_LIST_WF_METRICS = 92;
-  private static final int METHODID_GET_METRIC_WINDOW = 93;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 94;
-  private static final int METHODID_PUT_TENANT = 95;
-  private static final int METHODID_GET_TENANT = 96;
-  private static final int METHODID_PUT_QUOTA = 97;
-  private static final int METHODID_GET_QUOTA = 98;
-  private static final int METHODID_PUT_PRINCIPAL = 99;
-  private static final int METHODID_GET_PRINCIPAL = 100;
-  private static final int METHODID_WHOAMI = 101;
-  private static final int METHODID_GET_SERVER_VERSION = 102;
-  private static final int METHODID_COUNT_NODE_RUN = 103;
-  private static final int METHODID_COUNT_TASK_RUN = 104;
-  private static final int METHODID_POLL_TASK = 105;
+  private static final int METHODID_LIST_QUOTA_USAGE_METRICS = 92;
+  private static final int METHODID_LIST_WF_METRICS = 93;
+  private static final int METHODID_GET_METRIC_WINDOW = 94;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 95;
+  private static final int METHODID_PUT_TENANT = 96;
+  private static final int METHODID_GET_TENANT = 97;
+  private static final int METHODID_PUT_QUOTA = 98;
+  private static final int METHODID_GET_QUOTA = 99;
+  private static final int METHODID_PUT_PRINCIPAL = 100;
+  private static final int METHODID_GET_PRINCIPAL = 101;
+  private static final int METHODID_WHOAMI = 102;
+  private static final int METHODID_GET_SERVER_VERSION = 103;
+  private static final int METHODID_COUNT_NODE_RUN = 104;
+  private static final int METHODID_COUNT_TASK_RUN = 105;
+  private static final int METHODID_POLL_TASK = 106;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -9742,6 +9826,10 @@ public final class LittleHorseGrpc {
           break;
         case METHODID_LIST_TASK_METRICS:
           serviceImpl.listTaskMetrics((io.littlehorse.sdk.common.proto.ListTaskMetricsRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
+          break;
+        case METHODID_LIST_QUOTA_USAGE_METRICS:
+          serviceImpl.listQuotaUsageMetrics((io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.MetricsList>) responseObserver);
           break;
         case METHODID_LIST_WF_METRICS:
@@ -10469,6 +10557,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.MetricsList>(
                 service, METHODID_LIST_TASK_METRICS)))
         .addMethod(
+          getListQuotaUsageMetricsMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest,
+              io.littlehorse.sdk.common.proto.MetricsList>(
+                service, METHODID_LIST_QUOTA_USAGE_METRICS)))
+        .addMethod(
           getListWfMetricsMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -10700,6 +10795,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetTaskDefMetricsWindowMethod())
               .addMethod(getGetWfSpecMetricsWindowMethod())
               .addMethod(getListTaskMetricsMethod())
+              .addMethod(getListQuotaUsageMetricsMethod())
               .addMethod(getListWfMetricsMethod())
               .addMethod(getGetMetricWindowMethod())
               .addMethod(getSearchWfMetricWindowMethod())

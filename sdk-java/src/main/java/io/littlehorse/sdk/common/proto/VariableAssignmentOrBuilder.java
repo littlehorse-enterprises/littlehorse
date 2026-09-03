@@ -268,6 +268,33 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
+   * Builds a native Map using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   * @return Whether the mapBuilder field is set.
+   */
+  boolean hasMapBuilder();
+  /**
+   * <pre>
+   * Builds a native Map using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   * @return The mapBuilder.
+   */
+  io.littlehorse.sdk.common.proto.MapBuilder getMapBuilder();
+  /**
+   * <pre>
+   * Builds a native Map using data available in the ThreadRun.
+   * </pre>
+   *
+   * <code>.littlehorse.MapBuilder map_builder = 11;</code>
+   */
+  io.littlehorse.sdk.common.proto.MapBuilderOrBuilder getMapBuilderOrBuilder();
+
+  /**
+   * <pre>
    * If specified, the resolved value will be cast to this type before being used.
    * This allows explicit type conversions anywhere VariableAssignment is used.
    * The cast operation is non-mutating: original values remain unchanged.

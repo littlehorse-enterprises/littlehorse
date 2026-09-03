@@ -89,6 +89,25 @@ public class WorkflowThreadRunWfTest
     }
 
     [Fact]
+    public void RunWf_WithChildId_ShouldCompileSuccessfully()
+    {
+        var workflowName = "TestWorkflow";
+        var mockParentWorkflow = new Mock<Workflow>(workflowName, _action);
+
+        void EntryPointAction(WorkflowThread wf)
+        {
+            var childId = wf.DeclareStr("child-id");
+            wf.RunWf("child-wf", new Dictionary<string, object>{}).WithChildId(childId);
+        }
+
+        var workflowThread = new WorkflowThread(mockParentWorkflow.Object, EntryPointAction);
+        var compiledWfThread = workflowThread.Compile();
+
+        var runChildWfNode = compiledWfThread.Nodes["1-run-child-wf-RUN_CHILD_WF"].RunChildWf;
+        Assert.Equal(new VariableAssignment { VariableName = "child-id" }, runChildWfNode.ChildId);
+    }
+
+    [Fact]
     public void WaitForChildWf_ShouldCompileSuccessfully()
     {
         var workflowName = "TestWorkflow";

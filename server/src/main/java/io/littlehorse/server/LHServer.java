@@ -15,6 +15,7 @@ import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.monitoring.HealthService;
 import io.littlehorse.server.monitoring.http.NettyStatusServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
+import io.littlehorse.server.quotas.QuotaUsageReporter;
 import io.littlehorse.server.quotas.RequestQuotaManager;
 import io.littlehorse.server.streams.BackendInternalComms;
 import io.littlehorse.server.streams.CommandSender;
@@ -66,6 +67,7 @@ public class LHServer {
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
     private final RequestBlocker requestBlocker = new RequestBlocker();
     private final RequestQuotaManager requestQuotaManager;
+    private final QuotaUsageReporter quotaUsageReporter;
     private final CommandProcessorMetrics commandProcessorMetrics = new CommandProcessorMetrics();
 
     private RequestExecutionContext requestContext() {
@@ -124,7 +126,8 @@ public class LHServer {
                 config.getStreamsSessionTimeout(),
                 config,
                 internalComms.getAsyncWaiters());
-        this.requestQuotaManager = new RequestQuotaManager(internalComms);
+        this.quotaUsageReporter = new QuotaUsageReporter(internalComms.getCommandProducer(), config);
+        this.requestQuotaManager = new RequestQuotaManager(internalComms, quotaUsageReporter);
         this.listeners = config.getListeners().stream()
                 .map(s -> this.createListener(s, networkThreadpool))
                 .toList();
@@ -209,12 +212,15 @@ public class LHServer {
             timerStreams.start();
         }
         internalComms.start();
+        quotaUsageReporter.start();
         for (LHServerListener listener : listeners) {
             listener.start();
         }
     }
 
     public void close() {
+
+        quotaUsageReporter.close();
 
         CountDownLatch streamLatch = new CountDownLatch(timerStreams != null ? 2 : 1);
         if (timerStreams != null) {
