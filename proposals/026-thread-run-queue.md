@@ -2,7 +2,7 @@
 
 Author: Jake Rose
 
-This proposal introduces a `ThreadRun` queue that allows a `WfRun` to create more `ThreadRun`s than `LHS_X_MAX_THREAD_RUNS_PER_WF_RUN` without failing at runtime. It builds on the [`ThreadRun` archival proposal](012-archive-thread-run.md) by extending `InactiveThreadRun` to represent both archived and queued `ThreadRun`s.
+This proposal introduces a `ThreadRun` queue that allows a `WfRun` to create more `ThreadRun`s than `LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN` without failing at runtime. It builds on the [`ThreadRun` archival proposal](012-archive-thread-run.md) by extending `InactiveThreadRun` to represent both archived and queued `ThreadRun`s.
 
 ## Background
 
@@ -54,7 +54,7 @@ message WfRun {
 
 ## Enqueueing a `ThreadRun`
 
-When `startThread()` is invoked and the number of in-memory `ThreadRun`s is greater than or equal to `LHS_X_MAX_THREAD_RUNS_PER_WF_RUN`, the new `ThreadRun` is stored as a queued `InactiveThreadRun` instead of being started immediately.
+When `startThread()` is invoked and the number of in-memory `ThreadRun`s is greater than or equal to `LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN`, the new `ThreadRun` is stored as a queued `InactiveThreadRun` instead of being started immediately.
 
 The queued `ThreadRun`:
 
@@ -81,7 +81,13 @@ This differs from an active halted child. The current resume path does not rejec
 The Server attempts to drain the queue whenever the `WfRun` advances. A queued `ThreadRun` is activated only when:
 
 - The `WfRun` is not terminal.
-- There is capacity below `LHS_X_MAX_THREAD_RUNS_PER_WF_RUN`.
+- There is capacity below `LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN`.
 - The queued `ThreadRun` has no unresolved halt reasons.
 
 Eligible `ThreadRun`s are processed in queue order. A blocked `ThreadRun` is deferred without preventing later eligible entries from being considered. On activation, the `ThreadRun` is moved into the active collection, its variables are initialized, execution begins at its first node, and its `InactiveThreadRun` record is deleted.
+
+## Concerns
+
+A `WfRun` can stall when every active `ThreadRun` is waiting for work that can only be completed by a queued `ThreadRun`. All active slots remain occupied, so no active `ThreadRun` can complete and be archived to create capacity for the queued `ThreadRun`. The `WfRun` remains `RUNNING`, but it cannot make progress unless an active `ThreadRun` is unblocked by another mechanism, such as an external event.
+
+Increasing `LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN` may delay or avoid this condition for a particular workflow, but it does not eliminate the underlying dependency cycle. Workflow authors must avoid designs in which progress by every active `ThreadRun` depends on a `ThreadRun` that may be queued.

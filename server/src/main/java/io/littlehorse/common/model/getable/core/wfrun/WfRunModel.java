@@ -385,8 +385,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
-        int maxThreadRuns = executionContext.serverConfig().getMaxThreadRunsPerWfRun();
-        boolean addThreadRunToQueue = (parentThreadId != null) && (threadRunsUseMeCarefully.size() >= maxThreadRuns);
+        int activeThreadRuns = executionContext.serverConfig().getActiveThreadRunsPerWfRun();
+        boolean addThreadRunToQueue = (parentThreadId != null) && (threadRunsUseMeCarefully.size() >= activeThreadRuns);
 
         ThreadRunModel newThread = new ThreadRunModel(processorContext);
         newThread.parentThreadId = parentThreadId;
@@ -594,16 +594,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
 
             if (this.threadRunsUseMeCarefully.size()
-                    > this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()) {
+                    > this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
                                         "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
                                                 + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
-                                                + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                                                + "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN.",
                                         this.threadRunsUseMeCarefully.size(),
-                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
+                                        this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
@@ -673,14 +673,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (isTerminated() || threadRunQueue.isEmpty()) return false;
 
         boolean threadRunActivated = false;
-        int maxThreadsPerWfRun = this.executionContext.serverConfig().getMaxThreadRunsPerWfRun();
+        int activeThreadRunsPerWfRun = this.executionContext.serverConfig().getActiveThreadRunsPerWfRun();
         int numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
         GetableManager getableManager =
                 this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
-        if (numberOfThreadRunsInMem >= maxThreadsPerWfRun) return false;
+        if (numberOfThreadRunsInMem >= activeThreadRunsPerWfRun) return false;
 
         List<Integer> deferred = new ArrayList<>();
-        while (maxThreadsPerWfRun > numberOfThreadRunsInMem && !threadRunQueue.isEmpty()) {
+        while (activeThreadRunsPerWfRun > numberOfThreadRunsInMem && !threadRunQueue.isEmpty()) {
             int threadRunNumber = threadRunQueue.removeFirst();
             InactiveThreadRunIdModel inactiveThreadRunId = new InactiveThreadRunIdModel(this.id, threadRunNumber);
             InactiveThreadRunModel inactiveThreadRun = getableManager.get(inactiveThreadRunId);
@@ -719,7 +719,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()
+        int threshold = (this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()
                         * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
                 / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;

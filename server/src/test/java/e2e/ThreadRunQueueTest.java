@@ -46,13 +46,13 @@ public class ThreadRunQueueTest {
 
     @Test
     void shouldQueueExcessThreadRunsThenDequeueThemUntilCompletion() {
-        int maxThreadRuns = serverConfig.getMaxThreadRunsPerWfRun();
+        int activeThreadRuns = serverConfig.getActiveThreadRunsPerWfRun();
 
         // Spawn more child ThreadRuns than the WfRun is allowed to run concurrently. The entrypoint
-        // ThreadRun (number 0) occupies one slot, so (maxThreadRuns - 1) children can run at once and
+        // ThreadRun (number 0) occupies one slot, so (activeThreadRuns - 1) children can run at once and
         // the rest must be parked in the ThreadRun queue.
-        int totalChildren = maxThreadRuns + 5;
-        int expectedActiveThreadRuns = maxThreadRuns;
+        int totalChildren = activeThreadRuns + 5;
+        int expectedActiveThreadRuns = activeThreadRuns;
         int expectedQueuedThreadRuns = 6;
 
         ArrayList<Integer> childArr = new ArrayList<>();
@@ -94,11 +94,11 @@ public class ThreadRunQueueTest {
 
     @Test
     void shouldNotDequeueHaltedThreadRun() {
-        int maxThreadRuns = serverConfig.getMaxThreadRunsPerWfRun();
-        int queuedThreadRunNumber = maxThreadRuns;
+        int activeThreadRuns = serverConfig.getActiveThreadRunsPerWfRun();
+        int queuedThreadRunNumber = activeThreadRuns;
 
         ArrayList<Integer> childArr = new ArrayList<>();
-        for (int i = 0; i < maxThreadRuns; i++) {
+        for (int i = 0; i < activeThreadRuns; i++) {
             childArr.add(i);
         }
 
@@ -128,12 +128,12 @@ public class ThreadRunQueueTest {
 
     @Test
     void shouldDequeueNextThreadRunWhenQueueHeadIsHalted() {
-        int maxThreadRuns = serverConfig.getMaxThreadRunsPerWfRun();
-        int haltedThreadRunNumber = maxThreadRuns;
-        int nextThreadRunNumber = maxThreadRuns + 1;
+        int activeThreadRuns = serverConfig.getActiveThreadRunsPerWfRun();
+        int haltedThreadRunNumber = activeThreadRuns;
+        int nextThreadRunNumber = activeThreadRuns + 1;
 
         ArrayList<Integer> childArr = new ArrayList<>();
-        for (int i = 0; i < maxThreadRuns + 1; i++) {
+        for (int i = 0; i < activeThreadRuns + 1; i++) {
             childArr.add(i);
         }
 
@@ -167,11 +167,11 @@ public class ThreadRunQueueTest {
 
     @Test
     void shouldDequeueQueuedThreadRunAfterParentHaltReasonResolves() {
-        int maxThreadRuns = serverConfig.getMaxThreadRunsPerWfRun();
-        int queuedThreadRunNumber = maxThreadRuns;
+        int activeThreadRuns = serverConfig.getActiveThreadRunsPerWfRun();
+        int queuedThreadRunNumber = activeThreadRuns;
 
         ArrayList<Integer> childArr = new ArrayList<>();
-        for (int i = 0; i < maxThreadRuns; i++) {
+        for (int i = 0; i < activeThreadRuns; i++) {
             childArr.add(i);
         }
 
@@ -213,11 +213,11 @@ public class ThreadRunQueueTest {
 
     @Test
     void shouldHaltQueuedThreadRunWhenParentFails() {
-        int maxThreadRuns = serverConfig.getMaxThreadRunsPerWfRun();
-        int queuedThreadRunNumber = maxThreadRuns;
+        int activeThreadRuns = serverConfig.getActiveThreadRunsPerWfRun();
+        int queuedThreadRunNumber = activeThreadRuns;
 
         ArrayList<Integer> childArr = new ArrayList<>();
-        for (int i = 0; i < maxThreadRuns; i++) {
+        for (int i = 0; i < activeThreadRuns; i++) {
             childArr.add(i);
         }
 
