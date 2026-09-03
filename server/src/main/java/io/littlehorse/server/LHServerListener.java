@@ -1081,7 +1081,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskMetrics(ListTaskMetricsRequest req, StreamObserver<MetricsList> ctx) {
         ListTaskMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
@@ -1089,7 +1089,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.READ)
     public void listQuotaUsageMetrics(ListQuotaUsageMetricsRequest req, StreamObserver<MetricsList> ctx) {
         RequestExecutionContext requestContext = requestContext();
         if (!req.hasQuotaId()
