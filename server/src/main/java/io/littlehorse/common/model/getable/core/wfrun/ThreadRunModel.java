@@ -388,6 +388,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         haltReason.pendingInterrupt = new PendingInterruptHaltReasonModel();
         haltReason.pendingInterrupt.externalEventId = trigger.getObjectId();
 
+        // This also stops the children
         halt(haltReason);
 
         // Now make sure that the parent WfRun has the info necessary to launch the
@@ -785,7 +786,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      */
     private void failWithoutGrace(FailureModel failure, Date time) {
         for (int childId : childThreadIds) {
-            if (wfRun.getThreadRunQueue().contains(childId)) continue;
             ThreadRunModel child = wfRun.getThreadRun(childId);
             if (child == null) {
                 // already gc'ed

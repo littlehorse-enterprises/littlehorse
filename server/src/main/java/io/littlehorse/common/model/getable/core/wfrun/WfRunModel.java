@@ -697,7 +697,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 continue;
             }
 
-            activateQueuedThreadRun(inactiveThreadRun);
+            startQueuedThreadRun(queuedThreadRun, inactiveThreadRun.getQueued().getInputVars());
             threadRunActivated = true;
             getableManager.delete(inactiveThreadRunId);
 
@@ -716,12 +716,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             threadRun.setStatus(LHStatus.STARTING);
         }
         return reasonRemoved;
-    }
-
-    private void activateQueuedThreadRun(InactiveThreadRunModel inactiveThreadRun) {
-        inactiveThreadRun.getThreadRun().setWfRun(this);
-        this.startQueuedThreadRun(
-                inactiveThreadRun.getThreadRun(), inactiveThreadRun.getQueued().getInputVars());
     }
 
     private boolean shouldForceArchiveCompletedThreadRuns() {
