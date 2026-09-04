@@ -1,0 +1,268 @@
+import * as fs from 'fs'
+import * as path from 'path'
+import {
+  AllowedUpdateType,
+  PutExternalEventDefRequest,
+  PutWfSpecRequest,
+  PutWorkflowEventDefRequest,
+} from '../proto/service'
+import { WfSpec } from '../proto/wf_spec'
+import type { LHConfig } from '../LHConfig'
+import type { ExternalEventNodeOutput, ThrowEventNodeOutput } from './nodeOutputs'
+
+/** True for a gRPC NOT_FOUND, however the transport surfaces the code. */
+function isNotFound(err: unknown): boolean {
+  const code = (err as { code?: unknown })?.code
+  return code === 'NOT_FOUND' || code === 5
+}
+import { ThreadRetentionPolicy, WfSpec_ParentWfSpecReference, WorkflowRetentionPolicy } from '../proto/wf_spec'
+import { ExponentialBackoffRetryPolicy, VariableMutationType } from '../proto/common_wfspec'
+import { WorkflowThread, ThreadFunc } from './WorkflowThread'
+import type { WfRunVariable } from './variables'
+
+/** Optional workflow-level settings; each key mirrors a fluent or setter method. */
+export interface WorkflowOptions {
+  updateType?: AllowedUpdateType
+  retentionPolicy?: WorkflowRetentionPolicy
+  defaultThreadRetentionPolicy?: ThreadRetentionPolicy
+  defaultTaskTimeout?: number
+  defaultTaskRetries?: number
+  defaultTaskExponentialBackoff?: ExponentialBackoffRetryPolicy
+  parentWfSpecName?: string
+}
+
+/**
+ * Represents a WfSpec (mirrors Java Workflow/WorkflowImpl). Calling
+ * compileWorkflow() runs the thread functions exactly once to build the
+ * PutWfSpecRequest proto — the workflow itself executes on the server.
+ */
+export class Workflow {
+  private compiled?: PutWfSpecRequest
+  private readonly threadFuncs: Array<{ name: string; func: ThreadFunc }> = []
+  private readonly requiredTaskDefNames = new Set<string>()
+  private readonly requiredExternalEventDefNames = new Set<string>()
+  private readonly requiredChildWfSpecNames = new Set<string>()
+  private readonly requiredWorkflowEventDefNames = new Set<string>()
+  private readonly externalEventDefsToRegister: Array<{ toPutExternalEventDefRequest(): PutExternalEventDefRequest }> =
+    []
+  private readonly workflowEventDefsToRegister: ThrowEventNodeOutput[] = []
+
+  readonly threadsStack: WorkflowThread[] = []
+  defaultTaskTimeout?: number
+  defaultSimpleRetries = 0
+  defaultExponentialBackoff?: ExponentialBackoffRetryPolicy
+  defaultThreadRetentionPolicy?: ThreadRetentionPolicy
+  private wfRetentionPolicy?: WorkflowRetentionPolicy
+  private parentWfSpecName?: string
+  private allowedUpdates = AllowedUpdateType.ALL_UPDATES
+
+  private constructor(
+    readonly name: string,
+    private readonly entrypointThread: ThreadFunc
+  ) {}
+
+  static newWorkflow(name: string, entrypointThreadFunc: ThreadFunc, options?: WorkflowOptions): Workflow {
+    const workflow = new Workflow(name, entrypointThreadFunc)
+    if (options === undefined) return workflow
+    if (options.updateType !== undefined) workflow.withUpdateType(options.updateType)
+    if (options.retentionPolicy !== undefined) workflow.withRetentionPolicy(options.retentionPolicy)
+    if (options.defaultThreadRetentionPolicy !== undefined) {
+      workflow.withDefaultThreadRetentionPolicy(options.defaultThreadRetentionPolicy)
+    }
+    if (options.defaultTaskTimeout !== undefined) workflow.setDefaultTaskTimeout(options.defaultTaskTimeout)
+    if (options.defaultTaskRetries !== undefined) workflow.setDefaultTaskRetries(options.defaultTaskRetries)
+    if (options.defaultTaskExponentialBackoff !== undefined) {
+      workflow.setDefaultTaskExponentialBackoffPolicy(options.defaultTaskExponentialBackoff)
+    }
+    if (options.parentWfSpecName !== undefined) workflow.setParent(options.parentWfSpecName)
+    return workflow
+  }
+
+  compileWorkflow(): PutWfSpecRequest {
+    if (this.compiled !== undefined) return this.compiled
+
+    const spec = PutWfSpecRequest.create({ name: this.name, allowedUpdates: this.allowedUpdates })
+    spec.entrypointThreadName = this.addSubThread('entrypoint', this.entrypointThread)
+
+    while (this.threadFuncs.length > 0) {
+      const { name: funcName, func } = this.threadFuncs.shift()!
+      const thread = new WorkflowThread(this.name, this, func)
+      spec.threadSpecs[funcName] = thread.buildSpec()
+    }
+
+    if (this.wfRetentionPolicy !== undefined) {
+      spec.retentionPolicy = this.wfRetentionPolicy
+    }
+    if (this.parentWfSpecName !== undefined) {
+      spec.parentWfSpec = WfSpec_ParentWfSpecReference.create({ wfSpecName: this.parentWfSpecName })
+    }
+
+    this.compiled = spec
+    return spec
+  }
+
+  compileWfToJson(): string {
+    return PutWfSpecRequest.toJsonString(this.compileWorkflow(), { prettySpaces: 2 })
+  }
+
+  /**
+   * Compiles the workflow and writes it to `<directory>/<name>-wfspec.json`,
+   * creating the directory if needed (filename matches the Java SDK).
+   */
+  compileAndSaveToDisk(directory: string): string {
+    const filePath = path.join(directory, `${this.name}-wfspec.json`)
+    fs.mkdirSync(directory, { recursive: true })
+    fs.writeFileSync(filePath, this.compileWfToJson())
+    return filePath
+  }
+
+  /**
+   * Registers this WfSpec with the server, first creating any ExternalEventDefs
+   * and WorkflowEventDefs declared with `registeredAs()` (Java does the same,
+   * in the same order — the event defs must exist before the WfSpec lands).
+   */
+  async registerWfSpec(config: LHConfig): Promise<WfSpec> {
+    const request = this.compileWorkflow()
+    const client = await config.getAuthenticatedClient()
+
+    for (const eventDef of this.getExternalEventDefsToRegister()) {
+      await client.putExternalEventDef(eventDef)
+    }
+    for (const eventDef of this.getWorkflowEventDefsToRegister()) {
+      await client.putWorkflowEventDef(eventDef)
+    }
+    return client.putWfSpec(request)
+  }
+
+  /**
+   * Whether a WfSpec with this name exists. Passing `majorVersion` checks that
+   * specific version instead of the latest.
+   */
+  async doesWfSpecExist(config: LHConfig, majorVersion?: number): Promise<boolean> {
+    const client = await config.getAuthenticatedClient()
+    try {
+      if (majorVersion === undefined) {
+        await client.getLatestWfSpec({ name: this.name })
+      } else {
+        await client.getWfSpec({ name: this.name, majorVersion, revision: 0 })
+      }
+      return true
+    } catch (err: unknown) {
+      if (isNotFound(err)) return false
+      throw err
+    }
+  }
+
+  addExternalEventDefToRegister(node: { toPutExternalEventDefRequest(): PutExternalEventDefRequest }): void {
+    this.externalEventDefsToRegister.push(node)
+  }
+
+  addWorkflowEventDefToRegister(node: ThrowEventNodeOutput): void {
+    this.workflowEventDefsToRegister.push(node)
+  }
+
+  /** ExternalEventDefs declared via `registeredAs()`, ready to be registered. */
+  getExternalEventDefsToRegister(): PutExternalEventDefRequest[] {
+    this.compileWorkflow()
+    return this.externalEventDefsToRegister.map(node => node.toPutExternalEventDefRequest())
+  }
+
+  /** WorkflowEventDefs declared via `registeredAs()`, ready to be registered. */
+  getWorkflowEventDefsToRegister(): PutWorkflowEventDefRequest[] {
+    this.compileWorkflow()
+    return this.workflowEventDefsToRegister.map(node => node.toPutWorkflowEventDefRequest())
+  }
+
+  addSubThread(subThreadName: string, subThreadFunc: ThreadFunc): string {
+    if (this.threadFuncs.some(pair => pair.name === subThreadName)) {
+      throw new Error(`Thread ${subThreadName} already exists`)
+    }
+    this.threadFuncs.push({ name: subThreadName, func: subThreadFunc })
+    return subThreadName
+  }
+
+  /** Applies a mutation on the innermost active thread (used by WfRunVariable.assign). */
+  mutateOnActiveThread(variable: WfRunVariable, type: VariableMutationType, rhs: unknown): void {
+    const top = this.threadsStack[this.threadsStack.length - 1]
+    const activeThread = top !== undefined && top.isActive ? top : variable.parent
+    activeThread.mutate(variable, type, rhs)
+  }
+
+  setParent(parentWfSpecName: string): void {
+    this.parentWfSpecName = parentWfSpecName
+  }
+
+  setDefaultTaskTimeout(timeoutSeconds: number): void {
+    this.defaultTaskTimeout = timeoutSeconds
+  }
+
+  getDefaultTaskTimeout(): number | undefined {
+    return this.defaultTaskTimeout
+  }
+
+  setDefaultTaskRetries(defaultSimpleRetries: number): void {
+    if (defaultSimpleRetries < 0) {
+      throw new Error('Cannot have negative retries!')
+    }
+    this.defaultSimpleRetries = defaultSimpleRetries
+  }
+
+  setDefaultTaskExponentialBackoffPolicy(defaultPolicy: ExponentialBackoffRetryPolicy): void {
+    this.defaultExponentialBackoff = defaultPolicy
+  }
+
+  withRetentionPolicy(policy: WorkflowRetentionPolicy): Workflow {
+    this.wfRetentionPolicy = policy
+    return this
+  }
+
+  withDefaultThreadRetentionPolicy(policy: ThreadRetentionPolicy): Workflow {
+    this.defaultThreadRetentionPolicy = policy
+    return this
+  }
+
+  withUpdateType(allowedUpdateType: AllowedUpdateType): Workflow {
+    this.allowedUpdates = allowedUpdateType
+    return this
+  }
+
+  getName(): string {
+    return this.name
+  }
+
+  addTaskDefName(taskDefName: string): void {
+    this.requiredTaskDefNames.add(taskDefName)
+  }
+
+  addExternalEventDefName(eedName: string): void {
+    this.requiredExternalEventDefNames.add(eedName)
+  }
+
+  addChildWfSpecName(childWfSpecName: string): void {
+    this.requiredChildWfSpecNames.add(childWfSpecName)
+  }
+
+  addWorkflowEventDefName(name: string): void {
+    this.requiredWorkflowEventDefNames.add(name)
+  }
+
+  getRequiredTaskDefNames(): Set<string> {
+    this.compileWorkflow()
+    return this.requiredTaskDefNames
+  }
+
+  getRequiredExternalEventDefNames(): Set<string> {
+    this.compileWorkflow()
+    return this.requiredExternalEventDefNames
+  }
+
+  getRequiredChildWfSpecNames(): Set<string> {
+    this.compileWorkflow()
+    return this.requiredChildWfSpecNames
+  }
+
+  getRequiredWorkflowEventDefNames(): Set<string> {
+    this.compileWorkflow()
+    return this.requiredWorkflowEventDefNames
+  }
+}

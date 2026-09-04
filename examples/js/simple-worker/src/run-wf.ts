@@ -25,7 +25,7 @@ async function main() {
   console.log(`Started WfRun: ${result.id?.id}`)
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

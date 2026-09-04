@@ -34,7 +34,10 @@
     "build": "tsc",
     "test": "jest",
     "lint": "prettier --check .",
-    "lint:fix": "prettier --write ."
+    "lint:fix": "prettier --write .",
+    "build:conformance": "tsc -p conformance",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:core": "jest --config jest.integration.config.js --testPathIgnorePatterns '/src/integration/(cluster|tls|oauth)\\.test\\.ts$'"
   },
   "devDependencies": {
     "@jest/globals": "^30.4.1",
@@ -47,14 +50,15 @@
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "testcontainers": "^12.0.4",
+    "zod": "^4.3.6"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.12.5",
     "@protobuf-ts/grpc-transport": "^2.11.1",
     "@protobuf-ts/runtime": "^2.11.1",
-    "@protobuf-ts/runtime-rpc": "^2.11.1",
-    "zod": "^4.3.6"
+    "@protobuf-ts/runtime-rpc": "^2.11.1"
   },
   "peerDependencies": {
     "zod": "^4.0.0"

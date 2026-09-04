@@ -37,7 +37,10 @@ const argsMapping: Mapping = {
 const getPropertiesArgs = (args: Partial<ConfigArgs>): Partial<Config> => {
   const keys = Object.keys(args) as Array<keyof ConfigArgs>
   return keys.reduce<Partial<Config>>((config, key) => {
-    config[argsMapping[key]] = args[key]
+    const value = args[key]
+    if (value !== undefined) {
+      config[argsMapping[key]] = value
+    }
     return config
   }, {})
 }

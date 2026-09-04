@@ -1,5 +1,7 @@
 import type { RpcMetadata, RpcOptions, UnaryCall } from '@protobuf-ts/runtime-rpc'
+import type { PartialMessage } from '@protobuf-ts/runtime'
 import type { ILittleHorseClient, LittleHorseClient } from './proto/service.client'
+import { LittleHorse } from './proto/service'
 import { getRetryDelayMs, isResourceExhausted } from './grpcRetry'
 
 /**
@@ -7,19 +9,34 @@ import { getRetryDelayMs, isResourceExhausted } from './grpcRetry'
  * return `UnaryCall` objects) into a Promise-based client whose unary methods
  * resolve directly to the response message. Streaming methods (e.g. `pollTask`)
  * are left untouched.
+ *
+ * Requests are accepted as `PartialMessage`, matching what Java's builders let
+ * you leave out. The generated types require every repeated and map field to be
+ * present, and omitting one fails deep inside serialization with an opaque
+ * "Cannot read properties of undefined (reading 'length')" — so requests are
+ * normalized through the message's own `create()` before being sent.
  */
 export type LHPublicClient = {
   [K in keyof ILittleHorseClient]: ILittleHorseClient[K] extends (
     input: infer I,
     options?: RpcOptions
   ) => UnaryCall<infer _Req, infer O>
-    ? (input: I, options?: RpcOptions) => Promise<O>
+    ? (input: PartialMessage<I & object>, options?: RpcOptions) => Promise<O>
     : ILittleHorseClient[K]
 }
+
+/** Request message types by client method name, for defaulting inputs. */
+const REQUEST_TYPES = new Map(LittleHorse.methods.map(method => [method.localName, method.I]))
 
 export interface PromisifyClientOptions {
   defaultOptions: RpcOptions
   resourceExhaustedRetryEnabled: boolean
+  /**
+   * Minted per unary call, so a long-held client never outlives its token
+   * (Java refreshes per RPC through CallCredentials). An authorization set in
+   * per-call options wins.
+   */
+  tokenProvider?: () => Promise<string | undefined>
 }
 
 function mergeMeta(base?: RpcMetadata, override?: RpcMetadata): RpcMetadata {
@@ -39,7 +56,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function promisifyClient(client: LittleHorseClient, options: PromisifyClientOptions): LHPublicClient {
-  const { defaultOptions, resourceExhaustedRetryEnabled } = options
+  const { defaultOptions, resourceExhaustedRetryEnabled, tokenProvider } = options
 
   return new Proxy(client, {
     get(target, prop, receiver) {
@@ -56,9 +73,18 @@ export function promisifyClient(client: LittleHorseClient, options: PromisifyCli
 
       return async (input: unknown, callOptions?: RpcOptions) => {
         const merged = mergeOptions(defaultOptions, callOptions)
+        if (tokenProvider !== undefined && merged.meta?.['authorization'] === undefined) {
+          const token = await tokenProvider()
+          if (token !== undefined) {
+            merged.meta = { ...merged.meta, authorization: `Bearer ${token}` }
+          }
+        }
+        // Fills in the fields protobuf-ts requires but Java's builders default.
+        const requestType = REQUEST_TYPES.get(methodName)
+        const request = requestType === undefined ? input : requestType.create(input as never)
 
         for (;;) {
-          const call = value.call(target, input, merged) as UnaryCall
+          const call = value.call(target, request, merged) as UnaryCall
           try {
             return await call.response
           } catch (error) {

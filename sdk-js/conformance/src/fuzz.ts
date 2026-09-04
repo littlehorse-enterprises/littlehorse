@@ -1,0 +1,97 @@
+/**
+ * Random dual-compile generator — implements the normative contract in
+ * sdk-conformance/FUZZ.md exactly (PRNG, draw order, op table). No canon: the
+ * runner cross-compares SDK outputs for the same seed.
+ */
+import { LHConfig } from '../../dist'
+import { Workflow, type WfRunVariable } from '../../dist/wfsdk'
+import { PutWfSpecRequest } from '../../dist/proto/service'
+import { Comparator } from '../../dist/proto/type_definition'
+import { VariableMutationType } from '../../dist/proto/common_wfspec'
+
+function mulberry32(seed: number) {
+  let a = seed | 0
+  return (bound: number): number => {
+    a = (a + 0x6d2b79f5) | 0
+    let t = a ^ (a >>> 15)
+    t = Math.imul(t, 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    const draw = (t ^ (t >>> 14)) >>> 0
+    return draw % bound
+  }
+}
+
+function build(seed: number, ops: number): Workflow {
+  const nextInt = mulberry32(seed)
+  return Workflow.newWorkflow(`fuzz-${seed}`, thread => {
+    const intVars: WfRunVariable[] = []
+    for (let i = 0; i < ops; i++) {
+      const k = nextInt(8)
+      switch (k) {
+        case 0:
+          intVars.push(thread.declareInt(`v${i}`))
+          break
+        case 1:
+          thread.declareStr(`v${i}`)
+          break
+        case 2:
+          thread.declareBool(`v${i}`)
+          break
+        case 3:
+          thread.execute(`task-${nextInt(5)}`)
+          break
+        case 4:
+          thread.sleepSeconds(1 + nextInt(60))
+          break
+        case 5:
+          thread.waitForEvent(`evt-${nextInt(5)}`)
+          break
+        case 6:
+          if (intVars.length === 0) intVars.push(thread.declareInt(`v${i}`))
+          else thread.mutate(intVars[nextInt(intVars.length)], VariableMutationType.ADD, nextInt(10))
+          break
+        case 7:
+          if (intVars.length === 0) {
+            thread.execute(`task-${nextInt(5)}`)
+          } else {
+            const v = intVars[nextInt(intVars.length)]
+            const rhs = nextInt(10)
+            const branch = nextInt(5)
+            thread.doIf(thread.condition(v, Comparator.GREATER_THAN, rhs), body => body.execute(`branch-${branch}`))
+          }
+          break
+      }
+    }
+  })
+}
+
+export function compile(seed: number, ops: number): string {
+  return JSON.stringify(
+    PutWfSpecRequest.toJson(build(seed, ops).compileWorkflow(), { emitDefaultValues: true }),
+    null,
+    2
+  )
+}
+
+/**
+ * Registers the seed's workflow with a real server (canon validation: both
+ * SDKs agreeing on a proto says nothing about the server ACCEPTING it).
+ * Pre-registers the fixed task and event defs the op table can reference.
+ */
+export async function register(seed: number, ops: number): Promise<void> {
+  const config = LHConfig.from({})
+  const client = config.getClient()
+  const swallowExisting = async (p: Promise<unknown>) => {
+    try {
+      await p
+    } catch (e) {
+      if (!String(e).includes('ALREADY_EXISTS')) throw e
+    }
+  }
+  for (let n = 0; n < 5; n++) {
+    await swallowExisting(client.putTaskDef({ name: `task-${n}` }))
+    await swallowExisting(client.putTaskDef({ name: `branch-${n}` }))
+    await swallowExisting(client.putExternalEventDef({ name: `evt-${n}` }))
+  }
+  await client.putWfSpec(build(seed, ops).compileWorkflow())
+}
