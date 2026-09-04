@@ -151,7 +151,7 @@ cd examples/js/quickstart
 npm install && npm start
 ```
 
-Then in another terminal, register the `ExternalEventDef` and `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
+Then in another terminal, register the `ExternalEventDef` and `WfSpec` (this quickstart uses `lhctl`; the JS SDK can also build and register `WfSpec`s in code — see `examples/js`):
 
 ```sh
 cd examples/js/quickstart
