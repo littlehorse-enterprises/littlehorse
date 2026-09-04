@@ -68,13 +68,12 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
     }
   }, [data, bucketNum, rangeNum])
 
-  const limitRps = quota?.writeRequestsPerSecond
   const bucketLimit = quota !== undefined ? quota.writeRequestsPerSecond * 60 * bucketNum : undefined
 
   return (
     <>
       <Navigation href={routes.appRoot()} title="Go back to home" />
-      <Details tenantId={tenantId} scope={scope} principalId={principalId} limitRps={limitRps} />
+      <Details tenantId={tenantId} />
       <hr className="mt-6" />
       <div className="mt-6">
         <Card>
