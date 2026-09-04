@@ -172,6 +172,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         } else if (rhsSourceType == SourceCase.MAP_BUILDER) {
             out.addAll(mapBuilder.getRequiredWfRunVarNames());
         }
+        if (lhPath != null) {
+            for (VariableAssignmentModel dynamicAssignment : lhPath.getDynamicAssignments()) {
+                out.addAll(dynamicAssignment.getRequiredWfRunVarNames());
+            }
+        }
         return out;
     }
 
@@ -195,6 +200,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
         if (rhsSourceType == SourceCase.MAP_BUILDER) {
             out.addAll(mapBuilder.getRequiredNodeNames());
+        }
+        if (lhPath != null) {
+            for (VariableAssignmentModel dynamicAssignment : lhPath.getDynamicAssignments()) {
+                out.addAll(dynamicAssignment.getRequiredNodeNames());
+            }
         }
         return out;
     }
@@ -366,6 +376,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
 
         if (lhPath != null) {
+            lhPath.validateDynamicSelectors(typeDef, manager, wfSpec.fetchThreadSpec(threadSpecName));
             return typeDef.getNestedType(lhPath, manager);
         }
 
@@ -414,6 +425,11 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(structBuilder.getRequiredVariableNames());
         } else if (mapBuilder != null) {
             out.addAll(mapBuilder.getRequiredVariableNames());
+        }
+        if (lhPath != null) {
+            for (VariableAssignmentModel dynamicAssignment : lhPath.getDynamicAssignments()) {
+                out.addAll(dynamicAssignment.getRequiredVariableNames());
+            }
         }
         return out;
     }

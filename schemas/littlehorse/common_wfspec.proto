@@ -212,6 +212,10 @@ message VariableMutation {
   // a specific sub-field of the variable.
   optional string lhs_json_path = 2;
 
+  // A typed path resolving to a nested value to mutate. Supports Struct,
+  // Array, JSON, and Map values.
+  optional LHPath lhs_lh_path = 7;
+
   // Defines the operation that we are executing.
   VariableMutationType operation = 3;
 
@@ -395,6 +399,9 @@ message LHPath {
 
       // The index of the item you want to access from a JSON_ARR or Array
       int32 index = 2;
+
+      // A selector value resolved from the current ThreadRun context.
+      VariableAssignment dynamic = 3;
     }
   }
 
