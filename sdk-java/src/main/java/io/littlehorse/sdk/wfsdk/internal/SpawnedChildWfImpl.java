@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import io.littlehorse.sdk.wfsdk.SpawnedChildWf;
+import java.io.Serializable;
 
 public class SpawnedChildWfImpl implements SpawnedChildWf {
 
@@ -18,5 +19,11 @@ public class SpawnedChildWfImpl implements SpawnedChildWf {
 
     public WorkflowThreadImpl getThread() {
         return thread;
+    }
+
+    @Override
+    public SpawnedChildWf withChildId(Serializable childId) {
+        thread.setChildWfId(sourceNodeName, childId);
+        return this;
     }
 }

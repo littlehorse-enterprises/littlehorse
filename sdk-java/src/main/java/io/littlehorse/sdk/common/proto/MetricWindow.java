@@ -57,6 +57,7 @@ private static final long serialVersionUID = 0L;
           com.google.protobuf.AbstractMessage.InternalOneOfEnum {
     WORKFLOW(2),
     TASK(3),
+    QUOTA_USAGE(4),
     METRIC_NOT_SET(0);
     private final int value;
     private MetricCase(int value) {
@@ -76,6 +77,7 @@ private static final long serialVersionUID = 0L;
       switch (value) {
         case 2: return WORKFLOW;
         case 3: return TASK;
+        case 4: return QUOTA_USAGE;
         case 0: return METRIC_NOT_SET;
         default: return null;
       }
@@ -191,6 +193,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.TaskMetrics.getDefaultInstance();
   }
 
+  public static final int QUOTA_USAGE_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   * @return Whether the quotaUsage field is set.
+   */
+  @java.lang.Override
+  public boolean hasQuotaUsage() {
+    return metricCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   * @return The quotaUsage.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QuotaUsageMetrics getQuotaUsage() {
+    if (metricCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_;
+    }
+    return io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder getQuotaUsageOrBuilder() {
+    if (metricCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_;
+    }
+    return io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -214,6 +247,9 @@ private static final long serialVersionUID = 0L;
     if (metricCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.TaskMetrics) metric_);
     }
+    if (metricCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -234,6 +270,10 @@ private static final long serialVersionUID = 0L;
     if (metricCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.sdk.common.proto.TaskMetrics) metric_);
+    }
+    if (metricCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -265,6 +305,10 @@ private static final long serialVersionUID = 0L;
         if (!getTask()
             .equals(other.getTask())) return false;
         break;
+      case 4:
+        if (!getQuotaUsage()
+            .equals(other.getQuotaUsage())) return false;
+        break;
       case 0:
       default:
     }
@@ -291,6 +335,10 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + TASK_FIELD_NUMBER;
         hash = (53 * hash) + getTask().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + QUOTA_USAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getQuotaUsage().hashCode();
         break;
       case 0:
       default:
@@ -448,6 +496,9 @@ private static final long serialVersionUID = 0L;
       if (taskBuilder_ != null) {
         taskBuilder_.clear();
       }
+      if (quotaUsageBuilder_ != null) {
+        quotaUsageBuilder_.clear();
+      }
       metricCase_ = 0;
       metric_ = null;
       return this;
@@ -505,6 +556,10 @@ private static final long serialVersionUID = 0L;
           taskBuilder_ != null) {
         result.metric_ = taskBuilder_.build();
       }
+      if (metricCase_ == 4 &&
+          quotaUsageBuilder_ != null) {
+        result.metric_ = quotaUsageBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -529,6 +584,10 @@ private static final long serialVersionUID = 0L;
         }
         case TASK: {
           mergeTask(other.getTask());
+          break;
+        }
+        case QUOTA_USAGE: {
+          mergeQuotaUsage(other.getQuotaUsage());
           break;
         }
         case METRIC_NOT_SET: {
@@ -582,6 +641,13 @@ private static final long serialVersionUID = 0L;
               metricCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetQuotaUsageFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metricCase_ = 4;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1053,6 +1119,148 @@ private static final long serialVersionUID = 0L;
       metricCase_ = 3;
       onChanged();
       return taskBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QuotaUsageMetrics, io.littlehorse.sdk.common.proto.QuotaUsageMetrics.Builder, io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder> quotaUsageBuilder_;
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     * @return Whether the quotaUsage field is set.
+     */
+    @java.lang.Override
+    public boolean hasQuotaUsage() {
+      return metricCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     * @return The quotaUsage.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QuotaUsageMetrics getQuotaUsage() {
+      if (quotaUsageBuilder_ == null) {
+        if (metricCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+      } else {
+        if (metricCase_ == 4) {
+          return quotaUsageBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    public Builder setQuotaUsage(io.littlehorse.sdk.common.proto.QuotaUsageMetrics value) {
+      if (quotaUsageBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metric_ = value;
+        onChanged();
+      } else {
+        quotaUsageBuilder_.setMessage(value);
+      }
+      metricCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    public Builder setQuotaUsage(
+        io.littlehorse.sdk.common.proto.QuotaUsageMetrics.Builder builderForValue) {
+      if (quotaUsageBuilder_ == null) {
+        metric_ = builderForValue.build();
+        onChanged();
+      } else {
+        quotaUsageBuilder_.setMessage(builderForValue.build());
+      }
+      metricCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    public Builder mergeQuotaUsage(io.littlehorse.sdk.common.proto.QuotaUsageMetrics value) {
+      if (quotaUsageBuilder_ == null) {
+        if (metricCase_ == 4 &&
+            metric_ != io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance()) {
+          metric_ = io.littlehorse.sdk.common.proto.QuotaUsageMetrics.newBuilder((io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metric_ = value;
+        }
+        onChanged();
+      } else {
+        if (metricCase_ == 4) {
+          quotaUsageBuilder_.mergeFrom(value);
+        } else {
+          quotaUsageBuilder_.setMessage(value);
+        }
+      }
+      metricCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    public Builder clearQuotaUsage() {
+      if (quotaUsageBuilder_ == null) {
+        if (metricCase_ == 4) {
+          metricCase_ = 0;
+          metric_ = null;
+          onChanged();
+        }
+      } else {
+        if (metricCase_ == 4) {
+          metricCase_ = 0;
+          metric_ = null;
+        }
+        quotaUsageBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.QuotaUsageMetrics.Builder getQuotaUsageBuilder() {
+      return internalGetQuotaUsageFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder getQuotaUsageOrBuilder() {
+      if ((metricCase_ == 4) && (quotaUsageBuilder_ != null)) {
+        return quotaUsageBuilder_.getMessageOrBuilder();
+      } else {
+        if (metricCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_;
+        }
+        return io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QuotaUsageMetrics, io.littlehorse.sdk.common.proto.QuotaUsageMetrics.Builder, io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder> 
+        internalGetQuotaUsageFieldBuilder() {
+      if (quotaUsageBuilder_ == null) {
+        if (!(metricCase_ == 4)) {
+          metric_ = io.littlehorse.sdk.common.proto.QuotaUsageMetrics.getDefaultInstance();
+        }
+        quotaUsageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.QuotaUsageMetrics, io.littlehorse.sdk.common.proto.QuotaUsageMetrics.Builder, io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder>(
+                (io.littlehorse.sdk.common.proto.QuotaUsageMetrics) metric_,
+                getParentForChildren(),
+                isClean());
+        metric_ = null;
+      }
+      metricCase_ = 4;
+      onChanged();
+      return quotaUsageBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetricWindow)

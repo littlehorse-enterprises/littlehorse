@@ -1012,7 +1012,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "\017\n\013ALL_UPDATES\020\000\022\032\n\026MINOR_REVISION_UPDAT" +
       "ES\020\001\022\016\n\nNO_UPDATES\020\002*X\n\032StructDefCompati" +
       "bilityType\022\025\n\021NO_SCHEMA_UPDATES\020\000\022#\n\037FUL" +
-      "LY_COMPATIBLE_SCHEMA_UPDATES\020\0012\232E\n\013Littl" +
+      "LY_COMPATIBLE_SCHEMA_UPDATES\020\0012\372E\n\013Littl" +
       "eHorse\022D\n\nPutTaskDef\022\036.littlehorse.PutTa" +
       "skDefRequest\032\024.littlehorse.TaskDef\"\000\022<\n\n" +
       "GetTaskDef\022\026.littlehorse.TaskDefId\032\024.lit" +
@@ -1211,32 +1211,34 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "equest\032\032.littlehorse.WfSpecMetrics\"\000\022R\n\017" +
       "ListTaskMetrics\022#.littlehorse.ListTaskMe" +
       "tricsRequest\032\030.littlehorse.MetricsList\"\000" +
-      "\022N\n\rListWfMetrics\022!.littlehorse.ListWfMe" +
-      "tricsRequest\032\030.littlehorse.MetricsList\"\000" +
-      "\022K\n\017GetMetricWindow\022\033.littlehorse.Metric" +
-      "WindowId\032\031.littlehorse.MetricWindow\"\000\022c\n" +
-      "\024SearchWfMetricWindow\022(.littlehorse.Sear" +
-      "chWfMetricWindowRequest\032\037.littlehorse.Me" +
-      "tricWindowIdList\"\000\022A\n\tPutTenant\022\035.little" +
-      "horse.PutTenantRequest\032\023.littlehorse.Ten" +
-      "ant\"\000\0229\n\tGetTenant\022\025.littlehorse.TenantI" +
-      "d\032\023.littlehorse.Tenant\"\000\022>\n\010PutQuota\022\034.l" +
-      "ittlehorse.PutQuotaRequest\032\022.littlehorse" +
-      ".Quota\"\000\0226\n\010GetQuota\022\024.littlehorse.Quota" +
-      "Id\032\022.littlehorse.Quota\"\000\022J\n\014PutPrincipal" +
-      "\022 .littlehorse.PutPrincipalRequest\032\026.lit" +
-      "tlehorse.Principal\"\000\022B\n\014GetPrincipal\022\030.l" +
-      "ittlehorse.PrincipalId\032\026.littlehorse.Pri" +
-      "ncipal\"\000\022:\n\006Whoami\022\026.google.protobuf.Emp" +
-      "ty\032\026.littlehorse.Principal\"\000\022M\n\020GetServe" +
-      "rVersion\022\026.google.protobuf.Empty\032\037.littl" +
-      "ehorse.LittleHorseVersion\"\000\022F\n\014CountNode" +
-      "Run\022 .littlehorse.CountNodeRunRequest\032\022." +
-      "littlehorse.Count\"\000\022F\n\014CountTaskRun\022 .li" +
-      "ttlehorse.CountTaskRunRequest\032\022.littleho" +
-      "rse.Count\"\000BM\n\037io.littlehorse.sdk.common" +
-      ".protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Co" +
-      "mmon.Protob\006proto3"
+      "\022^\n\025ListQuotaUsageMetrics\022).littlehorse." +
+      "ListQuotaUsageMetricsRequest\032\030.littlehor" +
+      "se.MetricsList\"\000\022N\n\rListWfMetrics\022!.litt" +
+      "lehorse.ListWfMetricsRequest\032\030.littlehor" +
+      "se.MetricsList\"\000\022K\n\017GetMetricWindow\022\033.li" +
+      "ttlehorse.MetricWindowId\032\031.littlehorse.M" +
+      "etricWindow\"\000\022c\n\024SearchWfMetricWindow\022(." +
+      "littlehorse.SearchWfMetricWindowRequest\032" +
+      "\037.littlehorse.MetricWindowIdList\"\000\022A\n\tPu" +
+      "tTenant\022\035.littlehorse.PutTenantRequest\032\023" +
+      ".littlehorse.Tenant\"\000\0229\n\tGetTenant\022\025.lit" +
+      "tlehorse.TenantId\032\023.littlehorse.Tenant\"\000" +
+      "\022>\n\010PutQuota\022\034.littlehorse.PutQuotaReque" +
+      "st\032\022.littlehorse.Quota\"\000\0226\n\010GetQuota\022\024.l" +
+      "ittlehorse.QuotaId\032\022.littlehorse.Quota\"\000" +
+      "\022J\n\014PutPrincipal\022 .littlehorse.PutPrinci" +
+      "palRequest\032\026.littlehorse.Principal\"\000\022B\n\014" +
+      "GetPrincipal\022\030.littlehorse.PrincipalId\032\026" +
+      ".littlehorse.Principal\"\000\022:\n\006Whoami\022\026.goo" +
+      "gle.protobuf.Empty\032\026.littlehorse.Princip" +
+      "al\"\000\022M\n\020GetServerVersion\022\026.google.protob" +
+      "uf.Empty\032\037.littlehorse.LittleHorseVersio" +
+      "n\"\000\022F\n\014CountNodeRun\022 .littlehorse.CountN" +
+      "odeRunRequest\032\022.littlehorse.Count\"\000\022F\n\014C" +
+      "ountTaskRun\022 .littlehorse.CountTaskRunRe" +
+      "quest\032\022.littlehorse.Count\"\000BM\n\037io.little" +
+      "horse.sdk.common.protoP\001Z\t.;lhproto\252\002\034Li" +
+      "ttleHorse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

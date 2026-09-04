@@ -409,6 +409,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return new NodeOutputImpl(nodeName, this);
     }
 
+    void setChildWfId(String sourceNodeName, Serializable childId) {
+        RunChildWfNode.Builder node = spec.getNodesOrThrow(sourceNodeName).getRunChildWf().toBuilder();
+        node.setChildId(assignVariable(childId));
+        spec.putNodes(sourceNodeName, Node.newBuilder().setRunChildWf(node).build());
+    }
+
     private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
 
         for (Object var : args) {
