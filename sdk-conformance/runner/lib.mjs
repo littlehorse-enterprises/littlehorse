@@ -55,12 +55,12 @@ export function readLedgerYaml(path) {
 
 /** Revision of the last commit that touched the corpus, "+dirty" if edited since. */
 export function corpusRevision() {
-  // path may have no committed history yet (e.g. mid-rename) → repo HEAD
-  const rev =
-    execFileSync('git', ['log', '-1', '--format=%h', '--', 'sdk-conformance/areas'], {
-      cwd: REPO_ROOT, encoding: 'utf8',
-    }).trim() ||
-    execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: REPO_ROOT, encoding: 'utf8' }).trim()
+  // The TREE hash of areas/, not a commit hash: computed purely from file
+  // contents, so identical corpora stamp identically no matter how history
+  // was squashed or rebased (a squash-merge once made every stamp "stale").
+  const rev = execFileSync('git', ['rev-parse', '--short', 'HEAD:sdk-conformance/areas'], {
+    cwd: REPO_ROOT, encoding: 'utf8',
+  }).trim()
   const dirty = execFileSync('git', ['status', '--porcelain', '--', 'sdk-conformance/areas'], {
     cwd: REPO_ROOT, encoding: 'utf8',
   }).trim()
