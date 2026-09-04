@@ -81,18 +81,10 @@ class Quota(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     WRITE_REQUESTS_PER_SECOND_FIELD_NUMBER: _ClassVar[int]
-    id: QuotaId
+    id: _object_id_pb2.QuotaId
     created_at: _timestamp_pb2.Timestamp
     write_requests_per_second: int
-    def __init__(self, id: _Optional[_Union[QuotaId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., write_requests_per_second: _Optional[int] = ...) -> None: ...
-
-class QuotaId(_message.Message):
-    __slots__ = ("tenant", "principal")
-    TENANT_FIELD_NUMBER: _ClassVar[int]
-    PRINCIPAL_FIELD_NUMBER: _ClassVar[int]
-    tenant: _object_id_pb2.TenantId
-    principal: _object_id_pb2.PrincipalId
-    def __init__(self, tenant: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., principal: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.QuotaId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., write_requests_per_second: _Optional[int] = ...) -> None: ...
 
 class ServerACLs(_message.Message):
     __slots__ = ("acls",)
@@ -170,5 +162,5 @@ class PutQuotaRequest(_message.Message):
 class DeleteQuotaRequest(_message.Message):
     __slots__ = ("id",)
     ID_FIELD_NUMBER: _ClassVar[int]
-    id: QuotaId
-    def __init__(self, id: _Optional[_Union[QuotaId, _Mapping]] = ...) -> None: ...
+    id: _object_id_pb2.QuotaId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.QuotaId, _Mapping]] = ...) -> None: ...

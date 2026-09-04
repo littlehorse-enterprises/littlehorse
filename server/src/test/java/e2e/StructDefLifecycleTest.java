@@ -73,6 +73,70 @@ public class StructDefLifecycleTest {
     }
 
     @Test
+    void shouldStoreStructFieldDefDescription() {
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("car-12")
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "model",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .setDescription("The car model name")
+                                        .build()))
+                .build());
+
+        waitForStructDef("car-12", null);
+
+        StructDef structDef =
+                client.getStructDef(StructDefId.newBuilder().setName("car-12").build());
+
+        assertThat(structDef.getStructDef().getFieldsMap().get("model").getDescription())
+                .isEqualTo("The car model name");
+    }
+
+    @Test
+    void shouldUpdateDescriptionByBumpingVersion() {
+        String structDefName = UUID.randomUUID().toString();
+        InlineStructDef schema = InlineStructDef.newBuilder()
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(schema)
+                .setDescription("Original description")
+                .build());
+
+        waitForStructDef(structDefName, 0);
+
+        StructDef result = client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(schema)
+                .setDescription("Updated description")
+                .build());
+
+        assertThat(result.getId().getVersion()).isEqualTo(1);
+        assertThat(result.getDescription()).isEqualTo("Updated description");
+
+        StructDef originalVersion = client.getStructDef(
+                StructDefId.newBuilder().setName(structDefName).setVersion(0).build());
+        assertThat(originalVersion.getDescription()).isEqualTo("Original description");
+
+        Awaitility.await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> {
+            StructDef fetched = client.getStructDef(StructDefId.newBuilder()
+                    .setName(structDefName)
+                    .setVersion(1)
+                    .build());
+            assertThat(fetched.getDescription()).isEqualTo("Updated description");
+        });
+    }
+
+    @Test
     void shouldBumpVersionWhenPuttingCompatibleStructDefChanges() {
         client.putStructDef(PutStructDefRequest.newBuilder()
                 .setName("car-0")

@@ -1,0 +1,48 @@
+{
+  "name": "probe-wf-default-task-backoff",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-noop-TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-noop-TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "noop"
+            },
+            "timeoutSeconds": 0,
+            "retries": 0,
+            "variables": [],
+            "exponentialBackoff": {
+              "baseIntervalMs": 1000,
+              "maxDelayMs": "60000",
+              "multiplier": 2.0
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

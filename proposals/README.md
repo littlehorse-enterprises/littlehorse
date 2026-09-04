@@ -47,5 +47,9 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 019 | [Buildling `Struct`s Inside `WfSpec`](./019-struct-field-assignment-in-wfspec.md)                  | Colt McNealy                     | #2219 |
 | 020 | [Quotas](./019-quotas.md)                                                                          | Colt McNealy                     | TODO |
 | 021 | [Counted Tags](./021-counted-tags.md)                                                              | Eduwer Camacaro                  | TODO |
-| 023 | [Workflow Migrations](./022-workflow-migrations.md)                                                | Jake Rose.                       | TODO |
-| 023 | [Native Maps](./022-native-maps.md)                                                              | Jacob Snarr                      | TODO |
+| 022 | [Workflow Migrations](./022-workflow-migrations.md)                                                | Jake Rose.                       | TODO |
+| 023 | [Native Maps](./024-native-maps.md)                                                                | Jacob Snarr                      | [#2368](https://github.com/littlehorse-enterprises/littlehorse/pull/2368)  |
+| 024 | [Bulk Delete WfRun](./024-bulk-delete-wf-run.md)                                                | Eduwer Camacaro                       | [#2370](https://github.com/littlehorse-enterprises/littlehorse/pull/2370) |
+| 025 | [StructFieldDef Descriptions](./025-structfielddef-descriptions.md)                                | Jacob Snarr                      | TODO |
+| 026 | [Thread Run Queue](./026-thread-run-queue.md)                                                      | Jake Rose                        | TODO |
+| 027 | [RunChildWf with Specific ID](./027-runchildwf-with-id.md)                                         | Colt McNealy                     | [#2501](https://github.com/littlehorse-enterprises/littlehorse/issues/2501) |

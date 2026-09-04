@@ -22,8 +22,11 @@ export const searchWfSpecs = async ({
     bookmark: bookmarkAsString ? Buffer.from(bookmarkAsString, 'base64') : undefined,
     limit,
   })
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...wfSpecsRest } = wfSpecs
   return {
-    ...wfSpecs,
-    bookmarkAsString: wfSpecs.bookmark ? Buffer.from(wfSpecs.bookmark).toString('base64') : undefined,
+    ...wfSpecsRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
   }
 }

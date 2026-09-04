@@ -1,34 +1,43 @@
-## Running MapExample
+## MapExample: a typed-Map inventory workflow
 
-This example demonstrates using LittleHorse typed Maps.
+This example uses a typed Map to reserve inventory. The workflow:
 
-Run the example Java app:
+- checks the available stock for the requested SKU
+- reserves the order when enough stock is available
+- updates the SKU's quantity in the inventory Map
+- sends the reservation and updated inventory to task workers
+- notifies a worker when the order cannot be fulfilled
+
+Start the workers and register the `reserve-inventory` workflow:
 
 ```
 ./gradlew example-maps:run
 ```
 
-In another terminal, start a workflow run with `lhctl`.
-
-The `my-map` input variable is a typed `Map<STR, INT>`. Provide it as a JSON object; the
-keys and values are coerced to the declared key/value types:
-
-```
-# Override the map input with your own entries
-lhctl run example-maps my-map '{"apples": 10, "grapes": 7}'
-```
-
-`my-map` has a default value, so you can also run it with no input:
+In another terminal, start a workflow run with `lhctl`. The workflow loads its typed
+`Map<STR, INT>` inventory from the `get-inventory` task, then reserves two apples and
+saves the remaining quantity:
 
 ```
-# Uses the default map: {"apples": 3, "bananas": 5, "cherries": 12}
-lhctl run example-maps
+lhctl run reserve-inventory
 ```
 
-Inspect the run and task/node outputs:
+Choose an item and quantity:
 
 ```
-# Show the workflow run
+lhctl run reserve-inventory item-to-reserve bananas quantity-to-reserve 4
+```
+
+Request more than is available to exercise the out-of-stock path:
+
+```
+lhctl run reserve-inventory item-to-reserve apples quantity-to-reserve 10
+```
+
+## Inspecting a run
+
+```
+# Show the workflow run and its variables (my-map, total-count, apples-qty, ...)
 lhctl get wfRun <wf_run_id>
 
 # List all node runs for the workflow

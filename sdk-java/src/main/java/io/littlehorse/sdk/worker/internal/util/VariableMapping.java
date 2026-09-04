@@ -179,7 +179,16 @@ public class VariableMapping {
             if (expectsNativeLHMap && val.getValueCase() == VariableValue.ValueCase.MAP) {
                 return assignNativeMap(val);
             }
-            return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry, this.placeholderValues);
+            Object result = LHLibUtil.varValToObj(
+                    val, this.parameterJavaType, this.typeAdapterRegistry, this.placeholderValues);
+            if (result == null && parameterJavaType.isPrimitive()) {
+                throw new InputVarSubstitutionException(
+                        String.format(
+                                "Task variable <%s> resolved to null but method parameter type <%s> is primitive and cannot accept null. Use boxed type (e.g. Long instead of long) or ensure value is always present.",
+                                taskDefParamName, parameterJavaType.getName()),
+                        null);
+            }
+            return result;
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);

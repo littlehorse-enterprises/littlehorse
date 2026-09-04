@@ -1,4 +1,5 @@
 import {
+  LHPath,
   Timestamp,
   TypeDefinition,
   VariableAssignment,
@@ -17,6 +18,8 @@ import {
   getVariableDefType,
   getVariableFilterValue,
   getVariableValue,
+  lhPathToString,
+  variableMutationLhsToString,
 } from './variables'
 import { normalizeUtcTimestampString } from './timestamp'
 
@@ -332,6 +335,96 @@ describe('getVariable', () => {
       },
     }
     expect(getVariable(variable)).toEqual('NULL')
+  })
+})
+
+describe('lhPathToString', () => {
+  it('should create string from index selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'index', index: 0 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[0]')
+  })
+
+  it('should create string from key selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car')
+  })
+
+  it('should create string from dynamic selector', () => {
+    const lhPath: LHPath = {
+      path: [
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: { oneofKind: 'variableName', variableName: 'key' },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[{key}]')
+  })
+
+  it('should create string from nested static and dynamic selectors', () => {
+    const lhPath: LHPath = {
+      path: [
+        { selectorType: { oneofKind: 'key', key: 'anotherMap' } },
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: {
+                oneofKind: 'literalValue',
+                literalValue: { value: { oneofKind: 'str', str: 'key' } },
+              },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.anotherMap["key"]')
+  })
+
+  it('should create string from selector list', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }, { selectorType: { oneofKind: 'index', index: 10 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car[10]')
+  })
+})
+
+describe('variableMutationLhsToString', () => {
+  it('formats a root variable target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory' })).toEqual('inventory')
+  })
+
+  it('formats a legacy JSONPath target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory', lhsJsonPath: '$.apples' })).toEqual('inventory.apples')
+  })
+
+  it('formats a typed LHPath target', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'apples' } }] },
+      })
+    ).toEqual('inventory.apples')
+  })
+
+  it('prefers a typed LHPath over a legacy JSONPath', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsJsonPath: '$.legacy',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'typed' } }] },
+      })
+    ).toEqual('inventory.typed')
   })
 })
 

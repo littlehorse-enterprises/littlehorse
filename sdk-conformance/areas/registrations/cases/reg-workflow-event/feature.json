@@ -1,0 +1,18 @@
+{
+  "externalEventDefs": [  ],
+  "workflowEventDefs": [
+{
+  "name": "milestone",
+  "contentType": {
+    "returnType": {
+      "primitiveType": "STR",
+      "masked": false
+    }
+  }
+}
+  ],
+  "requiredTaskDefNames": [],
+  "requiredExternalEventDefNames": [],
+  "requiredChildWfSpecNames": [],
+  "requiredWorkflowEventDefNames": ["milestone"]
+}

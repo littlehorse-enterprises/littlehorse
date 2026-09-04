@@ -192,6 +192,7 @@ The scripts handle tasks such as:
 - **Validation** — Pre-release checks: version consistency, branch constraints, clean Git tree, and snapshot format verification.
 - **Version extraction** — Determining the current version from `gradle.properties` or Git tags.
 - **Cherry-pick** — Safely cherry-picking a commit from `master` onto a release branch for patch releases.
+- **Release notes** — Resolving the hand-written release notes file for a version (see [Release Notes](#release-notes)).
 
 ### Running Locally
 
@@ -201,6 +202,26 @@ cd release-manager/scripts
 python3 validate.py        --type minor --version 1.2.0
 python3 extract_version.py
 python3 cherry_pick.py     abc123def 1.0
+python3 release_notes.py   --version 1.2.0
+```
+
+## Release Notes
+
+Release notes are hand-written (not generated from the Git history) and live in the [`release_notes/`](../release_notes) directory at the repo root. The GitHub Release body is taken verbatim from the matching file.
+
+| Release | File |
+|---|---|
+| `v1.2.0` | `release_notes/1.2.0.md`, falling back to `release_notes/1.2.md` |
+| `v1.2.0-RC1` | Same as `v1.2.0` (pre-release qualifiers are stripped) |
+| `v1.1.2` | `release_notes/1.1.2.md` |
+
+If no matching file exists, the [`release`](../.github/workflows/release.yml) workflow fails in its first job (`prepare`), before any artifact is published — so **write the release notes before tagging**.
+
+Resolve the file for a version locally with:
+
+```bash
+python3 release-manager/scripts/release_notes.py --version 1.2.0            # prints the path
+python3 release-manager/scripts/release_notes.py --version 1.2.0 --output CHANGELOG.md
 ```
 
 ### Running from GitHub Actions

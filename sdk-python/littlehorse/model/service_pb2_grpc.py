@@ -301,6 +301,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 _registered_method=True)
+        self.SearchWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+                request_serializer=service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=service__pb2.WorkflowMigrationPlanIdList.FromString,
+                _registered_method=True)
         self.SearchCorrelatedEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchCorrelatedEvent',
                 request_serializer=service__pb2.SearchCorrelatedEventRequest.SerializeToString,
@@ -516,6 +521,11 @@ class LittleHorseStub(object):
                 request_serializer=metrics__pb2.ListTaskMetricsRequest.SerializeToString,
                 response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
+        self.ListQuotaUsageMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListQuotaUsageMetrics',
+                request_serializer=metrics__pb2.ListQuotaUsageMetricsRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricsList.FromString,
+                _registered_method=True)
         self.ListWfMetrics = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListWfMetrics',
                 request_serializer=metrics__pb2.ListWfMetricsRequest.SerializeToString,
@@ -548,7 +558,7 @@ class LittleHorseStub(object):
                 _registered_method=True)
         self.GetQuota = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetQuota',
-                request_serializer=acls__pb2.QuotaId.SerializeToString,
+                request_serializer=object__id__pb2.QuotaId.SerializeToString,
                 response_deserializer=acls__pb2.Quota.FromString,
                 _registered_method=True)
         self.PutPrincipal = channel.unary_unary(
@@ -978,6 +988,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SearchCorrelatedEvent(self, request, context):
         """Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
         events that may be orphaned.
@@ -1304,6 +1321,13 @@ class LittleHorseServicer(object):
 
     def ListTaskMetrics(self, request, context):
         """Lists available metric windows for a given TaskDefId and time range.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListQuotaUsageMetrics(self, request, context):
+        """Lists quota usage metric windows for a quota and time range.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1656,6 +1680,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.ApplyWorkflowMigrationPlanRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
+            'SearchWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.SearchWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=service__pb2.WorkflowMigrationPlanIdList.SerializeToString,
+            ),
             'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchCorrelatedEvent,
                     request_deserializer=service__pb2.SearchCorrelatedEventRequest.FromString,
@@ -1871,6 +1900,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=metrics__pb2.ListTaskMetricsRequest.FromString,
                     response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
+            'ListQuotaUsageMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListQuotaUsageMetrics,
+                    request_deserializer=metrics__pb2.ListQuotaUsageMetricsRequest.FromString,
+                    response_serializer=metrics__pb2.MetricsList.SerializeToString,
+            ),
             'ListWfMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListWfMetrics,
                     request_deserializer=metrics__pb2.ListWfMetricsRequest.FromString,
@@ -1903,7 +1937,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             ),
             'GetQuota': grpc.unary_unary_rpc_method_handler(
                     servicer.GetQuota,
-                    request_deserializer=acls__pb2.QuotaId.FromString,
+                    request_deserializer=object__id__pb2.QuotaId.FromString,
                     response_serializer=acls__pb2.Quota.SerializeToString,
             ),
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
@@ -3298,6 +3332,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def SearchWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+            service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+            service__pb2.WorkflowMigrationPlanIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def SearchCorrelatedEvent(request,
             target,
             options=(),
@@ -4459,6 +4520,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def ListQuotaUsageMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ListQuotaUsageMetrics',
+            metrics__pb2.ListQuotaUsageMetricsRequest.SerializeToString,
+            metrics__pb2.MetricsList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ListWfMetrics(request,
             target,
             options=(),
@@ -4635,7 +4723,7 @@ class LittleHorse(object):
             request,
             target,
             '/littlehorse.LittleHorse/GetQuota',
-            acls__pb2.QuotaId.SerializeToString,
+            object__id__pb2.QuotaId.SerializeToString,
             acls__pb2.Quota.FromString,
             options,
             channel_credentials,
