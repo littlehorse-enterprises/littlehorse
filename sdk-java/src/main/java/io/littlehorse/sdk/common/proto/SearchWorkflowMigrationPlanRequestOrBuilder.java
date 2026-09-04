@@ -50,30 +50,61 @@ public interface SearchWorkflowMigrationPlanRequestOrBuilder extends
 
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
+   * <code>string wf_spec_name = 3;</code>
+   * @return Whether the wfSpecName field is set.
+   */
+  boolean hasWfSpecName();
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 3;</code>
+   * @return The wfSpecName.
+   */
+  java.lang.String getWfSpecName();
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
+   * </pre>
+   *
+   * <code>string wf_spec_name = 3;</code>
+   * @return The bytes for wfSpecName.
+   */
+  com.google.protobuf.ByteString
+      getWfSpecNameBytes();
+
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
+   * </pre>
+   *
+   * <code>string prefix = 4;</code>
    * @return Whether the prefix field is set.
    */
   boolean hasPrefix();
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
+   * <code>string prefix = 4;</code>
    * @return The prefix.
    */
   java.lang.String getPrefix();
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
+   * <code>string prefix = 4;</code>
    * @return The bytes for prefix.
    */
   com.google.protobuf.ByteString
       getPrefixBytes();
+
+  io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest.WorkflowMigrationPlanCriteriaCase getWorkflowMigrationPlanCriteriaCase();
 }

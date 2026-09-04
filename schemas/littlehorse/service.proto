@@ -1161,8 +1161,15 @@ message SearchWorkflowMigrationPlanRequest {
   // Maximum results to return in one request.
   optional int32 limit = 2;
 
-  // Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
-  optional string prefix = 3;
+  // Optionally specify search criteria. If no criteria are specified, all
+  // WorkflowMigrationPlan's are returned.
+  oneof workflow_migration_plan_criteria {
+    // Return WorkflowMigrationPlan's whose source WfSpec has this name.
+    string wf_spec_name = 3;
+
+    // Return WorkflowMigrationPlan's whose name starts with this prefix.
+    string prefix = 4;
+  }
 }
 
 // EXPERIMENTAL: List of WorkflowMigrationPlan Id's.

@@ -1547,11 +1547,30 @@ export interface SearchWorkflowMigrationPlanRequest {
      */
     limit?: number;
     /**
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Optionally specify search criteria. If no criteria are specified, all
+     * WorkflowMigrationPlan's are returned.
      *
-     * @generated from protobuf field: optional string prefix = 3
+     * @generated from protobuf oneof: workflow_migration_plan_criteria
      */
-    prefix?: string;
+    workflowMigrationPlanCriteria: {
+        oneofKind: "wfSpecName";
+        /**
+         * Return WorkflowMigrationPlan's whose source WfSpec has this name.
+         *
+         * @generated from protobuf field: string wf_spec_name = 3
+         */
+        wfSpecName: string;
+    } | {
+        oneofKind: "prefix";
+        /**
+         * Return WorkflowMigrationPlan's whose name starts with this prefix.
+         *
+         * @generated from protobuf field: string prefix = 4
+         */
+        prefix: string;
+    } | {
+        oneofKind: undefined;
+    };
 }
 /**
  * EXPERIMENTAL: List of WorkflowMigrationPlan Id's.
@@ -6341,11 +6360,13 @@ class SearchWorkflowMigrationPlanRequest$Type extends MessageType<SearchWorkflow
         super("littlehorse.SearchWorkflowMigrationPlanRequest", [
             { no: 1, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
             { no: 2, name: "limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "prefix", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "wf_spec_name", kind: "scalar", oneof: "workflowMigrationPlanCriteria", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "prefix", kind: "scalar", oneof: "workflowMigrationPlanCriteria", T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<SearchWorkflowMigrationPlanRequest>): SearchWorkflowMigrationPlanRequest {
         const message = globalThis.Object.create((this.messagePrototype!));
+        message.workflowMigrationPlanCriteria = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial<SearchWorkflowMigrationPlanRequest>(this, message, value);
         return message;
@@ -6361,8 +6382,17 @@ class SearchWorkflowMigrationPlanRequest$Type extends MessageType<SearchWorkflow
                 case /* optional int32 limit */ 2:
                     message.limit = reader.int32();
                     break;
-                case /* optional string prefix */ 3:
-                    message.prefix = reader.string();
+                case /* string wf_spec_name */ 3:
+                    message.workflowMigrationPlanCriteria = {
+                        oneofKind: "wfSpecName",
+                        wfSpecName: reader.string()
+                    };
+                    break;
+                case /* string prefix */ 4:
+                    message.workflowMigrationPlanCriteria = {
+                        oneofKind: "prefix",
+                        prefix: reader.string()
+                    };
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -6382,9 +6412,12 @@ class SearchWorkflowMigrationPlanRequest$Type extends MessageType<SearchWorkflow
         /* optional int32 limit = 2; */
         if (message.limit !== undefined)
             writer.tag(2, WireType.Varint).int32(message.limit);
-        /* optional string prefix = 3; */
-        if (message.prefix !== undefined)
-            writer.tag(3, WireType.LengthDelimited).string(message.prefix);
+        /* string wf_spec_name = 3; */
+        if (message.workflowMigrationPlanCriteria.oneofKind === "wfSpecName")
+            writer.tag(3, WireType.LengthDelimited).string(message.workflowMigrationPlanCriteria.wfSpecName);
+        /* string prefix = 4; */
+        if (message.workflowMigrationPlanCriteria.oneofKind === "prefix")
+            writer.tag(4, WireType.LengthDelimited).string(message.workflowMigrationPlanCriteria.prefix);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

@@ -600,14 +600,16 @@ class ExternalEventDefIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchWorkflowMigrationPlanRequest(_message.Message):
-    __slots__ = ("bookmark", "limit", "prefix")
+    __slots__ = ("bookmark", "limit", "wf_spec_name", "prefix")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
     PREFIX_FIELD_NUMBER: _ClassVar[int]
     bookmark: bytes
     limit: int
+    wf_spec_name: str
     prefix: str
-    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ...) -> None: ...
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., prefix: _Optional[str] = ...) -> None: ...
 
 class WorkflowMigrationPlanIdList(_message.Message):
     __slots__ = ("results", "bookmark")

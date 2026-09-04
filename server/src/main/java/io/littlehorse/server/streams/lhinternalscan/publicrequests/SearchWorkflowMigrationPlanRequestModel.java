@@ -9,16 +9,25 @@ import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest;
+import io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest.WorkflowMigrationPlanCriteriaCase;
 import io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId;
 import io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowMigrationPlanReply;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.List;
+import java.util.Optional;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
+@Setter
 public class SearchWorkflowMigrationPlanRequestModel
         extends PublicScanRequest<
                 SearchWorkflowMigrationPlanRequest,
@@ -27,8 +36,11 @@ public class SearchWorkflowMigrationPlanRequestModel
                 WorkflowMigrationPlanIdModel,
                 SearchWorkflowMigrationPlanReply> {
 
+    private WorkflowMigrationPlanCriteriaCase type;
+    private String wfSpecName;
     private String prefix;
 
+    @Override
     public Class<SearchWorkflowMigrationPlanRequest> getProtoBaseClass() {
         return SearchWorkflowMigrationPlanRequest.class;
     }
@@ -38,6 +50,7 @@ public class SearchWorkflowMigrationPlanRequestModel
         return LHStore.GLOBAL_METADATA;
     }
 
+    @Override
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WORKFLOW_MIGRATION_PLAN;
     }
@@ -53,9 +66,20 @@ public class SearchWorkflowMigrationPlanRequestModel
                 log.error("Failed to load bookmark: {}", exn.getMessage(), exn);
             }
         }
-        if (p.hasPrefix()) prefix = p.getPrefix();
+        type = p.getWorkflowMigrationPlanCriteriaCase();
+        switch (type) {
+            case WF_SPEC_NAME:
+                wfSpecName = p.getWfSpecName();
+                break;
+            case PREFIX:
+                prefix = p.getPrefix();
+                break;
+            case WORKFLOWMIGRATIONPLANCRITERIA_NOT_SET:
+                // Nothing to do; return all WorkflowMigrationPlan's.
+        }
     }
 
+    @Override
     public SearchWorkflowMigrationPlanRequest.Builder toProto() {
         SearchWorkflowMigrationPlanRequest.Builder out = SearchWorkflowMigrationPlanRequest.newBuilder();
         if (bookmark != null) {
@@ -64,7 +88,16 @@ public class SearchWorkflowMigrationPlanRequestModel
         if (limit != null) {
             out.setLimit(limit);
         }
-        if (prefix != null) out.setPrefix(prefix);
+        switch (type) {
+            case WF_SPEC_NAME:
+                out.setWfSpecName(wfSpecName);
+                break;
+            case PREFIX:
+                out.setPrefix(prefix);
+                break;
+            case WORKFLOWMIGRATIONPLANCRITERIA_NOT_SET:
+                // Nothing to do; serialize no search criteria.
+        }
 
         return out;
     }
@@ -82,8 +115,18 @@ public class SearchWorkflowMigrationPlanRequestModel
     }
 
     @Override
+    public List<Attribute> getSearchAttributes() {
+        if (wfSpecName != null) {
+            return List.of(new Attribute("wfSpecName", wfSpecName));
+        }
+        return List.of();
+    }
+
+    @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) {
-        if (prefix != null && !prefix.equals("")) {
+        if (wfSpecName != null && !wfSpecName.isEmpty()) {
+            return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
+        } else if (prefix != null && !prefix.isEmpty()) {
             return new ObjectIdScanBoundaryStrategy(LHConstants.META_PARTITION_KEY, prefix, prefix + "~");
         } else {
             return ObjectIdScanBoundaryStrategy.prefixMetadataScan();

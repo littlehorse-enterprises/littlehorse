@@ -33,7 +33,6 @@ private static final long serialVersionUID = 0L;
   }
   private SearchWorkflowMigrationPlanRequest() {
     bookmark_ = com.google.protobuf.ByteString.EMPTY;
-    prefix_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -50,6 +49,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int workflowMigrationPlanCriteriaCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object workflowMigrationPlanCriteria_;
+  public enum WorkflowMigrationPlanCriteriaCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    WF_SPEC_NAME(3),
+    PREFIX(4),
+    WORKFLOWMIGRATIONPLANCRITERIA_NOT_SET(0);
+    private final int value;
+    private WorkflowMigrationPlanCriteriaCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WorkflowMigrationPlanCriteriaCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static WorkflowMigrationPlanCriteriaCase forNumber(int value) {
+      switch (value) {
+        case 3: return WF_SPEC_NAME;
+        case 4: return PREFIX;
+        case 0: return WORKFLOWMIGRATIONPLANCRITERIA_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public WorkflowMigrationPlanCriteriaCase
+  getWorkflowMigrationPlanCriteriaCase() {
+    return WorkflowMigrationPlanCriteriaCase.forNumber(
+        workflowMigrationPlanCriteriaCase_);
+  }
+
   public static final int BOOKMARK_FIELD_NUMBER = 1;
   private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
   /**
@@ -104,59 +145,128 @@ private static final long serialVersionUID = 0L;
     return limit_;
   }
 
-  public static final int PREFIX_FIELD_NUMBER = 3;
-  @SuppressWarnings("serial")
-  private volatile java.lang.Object prefix_ = "";
+  public static final int WF_SPEC_NAME_FIELD_NUMBER = 3;
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
-   * @return Whether the prefix field is set.
+   * <code>string wf_spec_name = 3;</code>
+   * @return Whether the wfSpecName field is set.
    */
-  @java.lang.Override
-  public boolean hasPrefix() {
-    return ((bitField0_ & 0x00000004) != 0);
+  public boolean hasWfSpecName() {
+    return workflowMigrationPlanCriteriaCase_ == 3;
   }
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
-   * @return The prefix.
+   * <code>string wf_spec_name = 3;</code>
+   * @return The wfSpecName.
    */
-  @java.lang.Override
-  public java.lang.String getPrefix() {
-    java.lang.Object ref = prefix_;
+  public java.lang.String getWfSpecName() {
+    java.lang.Object ref = "";
+    if (workflowMigrationPlanCriteriaCase_ == 3) {
+      ref = workflowMigrationPlanCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
       com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
-      prefix_ = s;
+      if (workflowMigrationPlanCriteriaCase_ == 3) {
+        workflowMigrationPlanCriteria_ = s;
+      }
       return s;
     }
   }
   /**
    * <pre>
-   * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+   * Return WorkflowMigrationPlan's whose source WfSpec has this name.
    * </pre>
    *
-   * <code>optional string prefix = 3;</code>
-   * @return The bytes for prefix.
+   * <code>string wf_spec_name = 3;</code>
+   * @return The bytes for wfSpecName.
    */
-  @java.lang.Override
   public com.google.protobuf.ByteString
-      getPrefixBytes() {
-    java.lang.Object ref = prefix_;
+      getWfSpecNameBytes() {
+    java.lang.Object ref = "";
+    if (workflowMigrationPlanCriteriaCase_ == 3) {
+      ref = workflowMigrationPlanCriteria_;
+    }
     if (ref instanceof java.lang.String) {
       com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
-      prefix_ = b;
+      if (workflowMigrationPlanCriteriaCase_ == 3) {
+        workflowMigrationPlanCriteria_ = b;
+      }
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int PREFIX_FIELD_NUMBER = 4;
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
+   * </pre>
+   *
+   * <code>string prefix = 4;</code>
+   * @return Whether the prefix field is set.
+   */
+  public boolean hasPrefix() {
+    return workflowMigrationPlanCriteriaCase_ == 4;
+  }
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
+   * </pre>
+   *
+   * <code>string prefix = 4;</code>
+   * @return The prefix.
+   */
+  public java.lang.String getPrefix() {
+    java.lang.Object ref = "";
+    if (workflowMigrationPlanCriteriaCase_ == 4) {
+      ref = workflowMigrationPlanCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      if (workflowMigrationPlanCriteriaCase_ == 4) {
+        workflowMigrationPlanCriteria_ = s;
+      }
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * Return WorkflowMigrationPlan's whose name starts with this prefix.
+   * </pre>
+   *
+   * <code>string prefix = 4;</code>
+   * @return The bytes for prefix.
+   */
+  public com.google.protobuf.ByteString
+      getPrefixBytes() {
+    java.lang.Object ref = "";
+    if (workflowMigrationPlanCriteriaCase_ == 4) {
+      ref = workflowMigrationPlanCriteria_;
+    }
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      if (workflowMigrationPlanCriteriaCase_ == 4) {
+        workflowMigrationPlanCriteria_ = b;
+      }
       return b;
     } else {
       return (com.google.protobuf.ByteString) ref;
@@ -183,8 +293,11 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeInt32(2, limit_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      com.google.protobuf.GeneratedMessage.writeString(output, 3, prefix_);
+    if (workflowMigrationPlanCriteriaCase_ == 3) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 3, workflowMigrationPlanCriteria_);
+    }
+    if (workflowMigrationPlanCriteriaCase_ == 4) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, workflowMigrationPlanCriteria_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -203,8 +316,11 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, limit_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
-      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, prefix_);
+    if (workflowMigrationPlanCriteriaCase_ == 3) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(3, workflowMigrationPlanCriteria_);
+    }
+    if (workflowMigrationPlanCriteriaCase_ == 4) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, workflowMigrationPlanCriteria_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -231,10 +347,18 @@ private static final long serialVersionUID = 0L;
       if (getLimit()
           != other.getLimit()) return false;
     }
-    if (hasPrefix() != other.hasPrefix()) return false;
-    if (hasPrefix()) {
-      if (!getPrefix()
-          .equals(other.getPrefix())) return false;
+    if (!getWorkflowMigrationPlanCriteriaCase().equals(other.getWorkflowMigrationPlanCriteriaCase())) return false;
+    switch (workflowMigrationPlanCriteriaCase_) {
+      case 3:
+        if (!getWfSpecName()
+            .equals(other.getWfSpecName())) return false;
+        break;
+      case 4:
+        if (!getPrefix()
+            .equals(other.getPrefix())) return false;
+        break;
+      case 0:
+      default:
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -255,9 +379,17 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + LIMIT_FIELD_NUMBER;
       hash = (53 * hash) + getLimit();
     }
-    if (hasPrefix()) {
-      hash = (37 * hash) + PREFIX_FIELD_NUMBER;
-      hash = (53 * hash) + getPrefix().hashCode();
+    switch (workflowMigrationPlanCriteriaCase_) {
+      case 3:
+        hash = (37 * hash) + WF_SPEC_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecName().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + PREFIX_FIELD_NUMBER;
+        hash = (53 * hash) + getPrefix().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -396,7 +528,8 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       bookmark_ = com.google.protobuf.ByteString.EMPTY;
       limit_ = 0;
-      prefix_ = "";
+      workflowMigrationPlanCriteriaCase_ = 0;
+      workflowMigrationPlanCriteria_ = null;
       return this;
     }
 
@@ -424,6 +557,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest buildPartial() {
       io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest result = new io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -439,11 +573,12 @@ private static final long serialVersionUID = 0L;
         result.limit_ = limit_;
         to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000004) != 0)) {
-        result.prefix_ = prefix_;
-        to_bitField0_ |= 0x00000004;
-      }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest result) {
+      result.workflowMigrationPlanCriteriaCase_ = workflowMigrationPlanCriteriaCase_;
+      result.workflowMigrationPlanCriteria_ = this.workflowMigrationPlanCriteria_;
     }
 
     @java.lang.Override
@@ -464,10 +599,22 @@ private static final long serialVersionUID = 0L;
       if (other.hasLimit()) {
         setLimit(other.getLimit());
       }
-      if (other.hasPrefix()) {
-        prefix_ = other.prefix_;
-        bitField0_ |= 0x00000004;
-        onChanged();
+      switch (other.getWorkflowMigrationPlanCriteriaCase()) {
+        case WF_SPEC_NAME: {
+          workflowMigrationPlanCriteriaCase_ = 3;
+          workflowMigrationPlanCriteria_ = other.workflowMigrationPlanCriteria_;
+          onChanged();
+          break;
+        }
+        case PREFIX: {
+          workflowMigrationPlanCriteriaCase_ = 4;
+          workflowMigrationPlanCriteria_ = other.workflowMigrationPlanCriteria_;
+          onChanged();
+          break;
+        }
+        case WORKFLOWMIGRATIONPLANCRITERIA_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -506,10 +653,17 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 16
             case 26: {
-              prefix_ = input.readStringRequireUtf8();
-              bitField0_ |= 0x00000004;
+              java.lang.String s = input.readStringRequireUtf8();
+              workflowMigrationPlanCriteriaCase_ = 3;
+              workflowMigrationPlanCriteria_ = s;
               break;
             } // case 26
+            case 34: {
+              java.lang.String s = input.readStringRequireUtf8();
+              workflowMigrationPlanCriteriaCase_ = 4;
+              workflowMigrationPlanCriteria_ = s;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -525,6 +679,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int workflowMigrationPlanCriteriaCase_ = 0;
+    private java.lang.Object workflowMigrationPlanCriteria_;
+    public WorkflowMigrationPlanCriteriaCase
+        getWorkflowMigrationPlanCriteriaCase() {
+      return WorkflowMigrationPlanCriteriaCase.forNumber(
+          workflowMigrationPlanCriteriaCase_);
+    }
+
+    public Builder clearWorkflowMigrationPlanCriteria() {
+      workflowMigrationPlanCriteriaCase_ = 0;
+      workflowMigrationPlanCriteria_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private com.google.protobuf.ByteString bookmark_ = com.google.protobuf.ByteString.EMPTY;
@@ -639,33 +808,39 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object prefix_ = "";
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
-     * @return Whether the prefix field is set.
+     * <code>string wf_spec_name = 3;</code>
+     * @return Whether the wfSpecName field is set.
      */
-    public boolean hasPrefix() {
-      return ((bitField0_ & 0x00000004) != 0);
+    @java.lang.Override
+    public boolean hasWfSpecName() {
+      return workflowMigrationPlanCriteriaCase_ == 3;
     }
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
-     * @return The prefix.
+     * <code>string wf_spec_name = 3;</code>
+     * @return The wfSpecName.
      */
-    public java.lang.String getPrefix() {
-      java.lang.Object ref = prefix_;
+    @java.lang.Override
+    public java.lang.String getWfSpecName() {
+      java.lang.Object ref = "";
+      if (workflowMigrationPlanCriteriaCase_ == 3) {
+        ref = workflowMigrationPlanCriteria_;
+      }
       if (!(ref instanceof java.lang.String)) {
         com.google.protobuf.ByteString bs =
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        prefix_ = s;
+        if (workflowMigrationPlanCriteriaCase_ == 3) {
+          workflowMigrationPlanCriteria_ = s;
+        }
         return s;
       } else {
         return (java.lang.String) ref;
@@ -673,20 +848,26 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
-     * @return The bytes for prefix.
+     * <code>string wf_spec_name = 3;</code>
+     * @return The bytes for wfSpecName.
      */
+    @java.lang.Override
     public com.google.protobuf.ByteString
-        getPrefixBytes() {
-      java.lang.Object ref = prefix_;
+        getWfSpecNameBytes() {
+      java.lang.Object ref = "";
+      if (workflowMigrationPlanCriteriaCase_ == 3) {
+        ref = workflowMigrationPlanCriteria_;
+      }
       if (ref instanceof String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        prefix_ = b;
+        if (workflowMigrationPlanCriteriaCase_ == 3) {
+          workflowMigrationPlanCriteria_ = b;
+        }
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -694,41 +875,160 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
+     * <code>string wf_spec_name = 3;</code>
+     * @param value The wfSpecName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      workflowMigrationPlanCriteriaCase_ = 3;
+      workflowMigrationPlanCriteria_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearWfSpecName() {
+      if (workflowMigrationPlanCriteriaCase_ == 3) {
+        workflowMigrationPlanCriteriaCase_ = 0;
+        workflowMigrationPlanCriteria_ = null;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose source WfSpec has this name.
+     * </pre>
+     *
+     * <code>string wf_spec_name = 3;</code>
+     * @param value The bytes for wfSpecName to set.
+     * @return This builder for chaining.
+     */
+    public Builder setWfSpecNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      workflowMigrationPlanCriteriaCase_ = 3;
+      workflowMigrationPlanCriteria_ = value;
+      onChanged();
+      return this;
+    }
+
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
+     * </pre>
+     *
+     * <code>string prefix = 4;</code>
+     * @return Whether the prefix field is set.
+     */
+    @java.lang.Override
+    public boolean hasPrefix() {
+      return workflowMigrationPlanCriteriaCase_ == 4;
+    }
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
+     * </pre>
+     *
+     * <code>string prefix = 4;</code>
+     * @return The prefix.
+     */
+    @java.lang.Override
+    public java.lang.String getPrefix() {
+      java.lang.Object ref = "";
+      if (workflowMigrationPlanCriteriaCase_ == 4) {
+        ref = workflowMigrationPlanCriteria_;
+      }
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (workflowMigrationPlanCriteriaCase_ == 4) {
+          workflowMigrationPlanCriteria_ = s;
+        }
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
+     * </pre>
+     *
+     * <code>string prefix = 4;</code>
+     * @return The bytes for prefix.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPrefixBytes() {
+      java.lang.Object ref = "";
+      if (workflowMigrationPlanCriteriaCase_ == 4) {
+        ref = workflowMigrationPlanCriteria_;
+      }
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        if (workflowMigrationPlanCriteriaCase_ == 4) {
+          workflowMigrationPlanCriteria_ = b;
+        }
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
+     * </pre>
+     *
+     * <code>string prefix = 4;</code>
      * @param value The prefix to set.
      * @return This builder for chaining.
      */
     public Builder setPrefix(
         java.lang.String value) {
       if (value == null) { throw new NullPointerException(); }
-      prefix_ = value;
-      bitField0_ |= 0x00000004;
+      workflowMigrationPlanCriteriaCase_ = 4;
+      workflowMigrationPlanCriteria_ = value;
       onChanged();
       return this;
     }
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
+     * <code>string prefix = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearPrefix() {
-      prefix_ = getDefaultInstance().getPrefix();
-      bitField0_ = (bitField0_ & ~0x00000004);
-      onChanged();
+      if (workflowMigrationPlanCriteriaCase_ == 4) {
+        workflowMigrationPlanCriteriaCase_ = 0;
+        workflowMigrationPlanCriteria_ = null;
+        onChanged();
+      }
       return this;
     }
     /**
      * <pre>
-     * Optionally search only for WorkflowMigrationPlan's whose name starts with this prefix.
+     * Return WorkflowMigrationPlan's whose name starts with this prefix.
      * </pre>
      *
-     * <code>optional string prefix = 3;</code>
+     * <code>string prefix = 4;</code>
      * @param value The bytes for prefix to set.
      * @return This builder for chaining.
      */
@@ -736,8 +1036,8 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.ByteString value) {
       if (value == null) { throw new NullPointerException(); }
       checkByteStringIsUtf8(value);
-      prefix_ = value;
-      bitField0_ |= 0x00000004;
+      workflowMigrationPlanCriteriaCase_ = 4;
+      workflowMigrationPlanCriteria_ = value;
       onChanged();
       return this;
     }
