@@ -129,18 +129,43 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             metrics.observe(command);
             response = command.process(executionContext, config);
             executionContext.endExecution();
+            log.debug(
+                    "Processed command type {} (commandId {}) on partition {}",
+                    command.type,
+                    command.getCommandId(),
+                    ctx.taskId().partition());
         } catch (RecordTooLargeException e) {
+            log.debug(
+                    "Command type {} (commandId {}) exceeded record size limit: {}",
+                    command.type,
+                    command.getCommandId(),
+                    e.getMessage());
             throw new CoreCommandException(
                     new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription(e.getMessage()), e), command);
         } catch (KafkaException ke) {
+            // Kafka-level failures are typically fatal and retried by Streams; surface them at WARN.
+            log.warn(
+                    "Kafka error while processing command type {} (commandId {}) on partition {}",
+                    command.type,
+                    command.getCommandId(),
+                    ctx.taskId().partition(),
+                    ke);
             throw ke;
         } catch (Exception exn) {
+            // Full stack goes to DEBUG to avoid noisy INFO; the exception handler decides final disposition.
+            log.debug(
+                    "Command type {} (commandId {}) failed on partition {}",
+                    command.type,
+                    command.getCommandId(),
+                    ctx.taskId().partition(),
+                    exn);
             throw new CoreCommandException(exn, command);
         }
         if (command.hasResponse()) {
             CompletableFuture<Message> completable = asyncWaiters.getOrRegisterFuture(
                     command.getCommandId().get(), Message.class, new CompletableFuture<>());
             completable.complete(response);
+            log.trace("Completed response future for commandId {}", command.getCommandId());
         }
     }
 
@@ -166,18 +191,26 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
         partitionIsClaimed = true;
         server.drainPartitionTaskQueue(ctx.taskId());
         ClusterScopedStore clusterStore = ClusterScopedStore.newInstance(this.globalStore, new BackgroundContext());
+        long startMillis = System.currentTimeMillis();
         try (LHKeyValueIterator<?> storedTenants = clusterStore.range(
                 GetableClassEnum.TENANT.getNumber() + "/",
                 GetableClassEnum.TENANT.getNumber() + "/~",
                 StoredGetable.class)) {
-            storedTenants.forEachRemaining(getable -> {
-                TenantModel storedTenant = ((StoredGetable<Tenant, TenantModel>) getable.getValue()).getStoredObject();
+            while (storedTenants.hasNext()) {
+                TenantModel storedTenant = ((StoredGetable<Tenant, TenantModel>)
+                                storedTenants.next().getValue())
+                        .getStoredObject();
                 rehydrateTenant(storedTenant);
-            });
+            }
         }
+        log.info(
+                "Claimed partition {}, rehydration took {}ms",
+                ctx.taskId().partition(),
+                System.currentTimeMillis() - startMillis);
     }
 
     private void rehydrateTenant(TenantModel tenant) {
+        log.debug("Rehydrating tenant on partition {}", ctx.taskId().partition());
         TenantScopedStore coreDefaultStore =
                 TenantScopedStore.newInstance(this.nativeStore, tenant.getId(), new BackgroundContext());
 
@@ -185,25 +218,39 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
                 coreDefaultStore.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
 
         if (hint == null) {
-            log.warn("Could not find task queue hint, may need to iterate over many tombstones");
+            // Expected on cold start; INFO because it signals a potentially expensive tombstone scan.
+            log.info(
+                    "No task queue hint on partition {}; may iterate over many tombstones",
+                    ctx.taskId().partition());
+        } else {
+            log.debug("Resuming task rehydration from key {}", hint.getKeyToResumeFrom());
         }
         String startKey = hint == null ? "" : hint.getKeyToResumeFrom();
         String endKey = "~";
+        int scheduledCount = 0;
         try (LHKeyValueIterator<ScheduledTaskModel> iter =
                 coreDefaultStore.range(startKey, endKey, ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 LHIterKeyValue<ScheduledTaskModel> next = iter.next();
                 ScheduledTaskModel scheduledTask = next.getValue();
-                log.debug("Rehydration: scheduling task: {}", scheduledTask.getStoreKey());
+                log.trace(
+                        "Rehydration: scheduling task on partition {}",
+                        ctx.taskId().partition());
                 // This will break task rehydration for tenant specific test. this will be addressed in Issue #554
                 server.onTaskScheduled(
                         ctx.taskId(), scheduledTask.getTaskDefId(), scheduledTask.getTaskRunId(), tenant.getId());
+                scheduledCount++;
             }
         }
+        log.debug(
+                "Rehydrated {} scheduled task(s) on partition {}",
+                scheduledCount,
+                ctx.taskId().partition());
     }
 
     @Override
     public void close() {
+        log.info("Closing CommandProcessor on partition {}", ctx.taskId().partition());
         if (partitionIsClaimed) {
             this.partitionDrain.reset();
         }
