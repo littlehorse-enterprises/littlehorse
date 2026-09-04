@@ -1,12 +1,12 @@
 import { MetricWindow, QuotaUsageMetrics, Timestamp } from 'littlehorse-client/proto'
 import {
+  bucketQuotaUsage,
   EMPTY_QUOTA_USAGE,
-  formatDurationMs,
   mergeQuotaUsageGroup,
   parseQuotaWindows,
   summarizeQuotaUsage,
-  transformToQuotaCountData,
-  transformToQuotaThrottleData,
+  toQuotaCountData,
+  toQuotaThrottleData,
 } from '../quotaMetricsData'
 
 function qu(observed: number, throttled: number, totalThrottleMs: number): QuotaUsageMetrics {
@@ -80,7 +80,13 @@ describe('mergeQuotaUsageGroup', () => {
   })
 })
 
-describe('transformToQuotaCountData', () => {
+const countData = (windows: MetricWindow[], bucketMinutes: number, rangeMinutes: number, s: number, e: number) =>
+  toQuotaCountData(bucketQuotaUsage(windows, bucketMinutes, rangeMinutes, s, e))
+
+const throttleData = (windows: MetricWindow[], bucketMinutes: number, rangeMinutes: number, s: number, e: number) =>
+  toQuotaThrottleData(bucketQuotaUsage(windows, bucketMinutes, rangeMinutes, s, e))
+
+describe('bucketQuotaUsage / toQuotaCountData', () => {
   const rangeStartMs = Date.parse('2026-09-03T10:00:00Z')
   const rangeEndMs = Date.parse('2026-09-03T10:10:00Z')
 
@@ -90,7 +96,7 @@ describe('transformToQuotaCountData', () => {
       makeQuotaWindow('2026-09-03T10:01:00Z', qu(20, 4, 2000)),
       makeQuotaWindow('2026-09-03T10:06:00Z', qu(7, 0, 0)),
     ]
-    const data = transformToQuotaCountData(windows, 5, 10, rangeStartMs, rangeEndMs)
+    const data = countData(windows, 5, 10, rangeStartMs, rangeEndMs)
     expect(data).toHaveLength(3)
     expect(data[0]).toMatchObject({ timestamp: rangeStartMs, observed: 30, throttled: 5 })
     expect(data[1]).toMatchObject({ observed: 7, throttled: 0 })
@@ -98,13 +104,13 @@ describe('transformToQuotaCountData', () => {
   })
 
   it('returns all-zero buckets when there are no windows', () => {
-    const data = transformToQuotaCountData([], 5, 10, rangeStartMs, rangeEndMs)
+    const data = countData([], 5, 10, rangeStartMs, rangeEndMs)
     expect(data).toHaveLength(3)
     expect(data.every(d => d.observed === 0 && d.throttled === 0)).toBe(true)
   })
 })
 
-describe('transformToQuotaThrottleData', () => {
+describe('toQuotaThrottleData', () => {
   const rangeStartMs = Date.parse('2026-09-03T10:00:00Z')
   const rangeEndMs = Date.parse('2026-09-03T10:05:00Z')
 
@@ -113,20 +119,23 @@ describe('transformToQuotaThrottleData', () => {
       makeQuotaWindow('2026-09-03T10:00:00Z', qu(100, 4, 1000)),
       makeQuotaWindow('2026-09-03T10:01:00Z', qu(100, 6, 4000)),
     ]
-    const data = transformToQuotaThrottleData(windows, 5, 5, rangeStartMs, rangeEndMs)
-    expect(data[0]).toMatchObject({ totalThrottleMs: 5000, avgThrottleMs: 500 })
+    const data = throttleData(windows, 5, 5, rangeStartMs, rangeEndMs)
+    expect(data[0]).toMatchObject({ avgThrottleMs: 500 })
   })
 
   it('reports zero average when nothing was throttled', () => {
     const windows = [makeQuotaWindow('2026-09-03T10:00:00Z', qu(50, 0, 0))]
-    const data = transformToQuotaThrottleData(windows, 5, 5, rangeStartMs, rangeEndMs)
-    expect(data[0]).toMatchObject({ totalThrottleMs: 0, avgThrottleMs: 0 })
+    const data = throttleData(windows, 5, 5, rangeStartMs, rangeEndMs)
+    expect(data[0]).toMatchObject({ avgThrottleMs: 0 })
   })
 })
 
 describe('summarizeQuotaUsage', () => {
+  const rangeStart = Date.parse('2026-09-03T10:00:00Z')
+  const rangeEnd = Date.parse('2026-09-03T10:10:00Z')
+
   it('returns zeros and a zero rate for no windows', () => {
-    expect(summarizeQuotaUsage([])).toEqual({
+    expect(summarizeQuotaUsage(bucketQuotaUsage([], 5, 10, rangeStart, rangeEnd))).toEqual({
       observed: 0,
       throttled: 0,
       throttleRate: 0,
@@ -139,7 +148,7 @@ describe('summarizeQuotaUsage', () => {
       makeQuotaWindow('2026-09-03T10:00:00Z', qu(600, 100, 50_000)),
       makeQuotaWindow('2026-09-03T10:01:00Z', qu(400, 150, 75_000)),
     ]
-    expect(summarizeQuotaUsage(windows)).toEqual({
+    expect(summarizeQuotaUsage(bucketQuotaUsage(windows, 5, 10, rangeStart, rangeEnd))).toEqual({
       observed: 1000,
       throttled: 250,
       throttleRate: 0.25,
@@ -148,14 +157,21 @@ describe('summarizeQuotaUsage', () => {
   })
 })
 
-describe('formatDurationMs', () => {
-  it('formats milliseconds, seconds, minutes, and hours', () => {
-    expect(formatDurationMs(0)).toBe('0ms')
-    expect(formatDurationMs(999)).toBe('999ms')
-    expect(formatDurationMs(1500)).toBe('1.5s')
-    expect(formatDurationMs(90_000)).toBe('1m 30s')
-    expect(formatDurationMs(120_000)).toBe('2m')
-    expect(formatDurationMs(5_400_000)).toBe('1h 30m')
-    expect(formatDurationMs(7_200_000)).toBe('2h')
+describe('summary and chart consistency', () => {
+  it('tiles total exactly what the chart buckets show', () => {
+    const rangeStart = Date.parse('2026-09-03T10:02:30Z')
+    const rangeEnd = Date.parse('2026-09-03T10:12:30Z')
+    const windows = [
+      makeQuotaWindow('2026-09-03T10:01:00Z', qu(999, 999, 999)),
+      makeQuotaWindow('2026-09-03T10:06:00Z', qu(10, 4, 2000)),
+      makeQuotaWindow('2026-09-03T10:07:00Z', qu(20, 6, 4000)),
+    ]
+    const buckets = bucketQuotaUsage(windows, 5, 10, rangeStart, rangeEnd)
+    const summary = summarizeQuotaUsage(buckets)
+    const charted = toQuotaCountData(buckets)
+
+    expect(summary.observed).toBe(charted.reduce((n, p) => n + p.observed, 0))
+    expect(summary.throttled).toBe(charted.reduce((n, p) => n + p.throttled, 0))
+    expect(summary.observed).toBe(30)
   })
 })

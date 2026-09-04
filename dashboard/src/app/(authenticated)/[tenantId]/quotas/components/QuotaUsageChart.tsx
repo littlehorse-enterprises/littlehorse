@@ -9,8 +9,11 @@ import {
 } from '@/components/ui/chart'
 import { type CSSProperties, FC } from 'react'
 import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts'
-import { formatDurationMs, QuotaCountDataPoint, QuotaThrottleDataPoint } from './quotaMetricsData'
+import { formatDurationMs } from '@/app/utils'
+import { QuotaCountDataPoint, QuotaThrottleDataPoint } from './quotaMetricsData'
 import { QUOTA_COUNT_CHART_CONFIG, QUOTA_THROTTLE_CHART_CONFIG, QuotaViewMode } from './quotaUsageConstants'
+
+const LIMIT_LINE_COLOR = 'hsl(215, 16%, 47%)'
 
 export type QuotaUsageChartProps = {
   viewMode: QuotaViewMode
@@ -40,9 +43,9 @@ export const QuotaUsageChart: FC<QuotaUsageChartProps> = ({ viewMode, countData,
         {bucketLimit !== undefined && (
           <ReferenceLine
             y={bucketLimit}
-            stroke="hsl(215, 16%, 47%)"
+            stroke={LIMIT_LINE_COLOR}
             strokeDasharray="6 4"
-            label={{ value: 'Quota limit', position: 'insideTopRight', fontSize: 11, fill: 'hsl(215, 16%, 47%)' }}
+            label={{ value: 'Quota limit', position: 'insideTopRight', fontSize: 11, fill: LIMIT_LINE_COLOR }}
           />
         )}
         <Line type="monotone" dataKey="observed" stroke="var(--color-observed)" strokeWidth={2} dot={false} />

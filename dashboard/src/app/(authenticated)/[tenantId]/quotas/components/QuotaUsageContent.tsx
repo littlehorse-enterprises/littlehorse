@@ -3,7 +3,8 @@
 import { CardContent } from '@/components/ui/card'
 import { RefreshCwIcon } from 'lucide-react'
 import { FC } from 'react'
-import { formatDurationMs, QuotaCountDataPoint, QuotaThrottleDataPoint, QuotaUsageSummary } from './quotaMetricsData'
+import { formatDurationMs } from '@/app/utils'
+import { QuotaCountDataPoint, QuotaThrottleDataPoint, QuotaUsageSummary } from './quotaMetricsData'
 import { QuotaUsageChart } from './QuotaUsageChart'
 import { QuotaViewMode } from './quotaUsageConstants'
 

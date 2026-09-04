@@ -10,12 +10,11 @@ import { ApplicableQuota } from '../actions/getApplicableQuota'
 import { getQuotaUsageMetrics } from '../actions/getQuotaUsageMetrics'
 import { Details } from './Details'
 import {
-  QuotaCountDataPoint,
-  QuotaThrottleDataPoint,
+  bucketQuotaUsage,
   QuotaUsageSummary,
   summarizeQuotaUsage,
-  transformToQuotaCountData,
-  transformToQuotaThrottleData,
+  toQuotaCountData,
+  toQuotaThrottleData,
 } from './quotaMetricsData'
 import { QuotaUsageContent } from './QuotaUsageContent'
 import { QuotaUsageHeader } from './QuotaUsageHeader'
@@ -32,17 +31,12 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
   const rangeNum = parseInt(rangeMinutes)
   const bucketNum = parseInt(bucketMinutes)
 
-  const quotaId = useMemo(
-    () =>
-      scope === 'principal' && principalId
-        ? { tenant: { id: tenantId }, principal: { id: principalId } }
-        : { tenant: { id: tenantId } },
-    [scope, principalId, tenantId]
-  )
+  const quotaId = quota?.id
 
   const fetcher = useCallback(async () => {
     const nowMs = Date.now()
     const rangeStartMs = nowMs - rangeNum * 60 * 1000
+    if (!quotaId) return undefined
     const result = await getQuotaUsageMetrics({
       quotaId,
       windowStart: new Date(rangeStartMs).toISOString(),
@@ -53,7 +47,7 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
   }, [quotaId, rangeNum, tenantId])
 
   const { data, error, isLoading } = useSWR(
-    ['quotaUsageMetrics', tenantId, scope, principalId, rangeMinutes],
+    quotaId ? ['quotaUsageMetrics', tenantId, scope, principalId, rangeMinutes] : null,
     fetcher,
     {
       refreshInterval: 120_000,
@@ -64,23 +58,18 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
 
   const { countData, throttleData, summary } = useMemo(() => {
     if (data === undefined) {
-      return {
-        countData: [] as QuotaCountDataPoint[],
-        throttleData: [] as QuotaThrottleDataPoint[],
-        summary: EMPTY_SUMMARY,
-      }
+      return { countData: [], throttleData: [], summary: EMPTY_SUMMARY }
     }
-    const { rangeStartMs, rangeEndMs } = data
-    const windows = data.result.windows ?? []
+    const buckets = bucketQuotaUsage(data.result.windows ?? [], bucketNum, rangeNum, data.rangeStartMs, data.rangeEndMs)
     return {
-      countData: transformToQuotaCountData(windows, bucketNum, rangeNum, rangeStartMs, rangeEndMs),
-      throttleData: transformToQuotaThrottleData(windows, bucketNum, rangeNum, rangeStartMs, rangeEndMs),
-      summary: summarizeQuotaUsage(windows),
+      countData: toQuotaCountData(buckets),
+      throttleData: toQuotaThrottleData(buckets),
+      summary: summarizeQuotaUsage(buckets),
     }
   }, [data, bucketNum, rangeNum])
 
   const limitRps = quota?.writeRequestsPerSecond
-  const bucketLimit = limitRps !== undefined ? limitRps * 60 * bucketNum : undefined
+  const bucketLimit = quota !== undefined ? quota.writeRequestsPerSecond * 60 * bucketNum : undefined
 
   return (
     <>
@@ -100,7 +89,7 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
           <QuotaUsageContent
             isLoading={isLoading}
             error={error}
-            hasData={summary.observed > 0}
+            hasData={summary.observed > 0 || summary.throttled > 0}
             viewMode={viewMode}
             countData={countData}
             throttleData={throttleData}
