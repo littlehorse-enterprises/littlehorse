@@ -1,19 +1,6 @@
 import { ChartConfig } from '@/components/ui/chart'
-import { QuotaId } from 'littlehorse-client/proto'
 
 export type QuotaViewMode = 'requests' | 'throttleTime'
-
-export type QuotaOption = {
-  key: string
-  label: string
-  quotaId: QuotaId
-  limitRps?: number
-}
-
-export const TENANT_WIDE_QUOTA_KEY = 'tenant'
-
-export const quotaOptionKey = (quotaId: QuotaId): string =>
-  quotaId.principal ? `principal:${quotaId.principal.id}` : TENANT_WIDE_QUOTA_KEY
 
 export const QUOTA_COUNT_CHART_CONFIG = {
   observed: { label: 'Observed', color: 'hsl(221, 83%, 53%)' },

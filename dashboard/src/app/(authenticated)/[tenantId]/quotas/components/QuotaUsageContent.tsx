@@ -16,8 +16,7 @@ export type QuotaUsageContentProps = {
   throttleData: QuotaThrottleDataPoint[]
   summary: QuotaUsageSummary
   bucketLimit?: number
-  noQuotasConfigured: boolean
-  quotasAvailable: boolean
+  noQuotaConfigured: boolean
 }
 
 const SummaryTile: FC<{ label: string; value: string }> = ({ label, value }) => (
@@ -36,18 +35,12 @@ export const QuotaUsageContent: FC<QuotaUsageContentProps> = ({
   throttleData,
   summary,
   bucketLimit,
-  noQuotasConfigured,
-  quotasAvailable,
+  noQuotaConfigured,
 }) => (
   <CardContent>
-    {noQuotasConfigured && (
+    {noQuotaConfigured && (
       <p className="pb-4 text-sm text-muted-foreground">
-        No quotas are configured for this tenant, so no new usage is being recorded.
-      </p>
-    )}
-    {!quotasAvailable && (
-      <p className="pb-4 text-sm text-muted-foreground">
-        Quota definitions could not be loaded; showing tenant-wide usage without configured limits.
+        No quota applies to you in this tenant, so no usage is being recorded.
       </p>
     )}
     {isLoading ? (

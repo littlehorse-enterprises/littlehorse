@@ -1,17 +1,13 @@
 import { Metadata } from 'next'
-import { getQuotas } from './actions/getQuotas'
+import { getApplicableQuota } from './actions/getApplicableQuota'
 import { QuotaUsage } from './components/QuotaUsage'
 
-type Props = {
-  params: Promise<{ tenantId: string }>
-  searchParams: Promise<{ quota?: string }>
-}
+type Props = { params: Promise<{ tenantId: string }> }
 
-export default async function Page({ params, searchParams }: Props) {
+export default async function Page({ params }: Props) {
   const { tenantId } = await params
-  const { quota } = await searchParams
-  const { quotas, quotasAvailable } = await getQuotas({ tenantId })
-  return <QuotaUsage quotas={quotas} quotasAvailable={quotasAvailable} initialQuotaKey={quota} />
+  const applicable = await getApplicableQuota({ tenantId })
+  return <QuotaUsage {...applicable} />
 }
 
 export const metadata: Metadata = {
