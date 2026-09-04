@@ -2,12 +2,12 @@
 
 A report-only cross-check that composes builder calls randomly and
 requires every SDK to compile the same random workflow to the same proto.
-It has no canon: with a shared seed, each testee generates the identical
+It has no canon. With a shared seed, each testee generates the identical
 call sequence independently, and the runner compares the SDKs' outputs to
 each other. Divergence means one builder's composition behavior drifted in
 a way no hand-written case anticipated.
 
-Two numbers control a run: seeds and ops.
+Two numbers control a run, seeds and ops.
 
 - A seed is the starting value for the random number generator. The
   generator is deterministic, so the same seed always produces the same
@@ -15,9 +15,9 @@ Two numbers control a run: seeds and ops.
   builds the exact same "random" workflow, named `fuzz-7`. One seed means
   one workflow, so running seeds 1..20 tests 20 distinct workflows.
 - Ops is how many random build steps make up each workflow. Each op is
-  one draw from the table below: declare a variable, run a task, sleep,
-  wait for an event, and so on. More ops means longer, more tangled
-  workflows, which stresses how builder calls compose.
+  one draw from the table below, such as declaring a variable, running a
+  task, sleeping, or waiting for an event. More ops means longer, more
+  tangled workflows, which stresses how builder calls compose.
 
 So `fuzz.mjs 50 16` builds 50 different workflows of 16 random steps
 each, and requires every SDK to compile all 50 identically.
@@ -28,17 +28,17 @@ ledgers. Run it with:
 ```
 node sdk-conformance/runner/fuzz.mjs            # seeds 1..20, 12 ops each
 node sdk-conformance/runner/fuzz.mjs 50 16      # 50 seeds, 16 ops
-node sdk-conformance/runner/fuzz.mjs --register # also register each agreed
+node sdk-conformance/runner/fuzz.mjs --register # also register each generated
                                                 # workflow with the server at
                                                 # LHC_API_HOST/PORT and require
                                                 # acceptance (canon validation)
 ```
 
-`--register` extends the testee verb with a trailing `--register` flag: the
-testee must register the compiled workflow (creating the fixed `task-<n>`,
-`branch-<n>`, and `evt-<n>` defs the op table references if absent) and exit
-nonzero if the server rejects it. The flag is optional, and only the js
-testee implements it today.
+`--register` extends the testee verb with a trailing `--register` flag.
+The testee must register the compiled workflow (creating the fixed
+`task-<n>`, `branch-<n>`, and `evt-<n>` defs the op table references if
+absent) and exit nonzero if the server rejects it. The flag is optional,
+and only the js testee implements it today.
 
 ## The generator contract (normative)
 
@@ -50,7 +50,7 @@ testee fuzz --seed <uint32> --ops <n>
     fuzz-<seed>, and print the compiled PutWfSpecRequest as proto JSON.
 ```
 
-PRNG: mulberry32(seed). For each draw, with 32-bit unsigned state `a`:
+The PRNG is mulberry32(seed). Each draw updates 32-bit unsigned state `a`:
 
 ```
 a = (a + 0x6D2B79F5) | 0
@@ -60,7 +60,7 @@ draw = ((t ^ (t >>> 14)) >>> 0)          // uint32
 nextInt(bound) = draw % bound
 ```
 
-Op sequence: for `i` in `0..ops-1`, draw `k = nextInt(8)`, then:
+For each `i` in `0..ops-1`, draw `k = nextInt(8)` and apply the op:
 
 | k | op (exactly these draws, in this order) |
 | --- | --- |
@@ -70,9 +70,9 @@ Op sequence: for `i` in `0..ops-1`, draw `k = nextInt(8)`, then:
 | 3 | `execute("task-<nextInt(5)>")` |
 | 4 | `sleepSeconds(1 + nextInt(60))` |
 | 5 | `waitForEvent("evt-<nextInt(5)>")` |
-| 6 | if any int variable exists: `mutate(intVars[nextInt(len)], ADD, nextInt(10))`; else `declareInt("v<i>")` with no draws |
-| 7 | if any int variable exists: `doIf(condition(intVars[nextInt(len)], GREATER_THAN, nextInt(10)))` with a body that runs `execute("branch-<nextInt(5)>")`; else `execute("task-<nextInt(5)>")` |
+| 6 | if any int variable exists, `mutate(intVars[nextInt(len)], ADD, nextInt(10))`, else `declareInt("v<i>")` with no draws |
+| 7 | if any int variable exists, `doIf(condition(intVars[nextInt(len)], GREATER_THAN, nextInt(10)))` with a body that runs `execute("branch-<nextInt(5)>")`, else `execute("task-<nextInt(5)>")` |
 
 `intVars` is the list of int variables in declaration order. Draw order is
-normative: a conditional branch that skips a draw must skip it in every
+normative. A conditional branch that skips a draw must skip it in every
 SDK.
