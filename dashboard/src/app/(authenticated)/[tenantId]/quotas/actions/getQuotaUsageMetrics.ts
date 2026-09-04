@@ -1,25 +1,24 @@
 'use server'
-
 import { listMetricsChunked } from '@/app/actions/listMetricsChunked'
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
-import { MetricsList, TaskDefId } from 'littlehorse-client/proto'
+import { MetricsList, QuotaId } from 'littlehorse-client/proto'
 
-type GetTaskMetricsProps = {
-  taskDefId: TaskDefId
+type GetQuotaUsageMetricsProps = {
+  quotaId: QuotaId
   windowStart?: string
   windowEnd?: string
 } & WithTenant
 
-export const getTaskMetrics = async ({
-  taskDefId,
+export const getQuotaUsageMetrics = async ({
+  quotaId,
   windowStart,
   windowEnd,
   tenantId,
-}: GetTaskMetricsProps): Promise<MetricsList> => {
+}: GetQuotaUsageMetricsProps): Promise<MetricsList> => {
   const client = await lhClient({ tenantId })
   return listMetricsChunked(
-    (start, end) => client.listTaskMetrics({ taskDef: taskDefId, windowStart: start, windowEnd: end }),
+    (start, end) => client.listQuotaUsageMetrics({ quotaId, windowStart: start, windowEnd: end }),
     windowStart,
     windowEnd
   )
