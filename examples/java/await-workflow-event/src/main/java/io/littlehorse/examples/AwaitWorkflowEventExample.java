@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.PutWorkflowEventDefRequest;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
+import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +83,7 @@ public class AwaitWorkflowEventExample {
         WorkflowEvent event = client.withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
                 .awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
                         .setWfRunId(WfRunId.newBuilder().setId(id))
+                        .addAllEventDefIds(List.of(WorkflowEventDefId.newBuilder().setName("sleep-done").build()))
                         .build());
 
         System.out.println(LHLibUtil.protoToJson(event));
