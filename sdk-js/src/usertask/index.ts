@@ -51,12 +51,15 @@ function isOptionalSchema(schema: ZodTypeAny): boolean {
  */
 export class UserTaskSchema {
   private compiled?: PutUserTaskDefRequest
+  private readonly description?: string
 
   constructor(
     readonly name: string,
     private readonly fields: UserTaskFieldsInput,
-    private readonly description?: string
+    descriptionOrOptions?: string | { description?: string }
   ) {
+    this.description =
+      typeof descriptionOrOptions === 'string' ? descriptionOrOptions : descriptionOrOptions?.description
     if (Object.keys(fields).length === 0) {
       throw new LHMisconfigurationError(`UserTaskDef '${name}' must declare at least one field`)
     }
@@ -87,7 +90,7 @@ export class UserTaskSchema {
 
   /** Registers the UserTaskDef with the server. */
   async register(configOrClient: LHConfig | LHPublicClient): Promise<UserTaskDef> {
-    const client = isClient(configOrClient) ? configOrClient : configOrClient.getClient()
+    const client = isClient(configOrClient) ? configOrClient : await configOrClient.getAuthenticatedClient()
     return client.putUserTaskDef(this.compile())
   }
 }
@@ -115,6 +118,10 @@ function userTaskFieldType(fieldName: string, schema: ZodTypeAny): VariableType 
 }
 
 /** Convenience wrapper mirroring `lhStruct(...)` for task structs. */
-export function userTaskSchema(name: string, fields: UserTaskFieldsInput, description?: string): UserTaskSchema {
-  return new UserTaskSchema(name, fields, description)
+export function userTaskSchema(
+  name: string,
+  fields: UserTaskFieldsInput,
+  descriptionOrOptions?: string | { description?: string }
+): UserTaskSchema {
+  return new UserTaskSchema(name, fields, descriptionOrOptions)
 }

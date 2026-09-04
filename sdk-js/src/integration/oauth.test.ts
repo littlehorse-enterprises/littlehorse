@@ -160,7 +160,8 @@ describe('OAuth against a real issuer', () => {
       const out = thread.declareStr('out')
       out.assign(thread.execute(taskDefName))
     })
-    await client.putWfSpec(wf.compileWorkflow())
+    // The documented registration API must authenticate on its own.
+    await wf.registerWfSpec(config)
     await awaitWfSpecReady(client, wf.getName())
 
     // The worker needs credentials too: its poll and report streams are

@@ -1,6 +1,14 @@
 export { Workflow } from './Workflow'
 export { WorkflowThread, WorkflowIfStatement } from './WorkflowThread'
-export type { ThreadFunc, IfElseBody } from './WorkflowThread'
+export type {
+  ThreadFunc,
+  IfElseBody,
+  WfRunVariableOptions,
+  TaskNodeOptions,
+  ExternalEventNodeOptions,
+  AssignUserTaskOptions,
+} from './WorkflowThread'
+export type { WorkflowOptions } from './Workflow'
 export { WfRunVariable } from './variables'
 export {
   NodeOutput,

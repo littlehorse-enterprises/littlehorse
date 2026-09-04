@@ -59,7 +59,9 @@ const PAIRS: Record<string, PairBody> = {
     if (f) wf.declareStruct('v', 'customer')
   },
   'add-variable': f => wf => {
-    if (f) wf.addVariable('v', VariableType.STR)
+    // addVariable is private in JS; declareStr is its public wrapper and
+    // compiles to the identical VariableDef.
+    if (f) wf.declareStr('v')
   },
 
   'var-with-default': f => wf => {

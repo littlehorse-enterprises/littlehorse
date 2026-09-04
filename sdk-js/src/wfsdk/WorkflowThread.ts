@@ -14,7 +14,9 @@ import {
   UserTaskNode,
   WaitForThreadsNode,
   WaitForThreadsStrategy,
+  WfRunVariableAccessLevel,
 } from '../proto/wf_spec'
+import { CorrelatedEventConfig } from '../proto/external_event'
 import {
   ExponentialBackoffRetryPolicy,
   TaskNode,
@@ -95,6 +97,54 @@ export class WorkflowIfStatement {
   }
 }
 
+/** Optional settings for a variable declaration; see each declare* method. */
+export interface WfRunVariableOptions<TDefault = unknown> {
+  defaultValue?: TDefault
+  required?: boolean
+  searchable?: boolean
+  searchableOn?: { fieldPath: string; fieldType: VariableType }[]
+  masked?: boolean
+  accessLevel?: WfRunVariableAccessLevel
+}
+
+/** Optional per-node settings for execute(); each key mirrors a chain method. */
+export interface TaskNodeOptions {
+  timeoutSeconds?: number
+  retries?: number
+  exponentialBackoff?: ExponentialBackoffRetryPolicy
+}
+
+/** Optional settings for waitForEvent(); each key mirrors a chain method. */
+export interface ExternalEventNodeOptions {
+  timeoutSeconds?: number
+  correlationId?: LHValue
+  maskCorrelationId?: boolean
+  payloadSchema?: ZodTypeAny
+  correlatedEventConfig?: CorrelatedEventConfig
+}
+
+/** Optional settings for assignUserTask(); notes and the exception name mirror their chain methods. */
+export interface AssignUserTaskOptions {
+  userId?: LHValue
+  userGroup?: LHValue
+  notes?: LHValue
+  onCancellationException?: LHValue
+}
+
+const TASK_NODE_OPTION_KEYS = new Set(['timeoutSeconds', 'retries', 'exponentialBackoff'])
+const ASSIGN_USER_TASK_OPTION_KEYS = new Set(['userId', 'userGroup', 'notes', 'onCancellationException'])
+
+/**
+ * Variadic calls can legally take a JSON-object argument, so an options bag
+ * is only recognized as a plain object holding nothing but known keys.
+ */
+function isOptionsBag(value: unknown, knownKeys: Set<string>): boolean {
+  if (typeof value !== 'object' || value === null) return false
+  if (Object.getPrototypeOf(value) !== Object.prototype) return false
+  const keys = Object.keys(value)
+  return keys.length > 0 && keys.every(key => knownKeys.has(key))
+}
+
 /**
  * Records the calls made in a thread function and compiles them into a
  * ThreadSpec (mirrors Java WorkflowThreadImpl). This code never executes a
@@ -144,65 +194,102 @@ export class WorkflowThread {
 
   // ---------------------------------------------------------------- variables
 
-  addVariable(name: string, typeOrDefaultVal: VariableType | unknown): WfRunVariable {
+  /**
+   * Each option delegates to the matching fluent method, so both styles run
+   * the same validation and compile to the same proto.
+   */
+  private applyVariableOptions(variable: WfRunVariable, options?: WfRunVariableOptions): WfRunVariable {
+    if (options === undefined) return variable
+    if (options.required) variable.required()
+    if (options.searchable) variable.searchable()
+    for (const index of options.searchableOn ?? []) {
+      variable.searchableOn(index.fieldPath, index.fieldType)
+    }
+    if (options.masked) variable.masked()
+    if (options.accessLevel !== undefined) variable.withAccessLevel(options.accessLevel)
+    if (options.defaultValue !== undefined) variable.withDefault(options.defaultValue)
+    return variable
+  }
+
+  /**
+   * Kept private in JS (Java's is public): inferring a type from a default
+   * value reads badly and misroutes small integers that collide with
+   * VariableType ordinals. The declare* methods are the public path.
+   */
+  private addVariable(name: string, typeOrDefaultVal: VariableType | unknown): WfRunVariable {
     this.checkIfIsActive()
     const wfRunVariable = WfRunVariable.createPrimitive(name, typeOrDefaultVal, this)
     this.wfRunVariables.push(wfRunVariable)
     return wfRunVariable
   }
 
-  declareStr(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.STR)
+  declareStr(name: string, options?: WfRunVariableOptions<string>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.STR), options)
   }
 
-  declareInt(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.INT)
+  declareInt(name: string, options?: WfRunVariableOptions<number | bigint>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.INT), options)
   }
 
-  declareDouble(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.DOUBLE)
+  declareDouble(name: string, options?: WfRunVariableOptions<number>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.DOUBLE), options)
   }
 
-  declareBool(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.BOOL)
+  declareBool(name: string, options?: WfRunVariableOptions<boolean>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.BOOL), options)
   }
 
-  declareBytes(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.BYTES)
+  declareBytes(name: string, options?: WfRunVariableOptions<Uint8Array>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.BYTES), options)
   }
 
-  declareTimestamp(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.TIMESTAMP)
+  declareTimestamp(name: string, options?: WfRunVariableOptions<Date>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.TIMESTAMP), options)
   }
 
-  declareJsonObj(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.JSON_OBJ)
+  declareJsonObj(name: string, options?: WfRunVariableOptions<Record<string, unknown>>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.JSON_OBJ), options)
   }
 
-  declareJsonArr(name: string): WfRunVariable {
-    return this.addVariable(name, VariableType.JSON_ARR)
+  declareJsonArr(name: string, options?: WfRunVariableOptions<unknown[]>): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.JSON_ARR), options)
+  }
+
+  declareWfRunId(name: string, options?: WfRunVariableOptions): WfRunVariable {
+    return this.applyVariableOptions(this.addVariable(name, VariableType.WF_RUN_ID), options)
   }
 
   /**
    * Declares a native, element-typed LH array (an `InlineArrayDef`) — distinct
    * from `declareJsonArr`, which is schemaless JSON.
    */
-  declareArray(name: string, elementType: LHType): WfRunVariable {
-    return this.addTypedVariable(name, arrayOf(elementType))
+  declareArray(name: string, elementType: LHType, options?: Omit<WfRunVariableOptions, 'defaultValue'>): WfRunVariable {
+    return this.applyVariableOptions(this.addTypedVariable(name, arrayOf(elementType)), options)
   }
 
   /** Declares a native LH map with typed keys and values (an `InlineMapDef`). */
-  declareMap(name: string, keyType: LHType, valueType: LHType): WfRunVariable {
-    return this.addTypedVariable(name, mapOf(keyType, valueType))
+  declareMap(
+    name: string,
+    keyType: LHType,
+    valueType: LHType,
+    options?: Omit<WfRunVariableOptions, 'defaultValue'>
+  ): WfRunVariable {
+    return this.applyVariableOptions(this.addTypedVariable(name, mapOf(keyType, valueType)), options)
   }
 
   /**
    * Declares a variable typed by a registered StructDef, referenced by name
    * (optionally pinned to a version) or by an `lhStruct(...)` zod schema.
    */
-  declareStruct(name: string, structDef: string | ZodTypeAny, version?: number): WfRunVariable {
+  declareStruct(
+    name: string,
+    structDef: string | ZodTypeAny,
+    versionOrOptions?: number | (Omit<WfRunVariableOptions, 'defaultValue'> & { version?: number })
+  ): WfRunVariable {
+    const version = typeof versionOrOptions === 'number' ? versionOrOptions : versionOrOptions?.version
+    const options = typeof versionOrOptions === 'number' ? undefined : versionOrOptions
     const type = typeof structDef === 'string' ? structOf(structDef, version) : structDef
-    return this.addTypedVariable(name, type)
+    return this.applyVariableOptions(this.addTypedVariable(name, type), options)
   }
 
   private addTypedVariable(name: string, type: LHType): WfRunVariable {
@@ -226,8 +313,20 @@ export class WorkflowThread {
 
   // ------------------------------------------------------------------- tasks
 
-  execute(taskName: string | WfRunVariable | LHFormatString, ...args: LHValue[]): TaskNodeOutput {
+  execute(taskName: string | WfRunVariable | LHFormatString, ...args: LHValue[]): TaskNodeOutput
+  execute(taskName: string | WfRunVariable | LHFormatString, args: LHValue[], options: TaskNodeOptions): TaskNodeOutput
+  execute(taskName: string | WfRunVariable | LHFormatString, ...argsOrOptions: unknown[]): TaskNodeOutput {
     this.checkIfIsActive()
+    let args = argsOrOptions as LHValue[]
+    let options: TaskNodeOptions | undefined
+    if (
+      argsOrOptions.length === 2 &&
+      Array.isArray(argsOrOptions[0]) &&
+      isOptionsBag(argsOrOptions[1], TASK_NODE_OPTION_KEYS)
+    ) {
+      args = argsOrOptions[0] as LHValue[]
+      options = argsOrOptions[1] as TaskNodeOptions
+    }
     let taskNode: TaskNode
     let nodeBaseName: string
     if (typeof taskName === 'string') {
@@ -242,7 +341,11 @@ export class WorkflowThread {
       nodeBaseName = taskName.format
     }
     const nodeName = this.addNode(nodeBaseName, { oneofKind: 'task', task: taskNode })
-    return new TaskNodeOutput(nodeName, this)
+    let output = new TaskNodeOutput(nodeName, this)
+    if (options?.retries !== undefined) output = output.withRetries(options.retries)
+    if (options?.exponentialBackoff !== undefined) output = output.withExponentialBackoff(options.exponentialBackoff)
+    if (options?.timeoutSeconds !== undefined) output = output.timeout(options.timeoutSeconds)
+    return output
   }
 
   private createTaskNode(taskToExecute: TaskNode['taskToExecute'], args: LHValue[]): TaskNode {
@@ -509,12 +612,23 @@ export class WorkflowThread {
 
   // ---------------------------------------------------------- external events
 
-  waitForEvent(externalEventDefName: string): ExternalEventNodeOutput {
+  waitForEvent(externalEventDefName: string, options?: ExternalEventNodeOptions): ExternalEventNodeOutput {
     this.checkIfIsActive()
     this.workflow.addExternalEventDefName(externalEventDefName)
     const waitNode = ExternalEventNode.create({ externalEventDefId: { name: externalEventDefName } })
     const nodeName = this.addNode(externalEventDefName, { oneofKind: 'externalEvent', externalEvent: waitNode })
-    return new ExternalEventNodeOutput(nodeName, externalEventDefName, this)
+    let output = new ExternalEventNodeOutput(nodeName, externalEventDefName, this)
+    if (options === undefined) return output
+    if (options.maskCorrelationId !== undefined && options.correlationId === undefined) {
+      throw new Error('maskCorrelationId requires correlationId')
+    }
+    if (options.timeoutSeconds !== undefined) output = output.timeout(options.timeoutSeconds)
+    if (options.correlationId !== undefined)
+      output = output.withCorrelationId(options.correlationId, options.maskCorrelationId)
+    if (options.payloadSchema !== undefined) output = output.registeredAs(options.payloadSchema)
+    if (options.correlatedEventConfig !== undefined)
+      output = output.withCorrelatedEventConfig(options.correlatedEventConfig)
+    return output
   }
 
   addTimeoutToExtEvtNode(node: ExternalEventNodeOutput, timeoutSeconds: number): void {
@@ -543,7 +657,11 @@ export class WorkflowThread {
 
   // ---------------------------------------------------------- workflow events
 
-  throwEvent(workflowEventDefName: string, content: LHValue): ThrowEventNodeOutput {
+  throwEvent(
+    workflowEventDefName: string,
+    content: LHValue,
+    options?: { payloadSchema?: ZodTypeAny }
+  ): ThrowEventNodeOutput {
     this.checkIfIsActive()
     this.workflow.addWorkflowEventDefName(workflowEventDefName)
     this.addNode(`throw-${workflowEventDefName}`, {
@@ -553,7 +671,9 @@ export class WorkflowThread {
         content: toVariableAssignment(content),
       },
     })
-    return new ThrowEventNodeOutput(workflowEventDefName, this)
+    const output = new ThrowEventNodeOutput(workflowEventDefName, this)
+    if (options?.payloadSchema !== undefined) output.registeredAs(options.payloadSchema)
+    return output
   }
 
   // ------------------------------------------------------------ child threads
@@ -703,7 +823,11 @@ export class WorkflowThread {
 
   // -------------------------------------------------------------- interrupts
 
-  registerInterruptHandler(interruptName: string, handler: ThreadFunc): InterruptHandler {
+  registerInterruptHandler(
+    interruptName: string,
+    handler: ThreadFunc,
+    options?: { payloadSchema?: ZodTypeAny | null }
+  ): InterruptHandler {
     this.checkIfIsActive()
     const threadName = this.workflow.addSubThread(`interrupt-${interruptName}`, handler)
     this.workflow.addExternalEventDefName(interruptName)
@@ -713,7 +837,11 @@ export class WorkflowThread {
         handlerSpecName: threadName,
       })
     )
-    return new InterruptHandler(interruptName, this)
+    const interruptHandler = new InterruptHandler(interruptName, this)
+    if (options !== undefined && 'payloadSchema' in options) {
+      interruptHandler.withEventType(options.payloadSchema ?? null)
+    }
+    return interruptHandler
   }
 
   // -------------------------------------------------------- failure handling
@@ -766,8 +894,28 @@ export class WorkflowThread {
 
   // -------------------------------------------------------------- user tasks
 
-  assignUserTask(userTaskDefName: string, userId: LHValue | null, userGroup: LHValue | null): UserTaskOutput {
+  assignUserTask(userTaskDefName: string, options?: AssignUserTaskOptions): UserTaskOutput
+  assignUserTask(userTaskDefName: string, userId: LHValue | null, userGroup: LHValue | null): UserTaskOutput
+  assignUserTask(
+    userTaskDefName: string,
+    userIdOrOptions?: AssignUserTaskOptions | LHValue | null,
+    maybeUserGroup?: LHValue | null
+  ): UserTaskOutput {
     this.checkIfIsActive()
+    let options: AssignUserTaskOptions | undefined
+    let userId: LHValue | null
+    let userGroup: LHValue | null
+    if (
+      maybeUserGroup === undefined &&
+      (userIdOrOptions === undefined || isOptionsBag(userIdOrOptions, ASSIGN_USER_TASK_OPTION_KEYS))
+    ) {
+      options = userIdOrOptions as AssignUserTaskOptions | undefined
+      userId = options?.userId ?? null
+      userGroup = options?.userGroup ?? null
+    } else {
+      userId = (userIdOrOptions ?? null) as LHValue | null
+      userGroup = maybeUserGroup ?? null
+    }
     if (typeof userId === 'string' && userId.trim() === '') {
       throw new Error("UserId can't be empty")
     }
@@ -782,7 +930,11 @@ export class WorkflowThread {
       utNode.userGroup = toVariableAssignment(userGroup)
     }
     const nodeName = this.addNode(userTaskDefName, { oneofKind: 'userTask', userTask: utNode })
-    return new UserTaskOutput(nodeName, this)
+    const output = new UserTaskOutput(nodeName, this)
+    if (options?.notes !== undefined) output.withNotes(options.notes)
+    if (options?.onCancellationException !== undefined)
+      output.withOnCancellationException(options.onCancellationException)
+    return output
   }
 
   setUserTaskNotes(userTask: UserTaskOutput, notes: LHValue): void {

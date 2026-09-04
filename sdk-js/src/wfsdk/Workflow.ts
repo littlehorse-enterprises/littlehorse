@@ -20,6 +20,17 @@ import { ExponentialBackoffRetryPolicy, VariableMutationType } from '../proto/co
 import { WorkflowThread, ThreadFunc } from './WorkflowThread'
 import type { WfRunVariable } from './variables'
 
+/** Optional workflow-level settings; each key mirrors a fluent or setter method. */
+export interface WorkflowOptions {
+  updateType?: AllowedUpdateType
+  retentionPolicy?: WorkflowRetentionPolicy
+  defaultThreadRetentionPolicy?: ThreadRetentionPolicy
+  defaultTaskTimeout?: number
+  defaultTaskRetries?: number
+  defaultTaskExponentialBackoff?: ExponentialBackoffRetryPolicy
+  parentWfSpecName?: string
+}
+
 /**
  * Represents a WfSpec (mirrors Java Workflow/WorkflowImpl). Calling
  * compileWorkflow() runs the thread functions exactly once to build the
@@ -50,8 +61,21 @@ export class Workflow {
     private readonly entrypointThread: ThreadFunc
   ) {}
 
-  static newWorkflow(name: string, entrypointThreadFunc: ThreadFunc): Workflow {
-    return new Workflow(name, entrypointThreadFunc)
+  static newWorkflow(name: string, entrypointThreadFunc: ThreadFunc, options?: WorkflowOptions): Workflow {
+    const workflow = new Workflow(name, entrypointThreadFunc)
+    if (options === undefined) return workflow
+    if (options.updateType !== undefined) workflow.withUpdateType(options.updateType)
+    if (options.retentionPolicy !== undefined) workflow.withRetentionPolicy(options.retentionPolicy)
+    if (options.defaultThreadRetentionPolicy !== undefined) {
+      workflow.withDefaultThreadRetentionPolicy(options.defaultThreadRetentionPolicy)
+    }
+    if (options.defaultTaskTimeout !== undefined) workflow.setDefaultTaskTimeout(options.defaultTaskTimeout)
+    if (options.defaultTaskRetries !== undefined) workflow.setDefaultTaskRetries(options.defaultTaskRetries)
+    if (options.defaultTaskExponentialBackoff !== undefined) {
+      workflow.setDefaultTaskExponentialBackoffPolicy(options.defaultTaskExponentialBackoff)
+    }
+    if (options.parentWfSpecName !== undefined) workflow.setParent(options.parentWfSpecName)
+    return workflow
   }
 
   compileWorkflow(): PutWfSpecRequest {
@@ -99,7 +123,7 @@ export class Workflow {
    */
   async registerWfSpec(config: LHConfig): Promise<WfSpec> {
     const request = this.compileWorkflow()
-    const client = config.getClient()
+    const client = await config.getAuthenticatedClient()
 
     for (const eventDef of this.getExternalEventDefsToRegister()) {
       await client.putExternalEventDef(eventDef)
@@ -115,7 +139,7 @@ export class Workflow {
    * specific version instead of the latest.
    */
   async doesWfSpecExist(config: LHConfig, majorVersion?: number): Promise<boolean> {
-    const client = config.getClient()
+    const client = await config.getAuthenticatedClient()
     try {
       if (majorVersion === undefined) {
         await client.getLatestWfSpec({ name: this.name })
