@@ -87,14 +87,13 @@ Release candidates (RC) are pre-release versions intended for final validation b
 2. **Pre-release checks**
    - Ensure the `X.Y` branch is green (CI passes).
    - Confirm no open blockers for the target milestone.
-3. **Version bump** — On the release branch, update the version in [`gradle.properties`](#version-file) to `X.Y.Z-RC<N>`.
-4. **Tag & push**
+3. **Tag & push** — Use the RC version in the tag; the release workflow derives the artifact version from the tag and updates `gradle.properties` during publishing.
    ```bash
    git tag vX.Y.Z-RC<N>
    git push origin vX.Y.Z-RC<N>
    ```
-5. **Publish artifacts** (see [Publishing Details](#publishing-details)).
-6. **Validation** — Stakeholders test the RC. If issues are found:
+4. **Publish artifacts** (see [Publishing Details](#publishing-details)).
+5. **Validation** — Stakeholders test the RC. If issues are found:
    - Fix them on `master` first.
    - Cherry-pick the fixes onto the `X.Y` branch using the [`cherry-pick` (TODO)](../.github/workflows/cherry-pick.yml) workflow.
    - Cut `RC<N+1>` from the release branch.
@@ -243,4 +242,3 @@ python3 release-manager/scripts/release_notes.py --version 1.2.0 --output CHANGE
 
 - Python ≥ 3.10
 - Git
-
