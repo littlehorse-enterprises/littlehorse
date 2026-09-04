@@ -69,7 +69,7 @@ jobs:
 
       - name: Install Dependencies
         working-directory: ./sdk-js
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Validate Formatting
         working-directory: ./sdk-js
@@ -116,7 +116,7 @@ jobs:
       - name: Build Testees
         run: |
           ./gradlew :sdk-java-conformance:installDist
-          pnpm --dir sdk-js install
+          pnpm --dir sdk-js install --frozen-lockfile
           pnpm --dir sdk-js run build
           pnpm --dir sdk-js run build:conformance
 
