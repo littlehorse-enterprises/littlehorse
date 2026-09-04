@@ -3,13 +3,21 @@
 // exit 1 on any gate failure. Contract: sdk-conformance/README.md.
 import { writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { CONFORMANCE, readJson, readLedgerYaml, corpusRevision, runTestee, runTesteeStdin, fail, ok } from './lib.mjs'
+import { CONFORMANCE, readJson, readLedgerYaml, corpusRevision, missingTestees, runTestee, runTesteeStdin, fail, ok } from './lib.mjs'
 import { semanticDiff } from './compare.mjs'
 
 const wfsdkManifest = readJson(resolve(CONFORMANCE, 'areas', 'wfsdk', 'manifest.json'))
 const serdeManifest = readJson(resolve(CONFORMANCE, 'areas', 'serde', 'manifest.json'))
 const registrationsManifest = readJson(resolve(CONFORMANCE, 'areas', 'registrations', 'manifest.json'))
 const testees = readJson(resolve(CONFORMANCE, 'testees.json'))
+const notBuilt = missingTestees()
+if (notBuilt.length > 0) {
+  for (const { sdk, build } of notBuilt) {
+    console.error(`testee '${sdk}' is not built. Build it with:  ${build}`)
+  }
+  console.error(`or build every testee at once:  node sdk-conformance/runner/build.mjs`)
+  process.exit(2)
+}
 const revision = corpusRevision()
 const allCaseIds = new Set(
   [...wfsdkManifest.cases, ...serdeManifest.cases, ...registrationsManifest.cases].map((c) => c.id),
@@ -118,5 +126,10 @@ for (const [sdk, config] of Object.entries(testees)) {
     resolve(CONFORMANCE, 'results', `${sdk}.json`),
     JSON.stringify({ sdk, corpusRevision: revision, summary, outcomes }, null, 2) + '\n',
   )
-  ok(`${sdk}: ${summary.PASS} pass, ${summary.FAIL} fail, ${summary.SKIP} skip, ${summary.MISSING} missing → results/${sdk}.json`)
+  const summaryLine = `${sdk}: ${summary.PASS} pass, ${summary.FAIL} fail, ${summary.SKIP} skip, ${summary.MISSING} missing → results/${sdk}.json`
+  if (summary.FAIL > 0 || summary.MISSING > 0) {
+    fail(summaryLine)
+  } else {
+    ok(summaryLine)
+  }
 }

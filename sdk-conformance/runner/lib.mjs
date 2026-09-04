@@ -105,3 +105,21 @@ export function fail(msg) {
 export function ok(msg) {
   console.log(`\x1b[32m✓\x1b[0m ${msg}`)
 }
+
+/**
+ * Testees are built by their own SDK's toolchain, so a fresh checkout has
+ * none. Returns [{sdk, build}] for every registered testee whose command
+ * target is missing, so entry points can print the fix instead of a spawn
+ * error.
+ */
+export function missingTestees() {
+  const testees = readJson(resolve(CONFORMANCE, 'testees.json'))
+  const missing = []
+  for (const [sdk, config] of Object.entries(testees)) {
+    const target = config.command[0] === 'node' ? config.command[1] : config.command[0]
+    if (!existsSync(resolve(REPO_ROOT, target))) {
+      missing.push({ sdk, build: config.build })
+    }
+  }
+  return missing
+}
