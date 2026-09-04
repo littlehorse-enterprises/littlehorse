@@ -16,7 +16,10 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
-  const run = await client.runWf({ wfSpecName: 'hundred-tasks', variables: {} })
+  const run = await client.runWf({
+    wfSpecName: 'hundred-tasks',
+    variables: {},
+  })
   const finished = await waitForRun(run.id!)
   console.log(`hundred-tasks -> ${LHStatus[finished.status]} (${run.id!.id})`)
   config.close()

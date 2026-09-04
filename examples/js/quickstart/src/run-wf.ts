@@ -57,7 +57,7 @@ async function main() {
   console.log(`  lhctl list taskRun ${wfRunId}`)
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

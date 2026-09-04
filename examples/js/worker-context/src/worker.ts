@@ -10,7 +10,9 @@ function task(requestTime: number, ctx: WorkerContext): void {
   const lag = end - requestTime
 
   console.log(`Epochs: start ${requestTime} end ${end}`)
-  console.log(`Started ${new Date(requestTime).toISOString()}, Finished ${new Date(end).toISOString()}. Lag in millis: ${lag}`)
+  console.log(
+    `Started ${new Date(requestTime).toISOString()}, Finished ${new Date(end).toISOString()}. Lag in millis: ${lag}`
+  )
   console.log(
     `Wf run id '${ctx.getWfRunId()?.id}'. Task global id '${ctx.getTaskRunId()?.taskGuid}'. Attempt number '${ctx.getAttemptNumber()}'`
   )

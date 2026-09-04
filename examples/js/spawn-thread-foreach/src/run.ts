@@ -22,7 +22,11 @@ async function main() {
   }
   const run = await client.runWf({
     wfSpecName: 'spawn-parallel-threads-from-json-arr-variable',
-    variables: { 'approval-chain': { value: { oneofKind: 'jsonObj', jsonObj: JSON.stringify(approvalChain) } } },
+    variables: {
+      'approval-chain': {
+        value: { oneofKind: 'jsonObj', jsonObj: JSON.stringify(approvalChain) },
+      },
+    },
   })
   const finished = await waitForRun(run.id!)
   console.log(

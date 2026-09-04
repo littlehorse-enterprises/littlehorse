@@ -19,7 +19,9 @@ async function main() {
   const run = await client.runWf({
     wfSpecName: 'example-variables',
     variables: {
-      'input-text': { value: { oneofKind: 'str', str: 'this is a very long text' } },
+      'input-text': {
+        value: { oneofKind: 'str', str: 'this is a very long text' },
+      },
       'add-length': { value: { oneofKind: 'bool', bool: false } },
       'user-id': { value: { oneofKind: 'int', int: '1234' } },
     },

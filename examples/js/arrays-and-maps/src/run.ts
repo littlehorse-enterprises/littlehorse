@@ -28,10 +28,7 @@ async function main() {
         value: {
           oneofKind: 'array',
           array: {
-            items: [
-              { value: { oneofKind: 'str', str: 'alpha' } },
-              { value: { oneofKind: 'str', str: 'beta' } },
-            ],
+            items: [{ value: { oneofKind: 'str', str: 'alpha' } }, { value: { oneofKind: 'str', str: 'beta' } }],
           },
         },
       },

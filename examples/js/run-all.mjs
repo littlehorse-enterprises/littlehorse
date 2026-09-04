@@ -19,9 +19,9 @@ const ROOT = dirname(fileURLToPath(import.meta.url))
 const SKIP = new Set(['quickstart', 'simple-worker', 'struct-builder'])
 const READY_TIMEOUT_MS = 60000
 const dirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((d) => d.isDirectory() && !SKIP.has(d.name) && d.name !== 'node_modules')
-  .map((d) => d.name)
-  .filter((d) => existsSync(join(ROOT, d, 'package.json')))
+  .filter(d => d.isDirectory() && !SKIP.has(d.name) && d.name !== 'node_modules')
+  .map(d => d.name)
+  .filter(d => existsSync(join(ROOT, d, 'package.json')))
   .sort()
 
 function startWorker(cwd) {
@@ -29,8 +29,11 @@ function startWorker(cwd) {
   const child = spawn(tsx, ['src/worker.ts'], { cwd, stdio: ['ignore', 'pipe', 'pipe'] })
   let output = ''
   const ready = new Promise((resolvePromise, reject) => {
-    const timer = setTimeout(() => reject(new Error(`worker not ready after ${READY_TIMEOUT_MS}ms\n${output}`)), READY_TIMEOUT_MS)
-    const onData = (chunk) => {
+    const timer = setTimeout(
+      () => reject(new Error(`worker not ready after ${READY_TIMEOUT_MS}ms\n${output}`)),
+      READY_TIMEOUT_MS
+    )
+    const onData = chunk => {
       output += chunk.toString()
       if (/^ready:/m.test(output)) {
         clearTimeout(timer)
@@ -39,7 +42,7 @@ function startWorker(cwd) {
     }
     child.stdout.on('data', onData)
     child.stderr.on('data', onData)
-    child.on('exit', (code) => {
+    child.on('exit', code => {
       clearTimeout(timer)
       reject(new Error(`worker exited early (code ${code})\n${output}`))
     })
@@ -49,7 +52,7 @@ function startWorker(cwd) {
 
 async function stopWorker(child) {
   if (child.exitCode !== null) return
-  const gone = new Promise((resolvePromise) => child.on('exit', resolvePromise))
+  const gone = new Promise(resolvePromise => child.on('exit', resolvePromise))
   child.kill('SIGTERM')
   const timer = setTimeout(() => child.kill('SIGKILL'), 5000)
   await gone
@@ -76,5 +79,7 @@ for (const dir of dirs) {
     if (worker) await stopWorker(worker.child)
   }
 }
-console.log(`\n${dirs.length - failed.length}/${dirs.length} examples passed${failed.length ? ` — failed: ${failed.join(', ')}` : ''}`)
+console.log(
+  `\n${dirs.length - failed.length}/${dirs.length} examples passed${failed.length ? ` — failed: ${failed.join(', ')}` : ''}`
+)
 process.exit(failed.length ? 1 : 0)

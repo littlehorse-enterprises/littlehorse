@@ -16,7 +16,10 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
-  const run = await client.runWf({ wfSpecName: 'example-wait-for-one-of', variables: {} })
+  const run = await client.runWf({
+    wfSpecName: 'example-wait-for-one-of',
+    variables: {},
+  })
   console.log('posting child-1-event; child-2 stays parked and gets halted...')
   await client.putExternalEvent({
     wfRunId: run.id,

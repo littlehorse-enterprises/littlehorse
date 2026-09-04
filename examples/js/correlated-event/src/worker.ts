@@ -11,7 +11,9 @@ const EVENT_NAME = 'document-signed'
 async function main() {
   await client.putExternalEventDef({
     name: EVENT_NAME,
-    contentType: { returnType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.BOOL }, masked: false } },
+    contentType: {
+      returnType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.BOOL }, masked: false },
+    },
     correlatedEventConfig: { deleteAfterFirstCorrelation: false },
   })
 
