@@ -28,7 +28,7 @@ import {
 } from '../proto/common_wfspec'
 import { Comparator } from '../proto/type_definition'
 import { LHErrorType, VariableType } from '../proto/common_enums'
-import { toVariableAssignment } from './builder'
+import { isDoubleContext, toVariableAssignment } from './builder'
 import { LHExpression, LHExpressionImpl, LHFormatString, LHValue } from './expressions'
 import {
   ExternalEventNodeOutput,
@@ -438,7 +438,10 @@ export class WorkflowThread {
     const mutation = VariableMutation.create({
       lhsName: lhsVar.name,
       operation: type,
-      rhsValue: { oneofKind: 'rhsAssignment', rhsAssignment: toVariableAssignment(rhs) },
+      rhsValue: {
+        oneofKind: 'rhsAssignment',
+        rhsAssignment: toVariableAssignment(rhs, isDoubleContext(lhsVar) ? VariableType.DOUBLE : undefined),
+      },
     })
     if (lhsVar.jsonPathStr !== undefined) {
       mutation.lhsJsonPath = lhsVar.jsonPathStr

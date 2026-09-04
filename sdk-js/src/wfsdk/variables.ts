@@ -118,7 +118,13 @@ export class WfRunVariable extends LHExpressionBase {
   }
 
   withDefault(defaultVal: unknown): WfRunVariable {
-    const val = objToVarVal(defaultVal)
+    let val = objToVarVal(defaultVal)
+    // JS cannot spell a double-typed whole number (100.0 === 100), so a
+    // whole-number default on a declared-DOUBLE variable encodes as DOUBLE.
+    // A bigint stays INT (the explicit escape hatch) and still throws below.
+    if (this.primitiveType === VariableType.DOUBLE && typeof defaultVal === 'number' && val.value.oneofKind === 'int') {
+      val = VariableValue.create({ value: { oneofKind: 'double', double: defaultVal } })
+    }
     if (variableTypeFromValue(val) !== this.primitiveType) {
       throw new Error(`Default value type does not match LH variable type of ${this.name}`)
     }
