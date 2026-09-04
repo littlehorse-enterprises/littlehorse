@@ -18,6 +18,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const eater = createTaskWorker(eatingDonut, 'eating-donut', config, {
     inputVars: { donutsLeft: z.number().int() },
+    outputSchema: z.string(),
   })
   await ensureTaskDef(eater)
 

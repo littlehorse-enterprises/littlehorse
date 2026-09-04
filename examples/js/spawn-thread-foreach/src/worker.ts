@@ -16,6 +16,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const executor = createTaskWorker(taskExecutor, 'task-executor', config, {
     inputVars: { taskInput: z.string() },
+    outputSchema: z.string(),
   })
   await ensureTaskDef(executor)
 

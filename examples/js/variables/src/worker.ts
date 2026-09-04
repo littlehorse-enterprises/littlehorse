@@ -34,6 +34,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const analyzer = createTaskWorker(sentimentAnalysis, 'sentiment-analysis', config, {
     inputVars: { text: lhMasked(z.string()) },
+    outputSchema: z.number(),
   })
   const processor = createTaskWorker(processText, 'process-text', config, {
     inputVars: {
@@ -42,6 +43,14 @@ async function main() {
       addLength: z.boolean(),
       userId: z.number().int(),
     },
+    outputSchema: lhMasked(
+      z.object({
+        text: z.string(),
+        sentimentScore: z.number(),
+        addLength: z.boolean(),
+        userId: z.number().int(),
+      })
+    ),
   })
   const sender = createTaskWorker(send, 'send', config, {
     inputVars: {
@@ -54,19 +63,25 @@ async function main() {
         })
       ),
     },
+    outputSchema: z.string(),
   })
   for (const w of [analyzer, processor, sender]) await ensureTaskDef(w)
 
   const wf = Workflow.newWorkflow('example-variables', thread => {
     // Optional settings go in an options object; the chained style
     // (.searchable() etc.) works too.
-    const inputText = thread.declareStr('input-text', { searchable: true, masked: true })
+    const inputText = thread.declareStr('input-text', {
+      searchable: true,
+      masked: true,
+    })
 
     const addLength = thread.declareBool('add-length', { searchable: true })
 
     const userId = thread.declareInt('user-id', { searchable: true })
 
-    const sentimentScore = thread.declareDouble('sentiment-score', { searchable: true })
+    const sentimentScore = thread.declareDouble('sentiment-score', {
+      searchable: true,
+    })
 
     const processedResult = thread.declareJsonObj('processed-result', {
       searchableOn: [{ fieldPath: '$.sentimentScore', fieldType: VariableType.DOUBLE }],
@@ -83,7 +98,9 @@ async function main() {
 
   for (const w of [analyzer, processor, sender]) await w.start()
   console.log('ready: polling for sentiment-analysis, process-text, send tasks')
-  console.log(`run the workflow:  lhctl run example-variables input-text 'this is a very long text' add-length false user-id 1234`)
+  console.log(
+    `run the workflow:  lhctl run example-variables input-text 'this is a very long text' add-length false user-id 1234`
+  )
 
   const shutdown = async () => {
     await Promise.all([analyzer.close(), processor.close(), sender.close()])

@@ -20,6 +20,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const mutator = createTaskWorker(spiderBite, 'spider-bite', config, {
     inputVars: { name: z.string() },
+    outputSchema: z.string(),
   })
   await ensureTaskDef(mutator)
 

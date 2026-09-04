@@ -16,6 +16,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const order = createTaskWorker(placeOrder, 'place-order', config, {
     inputVars: { total: z.number() },
+    outputSchema: z.string(),
   })
   await ensureTaskDef(order)
 

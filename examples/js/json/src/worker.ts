@@ -23,9 +23,11 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 async function main() {
   const greeter = createTaskWorker(greet, 'greet', config, {
     inputVars: { name: z.string() },
+    outputSchema: z.string(),
   })
   const describer = createTaskWorker(describeCar, 'describe-car', config, {
     inputVars: { car: z.object({ brand: z.string(), model: z.string() }) },
+    outputSchema: z.string(),
   })
   for (const w of [greeter, describer]) await ensureTaskDef(w)
 
@@ -40,7 +42,9 @@ async function main() {
 
   for (const w of [greeter, describer]) await w.start()
   console.log('ready: polling for greet, describe-car tasks')
-  console.log(`run the workflow:  lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "model": "Escape"}}'`)
+  console.log(
+    `run the workflow:  lhctl run example-json person '{"name": "Obi-Wan", "car": {"brand": "Ford", "model": "Escape"}}'`
+  )
 
   const shutdown = async () => {
     await Promise.all([greeter.close(), describer.close()])

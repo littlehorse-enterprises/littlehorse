@@ -20,9 +20,13 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
-  const asker = createTaskWorker(askForName, 'ask-for-name', config, { inputVars: {} })
+  const asker = createTaskWorker(askForName, 'ask-for-name', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
   const greeter = createTaskWorker(greet, 'greet', config, {
     inputVars: { name: z.string() },
+    outputSchema: z.string(),
   })
   for (const w of [asker, greeter]) await ensureTaskDef(w)
 

@@ -7,6 +7,7 @@ import {
   spawnedThreadsOf,
 } from 'littlehorse-client'
 import { Comparator } from 'littlehorse-client/proto'
+import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
@@ -97,9 +98,18 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 
 async function main() {
   const workers = [
-    createTaskWorker(calculateNextNotification, 'calculate-next-notification', config, { inputVars: {} }),
-    createTaskWorker(reminderTask, 'reminder-task', config, { inputVars: {} }),
-    createTaskWorker(handler, 'exc-handler', config, { inputVars: {} }),
+    createTaskWorker(calculateNextNotification, 'calculate-next-notification', config, {
+      inputVars: {},
+      outputSchema: z.number().int(),
+    }),
+    createTaskWorker(reminderTask, 'reminder-task', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
+    createTaskWorker(handler, 'exc-handler', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
   ]
   for (const worker of workers) await ensureTaskDef(worker)
 

@@ -16,16 +16,21 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
-  const run = await client.runWf({
-    wfSpecName: 'example-run-wf',
-    variables: {
-      n: { value: { oneofKind: 'int', int: '1' } },
-    },
-  })
-  const finished = await waitForRun(run.id!)
-  console.log(`example-run-wf -> ${LHStatus[finished.status]} (${run.id!.id})`)
+  // Java submits runs on a timer with an incrementing n; a trigger script
+  // does the same, bounded so it exits.
+  let failed = false
+  for (let n = 1; n <= 5; n++) {
+    console.log(`Requesting wf run execution, n = ${n}`)
+    const run = await client.runWf({
+      wfSpecName: 'example-run-wf',
+      variables: { n: { value: { oneofKind: 'int', int: String(n) } } },
+    })
+    const finished = await waitForRun(run.id!)
+    console.log(`example-run-wf n=${n} -> ${LHStatus[finished.status]} (${run.id!.id})`)
+    if (finished.status !== LHStatus.COMPLETED) failed = true
+  }
   config.close()
-  if (finished.status !== LHStatus.COMPLETED) process.exit(1)
+  if (failed) process.exit(1)
 }
 
 main().catch(err => {

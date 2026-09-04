@@ -18,7 +18,12 @@ function personToString(person: Person): string {
 // call a database or external service and return a JSON object.
 function fetchAddress(name: string): Address {
   console.log(`Looking up address for ${name}`)
-  return { street: '124 Sand Dune Lane', city: 'Anchorhead', state: 'Tattooine', zip: 97412 }
+  return {
+    street: '124 Sand Dune Lane',
+    city: 'Anchorhead',
+    state: 'Tattooine',
+    zip: 97412,
+  }
 }
 
 function savePerson(person: Person): string {
@@ -43,6 +48,7 @@ async function main() {
   })
   const savePersonWorker = createTaskWorker(savePerson, 'save-person', config, {
     inputVars: { person: Person },
+    outputSchema: z.string(),
   })
 
   // address must be registered before person: person references it by name.

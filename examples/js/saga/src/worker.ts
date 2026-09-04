@@ -31,11 +31,17 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
-  const flightBooker = createTaskWorker(bookFlight, 'book-flight', config, { inputVars: {} })
+  const flightBooker = createTaskWorker(bookFlight, 'book-flight', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
   const flightCanceller = createTaskWorker(cancelFlight, 'cancel-flight', config, {
     inputVars: { confirmationNumber: z.string() },
   })
-  const hotelBooker = createTaskWorker(bookHotel, 'book-hotel', config, { inputVars: {} })
+  const hotelBooker = createTaskWorker(bookHotel, 'book-hotel', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
   for (const w of [flightBooker, flightCanceller, hotelBooker]) await ensureTaskDef(w)
 
   const wf = Workflow.newWorkflow('example-saga', thread => {

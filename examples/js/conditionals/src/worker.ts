@@ -1,4 +1,5 @@
 import { LHTaskWorker, Workflow, createTaskWorker } from 'littlehorse-client'
+import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
@@ -29,10 +30,22 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 
 async function main() {
   const workers = [
-    createTaskWorker(taskA, 'task-a', config, { inputVars: {} }),
-    createTaskWorker(taskB, 'task-b', config, { inputVars: {} }),
-    createTaskWorker(taskC, 'task-c', config, { inputVars: {} }),
-    createTaskWorker(taskD, 'task-d', config, { inputVars: {} }),
+    createTaskWorker(taskA, 'task-a', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
+    createTaskWorker(taskB, 'task-b', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
+    createTaskWorker(taskC, 'task-c', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
+    createTaskWorker(taskD, 'task-d', config, {
+      inputVars: {},
+      outputSchema: z.string(),
+    }),
   ]
   for (const w of workers) await ensureTaskDef(w)
 

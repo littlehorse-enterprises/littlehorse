@@ -24,7 +24,13 @@ function lookupCarOwnerInDb(licensePlateNumber: string): Person {
   return {
     firstName: 'Obi-Wan',
     lastName: 'Kenobi',
-    homeAddress: { houseNumber: 124, street: 'Sand Dune Lane', city: 'Anchorhead', planet: 'Tattooine', zipCode: 97412 },
+    homeAddress: {
+      houseNumber: 124,
+      street: 'Sand Dune Lane',
+      city: 'Anchorhead',
+      planet: 'Tattooine',
+      zipCode: 97412,
+    },
   }
 }
 
@@ -60,6 +66,7 @@ async function main() {
   })
   const mailTicketWorker = createTaskWorker(mailTicket, 'mail-ticket', config, {
     inputVars: { person: Person },
+    outputSchema: z.string(),
   })
 
   await registerStructDefs(getCarOwnerWorker, ParkingTicketReport, Address, Person)

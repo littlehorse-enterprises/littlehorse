@@ -1,4 +1,5 @@
 import { LHTaskWorker, Workflow, createTaskWorker, spawnedThreadsOf } from 'littlehorse-client'
+import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
@@ -14,7 +15,10 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
-  const completed = createTaskWorker(childCompleted, 'child-completed', config, { inputVars: {} })
+  const completed = createTaskWorker(childCompleted, 'child-completed', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
   await ensureTaskDef(completed)
 
   const wf = Workflow.newWorkflow('example-wait-for-one-of', thread => {

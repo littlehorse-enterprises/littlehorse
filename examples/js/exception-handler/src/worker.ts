@@ -1,4 +1,5 @@
 import { LHTaskWorker, Workflow, createTaskWorker } from 'littlehorse-client'
+import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
@@ -24,8 +25,14 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
-  const failWorker = createTaskWorker(fail, 'fail', config, { inputVars: {} })
-  const myTask = createTaskWorker(passingTask, 'my-task', config, { inputVars: {} })
+  const failWorker = createTaskWorker(fail, 'fail', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
+  const myTask = createTaskWorker(passingTask, 'my-task', config, {
+    inputVars: {},
+    outputSchema: z.string(),
+  })
   for (const w of [failWorker, myTask]) await ensureTaskDef(w)
 
   const wf = Workflow.newWorkflow('example-exception-handler', thread => {
