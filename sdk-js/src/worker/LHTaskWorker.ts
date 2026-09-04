@@ -1,14 +1,21 @@
 import type { GrpcTransport } from '@protobuf-ts/grpc-transport'
 import { ReportTaskRun, ScheduledTask, PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
-import { TypeDefinition } from '../proto/type_definition'
+import { TypeDefinition, VariableValue } from '../proto/type_definition'
+import { LHTypeAdapterRegistry } from '../common/typeAdapters'
 import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { TaskDefId } from '../proto/object_id'
 import { TaskStatus, LHErrorType } from '../proto/common_enums'
-import { LHConfig } from '../LHConfig'
+import { AccessTokenProvider, LHConfig } from '../LHConfig'
 import type { LHPublicClient } from '../client'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { toStructVariableValue, getStructName, zodToVariableDefs, buildPutStructDefRequest } from './zodSchema'
+import {
+  toStructVariableValue,
+  getStructName,
+  zodToVariableDefs,
+  zodToTypeDef,
+  buildPutStructDefRequest,
+} from './zodSchema'
 import { randomBytes } from 'crypto'
 import { type ZodTypeAny } from 'zod'
 
@@ -59,6 +66,12 @@ class ServerConnection {
   private inflight = 0
   /** True while we are deliberately not asking for work (at capacity). */
   private awaitingCapacity = false
+  /**
+   * The CURRENT stream's request sender. Task-completion callbacks resume
+   * through this instead of their own generation's closure, so a task started
+   * by a dead stream can never consume the wakeup and strand a live one.
+   */
+  private resume: (() => void) | undefined
 
   constructor(
     host: string,
@@ -70,15 +83,14 @@ class ServerConnection {
     private readonly config: LHConfig,
     private readonly maxInflight: number,
     private readonly outputSchema?: ZodTypeAny,
-    accessToken?: string
+    private readonly tokenProvider?: AccessTokenProvider
   ) {
     this.host = host
     this.port = port
     this.transport = config.createTransport(host, port)
-    // The token is bound at connection time. If it later expires the stream
-    // fails, the poll loop reconnects, and the heartbeat supplies a fresh one
-    // — so expiry self-heals through the existing reconnect path.
-    this.client = config.createClientForTransport(this.transport, accessToken)
+    // Unary calls (reportTask, checkpoints) mint a fresh token per call, and
+    // doPoll mints one per stream, so token expiry never strands a connection.
+    this.client = config.createClientForTransport(this.transport, tokenProvider)
   }
 
   get hostKey(): string {
@@ -137,8 +149,13 @@ class ServerConnection {
   }
 
   private async doPoll(): Promise<void> {
+    this.awaitingCapacity = false
     this.pollAbort = new AbortController()
-    const call = this.client.pollTask({ abort: this.pollAbort.signal })
+    const token = await this.tokenProvider?.()
+    const call = this.client.pollTask({
+      abort: this.pollAbort.signal,
+      ...(token !== undefined && { meta: { authorization: `Bearer ${token}` } }),
+    })
 
     const sendRequest = () => {
       if (!this.running) return
@@ -152,6 +169,7 @@ class ServerConnection {
         })
         .catch(() => {})
     }
+    this.resume = sendRequest
 
     sendRequest()
 
@@ -166,10 +184,11 @@ class ServerConnection {
             })
             .finally(() => {
               this.inflight--
-              // A slot freed up; if we stopped asking for work, resume.
+              // A slot freed up; if we stopped asking for work, resume the
+              // CURRENT stream (this.resume), never this closure's own.
               if (this.awaitingCapacity) {
                 this.awaitingCapacity = false
-                sendRequest()
+                this.resume?.()
               }
             })
         }
@@ -199,7 +218,8 @@ class ServerConnection {
 
   private async executeTask(task: ScheduledTask): Promise<ReportTaskRun> {
     // The client is passed so checkpointed operations can talk to the server.
-    const context = new WorkerContext(task, this.client)
+    const typeAdapters = this.config.getTypeAdapterRegistry()
+    const context = new WorkerContext(task, this.client, typeAdapters)
     const now = Timestamp.now()
 
     let args: unknown[]
@@ -237,7 +257,7 @@ class ServerConnection {
         result !== undefined &&
         typeof result === 'object'
           ? toStructVariableValue(result as Record<string, unknown>, this.outputSchema)
-          : toVariableValue(result)
+          : toVariableValue(result, undefined, typeAdapters)
 
       return {
         taskRunId: task.taskRunId,
@@ -262,7 +282,7 @@ class ServerConnection {
             exception: {
               name: err.name,
               message: err.message,
-              content: err.content ? toVariableValue(err.content) : { value: { oneofKind: undefined } },
+              content: err.content ? exceptionContent(err.content, typeAdapters) : { value: { oneofKind: undefined } },
             },
           },
           totalCheckpoints: 0,
@@ -341,6 +361,9 @@ export interface LHTaskWorkerOptions {
    * ```
    */
   inputVars: Record<string, ZodTypeAny>
+
+  /** Registered as the TaskDef's description (Java: the annotation's description). */
+  description?: string
 
   /**
    * When the task function returns a struct, provide the Zod schema
@@ -481,7 +504,6 @@ export function createTaskWorker(
 
   async function heartbeat(): Promise<void> {
     try {
-      const accessToken = await currentAccessToken()
       const response = await (
         await bootstrap()
       ).registerTaskWorker({
@@ -520,7 +542,7 @@ export function createTaskWorker(
             config,
             maxInflightTasks,
             outputSchema,
-            accessToken
+            currentAccessToken
           )
           conn.start()
           connections.set(key, conn)
@@ -536,7 +558,7 @@ export function createTaskWorker(
     }
   }
 
-  return {
+  const api: LHTaskWorker = {
     getTaskDefName(): string {
       return taskDefName
     },
@@ -564,11 +586,18 @@ export function createTaskWorker(
         ).putTaskDef({
           name: taskDefName,
           inputVars,
+          // Java registers the output type from the task signature; the
+          // outputSchema option is the JS equivalent. Absent means void.
+          ...(outputSchema !== undefined && { returnType: { returnType: zodToTypeDef(outputSchema) } }),
+          ...(options.description !== undefined && { description: options.description }),
         })
         console.log(`[LHTaskWorker] Registered TaskDef: ${result.id?.name}`)
       } catch (err: any) {
         if (err?.code === 'ALREADY_EXISTS') {
-          console.log(`[LHTaskWorker] TaskDef '${taskDefName}' already exists, skipping registration.`)
+          // An existing TaskDef is fine only when it matches this worker's
+          // declared signature; validating surfaces drift instead of hiding it.
+          console.log(`[LHTaskWorker] TaskDef '${taskDefName}' already exists; validating against it.`)
+          await api.validateTaskDef()
         } else {
           throw err
         }
@@ -657,6 +686,9 @@ export function createTaskWorker(
 
     async start(): Promise<void> {
       if (running) return
+      // Fail fast on a partial OAuth trio; otherwise the heartbeat's catch
+      // would retry the misconfiguration forever while start() looks healthy.
+      config.isOauth()
       running = true
 
       console.log(`[LHTaskWorker] Starting worker for TaskDef '${taskDefName}' (id: ${taskWorkerId})`)
@@ -725,8 +757,22 @@ export function createTaskWorker(
       return total
     },
   }
+  return api
 }
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/**
+ * Conversion must stay total here: this runs inside the TASK_EXCEPTION report
+ * path, and a throw would mean no report reaches the server at all. Falls back
+ * to the stringified content, like the pre-1.3 converter did for everything.
+ */
+function exceptionContent(content: unknown, typeAdapters?: LHTypeAdapterRegistry): VariableValue {
+  try {
+    return toVariableValue(content, undefined, typeAdapters)
+  } catch {
+    return { value: { oneofKind: 'str', str: String(content) } }
+  }
 }

@@ -4,6 +4,7 @@ import { WfRunId, TaskRunId, NodeRunId } from '../proto/object_id'
 import { UserTaskTriggerReference } from '../proto/user_tasks'
 import type { LHPublicClient } from '../client'
 import { extractVariableValue, toVariableValue } from './variableMapping'
+import { LHTypeAdapterRegistry } from '../common/typeAdapters'
 
 /**
  * Collects logs produced inside a checkpointed operation; they are stored
@@ -33,7 +34,11 @@ export class WorkerContext {
   /** How many checkpoints this attempt has reached so far. */
   private checkpointsSoFar = 0
 
-  constructor(task: ScheduledTask, client?: LHPublicClient) {
+  constructor(
+    task: ScheduledTask,
+    client?: LHPublicClient,
+    private readonly typeAdapters?: LHTypeAdapterRegistry
+  ) {
     this.task = task
     this.client = client
   }
@@ -137,7 +142,7 @@ export class WorkerContext {
     const response = await this.client.putCheckpoint({
       taskRunId: this.task.taskRunId,
       taskAttempt: this.task.attemptNumber,
-      value: toVariableValue(result),
+      value: toVariableValue(result, undefined, this.typeAdapters),
       logs: checkpointContext.getLogOutput(),
     })
     this.checkpointsSoFar++

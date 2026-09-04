@@ -2,6 +2,7 @@ import { VariableValue } from '../proto/type_definition'
 import { VarNameAndVal } from '../proto/task_run'
 import { ScheduledTask } from '../proto/service'
 import { VariableType } from '../proto/common_enums'
+import { LHTypeAdapterRegistry } from '../common/typeAdapters'
 import { objToVarVal, varValToObj } from '../common/serde'
 
 /**
@@ -21,7 +22,15 @@ export function extractTaskArgs(task: ScheduledTask): unknown[] {
 }
 
 /** Converts a task's return value to a VariableValue. */
-export function toVariableValue(value: unknown, declaredType?: VariableType): VariableValue {
+export function toVariableValue(
+  value: unknown,
+  declaredType?: VariableType,
+  typeAdapters?: LHTypeAdapterRegistry
+): VariableValue {
+  // A matching adapter wins outright, like Java consults the registry first.
+  if (typeAdapters?.findForValue(value) !== undefined) {
+    return objToVarVal(value, typeAdapters)
+  }
   // the declared type disambiguates what the value alone cannot: JS numbers
   // carry no int/double distinction (Java resolves this via Long vs Double)
   if (declaredType === VariableType.DOUBLE && typeof value === 'number') {
@@ -30,5 +39,5 @@ export function toVariableValue(value: unknown, declaredType?: VariableType): Va
   if (declaredType === VariableType.INT && (typeof value === 'number' || typeof value === 'bigint')) {
     return { value: { oneofKind: 'int', int: value.toString() } }
   }
-  return objToVarVal(value)
+  return objToVarVal(value, typeAdapters)
 }
