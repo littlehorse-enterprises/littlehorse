@@ -7,9 +7,13 @@ import e2e.Struct.Person;
 import e2e.Struct.PhoneNumbers;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
@@ -26,6 +30,7 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -87,6 +92,9 @@ public class MapsTest {
 
     @LHWorkflow("map-nullable-wf")
     private Workflow mapNullableWf;
+
+    @LHWorkflow("map-equality-wf")
+    private Workflow mapEqualityWf;
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
@@ -229,6 +237,40 @@ public class MapsTest {
                                     .getStr())
                             .isEqualTo("null-value");
                 })
+                .start();
+    }
+
+    @Test
+    public void shouldTreatReorderedMapEntriesAsEqualInWorkflow() throws Exception {
+        Map<String, Long> left = new LinkedHashMap<>();
+        left.put("first", 1L);
+        left.put("second", 2L);
+        Map<String, Long> right = new LinkedHashMap<>();
+        right.put("second", 2L);
+        right.put("first", 1L);
+
+        workflowVerifier
+                .prepareRun(mapEqualityWf, Arg.of("left", nativeMap(left)), Arg.of("right", nativeMap(right)))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "are-equal", variableValue -> assertThat(variableValue.getBool())
+                        .isTrue())
+                .start();
+    }
+
+    @Test
+    public void shouldTreatMapsWithDifferentValuesAsUnequalInWorkflow() throws Exception {
+        Map<String, Long> left = new LinkedHashMap<>();
+        left.put("first", 1L);
+        left.put("second", 2L);
+        Map<String, Long> right = new LinkedHashMap<>();
+        right.put("second", 3L);
+        right.put("first", 1L);
+
+        workflowVerifier
+                .prepareRun(mapEqualityWf, Arg.of("left", nativeMap(left)), Arg.of("right", nativeMap(right)))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "are-equal", variableValue -> assertThat(variableValue.getBool())
+                        .isFalse())
                 .start();
     }
 
@@ -552,6 +594,26 @@ public class MapsTest {
         result.put("hello", 100L);
         result.put("brand-new", 7L);
         return result;
+    }
+
+    @LHWorkflow("map-equality-wf")
+    public Workflow buildMapEqualityWf() {
+        return new WorkflowImpl("map-equality-wf", thread -> {
+            WfRunVariable left =
+                    thread.declareMap("left", String.class, Long.class).required();
+            WfRunVariable right =
+                    thread.declareMap("right", String.class, Long.class).required();
+            WfRunVariable areEqual = thread.declareBool("are-equal");
+            areEqual.assign(left.isEqualTo(right));
+        });
+    }
+
+    private static VariableValue nativeMap(Map<String, Long> map) throws Exception {
+        InlineMapDef mapType = InlineMapDef.newBuilder()
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .build();
+        return LHLibUtil.objToVarValAsNativeMap(map, mapType, LHTypeAdapterRegistry.empty());
     }
 
     @LHWorkflow("map-nullable-wf")
