@@ -693,9 +693,9 @@ class QuotaIdList(_message.Message):
     __slots__ = ("results", "bookmark")
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    results: _containers.RepeatedCompositeFieldContainer[_acls_pb2.QuotaId]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.QuotaId]
     bookmark: bytes
-    def __init__(self, results: _Optional[_Iterable[_Union[_acls_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "is_claimed")

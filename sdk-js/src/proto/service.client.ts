@@ -11,7 +11,7 @@ import type { LittleHorseVersion } from "./service";
 import type { PrincipalId } from "./object_id";
 import type { Principal } from "./acls";
 import type { PutPrincipalRequest } from "./acls";
-import type { QuotaId } from "./acls";
+import type { QuotaId } from "./object_id";
 import type { Quota } from "./acls";
 import type { PutQuotaRequest } from "./acls";
 import type { TenantId } from "./object_id";
@@ -22,6 +22,7 @@ import type { SearchWfMetricWindowRequest } from "./metrics";
 import type { MetricWindow } from "./metrics";
 import type { MetricWindowId } from "./object_id";
 import type { ListWfMetricsRequest } from "./metrics";
+import type { ListQuotaUsageMetricsRequest } from "./metrics";
 import type { MetricsList } from "./metrics";
 import type { ListTaskMetricsRequest } from "./metrics";
 import type { WfSpecMetrics } from "./service";
@@ -813,6 +814,12 @@ export interface ILittleHorseClient {
      * @generated from protobuf rpc: ListTaskMetrics
      */
     listTaskMetrics(input: ListTaskMetricsRequest, options?: RpcOptions): UnaryCall<ListTaskMetricsRequest, MetricsList>;
+    /**
+     * Lists quota usage metric windows for a quota and time range.
+     *
+     * @generated from protobuf rpc: ListQuotaUsageMetrics
+     */
+    listQuotaUsageMetrics(input: ListQuotaUsageMetricsRequest, options?: RpcOptions): UnaryCall<ListQuotaUsageMetricsRequest, MetricsList>;
     /**
      * Lists available metric windows for a given WfSpecId and time range.
      *
@@ -1823,12 +1830,21 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
         return stackIntercept<ListTaskMetricsRequest, MetricsList>("unary", this._transport, method, opt, input);
     }
     /**
+     * Lists quota usage metric windows for a quota and time range.
+     *
+     * @generated from protobuf rpc: ListQuotaUsageMetrics
+     */
+    listQuotaUsageMetrics(input: ListQuotaUsageMetricsRequest, options?: RpcOptions): UnaryCall<ListQuotaUsageMetricsRequest, MetricsList> {
+        const method = this.methods[94], opt = this._transport.mergeOptions(options);
+        return stackIntercept<ListQuotaUsageMetricsRequest, MetricsList>("unary", this._transport, method, opt, input);
+    }
+    /**
      * Lists available metric windows for a given WfSpecId and time range.
      *
      * @generated from protobuf rpc: ListWfMetrics
      */
     listWfMetrics(input: ListWfMetricsRequest, options?: RpcOptions): UnaryCall<ListWfMetricsRequest, MetricsList> {
-        const method = this.methods[94], opt = this._transport.mergeOptions(options);
+        const method = this.methods[95], opt = this._transport.mergeOptions(options);
         return stackIntercept<ListWfMetricsRequest, MetricsList>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1837,7 +1853,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: GetMetricWindow
      */
     getMetricWindow(input: MetricWindowId, options?: RpcOptions): UnaryCall<MetricWindowId, MetricWindow> {
-        const method = this.methods[95], opt = this._transport.mergeOptions(options);
+        const method = this.methods[96], opt = this._transport.mergeOptions(options);
         return stackIntercept<MetricWindowId, MetricWindow>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1846,7 +1862,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: SearchWfMetricWindow
      */
     searchWfMetricWindow(input: SearchWfMetricWindowRequest, options?: RpcOptions): UnaryCall<SearchWfMetricWindowRequest, MetricWindowIdList> {
-        const method = this.methods[96], opt = this._transport.mergeOptions(options);
+        const method = this.methods[97], opt = this._transport.mergeOptions(options);
         return stackIntercept<SearchWfMetricWindowRequest, MetricWindowIdList>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1855,7 +1871,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: PutTenant
      */
     putTenant(input: PutTenantRequest, options?: RpcOptions): UnaryCall<PutTenantRequest, Tenant> {
-        const method = this.methods[97], opt = this._transport.mergeOptions(options);
+        const method = this.methods[98], opt = this._transport.mergeOptions(options);
         return stackIntercept<PutTenantRequest, Tenant>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1864,7 +1880,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: GetTenant
      */
     getTenant(input: TenantId, options?: RpcOptions): UnaryCall<TenantId, Tenant> {
-        const method = this.methods[98], opt = this._transport.mergeOptions(options);
+        const method = this.methods[99], opt = this._transport.mergeOptions(options);
         return stackIntercept<TenantId, Tenant>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1873,7 +1889,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: PutQuota
      */
     putQuota(input: PutQuotaRequest, options?: RpcOptions): UnaryCall<PutQuotaRequest, Quota> {
-        const method = this.methods[99], opt = this._transport.mergeOptions(options);
+        const method = this.methods[100], opt = this._transport.mergeOptions(options);
         return stackIntercept<PutQuotaRequest, Quota>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1882,7 +1898,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: GetQuota
      */
     getQuota(input: QuotaId, options?: RpcOptions): UnaryCall<QuotaId, Quota> {
-        const method = this.methods[100], opt = this._transport.mergeOptions(options);
+        const method = this.methods[101], opt = this._transport.mergeOptions(options);
         return stackIntercept<QuotaId, Quota>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1891,7 +1907,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: PutPrincipal
      */
     putPrincipal(input: PutPrincipalRequest, options?: RpcOptions): UnaryCall<PutPrincipalRequest, Principal> {
-        const method = this.methods[101], opt = this._transport.mergeOptions(options);
+        const method = this.methods[102], opt = this._transport.mergeOptions(options);
         return stackIntercept<PutPrincipalRequest, Principal>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1900,7 +1916,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: GetPrincipal
      */
     getPrincipal(input: PrincipalId, options?: RpcOptions): UnaryCall<PrincipalId, Principal> {
-        const method = this.methods[102], opt = this._transport.mergeOptions(options);
+        const method = this.methods[103], opt = this._transport.mergeOptions(options);
         return stackIntercept<PrincipalId, Principal>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1909,7 +1925,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: Whoami
      */
     whoami(input: Empty, options?: RpcOptions): UnaryCall<Empty, Principal> {
-        const method = this.methods[103], opt = this._transport.mergeOptions(options);
+        const method = this.methods[104], opt = this._transport.mergeOptions(options);
         return stackIntercept<Empty, Principal>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1918,7 +1934,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: GetServerVersion
      */
     getServerVersion(input: Empty, options?: RpcOptions): UnaryCall<Empty, LittleHorseVersion> {
-        const method = this.methods[104], opt = this._transport.mergeOptions(options);
+        const method = this.methods[105], opt = this._transport.mergeOptions(options);
         return stackIntercept<Empty, LittleHorseVersion>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1928,7 +1944,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: CountNodeRun
      */
     countNodeRun(input: CountNodeRunRequest, options?: RpcOptions): UnaryCall<CountNodeRunRequest, Count> {
-        const method = this.methods[105], opt = this._transport.mergeOptions(options);
+        const method = this.methods[106], opt = this._transport.mergeOptions(options);
         return stackIntercept<CountNodeRunRequest, Count>("unary", this._transport, method, opt, input);
     }
     /**
@@ -1939,7 +1955,7 @@ export class LittleHorseClient implements ILittleHorseClient, ServiceInfo {
      * @generated from protobuf rpc: CountTaskRun
      */
     countTaskRun(input: CountTaskRunRequest, options?: RpcOptions): UnaryCall<CountTaskRunRequest, Count> {
-        const method = this.methods[106], opt = this._transport.mergeOptions(options);
+        const method = this.methods[107], opt = this._transport.mergeOptions(options);
         return stackIntercept<CountTaskRunRequest, Count>("unary", this._transport, method, opt, input);
     }
 }

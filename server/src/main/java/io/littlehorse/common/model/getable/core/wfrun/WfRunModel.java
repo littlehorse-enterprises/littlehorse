@@ -64,6 +64,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -106,6 +107,7 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     private ExecutionContext executionContext;
     private WorkflowMigrationPlanIdModel workflowMigrationPlanId;
     private Map<String, MigrationVarsModel> migrationVarsByThread = new HashMap<>();
+    private LinkedList<Integer> threadRunQueue = new LinkedList<>();
 
     // Not in proto
     private int numAdvancesInThisCommand = 0;
@@ -284,6 +286,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             migrationVarsByThread.put(
                     entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
         }
+        for (Integer threadRunNumber : proto.getThreadRunQueueList()) {
+            threadRunQueue.add(threadRunNumber);
+        }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
     }
@@ -352,6 +357,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
             out.putMigrationVariables(entry.getKey(), entry.getValue().toProto().build());
         }
+        for (Integer threadRunNumber : threadRunQueue) {
+            out.addThreadRunQueue(threadRunNumber);
+        }
 
         return out;
     }
@@ -377,16 +385,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
 
-        int maxThreadRuns = executionContext.serverConfig().getMaxThreadRunsPerWfRun();
-        if (parentThreadId != null && threadRunsUseMeCarefully.size() >= maxThreadRuns) {
-            throw new NodeFailureException(new FailureModel(
-                    String.format(
-                            "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
-                                    + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
-                                    + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN at the server configuration level.",
-                            threadRunsUseMeCarefully.size() + 1, maxThreadRuns),
-                    LHConstants.INTERNAL_ERROR));
-        }
+        int activeThreadRuns = executionContext.serverConfig().getActiveThreadRunsPerWfRun();
+        boolean addThreadRunToQueue = (parentThreadId != null) && (threadRunsUseMeCarefully.size() >= activeThreadRuns);
 
         ThreadRunModel newThread = new ThreadRunModel(processorContext);
         newThread.parentThreadId = parentThreadId;
@@ -409,10 +409,25 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         newThread.wfRun = this;
         newThread.type = type;
+        if (addThreadRunToQueue) {
+            newThread.setStatus(LHStatus.STARTING);
+            newThread.setStartTime(start);
+            QueuedThreadRunInfoModel queuedThreadInfo = new QueuedThreadRunInfoModel(variables);
+            InactiveThreadRunModel inactiveThreadRun = new InactiveThreadRunModel(newThread, queuedThreadInfo);
+            threadRunQueue.add(newThread.number);
+            processorContext.getableManager().put(inactiveThreadRun);
+            return newThread;
+        }
         threadRunsUseMeCarefully.add(newThread);
 
         newThread.createVariablesAndStart(variables);
         return newThread;
+    }
+
+    public ThreadRunModel startQueuedThreadRun(ThreadRunModel queuedThreadRun, Map<String, VariableValueModel> vars) {
+        threadRunsUseMeCarefully.add(queuedThreadRun);
+        queuedThreadRun.createVariablesAndStart(vars);
+        return queuedThreadRun;
     }
 
     public String getWfSpecName() {
@@ -579,16 +594,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
 
             if (this.threadRunsUseMeCarefully.size()
-                    > this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()) {
+                    > this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
                                         "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
                                                 + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
-                                                + "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN.",
+                                                + "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN.",
                                         this.threadRunsUseMeCarefully.size(),
-                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
+                                        this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
@@ -596,7 +611,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
-            statusChanged = startXnHandlersAndInterrupts(time);
+            statusChanged = maybeDequeThreadRun();
+            statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
@@ -653,8 +669,57 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         migrationVarsByThread.clear();
     }
 
+    private boolean maybeDequeThreadRun() {
+        if (isTerminated() || threadRunQueue.isEmpty()) return false;
+
+        boolean threadRunActivated = false;
+        int activeThreadRunsPerWfRun = this.executionContext.serverConfig().getActiveThreadRunsPerWfRun();
+        int numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
+        if (numberOfThreadRunsInMem >= activeThreadRunsPerWfRun) return false;
+
+        List<Integer> deferred = new ArrayList<>();
+        while (activeThreadRunsPerWfRun > numberOfThreadRunsInMem && !threadRunQueue.isEmpty()) {
+            int threadRunNumber = threadRunQueue.removeFirst();
+            InactiveThreadRunIdModel inactiveThreadRunId = new InactiveThreadRunIdModel(this.id, threadRunNumber);
+            InactiveThreadRunModel inactiveThreadRun = getableManager.get(inactiveThreadRunId);
+            if (inactiveThreadRun == null || inactiveThreadRun.getQueued() == null) {
+                throw new LHApiException(
+                        Status.INTERNAL,
+                        "Queued ThreadRun " + threadRunNumber + " is missing its InactiveThreadRun/queued info");
+            }
+            ThreadRunModel queuedThreadRun = inactiveThreadRun.getThreadRun();
+            queuedThreadRun.setWfRun(this);
+            resolveQueuedThreadRunHaltReasons(queuedThreadRun);
+            if (!queuedThreadRun.getHaltReasons().isEmpty()) {
+                deferred.add(threadRunNumber);
+                continue;
+            }
+
+            startQueuedThreadRun(queuedThreadRun, inactiveThreadRun.getQueued().getInputVars());
+            threadRunActivated = true;
+            getableManager.delete(inactiveThreadRunId);
+
+            numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
+        }
+        threadRunQueue.addAll(0, deferred);
+        return threadRunActivated;
+    }
+
+    private boolean resolveQueuedThreadRunHaltReasons(ThreadRunModel threadRun) {
+        boolean reasonRemoved = threadRun.getHaltReasons().removeIf(reason -> switch (reason.getType()) {
+            case PARENT_HALTED, INTERRUPTED, HANDLING_FAILURE -> reason.isResolved();
+            default -> false;
+        });
+        if (reasonRemoved && threadRun.getHaltReasons().isEmpty()) {
+            threadRun.setStatus(LHStatus.STARTING);
+        }
+        return reasonRemoved;
+    }
+
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()
+        int threshold = (this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()
                         * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
                 / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
@@ -805,13 +870,17 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (req.threadRunNumber > getGreatestThreadRunNumber() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
-
         ThreadRunModel thread = getThreadRun(req.threadRunNumber);
 
         for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
             ThreadHaltReasonModel thr = thread.haltReasons.get(i);
             if (thr.type == ReasonCase.MANUAL_HALT) {
                 thread.haltReasons.remove(i);
+            }
+        }
+        if (threadRunQueue.contains(req.threadRunNumber)) {
+            if (thread.haltReasons.isEmpty()) {
+                thread.setStatus(LHStatus.STARTING);
             }
         }
         this.advance(new Date());

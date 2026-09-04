@@ -12,6 +12,7 @@ import { SearchWfMetricWindowRequest } from "./metrics";
 import { MetricWindow } from "./metrics";
 import { MetricWindowId } from "./object_id";
 import { ListWfMetricsRequest } from "./metrics";
+import { ListQuotaUsageMetricsRequest } from "./metrics";
 import { MetricsList } from "./metrics";
 import { ListTaskMetricsRequest } from "./metrics";
 import { DeleteBulkJobRequest } from "./bulk_job";
@@ -67,7 +68,7 @@ import { WorkflowEvent } from "./workflow_event";
 import { ExternalEvent } from "./external_event";
 import { Variable } from "./variable";
 import { NodeRun } from "./node_run";
-import { QuotaId } from "./acls";
+import { QuotaId } from "./object_id";
 import { PrincipalId } from "./object_id";
 import { TenantId } from "./object_id";
 import { VariableId } from "./object_id";
@@ -9890,6 +9891,7 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "GetTaskDefMetricsWindow", options: {}, I: TaskDefMetricsQueryRequest, O: TaskDefMetrics },
     { name: "GetWfSpecMetricsWindow", options: {}, I: WfSpecMetricsQueryRequest, O: WfSpecMetrics },
     { name: "ListTaskMetrics", options: {}, I: ListTaskMetricsRequest, O: MetricsList },
+    { name: "ListQuotaUsageMetrics", options: {}, I: ListQuotaUsageMetricsRequest, O: MetricsList },
     { name: "ListWfMetrics", options: {}, I: ListWfMetricsRequest, O: MetricsList },
     { name: "GetMetricWindow", options: {}, I: MetricWindowId, O: MetricWindow },
     { name: "SearchWfMetricWindow", options: {}, I: SearchWfMetricWindowRequest, O: MetricWindowIdList },

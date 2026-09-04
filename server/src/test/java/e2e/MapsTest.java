@@ -7,13 +7,18 @@ import e2e.Struct.Person;
 import e2e.Struct.PhoneNumbers;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.util.Arg;
+import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -25,6 +30,7 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -69,8 +75,26 @@ public class MapsTest {
     @LHWorkflow("map-array-value-wf")
     private Workflow mapArrayValueWf;
 
+    @LHWorkflow("map-put-wf")
+    private Workflow mapPutWf;
+
+    @LHWorkflow("map-put-overwrite-wf")
+    private Workflow mapPutOverwriteWf;
+
+    @LHWorkflow("map-put-dynamic-key-wf")
+    private Workflow mapPutDynamicKeyWf;
+
+    @LHWorkflow("map-put-coerced-value-wf")
+    private Workflow mapPutCoercedValueWf;
+
+    @LHWorkflow("map-builder-wf")
+    private Workflow mapBuilderWf;
+
     @LHWorkflow("map-nullable-wf")
     private Workflow mapNullableWf;
+
+    @LHWorkflow("map-equality-wf")
+    private Workflow mapEqualityWf;
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
@@ -217,6 +241,40 @@ public class MapsTest {
     }
 
     @Test
+    public void shouldTreatReorderedMapEntriesAsEqualInWorkflow() throws Exception {
+        Map<String, Long> left = new LinkedHashMap<>();
+        left.put("first", 1L);
+        left.put("second", 2L);
+        Map<String, Long> right = new LinkedHashMap<>();
+        right.put("second", 2L);
+        right.put("first", 1L);
+
+        workflowVerifier
+                .prepareRun(mapEqualityWf, Arg.of("left", nativeMap(left)), Arg.of("right", nativeMap(right)))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "are-equal", variableValue -> assertThat(variableValue.getBool())
+                        .isTrue())
+                .start();
+    }
+
+    @Test
+    public void shouldTreatMapsWithDifferentValuesAsUnequalInWorkflow() throws Exception {
+        Map<String, Long> left = new LinkedHashMap<>();
+        left.put("first", 1L);
+        left.put("second", 2L);
+        Map<String, Long> right = new LinkedHashMap<>();
+        right.put("second", 3L);
+        right.put("first", 1L);
+
+        workflowVerifier
+                .prepareRun(mapEqualityWf, Arg.of("left", nativeMap(left)), Arg.of("right", nativeMap(right)))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "are-equal", variableValue -> assertThat(variableValue.getBool())
+                        .isFalse())
+                .start();
+    }
+
+    @Test
     public void shouldDetectMapContainsKey() {
         workflowVerifier
                 .prepareRun(mapContainsWf)
@@ -258,7 +316,7 @@ public class MapsTest {
                             .count();
                     assertThat(helloCount).isEqualTo(1);
 
-                    java.util.Map<String, Long> asJavaMap = new HashMap<>();
+                    Map<String, Long> asJavaMap = new HashMap<>();
                     entries.forEach(
                             e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
 
@@ -538,6 +596,26 @@ public class MapsTest {
         return result;
     }
 
+    @LHWorkflow("map-equality-wf")
+    public Workflow buildMapEqualityWf() {
+        return new WorkflowImpl("map-equality-wf", thread -> {
+            WfRunVariable left =
+                    thread.declareMap("left", String.class, Long.class).required();
+            WfRunVariable right =
+                    thread.declareMap("right", String.class, Long.class).required();
+            WfRunVariable areEqual = thread.declareBool("are-equal");
+            areEqual.assign(left.isEqualTo(right));
+        });
+    }
+
+    private static VariableValue nativeMap(Map<String, Long> map) throws Exception {
+        InlineMapDef mapType = InlineMapDef.newBuilder()
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .build();
+        return LHLibUtil.objToVarValAsNativeMap(map, mapType, LHTypeAdapterRegistry.empty());
+    }
+
     @LHWorkflow("map-nullable-wf")
     public Workflow buildMapNullableWf() {
         return new WorkflowImpl("map-nullable-wf", thread -> {
@@ -622,6 +700,183 @@ public class MapsTest {
         return new WorkflowImpl("map-array-value-wf", thread -> {
             // Map<STR, ARRAY<INT>> as a required input variable
             thread.declareMap("my-map", String.class, Long[].class).required();
+        });
+    }
+
+    @Test
+    public void shouldInsertNewKeyWithPut() {
+        workflowVerifier
+                .prepareRun(mapPutWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // Original map has "hello"->42, "world"->99. After put("new-key", 77) => 3 entries.
+                    assertThat(entries).hasSize(3);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("hello", 42L);
+                    assertThat(asJavaMap).containsEntry("world", 99L);
+                    assertThat(asJavaMap).containsEntry("new-key", 77L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldOverwriteExistingKeyWithPut() {
+        workflowVerifier
+                .prepareRun(mapPutOverwriteWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // put("hello", 999) should overwrite existing "hello"->42, keeping 2 entries.
+                    assertThat(entries).hasSize(2);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("hello", 999L);
+                    assertThat(asJavaMap).containsEntry("world", 99L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldPutWithDynamicVariableKey() {
+        workflowVerifier
+                .prepareRun(mapPutDynamicKeyWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    // Starts with "hello"->42, "world"->99, then put(dynamicKey, 123) where dynamicKey="dynamic-key"
+                    assertThat(entries).hasSize(3);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("dynamic-key", 123L);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldCoerceValueWhenPuttingMissingKey() {
+        workflowVerifier
+                .prepareRun(mapPutCoercedValueWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getMap().getEntriesList()).hasSize(1);
+                    assertThat(variableValue.getMap().getEntries(0).getValue().getDouble())
+                            .isEqualTo(7.0);
+                })
+                .start();
+    }
+
+    @Test
+    public void shouldRejectPutWithIncompatibleKeyTypeAtRegistration() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-key-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable key = thread.declareInt("key");
+            mapVar.put(key, 42L);
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
+            if (!(exn instanceof StatusRuntimeException)) return false;
+            return ((StatusRuntimeException) exn).getStatus().getCode() == Status.Code.INVALID_ARGUMENT;
+        });
+    }
+
+    @Test
+    public void shouldRejectPutWithIncompatibleValueTypeAtRegistration() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-value-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            mapVar.put("key", "not-a-long");
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
+            if (!(exn instanceof StatusRuntimeException)) return false;
+            return ((StatusRuntimeException) exn).getStatus().getCode() == Status.Code.INVALID_ARGUMENT;
+        });
+    }
+
+    @Test
+    public void shouldBuildMapWithMapBuilder() {
+        workflowVerifier
+                .prepareRun(mapBuilderWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-map", variableValue -> {
+                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.MAP);
+                    var entries = variableValue.getMap().getEntriesList();
+                    assertThat(entries).hasSize(2);
+
+                    Map<String, Long> asJavaMap = new HashMap<>();
+                    entries.forEach(
+                            e -> asJavaMap.put(e.getKey().getStr(), e.getValue().getInt()));
+                    assertThat(asJavaMap).containsEntry("alpha", 1L);
+                    assertThat(asJavaMap).containsEntry("beta", 2L);
+                })
+                .start();
+    }
+
+    @LHWorkflow("map-put-wf")
+    public Workflow buildMapPutWf() {
+        return new WorkflowImpl("map-put-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            mapVar.put("new-key", 77L);
+        });
+    }
+
+    @LHWorkflow("map-put-overwrite-wf")
+    public Workflow buildMapPutOverwriteWf() {
+        return new WorkflowImpl("map-put-overwrite-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            mapVar.put("hello", 999L);
+        });
+    }
+
+    @LHWorkflow("map-put-dynamic-key-wf")
+    public Workflow buildMapPutDynamicKeyWf() {
+        return new WorkflowImpl("map-put-dynamic-key-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            WfRunVariable dynamicKey = thread.declareStr("dynamic-key");
+            TaskNodeOutput produced = thread.execute("produce-map");
+            mapVar.assign(produced);
+            TaskNodeOutput keyValue = thread.execute("produce-key-name");
+            dynamicKey.assign(keyValue);
+            mapVar.put(dynamicKey, 123L);
+        });
+    }
+
+    @LHWorkflow("map-put-coerced-value-wf")
+    public Workflow buildMapPutCoercedValueWf() {
+        return new WorkflowImpl("map-put-coerced-value-wf", thread -> {
+            WfRunVariable mapVar =
+                    thread.declareMap("my-map", String.class, Double.class).withDefault(Map.of());
+            mapVar.put("ratio", 7L);
+        });
+    }
+
+    @LHTaskMethod("produce-key-name")
+    public String produceKeyName() {
+        return "dynamic-key";
+    }
+
+    @LHWorkflow("map-builder-wf")
+    public Workflow buildMapBuilderWf() {
+        return new WorkflowImpl("map-builder-wf", thread -> {
+            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+            LHMapBuilder builder = thread.buildMap();
+            builder.put("alpha", 1L);
+            builder.put("beta", 2L);
+            mapVar.assign(builder);
         });
     }
 }

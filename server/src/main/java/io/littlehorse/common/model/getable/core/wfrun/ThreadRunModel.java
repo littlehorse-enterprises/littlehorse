@@ -381,6 +381,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
         trigger.setClaimed(true);
+
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -459,6 +460,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
+
+        if (wfRun.getThreadRunQueue().contains(number)) {
+            haltReasons.add(reason);
+            setStatus(LHStatus.HALTED);
+            return;
+        }
 
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
@@ -661,13 +668,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
             for (int childId : childThreadIds) {
-                ThreadRunModel child = wfRun.getThreadRun(childId);
                 ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
                 hr.type = ReasonCase.PARENT_HALTED;
                 hr.parentHalted = new ParentHaltedModel();
                 hr.parentHalted.parentThreadId = number;
+                ThreadRunModel child = wfRun.getThreadRun(childId);
                 child.halt(hr);
-                if (child.getCurrentNodeRun().isInProgress()) {
+                if (!wfRun.getThreadRunQueue().contains(childId)
+                        && child.getCurrentNodeRun().isInProgress()) {
                     child.getCurrentNodeRun().maybeHalt(processorContext);
                 }
             }
@@ -935,7 +943,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 val = val.jsonPath(assn.getJsonPath());
                 break;
             case LH_PATH:
-                val = val.get(assn.getLhPath());
+                val = val.get(assn.getLhPath(), assn.getLhPath().resolveDynamicSelectors(this, txnCache));
                 break;
             case PATH_NOT_SET:
         }

@@ -453,7 +453,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
                     break;
                 case INLINE_ARRAY_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
                         throw new InvalidExpressionException(String.format(
                                 "Expected numeric index selector for Array type, got key selector '%s'",
                                 selector.getKey()));
@@ -461,9 +462,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
                 case INLINE_MAP_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
-                        throw new InvalidExpressionException(String.format(
-                                "Expected key selector for Map type, got index selector '%d'", selector.getIndex()));
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                        throw new InvalidExpressionException(
+                                "Expected key selector for Map type, got an unset selector");
                     }
                     currentTypeDef = currentTypeDef.getInlineMapDef().getValueType();
                     break;
@@ -537,6 +540,48 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case VALUE_NOT_SET:
                 return;
             default:
+        }
+    }
+
+    /**
+     * Returns true if this type may replace {@code formerlyFrozen} as the declared type of a
+     * frozen (PUBLIC_VAR / required entrypoint) variable across WfSpec revisions.
+     *
+     * <p>Unlike {@link #equals(Object)}, a StructDef-typed variable may advance to a newer
+     * StructDef version, since StructDef versions evolve superset-compatibly. The fundamental
+     * shape (primitive kind, struct name, array/map structure, masking) must stay identical.
+     */
+    public boolean isFrozenCompatibleWith(TypeDefinitionModel formerlyFrozen) {
+        if (this.masked != formerlyFrozen.masked) {
+            return false;
+        }
+        if (this.definedTypeCase != formerlyFrozen.definedTypeCase) {
+            return false;
+        }
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                return this.primitiveType == formerlyFrozen.primitiveType;
+            case STRUCT_DEF_ID:
+                // Same struct; allow moving forward to a newer (superset) StructDef version.
+                return this.structDefId.getName().equals(formerlyFrozen.structDefId.getName())
+                        && this.structDefId.getVersion() >= formerlyFrozen.structDefId.getVersion();
+            case INLINE_ARRAY_DEF:
+                return this.inlineArrayDef
+                        .getArrayType()
+                        .isFrozenCompatibleWith(
+                                formerlyFrozen.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                return this.inlineMapDef
+                                .getKeyType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getKeyType())
+                        && this.inlineMapDef
+                                .getValueType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getValueType());
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                return this.equals(formerlyFrozen);
         }
     }
 

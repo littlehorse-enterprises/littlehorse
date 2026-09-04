@@ -114,6 +114,7 @@ const (
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName      = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
 	LittleHorse_ListTaskMetrics_FullMethodName             = "/littlehorse.LittleHorse/ListTaskMetrics"
+	LittleHorse_ListQuotaUsageMetrics_FullMethodName       = "/littlehorse.LittleHorse/ListQuotaUsageMetrics"
 	LittleHorse_ListWfMetrics_FullMethodName               = "/littlehorse.LittleHorse/ListWfMetrics"
 	LittleHorse_GetMetricWindow_FullMethodName             = "/littlehorse.LittleHorse/GetMetricWindow"
 	LittleHorse_SearchWfMetricWindow_FullMethodName        = "/littlehorse.LittleHorse/SearchWfMetricWindow"
@@ -392,6 +393,8 @@ type LittleHorseClient interface {
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -1299,6 +1302,15 @@ func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMet
 	return out, nil
 }
 
+func (c *littleHorseClient) ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListQuotaUsageMetrics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
 	out := new(MetricsList)
 	err := c.cc.Invoke(ctx, LittleHorse_ListWfMetrics_FullMethodName, in, out, opts...)
@@ -1679,6 +1691,8 @@ type LittleHorseServer interface {
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -1996,6 +2010,9 @@ func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *W
 }
 func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListQuotaUsageMetrics not implemented")
 }
 func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
@@ -3749,6 +3766,24 @@ func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_ListQuotaUsageMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListQuotaUsageMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListQuotaUsageMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, req.(*ListQuotaUsageMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_ListWfMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListWfMetricsRequest)
 	if err := dec(in); err != nil {
@@ -4361,6 +4396,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTaskMetrics",
 			Handler:    _LittleHorse_ListTaskMetrics_Handler,
+		},
+		{
+			MethodName: "ListQuotaUsageMetrics",
+			Handler:    _LittleHorse_ListQuotaUsageMetrics_Handler,
 		},
 		{
 			MethodName: "ListWfMetrics",

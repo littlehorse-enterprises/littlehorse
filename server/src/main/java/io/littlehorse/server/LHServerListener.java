@@ -104,6 +104,7 @@ import io.littlehorse.server.streams.lhinternalscan.count.CountRequest;
 import io.littlehorse.server.streams.lhinternalscan.count.CountTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListQuotaUsageMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
@@ -1092,10 +1093,28 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskMetrics(ListTaskMetricsRequest req, StreamObserver<MetricsList> ctx) {
         ListTaskMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
+        handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.READ)
+    public void listQuotaUsageMetrics(ListQuotaUsageMetricsRequest req, StreamObserver<MetricsList> ctx) {
+        RequestExecutionContext requestContext = requestContext();
+        if (!req.hasQuotaId()
+                || !req.getQuotaId().hasTenant()
+                || !req.getQuotaId()
+                        .getTenant()
+                        .getId()
+                        .equals(requestContext.authorization().tenantId().toString())) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
+        ListQuotaUsageMetricsRequestModel reqModel =
+                LHSerializable.fromProto(req, ListQuotaUsageMetricsRequestModel.class, requestContext);
         handleScan(reqModel, ctx, ListMetricsReply.class);
     }
 
@@ -1110,6 +1129,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getMetricWindow(MetricWindowId req, StreamObserver<MetricWindow> ctx) {
+        if (req.getIdCase() == MetricWindowId.IdCase.QUOTA_ID
+                && (!req.getQuotaId().hasTenant()
+                        || !req.getQuotaId()
+                                .getTenant()
+                                .getId()
+                                .equals(requestContext()
+                                        .authorization()
+                                        .tenantId()
+                                        .toString()))) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
         MetricWindowIdModel id = LHSerializable.fromProto(req, MetricWindowIdModel.class, requestContext());
         MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
         ctx.onNext(metricWindow.toProto().build());
