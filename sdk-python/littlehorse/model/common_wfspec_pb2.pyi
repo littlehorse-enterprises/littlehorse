@@ -136,7 +136,7 @@ class MapBuilder(_message.Message):
     def __init__(self, entries: _Optional[_Iterable[_Union[MapBuilder.Entry, _Mapping]]] = ..., map_type: _Optional[_Union[_type_definition_pb2.InlineMapDef, _Mapping]] = ...) -> None: ...
 
 class VariableMutation(_message.Message):
-    __slots__ = ("lhs_name", "lhs_json_path", "operation", "rhs_assignment", "literal_value", "node_output")
+    __slots__ = ("lhs_name", "lhs_json_path", "lhs_lh_path", "operation", "rhs_assignment", "literal_value", "node_output")
     class NodeOutputSource(_message.Message):
         __slots__ = ("jsonpath", "lh_path")
         JSONPATH_FIELD_NUMBER: _ClassVar[int]
@@ -146,17 +146,19 @@ class VariableMutation(_message.Message):
         def __init__(self, jsonpath: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ...) -> None: ...
     LHS_NAME_FIELD_NUMBER: _ClassVar[int]
     LHS_JSON_PATH_FIELD_NUMBER: _ClassVar[int]
+    LHS_LH_PATH_FIELD_NUMBER: _ClassVar[int]
     OPERATION_FIELD_NUMBER: _ClassVar[int]
     RHS_ASSIGNMENT_FIELD_NUMBER: _ClassVar[int]
     LITERAL_VALUE_FIELD_NUMBER: _ClassVar[int]
     NODE_OUTPUT_FIELD_NUMBER: _ClassVar[int]
     lhs_name: str
     lhs_json_path: str
+    lhs_lh_path: LHPath
     operation: VariableMutationType
     rhs_assignment: VariableAssignment
     literal_value: _type_definition_pb2.VariableValue
     node_output: VariableMutation.NodeOutputSource
-    def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
+    def __init__(self, lhs_name: _Optional[str] = ..., lhs_json_path: _Optional[str] = ..., lhs_lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., operation: _Optional[_Union[VariableMutationType, str]] = ..., rhs_assignment: _Optional[_Union[VariableAssignment, _Mapping]] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., node_output: _Optional[_Union[VariableMutation.NodeOutputSource, _Mapping]] = ...) -> None: ...
 
 class VariableDef(_message.Message):
     __slots__ = ("type", "name", "default_value", "masked_value", "type_def")
@@ -238,12 +240,14 @@ class TaskNode(_message.Message):
 class LHPath(_message.Message):
     __slots__ = ("path",)
     class Selector(_message.Message):
-        __slots__ = ("key", "index")
+        __slots__ = ("key", "index", "dynamic")
         KEY_FIELD_NUMBER: _ClassVar[int]
         INDEX_FIELD_NUMBER: _ClassVar[int]
+        DYNAMIC_FIELD_NUMBER: _ClassVar[int]
         key: str
         index: int
-        def __init__(self, key: _Optional[str] = ..., index: _Optional[int] = ...) -> None: ...
+        dynamic: VariableAssignment
+        def __init__(self, key: _Optional[str] = ..., index: _Optional[int] = ..., dynamic: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
     PATH_FIELD_NUMBER: _ClassVar[int]
     path: _containers.RepeatedCompositeFieldContainer[LHPath.Selector]
     def __init__(self, path: _Optional[_Iterable[_Union[LHPath.Selector, _Mapping]]] = ...) -> None: ...

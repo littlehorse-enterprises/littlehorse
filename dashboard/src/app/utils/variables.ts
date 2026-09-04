@@ -1,18 +1,19 @@
 import {
   Array$ as LHArray,
+  LHPath,
   Map as LHMap,
   Struct,
   Timestamp,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
+  VariableMutation,
   VariableMutationType,
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
 import { getComparatorSymbol } from './comparatorUtils'
 import { normalizeUtcTimestampString } from './timestamp'
-import { lhPathToString } from './lhPath'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
 /**
@@ -105,11 +106,39 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
       return `${getVariable(variable.source.sizeOf.operand!, depth + 1)}.size()`
     case 'mapBuilder':
       return `{${variable.source.mapBuilder.entries
-        .map((e) => `${getVariable(e.key!, depth + 1)}: ${getVariable(e.value!, depth + 1)}`)
+        .map(e => `${getVariable(e.key!, depth + 1)}: ${getVariable(e.value!, depth + 1)}`)
         .join(', ')}}`
     default:
       return ''
   }
+}
+
+export const lhPathToString = (lhPath: LHPath): string => {
+  return lhPath.path.reduce((outputStr, selector) => {
+    switch (selector.selectorType?.oneofKind) {
+      case 'index':
+        return `${outputStr}[${selector.selectorType.index}]`
+      case 'key':
+        return `${outputStr}.${selector.selectorType.key}`
+      case 'dynamic': {
+        const assignment = selector.selectorType.dynamic
+        const literal =
+          assignment.source?.oneofKind === 'literalValue' ? assignment.source.literalValue.value : undefined
+        const selectorValue = literal?.oneofKind === 'str' ? JSON.stringify(literal.str) : getVariable(assignment)
+        return `${outputStr}[${selectorValue}]`
+      }
+      default:
+        return outputStr
+    }
+  }, '$')
+}
+
+export const variableMutationLhsToString = (
+  mutation: Pick<VariableMutation, 'lhsName' | 'lhsJsonPath' | 'lhsLhPath'>
+): string => {
+  if (mutation.lhsLhPath) return lhPathToString(mutation.lhsLhPath).replace('$', mutation.lhsName)
+  if (mutation.lhsJsonPath) return mutation.lhsJsonPath.replace('$', mutation.lhsName)
+  return mutation.lhsName
 }
 
 /**

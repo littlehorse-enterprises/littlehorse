@@ -379,69 +379,191 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel get(LHPathModel path) throws LHVarSubError {
+        return get(path, new HashMap<>());
+    }
+
+    public VariableValueModel get(LHPathModel path, Map<Selector, VariableValueModel> resolvedMapKeys)
+            throws LHVarSubError {
         if (path == null || path.getPath().isEmpty()) {
             return this;
         }
 
         VariableValueModel val = this;
-        List<Selector> selectors = new ArrayList<>(path.getPath());
-
-        // Non-recursively iterates over the LHPath until it has reached the end
-        while (!selectors.isEmpty()) {
-            Selector currentSelector = selectors.get(0);
-
-            switch (val.valueType) {
-                case STRUCT:
-                    val = val.getStruct()
-                            .getInlineStruct()
-                            .getFields()
-                            .get(currentSelector.getKey())
-                            .getValue();
-
-                    selectors.remove(0);
-                    break;
-                case ARRAY:
-                    if (currentSelector.getIndex() < 0) {
-                        throw new LHVarSubError(null, "Array index cannot be negative: " + currentSelector.getIndex());
-                    }
-                    val = val.getArray().getItems().get(currentSelector.getIndex());
-                    selectors.remove(0);
-                    break;
-                case MAP:
-                    VariableValueModel matchedValue = null;
-                    for (MapModel.MapEntryModel entry : val.getMap().getEntries()) {
-                        if (entry.getKey().equals(new VariableValueModel(currentSelector.getKey()))) {
-                            matchedValue = entry.getValue();
-                            break;
-                        }
-                    }
-                    // Accessing a key that is not present resolves to null (see proposal)
-                    if (matchedValue == null) {
-                        return new VariableValueModel();
-                    }
-                    val = matchedValue;
-                    selectors.remove(0);
-                    break;
-                case JSON_ARR:
-                    // Once we find a JSON_ARR, we can use JSONPath for the rest of our queries
-                    return val.jsonPath(new LHPathModel(selectors).toJsonPathStr());
-                case JSON_OBJ:
-                    // Once we find a JSON_OBJ, we can use JSONPath for the rest of our queries
-                    return val.jsonPath(new LHPathModel(selectors).toJsonPathStr());
-                case BOOL:
-                case BYTES:
-                case DOUBLE:
-                case INT:
-                case STR:
-                case UTC_TIMESTAMP:
-                case WF_RUN_ID:
-                case VALUE_NOT_SET:
-                default:
-                    throw new LHVarSubError(null, "Cannot 'get' on " + val.valueType);
-            }
+        for (Selector selector : path.getPath()) {
+            val = val.getSingleStep(selector, resolvedMapKeys);
         }
 
         return val;
+    }
+
+    public void updateViaLhPath(
+            LHPathModel path, Map<Selector, VariableValueModel> resolvedMapKeys, VariableValueModel value)
+            throws LHVarSubError {
+        List<Selector> selectors = path.getPath();
+        if (selectors.isEmpty()) {
+            throw new LHVarSubError(null, "Empty LHPath on LHS mutation");
+        }
+
+        VariableValueModel target = this;
+        for (int i = 0; i < selectors.size() - 1; i++) {
+            target = target.getSingleStep(selectors.get(i), resolvedMapKeys);
+            if (target.isNull()) {
+                throw new LHVarSubError(null, "Cannot assign through a missing value in an LHPath");
+            }
+        }
+
+        target.setAtSelector(selectors.get(selectors.size() - 1), resolvedMapKeys, value);
+    }
+
+    private VariableValueModel getSingleStep(Selector selector, Map<Selector, VariableValueModel> resolvedMapKeys)
+            throws LHVarSubError {
+        switch (valueType) {
+            case STRUCT:
+                if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
+                    throw new LHVarSubError(null, "Expected key selector when accessing STRUCT");
+                }
+                StructFieldModel field = struct.getInlineStruct().getFields().get(selector.getKey());
+                return field == null ? new VariableValueModel() : field.getValue();
+            case ARRAY:
+                if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                        && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                    throw new LHVarSubError(null, "Expected index selector when accessing ARRAY");
+                }
+                int index = indexForSelector(selector, resolvedMapKeys);
+                if (index < 0 || index >= array.getItems().size()) {
+                    throw new LHVarSubError(null, "Array index out of bounds: " + index);
+                }
+                return array.getItems().get(index);
+            case MAP:
+                VariableValueModel mapKey = mapKeyForSelector(selector, resolvedMapKeys);
+                for (MapModel.MapEntryModel entry : map.getEntries()) {
+                    if (entry.getKey().equals(mapKey)) {
+                        return entry.getValue();
+                    }
+                }
+                return new VariableValueModel();
+            case JSON_ARR:
+            case JSON_OBJ:
+                return jsonPath(jsonPathForSelector(selector, resolvedMapKeys));
+            case BOOL:
+            case BYTES:
+            case DOUBLE:
+            case INT:
+            case STR:
+            case UTC_TIMESTAMP:
+            case WF_RUN_ID:
+            case VALUE_NOT_SET:
+            default:
+                throw new LHVarSubError(null, "Cannot 'get' on " + valueType);
+        }
+    }
+
+    private void setAtSelector(
+            Selector selector, Map<Selector, VariableValueModel> resolvedMapKeys, VariableValueModel value)
+            throws LHVarSubError {
+        switch (valueType) {
+            case STRUCT:
+                if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
+                    throw new LHVarSubError(null, "Expected key selector when updating STRUCT");
+                }
+                StructFieldModel field = struct.getInlineStruct().getFields().get(selector.getKey());
+                if (field == null) {
+                    field = new StructFieldModel();
+                    field.setMasked(false);
+                    struct.getInlineStruct().getFields().put(selector.getKey(), field);
+                }
+                field.setValue(value.getCopy());
+                return;
+            case ARRAY:
+                if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                        && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                    throw new LHVarSubError(null, "Expected index selector when updating ARRAY");
+                }
+                int index = indexForSelector(selector, resolvedMapKeys);
+                if (index < 0 || index >= array.getItems().size()) {
+                    throw new LHVarSubError(null, "Array index out of bounds: " + index);
+                }
+                array.getItems().set(index, value.getCopy());
+                return;
+            case MAP:
+                VariableValueModel mapKey = mapKeyForSelector(selector, resolvedMapKeys);
+                for (int i = 0; i < map.getEntries().size(); i++) {
+                    MapModel.MapEntryModel entry = map.getEntries().get(i);
+                    if (entry.getKey().equals(mapKey)) {
+                        map.getEntries()
+                                .set(
+                                        i,
+                                        new MapModel.MapEntryModel(
+                                                entry.getKey().getCopy(), value.getCopy()));
+                        return;
+                    }
+                }
+                map.getEntries().add(new MapModel.MapEntryModel(mapKey.getCopy(), value.getCopy()));
+                return;
+            case JSON_ARR:
+            case JSON_OBJ:
+                updateJsonViaJsonPath(jsonPathForSelector(selector, resolvedMapKeys), value.getVal());
+                return;
+            case BOOL:
+            case BYTES:
+            case DOUBLE:
+            case INT:
+            case STR:
+            case UTC_TIMESTAMP:
+            case WF_RUN_ID:
+            case VALUE_NOT_SET:
+            default:
+                throw new LHVarSubError(null, "Cannot set on " + valueType);
+        }
+    }
+
+    private static VariableValueModel mapKeyForSelector(
+            Selector selector, Map<Selector, VariableValueModel> resolvedMapKeys) throws LHVarSubError {
+        return switch (selector.getSelectorTypeCase()) {
+            case KEY -> new VariableValueModel(selector.getKey());
+            case INDEX -> new VariableValueModel((long) selector.getIndex());
+            case DYNAMIC -> {
+                VariableValueModel resolvedKey = resolvedMapKeys.get(selector);
+                if (resolvedKey == null) {
+                    throw new LHVarSubError(null, "Dynamic selector was not resolved");
+                }
+                yield resolvedKey;
+            }
+            case SELECTORTYPE_NOT_SET -> throw new LHVarSubError(null, "Map selector is not set");
+        };
+    }
+
+    private static int indexForSelector(Selector selector, Map<Selector, VariableValueModel> resolvedSelectors)
+            throws LHVarSubError {
+        if (selector.getSelectorTypeCase() == Selector.SelectorTypeCase.INDEX) {
+            return selector.getIndex();
+        }
+        VariableValueModel resolvedIndex = resolvedSelectors.get(selector);
+        if (resolvedIndex == null || resolvedIndex.getTypeDefinition().getPrimitiveType() != VariableType.INT) {
+            throw new LHVarSubError(null, "Dynamic selector for Array must resolve to INT");
+        }
+        return Math.toIntExact(resolvedIndex.getIntVal());
+    }
+
+    private static String jsonPathForSelector(Selector selector, Map<Selector, VariableValueModel> resolvedSelectors)
+            throws LHVarSubError {
+        if (selector.getSelectorTypeCase() == Selector.SelectorTypeCase.KEY) {
+            return "$." + selector.getKey();
+        }
+        if (selector.getSelectorTypeCase() == Selector.SelectorTypeCase.INDEX) {
+            return "$[" + selector.getIndex() + "]";
+        }
+        VariableValueModel resolvedSelector = resolvedSelectors.get(selector);
+        if (resolvedSelector == null) {
+            throw new LHVarSubError(null, "Dynamic selector was not resolved");
+        }
+        if (resolvedSelector.getTypeDefinition().getPrimitiveType() == VariableType.STR) {
+            return "$." + resolvedSelector.getStrVal();
+        }
+        if (resolvedSelector.getTypeDefinition().getPrimitiveType() == VariableType.INT) {
+            return "$[" + resolvedSelector.getIntVal() + "]";
+        }
+        throw new LHVarSubError(null, "Dynamic selector for JSON must resolve to STR or INT");
     }
 
     public VariableValueModel jsonPath(String path) throws LHVarSubError {

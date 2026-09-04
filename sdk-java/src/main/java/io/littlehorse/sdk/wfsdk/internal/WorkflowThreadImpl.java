@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -331,6 +332,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     @Override
     public InlineLHStructBuilderImpl buildInlineStruct() {
         return new InlineLHStructBuilderImpl(this);
+    }
+
+    @Override
+    public LHMapBuilderImpl buildMap() {
+        return new LHMapBuilderImpl(this);
     }
 
     @Override
@@ -959,6 +965,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         if (lhs.getJsonPath() != null) {
             mutation.setLhsJsonPath(lhs.getJsonPath());
+        } else if (!lhs.getLhPath().isEmpty()) {
+            mutation.setLhsLhPath(LHPath.newBuilder().addAllPath(lhs.getLhPath()));
         }
 
         mutation.setRhsAssignment(assignVariable(rhs));
