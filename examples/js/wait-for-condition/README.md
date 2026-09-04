@@ -1,24 +1,48 @@
 # Wait For Condition
 
-Block until a variable satisfies a condition.
+This is a wait for condition example, which does three things:
+
+1. Declare a `counter` variable of type Integer.
+2. Wait until the counter reaches 0.
+3. An interrupt handler decrements the counter variable when an external
+   event is received.
 
 Built with the `sdk-js` **wfsdk**: the `WfSpec` is defined in TypeScript and
-registered from code — no checked-in JSON, no `lhctl deploy`.
+registered from code, no checked-in JSON, no `lhctl deploy`.
+
+## Prerequisites
+
+A running LittleHorse server; see [`../../README.md`](../../README.md) for the
+one-command setup. Examples read `~/.config/littlehorse.config` when it
+exists, else they connect to `localhost:2023`.
 
 ## Run it
 
-Start a server if you do not have one:
-
-```bash
-docker run --rm -d -p 2023:2023 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
-```
-
-Then:
+Start the registrar. It registers the ExternalEventDef and the WfSpec; there
+are no TaskDefs in this example:
 
 ```bash
 npm install
 npm start
 ```
 
-The example registers its metadata, starts its worker(s), launches one `WfRun`,
-waits for it to finish, and prints the result.
+In another terminal, run the workflow:
+
+```bash
+lhctl run example-wait-for-condition counter 1
+```
+
+Then trigger the interrupt handler with:
+
+```bash
+lhctl postEvent <wf_run_id> subtract
+```
+
+Check the result:
+
+```bash
+lhctl get wfRun <wf_run_id>
+```
+
+No `lhctl`? `npm run trigger` drives the whole scenario: it starts a run
+with `counter 1`, posts one `subtract` event, and prints the result.

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "npx tsx src/index.ts"
+    "start": "npx tsx src/worker.ts",
+    "trigger": "npx tsx src/run.ts"
   },
   "dependencies": {
     "littlehorse-client": "file:../../../sdk-js",
