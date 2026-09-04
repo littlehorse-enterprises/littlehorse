@@ -27,10 +27,27 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     @Getter
     private ThreadRunModel threadRun;
 
+    @Getter
+    private ArchivedThreadRunInfoModel archived;
+
+    @Getter
+    private QueuedThreadRunInfoModel queued;
+
     public InactiveThreadRunModel() {}
 
     public InactiveThreadRunModel(ThreadRunModel threadRun) {
+        this(threadRun, new ArchivedThreadRunInfoModel(), null);
+    }
+
+    public InactiveThreadRunModel(ThreadRunModel threadRun, QueuedThreadRunInfoModel queued) {
+        this(threadRun, null, queued);
+    }
+
+    private InactiveThreadRunModel(
+            ThreadRunModel threadRun, ArchivedThreadRunInfoModel archived, QueuedThreadRunInfoModel queued) {
         this.threadRun = threadRun;
+        this.archived = archived;
+        this.queued = queued;
         this.id = new InactiveThreadRunIdModel(threadRun.getWfRun().getId(), threadRun.getNumber());
     }
 
@@ -58,6 +75,17 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     public InactiveThreadRun.Builder toProto() {
         InactiveThreadRun.Builder out = InactiveThreadRun.newBuilder();
         out.setThreadRun(this.threadRun.toProto());
+        if (id != null) {
+            out.setId(id.toProto());
+        }
+
+        if (queued != null) {
+            out.setQueued(queued.toProto());
+        } else {
+            // An InactiveThreadRun with no explicit type defaults to archived, which also
+            // keeps backward compatibility with data persisted before the oneof existed.
+            out.setArchived(archived != null ? archived.toProto() : new ArchivedThreadRunInfoModel().toProto());
+        }
         return out;
     }
 
@@ -65,6 +93,16 @@ public class InactiveThreadRunModel extends CoreGetable<InactiveThreadRun>
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         InactiveThreadRun p = (InactiveThreadRun) proto;
         this.threadRun = ThreadRunModel.fromProto(p.getThreadRun(), context);
+        if (p.hasId()) {
+            this.id = InactiveThreadRunIdModel.fromProto(p.getId(), InactiveThreadRunIdModel.class, context);
+        }
+
+        switch (p.getInactiveReasonCase()) {
+            case ARCHIVED -> this.archived = ArchivedThreadRunInfoModel.fromProto(p.getArchived(), context);
+            case QUEUED -> this.queued = QueuedThreadRunInfoModel.fromProto(p.getQueued(), context);
+            // Data persisted before the oneof existed has no type set; treat it as archived.
+            case INACTIVEREASON_NOT_SET -> this.archived = new ArchivedThreadRunInfoModel();
+        }
     }
 
     @Override
