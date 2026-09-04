@@ -160,8 +160,8 @@ public class LHServerConfig extends ConfigBase {
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
 
-    // Maximum number of thread runs per workflow run.
-    public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
+    // Number of active thread runs allowed per workflow run.
+    public static final String X_ACTIVE_THREAD_RUNS_PER_WF_RUN = "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
     private String lhsMetricsLevel;
 
@@ -515,8 +515,8 @@ public class LHServerConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
-    public int getMaxThreadRunsPerWfRun() {
-        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_MAX_THREAD_RUNS_PER_WF_RUN, "65"));
+    public int getActiveThreadRunsPerWfRun() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_ACTIVE_THREAD_RUNS_PER_WF_RUN, "65"));
     }
 
     public OAuthConfig getOAuthConfig() {

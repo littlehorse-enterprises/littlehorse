@@ -37,6 +37,7 @@ private static final long serialVersionUID = 0L;
     threadRuns_ = java.util.Collections.emptyList();
     pendingInterrupts_ = java.util.Collections.emptyList();
     pendingFailures_ = java.util.Collections.emptyList();
+    threadRunQueue_ = emptyIntList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -1627,6 +1628,36 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     return map.get(key);
   }
 
+  public static final int THREAD_RUN_QUEUE_FIELD_NUMBER = 14;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.Internal.IntList threadRunQueue_ =
+      emptyIntList();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getThreadRunQueueList() {
+    return threadRunQueue_;
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return The count of threadRunQueue.
+   */
+  public int getThreadRunQueueCount() {
+    return threadRunQueue_.size();
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  public int getThreadRunQueue(int index) {
+    return threadRunQueue_.getInt(index);
+  }
+  private int threadRunQueueMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1641,6 +1672,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getId());
     }
@@ -1683,6 +1715,13 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         internalGetMigrationVariables(),
         MigrationVariablesDefaultEntryHolder.defaultEntry,
         13);
+    if (getThreadRunQueueList().size() > 0) {
+      output.writeUInt32NoTag(114);
+      output.writeUInt32NoTag(threadRunQueueMemoizedSerializedSize);
+    }
+    for (int i = 0; i < threadRunQueue_.size(); i++) {
+      output.writeInt32NoTag(threadRunQueue_.getInt(i));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1750,6 +1789,20 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(13, migrationVariables__);
     }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < threadRunQueue_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(threadRunQueue_.getInt(i));
+      }
+      size += dataSize;
+      if (!getThreadRunQueueList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      threadRunQueueMemoizedSerializedSize = dataSize;
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1808,6 +1861,8 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     }
     if (!internalGetMigrationVariables().equals(
         other.internalGetMigrationVariables())) return false;
+    if (!getThreadRunQueueList()
+        .equals(other.getThreadRunQueueList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1866,6 +1921,10 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     if (!internalGetMigrationVariables().getMap().isEmpty()) {
       hash = (37 * hash) + MIGRATION_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetMigrationVariables().hashCode();
+    }
+    if (getThreadRunQueueCount() > 0) {
+      hash = (37 * hash) + THREAD_RUN_QUEUE_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadRunQueueList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -2100,6 +2159,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         workflowMigrationPlanIdBuilder_ = null;
       }
       internalGetMutableMigrationVariables().clear();
+      threadRunQueue_ = emptyIntList();
       return this;
     }
 
@@ -2218,6 +2278,10 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       }
       if (((from_bitField0_ & 0x00001000) != 0)) {
         result.migrationVariables_ = internalGetMigrationVariables().build(MigrationVariablesDefaultEntryHolder.defaultEntry);
+      }
+      if (((from_bitField0_ & 0x00002000) != 0)) {
+        threadRunQueue_.makeImmutable();
+        result.threadRunQueue_ = threadRunQueue_;
       }
       result.bitField0_ |= to_bitField0_;
     }
@@ -2365,6 +2429,17 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       internalGetMutableMigrationVariables().mergeFrom(
           other.internalGetMigrationVariables());
       bitField0_ |= 0x00001000;
+      if (!other.threadRunQueue_.isEmpty()) {
+        if (threadRunQueue_.isEmpty()) {
+          threadRunQueue_ = other.threadRunQueue_;
+          threadRunQueue_.makeImmutable();
+          bitField0_ |= 0x00002000;
+        } else {
+          ensureThreadRunQueueIsMutable();
+          threadRunQueue_.addAll(other.threadRunQueue_);
+        }
+        onChanged();
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -2504,6 +2579,22 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
               bitField0_ |= 0x00001000;
               break;
             } // case 106
+            case 112: {
+              int v = input.readInt32();
+              ensureThreadRunQueueIsMutable();
+              threadRunQueue_.addInt(v);
+              break;
+            } // case 112
+            case 114: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureThreadRunQueueIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                threadRunQueue_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            } // case 114
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5142,6 +5233,90 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.MigrationVars.Builder) entry;
+    }
+
+    private com.google.protobuf.Internal.IntList threadRunQueue_ = emptyIntList();
+    private void ensureThreadRunQueueIsMutable() {
+      if (!threadRunQueue_.isModifiable()) {
+        threadRunQueue_ = makeMutableCopy(threadRunQueue_);
+      }
+      bitField0_ |= 0x00002000;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return A list containing the threadRunQueue.
+     */
+    public java.util.List<java.lang.Integer>
+        getThreadRunQueueList() {
+      threadRunQueue_.makeImmutable();
+      return threadRunQueue_;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return The count of threadRunQueue.
+     */
+    public int getThreadRunQueueCount() {
+      return threadRunQueue_.size();
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param index The index of the element to return.
+     * @return The threadRunQueue at the given index.
+     */
+    public int getThreadRunQueue(int index) {
+      return threadRunQueue_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param index The index to set the value at.
+     * @param value The threadRunQueue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setThreadRunQueue(
+        int index, int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.setInt(index, value);
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param value The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addThreadRunQueue(int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.addInt(value);
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param values The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllThreadRunQueue(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureThreadRunQueueIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, threadRunQueue_);
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearThreadRunQueue() {
+      threadRunQueue_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00002000);
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfRun)
