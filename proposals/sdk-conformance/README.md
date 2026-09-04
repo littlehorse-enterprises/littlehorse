@@ -28,7 +28,9 @@ The design decisions cite a study of how fourteen real multi-language
 ecosystems (Protocol Buffers, gRPC, Temporal, AWS, Ethereum, the JSON
 Schema and JavaScript test suites, and more) run cross-language
 conformance: what survives, and what rots. "The research" and the named
-lessons throughout this family refer to that study.
+lessons throughout this family refer to that study, whose write-up is not
+kept in this repo; the cited systems are all public, so any specific
+claim can be re-verified at its source.
 
 ## Why a conformance suite
 

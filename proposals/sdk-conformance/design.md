@@ -2,7 +2,8 @@
 
 - Status: **Implemented** (2026-09); kept as the design record. See the
   implementation note below for where the built suite grew beyond this
-  document.
+  document, and for the two acceptance items still open (gating and the
+  drift gate).
 - Parent: [README.md](./README.md)
 
 v1 as proposed here is deliberately narrow: workflow-compilation
@@ -30,12 +31,15 @@ from this document are:
   early in two-SDK form: seeded random workflows generated independently
   by every testee and pairwise cross-compared, with optional live-server
   registration ([FUZZ.md](../../sdk-conformance/FUZZ.md)).
-- A single-command reporter (`runner/all.mjs`) runs freshness, grading,
+- A single-command reporter (`runner/suite.mjs`) runs freshness, grading,
   matrix, and fuzz as one gate.
 - CI: the suite job exists but currently runs report-only for everyone
   (including the two v1 SDKs), and the canon drift gate is not wired yet.
   Both remain the plan; gating is each team's opt-in per
-  [adoption.md](./adoption.md).
+  [adoption.md](./adoption.md). The current job also builds both testees
+  itself (gradle plus pnpm in one job), a two-SDK consolidation of the
+  two-homes CI split described below; unwinding it into per-SDK build
+  steps is part of gating.
 
 ## Contents
 
@@ -343,10 +347,10 @@ file, explicit arguments) resolves to one effective config, and every SDK
 must resolve it the same way. That makes it a natural fourth area: a
 `resolve` testee verb prints the resolved config as JSON, and the shared
 `LHC_*` key list is the denominator. The need is proven, not hypothetical:
-sdk-java layered environment variables under explicit arguments while
-sdk-js ignored the environment entirely, and neither SDK's own unit tests
-could see the disagreement, because each SDK's tests only check its own
-opinion (found and fixed during v1). Retry behavior splits across tiers:
+sdk-java's no-argument path reads the environment while sdk-js's
+equivalent entry point ignored it entirely, and neither SDK's own unit
+tests could see the disagreement, because each SDK's tests only check its
+own opinion (found and fixed during v1). Retry behavior splits across tiers:
 its defaults are config, the retry decision table (error code plus
 RetryInfo in, retry plus delay out) could be a small data area of its own,
 and live retry timing belongs to the runtime area below, adjudicated by
