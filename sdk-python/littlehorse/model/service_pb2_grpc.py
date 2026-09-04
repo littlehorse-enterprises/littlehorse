@@ -301,6 +301,11 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 _registered_method=True)
+        self.SearchWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+                request_serializer=service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=service__pb2.WorkflowMigrationPlanIdList.FromString,
+                _registered_method=True)
         self.SearchCorrelatedEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchCorrelatedEvent',
                 request_serializer=service__pb2.SearchCorrelatedEventRequest.SerializeToString,
@@ -978,6 +983,13 @@ class LittleHorseServicer(object):
     def ApplyWorkflowMigrationPlan(self, request, context):
         """EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
         destination WfSpec.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Search for WorkflowMigrationPlan's.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1667,6 +1679,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ApplyWorkflowMigrationPlan,
                     request_deserializer=service__pb2.ApplyWorkflowMigrationPlanRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'SearchWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.SearchWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=service__pb2.WorkflowMigrationPlanIdList.SerializeToString,
             ),
             'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchCorrelatedEvent,
@@ -3304,6 +3321,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
             service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
             wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+            service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+            service__pb2.WorkflowMigrationPlanIdList.FromString,
             options,
             channel_credentials,
             insecure,

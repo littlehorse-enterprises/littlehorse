@@ -1144,7 +1144,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
      * <code>.littlehorse.VariableAssignment wf_spec_var = 4;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         internalGetWfSpecVarFieldBuilder() {
       if (wfSpecVarBuilder_ == null) {
         if (!(wfSpecCase_ == 4)) {
@@ -1537,9 +1537,7 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
      * <code>.littlehorse.VariableAssignment child_id = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.VariableAssignment,
-        io.littlehorse.sdk.common.proto.VariableAssignment.Builder,
-        io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
         internalGetChildIdFieldBuilder() {
       if (childIdBuilder_ == null) {
         childIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1602,3 +1600,4 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
   }
 
 }
+
