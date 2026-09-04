@@ -70,6 +70,7 @@ const (
 	LittleHorse_GetWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/GetWorkflowMigrationPlan"
 	LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan"
 	LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName  = "/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan"
+	LittleHorse_SearchWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/SearchWorkflowMigrationPlan"
 	LittleHorse_SearchCorrelatedEvent_FullMethodName       = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
 	LittleHorse_SearchNodeRun_FullMethodName               = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName               = "/littlehorse.LittleHorse/SearchTaskRun"
@@ -274,6 +275,8 @@ type LittleHorseClient interface {
 	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
 	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
@@ -875,6 +878,15 @@ func (c *littleHorseClient) DeleteWorkflowMigrationPlan(ctx context.Context, in 
 func (c *littleHorseClient) ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error) {
 	out := new(WfRun)
 	err := c.cc.Invoke(ctx, LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error) {
+	out := new(WorkflowMigrationPlanIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWorkflowMigrationPlan_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1561,6 +1573,8 @@ type LittleHorseServer interface {
 	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
 	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
@@ -1864,6 +1878,9 @@ func (UnimplementedLittleHorseServer) DeleteWorkflowMigrationPlan(context.Contex
 }
 func (UnimplementedLittleHorseServer) ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWorkflowMigrationPlan not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
@@ -2945,6 +2962,24 @@ func _LittleHorse_ApplyWorkflowMigrationPlan_Handler(srv interface{}, ctx contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).ApplyWorkflowMigrationPlan(ctx, req.(*ApplyWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, req.(*SearchWorkflowMigrationPlanRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4189,6 +4224,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyWorkflowMigrationPlan",
 			Handler:    _LittleHorse_ApplyWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "SearchWorkflowMigrationPlan",
+			Handler:    _LittleHorse_SearchWorkflowMigrationPlan_Handler,
 		},
 		{
 			MethodName: "SearchCorrelatedEvent",

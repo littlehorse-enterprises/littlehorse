@@ -1562,6 +1562,37 @@ public final class LittleHorseGrpc {
     return getApplyWorkflowMigrationPlanMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> getSearchWorkflowMigrationPlanMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchWorkflowMigrationPlan",
+      requestType = io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest,
+      io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> getSearchWorkflowMigrationPlanMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> getSearchWorkflowMigrationPlanMethod;
+    if ((getSearchWorkflowMigrationPlanMethod = LittleHorseGrpc.getSearchWorkflowMigrationPlanMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchWorkflowMigrationPlanMethod = LittleHorseGrpc.getSearchWorkflowMigrationPlanMethod) == null) {
+          LittleHorseGrpc.getSearchWorkflowMigrationPlanMethod = getSearchWorkflowMigrationPlanMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest, io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchWorkflowMigrationPlan"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchWorkflowMigrationPlan"))
+              .build();
+        }
+      }
+    }
+    return getSearchWorkflowMigrationPlanMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest,
       io.littlehorse.sdk.common.proto.CorrelatedEventIdList> getSearchCorrelatedEventMethod;
 
@@ -3928,6 +3959,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+     * </pre>
+     */
+    default void searchWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchWorkflowMigrationPlanMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -5140,6 +5181,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+     * </pre>
+     */
+    public void searchWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchWorkflowMigrationPlanMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -6348,6 +6400,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList searchWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSearchWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -7497,6 +7559,16 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.WfRun applyWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getApplyWorkflowMigrationPlanMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList searchWorkflowMigrationPlan(io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchWorkflowMigrationPlanMethod(), getCallOptions(), request);
     }
 
     /**
@@ -8691,6 +8763,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList> searchWorkflowMigrationPlan(
+        io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchWorkflowMigrationPlanMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
      * events that may be orphaned.
      * </pre>
@@ -9385,63 +9468,64 @@ public final class LittleHorseGrpc {
   private static final int METHODID_GET_WORKFLOW_MIGRATION_PLAN = 47;
   private static final int METHODID_DELETE_WORKFLOW_MIGRATION_PLAN = 48;
   private static final int METHODID_APPLY_WORKFLOW_MIGRATION_PLAN = 49;
-  private static final int METHODID_SEARCH_CORRELATED_EVENT = 50;
-  private static final int METHODID_SEARCH_NODE_RUN = 51;
-  private static final int METHODID_SEARCH_TASK_RUN = 52;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 53;
-  private static final int METHODID_SEARCH_VARIABLE = 54;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 55;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 56;
-  private static final int METHODID_SEARCH_TASK_DEF = 57;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 58;
-  private static final int METHODID_SEARCH_WF_SPEC = 59;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 60;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 61;
-  private static final int METHODID_SEARCH_TENANT = 62;
-  private static final int METHODID_SEARCH_PRINCIPAL = 63;
-  private static final int METHODID_SEARCH_QUOTA = 64;
-  private static final int METHODID_SEARCH_STRUCT_DEF = 65;
-  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 66;
-  private static final int METHODID_REGISTER_TASK_WORKER = 67;
-  private static final int METHODID_REPORT_TASK = 68;
-  private static final int METHODID_PUT_CHECKPOINT = 69;
-  private static final int METHODID_GET_CHECKPOINT = 70;
-  private static final int METHODID_STOP_WF_RUN = 71;
-  private static final int METHODID_RESUME_WF_RUN = 72;
-  private static final int METHODID_RESCUE_THREAD_RUN = 73;
-  private static final int METHODID_DELETE_WF_RUN = 74;
-  private static final int METHODID_DELETE_TASK_DEF = 75;
-  private static final int METHODID_DELETE_STRUCT_DEF = 76;
-  private static final int METHODID_DELETE_WF_SPEC = 77;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 78;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 79;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 80;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 81;
-  private static final int METHODID_DELETE_PRINCIPAL = 82;
-  private static final int METHODID_DELETE_QUOTA = 83;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 84;
-  private static final int METHODID_CREATE_BULK_JOB = 85;
-  private static final int METHODID_GET_BULK_JOB = 86;
-  private static final int METHODID_SEARCH_BULK_JOB = 87;
-  private static final int METHODID_DELETE_BULK_JOB = 88;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 89;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 90;
-  private static final int METHODID_LIST_TASK_METRICS = 91;
-  private static final int METHODID_LIST_QUOTA_USAGE_METRICS = 92;
-  private static final int METHODID_LIST_WF_METRICS = 93;
-  private static final int METHODID_GET_METRIC_WINDOW = 94;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 95;
-  private static final int METHODID_PUT_TENANT = 96;
-  private static final int METHODID_GET_TENANT = 97;
-  private static final int METHODID_PUT_QUOTA = 98;
-  private static final int METHODID_GET_QUOTA = 99;
-  private static final int METHODID_PUT_PRINCIPAL = 100;
-  private static final int METHODID_GET_PRINCIPAL = 101;
-  private static final int METHODID_WHOAMI = 102;
-  private static final int METHODID_GET_SERVER_VERSION = 103;
-  private static final int METHODID_COUNT_NODE_RUN = 104;
-  private static final int METHODID_COUNT_TASK_RUN = 105;
-  private static final int METHODID_POLL_TASK = 106;
+  private static final int METHODID_SEARCH_WORKFLOW_MIGRATION_PLAN = 50;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 51;
+  private static final int METHODID_SEARCH_NODE_RUN = 52;
+  private static final int METHODID_SEARCH_TASK_RUN = 53;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 54;
+  private static final int METHODID_SEARCH_VARIABLE = 55;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 56;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 57;
+  private static final int METHODID_SEARCH_TASK_DEF = 58;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 59;
+  private static final int METHODID_SEARCH_WF_SPEC = 60;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 61;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 62;
+  private static final int METHODID_SEARCH_TENANT = 63;
+  private static final int METHODID_SEARCH_PRINCIPAL = 64;
+  private static final int METHODID_SEARCH_QUOTA = 65;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 66;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 67;
+  private static final int METHODID_REGISTER_TASK_WORKER = 68;
+  private static final int METHODID_REPORT_TASK = 69;
+  private static final int METHODID_PUT_CHECKPOINT = 70;
+  private static final int METHODID_GET_CHECKPOINT = 71;
+  private static final int METHODID_STOP_WF_RUN = 72;
+  private static final int METHODID_RESUME_WF_RUN = 73;
+  private static final int METHODID_RESCUE_THREAD_RUN = 74;
+  private static final int METHODID_DELETE_WF_RUN = 75;
+  private static final int METHODID_DELETE_TASK_DEF = 76;
+  private static final int METHODID_DELETE_STRUCT_DEF = 77;
+  private static final int METHODID_DELETE_WF_SPEC = 78;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 79;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 80;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 81;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 82;
+  private static final int METHODID_DELETE_PRINCIPAL = 83;
+  private static final int METHODID_DELETE_QUOTA = 84;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 85;
+  private static final int METHODID_CREATE_BULK_JOB = 86;
+  private static final int METHODID_GET_BULK_JOB = 87;
+  private static final int METHODID_SEARCH_BULK_JOB = 88;
+  private static final int METHODID_DELETE_BULK_JOB = 89;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 90;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 91;
+  private static final int METHODID_LIST_TASK_METRICS = 92;
+  private static final int METHODID_LIST_QUOTA_USAGE_METRICS = 93;
+  private static final int METHODID_LIST_WF_METRICS = 94;
+  private static final int METHODID_GET_METRIC_WINDOW = 95;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 96;
+  private static final int METHODID_PUT_TENANT = 97;
+  private static final int METHODID_GET_TENANT = 98;
+  private static final int METHODID_PUT_QUOTA = 99;
+  private static final int METHODID_GET_QUOTA = 100;
+  private static final int METHODID_PUT_PRINCIPAL = 101;
+  private static final int METHODID_GET_PRINCIPAL = 102;
+  private static final int METHODID_WHOAMI = 103;
+  private static final int METHODID_GET_SERVER_VERSION = 104;
+  private static final int METHODID_COUNT_NODE_RUN = 105;
+  private static final int METHODID_COUNT_TASK_RUN = 106;
+  private static final int METHODID_POLL_TASK = 107;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -9659,6 +9743,10 @@ public final class LittleHorseGrpc {
         case METHODID_APPLY_WORKFLOW_MIGRATION_PLAN:
           serviceImpl.applyWorkflowMigrationPlan((io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WfRun>) responseObserver);
+          break;
+        case METHODID_SEARCH_WORKFLOW_MIGRATION_PLAN:
+          serviceImpl.searchWorkflowMigrationPlan((io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList>) responseObserver);
           break;
         case METHODID_SEARCH_CORRELATED_EVENT:
           serviceImpl.searchCorrelatedEvent((io.littlehorse.sdk.common.proto.SearchCorrelatedEventRequest) request,
@@ -10256,6 +10344,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.WfRun>(
                 service, METHODID_APPLY_WORKFLOW_MIGRATION_PLAN)))
         .addMethod(
+          getSearchWorkflowMigrationPlanMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchWorkflowMigrationPlanRequest,
+              io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdList>(
+                service, METHODID_SEARCH_WORKFLOW_MIGRATION_PLAN)))
+        .addMethod(
           getSearchCorrelatedEventMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -10752,6 +10847,7 @@ public final class LittleHorseGrpc {
               .addMethod(getGetWorkflowMigrationPlanMethod())
               .addMethod(getDeleteWorkflowMigrationPlanMethod())
               .addMethod(getApplyWorkflowMigrationPlanMethod())
+              .addMethod(getSearchWorkflowMigrationPlanMethod())
               .addMethod(getSearchCorrelatedEventMethod())
               .addMethod(getSearchNodeRunMethod())
               .addMethod(getSearchTaskRunMethod())
