@@ -31,6 +31,12 @@ const REQUEST_TYPES = new Map(LittleHorse.methods.map(method => [method.localNam
 export interface PromisifyClientOptions {
   defaultOptions: RpcOptions
   resourceExhaustedRetryEnabled: boolean
+  /**
+   * Minted per unary call, so a long-held client never outlives its token
+   * (Java refreshes per RPC through CallCredentials). An authorization set in
+   * per-call options wins.
+   */
+  tokenProvider?: () => Promise<string | undefined>
 }
 
 function mergeMeta(base?: RpcMetadata, override?: RpcMetadata): RpcMetadata {
@@ -50,7 +56,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 export function promisifyClient(client: LittleHorseClient, options: PromisifyClientOptions): LHPublicClient {
-  const { defaultOptions, resourceExhaustedRetryEnabled } = options
+  const { defaultOptions, resourceExhaustedRetryEnabled, tokenProvider } = options
 
   return new Proxy(client, {
     get(target, prop, receiver) {
@@ -67,6 +73,12 @@ export function promisifyClient(client: LittleHorseClient, options: PromisifyCli
 
       return async (input: unknown, callOptions?: RpcOptions) => {
         const merged = mergeOptions(defaultOptions, callOptions)
+        if (tokenProvider !== undefined && merged.meta?.['authorization'] === undefined) {
+          const token = await tokenProvider()
+          if (token !== undefined) {
+            merged.meta = { ...merged.meta, authorization: `Bearer ${token}` }
+          }
+        }
         // Fills in the fields protobuf-ts requires but Java's builders default.
         const requestType = REQUEST_TYPES.get(methodName)
         const request = requestType === undefined ? input : requestType.create(input as never)

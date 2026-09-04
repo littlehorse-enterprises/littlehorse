@@ -62,7 +62,11 @@ function parsePositiveInt(config: string | undefined, name: string): number | un
   return value
 }
 
-/** OAuth is all-or-nothing: a partial config is a misconfiguration. */
+/**
+ * OAuth is all-or-nothing: a partial config is a misconfiguration. Validated
+ * lazily where OAuth is used, not at construction, mirroring Java's isOauth()
+ * so ambient partial LHC_OAUTH_* env cannot break non-OAuth usage.
+ */
 function requireOauth(value: string | undefined, name: string): string {
   if (!value) {
     throw new LHMisconfigurationError(`${name} is required when configuring OAuth`)
@@ -90,6 +94,14 @@ const DEFAULT_CONFIG: Config = {
   LHC_API_PROTOCOL: 'PLAINTEXT',
 }
 
+// Java parity (LHConfig: 45s/5s, keepAliveWithoutCalls on): without these an
+// idle poll stream behind NAT or a load balancer dies undetected.
+const DEFAULT_KEEPALIVE_TIME_MS = 45000
+const DEFAULT_KEEPALIVE_TIMEOUT_MS = 5000
+
+/** Mints a fresh bearer token for a call; undefined sends the call anonymous. */
+export type AccessTokenProvider = () => Promise<string | undefined>
+
 export class LHConfig {
   private apiHost?: string = 'localhost'
   private apiPort?: string = '2023'
@@ -106,6 +118,10 @@ export class LHConfig {
   private taskWorkerId: string
   private taskWorkerVersion?: string
   private oauth?: OAuthCredentialsProvider
+  private oauthClientId?: string
+  private oauthClientSecret?: string
+  private oauthTokenEndpoint?: string
+  private readonly transports = new Map<string, GrpcTransport>()
   private readonly typeAdapters = new LHTypeAdapterRegistry()
 
   private channelCredentials: ChannelCredentials
@@ -134,16 +150,14 @@ export class LHConfig {
     this.taskWorkerId = mergedConfig.LHC_TASK_WORKER_ID || randomUUID()
     this.taskWorkerVersion = mergedConfig.LHC_TASK_WORKER_VERSION
 
-    if (
-      mergedConfig.LHC_OAUTH_CLIENT_ID ||
-      mergedConfig.LHC_OAUTH_CLIENT_SECRET ||
-      mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL
-    ) {
-      this.oauth = new OAuthCredentialsProvider({
-        clientId: requireOauth(mergedConfig.LHC_OAUTH_CLIENT_ID, 'LHC_OAUTH_CLIENT_ID'),
-        clientSecret: requireOauth(mergedConfig.LHC_OAUTH_CLIENT_SECRET, 'LHC_OAUTH_CLIENT_SECRET'),
-        tokenEndpoint: requireOauth(mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL, 'LHC_OAUTH_ACCESS_TOKEN_URL'),
-      })
+    this.oauthClientId = mergedConfig.LHC_OAUTH_CLIENT_ID
+    this.oauthClientSecret = mergedConfig.LHC_OAUTH_CLIENT_SECRET
+    this.oauthTokenEndpoint = mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL
+
+    if (this.protocol !== 'PLAINTEXT' && this.protocol !== 'TLS') {
+      // Java throws here too; falling back silently would ship plaintext
+      // traffic for a typo like 'tls' or 'SSL'.
+      throw new LHMisconfigurationError(`Invalid LHC_API_PROTOCOL "${this.protocol}": expected PLAINTEXT or TLS`)
     }
 
     if (this.protocol === 'TLS') {
@@ -217,15 +231,18 @@ export class LHConfig {
   }
 
   /**
-   * A client whose calls carry a freshly-minted OAuth bearer token. Separate
-   * from getClient() because acquiring a token is asynchronous, and making
-   * every client call async would be a breaking change for non-OAuth users.
+   * A client whose calls each carry a freshly-minted OAuth bearer token
+   * (Java refreshes per RPC through CallCredentials; the provider caches the
+   * token and refreshes it before expiry). Separate from getClient() because
+   * acquiring a token is asynchronous, and making every client call async
+   * would be a breaking change for non-OAuth users.
    */
   public async getAuthenticatedClient(): Promise<LHPublicClient> {
-    if (this.oauth === undefined) {
+    const oauth = this.getOauthProvider()
+    if (oauth === undefined) {
       return this.getClient()
     }
-    return this.getClient(await this.oauth.getToken())
+    return this.createClientForHost(this.apiHost!, this.apiPort!, () => oauth.getToken())
   }
 
   /**
@@ -243,27 +260,56 @@ export class LHConfig {
 
   /** gRPC channel options derived from the configured channel settings. */
   public getClientOptions(): Record<string, number> {
-    const options: Record<string, number> = {}
+    const options: Record<string, number> = {
+      'grpc.keepalive_time_ms': this.keepaliveTimeMs ?? DEFAULT_KEEPALIVE_TIME_MS,
+      'grpc.keepalive_timeout_ms': this.keepaliveTimeoutMs ?? DEFAULT_KEEPALIVE_TIMEOUT_MS,
+      'grpc.keepalive_permit_without_calls': 1,
+    }
     if (this.grpcMaxReceiveMessageLength !== undefined) {
       options['grpc.max_receive_message_length'] = this.grpcMaxReceiveMessageLength
-    }
-    if (this.keepaliveTimeMs !== undefined) {
-      options['grpc.keepalive_time_ms'] = this.keepaliveTimeMs
-    }
-    if (this.keepaliveTimeoutMs !== undefined) {
-      options['grpc.keepalive_timeout_ms'] = this.keepaliveTimeoutMs
     }
     return options
   }
 
-  public createClientForHost(host: string, port: string | number, accessToken?: string): LHPublicClient {
-    return this.createClientForTransport(this.createTransport(host, port), accessToken)
+  public createClientForHost(
+    host: string,
+    port: string | number,
+    accessToken?: string | AccessTokenProvider
+  ): LHPublicClient {
+    return this.createClientForTransport(this.sharedTransport(host, port), accessToken)
   }
 
-  public createClientForTransport(transport: GrpcTransport, accessToken?: string): LHPublicClient {
+  /**
+   * One cached transport per host:port (Java caches channels the same way), so
+   * repeated getClient() calls reuse a connection instead of leaking one each.
+   * Released by close().
+   */
+  private sharedTransport(host: string, port: string | number): GrpcTransport {
+    const key = `${host}:${port}`
+    const existing = this.transports.get(key)
+    if (existing) return existing
+    const transport = this.createTransport(host, port)
+    this.transports.set(key, transport)
+    return transport
+  }
+
+  /** Closes every transport this config created through getClient()/createClientForHost(). */
+  public close(): void {
+    for (const transport of this.transports.values()) {
+      transport.close()
+    }
+    this.transports.clear()
+  }
+
+  public createClientForTransport(
+    transport: GrpcTransport,
+    accessToken?: string | AccessTokenProvider
+  ): LHPublicClient {
+    const staticToken = typeof accessToken === 'string' ? accessToken : undefined
     return promisifyClient(new LittleHorseClient(transport), {
-      defaultOptions: { meta: this.getMetadata(accessToken) },
+      defaultOptions: { meta: this.getMetadata(staticToken) },
       resourceExhaustedRetryEnabled: this.resourceExhaustedRetryEnabled,
+      tokenProvider: typeof accessToken === 'function' ? accessToken : undefined,
     })
   }
 
@@ -323,7 +369,7 @@ export class LHConfig {
 
   /** Fetches a TaskDef by name through the configured client. */
   async getTaskDef(name: string) {
-    return this.getClient().getTaskDef({ name })
+    return (await this.getAuthenticatedClient()).getTaskDef({ name })
   }
 
   /** Worker concurrency (Java: LHConfig#getWorkerThreads/getInflightTasks). */
@@ -351,20 +397,50 @@ export class LHConfig {
   }
 
   /**
-   * The adapters available to the wfsdk and worker
+   * The adapters the task worker consults when serializing values (task
+   * outputs, exception content, checkpoints). Reads stay with the built-ins
+   * unless an adapter is asked for by name, and compile-time adapter support
+   * in the wfsdk is tracked in the conformance exemptions
    * (Java: LHConfig#getTypeAdapterRegistry).
    */
   getTypeAdapterRegistry(): LHTypeAdapterRegistry {
     return this.typeAdapters
   }
 
-  /** Whether OAuth credentials are configured (Java: LHConfig#isOauth). */
+  /**
+   * Whether OAuth credentials are configured (Java: LHConfig#isOauth).
+   * Like Java, a partial LHC_OAUTH_* trio throws here, when OAuth is about to
+   * be used, and never at construction.
+   */
   isOauth(): boolean {
-    return this.oauth !== undefined
+    // Absent means undefined, like Java's null check: an empty string counts
+    // as present-but-invalid and throws below.
+    if (
+      this.oauthClientId === undefined &&
+      this.oauthClientSecret === undefined &&
+      this.oauthTokenEndpoint === undefined
+    ) {
+      return false
+    }
+    requireOauth(this.oauthClientId, 'LHC_OAUTH_CLIENT_ID')
+    requireOauth(this.oauthClientSecret, 'LHC_OAUTH_CLIENT_SECRET')
+    requireOauth(this.oauthTokenEndpoint, 'LHC_OAUTH_ACCESS_TOKEN_URL')
+    return true
   }
 
-  /** The OAuth provider, when configured. */
+  /**
+   * The OAuth provider, when configured. Throws LHMisconfigurationError for a
+   * partial LHC_OAUTH_* trio, same as isOauth().
+   */
   getOauthProvider(): OAuthCredentialsProvider | undefined {
+    if (!this.isOauth()) {
+      return undefined
+    }
+    this.oauth ??= new OAuthCredentialsProvider({
+      clientId: this.oauthClientId!,
+      clientSecret: this.oauthClientSecret!,
+      tokenEndpoint: this.oauthTokenEndpoint!,
+    })
     return this.oauth
   }
 
