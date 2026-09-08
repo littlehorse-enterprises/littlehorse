@@ -29,6 +29,7 @@ include(
         'exception-handler',
         'expressions',
         'external-event',
+        'grpc-interceptor',
         'hundred-tasks',
         'interrupt-handler',
         'inline-struct-placeholder',
