@@ -2,7 +2,6 @@
 import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import { Quota, QuotaId } from 'littlehorse-client/proto'
-import { ClientError, Status } from 'nice-grpc-common'
 
 export type QuotaScope = 'principal' | 'tenant' | 'none'
 
@@ -14,11 +13,15 @@ export type ApplicableQuota = {
 
 type LhClient = Awaited<ReturnType<typeof lhClient>>
 
+// The protobuf-ts client throws RpcError with string status codes; nice-grpc's ClientError never matches it.
+const isNotFound = (error: unknown): boolean =>
+  typeof error === 'object' && error !== null && 'code' in error && error.code === 'NOT_FOUND'
+
 const getQuotaOrNull = async (client: LhClient, quotaId: QuotaId): Promise<Quota | null> => {
   try {
     return await client.getQuota(quotaId)
   } catch (error) {
-    if (error instanceof ClientError && error.code === Status.NOT_FOUND) return null
+    if (isNotFound(error)) return null
     throw error
   }
 }
