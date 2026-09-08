@@ -5,6 +5,10 @@ export const routes = {
     root: (tenantId: string) => `/${tenantId}`,
   },
 
+  quotas: {
+    usage: () => '/quotas',
+  },
+
   wfSpec: {
     base: (name: string) => `/wfSpec/${name}`,
     detail: (name: string, version: string | number) => `/wfSpec/${name}/${version}`,
