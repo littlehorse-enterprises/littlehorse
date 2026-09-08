@@ -1,9 +1,9 @@
 'use client'
 
+import { formatDurationMs } from '@/app/utils'
 import { CardContent } from '@/components/ui/card'
 import { RefreshCwIcon } from 'lucide-react'
 import { FC } from 'react'
-import { formatDurationMs } from '@/app/utils'
 import { QuotaCountDataPoint, QuotaThrottleDataPoint, QuotaUsageSummary } from './quotaMetricsData'
 import { QuotaUsageChart } from './QuotaUsageChart'
 import { QuotaViewMode } from './quotaUsageConstants'
@@ -11,13 +11,11 @@ import { QuotaViewMode } from './quotaUsageConstants'
 export type QuotaUsageContentProps = {
   isLoading: boolean
   error: unknown
-  hasData: boolean
   viewMode: QuotaViewMode
   countData: QuotaCountDataPoint[]
   throttleData: QuotaThrottleDataPoint[]
   summary: QuotaUsageSummary
-  bucketLimit?: number
-  noQuotaConfigured: boolean
+  bucketLimit: number
 }
 
 const SummaryTile: FC<{ label: string; value: string }> = ({ label, value }) => (
@@ -30,20 +28,13 @@ const SummaryTile: FC<{ label: string; value: string }> = ({ label, value }) => 
 export const QuotaUsageContent: FC<QuotaUsageContentProps> = ({
   isLoading,
   error,
-  hasData,
   viewMode,
   countData,
   throttleData,
   summary,
   bucketLimit,
-  noQuotaConfigured,
 }) => (
   <CardContent>
-    {noQuotaConfigured && (
-      <p className="pb-4 text-sm text-muted-foreground">
-        No quota applies to you in this tenant, so no usage is being recorded.
-      </p>
-    )}
     {isLoading ? (
       <div className="flex h-[300px] items-center justify-center">
         <RefreshCwIcon className="h-6 w-6 animate-spin text-blue-500" />
@@ -60,7 +51,7 @@ export const QuotaUsageContent: FC<QuotaUsageContentProps> = ({
           <SummaryTile label="Throttle rate" value={`${(summary.throttleRate * 100).toFixed(1)}%`} />
           <SummaryTile label="Time throttled" value={formatDurationMs(summary.totalThrottleTimeMs)} />
         </div>
-        {hasData ? (
+        {summary.observed > 0 ? (
           <QuotaUsageChart
             viewMode={viewMode}
             countData={countData}
