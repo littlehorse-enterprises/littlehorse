@@ -173,6 +173,33 @@ public class QuotaTest {
                 DeletePrincipalRequest.newBuilder().setId(principalId).build());
     }
 
+    @Test
+    void shouldIncludePrincipalInQuotaIdWhenSearchingAllQuotas() {
+        String principalName = "search-all-principal-" + UUID.randomUUID();
+        PrincipalId principalId = PrincipalId.newBuilder().setId(principalName).build();
+
+        client.putPrincipal(PutPrincipalRequest.newBuilder()
+                .setId(principalName)
+                .setOverwrite(true)
+                .build());
+
+        Quota principalQuota = client.putQuota(PutQuotaRequest.newBuilder()
+                .setTenant(TenantId.newBuilder().setId(tenantId()))
+                .setPrincipal(principalId)
+                .setWriteRequestsPerSecond(50)
+                .build());
+
+        Awaitility.await().atMost(Duration.ofSeconds(4)).untilAsserted(() -> {
+            QuotaIdList results = client.searchQuota(SearchQuotaRequest.getDefaultInstance());
+            assertThat(results.getResultsList()).contains(principalQuota.getId());
+        });
+
+        client.deleteQuota(
+                DeleteQuotaRequest.newBuilder().setId(principalQuota.getId()).build());
+        client.deletePrincipal(
+                DeletePrincipalRequest.newBuilder().setId(principalId).build());
+    }
+
     /**
      * Sends a burst via a raw client (no retry interceptor), asserts some are throttled,
      * and verifies the first throttled response contains a valid RetryInfo.
