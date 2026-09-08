@@ -78,6 +78,9 @@ export const QuotaUsage: FC<ApplicableQuota> = ({ scope, quota, principalId }) =
       <div className="mt-6">
         <Card>
           <QuotaUsageHeader
+            scope={scope}
+            principalId={principalId}
+            limitRps={quota?.writeRequestsPerSecond}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             bucketMinutes={bucketMinutes}
