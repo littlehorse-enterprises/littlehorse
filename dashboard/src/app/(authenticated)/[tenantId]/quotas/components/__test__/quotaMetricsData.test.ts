@@ -108,6 +108,21 @@ describe('bucketQuotaUsage / toQuotaCountData', () => {
     expect(data).toHaveLength(3)
     expect(data.every(d => d.observed === 0 && d.throttled === 0)).toBe(true)
   })
+
+  it('keeps windows from the partial bucket before the first aligned boundary', () => {
+    const start = Date.parse('2026-09-03T09:03:30Z')
+    const end = Date.parse('2026-09-03T10:03:30Z')
+    const windows = Array.from({ length: 60 }, (_, i) =>
+      makeQuotaWindow(new Date(Date.parse('2026-09-03T09:04:00Z') + i * 60_000).toISOString(), qu(1, 0, 0))
+    )
+    const buckets = bucketQuotaUsage(windows, 60, 60, start, end)
+    expect(buckets.map(b => b.timestamp)).toEqual([
+      Date.parse('2026-09-03T09:00:00Z'),
+      Date.parse('2026-09-03T10:00:00Z'),
+    ])
+    expect(buckets.map(b => b.usage.requestsObserved)).toEqual([56, 4])
+    expect(summarizeQuotaUsage(buckets).observed).toBe(60)
+  })
 })
 
 describe('toQuotaThrottleData', () => {
@@ -162,7 +177,7 @@ describe('summary and chart consistency', () => {
     const rangeStart = Date.parse('2026-09-03T10:02:30Z')
     const rangeEnd = Date.parse('2026-09-03T10:12:30Z')
     const windows = [
-      makeQuotaWindow('2026-09-03T10:01:00Z', qu(999, 999, 999)),
+      makeQuotaWindow('2026-09-03T10:03:00Z', qu(5, 1, 500)),
       makeQuotaWindow('2026-09-03T10:06:00Z', qu(10, 4, 2000)),
       makeQuotaWindow('2026-09-03T10:07:00Z', qu(20, 6, 4000)),
     ]
@@ -170,8 +185,9 @@ describe('summary and chart consistency', () => {
     const summary = summarizeQuotaUsage(buckets)
     const charted = toQuotaCountData(buckets)
 
+    expect(charted[0].timestamp).toBe(Date.parse('2026-09-03T10:00:00Z'))
     expect(summary.observed).toBe(charted.reduce((n, p) => n + p.observed, 0))
     expect(summary.throttled).toBe(charted.reduce((n, p) => n + p.throttled, 0))
-    expect(summary.observed).toBe(30)
+    expect(summary.observed).toBe(35)
   })
 })
