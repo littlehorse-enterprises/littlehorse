@@ -83,3 +83,18 @@ export function computeStartTimeWindow(windowMinutes: number): StartTimeWindow {
   const earliestStart = new Date(now.getTime() - windowMinutes * 6e4).toISOString()
   return { latestStart, earliestStart }
 }
+
+/** Formats a millisecond duration for display, e.g. 999 -> "999ms", 90_000 -> "1m 30s". */
+export const formatDurationMs = (ms: number): string => {
+  if (ms < 1000) return `${ms}ms`
+  const totalSeconds = Math.round(ms / 1000)
+  if (totalSeconds < 60) return `${(ms / 1000).toFixed(1)}s`
+  const totalMinutes = Math.round(totalSeconds / 60)
+  if (totalMinutes < 60) {
+    const seconds = totalSeconds % 60
+    return seconds > 0 ? `${Math.floor(totalSeconds / 60)}m ${seconds}s` : `${totalMinutes}m`
+  }
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+  return minutes > 0 ? `${hours}h ${minutes}m` : `${hours}h`
+}
