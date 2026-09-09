@@ -83,7 +83,8 @@
       "systeminformation": "^5.31.6",
       "form-data": "^4.0.6",
       "postcss": "^8.5.10",
-      "brace-expansion": "^1.1.16"
+      "brace-expansion": "^1.1.16",
+      "sharp": "^0.35.0"
     }
   }
 }
