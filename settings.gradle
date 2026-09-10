@@ -31,6 +31,7 @@ include(
         'external-event',
         'hundred-tasks',
         'interrupt-handler',
+        'inline-struct-def',
         'inline-struct-placeholder',
         'json',
         'maps',
