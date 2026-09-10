@@ -224,6 +224,9 @@ service LittleHorse {
   // EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
   // destination WfSpec.
   rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
+
+  // EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+  rpc SearchWorkflowMigrationPlan(SearchWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlanIdList) {}
   
   // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
   // events that may be orphaned.
@@ -369,6 +372,8 @@ service LittleHorse {
   
   // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists quota usage metric windows for a quota and time range.
+  rpc ListQuotaUsageMetrics(ListQuotaUsageMetricsRequest) returns (MetricsList) {}
   // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
   // Gets a MetricWindow by its ID.
@@ -1144,6 +1149,35 @@ message SearchExternalEventDefRequest {
 message ExternalEventDefIdList {
   // The resulting object id's.
   repeated ExternalEventDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+message SearchWorkflowMigrationPlanRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally specify search criteria. If no criteria are specified, all
+  // WorkflowMigrationPlan's are returned.
+  oneof workflow_migration_plan_criteria {
+    // Return WorkflowMigrationPlan's whose source WfSpec has this name.
+    string wf_spec_name = 3;
+
+    // Return WorkflowMigrationPlan's whose name starts with this prefix.
+    string prefix = 4;
+  }
+}
+
+// EXPERIMENTAL: List of WorkflowMigrationPlan Id's.
+message WorkflowMigrationPlanIdList {
+  // The resulting object id's.
+  repeated WorkflowMigrationPlanId results = 1;
 
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request

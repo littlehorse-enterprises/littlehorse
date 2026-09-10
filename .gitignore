@@ -53,3 +53,4 @@ global.json
 *.sln
 # java profiling
 .profileconfig.json
+examples/js/*/package-lock.json

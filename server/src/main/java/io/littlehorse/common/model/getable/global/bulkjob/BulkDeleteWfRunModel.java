@@ -21,7 +21,7 @@ import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.storeinternals.index.Tag;
-import io.littlehorse.server.streams.stores.TenantScopedStore;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,9 +90,14 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         return tagScan.getKeyPrefix() + "/" + LHUtil.toLhDbFormat(LHUtil.fromProtoTs(tagScan.getLatestCreateTime()));
     }
 
+    /**
+     * Scans Tags to find matching WfRuns and hands each one to {@code commandForwarder} as a delete
+     * command. The store is read-only on purpose: this runs on the per-partition background worker,
+     * which may never write to RocksDB directly.
+     */
     public BulkJobShardCursorModel process(
             Consumer<CoreSubCommand<?>> commandForwarder,
-            TenantScopedStore coreStore,
+            ReadOnlyTenantScopedStore coreStore,
             BulkJobShardCursorModel shardCursor,
             BooleanSupplier outOfBudget) {
         // The cursor stores the full Tag store key of the last WfRun we deleted. On resume we
@@ -103,6 +108,7 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
         Date lastSeenTimestamp = shardCursor.getLastSeenTimestamp();
         InternalScanPb.TagScanPb tagScan = buildScan();
         String startKey = resumeFromKey.isBlank() ? startKey(tagScan) : resumeFromKey;
+        ReadOnlyGetableManager getableManager = new ReadOnlyGetableManager(coreStore);
         try (LHKeyValueIterator<Tag> range = coreStore.range(startKey, endKey(tagScan), Tag.class)) {
             while (range.hasNext()) {
                 if (outOfBudget.getAsBoolean()) {
@@ -116,7 +122,6 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
                         (WfRunIdModel) WfRunIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
                 // The resume key is included in the range; it was already processed, so skip it.
                 if (!resumeFromKey.isBlank() && tag.getStoreKey().equals(resumeFromKey)) {
-                    ReadOnlyGetableManager getableManager = new ReadOnlyGetableManager(coreStore);
                     WfRunModel wfRunModel = getableManager.get(wfRunIdToDelete);
                     if (wfRunModel != null) {
                         // Previous delete not processed yet — back off, keep scanCompleted == false,
@@ -125,6 +130,10 @@ public class BulkDeleteWfRunModel extends LHSerializable<BulkDeleteWfRun> {
                     }
                     continue;
                 }
+                // Point-get the WfRun to pull its `wrg/<wfRunId>/` block(s) into the RocksDB block cache.
+                // All of a WfRun's Getables share this prefix, so the delete command's prefix scan
+                // mostly hits cache.
+                getableManager.get(wfRunIdToDelete);
                 DeleteWfRunRequest delete = DeleteWfRunRequest.newBuilder()
                         .setId(wfRunIdToDelete.toProto())
                         .build();

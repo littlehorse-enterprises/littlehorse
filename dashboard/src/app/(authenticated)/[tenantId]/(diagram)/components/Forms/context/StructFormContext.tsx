@@ -18,7 +18,7 @@ type StructPath = string[]
 export type VariableCase = Exclude<VariableValue['value']['oneofKind'], undefined>
 
 export interface StructFormContextValue {
-  registerStructPath: (path: StructPath, structDefId: StructDefId) => void
+  registerStructPath: (path: StructPath, structDefId: StructDefId, includeEmptyStruct?: boolean) => void
   unregisterStructPath: (path: StructPath) => void
   setPrimitiveFieldValue: (
     path: StructPath,
@@ -189,9 +189,11 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
   )
 
   const registerStructPath = useCallback(
-    (path: StructPath, structDefId: StructDefId) => {
+    (path: StructPath, structDefId: StructDefId, includeEmptyStruct = false) => {
       structDefRegistryRef.current.set(structPathKey(path), structDefId)
-      ensureStructAtPath(path)
+      if (includeEmptyStruct) {
+        ensureStructAtPath(path)
+      }
     },
     [ensureStructAtPath]
   )

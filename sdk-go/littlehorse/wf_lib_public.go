@@ -329,6 +329,17 @@ type LHExpression interface {
 type SpawnedChildWf struct {
 	sourceNodeName string
 	thread         *WorkflowThread
+	runNode        *lhproto.RunChildWfNode
+}
+
+// WithChildId sets the ID assigned to the child WfRun.
+func (s *SpawnedChildWf) WithChildId(childID interface{}) *SpawnedChildWf {
+	assn, err := s.thread.assignVariable(childID)
+	if err != nil {
+		s.thread.throwError(err)
+	}
+	s.runNode.ChildId = assn
+	return s
 }
 
 func (s *SpawnedChildWf) BuildNode() *lhproto.WaitForChildWfNode {

@@ -2,6 +2,9 @@
 
 ## Installing `lhctl`
 
+Building `lhctl` from source requires Go 1.25 or newer. Users installing a prebuilt `lhctl`
+binary or using the container image do not need Go installed.
+
 1. To install `lhctl` from the source code, first run the following commands within the `/lhctl/` directory:
 
 ```bash

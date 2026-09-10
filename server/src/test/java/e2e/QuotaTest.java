@@ -14,8 +14,10 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeletePrincipalRequest;
 import io.littlehorse.sdk.common.proto.DeleteQuotaRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.ListQuotaUsageMetricsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.MetricsList;
 import io.littlehorse.sdk.common.proto.PrincipalId;
 import io.littlehorse.sdk.common.proto.PutPrincipalRequest;
 import io.littlehorse.sdk.common.proto.PutQuotaRequest;
@@ -37,12 +39,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junitpioneer.jupiter.RetryingTest;
 
 @LHTest
 @Isolated
+@Tag("slow")
 public class QuotaTest {
 
     private LittleHorseBlockingStub client;
@@ -169,6 +173,33 @@ public class QuotaTest {
                 DeletePrincipalRequest.newBuilder().setId(principalId).build());
     }
 
+    @Test
+    void shouldIncludePrincipalInQuotaIdWhenSearchingAllQuotas() {
+        String principalName = "search-all-principal-" + UUID.randomUUID();
+        PrincipalId principalId = PrincipalId.newBuilder().setId(principalName).build();
+
+        client.putPrincipal(PutPrincipalRequest.newBuilder()
+                .setId(principalName)
+                .setOverwrite(true)
+                .build());
+
+        Quota principalQuota = client.putQuota(PutQuotaRequest.newBuilder()
+                .setTenant(TenantId.newBuilder().setId(tenantId()))
+                .setPrincipal(principalId)
+                .setWriteRequestsPerSecond(50)
+                .build());
+
+        Awaitility.await().atMost(Duration.ofSeconds(4)).untilAsserted(() -> {
+            QuotaIdList results = client.searchQuota(SearchQuotaRequest.getDefaultInstance());
+            assertThat(results.getResultsList()).contains(principalQuota.getId());
+        });
+
+        client.deleteQuota(
+                DeleteQuotaRequest.newBuilder().setId(principalQuota.getId()).build());
+        client.deletePrincipal(
+                DeletePrincipalRequest.newBuilder().setId(principalId).build());
+    }
+
     /**
      * Sends a burst via a raw client (no retry interceptor), asserts some are throttled,
      * and verifies the first throttled response contains a valid RetryInfo.
@@ -215,6 +246,45 @@ public class QuotaTest {
             assertThat(foundRetryInfo)
                     .as("RESOURCE_EXHAUSTED response should contain RetryInfo")
                     .isTrue();
+        } finally {
+            deleteQuotaSilently(tenantQuotaId());
+        }
+    }
+
+    @Test
+    void shouldReportQuotaUsage() {
+        setQuota(2);
+        LittleHorseBlockingStub rawClient = createRawClient();
+        try {
+            awaitQuota(2);
+            BurstResult result = sendBurst(rawClient, 6);
+            assertThat(result.throttled()).isNotEmpty();
+
+            Awaitility.await()
+                    .atMost(Duration.ofSeconds(75))
+                    .pollInterval(Duration.ofSeconds(2))
+                    .untilAsserted(() -> {
+                        MetricsList metrics = client.listQuotaUsageMetrics(ListQuotaUsageMetricsRequest.newBuilder()
+                                .setQuotaId(tenantQuotaId())
+                                .build());
+                        int observed = metrics.getWindowsList().stream()
+                                .mapToInt(window -> window.hasQuotaUsage()
+                                        ? window.getQuotaUsage().getRequestsObserved()
+                                        : 0)
+                                .sum();
+                        int throttled = metrics.getWindowsList().stream()
+                                .mapToInt(window -> window.hasQuotaUsage()
+                                        ? window.getQuotaUsage().getRequestsThrottled()
+                                        : 0)
+                                .sum();
+                        assertThat(observed).isGreaterThanOrEqualTo(6);
+                        assertThat(throttled)
+                                .isGreaterThanOrEqualTo(result.throttled().size());
+                        assertThat(metrics.getWindowsList()).isNotEmpty();
+                        assertThat(client.getMetricWindow(metrics.getWindows(0).getId())
+                                        .hasQuotaUsage())
+                                .isTrue();
+                    });
         } finally {
             deleteQuotaSilently(tenantQuotaId());
         }

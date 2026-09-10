@@ -4,9 +4,9 @@ For documentation on how to use this library, please go to [the LittleHorse webs
 
 ### Dependencies
 
-Install golang.
+Install Go 1.25 or newer.
 
-Install Golang protobuf compilers, as follows:
+Install the Go protobuf compilers as follows:
 
 ```
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest

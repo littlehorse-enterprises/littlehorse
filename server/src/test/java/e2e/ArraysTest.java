@@ -50,6 +50,9 @@ public class ArraysTest {
     @LHWorkflow("array-get-wf")
     private Workflow arrayGetWf;
 
+    @LHWorkflow("array-dynamic-get-wf")
+    private Workflow arrayDynamicGetWf;
+
     @LHWorkflow("array-contains-wf")
     private Workflow arrayContainsWf;
 
@@ -176,6 +179,18 @@ public class ArraysTest {
     }
 
     @Test
+    public void shouldAllowGettingArrayElementByDynamicIndex() {
+        workflowVerifier
+                .prepareRun(arrayDynamicGetWf)
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "picked", variableValue -> {
+                    Assertions.assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.INT);
+                    Assertions.assertThat(variableValue.getInt()).isEqualTo(3L);
+                })
+                .start();
+    }
+
+    @Test
     public void shouldDetectArrayContains() {
         workflowVerifier
                 .prepareRun(arrayContainsWf)
@@ -185,6 +200,20 @@ public class ArraysTest {
                     Assertions.assertThat(variableValue.getBool()).isTrue();
                 })
                 .start();
+    }
+
+    @Test
+    public void shouldRejectDynamicArraySelectorWithNonIntegerType() {
+        Workflow invalidWorkflow = new WorkflowImpl("invalid-dynamic-array-selector-wf", thread -> {
+            WfRunVariable array = thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L});
+            WfRunVariable selector = thread.declareStr("selector").withDefault("not-an-index");
+            WfRunVariable picked = thread.declareInt("picked");
+            picked.assign(array.get(selector));
+        });
+
+        assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
+                .matches(exn -> exn instanceof StatusRuntimeException
+                        && ((StatusRuntimeException) exn).getStatus().getCode() == Status.Code.INVALID_ARGUMENT);
     }
 
     @Test
@@ -350,6 +379,16 @@ public class ArraysTest {
             TaskNodeOutput produced = thread.execute("produce-array");
             arrVar.assign(produced);
             picked.assign(arrVar.get(1));
+        });
+    }
+
+    @LHWorkflow("array-dynamic-get-wf")
+    public Workflow buildArrayDynamicGetWf() {
+        return new WorkflowImpl("array-dynamic-get-wf", thread -> {
+            WfRunVariable arrVar = thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+            WfRunVariable index = thread.declareInt("index").withDefault(2L);
+            WfRunVariable picked = thread.declareInt("picked");
+            picked.assign(arrVar.get(index));
         });
     }
 

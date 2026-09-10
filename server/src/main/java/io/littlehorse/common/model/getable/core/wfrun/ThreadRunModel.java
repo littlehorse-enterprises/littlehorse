@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -28,6 +29,7 @@ import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
 import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
@@ -39,6 +41,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructFieldValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.MapBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
@@ -380,6 +383,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
         trigger.setClaimed(true);
+
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -458,6 +462,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
+
+        if (wfRun.getThreadRunQueue().contains(number)) {
+            haltReasons.add(reason);
+            setStatus(LHStatus.HALTED);
+            return;
+        }
 
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
@@ -660,13 +670,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
             for (int childId : childThreadIds) {
-                ThreadRunModel child = wfRun.getThreadRun(childId);
                 ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
                 hr.type = ReasonCase.PARENT_HALTED;
                 hr.parentHalted = new ParentHaltedModel();
                 hr.parentHalted.parentThreadId = number;
+                ThreadRunModel child = wfRun.getThreadRun(childId);
                 child.halt(hr);
-                if (child.getCurrentNodeRun().isInProgress()) {
+                if (!wfRun.getThreadRunQueue().contains(childId)
+                        && child.getCurrentNodeRun().isInProgress()) {
                     child.getCurrentNodeRun().maybeHalt(processorContext);
                 }
             }
@@ -921,6 +932,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             case STRUCT_BUILDER:
                 val = buildStructValue(assn, txnCache);
                 break;
+            case MAP_BUILDER:
+                val = buildMapValue(assn, txnCache);
+                break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
                 throw new IllegalStateException("Invalid WfSpec with un-set VariableAssignment.");
@@ -931,7 +945,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 val = val.jsonPath(assn.getJsonPath());
                 break;
             case LH_PATH:
-                val = val.get(assn.getLhPath());
+                val = val.get(assn.getLhPath(), assn.getLhPath().resolveDynamicSelectors(this, txnCache));
                 break;
             case PATH_NOT_SET:
         }
@@ -947,6 +961,42 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         struct.setInlineStruct(buildInlineStructValue(
                 assn.getStructBuilder().getValue(), assn.getStructBuilder().getStructDefId(), txnCache));
         return new VariableValueModel(struct);
+    }
+
+    private VariableValueModel buildMapValue(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        MapBuilderModel builder = assn.getMapBuilder();
+        List<MapModel.MapEntryModel> entries = new ArrayList<>();
+
+        for (MapBuilderModel.MapBuilderEntryModel entry : builder.getEntries()) {
+            VariableValueModel key = assignVariable(entry.getKey(), txnCache);
+            VariableValueModel value = assignVariable(entry.getValue(), txnCache);
+            // last-wins on duplicate keys: find existing entry with same key, replace; else append
+            boolean found = false;
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getKey().equals(key)) {
+                    entries.set(i, new MapModel.MapEntryModel(key, value));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                entries.add(new MapModel.MapEntryModel(key, value));
+            }
+        }
+
+        MapModel out = new MapModel();
+        out.getEntries().addAll(entries);
+        if (builder.getMapType() != null) {
+            out.setMapType(builder.getMapType());
+        } else if (!entries.isEmpty()) {
+            // Native Maps must always carry a concrete type; derive it from the entries so no
+            // untyped Map is ever created at runtime.
+            MapModel.MapEntryModel first = entries.get(0);
+            out.setMapType(new InlineMapDefModel(
+                    first.getKey().getTypeDefinition(), first.getValue().getTypeDefinition()));
+        }
+        return new VariableValueModel(out);
     }
 
     private InlineStructModel buildInlineStructValue(

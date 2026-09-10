@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableMutation;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
@@ -94,6 +95,14 @@ public class WfRunVariableImplTest {
     }
 
     @Test
+    void shouldRejectPutOnNonMapVariable() {
+        assertThrows(LHWfSpecBuilderException.class, () -> new WorkflowImpl("my-workflow", thread -> {
+                    thread.declareStr("not-a-map").put("key", 42L);
+                })
+                .compileWorkflow());
+    }
+
+    @Test
     void shouldDeclareMapWithCorrectTypeDefinition() {
         WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
             thread.declareMap("my-map", String.class, Long.class);
@@ -108,6 +117,32 @@ public class WfRunVariableImplTest {
         InlineMapDef mapDef = typeDef.getInlineMapDef();
         assertThat(mapDef.getKeyType().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(mapDef.getValueType().getPrimitiveType()).isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void shouldCompileMapPutAsPathBasedAssign() {
+        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
+            var map = thread.declareMap("my-map", String.class, Long.class);
+            var key = thread.declareStr("key");
+            map.put(key, 42L);
+        });
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("my-map"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getOperation()).isEqualTo(VariableMutationType.ASSIGN);
+        assertThat(mutation.hasLhsLhPath()).isTrue();
+        assertThat(mutation.getLhsLhPath().getPathList()).singleElement().satisfies(selector -> {
+            assertThat(selector.hasDynamic()).isTrue();
+            assertThat(selector.getDynamic().getVariableName()).isEqualTo("key");
+        });
+        assertThat(mutation.getRhsAssignment().getLiteralValue().getInt()).isEqualTo(42L);
     }
 
     @Test

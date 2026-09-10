@@ -67,16 +67,21 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="space-y-4">
+      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="min-w-0 space-y-4">
         <FormField
           label={'Custom WfRun Id'}
           as={Input}
           id="customWfRunId"
           type="text"
-          variableType={VariableType.STR}
+          typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
         />
         {wfSpec.parentWfSpec && (
-          <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
+          <FormField
+            label={'Parent WfRun Id'}
+            as={Input}
+            id="parentWfRunId"
+            typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
+          />
         )}
 
         {sortedVariables.map((variable: ThreadVarDef, index) => (

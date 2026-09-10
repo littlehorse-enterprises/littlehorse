@@ -28,12 +28,17 @@ type LHStructDefInfo struct {
 //     .NET's [LHStructField(masked: true)].
 //   - "-": skips the field entirely (not included in the StructDef).
 //
+// For field-level descriptions, use the separate `lhdesc` tag:
+//
+//	`lhdesc:"The user's primary contact email"`
+//
 // Examples:
 //
 //	`lh:"firstName"`          // explicit field name, no options
 //	`lh:"ssn,masked"`         // explicit field name + masked
 //	`lh:",masked"`            // default field name + masked
 //	`lh:"-"`                  // skip this field
+//	`lhdesc:"User email"`     // field description (separate tag)
 type lhTagInfo struct {
 	// name is the explicit field name from the tag (empty string means use fallback resolution).
 	name string
@@ -139,6 +144,11 @@ func buildInlineStructDef(t reflect.Type) (*lhproto.InlineStructDef, error) {
 		// Java's @LHStructField(masked = true) and .NET's [LHStructField(masked: true)].
 		if tagInfo.masked {
 			fieldDef.FieldType.Masked = true
+		}
+
+		// Read the optional `lhdesc` tag for a human-readable field description.
+		if desc := field.Tag.Get("lhdesc"); desc != "" {
+			fieldDef.Description = &desc
 		}
 
 		fields[fieldName] = fieldDef

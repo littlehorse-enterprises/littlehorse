@@ -157,6 +157,13 @@ public interface WorkflowThread {
     InlineLHStructBuilder buildInlineStruct();
 
     /**
+     * Creates a builder for a native Map value with dynamic keys and values.
+     * This is the Map analog of {@link #buildStruct(String)}.
+     * @return a Map builder
+     */
+    LHMapBuilder buildMap();
+
+    /**
      * Creates a variable of type INT in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.

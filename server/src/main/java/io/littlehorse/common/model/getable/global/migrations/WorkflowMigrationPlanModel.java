@@ -22,6 +22,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -62,7 +63,8 @@ public class WorkflowMigrationPlanModel extends MetadataGetable<WorkflowMigratio
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of();
+        return List.of(new GetableIndex<>(
+                List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), TagStorageType.LOCAL));
     }
 
     @Override
@@ -72,6 +74,9 @@ public class WorkflowMigrationPlanModel extends MetadataGetable<WorkflowMigratio
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
+        if (key.equals("wfSpecName")) {
+            return List.of(new IndexedField(key, oldWfSpecId.getName(), tagStorageType.orElseThrow()));
+        }
         return List.of();
     }
 

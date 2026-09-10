@@ -256,7 +256,9 @@ export function buildStructVariableDef(paramName: string, schema: ZodTypeAny): V
  * Returns all LH struct schemas referenced (transitively) by `schema`,
  * in dependency order (deepest first), including `schema` itself.
  *
- * Useful for registering nested struct dependencies in the right order.
+ * Prefer registering structs explicitly in an order you choose, dependencies
+ * first; automatic ordering hides the registration order from you, and the
+ * team no longer recommends it (Java has stopped showcasing its equivalent).
  */
 export function getStructDependencies(schema: ZodTypeAny): ZodTypeAny[] {
   const visited = new Set<string>()

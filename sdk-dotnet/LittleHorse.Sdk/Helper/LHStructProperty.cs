@@ -141,6 +141,12 @@ namespace LittleHorse.Sdk.Helper
         fieldDef.DefaultValue = defaultValue;
       }
 
+      var lhStructField = GetAnnotation<LHStructFieldAttribute>();
+      if (lhStructField != null && !string.IsNullOrWhiteSpace(lhStructField.Description))
+      {
+        fieldDef.Description = lhStructField.Description;
+      }
+
       return fieldDef;
     }
 

@@ -1,17 +1,27 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@LHStructDef("address")
+@LHStructDef(value = "address", description = "A physical address, including street, city, planet, and postal code.")
 public class Address {
+    @LHStructField(description = "The street number of the building.")
     private Integer houseNumber;
+
+    @LHStructField(description = "The name of the street.")
     private String street;
+
+    @LHStructField(description = "The city or municipality.")
     private String city;
+
+    @LHStructField(description = "The planet where the address is located.")
     private String planet;
+
+    @LHStructField(description = "The postal code for the location.")
     private Integer zipCode;
 
     public Address() {}

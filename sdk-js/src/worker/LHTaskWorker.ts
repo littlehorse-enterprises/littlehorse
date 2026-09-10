@@ -1,13 +1,21 @@
 import type { GrpcTransport } from '@protobuf-ts/grpc-transport'
-import { ReportTaskRun, ScheduledTask, PutStructDefRequest } from '../proto/service'
+import { ReportTaskRun, ScheduledTask, PutStructDefRequest, StructDefCompatibilityType } from '../proto/service'
+import { TypeDefinition, VariableValue } from '../proto/type_definition'
+import { LHTypeAdapterRegistry } from '../common/typeAdapters'
 import { Timestamp } from '../proto/google/protobuf/timestamp'
 import { TaskDefId } from '../proto/object_id'
 import { TaskStatus, LHErrorType } from '../proto/common_enums'
-import { LHConfig } from '../LHConfig'
+import { AccessTokenProvider, LHConfig } from '../LHConfig'
 import type { LHPublicClient } from '../client'
 import { WorkerContext } from './WorkerContext'
 import { extractTaskArgs, toVariableValue } from './variableMapping'
-import { toStructVariableValue, getStructName, zodToVariableDefs } from './zodSchema'
+import {
+  toStructVariableValue,
+  getStructName,
+  zodToVariableDefs,
+  zodToTypeDef,
+  buildPutStructDefRequest,
+} from './zodSchema'
 import { randomBytes } from 'crypto'
 import { type ZodTypeAny } from 'zod'
 
@@ -20,6 +28,28 @@ export type TaskFunction = (...args: any[]) => any | Promise<any>
 const HEARTBEAT_INTERVAL_MS = 15_000
 const REPORT_TASK_MAX_RETRIES = 5
 const REPORT_TASK_RETRY_DELAY_MS = 2_000
+const CLOSE_DRAIN_TIMEOUT_MS = 30_000
+
+/** Why a worker is (un)healthy — mirrors Java's LHTaskWorkerHealthReason. */
+export enum LHTaskWorkerHealthReason {
+  HEALTHY = 'HEALTHY',
+  /** start() has not been called, or close() already ran. */
+  NOT_RUNNING = 'NOT_RUNNING',
+  /** Running, but not connected to any server host. */
+  NO_CONNECTIONS = 'NO_CONNECTIONS',
+  /** The server reported the cluster is not healthy (mid-rebalance). */
+  SERVER_REBALANCING = 'SERVER_REBALANCING',
+  /** The worker's own registration call is failing. */
+  UNHEALTHY = 'UNHEALTHY',
+}
+
+/** Health snapshot of a task worker — mirrors Java's LHTaskWorkerHealth. */
+export interface LHTaskWorkerHealth {
+  healthy: boolean
+  reason: LHTaskWorkerHealthReason
+  /** Number of server hosts this worker is currently polling. */
+  connectedHosts: number
+}
 
 /**
  * Represents a connection to a single LH Server host for polling tasks.
@@ -32,6 +62,16 @@ class ServerConnection {
   private readonly transport: GrpcTransport
   private readonly client: LHPublicClient
   private pollPromise: Promise<void> | undefined
+  private pollAbort: AbortController | undefined
+  private inflight = 0
+  /** True while we are deliberately not asking for work (at capacity). */
+  private awaitingCapacity = false
+  /**
+   * The CURRENT stream's request sender. Task-completion callbacks resume
+   * through this instead of their own generation's closure, so a task started
+   * by a dead stream can never consume the wakeup and strand a live one.
+   */
+  private resume: (() => void) | undefined
 
   constructor(
     host: string,
@@ -41,12 +81,16 @@ class ServerConnection {
     private readonly taskFunction: TaskFunction,
     private readonly taskWorkerVersion: string | undefined,
     private readonly config: LHConfig,
-    private readonly outputSchema?: ZodTypeAny
+    private readonly maxInflight: number,
+    private readonly outputSchema?: ZodTypeAny,
+    private readonly tokenProvider?: AccessTokenProvider
   ) {
     this.host = host
     this.port = port
     this.transport = config.createTransport(host, port)
-    this.client = config.createClientForTransport(this.transport)
+    // Unary calls (reportTask, checkpoints) mint a fresh token per call, and
+    // doPoll mints one per stream, so token expiry never strands a connection.
+    this.client = config.createClientForTransport(this.transport, tokenProvider)
   }
 
   get hostKey(): string {
@@ -67,10 +111,25 @@ class ServerConnection {
     this.pollPromise = this.pollLoop()
   }
 
-  async close(): Promise<void> {
+  /** Number of tasks currently executing on this connection. */
+  getInflightCount(): number {
+    return this.inflight
+  }
+
+  async close(drainTimeoutMs = CLOSE_DRAIN_TIMEOUT_MS): Promise<void> {
     this.running = false
+    // Aborting the in-flight poll call is what actually unblocks the response
+    // iterator: without it, `for await (call.responses)` waits forever for a
+    // task that will never arrive and close() never returns.
+    this.pollAbort?.abort()
     if (this.pollPromise) {
       await this.pollPromise.catch(() => {})
+    }
+    // Let tasks that were already handed to us finish and report before the
+    // transport goes away, so results aren't lost on shutdown.
+    const deadline = Date.now() + drainTimeoutMs
+    while (this.inflight > 0 && Date.now() < deadline) {
+      await sleep(10)
     }
     this.transport.close()
   }
@@ -90,18 +149,27 @@ class ServerConnection {
   }
 
   private async doPoll(): Promise<void> {
-    const call = this.client.pollTask()
+    this.awaitingCapacity = false
+    this.pollAbort = new AbortController()
+    const token = await this.tokenProvider?.()
+    const call = this.client.pollTask({
+      abort: this.pollAbort.signal,
+      ...(token !== undefined && { meta: { authorization: `Bearer ${token}` } }),
+    })
 
     const sendRequest = () => {
       if (!this.running) return
       // Flow control: request the next task. We only ask for more work after
       // the previous response has been received and dispatched.
-      call.requests.send({
-        taskDefId: this.taskDefId,
-        clientId: this.clientId,
-        taskWorkerVersion: this.taskWorkerVersion,
-      }).catch(() => {})
+      call.requests
+        .send({
+          taskDefId: this.taskDefId,
+          clientId: this.clientId,
+          taskWorkerVersion: this.taskWorkerVersion,
+        })
+        .catch(() => {})
     }
+    this.resume = sendRequest
 
     sendRequest()
 
@@ -109,11 +177,29 @@ class ServerConnection {
       for await (const response of call.responses) {
         if (response.result) {
           // Execute task in the background (don't await—allow the next poll)
-          this.executeAndReport(response.result).catch(err => {
-            console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
-          })
+          this.inflight++
+          this.executeAndReport(response.result)
+            .catch(err => {
+              console.error(`[LHTaskWorker] Unhandled error executing task:`, err)
+            })
+            .finally(() => {
+              this.inflight--
+              // A slot freed up; if we stopped asking for work, resume the
+              // CURRENT stream (this.resume), never this closure's own.
+              if (this.awaitingCapacity) {
+                this.awaitingCapacity = false
+                this.resume?.()
+              }
+            })
         }
         if (!this.running) break
+
+        // Back-pressure: stop requesting work while at capacity, rather than
+        // accepting tasks we cannot start. The `finally` above resumes.
+        if (this.inflight >= this.maxInflight) {
+          this.awaitingCapacity = true
+          continue
+        }
         sendRequest()
       }
     } finally {
@@ -131,11 +217,35 @@ class ServerConnection {
   }
 
   private async executeTask(task: ScheduledTask): Promise<ReportTaskRun> {
-    const context = new WorkerContext(task)
+    // The client is passed so checkpointed operations can talk to the server.
+    const typeAdapters = this.config.getTypeAdapterRegistry()
+    const context = new WorkerContext(task, this.client, typeAdapters)
     const now = Timestamp.now()
 
+    let args: unknown[]
     try {
-      const args = extractTaskArgs(task)
+      args = extractTaskArgs(task)
+    } catch (err: any) {
+      // Failing to map the server's input variables is distinct from the task
+      // itself failing: the server must not retry this as a technical error.
+      return {
+        taskRunId: task.taskRunId,
+        time: now,
+        status: TaskStatus.TASK_INPUT_VAR_SUB_ERROR,
+        attemptNumber: task.attemptNumber,
+        logOutput: undefined,
+        result: {
+          oneofKind: 'error',
+          error: {
+            type: LHErrorType.VAR_SUB_ERROR,
+            message: err?.message ?? String(err),
+          },
+        },
+        totalCheckpoints: 0,
+      }
+    }
+
+    try {
       // Append WorkerContext as the last argument
       args.push(context)
 
@@ -147,16 +257,14 @@ class ServerConnection {
         result !== undefined &&
         typeof result === 'object'
           ? toStructVariableValue(result as Record<string, unknown>, this.outputSchema)
-          : toVariableValue(result)
+          : toVariableValue(result, undefined, typeAdapters)
 
       return {
         taskRunId: task.taskRunId,
         time: now,
         status: TaskStatus.TASK_SUCCESS,
         attemptNumber: task.attemptNumber,
-        logOutput: context.getLogOutput()
-          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-          : undefined,
+        logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
         result: { oneofKind: 'output', output },
         totalCheckpoints: 0,
       }
@@ -168,15 +276,13 @@ class ServerConnection {
           time: now,
           status: TaskStatus.TASK_EXCEPTION,
           attemptNumber: task.attemptNumber,
-          logOutput: context.getLogOutput()
-            ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-            : undefined,
+          logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
           result: {
             oneofKind: 'exception',
             exception: {
               name: err.name,
               message: err.message,
-              content: err.content ? toVariableValue(err.content) : { value: { oneofKind: undefined } },
+              content: err.content ? exceptionContent(err.content, typeAdapters) : { value: { oneofKind: undefined } },
             },
           },
           totalCheckpoints: 0,
@@ -189,9 +295,7 @@ class ServerConnection {
         time: now,
         status: TaskStatus.TASK_FAILED,
         attemptNumber: task.attemptNumber,
-        logOutput: context.getLogOutput()
-          ? { value: { oneofKind: 'str', str: context.getLogOutput()! } }
-          : undefined,
+        logOutput: context.getLogOutput() ? { value: { oneofKind: 'str', str: context.getLogOutput()! } } : undefined,
         result: {
           oneofKind: 'error',
           error: {
@@ -216,6 +320,14 @@ class ServerConnection {
         console.error(`[LHTaskWorker] Failed to report task after all retries:`, err)
       }
     }
+  }
+}
+
+/** Thrown when a worker's signature disagrees with the server's TaskDef. */
+export class TaskSchemaMismatchError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'TaskSchemaMismatchError'
   }
 }
 
@@ -250,6 +362,9 @@ export interface LHTaskWorkerOptions {
    */
   inputVars: Record<string, ZodTypeAny>
 
+  /** Registered as the TaskDef's description (Java: the annotation's description). */
+  description?: string
+
   /**
    * When the task function returns a struct, provide the Zod schema
    * (created with `lhStruct()`) here so the worker can serialize the
@@ -268,6 +383,25 @@ export interface LHTaskWorkerOptions {
    * Optional version string for the task worker (recorded for debugging).
    */
   taskWorkerVersion?: string
+
+  /**
+   * How often to re-register with the server, which is also how quickly the
+   * worker notices a rebalance. Defaults to 15s.
+   */
+  heartbeatIntervalMs?: number
+
+  /**
+   * Maximum tasks executing concurrently per server connection. The worker
+   * stops requesting work while at capacity. Defaults to 10 (Java's
+   * equivalent knobs are workerThreads / inflightTasks).
+   */
+  maxInflightTasks?: number
+
+  /**
+   * Bearer token for a listener that requires one. Usually unnecessary: when
+   * the config has OAuth credentials the worker mints and refreshes its own.
+   */
+  accessToken?: string
 }
 
 /**
@@ -285,12 +419,29 @@ export interface LHTaskWorker {
   registerTaskDef(): Promise<void>
   /** Registers a StructDef on the LH server. */
   registerStructDef(request: PutStructDefRequest): Promise<void>
+  /**
+   * Checks the worker's declared input vars against the server's TaskDef and
+   * throws TaskSchemaMismatchError on a mismatch — Java: LHTaskWorker
+   * start-time validation.
+   */
+  validateTaskDef(): Promise<void>
+  /**
+   * Asks the server whether these schemas are valid evolutions, without
+   * registering them — Java: LHTaskWorker#validateStructDef(s).
+   */
+  validateStructDefs(schemas: ZodTypeAny[], compatibilityType?: StructDefCompatibilityType): Promise<void>
   /** Starts the task worker (heartbeat loop + poll streams). */
   start(): Promise<void>
   /** Cleanly shuts down the task worker. */
   close(): Promise<void>
   /** Returns whether the worker is currently running. */
   isRunning(): boolean
+  /** Returns whether the worker has been shut down (inverse of isRunning). */
+  isClosed(): boolean
+  /** Returns a health snapshot — Java: LHTaskWorker#healthStatus. */
+  healthStatus(): LHTaskWorkerHealth
+  /** Number of tasks currently executing across all connections. */
+  getInflightTaskCount(): number
 }
 
 /**
@@ -320,18 +471,42 @@ export function createTaskWorker(
   config: LHConfig,
   options: LHTaskWorkerOptions
 ): LHTaskWorker {
-  const taskWorkerId = `worker-${taskDefName}-${randomBytes(8).toString('hex')}`
-  const bootstrapClient = config.getClient()
+  // Config-provided ids/versions win; the random suffix keeps two workers for
+  // the same TaskDef on one host distinguishable.
+  const taskWorkerId = `${config.getTaskWorkerId()}-${taskDefName}-${randomBytes(4).toString('hex')}`
+  // Hold the bootstrap transport so close() can release it; config.getClient()
+  // would create one we could never shut down.
+  const bootstrapTransport = config.createTransport(config.getApiBootstrapHost()!, config.getApiBootstrapPort()!)
+
+  /**
+   * A credential for this worker's calls, if the listener needs one: an
+   * explicitly supplied token, else one minted from the configured OAuth
+   * provider (which caches and refreshes it).
+   */
+  async function currentAccessToken(): Promise<string | undefined> {
+    if (options.accessToken !== undefined) return options.accessToken
+    return config.getOauthProvider()?.getToken()
+  }
+
+  /** Bootstrap client carrying a current credential. */
+  async function bootstrap(): Promise<LHPublicClient> {
+    return config.createClientForTransport(bootstrapTransport, await currentAccessToken())
+  }
   const inputVars = zodToVariableDefs(options.inputVars)
   const outputSchema = options.outputSchema
-  const taskWorkerVersion = options.taskWorkerVersion
+  const taskWorkerVersion = options.taskWorkerVersion ?? config.getTaskWorkerVersion()
+  const maxInflightTasks = options.maxInflightTasks ?? config.getNumWorkerThreads()
   const connections = new Map<string, ServerConnection>()
   let running = false
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined
+  let lastHeartbeatFailed = false
+  let clusterHealthy = true
 
   async function heartbeat(): Promise<void> {
     try {
-      const response = await bootstrapClient.registerTaskWorker({
+      const response = await (
+        await bootstrap()
+      ).registerTaskWorker({
         taskWorkerId,
         taskDefId: { name: taskDefName },
       })
@@ -365,18 +540,25 @@ export function createTaskWorker(
             taskFunction,
             taskWorkerVersion,
             config,
-            outputSchema
+            maxInflightTasks,
+            outputSchema,
+            currentAccessToken
           )
           conn.start()
           connections.set(key, conn)
         }
       }
+      lastHeartbeatFailed = false
+      // The server tells us when the cluster itself is unhealthy (e.g. mid
+      // rebalance); Java surfaces the same signal via LHLivenessController.
+      clusterHealthy = response.isClusterHealthy ?? true
     } catch (err) {
+      lastHeartbeatFailed = true
       console.error('[LHTaskWorker] Failed to register with server:', err)
     }
   }
 
-  return {
+  const api: LHTaskWorker = {
     getTaskDefName(): string {
       return taskDefName
     },
@@ -387,7 +569,7 @@ export function createTaskWorker(
 
     async doesTaskDefExist(): Promise<boolean> {
       try {
-        await bootstrapClient.getTaskDef({ name: taskDefName })
+        await (await bootstrap()).getTaskDef({ name: taskDefName })
         return true
       } catch (err: any) {
         if (err?.code === 'NOT_FOUND') {
@@ -399,14 +581,23 @@ export function createTaskWorker(
 
     async registerTaskDef(): Promise<void> {
       try {
-        const result = await bootstrapClient.putTaskDef({
+        const result = await (
+          await bootstrap()
+        ).putTaskDef({
           name: taskDefName,
           inputVars,
+          // Java registers the output type from the task signature; the
+          // outputSchema option is the JS equivalent. Absent means void.
+          ...(outputSchema !== undefined && { returnType: { returnType: zodToTypeDef(outputSchema) } }),
+          ...(options.description !== undefined && { description: options.description }),
         })
         console.log(`[LHTaskWorker] Registered TaskDef: ${result.id?.name}`)
       } catch (err: any) {
         if (err?.code === 'ALREADY_EXISTS') {
-          console.log(`[LHTaskWorker] TaskDef '${taskDefName}' already exists, skipping registration.`)
+          // An existing TaskDef is fine only when it matches this worker's
+          // declared signature; validating surfaces drift instead of hiding it.
+          console.log(`[LHTaskWorker] TaskDef '${taskDefName}' already exists; validating against it.`)
+          await api.validateTaskDef()
         } else {
           throw err
         }
@@ -415,7 +606,7 @@ export function createTaskWorker(
 
     async registerStructDef(request: PutStructDefRequest): Promise<void> {
       try {
-        const result = await bootstrapClient.putStructDef(request)
+        const result = await (await bootstrap()).putStructDef(request)
         console.log(`[LHTaskWorker] Registered StructDef: ${result.id?.name} v${result.id?.version}`)
       } catch (err: any) {
         if (err?.code === 'ALREADY_EXISTS') {
@@ -426,8 +617,78 @@ export function createTaskWorker(
       }
     },
 
+    async validateTaskDef(): Promise<void> {
+      // Java does this inside start(): fetch the server's TaskDef and check
+      // the worker's declared inputs against it, so a signature mismatch
+      // fails immediately instead of on the first scheduled task.
+      let serverTaskDef
+      try {
+        serverTaskDef = await (await bootstrap()).getTaskDef({ name: taskDefName })
+      } catch (err: unknown) {
+        const code = (err as { code?: unknown })?.code
+        if (code === 'NOT_FOUND' || code === 5) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' does not exist on the server. Register it first (registerTaskDef()).`
+          )
+        }
+        throw err
+      }
+
+      const expected = serverTaskDef.inputVars
+      if (expected.length !== inputVars.length) {
+        throw new TaskSchemaMismatchError(
+          `TaskDef '${taskDefName}' expects ${expected.length} input var(s) ` +
+            `(${expected.map(v => v.name).join(', ') || 'none'}), but this worker declares ` +
+            `${inputVars.length} (${inputVars.map(v => v.name).join(', ') || 'none'}).`
+        )
+      }
+
+      for (let i = 0; i < expected.length; i++) {
+        const serverVar = expected[i]
+        const workerVar = inputVars[i]
+        if (serverVar.name !== workerVar.name) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' input var ${i} is named '${serverVar.name}', ` +
+              `but this worker declares '${workerVar.name}'.`
+          )
+        }
+        if (!TypeDefinition.equals(serverVar.typeDef, workerVar.typeDef)) {
+          throw new TaskSchemaMismatchError(
+            `TaskDef '${taskDefName}' input var '${serverVar.name}' has a different type on the server ` +
+              `than this worker declares.`
+          )
+        }
+      }
+    },
+
+    async validateStructDefs(
+      schemas: ZodTypeAny[],
+      compatibilityType: StructDefCompatibilityType = StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES
+    ): Promise<void> {
+      // Asks the server whether the schema *could* be registered, without
+      // registering it — Java: LHTaskWorker#validateStructDef(s).
+      for (const schema of schemas) {
+        const request = buildPutStructDefRequest(schema, compatibilityType)
+        const response = await (
+          await bootstrap()
+        ).validateStructDefEvolution({
+          structDefId: { name: request.name, version: 0 },
+          structDef: request.structDef,
+          compatibilityType,
+        })
+        if (!response.isValid) {
+          throw new Error(
+            `StructDef '${request.name}' is not a valid evolution under ${StructDefCompatibilityType[compatibilityType]}.`
+          )
+        }
+      }
+    },
+
     async start(): Promise<void> {
       if (running) return
+      // Fail fast on a partial OAuth trio; otherwise the heartbeat's catch
+      // would retry the misconfiguration forever while start() looks healthy.
+      config.isOauth()
       running = true
 
       console.log(`[LHTaskWorker] Starting worker for TaskDef '${taskDefName}' (id: ${taskWorkerId})`)
@@ -438,7 +699,7 @@ export function createTaskWorker(
         heartbeat().catch(err => {
           console.error('[LHTaskWorker] Heartbeat error:', err)
         })
-      }, HEARTBEAT_INTERVAL_MS)
+      }, options.heartbeatIntervalMs ?? HEARTBEAT_INTERVAL_MS)
     },
 
     async close(): Promise<void> {
@@ -458,14 +719,60 @@ export function createTaskWorker(
       }
       await Promise.all(closePromises)
       connections.clear()
+      bootstrapTransport.close()
     },
 
     isRunning(): boolean {
       return running
     },
+
+    isClosed(): boolean {
+      return !running
+    },
+
+    healthStatus(): LHTaskWorkerHealth {
+      const connectedHosts = [...connections.values()].filter(conn => conn.isRunning()).length
+      let reason = LHTaskWorkerHealthReason.HEALTHY
+      if (!running) {
+        reason = LHTaskWorkerHealthReason.NOT_RUNNING
+      } else if (!clusterHealthy) {
+        // Java checks cluster health before worker health, so a rebalancing
+        // cluster is reported as such rather than as a worker fault.
+        reason = LHTaskWorkerHealthReason.SERVER_REBALANCING
+      } else if (lastHeartbeatFailed) {
+        reason = LHTaskWorkerHealthReason.UNHEALTHY
+      } else if (connectedHosts === 0) {
+        reason = LHTaskWorkerHealthReason.NO_CONNECTIONS
+      }
+      return {
+        healthy: reason === LHTaskWorkerHealthReason.HEALTHY,
+        reason,
+        connectedHosts,
+      }
+    },
+
+    getInflightTaskCount(): number {
+      let total = 0
+      for (const conn of connections.values()) total += conn.getInflightCount()
+      return total
+    },
   }
+  return api
 }
 
 function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+/**
+ * Conversion must stay total here: this runs inside the TASK_EXCEPTION report
+ * path, and a throw would mean no report reaches the server at all. Falls back
+ * to the stringified content, like the pre-1.3 converter did for everything.
+ */
+function exceptionContent(content: unknown, typeAdapters?: LHTypeAdapterRegistry): VariableValue {
+  try {
+    return toVariableValue(content, undefined, typeAdapters)
+  } catch {
+    return { value: { oneofKind: 'str', str: String(content) } }
+  }
 }

@@ -35,6 +35,7 @@ import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -745,10 +746,12 @@ public class LHLibUtil {
      * Serializes a Java Map into a native LittleHorse MAP VariableValue.
      *
      * <p>Each entry's key and value are serialized independently. Use this method when you know
-     * the target is a native LH Map variable (as opposed to a JSON_OBJ).
+     * the target is a native LH Map variable (as opposed to a JSON_OBJ). The declared
+     * {@code mapType} is stamped onto the resulting Map so it always carries a concrete key/value
+     * type; native Maps may never be untyped.
      */
-    public static VariableValue objToVarValAsNativeMap(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
-            throws LHSerdeException {
+    public static VariableValue objToVarValAsNativeMap(
+            Object o, InlineMapDef mapType, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
         if (o == null) {
             return VariableValue.newBuilder().build();
         }
@@ -760,13 +763,16 @@ public class LHLibUtil {
         }
 
         return VariableValue.newBuilder()
-                .setMap(serializeToNativeMap((Map<?, ?>) o, typeAdapterRegistry))
+                .setMap(serializeToNativeMap((Map<?, ?>) o, mapType, typeAdapterRegistry))
                 .build();
     }
 
     private static io.littlehorse.sdk.common.proto.Map serializeToNativeMap(
-            Map<?, ?> map, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+            Map<?, ?> map, InlineMapDef mapType, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
         io.littlehorse.sdk.common.proto.Map.Builder out = io.littlehorse.sdk.common.proto.Map.newBuilder();
+        if (mapType != null) {
+            out.setMapType(mapType);
+        }
 
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             VariableValue key = objToVarVal(entry.getKey(), typeAdapterRegistry);

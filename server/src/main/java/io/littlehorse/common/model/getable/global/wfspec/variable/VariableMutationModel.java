@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -31,6 +32,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     private String lhsName;
     private String lhsJsonPath;
+    private LHPathModel lhsLhPath;
     private VariableMutationType operation;
 
     private RhsValueCase rhsValueType;
@@ -49,6 +51,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 VariableMutation.newBuilder().setLhsName(lhsName).setOperation(operation);
 
         if (lhsJsonPath != null) out.setLhsJsonPath(lhsJsonPath);
+        if (lhsLhPath != null) out.setLhsLhPath(lhsLhPath.toProto());
 
         switch (rhsValueType) {
             case LITERAL_VALUE:
@@ -72,6 +75,9 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         VariableMutation p = (VariableMutation) proto;
         lhsName = p.getLhsName();
         if (p.hasLhsJsonPath()) lhsJsonPath = p.getLhsJsonPath();
+        if (p.hasLhsLhPath()) {
+            lhsLhPath = LHPathModel.fromProto(p.getLhsLhPath(), context);
+        }
         operation = p.getOperation();
 
         rhsValueType = p.getRhsValueCase();
@@ -134,7 +140,9 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                     out = out.jsonPath(nodeOutputSource.getJsonPath());
                     break;
                 case LH_PATH:
-                    out = out.get(nodeOutputSource.getLhPath());
+                    out = out.get(
+                            nodeOutputSource.getLhPath(),
+                            nodeOutputSource.getLhPath().resolveDynamicSelectors(thread, txnCache));
                     break;
                 case PATH_NOT_SET:
             }
@@ -171,6 +179,18 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
                 currentLhs.updateJsonViaJsonPath(lhsJsonPath, thingToPut.getVal());
                 txnCache.put(lhsName, currentLhs);
+            } else if (lhsLhPath != null) {
+                Map<LHPath.Selector, VariableValueModel> resolvedSelectors =
+                        lhsLhPath.resolveDynamicSelectors(thread, txnCache);
+                VariableValueModel currentLhs = getVarValFromThreadInTxn(lhsName, thread, txnCache);
+                VariableValueModel lhsAtPath = currentLhs.get(lhsLhPath, resolvedSelectors);
+                Optional<TypeDefinitionModel> declaredPathType = lhsRealType.getNestedType(
+                        lhsLhPath, thread.getExecutionContext().metadataManager());
+                TypeDefinitionModel typeToCoerceTo = declaredPathType.orElse(lhsAtPath.getTypeDefinition());
+                VariableValueModel thingToPut = lhsAtPath.operate(operation, rhsVal, typeToCoerceTo);
+
+                currentLhs.updateViaLhPath(lhsLhPath, resolvedSelectors, thingToPut);
+                txnCache.put(lhsName, currentLhs);
             } else {
                 TypeDefinitionModel typeToCoerceTo = lhsRealType;
                 txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
@@ -186,6 +206,11 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
     public Set<String> getRequiredVariableNames() {
         Set<String> out = new HashSet<>();
         out.add(lhsName);
+        if (lhsLhPath != null) {
+            for (VariableAssignmentModel dynamicAssignment : lhsLhPath.getDynamicAssignments()) {
+                out.addAll(dynamicAssignment.getRequiredWfRunVarNames());
+            }
+        }
         if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT) {
             out.addAll(rhsRhsAssignment.getRequiredWfRunVarNames());
         }
@@ -194,12 +219,29 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidMutationException {
+        if (lhsJsonPath != null && lhsLhPath != null) {
+            throw new InvalidMutationException("Cannot set both a JSON path and LH Path on one LHS mutation");
+        }
+
         if (lhsJsonPath != null) {
             // Can't validate anything, sorry.
             return;
         }
 
         TypeDefinitionModel lhsType = threadSpec.getVarDef(lhsName).getVarDef().getTypeDef();
+
+        if (lhsLhPath != null) {
+            try {
+                lhsLhPath.validateDynamicSelectors(lhsType, manager, threadSpec);
+                Optional<TypeDefinitionModel> nestedType = lhsType.getNestedType(lhsLhPath, manager);
+                if (nestedType.isEmpty()) {
+                    return;
+                }
+                lhsType = nestedType.get();
+            } catch (InvalidExpressionException exn) {
+                throw new InvalidMutationException("Mutation of variable " + lhsName + " invalid: " + exn.getMessage());
+            }
+        }
 
         try {
             Optional<TypeDefinitionModel> rhsType =

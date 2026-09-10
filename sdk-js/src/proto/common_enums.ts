@@ -315,5 +315,9 @@ export enum MetricWindowType {
     /**
      * @generated from protobuf enum value: NODE_METRIC = 3;
      */
-    NODE_METRIC = 3
+    NODE_METRIC = 3,
+    /**
+     * @generated from protobuf enum value: QUOTA_USAGE_METRIC = 4;
+     */
+    QUOTA_USAGE_METRIC = 4
 }

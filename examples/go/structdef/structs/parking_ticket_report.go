@@ -7,7 +7,7 @@ import (
 )
 
 const ParkingTicketReportStructDefName string = "parking-ticket-report"
-const ParkingTicketReportStructDefDescription string = "ParkingTicketReport represents a parking ticket report for a vehicle."
+const ParkingTicketReportStructDefDescription string = "A parking ticket report capturing vehicle details and license plate at the time of the violation."
 
 // ParkingTicketReport represents a parking ticket report for a vehicle.
 type ParkingTicketReport struct {

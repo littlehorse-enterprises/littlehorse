@@ -1032,9 +1032,13 @@ private static final long serialVersionUID = 0L;
   private io.littlehorse.sdk.common.proto.InlineMapDef mapType_;
   /**
    * <pre>
-   * Optional, authoritative key/value types for this map.
+   * Authoritative key/value types for this map.
    * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-   * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+   *
+   * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+   * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+   * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+   * always carry a concrete key/value type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1046,9 +1050,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional, authoritative key/value types for this map.
+   * Authoritative key/value types for this map.
    * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-   * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+   *
+   * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+   * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+   * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+   * always carry a concrete key/value type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1060,9 +1068,13 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Optional, authoritative key/value types for this map.
+   * Authoritative key/value types for this map.
    * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-   * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+   *
+   * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+   * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+   * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+   * always carry a concrete key/value type.
    * </pre>
    *
    * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1853,9 +1865,13 @@ private static final long serialVersionUID = 0L;
         io.littlehorse.sdk.common.proto.InlineMapDef, io.littlehorse.sdk.common.proto.InlineMapDef.Builder, io.littlehorse.sdk.common.proto.InlineMapDefOrBuilder> mapTypeBuilder_;
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1866,9 +1882,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1883,9 +1903,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1905,9 +1929,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1925,9 +1953,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1952,9 +1984,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1971,9 +2007,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -1985,9 +2025,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>
@@ -2002,9 +2046,13 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      * </pre>
      *
      * <code>optional .littlehorse.InlineMapDef map_type = 2;</code>

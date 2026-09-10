@@ -2013,7 +2013,10 @@ class WorkflowThread:
         self.add_node("complete", exit_node)
 
     def run_wf(
-        self, wf_spec_name: str, inputs: Optional[dict[str, Any]] = None
+        self,
+        wf_spec_name: str,
+        inputs: Optional[dict[str, Any]] = None,
+        child_id: Optional[Any] = None,
     ) -> SpawnedChildWf:
         self._check_if_active()
         inputs = {} if inputs is None else inputs
@@ -2024,6 +2027,7 @@ class WorkflowThread:
             inputs={
                 key: to_variable_assignment(value) for key, value in inputs.items()
             },
+            child_id=to_variable_assignment(child_id) if child_id is not None else None,
         )
         node_name = self.add_node("run-" + wf_spec_name, run_child_wf_node)
         return SpawnedChildWf(node_name, self)

@@ -387,6 +387,12 @@ export interface RunChildWfNode {
     inputs: {
         [key: string]: VariableAssignment;
     };
+    /**
+     * Optional assignment resolving to the ID for the child WfRun.
+     *
+     * @generated from protobuf field: littlehorse.VariableAssignment child_id = 5
+     */
+    childId?: VariableAssignment;
 }
 /**
  * This node acceptss a WfRunId and waits for the specified WfRun to complete.
@@ -1889,7 +1895,8 @@ class RunChildWfNode$Type extends MessageType<RunChildWfNode> {
             { no: 1, name: "wf_spec_name", kind: "scalar", oneof: "wfSpec", T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "wf_spec_var", kind: "message", oneof: "wfSpec", T: () => VariableAssignment },
             { no: 2, name: "major_version", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 3, name: "inputs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableAssignment } }
+            { no: 3, name: "inputs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableAssignment } },
+            { no: 5, name: "child_id", kind: "message", T: () => VariableAssignment }
         ]);
     }
     create(value?: PartialMessage<RunChildWfNode>): RunChildWfNode {
@@ -1923,6 +1930,9 @@ class RunChildWfNode$Type extends MessageType<RunChildWfNode> {
                     break;
                 case /* map<string, littlehorse.VariableAssignment> inputs */ 3:
                     this.binaryReadMap3(message.inputs, reader, options);
+                    break;
+                case /* littlehorse.VariableAssignment child_id */ 5:
+                    message.childId = VariableAssignment.internalBinaryRead(reader, reader.uint32(), options, message.childId);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1968,6 +1978,9 @@ class RunChildWfNode$Type extends MessageType<RunChildWfNode> {
         /* littlehorse.VariableAssignment wf_spec_var = 4; */
         if (message.wfSpec.oneofKind === "wfSpecVar")
             VariableAssignment.internalBinaryWrite(message.wfSpec.wfSpecVar, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.VariableAssignment child_id = 5; */
+        if (message.childId)
+            VariableAssignment.internalBinaryWrite(message.childId, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

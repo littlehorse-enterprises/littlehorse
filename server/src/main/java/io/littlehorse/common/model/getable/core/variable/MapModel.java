@@ -78,7 +78,21 @@ public final class MapModel extends LHSerializable<Map> {
         }
         if (p.hasMapType()) {
             this.mapType = InlineMapDefModel.fromProto(p.getMapType(), InlineMapDefModel.class, context);
+        } else {
+            // Migrate legacy untyped maps on read: infer the type from the entries so that no
+            // untyped MapModel ever survives deserialization. Empty legacy maps have no entries to
+            // infer from and are left untyped until pinned on assignment to a typed variable.
+            this.mapType = inferMapTypeFromEntries();
         }
+    }
+
+    private InlineMapDefModel inferMapTypeFromEntries() {
+        if (entries.isEmpty()) {
+            return null;
+        }
+        MapEntryModel first = entries.get(0);
+        return new InlineMapDefModel(
+                first.getKey().getTypeDefinition(), first.getValue().getTypeDefinition());
     }
 
     public InlineMapDefModel getInlineMapDef() {

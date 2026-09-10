@@ -3,7 +3,8 @@ import { VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto
 import { CircleAlert } from 'lucide-react'
 import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import FormLabel from './FormLabel'
+import VariableFieldHeader from './VariableFieldHeader'
+import { TypeDefinitionBadge } from './TypeDefinitionBadge'
 import { TimestampPicker } from './TimestampPicker'
 
 type TimestampVariableFieldProps = {
@@ -30,9 +31,11 @@ export const TimestampVariableField: FC<TimestampVariableFieldProps> = ({
 
   return (
     <Field>
-      <FormLabel
-        label={label}
-        variableType={VariableType.TIMESTAMP}
+      <VariableFieldHeader
+        name={label}
+        typeBadge={
+          <TypeDefinitionBadge typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.TIMESTAMP }} />
+        }
         accessLevel={accessLevel}
         required={protoRequired}
         masked={masked}

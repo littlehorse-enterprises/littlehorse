@@ -24,4 +24,51 @@ public interface InactiveThreadRunOrBuilder extends
    * <code>.littlehorse.ThreadRun thread_run = 1;</code>
    */
   io.littlehorse.sdk.common.proto.ThreadRunOrBuilder getThreadRunOrBuilder();
+
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return Whether the archived field is set.
+   */
+  boolean hasArchived();
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return The archived.
+   */
+  io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived();
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder();
+
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return Whether the queued field is set.
+   */
+  boolean hasQueued();
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return The queued.
+   */
+  io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued();
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   */
+  io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder();
+
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   * @return Whether the id field is set.
+   */
+  boolean hasId();
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   * @return The id.
+   */
+  io.littlehorse.sdk.common.proto.InactiveThreadRunId getId();
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder getIdOrBuilder();
+
+  io.littlehorse.sdk.common.proto.InactiveThreadRun.InactiveReasonCase getInactiveReasonCase();
 }

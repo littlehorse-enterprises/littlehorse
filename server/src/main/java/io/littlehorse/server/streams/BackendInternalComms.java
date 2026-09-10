@@ -812,8 +812,9 @@ public class BackendInternalComms implements Closeable {
                         ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             } else {
                 // search for global getables
-                return ByteString.copyFrom(ObjectIdModel.fromString(storeableKey.split("/")[1], idCls)
-                        .toBytes());
+                String objectIdStr = storeableKey.substring(storeableKey.indexOf('/') + 1);
+                return ByteString.copyFrom(
+                        ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             }
         } else {
             throw new RuntimeException("Impossible: unknown result type");

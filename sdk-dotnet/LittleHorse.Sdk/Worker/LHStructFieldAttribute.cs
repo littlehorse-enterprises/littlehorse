@@ -19,14 +19,21 @@ namespace LittleHorse.Sdk.Worker
         public bool Masked { get; }
 
         /// <summary>
+        /// Optional human-readable description of this field's purpose.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
         /// Creates a struct field attribute.
         /// </summary>
         /// <param name="name">Optional field name override.</param>
         /// <param name="masked">Whether the field should be masked.</param>
-        public LHStructFieldAttribute(string name = "", bool masked = false)
+        /// <param name="description">Optional description of the field's purpose.</param>
+        public LHStructFieldAttribute(string name = "", bool masked = false, string description = "")
         {
             Name = name;
             Masked = masked;
+            Description = description;
         }
     }
 }

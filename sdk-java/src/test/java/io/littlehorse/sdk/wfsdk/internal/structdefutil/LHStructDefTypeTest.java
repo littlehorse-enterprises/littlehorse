@@ -93,6 +93,15 @@ public class LHStructDefTypeTest {
         public String displayName;
     }
 
+    @LHStructDef("described-field-demo")
+    @Getter
+    class DescribedFieldDemo {
+        @LHStructField(description = "The user's primary contact email")
+        public String email;
+
+        public String name;
+    }
+
     @LHStructDef("boolean-field-annotation-demo")
     @Getter
     class BooleanFieldAnnotationDemo {
@@ -315,5 +324,16 @@ public class LHStructDefTypeTest {
         assertThatThrownBy(() -> new LHStructDefType(InvalidJsonArrHolder.class, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_ARR");
+    }
+
+    @Test
+    public void getInlineStructDefSetsDescriptionFromLHStructFieldAnnotation() {
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(DescribedFieldDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(actualInlineStructDef.getFieldsMap().get("email").getDescription())
+                .isEqualTo("The user's primary contact email");
+        assertThat(actualInlineStructDef.getFieldsMap().get("name").hasDescription())
+                .isFalse();
     }
 }

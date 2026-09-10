@@ -39,6 +39,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
 
     private String wfSpecName;
     private VariableAssignmentModel wfSpecVar;
+    private VariableAssignmentModel childId;
     private int majorVersion;
     private Map<String, VariableAssignmentModel> inputs = new HashMap<>();
 
@@ -55,6 +56,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else if (wfSpecVar != null) {
             out.setWfSpecVar(wfSpecVar.toProto());
         }
+        if (childId != null) out.setChildId(childId.toProto());
 
         for (Map.Entry<String, VariableAssignmentModel> inputVar : inputs.entrySet()) {
             out.putInputs(inputVar.getKey(), inputVar.getValue().toProto().build());
@@ -70,6 +72,9 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
             this.wfSpecName = p.getWfSpecName();
         } else if (p.hasWfSpecVar()) {
             this.wfSpecVar = VariableAssignmentModel.fromProto(p.getWfSpecVar(), ignored);
+        }
+        if (p.hasChildId()) {
+            this.childId = VariableAssignmentModel.fromProto(p.getChildId(), ignored);
         }
 
         for (Map.Entry<String, VariableAssignment> entry : p.getInputsMap().entrySet()) {
@@ -108,6 +113,9 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         } else {
             throw new InvalidNodeException("A valid WfSpec name must be specified", node);
         }
+        if (childId != null && !childId.canBeType(VariableType.STR, node.threadSpec)) {
+            throw new InvalidNodeException("Child WfRun ID must be a STR", node);
+        }
     }
 
     @Override
@@ -126,6 +134,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         for (VariableAssignmentModel assn : inputs.values()) {
             out.addAll(assn.getRequiredWfRunVarNames());
         }
+        if (childId != null) out.addAll(childId.getRequiredWfRunVarNames());
         return out;
     }
 
@@ -135,6 +144,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
         for (VariableAssignmentModel assignment : inputs.values()) {
             out.addAll(assignment.getRequiredNodeNames());
         }
+        if (childId != null) out.addAll(childId.getRequiredNodeNames());
         return out;
     }
 

@@ -99,13 +99,15 @@ export interface InlineArrayDef {
  */
 export interface InlineMapDef {
     /**
-     * Type definition for each key in the map. Must resolve to a primitive type.
+     * Type definition for each key in the map. Must resolve to a concrete primitive type.
+     * Wildcard/unset key types are not permitted.
      *
      * @generated from protobuf field: littlehorse.TypeDefinition key_type = 1
      */
     keyType?: TypeDefinition;
     /**
-     * Type definition for each value in the map.
+     * Type definition for each value in the map. Must be a concrete, non-JSON type.
+     * Wildcard/unset value types are not permitted, and JSON_OBJ/JSON_ARR values are rejected.
      *
      * @generated from protobuf field: littlehorse.TypeDefinition value_type = 2
      */
@@ -151,6 +153,12 @@ export interface StructFieldDef {
      * @generated from protobuf field: bool is_nullable = 3
      */
     isNullable: boolean;
+    /**
+     * Optional human-readable description of this field's purpose.
+     *
+     * @generated from protobuf field: optional string description = 4
+     */
+    description?: string;
 }
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -284,9 +292,13 @@ export interface Map {
      */
     entries: Map_Entry[];
     /**
-     * Optional, authoritative key/value types for this map.
+     * Authoritative key/value types for this map.
      * Stored alongside the entries for ease of access, mirroring `Array.element_type`.
-     * If absent, the types may be unknown and must be derived from entries or treated as wildcard.
+     *
+     * Native Maps are always typed: this field is `optional` only for wire-compatibility with
+     * Maps persisted before typing was enforced. When absent (legacy data), the server infers the
+     * type from the entries on read; empty legacy Maps are typed on assignment. New Maps must
+     * always carry a concrete key/value type.
      *
      * @generated from protobuf field: optional littlehorse.InlineMapDef map_type = 2
      */
@@ -733,7 +745,8 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
         super("littlehorse.StructFieldDef", [
             { no: 1, name: "field_type", kind: "message", T: () => TypeDefinition },
             { no: 2, name: "default_value", kind: "message", T: () => VariableValue },
-            { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
+            { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
+            { no: 4, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<StructFieldDef>): StructFieldDef {
@@ -757,6 +770,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
                 case /* bool is_nullable */ 3:
                     message.isNullable = reader.bool();
                     break;
+                case /* optional string description */ 4:
+                    message.description = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -778,6 +794,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
         /* bool is_nullable = 3; */
         if (message.isNullable !== false)
             writer.tag(3, WireType.Varint).bool(message.isNullable);
+        /* optional string description = 4; */
+        if (message.description !== undefined)
+            writer.tag(4, WireType.LengthDelimited).string(message.description);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

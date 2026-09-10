@@ -18,10 +18,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RequestQuotaManager {
 
     private final BackendInternalComms internalComms;
+    private final QuotaUsageReporter usageReporter;
     private final Map<String, QuotaState> quotaStates = new ConcurrentHashMap<>();
 
     public RequestQuotaManager(BackendInternalComms internalComms) {
+        this(internalComms, null);
+    }
+
+    public RequestQuotaManager(BackendInternalComms internalComms, QuotaUsageReporter usageReporter) {
         this.internalComms = internalComms;
+        this.usageReporter = usageReporter;
     }
 
     public void enforceOrThrow(RequestExecutionContext context) {
@@ -36,10 +42,14 @@ public class RequestQuotaManager {
 
         long retryDelayMs = 0L;
         if (tenantQuota != null) {
-            retryDelayMs = consumeAndGetDelay(tenantQuota, serverCount);
+            long delay = consumeAndGetDelay(tenantQuota, serverCount);
+            recordUsage(tenantQuota, delay);
+            retryDelayMs = delay;
         }
         if (principalQuota != null) {
-            retryDelayMs = Math.max(retryDelayMs, consumeAndGetDelay(principalQuota, serverCount));
+            long delay = consumeAndGetDelay(principalQuota, serverCount);
+            recordUsage(principalQuota, delay);
+            retryDelayMs = Math.max(retryDelayMs, delay);
         }
 
         if (retryDelayMs > 0) {
@@ -51,6 +61,12 @@ public class RequestQuotaManager {
         String key = quota.getObjectId().toString();
         QuotaState state = quotaStates.computeIfAbsent(key, k -> new QuotaState());
         return state.recordRequestAndCalculateDelay(quota, serverCount);
+    }
+
+    private void recordUsage(QuotaModel quota, long delayMs) {
+        if (usageReporter != null) {
+            usageReporter.record(quota.getObjectId(), delayMs > 0, delayMs);
+        }
     }
 
     private static Status resourceExhaustedStatus(long retryDelayMs) {

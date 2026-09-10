@@ -1,4 +1,4 @@
-import { ThreadVarDef, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { ThreadVarDef, TypeDefinition, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { formatTypeDefinition } from '@/app/utils'
@@ -6,12 +6,13 @@ import { Field, FieldError } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import { CircleAlert } from 'lucide-react'
 import FormField from './FormField'
-import FormLabel from './FormLabel'
+import VariableFieldHeader from './VariableFieldHeader'
+import { TypeDefinitionBadge } from './TypeDefinitionBadge'
 import { StructDefGroup } from './StructDefGroup'
 import { TimestampVariableField } from './TimestampVariableField'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
 
-type ContainerKind = 'inlineArrayDef' | 'inlineMapDef'
+type ContainerTypeDef = Extract<TypeDefinition['definedType'], { oneofKind: 'inlineArrayDef' | 'inlineMapDef' }>
 
 /**
  * Text input for Map/Array variables in the Execute WfRun form. The value is entered as the
@@ -20,23 +21,29 @@ type ContainerKind = 'inlineArrayDef' | 'inlineMapDef'
  */
 const ContainerVariableField: FC<{
   name: string
-  kind: ContainerKind
-  typeLabel: string
+  typeDef: ContainerTypeDef
   required?: boolean
   accessLevel?: WfRunVariableAccessLevel
   masked?: boolean
-}> = ({ name, kind, typeLabel, required, accessLevel, masked }) => {
+}> = ({ name, typeDef, required, accessLevel, masked }) => {
   const {
     register,
     formState: { errors },
   } = useFormContext()
 
-  const wantsObject = kind === 'inlineMapDef'
+  const wantsObject = typeDef.oneofKind === 'inlineMapDef'
+  const typeLabel = formatTypeDefinition(typeDef)
   const placeholder = wantsObject ? '{ "key": value }' : '[ value, … ]'
 
   return (
     <Field>
-      <FormLabel label={name} typeLabel={typeLabel} accessLevel={accessLevel} required={required} masked={masked} />
+      <VariableFieldHeader
+        name={name}
+        typeBadge={<TypeDefinitionBadge typeDef={typeDef} />}
+        accessLevel={accessLevel}
+        required={required}
+        masked={masked}
+      />
       <Textarea
         id={name}
         placeholder={placeholder}
@@ -87,8 +94,8 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
 
   if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) {
     return (
-      <FormLabel
-        label={name}
+      <VariableFieldHeader
+        name={name}
         accessLevel={variable.accessLevel}
         required={variable.required}
         masked={varDef.typeDef?.masked}
@@ -122,7 +129,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         protoRequired={variable.required}
         formRequired={variable.required}
         accessLevel={variable.accessLevel}
-        variableType={definedType.primitiveType}
+        typeDef={definedType}
         masked={varDef.typeDef?.masked}
       />
     )
@@ -134,6 +141,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         structDefId={definedType.structDefId}
         name={name}
         required={variable.required}
+        accessLevel={variable.accessLevel}
         masked={varDef.typeDef?.masked}
         defaultValue={varDef.defaultValue}
       />
@@ -144,8 +152,7 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     return (
       <ContainerVariableField
         name={name}
-        kind={definedType.oneofKind}
-        typeLabel={formatTypeDefinition(definedType)}
+        typeDef={definedType}
         required={variable.required}
         accessLevel={variable.accessLevel}
         masked={varDef.typeDef?.masked}

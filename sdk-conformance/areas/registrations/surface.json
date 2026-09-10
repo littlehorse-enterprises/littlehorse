@@ -1,0 +1,14 @@
+{
+  "capabilities": [
+    "ExternalEventNodeOutput#registeredAs",
+    "ExternalEventNodeOutput#withCorrelatedEventConfig",
+    "ThrowEventNodeOutput#registeredAs",
+    "InterruptHandler#withEventType",
+    "Workflow#getExternalEventDefsToRegister",
+    "Workflow#getWorkflowEventDefsToRegister",
+    "Workflow#getRequiredTaskDefNames",
+    "Workflow#getRequiredExternalEventDefNames",
+    "Workflow#getRequiredChildWfSpecNames",
+    "Workflow#getRequiredWorkflowEventDefNames"
+  ]
+}

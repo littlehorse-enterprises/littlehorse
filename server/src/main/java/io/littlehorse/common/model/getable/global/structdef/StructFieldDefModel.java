@@ -24,6 +24,9 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     private boolean isNullable;
 
+    @Getter
+    private String description;
+
     @Override
     public StructFieldDef.Builder toProto() {
         StructFieldDef.Builder out = StructFieldDef.newBuilder()
@@ -32,6 +35,10 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
         if (defaultValue != null) {
             out.setDefaultValue(defaultValue.toProto());
+        }
+
+        if (description != null && !description.isBlank()) {
+            out.setDescription(description);
         }
 
         return out;
@@ -45,6 +52,10 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
         if (proto.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
+        }
+
+        if (proto.hasDescription()) {
+            description = proto.getDescription();
         }
     }
 

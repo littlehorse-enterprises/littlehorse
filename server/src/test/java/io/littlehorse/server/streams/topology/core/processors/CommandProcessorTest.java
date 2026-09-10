@@ -26,10 +26,12 @@ import io.littlehorse.server.streams.stores.PartitionLocalBuffer;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
+import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.lang.reflect.Field;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +41,8 @@ import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.Stores;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,6 +90,22 @@ public class CommandProcessorTest {
         commandProcessor = new CommandProcessor(config, server, metadataCache, taskQueueManager, mock(), mock());
         nativeInMemoryStore.init(mockProcessorContext.getStateStoreContext(), nativeInMemoryStore);
         globalInMemoryStore.init(mockProcessorContext.getStateStoreContext(), globalInMemoryStore);
+        // init() spawns the per-partition background worker, which reads through this provider.
+        // Resolved lazily: TestCoreProcessorContext re-registers its own stores into the mock
+        // context, and the worker must see the same ones the processor writes to.
+        CoreStoreProvider coreStoreProvider = mock();
+        when(coreStoreProvider.nativeCoreStore(anyInt()))
+                .thenAnswer(invocation -> mockProcessorContext.getStateStore(ServerTopology.CORE_STORE));
+        lenient()
+                .when(coreStoreProvider.getNativeGlobalStore())
+                .thenAnswer(invocation -> mockProcessorContext.getStateStore(ServerTopology.GLOBAL_METADATA_STORE));
+        when(server.getCoreStoreProvider()).thenReturn(coreStoreProvider);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        // Stops the background worker; without this each test leaks a thread for the whole suite.
+        commandProcessor.close();
     }
 
     @Test
@@ -122,7 +142,13 @@ public class CommandProcessorTest {
         defaultStore.put(scheduledTask);
         clusterStore.put(new StoredGetable<>(new TenantModel("my-tenant")));
         commandProcessor.init(mockProcessorContext);
-        verify(server, times(2)).onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any());
+        // Rehydration now runs on the background worker instead of blocking init(), so the offers
+        // arrive shortly after rather than before init() returns.
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(5))
+                .pollInterval(Duration.ofMillis(10))
+                .untilAsserted(() -> verify(server, times(2))
+                        .onTaskScheduled(any(), eq(scheduledTask.getTaskDefId()), any(), any()));
     }
 
     @Test
@@ -136,11 +162,8 @@ public class CommandProcessorTest {
         metricWindow.incrementCount("started");
         getMetricWindows().put(metricWindow);
 
-        // Force the flusher into MEMORY mode by triggering a first punctuation (catch-up with empty store)
-        mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
-        mockProcessorContext.resetForwards();
-
-        // Now punctuate again — this time it reads from memory
+        // There is now a single punctuator, and the historical replay it used to have to run first
+        // lives on the background worker, so one tick is enough to flush the in-memory window.
         mockProcessorContext.scheduledPunctuators().get(0).getPunctuator().punctuate(System.currentTimeMillis());
 
         assertThat(mockProcessorContext.forwarded()).hasSize(2);

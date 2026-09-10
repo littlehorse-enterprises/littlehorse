@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ["1.24", "1.25", "1.26"]
+        go-version: ["1.25", "1.26"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -49,6 +49,88 @@ jobs:
 
       - name: Tests
         run: go test ./sdk-go/...
+
+  tests-sdk-js:
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
+      - name: Install Dependencies
+        working-directory: ./sdk-js
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate Formatting
+        working-directory: ./sdk-js
+        run: pnpm run lint
+
+      - name: Build
+        working-directory: ./sdk-js
+        run: pnpm run build && pnpm run build:conformance
+
+      - name: Tests
+        working-directory: ./sdk-js
+        run: pnpm test
+
+  conformance:
+    # Report-only for now: the suite publishes evidence and must not gate
+    # anyone's merge until teams opt in.
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # full history: the runner stamps results with the last commit
+          # that touched sdk-conformance/areas, which a shallow clone hides
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: "corretto"
+          java-version: 25
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.19.0
+
+      - name: Build Testees
+        run: |
+          ./gradlew :sdk-java-conformance:installDist
+          pnpm --dir sdk-js install --frozen-lockfile
+          pnpm --dir sdk-js run build
+          pnpm --dir sdk-js run build:conformance
+
+      - name: Corpus Freshness
+        run: node sdk-conformance/runner/freshness.mjs
+
+      - name: Grade
+        run: node sdk-conformance/runner/run.mjs
+
+      - name: Matrix Staleness
+        run: node sdk-conformance/runner/matrix.mjs --check
+
+      - name: Random Dual-Compile
+        run: node sdk-conformance/runner/fuzz.mjs 50 16
 
   tests-sdk-python:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
@@ -134,7 +216,7 @@ jobs:
           java-version: 25
 
       - name: E2E Tests
-        run: ./gradlew server:e2e
+        run: ./gradlew server:e2e -x server:spotBugsMain -x server:spotBugsTest
 
   tests-server-e2e-slow:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}

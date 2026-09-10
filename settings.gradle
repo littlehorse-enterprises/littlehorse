@@ -56,3 +56,6 @@ include(
 }
 
 project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")
+
+include 'sdk-java-conformance'
+project(":sdk-java-conformance").projectDir = new File(rootProject.projectDir, "sdk-java/conformance")

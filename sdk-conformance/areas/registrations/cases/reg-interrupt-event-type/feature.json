@@ -1,0 +1,18 @@
+{
+  "externalEventDefs": [
+{
+  "name": "cancel-requested",
+  "contentType": {
+    "returnType": {
+      "primitiveType": "STR",
+      "masked": false
+    }
+  }
+}
+  ],
+  "workflowEventDefs": [  ],
+  "requiredTaskDefNames": ["cancel","main-step"],
+  "requiredExternalEventDefNames": ["cancel-requested"],
+  "requiredChildWfSpecNames": [],
+  "requiredWorkflowEventDefNames": []
+}

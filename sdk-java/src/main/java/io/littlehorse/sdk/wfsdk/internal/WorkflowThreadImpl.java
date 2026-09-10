@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -334,6 +335,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHMapBuilderImpl buildMap() {
+        return new LHMapBuilderImpl(this);
+    }
+
+    @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         parent.addTaskDefName(taskName);
@@ -401,6 +407,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         String nodeName = addNode("wait", NodeCase.WAIT_FOR_CHILD_WF, node.build());
         return new NodeOutputImpl(nodeName, this);
+    }
+
+    void setChildWfId(String sourceNodeName, Serializable childId) {
+        RunChildWfNode.Builder node = spec.getNodesOrThrow(sourceNodeName).getRunChildWf().toBuilder();
+        node.setChildId(assignVariable(childId));
+        spec.putNodes(sourceNodeName, Node.newBuilder().setRunChildWf(node).build());
     }
 
     private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
@@ -953,6 +965,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         if (lhs.getJsonPath() != null) {
             mutation.setLhsJsonPath(lhs.getJsonPath());
+        } else if (!lhs.getLhPath().isEmpty()) {
+            mutation.setLhsLhPath(LHPath.newBuilder().addAllPath(lhs.getLhPath()));
         }
 
         mutation.setRhsAssignment(assignVariable(rhs));

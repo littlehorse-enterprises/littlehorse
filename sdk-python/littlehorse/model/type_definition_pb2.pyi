@@ -75,14 +75,16 @@ class InlineStructDef(_message.Message):
     def __init__(self, fields: _Optional[_Mapping[str, StructFieldDef]] = ...) -> None: ...
 
 class StructFieldDef(_message.Message):
-    __slots__ = ("field_type", "default_value", "is_nullable")
+    __slots__ = ("field_type", "default_value", "is_nullable", "description")
     FIELD_TYPE_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_VALUE_FIELD_NUMBER: _ClassVar[int]
     IS_NULLABLE_FIELD_NUMBER: _ClassVar[int]
+    DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     field_type: TypeDefinition
     default_value: VariableValue
     is_nullable: bool
-    def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[VariableValue, _Mapping]] = ..., is_nullable: _Optional[bool] = ...) -> None: ...
+    description: str
+    def __init__(self, field_type: _Optional[_Union[TypeDefinition, _Mapping]] = ..., default_value: _Optional[_Union[VariableValue, _Mapping]] = ..., is_nullable: _Optional[bool] = ..., description: _Optional[str] = ...) -> None: ...
 
 class VariableValue(_message.Message):
     __slots__ = ("json_obj", "json_arr", "double", "bool", "str", "int", "bytes", "wf_run_id", "utc_timestamp", "struct", "array", "map")

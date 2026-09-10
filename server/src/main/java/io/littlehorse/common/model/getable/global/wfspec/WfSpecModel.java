@@ -426,10 +426,12 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
 
             if (currentVarDef != null) {
                 // We check that the current one is compatible with the old.
+                // Struct vars may evolve to a newer (superset) StructDef version.
                 // TODO: validate jsonpath stuff.
-                if (!oldDef.getVarDef()
+                if (!currentVarDef
+                        .getVarDef()
                         .getTypeDef()
-                        .equals(currentVarDef.getVarDef().getTypeDef())) {
+                        .isFrozenCompatibleWith(oldDef.getVarDef().getTypeDef())) {
                     throw new InvalidWfSpecException(
                             "Variable %s must be of type %s not %s as it was formerly declared a PUBLIC_VAR"
                                     .formatted(

@@ -133,5 +133,32 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
   io.littlehorse.sdk.common.proto.VariableAssignment getInputsOrThrow(
       java.lang.String key);
 
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   * @return Whether the childId field is set.
+   */
+  boolean hasChildId();
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   * @return The childId.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getChildId();
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getChildIdOrBuilder();
+
   io.littlehorse.sdk.common.proto.RunChildWfNode.WfSpecCase getWfSpecCase();
 }

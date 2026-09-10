@@ -62,15 +62,6 @@ message Quota {
     int32 write_requests_per_second = 3;
 }
 
-// Identifies a `Quota`.
-message QuotaId {
-    // The governed `Tenant`.
-    TenantId tenant = 1;
-
-    // If unset, the quota applies to all `Principal`s in the `Tenant`.
-    optional PrincipalId principal = 2;
-}
-
 // List of ACL's for LittleHorse
 message ServerACLs {
     // The associated ACL's

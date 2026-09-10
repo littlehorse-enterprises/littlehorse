@@ -2,50 +2,48 @@
 
 This proposal aims to support rudimentary request quotas for write requests:
 
-* Introduce a `Quota` Getable at the Tenant level, which may govern all `Principal`s or one specific `Principal`.
+* Introduce a cluster-scoped `Quota` Getable, which may govern all `Principal`s in one `Tenant` or one specific `Principal` in that `Tenant`.
 * The first dimension governed by a `Quota` is mutating unary GRPC calls (non-streaming Write requests).
 * `Quota`s are specified at a cluster-wide level and enforced via approximation at a per-server level.
-* Introduce a `QuotaUsageWindow` which is designed similarly to workflow metrics in order to allow users to track quota utilization.
+* Use existing tenant-scoped `MetricWindow` infrastructure to allow to allow users to track quota utilization.
 
 ## Public API's
 
 ### Administering Quotas
 
-We'll introduce a `Quota` object as a Tenant-scoped `Getable`. (For reasoning on why not Cluster-scoped, see the rejected alterantives).
+We'll introduce a `Quota` object as a cluster-scoped `Getable`. The `QuotaId` contains a `TenantId`, so each quota still governs requests for only one tenant. The cluster scope is required for the ACL model described below.
 
 ```proto
-// A Quota defines limits for resources used by a certain `Principal` or all `Principal`s
-// in a certain `Tenant`.
+// A Quota defines limits for requests made within a certain `Tenant`, optionally
+// scoped to one specific `Principal`.
 //
 // Note that Quotas are enforced per-server instance.
 message Quota {
-    // The Id of the `Quota`
+    // The ID of the `Quota`.
     QuotaId id = 1;
 
-    // This field controls the number of mutating (write) unary GRPC calls made
-    // per second in the cluster.
+    // The maximum number of mutating unary gRPC requests allowed per second.
     int32 write_requests_per_second = 2;
 }
 
 // Identifies a `Quota`
 message QuotaId {
-    // The governed `Tenant`
+    // The governed `Tenant`.
     TenantId tenant = 1;
 
     // If not set, the quota applies to all `Principal`s in the `Tenant`.
     optional PrincipalId principal = 2;
 }
 
-// Creates or Updates a `Quota`
+// Creates or updates a `Quota`.
 message PutQuotaRequest {
-    // The governed `Tenant`
+    // The governed `Tenant`.
     TenantId tenant = 1;
 
     // If not set, the quota applies to all `Principal`s in the `Tenant`.
     optional PrincipalId principal = 2;
 
-    // This field controls the number of mutating (write) unary GRPC calls made
-    // per second in the cluster.
+    // The maximum number of mutating unary gRPC requests allowed per second.
     int32 write_requests_per_second = 3;
 }
 
@@ -89,6 +87,8 @@ lhctl get quota my-tenant --principal obi-wan
 
 Because the `Quota` is a Cluster-scoped Getable (i.e. not accessed from within the Tenant but rather next ot `Tenant`s and `Principal`s in the store), to interact with it you must have _**global**_ `AclAction.WRITE_METADATA` over the resource `AclResource.ACL_QUOTA` (which is added in this proposal).
 
+This was motivated by multi-tenant deployments: A cluster administrator may grant users of a tenant `ALL_ACTIONS` over `ACL_ALL_RESOURCES` in that tenant's `per_tenant_acls`. That grants full access to the tenant's resources, but does not grant access to cluster-scoped `Quota`, `Tenant`, or `Principal` resources. If `Quota` were tenant-scoped, those users could change their own quota.
+
 ### Quotas Exceeded Path
 
 When a quota is exceeded, the server will respond with `RESOURCE_EXHAUSTED`. The server will respond with a `com.google.protobuf.RetryInfo` including information about how long to delay the retry. We'll edit the `LHConfig` in all five SDK's to include interceptors which transparently retry on `RESOURCE_EXHAUSTED` after the specified delay (see implementation details below).
@@ -100,45 +100,57 @@ When a quota is exceeded, the server will respond with `RESOURCE_EXHAUSTED`. The
 We'll allow users to track quota utilization. Importantly, applications within a `Tenant` will need to track their own quotas. To do this, we'll introduce metrics-style quota utilization windows which are aggregated every minute, just like other utilization metrics:
 
 ```proto
-// A QuotaUsageWindow tracks the utilization of a quota over a one-minute period.
-message QuotaUsageWindow {
-    // The id contains information about when the window started.
-    QuotaUsageWindowId id = 1;
-
+// Add this arm to the existing MetricWindow.metric oneof.
+message QuotaMetrics {
     // Total incoming requests received during this window, whether accepted
-    // or throttled..
-    int32 requests_observed = 2;
+    // or throttled. Only the count is populated.
+    CountAndTiming requests_observed = 1;
 
-    // Total requests throttled during this window.
-    int32 requests_throttled = 3;
-
-    // Total time that requests were throttled during this window.
-    int64 total_throttle_time_ms = 4;
+    // Total requests throttled during this window. The total throttle time is
+    // represented by total_latency_ms, as with other latency metrics.
+    CountAndTiming requests_throttled = 2;
 }
 
-// Id of a QuotaUsageWindow
-message QuotaUsageWindowId {
-    // The ID of the quota being tracked.
+// Add quota_id to the existing MetricWindowId.id oneof.
+message MetricWindowId {
+    oneof id {
+        WfSpecId wf_spec_id = 1;
+        TaskDefId task_def_id = 2;
+        UserTaskDefId user_task_def_id = 3;
+        QuotaId quota_id = 4;
+    }
+
+    // Metric windows are displayed within this tenant.
+    optional TenantId tenant_id = 6;
+
+    google.protobuf.Timestamp window_start = 7;
+    optional MetricWindowType metric_type = 8;
+}
+
+// Add this value to the existing MetricWindowType enum.
+enum MetricWindowType {
+    QUOTA_METRIC = 4;
+}
+
+// Add this arm to the existing MetricWindow.metric oneof.
+message MetricWindow {
+    MetricWindowId id = 1;
+
+    oneof metric {
+        WfMetrics workflow = 2;
+        TaskMetrics task = 3;
+        QuotaMetrics quota = 4;
+    }
+}
+
+message ListQuotaMetricsRequest {
     QuotaId quota_id = 1;
-
-    // The start time of the window being tracked.
-    google.protobuf.Timestamp start_time = 2;
+    optional google.protobuf.Timestamp window_start = 2;
+    optional google.protobuf.Timestamp window_end = 3;
 }
 
-// Request to list quota usage windows.
-message ListQuotaUsageWindowRequest {
-    // The id of the quota to inspect.
-    QuotaId quota_id = 1;
-
-    // The time of the last window (most recent) to look at.
-    google.protobuf.Timestamp last_window = 2;
-
-    // Number of windows to load
-    int32 num_windows = 3;
-}
-
-rpc ListQuotaUsageWindows(ListQuotaUsageWindowRequest) returns (QuotaUsageWindowList) {}
-rpc GetQuotaUsageWindow(QuotaUsageWindowId) returns (QuotaUsageWindow) {}
+rpc ListQuotaMetrics(ListQuotaMetricsRequest) returns (MetricsList) {}
+// Use the existing GetMetricWindow(MetricWindowId) RPC for a single window.
 ```
 
 Quota tracking is at most once: if a server crashes before the window closes, the data is not forwarded. This is because the quotas are calculated before sending a `Command` into Kafka (more details below in implementation section).
@@ -177,24 +189,23 @@ For example, let's assume 5 requests per window and each window is 500ms. Here's
 
 The amount of requests allowed per window in each server will be calculated as `quota.writes_per_second` / `num_servers`.
 
-### Forwarding `QuotaUsageWindow`s
+### Forwarding Quota Metric Windows
 
-Every minute, the `LHServerListener` will forward a `Command` to Kafka stating how many requests were observed, throttled, and for how long they were throttled in the past minute for each `QuotaId`. This `Command` will be aggregated per `Quota` and will be visible via the API described above.
+Every minute, the `LHServerListener` will forward a `Command` to Kafka stating how many requests were observed, how many were throttled, and the aggregate throttle latency in the past minute for each `QuotaId`. This `Command` will be aggregated into tenant-scoped `MetricWindow`s and will be visible via the API described above.
 
 In the case of a server crash, we will under-count the number of received requests.
 
-## Out of Scope
+## Scope Boundaries
 
-### Rejected Alternatives
+### Cluster Scope and Tenant Usage Metrics
 
-#### Quotas Outside `Tenants`
+The `Quota` resource is cluster-scoped because quota administration must remain outside tenant-level ACLs. In a multi-tenant deployment, a cluster administrator may grant users full access to a tenant with `ALL_ACTIONS` over `ACL_ALL_RESOURCES`. Tenant-level access does not include cluster-scoped `Quota`, `Tenant`, or `Principal` resources, so users cannot alter their own quota. Only principals with the corresponding global ACLs can create or modify those resources.
 
-In many deployments of LittleHorse, users have ACL's set for specific `Tenant`s only and administrators discourage people from using `global_acls`. However, users need to be able to easily see their own quota utilization. Therefore, making the `Quota` a Tenant-scoped object saves a ton of operational friction.
+Quota usage metrics are intentionally different: they are tenant-scoped Getables and are visible from within the governed tenant. This allows tenant users to monitor utilization without giving them permission to change the cluster-scoped quota configuration.
 
-The only use-case harmed by this is having a single application or person running requests in multiple `Tenant`s. However:
+Common pattern in mulittenant deployments: there's an administrator `Principal` who creates `Principal`s that live with (`ALL_ACTIONS`, `ACL_ALL_RESOURCES`) in their `per_tenant_acls`.
 
-* A human `Principal` with access to multiple `Tenant`s is highly unlikely to exceed a quota.
-* There are very few machine client use-cases in which the application accesses multiple `Tenant`s. In some of these cases, it's even desirable for the machine client to have different quotas in each `Tenant` that it accesses.
+We designed with this pattern in mind so that it's possible to easily create users / clients (`Principal`s) inside a certain `Tenant` without the users being able to alter their own quotas, assuming adversarial relationships between `Tenant`s.
 
 ### Future Work
 
@@ -203,6 +214,8 @@ Future work (out of scope for this proposal) will allow:
 #### Full Transparent Retries
 
 This proposal is the first time we're taking advantage of GRPC's built-in retry capability. In the future, we'll take advantage of GRPC client interceptors to add idempotence to allow fully safe transparent retries on the client side. This will require a major refactor of the `AsyncWaiters` class but will drastically improve reliability in the face of failures.
+
+THe "Full Transparent Retries" idea doesn't have anything to do with quotas but rather using GRPC's built-in retry capability to transparently handle transient errors (eg. `UNAVAILABLE`).
 
 #### Quota Rebalancing
 

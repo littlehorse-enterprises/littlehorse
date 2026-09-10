@@ -366,25 +366,38 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Validates that any InlineMapDef in this TypeDefinition has a primitive key type.
-     * Map keys must be primitive VariableTypes (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID).
-     * Non-primitive key types (STRUCT, ARRAY, MAP, JSON_OBJ, JSON_ARR, BYTES) are rejected.
+     * Validates that any InlineMapDef in this TypeDefinition is fully typed: its key type must be a
+     * concrete primitive VariableType (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID) and its value
+     * type must be concrete. Native Maps are a first-class LittleHorse type and may never carry
+     * JSON (JSON_OBJ / JSON_ARR) or wildcard/unset key or value types at any nesting depth.
      *
-     * @throws IllegalArgumentException if a map key type is not primitive.
+     * @throws IllegalArgumentException if a map key/value type is missing, wildcard, non-primitive
+     *     (for keys), or JSON.
      */
     public void validateMapKeyTypes() {
-        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
+            if (inlineMapDef == null) {
+                throw new IllegalArgumentException("Native Map is missing its key/value type definition");
+            }
             TypeDefinitionModel keyType = inlineMapDef.getKeyType();
-            if (keyType != null && !keyType.isNull() && !keyType.isPrimitive()) {
+            TypeDefinitionModel valueType = inlineMapDef.getValueType();
+
+            if (keyType == null || keyType.isNull()) {
+                throw new IllegalArgumentException("Native Map key type must be defined");
+            }
+            if (!keyType.isPrimitive()) {
                 throw new IllegalArgumentException(
                         "Map key type must be a primitive VariableType, but got: " + keyType);
             }
-            if (keyType != null) {
-                keyType.validateMapKeyTypes();
+
+            if (valueType == null || valueType.isNull()) {
+                throw new IllegalArgumentException("Native Map value type must be defined");
             }
-            if (inlineMapDef.getValueType() != null) {
-                inlineMapDef.getValueType().validateMapKeyTypes();
+            if (valueType.isJson()) {
+                throw new IllegalArgumentException(
+                        "Native Maps cannot contain JSON values; JSON is not an LH native type. Got: " + valueType);
             }
+            valueType.validateMapKeyTypes();
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && inlineArrayDef != null) {
             if (inlineArrayDef.getArrayType() != null) {
                 inlineArrayDef.getArrayType().validateMapKeyTypes();
@@ -487,7 +500,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
                     break;
                 case INLINE_ARRAY_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
                         throw new InvalidExpressionException(String.format(
                                 "Expected numeric index selector for Array type, got key selector '%s'",
                                 selector.getKey()));
@@ -495,9 +509,11 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
                 case INLINE_MAP_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
-                        throw new InvalidExpressionException(String.format(
-                                "Expected key selector for Map type, got index selector '%d'", selector.getIndex()));
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                        throw new InvalidExpressionException(
+                                "Expected key selector for Map type, got an unset selector");
                     }
                     currentTypeDef = currentTypeDef.getInlineMapDef().getValueType();
                     break;
@@ -622,6 +638,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case PRIMITIVE_TYPE:
                 return this.primitiveType == formerlyFrozen.primitiveType;
             case STRUCT_DEF_ID:
+                // Same struct; allow moving forward to a newer (superset) StructDef version.
                 return this.structDefId.getName().equals(formerlyFrozen.structDefId.getName())
                         && this.structDefId.getVersion() >= formerlyFrozen.structDefId.getVersion();
             case INLINE_ARRAY_DEF:

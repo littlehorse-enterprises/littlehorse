@@ -8,7 +8,7 @@ export const LoginButton: FC<Pick<ClientSafeProvider, 'id' | 'name'>> = ({ id, n
   const callbackUrl = searchParams.get('callbackUrl') || '/'
   return (
     <button
-      onClick={() => signIn(id, { callbackUrl })}
+      onClick={() => signIn(id, { callbackUrl }, { prompt: 'login' })}
       className="w-full rounded-md bg-blue-500 px-4 py-4 font-semibold text-white md:w-96 lg:w-96"
     >
       Login with {name}
