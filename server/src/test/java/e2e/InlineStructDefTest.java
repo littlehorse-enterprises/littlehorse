@@ -2,12 +2,16 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import e2e.Struct.Location;
 import e2e.Struct.Product;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.util.Arg;
@@ -40,10 +44,21 @@ public class InlineStructDefTest {
     @Test
     void wfSpecVariableDeclaredAsInlineStructSurvivesRoundTrip() {
         String wfName = "inline-struct-rt-" + UUID.randomUUID();
-        WfSpec stored = client.putWfSpec(Workflow.newWorkflow(wfName, wf -> {
-                    wf.declareInlineStruct("location", Location.class);
-                })
-                .compileWorkflow());
+        PutWfSpecRequest compiled = Workflow.newWorkflow(wfName, wf -> wf.declareJsonObj("location"))
+                .compileWorkflow();
+        InlineStructDef locationType = InlineStructDef.newBuilder()
+                .putFields("city", primitiveField(VariableType.STR))
+                .putFields("zipCode", primitiveField(VariableType.INT))
+                .build();
+        var threadSpec = compiled.getThreadSpecsOrThrow(compiled.getEntrypointThreadName()).toBuilder();
+        threadSpec
+                .getVariableDefsBuilder(0)
+                .getVarDefBuilder()
+                .clearType()
+                .setTypeDef(TypeDefinition.newBuilder().setInlineStructDef(locationType));
+        WfSpec stored = client.putWfSpec(compiled.toBuilder()
+                .putThreadSpecs(compiled.getEntrypointThreadName(), threadSpec.build())
+                .build());
 
         WfSpecId id = stored.getId();
         Awaitility.await()
@@ -67,6 +82,12 @@ public class InlineStructDefTest {
                 .isTrue();
         assertThat(locationDef.getTypeDef().getInlineStructDef().containsFields("zipCode"))
                 .isTrue();
+    }
+
+    private StructFieldDef primitiveField(VariableType type) {
+        return StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
+                .build();
     }
 
     @Test
