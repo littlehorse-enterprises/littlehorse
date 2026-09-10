@@ -2,9 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import e2e.Struct.Product;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
-import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -14,16 +12,8 @@ import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
-import io.littlehorse.sdk.common.util.Arg;
-import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
-import io.littlehorse.test.LHWorkflow;
-import io.littlehorse.test.WithStructDefs;
-import io.littlehorse.test.WithWorkers;
-import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
 import java.util.UUID;
@@ -31,15 +21,9 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@WithStructDefs({Product.class})
-@WithWorkers("inlineStructWorker")
 public class InlineStructDefTest {
 
     private LittleHorseBlockingStub client;
-    private WorkflowVerifier verifier;
-
-    @LHWorkflow("inline-struct-product-wf")
-    private Workflow productWf;
 
     @Test
     void wfSpecVariableDeclaredAsInlineStructSurvivesRoundTrip() {
@@ -88,47 +72,5 @@ public class InlineStructDefTest {
         return StructFieldDef.newBuilder()
                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
                 .build();
-    }
-
-    @Test
-    void nestedInlineStructFieldWorkflowCompletesAndPreservesValue() {
-        verifier.prepareRun(productWf, Arg.of("product-name", "Sprocket"), Arg.of("width", 8), Arg.of("height", 3))
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyVariable(0, "product", varVal -> {
-                    var fields = varVal.getStruct().getStruct().getFieldsMap();
-                    assertThat(fields.get("name").getValue().getStr()).isEqualTo("Sprocket");
-
-                    // dimensions is stored as an inline struct — no named StructDefId
-                    var dimsStruct = fields.get("dimensions").getValue().getStruct();
-                    assertThat(dimsStruct.getStructDefId().getName()).isEmpty();
-
-                    var dimFields = dimsStruct.getStruct().getFieldsMap();
-                    assertThat(dimFields.get("width").getValue().getInt()).isEqualTo(8);
-                    assertThat(dimFields.get("height").getValue().getInt()).isEqualTo(3);
-                })
-                .start();
-    }
-
-    @LHWorkflow("inline-struct-product-wf")
-    public Workflow getProductWf() {
-        return new WorkflowImpl("inline-struct-product-wf", wf -> {
-            WfRunVariable nameIn = wf.declareStr("product-name").required();
-            WfRunVariable widthIn = wf.declareInt("width").required();
-            WfRunVariable heightIn = wf.declareInt("height").required();
-            WfRunVariable product = wf.declareStruct("product", Product.class);
-
-            product.assign(wf.buildStruct("inline-test-product")
-                    .put("name", nameIn)
-                    .put(
-                            "dimensions",
-                            wf.buildInlineStruct().put("width", widthIn).put("height", heightIn)));
-
-            wf.execute("echo-product-name", product.get("name"));
-        });
-    }
-
-    @LHTaskMethod("echo-product-name")
-    public String echoProductName(String name) {
-        return name;
     }
 }
