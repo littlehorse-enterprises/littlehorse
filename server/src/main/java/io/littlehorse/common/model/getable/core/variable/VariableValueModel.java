@@ -14,10 +14,8 @@ import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
-import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
-import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
@@ -144,13 +142,10 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public TypeDefinitionModel getTypeDefinition() {
         if (this.valueType == ValueCase.STRUCT) {
-            StructDefIdModel id = this.struct.getStructDefId();
-            if (id == null || id.getName() == null || id.getName().isEmpty()) {
-                // Inline-typed struct: no named StructDef. Return a wildcard so
-                // isCompatibleWith(INLINE_STRUCT_DEF) treats empty fields as "any".
-                return new TypeDefinitionModel(new InlineStructDefModel());
+            if (this.struct.getStructDefId() == null) {
+                return new TypeDefinitionModel();
             }
-            return new TypeDefinitionModel(id);
+            return new TypeDefinitionModel(this.struct.getStructDefId());
         } else if (this.valueType == ValueCase.ARRAY) {
             // If the ArrayModel has an authoritative element type, prefer it. This
             // is set at ingress (RunWf/Task returns) to avoid per-item checks later.
@@ -979,6 +974,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                     return asStruct();
                 }
                 break;
+            case INLINE_STRUCT_DEF:
+                if (otherType.equals(getTypeDefinition())) {
+                    return asStruct();
+                }
+                break;
             case INLINE_ARRAY_DEF:
                 // If this array value has an unknown/empty element type (reported for empty
                 // native arrays), allow coercion to any inline array target type. This lets
@@ -1028,7 +1028,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel asStruct() throws LHVarSubError {
-        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
+                || getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
             return new VariableValueModel(struct);
         } else {
             throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to STRUCT");
