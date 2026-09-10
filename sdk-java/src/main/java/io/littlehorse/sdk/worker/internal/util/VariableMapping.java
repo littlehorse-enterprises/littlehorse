@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,8 @@ public class VariableMapping {
     private final Class<?> parameterJavaType;
     private final boolean expectsNativeLHArray;
     private final boolean expectsNativeLHMap;
+    private final Class<?> nativeMapKeyJavaType;
+    private final Class<?> nativeMapValueJavaType;
     private final Map<String, String> placeholderValues;
 
     public VariableMapping(
@@ -47,6 +50,14 @@ public class VariableMapping {
                         == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
         this.expectsNativeLHMap = lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
                 == TypeDefinition.DefinedTypeCase.INLINE_MAP_DEF;
+        if (expectsNativeLHMap) {
+            LHMapType mapType = (LHMapType) lhTaskParameter.getVariableClassType();
+            this.nativeMapKeyJavaType = mapType.getKeyClass();
+            this.nativeMapValueJavaType = mapType.getValueClass();
+        } else {
+            this.nativeMapKeyJavaType = null;
+            this.nativeMapValueJavaType = null;
+        }
 
         try {
             validateParamAgainstVariableDef(variableDef, lhTaskParameter);
@@ -95,6 +106,8 @@ public class VariableMapping {
                         .getStructDefId()
                         .getName()
                         .equals(expectedType.getStructDefId().getName());
+            case INLINE_STRUCT_DEF:
+                return providedType.getInlineStructDef().equals(expectedType.getInlineStructDef());
             case INLINE_ARRAY_DEF:
                 return areTypesCompatible(
                         providedType.getInlineArrayDef().getArrayType(),
@@ -148,6 +161,9 @@ public class VariableMapping {
                         + ", "
                         + formatTypeDefinition(typeDefinition.getInlineMapDef().getValueType())
                         + ">";
+            case INLINE_STRUCT_DEF:
+                return "InlineStruct<"
+                        + typeDefinition.getInlineStructDef().getFieldsMap().keySet() + ">";
             default:
                 return "UNSPECIFIED";
         }
@@ -221,8 +237,10 @@ public class VariableMapping {
         Map<Object, Object> result = new HashMap<>();
 
         for (io.littlehorse.sdk.common.proto.Map.Entry entry : protoMap.getEntriesList()) {
-            Object key = LHLibUtil.varValToObj(entry.getKey(), Object.class, typeAdapterRegistry);
-            Object value = LHLibUtil.varValToObj(entry.getValue(), Object.class, typeAdapterRegistry);
+            Object key =
+                    LHLibUtil.varValToObj(entry.getKey(), nativeMapKeyJavaType, typeAdapterRegistry, placeholderValues);
+            Object value = LHLibUtil.varValToObj(
+                    entry.getValue(), nativeMapValueJavaType, typeAdapterRegistry, placeholderValues);
             result.put(key, value);
         }
 

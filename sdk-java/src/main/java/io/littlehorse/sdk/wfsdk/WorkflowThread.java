@@ -228,6 +228,15 @@ public interface WorkflowThread {
     WfRunVariable declareStruct(String name, Class<?> clazz);
 
     /**
+     * Creates an inline Struct variable based on an unannotated POJO class.
+     *
+     * @param name is the name of the variable.
+     * @param clazz is the class that defines the inline Struct schema.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareInlineStruct(String name, Class<?> clazz);
+
+    /**
      * Creates a Struct variable based on your StructDef name. Uses latest version of the StructDef.
      *
      * To supply a specific StructDef version number, use {@link WorkflowThread#declareStruct(String, String, int)} and provide the version number as the third parameter.

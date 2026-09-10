@@ -2,9 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,6 +16,15 @@ import java.util.Objects;
  * It provides methods for creating instances of the class, retrieving type definitions, and handling type adapters.
  */
 public abstract class LHClassType {
+    public enum ResolutionContext {
+        /** Preserve unannotated Java objects as JSON values. */
+        VALUE,
+
+        /** Resolve unannotated concrete POJOs as embedded Struct schemas. */
+        STRUCT_MEMBER
+    }
+
+    private static final ThreadLocal<HashSet<Class<?>>> inlineStructBuildPath = new ThreadLocal<>();
     protected Class<?> clazz;
     protected LHTypeAdapterRegistry typeAdapterRegistry;
     protected Map<String, String> placeholderValues = Map.of();
@@ -50,17 +61,56 @@ public abstract class LHClassType {
      */
     public static LHClassType fromJavaClass(
             Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        return resolve(classType, typeAdapterRegistry, placeholderValues, ResolutionContext.VALUE);
+    }
+
+    public static LHClassType resolve(
+            Class<?> classType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues,
+            ResolutionContext context) {
+        Objects.requireNonNull(context, "Resolution context should not be null");
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
         } else if (void.class.equals(classType) || Void.class.equals(classType)) {
             throw new IllegalArgumentException(
                     "Void type is not supported as a variable type in LittleHorse. Void cases should be handled before creating LHClassTypes.");
-        } else if (LHLibUtil.isJavaClassLHPrimitive(classType)) {
+        } else if (LHLibUtil.getTypeAdapterForClass(classType, typeAdapterRegistry)
+                        .isPresent()
+                || LHLibUtil.isJavaClassLHPrimitive(classType)) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType, typeAdapterRegistry, placeholderValues);
         }
-        return new LHPrimitiveType(classType, typeAdapterRegistry);
+        if (context == ResolutionContext.VALUE
+                || classType == Object.class
+                || classType.isInterface()
+                || classType.isEnum()) {
+            return new LHPrimitiveType(classType, typeAdapterRegistry);
+        }
+
+        HashSet<Class<?>> buildPath = inlineStructBuildPath.get();
+        if (buildPath == null) {
+            buildPath = new HashSet<>();
+            inlineStructBuildPath.set(buildPath);
+        }
+        if (!buildPath.add(classType)) {
+            throw new StructDefCircularDependencyException(
+                    "Circular inline StructDef dependency involving class: " + classType.getCanonicalName());
+        }
+        try {
+            return new LHInlineStructDefType(classType, typeAdapterRegistry, placeholderValues);
+        } finally {
+            buildPath.remove(classType);
+            if (buildPath.isEmpty()) {
+                inlineStructBuildPath.remove();
+            }
+        }
+    }
+
+    public static LHClassType fromStructFieldJavaClass(
+            Class<?> classType, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        return resolve(classType, typeAdapterRegistry, placeholderValues, ResolutionContext.STRUCT_MEMBER);
     }
 
     public Object createInstance()
