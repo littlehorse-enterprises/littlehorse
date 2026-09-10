@@ -5,9 +5,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
-import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
-import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
 import java.beans.PropertyDescriptor;
@@ -40,13 +38,9 @@ public class LHStructProperty {
     @Getter
     private final boolean isNullable;
 
-    private final LHClassType parentStructDef;
+    private final LHStructDefType parentStructDef;
 
     public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
-        this(pd, (LHClassType) parentStructDef);
-    }
-
-    LHStructProperty(PropertyDescriptor pd, LHClassType parentStructDef) {
         this.pd = Objects.requireNonNull(pd);
         this.parentStructDef = parentStructDef;
 
@@ -202,14 +196,7 @@ public class LHStructProperty {
             return resolveMapType(typeAdapterRegistry);
         }
 
-        Class<?> propertyType = pd.getPropertyType();
-        // In StructDef context, unannotated POJOs become inline struct defs rather than JSON_OBJ.
-        if (!propertyType.isAnnotationPresent(LHStructDef.class)
-                && typeAdapterRegistry.getForClass(propertyType).isEmpty()
-                && LHLibUtil.javaClassToLHVarType(propertyType, typeAdapterRegistry) == VariableType.JSON_OBJ) {
-            return new LHInlineStructDefType(propertyType, typeAdapterRegistry, placeholderValues);
-        }
-        return LHClassType.fromJavaClass(propertyType, typeAdapterRegistry, placeholderValues);
+        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
     }
 
     private boolean isNativeArray() {
