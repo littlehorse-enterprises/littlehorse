@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -224,6 +225,20 @@ public class WfRunVariableImplTest {
 
         assertThat(defaultValue.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
         assertThat(defaultValue.getStruct().getStructDefId().getName()).isEqualTo("library");
+    }
+
+    @Test
+    void shouldCreateNestedPathOnNamedStructWithoutDefaultValue() {
+        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
+            thread.declareStruct("library", Library.class)
+                    .required()
+                    .get("books")
+                    .get(0);
+        });
+
+        assertDoesNotThrow(() -> {
+            workflow.compileWorkflow();
+        });
     }
 
     @Test

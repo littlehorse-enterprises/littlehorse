@@ -473,7 +473,7 @@ class WfRunVariableImpl implements WfRunVariable {
     public WfRunVariableImpl clone() {
         WfRunVariableImpl out =
                 new WfRunVariableImpl(this.getName(), this.getParent(), this.getTypeDef(), this.declaredClassType);
-        out.setDefaultValue(this.getDefaultValue());
+        out.defaultValue = this.defaultValue;
         out.setRequired(this.isRequired());
         out.setSearchable(this.isSearchable());
         out.setJsonIndexes(new ArrayList<>(this.getJsonIndexes()));
