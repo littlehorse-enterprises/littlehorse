@@ -23,11 +23,13 @@ in the `WfSpec` and `TaskDef`s. Only the named `Order` StructDef is registered.
 
 ### Run the workflow
 
-In another terminal, use `lhctl` to provide the order as a JSON input variable. The nested
+In another terminal, use `lhctl` to provide the order as a JSON-formatted Struct variable. The nested
 `deliveryAddress` object is provided inline:
 
+*Unnecessary spacing added to the Struct strings to fit the use case of the example, which involves trimming those Strings via our `normalize-order` TaskDef.*
+
 ```bash
-lhctl run example-inline-struct-def order '{"orderId":"ORD-1234","deliveryAddress":{"street":"123 Main Street","city":"Springfield","postalCode":"12345"}}'
+lhctl run example-inline-struct-def order '{"orderId":"ORD-1234","deliveryAddress":{"street":"123 Main Street   ","city":"        Springfield","postalCode":"      12345"}}'
 ```
 
 The command prints the workflow run ID. Use it to inspect the result:
