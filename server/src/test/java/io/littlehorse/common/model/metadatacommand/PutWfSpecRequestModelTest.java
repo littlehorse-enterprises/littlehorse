@@ -230,6 +230,27 @@ public class PutWfSpecRequestModelTest {
                 .contains("Comparator IN");
     }
 
+    @Test
+    public void shouldAllowArrayContainsExpressionAssignedToVariable() {
+        Workflow wf = Workflow.newWorkflow("array-contains-valid", thread -> {
+            WfRunVariable array = thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+            WfRunVariable result = thread.declareBool("result");
+            result.assign(array.doesContain(2L));
+        });
+        String commandId = UUID.randomUUID().toString();
+        MetadataCommand command = MetadataCommand.newBuilder()
+                .setCommandId(commandId)
+                .setPutWfSpec(wf.compileWorkflow())
+                .build();
+
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+        CompletableFuture<Message> registration =
+                asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+
+        assertThat(registration.getNow(null)).isInstanceOf(WfSpec.class);
+    }
+
     private PutWfSpecRequest testWorkflowSpec() {
         return new WorkflowImpl("example-basic", wf -> {
                     wf.execute("greet");
