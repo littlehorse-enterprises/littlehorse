@@ -125,6 +125,12 @@ public class LHStructDefTypeTest {
         public UnannotatedNestedPojo nestedPojo;
     }
 
+    @LHStructDef("inline-struct-array-holder")
+    @Getter
+    class InlineStructArrayHolder {
+        public UnannotatedNestedPojo[] nestedPojos;
+    }
+
     @LHStructDef("invalid-json-arr-holder")
     @Getter
     class InvalidJsonArrHolder {
@@ -332,6 +338,24 @@ public class LHStructDefTypeTest {
                                                 TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
                                         .build())
                         .build());
+    }
+
+    @Test
+    public void shouldBuildInlineArrayDefOfInlineStructDefs() {
+        TypeDefinition fieldType = new LHStructDefType(InlineStructArrayHolder.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef()
+                .getFieldsOrThrow("nestedPojos")
+                .getFieldType();
+
+        assertThat(fieldType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF);
+        TypeDefinition elementType = fieldType.getInlineArrayDef().getArrayType();
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(elementType
+                        .getInlineStructDef()
+                        .getFieldsOrThrow("value")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
     }
 
     @Test
