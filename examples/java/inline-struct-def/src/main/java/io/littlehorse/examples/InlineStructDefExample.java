@@ -17,10 +17,9 @@ import org.slf4j.LoggerFactory;
 public class InlineStructDefExample {
 
     private static final Logger log = LoggerFactory.getLogger(InlineStructDefExample.class);
-    private static final String WF_SPEC_NAME = "example-inline-struct-def";
 
     public static Workflow getWorkflow() {
-        return new WorkflowImpl(WF_SPEC_NAME, wf -> {
+        return new WorkflowImpl("example-inline-struct-def", wf -> {
             WfRunVariable address =
                     wf.declareInlineStruct("address", DeliveryAddress.class).required();
             WfRunVariable normalizedAddress = wf.declareInlineStruct("normalized-address", DeliveryAddress.class);
