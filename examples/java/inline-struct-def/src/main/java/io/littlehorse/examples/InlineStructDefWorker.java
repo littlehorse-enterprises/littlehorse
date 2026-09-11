@@ -1,7 +1,6 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHTaskMethod;
-import io.littlehorse.sdk.worker.LHType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,18 +8,22 @@ public class InlineStructDefWorker {
 
     private static final Logger log = LoggerFactory.getLogger(InlineStructDefWorker.class);
 
-    @LHTaskMethod("normalize-address")
-    @LHType(isInlineStruct = true)
-    public DeliveryAddress normalizeAddress(@LHType(isInlineStruct = true) DeliveryAddress address) {
-        return new DeliveryAddress(
+    @LHTaskMethod("normalize-order")
+    public Order normalizeOrder(Order order) {
+        DeliveryAddress address = order.getDeliveryAddress();
+        DeliveryAddress normalizedAddress = new DeliveryAddress(
                 address.getStreet().trim(),
                 address.getCity().trim(),
                 address.getPostalCode().trim());
+
+        return new Order(order.getOrderId(), normalizedAddress);
     }
 
     @LHTaskMethod("format-shipping-label")
-    public String formatShippingLabel(@LHType(isInlineStruct = true) DeliveryAddress address) {
-        String label = "%s, %s %s".formatted(address.getStreet(), address.getCity(), address.getPostalCode());
+    public String formatShippingLabel(Order order) {
+        DeliveryAddress address = order.getDeliveryAddress();
+        String label = "%s: %s, %s %s"
+                .formatted(order.getOrderId(), address.getStreet(), address.getCity(), address.getPostalCode());
         log.info("Prepared shipping label: {}", label);
         return label;
     }
