@@ -6,11 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
+import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
+import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructField;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -35,6 +41,35 @@ public class VariableValueModelTest {
         VariableValueModel rhs = new VariableValueModel();
         VariableValueModel variableOutput = lhs.operate(VariableMutationType.ASSIGN, rhs, rhs.getTypeDefinition());
         assertThat(variableOutput.isNull()).isTrue();
+    }
+
+    @Test
+    public void shouldAssignAnonymousStructToInlineStructType() throws Exception {
+        TypeDefinitionModel inlineStructType = new TypeDefinitionModel(InlineStructDefModel.fromProto(
+                InlineStructDef.newBuilder()
+                        .putFields(
+                                "street",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(new TypeDefinitionModel(VariableType.STR).toProto())
+                                        .build())
+                        .build(),
+                null));
+        VariableValue taskOutput = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStruct(InlineStruct.newBuilder()
+                                .putFields(
+                                        "street",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .setStr("Main St"))
+                                                .build())))
+                .build();
+        VariableValueModel rhs = VariableValueModel.fromProto(taskOutput, null);
+
+        VariableValueModel result =
+                new VariableValueModel().operate(VariableMutationType.ASSIGN, rhs, inlineStructType);
+
+        assertThat(result.toProto().build()).isEqualTo(taskOutput);
     }
 
     @Test

@@ -1049,6 +1049,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel coerceToType(TypeDefinitionModel otherType) throws LHVarSubError {
+        if (valueType == ValueCase.STRUCT
+                && struct != null
+                && struct.getStructDefId() == null
+                && otherType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+            return new VariableValueModel(struct);
+        }
+
         if (getTypeDefinition().isNull()) {
             throw new LHVarSubError(null, "Coercing from NULL not supported.");
         } else if (otherType.isNull()) {
