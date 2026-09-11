@@ -433,6 +433,49 @@ public class LHLibUtilTest {
         }
     }
 
+    public static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
+    @LHStructDef("inline-address-holder")
+    public static class InlineAddressHolder {
+        private InlineAddress address;
+        private InlineAddress[] previousAddresses;
+        private Map<String, InlineAddress> addressesByLabel;
+
+        public InlineAddress getAddress() {
+            return address;
+        }
+
+        public void setAddress(InlineAddress address) {
+            this.address = address;
+        }
+
+        public InlineAddress[] getPreviousAddresses() {
+            return previousAddresses;
+        }
+
+        public void setPreviousAddresses(InlineAddress[] previousAddresses) {
+            this.previousAddresses = previousAddresses;
+        }
+
+        public Map<String, InlineAddress> getAddressesByLabel() {
+            return addressesByLabel;
+        }
+
+        public void setAddressesByLabel(Map<String, InlineAddress> addressesByLabel) {
+            this.addressesByLabel = addressesByLabel;
+        }
+    }
+
     @Test
     void shouldSerializeNullFieldAsValueNotSet() {
         NullableFieldStruct pojo = new NullableFieldStruct();
@@ -468,6 +511,43 @@ public class LHLibUtilTest {
         NullableFieldStruct pojo = (NullableFieldStruct) LHLibUtil.varValToObj(structVal, NullableFieldStruct.class);
 
         assertThat(pojo.getNullableField()).isNull();
+    }
+
+    @Test
+    void shouldRoundTripInlinePojoFieldsAndArrayElements() throws LHSerdeException {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        InlineAddressHolder holder = new InlineAddressHolder();
+        holder.setAddress(address);
+        holder.setPreviousAddresses(new InlineAddress[] {address});
+        holder.setAddressesByLabel(Map.of("home", address));
+
+        Struct struct = LHLibUtil.serializeToStruct(holder);
+        VariableValue nestedAddress =
+                struct.getStruct().getFieldsMap().get("address").getValue();
+        VariableValue arrayAddress = struct.getStruct()
+                .getFieldsMap()
+                .get("previousAddresses")
+                .getValue()
+                .getArray()
+                .getItems(0);
+        VariableValue mapAddress = struct.getStruct()
+                .getFieldsMap()
+                .get("addressesByLabel")
+                .getValue()
+                .getMap()
+                .getEntries(0)
+                .getValue();
+
+        assertThat(nestedAddress.getStruct().hasStructDefId()).isFalse();
+        assertThat(arrayAddress.getStruct().hasStructDefId()).isFalse();
+        assertThat(mapAddress.getStruct().hasStructDefId()).isFalse();
+
+        InlineAddressHolder result = (InlineAddressHolder) LHLibUtil.varValToObj(
+                VariableValue.newBuilder().setStruct(struct).build(), InlineAddressHolder.class);
+        assertThat(result.getAddress().getStreet()).isEqualTo("Main St");
+        assertThat(result.getPreviousAddresses()[0].getStreet()).isEqualTo("Main St");
+        assertThat(result.getAddressesByLabel().get("home").getStreet()).isEqualTo("Main St");
     }
 
     @Test

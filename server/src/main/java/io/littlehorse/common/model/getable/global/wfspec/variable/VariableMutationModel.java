@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -17,7 +18,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
 import java.util.Map;
@@ -217,7 +218,7 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         return out;
     }
 
-    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
+    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidMutationException {
         if (lhsJsonPath != null && lhsLhPath != null) {
             throw new InvalidMutationException("Cannot set both a JSON path and LH Path on one LHS mutation");
@@ -244,6 +245,15 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
         }
 
         try {
+            if (rhsValueType == RhsValueCase.RHS_ASSIGNMENT && rhsRhsAssignment.getExpression() != null) {
+                try {
+                    rhsRhsAssignment.getExpression().validate(source, manager, threadSpec);
+                } catch (InvalidEdgeException exn) {
+                    throw new InvalidMutationException(
+                            "Mutation of variable " + lhsName + " invalid: " + exn.getMessage());
+                }
+            }
+
             Optional<TypeDefinitionModel> rhsType =
                     rhsRhsAssignment.resolveType(manager, threadSpec.getWfSpec(), threadSpec.getName());
             if (rhsType.isEmpty()) {

@@ -65,6 +65,26 @@ public class ScheduledTaskExecutorTest {
                     .build();
         }
 
+        @LHType(isInlineStruct = true)
+        public InlineAddress inlinePojoReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return address;
+        }
+
+        public InlineAddress jsonPojoReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return address;
+        }
+
+        @LHType(isLHMap = true)
+        public Map<String, InlineAddress> nativeMapReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return Map.of("home", address);
+        }
+
         public String primitiveInput(long value) {
             return "value:" + value;
         }
@@ -83,6 +103,18 @@ public class ScheduledTaskExecutorTest {
         }
     }
 
+    public static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
     @Test
     void shouldSerializeReturnAsNativeArrayWhenAnnotated() throws Exception {
         ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
@@ -93,6 +125,53 @@ public class ScheduledTaskExecutorTest {
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(out.getArray().getItemsCount()).isEqualTo(3);
         assertThat(out.getArray().getItems(0).getInt()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldSerializeAnnotatedPojoReturnAsInlineStruct() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("inlinePojoReturn");
+        InlineAddress address = new InlineAddress();
+        address.setStreet("123 Main St");
+
+        VariableValue out = executor.serializeResult(address, method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(out.getStruct().hasStructDefId()).isFalse();
+        assertThat(out.getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("street")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("123 Main St");
+    }
+
+    @Test
+    void shouldKeepUnannotatedPojoReturnAsJsonObject() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("jsonPojoReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().jsonPojoReturn(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.JSON_OBJ);
+    }
+
+    @Test
+    void shouldSerializeInlinePojoValuesInNativeMapReturn() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("nativeMapReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().nativeMapReturn(), method);
+
+        VariableValue value = out.getMap().getEntries(0).getValue();
+        assertThat(value.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(value.getStruct().hasStructDefId()).isFalse();
+        assertThat(value.getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("street")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("123 Main St");
     }
 
     @Test

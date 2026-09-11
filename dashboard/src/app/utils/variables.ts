@@ -3,6 +3,8 @@ import {
   LHPath,
   Map as LHMap,
   Struct,
+  StructField,
+  StructFieldDef,
   Timestamp,
   TypeDefinition,
   VariableAssignment,
@@ -28,6 +30,8 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): VariableVal
       return getVariableCaseFromType(typeDef.definedType.primitiveType)
     case 'structDefId':
       return 'struct'
+    case 'inlineStructDef':
+      return 'struct'
     case 'inlineArrayDef':
       return 'array'
     case 'inlineMapDef':
@@ -48,6 +52,8 @@ export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['
     }
     case 'structDefId':
       return `Struct<${definedType.structDefId.name},${definedType.structDefId.version}>`
+    case 'inlineStructDef':
+      return 'InlineStruct'
     case 'inlineArrayDef': {
       const nested = definedType.inlineArrayDef.arrayType
       return `Array<${formatTypeDefinition(nested)}>`
@@ -79,6 +85,9 @@ export const VARIABLE_CASE_LABELS: Record<VariableValueCase, string> = {
   array: 'Array',
   map: 'Map',
 }
+
+export const isStructFieldRequired = (fieldDef: StructFieldDef): boolean =>
+  fieldDef.defaultValue === undefined && !fieldDef.isNullable
 
 /**
  * Retrieves the value of a variable based on its assignment and source.
@@ -357,6 +366,41 @@ const jsonValueToVariableValue = (typeDef: TypeDefinition | undefined, value: un
         value: jsonValueToVariableValue(valueType, v),
       }))
       return VariableValue.create({ value: { oneofKind: 'map', map: { entries } } })
+    }
+    case 'inlineStructDef': {
+      if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        throw new Error('Expected a JSON object for InlineStruct')
+      }
+
+      const inputFields = value as Record<string, unknown>
+      const fieldDefs = definedType.inlineStructDef.fields
+      const unknownField = Object.keys(inputFields).find(fieldName => !fieldDefs[fieldName])
+      if (unknownField) throw new Error(`Unknown InlineStruct field: ${unknownField}`)
+
+      const fields: Record<string, StructField> = {}
+      for (const [fieldName, fieldDef] of Object.entries(fieldDefs)) {
+        if (!Object.hasOwn(inputFields, fieldName)) {
+          if (isStructFieldRequired(fieldDef)) throw new Error(`Missing required InlineStruct field: ${fieldName}`)
+          continue
+        }
+        if (!fieldDef.fieldType) throw new Error(`InlineStruct field has no type: ${fieldName}`)
+
+        const fieldValue = inputFields[fieldName]
+        if (fieldValue === null) {
+          if (!fieldDef.isNullable) throw new Error(`InlineStruct field is not nullable: ${fieldName}`)
+          fields[fieldName] = { value: VariableValue.create(), masked: fieldDef.fieldType.masked }
+          continue
+        }
+
+        fields[fieldName] = {
+          value: jsonValueToVariableValue(fieldDef.fieldType, fieldValue),
+          masked: fieldDef.fieldType.masked,
+        }
+      }
+
+      return VariableValue.create({
+        value: { oneofKind: 'struct', struct: { struct: { fields } } },
+      })
     }
     case 'primitiveType':
       return getTypedVariableValue(

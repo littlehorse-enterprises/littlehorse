@@ -109,14 +109,26 @@ public class LHStructDefTypeTest {
         public boolean isAlive;
     }
 
+    @Getter
     class UnannotatedNestedPojo {
         public String value;
+    }
+
+    @Getter
+    class InlinePojoWithNamedDependency {
+        public Author author;
     }
 
     @LHStructDef("invalid-json-obj-holder")
     @Getter
     class InvalidJsonObjHolder {
         public UnannotatedNestedPojo nestedPojo;
+    }
+
+    @LHStructDef("inline-struct-array-holder")
+    @Getter
+    class InlineStructArrayHolder {
+        public UnannotatedNestedPojo[] nestedPojos;
     }
 
     @LHStructDef("invalid-json-arr-holder")
@@ -313,10 +325,59 @@ public class LHStructDefTypeTest {
     }
 
     @Test
-    public void shouldRejectStructDefFieldResolvingToJsonObj() {
-        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    public void shouldInlineUnannotatedNestedPojo() {
+        InlineStructDef definition =
+                new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(definition.getFieldsOrThrow("nestedPojo").getFieldType().getInlineStructDef())
+                .isEqualTo(InlineStructDef.newBuilder()
+                        .putFields(
+                                "value",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .build())
+                        .build());
+    }
+
+    @Test
+    public void shouldBuildInlineArrayDefOfInlineStructDefs() {
+        TypeDefinition fieldType = new LHStructDefType(InlineStructArrayHolder.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef()
+                .getFieldsOrThrow("nestedPojos")
+                .getFieldType();
+
+        assertThat(fieldType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF);
+        TypeDefinition elementType = fieldType.getInlineArrayDef().getArrayType();
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(elementType
+                        .getInlineStructDef()
+                        .getFieldsOrThrow("value")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    public void shouldRetainJsonObjectFallbackOutsideStructDefFields() {
+        assertThat(LHClassType.fromJavaClass(UnannotatedNestedPojo.class, LHTypeAdapterRegistry.empty())
+                        .getTypeDefinition()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.JSON_OBJ);
+    }
+
+    @Test
+    public void shouldCollectNamedDependenciesNestedInsideInlinePojos() {
+        @LHStructDef("inline-dependency-holder")
+        @Getter
+        class InlineDependencyHolder {
+            private InlinePojoWithNamedDependency nestedPojo;
+        }
+
+        assertThat(new LHStructDefType(InlineDependencyHolder.class, LHTypeAdapterRegistry.empty())
+                        .getDependencyClasses())
+                .extracting(dependency -> dependency.getStructDefId().getName())
+                .containsExactly("author", "inline-dependency-holder");
     }
 
     @Test

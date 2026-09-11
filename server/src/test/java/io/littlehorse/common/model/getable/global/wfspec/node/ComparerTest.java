@@ -2,8 +2,10 @@ package io.littlehorse.common.model.getable.global.wfspec.node;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.Map;
@@ -28,6 +30,16 @@ public class ComparerTest {
         VariableValueModel right = VariableValueModel.fromProto(rightProto, null);
 
         assertTrue(Comparer.contains(left, right));
+    }
+
+    @Test
+    public void shouldRejectMapContains() throws Exception {
+        VariableValueModel map = mapModelOf(mapEntry(stringValue("first"), intValue(1)));
+
+        LHVarSubError exception =
+                assertThrows(LHVarSubError.class, () -> Comparer.contains(map, stringValueModel("first")));
+
+        assertEquals("Can't do CONTAINS on MAP", exception.getMessage());
     }
 
     @Test
@@ -96,6 +108,10 @@ public class ComparerTest {
 
     private static VariableValue stringValue(String value) {
         return VariableValue.newBuilder().setStr(value).build();
+    }
+
+    private static VariableValueModel stringValueModel(String value) throws Exception {
+        return VariableValueModel.fromProto(stringValue(value), null);
     }
 
     private static VariableValue intValue(long value) {

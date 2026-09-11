@@ -1,82 +1,11 @@
-import { ThreadVarDef, TypeDefinition, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
+import { ThreadVarDef, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { formatTypeDefinition } from '@/app/utils'
-import { Field, FieldError } from '@/components/ui/field'
-import { Textarea } from '@/components/ui/textarea'
-import { CircleAlert } from 'lucide-react'
+import { ContainerTypeDef, ContainerVariableField } from './ContainerVariableField'
 import FormField from './FormField'
 import VariableFieldHeader from './VariableFieldHeader'
-import { TypeDefinitionBadge } from './TypeDefinitionBadge'
 import { StructDefGroup } from './StructDefGroup'
 import { TimestampVariableField } from './TimestampVariableField'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
-
-type ContainerTypeDef = Extract<TypeDefinition['definedType'], { oneofKind: 'inlineArrayDef' | 'inlineMapDef' }>
-
-/**
- * Text input for Map/Array variables in the Execute WfRun form. The value is entered as the
- * same human-friendly JSON the dashboard displays (a Map is `{"one":1}`, an Array is `[1,2]`)
- * and converted to a typed VariableValue at submit time via `getTypedVariableValueFromTypeDef`.
- */
-const ContainerVariableField: FC<{
-  name: string
-  typeDef: ContainerTypeDef
-  required?: boolean
-  accessLevel?: WfRunVariableAccessLevel
-  masked?: boolean
-}> = ({ name, typeDef, required, accessLevel, masked }) => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext()
-
-  const wantsObject = typeDef.oneofKind === 'inlineMapDef'
-  const typeLabel = formatTypeDefinition(typeDef)
-  const placeholder = wantsObject ? '{ "key": value }' : '[ value, … ]'
-
-  return (
-    <Field>
-      <VariableFieldHeader
-        name={name}
-        typeBadge={<TypeDefinitionBadge typeDef={typeDef} />}
-        accessLevel={accessLevel}
-        required={required}
-        masked={masked}
-      />
-      <Textarea
-        id={name}
-        placeholder={placeholder}
-        className={errors[name] ? 'border-destructive' : undefined}
-        {...register(name, {
-          required: required ? `${name} is required` : false,
-          validate: value => {
-            if (!value) return true
-            let parsed: unknown
-            try {
-              parsed = JSON.parse(value)
-            } catch {
-              return 'Input must be valid JSON'
-            }
-            if (wantsObject && (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed))) {
-              return `Expected a JSON object for ${typeLabel}`
-            }
-            if (!wantsObject && !Array.isArray(parsed)) {
-              return `Expected a JSON array for ${typeLabel}`
-            }
-            return true
-          },
-        })}
-      />
-      {errors[name] && (
-        <FieldError className="flex items-center gap-1 text-sm text-destructive">
-          <CircleAlert size={16} />
-          {String(errors[name]?.message)}
-        </FieldError>
-      )}
-    </Field>
-  )
-}
 
 interface VariableFormFieldProps {
   variable: ThreadVarDef
@@ -148,14 +77,28 @@ const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     )
   }
 
+  if (definedType.oneofKind === 'inlineStructDef') {
+    return (
+      <StructDefGroup
+        inlineStructDef={definedType.inlineStructDef}
+        name={name}
+        required={variable.required}
+        accessLevel={variable.accessLevel}
+        masked={varDef.typeDef?.masked}
+        defaultValue={varDef.defaultValue}
+      />
+    )
+  }
+
   if (definedType.oneofKind === 'inlineArrayDef' || definedType.oneofKind === 'inlineMapDef') {
     return (
       <ContainerVariableField
         name={name}
-        typeDef={definedType}
+        typeDef={varDef.typeDef as ContainerTypeDef}
         required={variable.required}
         accessLevel={variable.accessLevel}
         masked={varDef.typeDef?.masked}
+        defaultValue={varDef.defaultValue}
       />
     )
   }
