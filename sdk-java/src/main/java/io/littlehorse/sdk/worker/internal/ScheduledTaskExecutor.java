@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
-import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHTaskError;
@@ -21,6 +20,7 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTypeMetadata;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -215,20 +215,34 @@ public class ScheduledTaskExecutor {
         }
 
         if (metadata.isLHMap()) {
-            return LHLibUtil.objToVarValAsNativeMap(result, resolveTaskMapType(taskMethod), typeAdapterRegistry);
+            LHMapType mapType = resolveTaskMapType(taskMethod);
+            return LHLibUtil.objToVarValAsNativeMap(
+                    result,
+                    mapType.getTypeDefinition().getInlineMapDef(),
+                    typeAdapterRegistry,
+                    mapType.getKeyClass(),
+                    mapType.getValueClass(),
+                    placeholderValues);
+        }
+
+        if (metadata.isInlineStruct()) {
+            return LHLibUtil.objToVarValAsStruct(result, returnType, typeAdapterRegistry, placeholderValues);
         }
 
         return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);
     }
 
-    private InlineMapDef resolveTaskMapType(Method taskMethod) {
+    private LHMapType resolveTaskMapType(Method taskMethod) {
         Type generic = taskMethod.getGenericReturnType();
         if (generic instanceof ParameterizedType) {
             Type[] args = ((ParameterizedType) generic).getActualTypeArguments();
             if (args.length == 2 && args[0] instanceof Class && args[1] instanceof Class) {
-                return new LHMapType((Class<?>) args[0], (Class<?>) args[1], typeAdapterRegistry, placeholderValues)
-                        .getTypeDefinition()
-                        .getInlineMapDef();
+                return new LHMapType(
+                        (Class<?>) args[0],
+                        (Class<?>) args[1],
+                        typeAdapterRegistry,
+                        placeholderValues,
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
             }
         }
         throw new IllegalArgumentException("Task method '" + taskMethod.getName()

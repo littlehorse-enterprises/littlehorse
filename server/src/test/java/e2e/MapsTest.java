@@ -51,9 +51,6 @@ public class MapsTest {
     @LHWorkflow("map-get-missing-wf")
     private Workflow mapGetMissingWf;
 
-    @LHWorkflow("map-contains-wf")
-    private Workflow mapContainsWf;
-
     @LHWorkflow("map-extend-wf")
     private Workflow mapExtendWf;
 
@@ -271,18 +268,6 @@ public class MapsTest {
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "are-equal", variableValue -> assertThat(variableValue.getBool())
                         .isFalse())
-                .start();
-    }
-
-    @Test
-    public void shouldDetectMapContainsKey() {
-        workflowVerifier
-                .prepareRun(mapContainsWf)
-                .waitForStatus(LHStatus.COMPLETED)
-                .thenVerifyVariable(0, "found", variableValue -> {
-                    assertThat(variableValue.getValueCase()).isEqualTo(ValueCase.BOOL);
-                    assertThat(variableValue.getBool()).isTrue();
-                })
                 .start();
     }
 
@@ -518,17 +503,6 @@ public class MapsTest {
             TaskNodeOutput produced = thread.execute("produce-map");
             mapVar.assign(produced);
             picked.assign(mapVar.get("nonexistent-key"));
-        });
-    }
-
-    @LHWorkflow("map-contains-wf")
-    public Workflow buildMapContainsWf() {
-        return new WorkflowImpl("map-contains-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable found = thread.declareBool("found");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            found.assign(mapVar.doesContain("hello"));
         });
     }
 

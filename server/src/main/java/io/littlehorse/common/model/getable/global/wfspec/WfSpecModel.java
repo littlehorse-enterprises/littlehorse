@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.AbstractGetable;
@@ -13,6 +12,7 @@ import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -27,7 +27,6 @@ import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -354,22 +353,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                                         .formatted(varName, tspec.getName(), varToThreadSpec.get(varName)));
                     }
                 }
-                if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
-                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
-                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
-                    try {
-                        vd.getTypeDef().validateStructDefExistsAndPinVersion(ctx.metadataManager());
-                    } catch (UnknownStructDefException e) {
-                        throw new InvalidWfSpecException(
-                                "Var name %s defined in thread %s refers to non-existent StructDef: %s"
-                                        .formatted(varName, tspec.getName(), e.getMessage()));
-                    }
-                }
-                // Validate that Map key types are primitive
                 try {
-                    vd.getTypeDef().validateMapKeyTypes();
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidWfSpecException("Var name %s defined in thread %s has invalid Map key type: %s"
+                    vd.getTypeDef().validateAndPin(ctx.metadataManager());
+                } catch (StructDefValidationException e) {
+                    throw new InvalidWfSpecException("Var name %s defined in thread %s has invalid type: %s"
                             .formatted(varName, tspec.getName(), e.getMessage()));
                 }
                 varToThreadSpec.put(varName, tspec.getName());

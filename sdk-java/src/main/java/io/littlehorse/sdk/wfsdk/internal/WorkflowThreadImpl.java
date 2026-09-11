@@ -58,6 +58,7 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
@@ -605,6 +606,23 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public WfRunVariable declareInlineStruct(String name, Class<?> clazz) {
+        LHClassType classType = LHClassType.resolve(
+                clazz,
+                parent.getTypeAdapterRegistry(),
+                parent.getPlaceholderValues(),
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (classType.getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF) {
+            throw new IllegalArgumentException(
+                    "Inline Struct variables require an unannotated POJO class: " + clazz.getName());
+        }
+        checkIfIsActive();
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, classType, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    @Override
     public WfRunVariable declareStruct(String name, String structDefName) {
         return addStructVariable(name, new LHStructDefId(resolveStructDefName(structDefName)));
     }
@@ -622,14 +640,24 @@ final class WorkflowThreadImpl implements WorkflowThread {
     public WfRunVariable declareArray(String name, Class<?> elementType) {
         Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
         return addArrayVariable(
-                name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
+                name,
+                new LHArrayType(
+                        arrayType,
+                        parent.getTypeAdapterRegistry(),
+                        parent.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER));
     }
 
     @Override
     public WfRunVariable declareMap(String name, Class<?> keyType, Class<?> valueType) {
         return addMapVariable(
                 name,
-                new LHMapType(keyType, valueType, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
+                new LHMapType(
+                        keyType,
+                        valueType,
+                        parent.getTypeAdapterRegistry(),
+                        parent.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER));
     }
 
     @Override

@@ -13,12 +13,22 @@ public final class LHArrayType extends LHClassType {
 
     private final LHClassType componentType;
 
+    /** Creates an array whose elements use Struct-member resolution. */
     public LHArrayType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        this(clazz, typeAdapterRegistry, Map.of());
+        this(clazz, typeAdapterRegistry, Map.of(), ResolutionContext.STRUCT_MEMBER);
+    }
+
+    /** Creates an array whose elements use Struct-member resolution. */
+    public LHArrayType(
+            Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        this(clazz, typeAdapterRegistry, placeholderValues, ResolutionContext.STRUCT_MEMBER);
     }
 
     public LHArrayType(
-            Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+            Class<?> clazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues,
+            ResolutionContext componentResolutionContext) {
         super(clazz, typeAdapterRegistry, placeholderValues);
 
         if (!clazz.isArray()) {
@@ -34,9 +44,11 @@ public final class LHArrayType extends LHClassType {
         Class<?> componentClass = clazz.getComponentType();
 
         if (componentClass.isArray()) {
-            this.componentType = new LHArrayType(componentClass, typeAdapterRegistry, this.placeholderValues);
+            this.componentType = new LHArrayType(
+                    componentClass, typeAdapterRegistry, this.placeholderValues, componentResolutionContext);
         } else {
-            this.componentType = LHClassType.fromJavaClass(componentClass, typeAdapterRegistry, this.placeholderValues);
+            this.componentType = LHClassType.resolve(
+                    componentClass, typeAdapterRegistry, this.placeholderValues, componentResolutionContext);
         }
 
         try {
@@ -53,6 +65,10 @@ public final class LHArrayType extends LHClassType {
     @Override
     public DefinedTypeCase getDefinedTypeCase() {
         return DefinedTypeCase.INLINE_ARRAY_DEF;
+    }
+
+    LHClassType getResolvedComponentType() {
+        return componentType;
     }
 
     @Override

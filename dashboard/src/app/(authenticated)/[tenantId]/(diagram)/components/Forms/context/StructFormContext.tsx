@@ -18,14 +18,20 @@ type StructPath = string[]
 export type VariableCase = Exclude<VariableValue['value']['oneofKind'], undefined>
 
 export interface StructFormContextValue {
-  registerStructPath: (path: StructPath, structDefId: StructDefId, includeEmptyStruct?: boolean) => void
+  registerStructPath: (path: StructPath, structDefId?: StructDefId, includeEmptyStruct?: boolean) => void
   unregisterStructPath: (path: StructPath) => void
   setPrimitiveFieldValue: (
     path: StructPath,
-    structDefId: StructDefId,
+    structDefId: StructDefId | undefined,
     fieldName: string,
     variableCase: VariableCase,
     value: unknown
+  ) => void
+  setFieldValue: (
+    path: StructPath,
+    structDefId: StructDefId | undefined,
+    fieldName: string,
+    value: VariableValue
   ) => void
   clearFieldValue: (path: StructPath, fieldName: string) => void
   getStructVariables: () => RunWfRequest['variables']
@@ -35,11 +41,11 @@ const STRUCT_PATH_KEY_SEPARATOR = '__STRUCT_PATH__'
 
 const structPathKey = (path: StructPath) => path.join(STRUCT_PATH_KEY_SEPARATOR)
 
-const createStructVariableValue = (structDefId: StructDefId): VariableValue => ({
+const createStructVariableValue = (structDefId?: StructDefId): VariableValue => ({
   value: {
     oneofKind: 'struct',
     struct: {
-      structDefId,
+      ...(structDefId ? { structDefId } : {}),
       struct: {
         fields: {},
       },
@@ -49,12 +55,12 @@ const createStructVariableValue = (structDefId: StructDefId): VariableValue => (
 
 const cloneVariableValue = (value: VariableValue): VariableValue => JSON.parse(JSON.stringify(value))
 
-const ensureStructFields = (value: VariableValue, structDefId: StructDefId): Record<string, StructField> => {
+const ensureStructFields = (value: VariableValue, structDefId?: StructDefId): Record<string, StructField> => {
   if (!value.value || value.value.oneofKind !== 'struct') {
     value.value = {
       oneofKind: 'struct',
       struct: {
-        structDefId,
+        ...(structDefId ? { structDefId } : {}),
         struct: {
           fields: {},
         },
@@ -100,43 +106,43 @@ interface StructFormProviderProps {
 
 export const StructFormProvider: FC<StructFormProviderProps> = ({ children, contextRef }) => {
   const structValuesRef = useRef<RunWfRequest['variables']>({})
-  const structDefRegistryRef = useRef<Map<string, StructDefId>>(new Map())
+  const structRegistryRef = useRef<Map<string, { structDefId?: StructDefId }>>(new Map())
 
   const ensureStructAtPath = useCallback((path: StructPath): Record<string, StructField> | undefined => {
     if (path.length === 0) return undefined
 
     const [topLevelName] = path
     const topKey = structPathKey([topLevelName])
-    const topStructDefId = structDefRegistryRef.current.get(topKey)
-    if (!topStructDefId) return undefined
+    const topRegistration = structRegistryRef.current.get(topKey)
+    if (!topRegistration) return undefined
 
     const structValues = structValuesRef.current
     if (!structValues[topLevelName]) {
-      structValues[topLevelName] = createStructVariableValue(topStructDefId)
+      structValues[topLevelName] = createStructVariableValue(topRegistration.structDefId)
     }
 
     const topValue = structValues[topLevelName]
-    let currentFields = ensureStructFields(topValue, topStructDefId)
+    let currentFields = ensureStructFields(topValue, topRegistration.structDefId)
 
     for (let index = 1; index < path.length; index++) {
       const segment = path[index]
       const segmentKey = structPathKey(path.slice(0, index + 1))
-      const segmentDefId = structDefRegistryRef.current.get(segmentKey)
-      if (!segmentDefId) return undefined
+      const segmentRegistration = structRegistryRef.current.get(segmentKey)
+      if (!segmentRegistration) return undefined
 
       const existingField = currentFields[segment]
       if (!existingField) {
         currentFields[segment] = {
-          value: createStructVariableValue(segmentDefId),
+          value: createStructVariableValue(segmentRegistration.structDefId),
           masked: false,
         }
       } else if (!existingField.value) {
-        existingField.value = createStructVariableValue(segmentDefId)
+        existingField.value = createStructVariableValue(segmentRegistration.structDefId)
       }
 
       const fieldValue = currentFields[segment].value
       if (!fieldValue) return undefined
-      currentFields = ensureStructFields(fieldValue, segmentDefId)
+      currentFields = ensureStructFields(fieldValue, segmentRegistration.structDefId)
     }
 
     return currentFields
@@ -189,8 +195,8 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
   )
 
   const registerStructPath = useCallback(
-    (path: StructPath, structDefId: StructDefId, includeEmptyStruct = false) => {
-      structDefRegistryRef.current.set(structPathKey(path), structDefId)
+    (path: StructPath, structDefId?: StructDefId, includeEmptyStruct = false) => {
+      structRegistryRef.current.set(structPathKey(path), { structDefId })
       if (includeEmptyStruct) {
         ensureStructAtPath(path)
       }
@@ -201,9 +207,9 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
   const unregisterStructPath = useCallback(
     (path: StructPath) => {
       const targetKey = structPathKey(path)
-      for (const key of Array.from(structDefRegistryRef.current.keys())) {
+      for (const key of Array.from(structRegistryRef.current.keys())) {
         if (key === targetKey || key.startsWith(`${targetKey}${STRUCT_PATH_KEY_SEPARATOR}`)) {
-          structDefRegistryRef.current.delete(key)
+          structRegistryRef.current.delete(key)
         }
       }
 
@@ -224,9 +230,15 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
   )
 
   const setPrimitiveFieldValue = useCallback(
-    (path: StructPath, structDefId: StructDefId, fieldName: string, variableCase: VariableCase, value: unknown) => {
+    (
+      path: StructPath,
+      structDefId: StructDefId | undefined,
+      fieldName: string,
+      variableCase: VariableCase,
+      value: unknown
+    ) => {
       if (path.length === 0) return
-      structDefRegistryRef.current.set(structPathKey(path), structDefId)
+      structRegistryRef.current.set(structPathKey(path), { structDefId })
       const fields = ensureStructAtPath(path)
       if (!fields) return
       fields[fieldName] = {
@@ -238,6 +250,17 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
         },
         masked: false,
       }
+    },
+    [ensureStructAtPath]
+  )
+
+  const setFieldValue = useCallback(
+    (path: StructPath, structDefId: StructDefId | undefined, fieldName: string, value: VariableValue) => {
+      if (path.length === 0) return
+      structRegistryRef.current.set(structPathKey(path), { structDefId })
+      const fields = ensureStructAtPath(path)
+      if (!fields) return
+      fields[fieldName] = { value, masked: false }
     },
     [ensureStructAtPath]
   )
@@ -269,10 +292,18 @@ export const StructFormProvider: FC<StructFormProviderProps> = ({ children, cont
       registerStructPath,
       unregisterStructPath,
       setPrimitiveFieldValue,
+      setFieldValue,
       clearFieldValue,
       getStructVariables,
     }),
-    [registerStructPath, unregisterStructPath, setPrimitiveFieldValue, clearFieldValue, getStructVariables]
+    [
+      registerStructPath,
+      unregisterStructPath,
+      setPrimitiveFieldValue,
+      setFieldValue,
+      clearFieldValue,
+      getStructVariables,
+    ]
   )
 
   useEffect(() => {

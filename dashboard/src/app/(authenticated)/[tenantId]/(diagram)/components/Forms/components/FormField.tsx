@@ -39,11 +39,9 @@ const FormField: FC<FormFieldProps> = ({
   masked,
   disabled = false,
 }) => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext()
+  const { register, getFieldState, formState } = useFormContext()
   const As = as
+  const fieldError = getFieldState(id, formState).error
 
   return (
     <Field>
@@ -59,16 +57,16 @@ const FormField: FC<FormFieldProps> = ({
       <As
         id={id}
         {...register(id, { required: formRequired ? `${label} is required` : false, validate })}
-        className={cn(errors[id] && 'border-destructive', 'w-fit')}
+        className={cn(fieldError && 'border-destructive', 'w-fit')}
         type={type}
         inputMode={inputMode}
         disabled={disabled}
       />
 
-      {errors[id] && (
+      {fieldError && (
         <FieldError className="flex items-center gap-1 text-sm text-destructive">
           <CircleAlert size={16} />
-          {String(errors[id]?.message)}
+          {String(fieldError.message)}
         </FieldError>
       )}
     </Field>
