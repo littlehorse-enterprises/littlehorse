@@ -18,6 +18,7 @@ import {
   getVariableDefType,
   getVariableFilterValue,
   getVariableValue,
+  isStructFieldRequired,
   lhPathToString,
   variableMutationLhsToString,
 } from './variables'
@@ -595,6 +596,15 @@ describe('getVariableCaseFromTypeDef', () => {
     expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
   })
 
+  it('should return struct for inlineStructDef', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
+  })
+
   it('should throw on unknown type', () => {
     const typeDef = {} as TypeDefinition
     expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
@@ -718,6 +728,15 @@ describe('formatTypeDefinition', () => {
 
     expect(formatTypeDefinition(typeDef)).toEqual('Struct<customer,1>')
   })
+
+  it('should format inline struct type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('InlineStruct')
+  })
 })
 
 describe('getVariableValue', () => {
@@ -778,6 +797,31 @@ describe('getTypedVariableValueFromTypeDef', () => {
     masked: false,
   }
 
+  const inlineAddress: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineStructDef',
+      inlineStructDef: {
+        fields: {
+          street: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: false,
+          },
+          unit: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: true,
+          },
+        },
+      },
+    },
+    masked: false,
+  }
+
   it('converts friendly Map JSON into a proto Map that round-trips back to the same display', () => {
     const vv = getTypedVariableValueFromTypeDef(mapStrInt, '{"apples":3,"bananas":5}')
     expect(vv.value.oneofKind).toEqual('map')
@@ -815,6 +859,39 @@ describe('getTypedVariableValueFromTypeDef', () => {
     expect(getVariableValue(vv)).toEqual('{"a":[1,2],"b":[3]}')
   })
 
+  it('converts inline structs nested in arrays without a StructDefId', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    const vv = getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","unit":null}]')
+    const address = vv.value.oneofKind === 'array' ? vv.value.array.items[0] : undefined
+
+    expect(address?.value.oneofKind).toBe('struct')
+    if (address?.value.oneofKind !== 'struct') throw new Error('Expected Struct value')
+    expect(address.value.struct.structDefId).toBeUndefined()
+    expect(address.value.struct.struct?.fields.street.value?.value).toEqual({ oneofKind: 'str', str: 'Main' })
+    expect(address.value.struct.struct?.fields.unit.value?.value.oneofKind).toBeUndefined()
+  })
+
+  it('rejects invalid inline struct objects nested in arrays', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"unit":"2A"}]')).toThrow(
+      'Missing required InlineStruct field: street'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","extra":true}]')).toThrow(
+      'Unknown InlineStruct field: extra'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '["Main"]')).toThrow(
+      'Expected a JSON object for InlineStruct'
+    )
+  })
+
   it('throws on malformed JSON so callers can surface a validation error instead of crashing', () => {
     expect(() => getTypedVariableValueFromTypeDef(mapStrInt, 'not json')).toThrow()
   })
@@ -823,5 +900,13 @@ describe('getTypedVariableValueFromTypeDef', () => {
     const varDef: VariableDef = { name: 'settings', typeDef: mapStrInt } as VariableDef
     const vv = getVariableFilterValue(varDef, '{"x":1}')
     expect(getVariableValue(vv)).toEqual('{"x":1}')
+  })
+})
+
+describe('isStructFieldRequired', () => {
+  it('treats nullable and defaulted fields as optional', () => {
+    expect(isStructFieldRequired({ isNullable: false })).toBe(true)
+    expect(isStructFieldRequired({ isNullable: true })).toBe(false)
+    expect(isStructFieldRequired({ isNullable: false, defaultValue: VariableValue.create() })).toBe(false)
   })
 })

@@ -1,5 +1,4 @@
 import { AccessLevelBadge, MaskedBadge, OptionalBadge, RequiredBadge } from '@/components/ui/badge'
-import { FieldLabel } from '@/components/ui/field'
 import { WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC, ReactNode } from 'react'
 import { OverflowText } from '@/app/(authenticated)/[tenantId]/components/OverflowText'
@@ -27,21 +26,21 @@ const VariableFieldHeader: FC<VariableFieldHeaderProps> = ({
   action,
 }) => {
   return (
-    <FieldLabel className="flex w-full flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <p className="font-semibold">{name}</p>
-          <div className="space-x-2">
+    <div className="flex w-full flex-col gap-2 text-sm font-medium leading-snug">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
+          <p className="break-words font-semibold">{name}</p>
+          <div className="flex flex-wrap gap-2">
             {typeBadge}
             {accessLevel && <AccessLevelBadge accessLevel={accessLevel} />}
             {masked && <MaskedBadge />}
             {required ? <RequiredBadge /> : <OptionalBadge />}
           </div>
         </div>
-        {action}
+        {action && <div className="shrink-0">{action}</div>}
       </div>
       {description && <OverflowText prose className="text-xs font-normal text-muted-foreground" text={description} />}
-    </FieldLabel>
+    </div>
   )
 }
 
