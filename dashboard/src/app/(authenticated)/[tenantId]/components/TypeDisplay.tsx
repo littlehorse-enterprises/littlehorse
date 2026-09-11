@@ -36,7 +36,7 @@ export const TypeDisplay: FC<Props> = ({ definedType }) => {
             <button
               type="button"
               aria-label="Inspect InlineStruct schema"
-              className="cursor-pointer rounded transition-colors hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="inline-flex cursor-pointer items-center justify-center rounded align-middle leading-none transition-colors hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
               <TypeBadge>
                 <span className="inline-flex items-center gap-1">

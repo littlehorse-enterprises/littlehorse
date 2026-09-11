@@ -90,6 +90,7 @@ describe('TypeDisplay', () => {
 
     render(<TypeDisplay definedType={definedType} />)
     const inspectButton = screen.getByRole('button', { name: 'Inspect InlineStruct schema' })
+    expect(inspectButton).toHaveClass('inline-flex', 'items-center', 'justify-center', 'align-middle', 'leading-none')
     expect(inspectButton.querySelector('svg')).toBeInTheDocument()
     fireEvent.click(inspectButton)
 
