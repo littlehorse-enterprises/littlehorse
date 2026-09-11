@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
 import io.littlehorse.sdk.common.proto.StructBuilder;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -98,12 +99,10 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
             String threadSpecName,
             ThreadSpecModel threadSpec)
             throws InvalidExpressionException {
-        StructDefModel structDef = new WfService(manager).getStructDef(expectedType.getStructDefId());
-        if (structDef == null) {
-            throw new InvalidExpressionException("StructDef not found: " + expectedType.getStructDefId());
-        }
-
-        Map<String, StructFieldDefModel> fieldDefs = structDef.getStructDef().getFields();
+        Map<String, StructFieldDefModel> fieldDefs = getFieldDefinitions(expectedType, manager);
+        String typeDescription = expectedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF
+                ? "Inline Struct"
+                : "StructDef " + expectedType.getStructDefId();
         Set<String> missingRequired = new HashSet<>();
 
         for (Map.Entry<String, StructFieldDefModel> entry : fieldDefs.entrySet()) {
@@ -113,10 +112,8 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
         }
 
         if (!missingRequired.isEmpty()) {
-            throw new InvalidExpressionException("Missing required field(s) for StructDef "
-                    + expectedType.getStructDefId()
-                    + ": "
-                    + String.join(", ", missingRequired));
+            throw new InvalidExpressionException(
+                    "Missing required field(s) for " + typeDescription + ": " + String.join(", ", missingRequired));
         }
 
         for (Map.Entry<String, InlineStructFieldValueModel> entry :
@@ -124,8 +121,7 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = fieldDefs.get(fieldName);
             if (fieldDef == null) {
-                throw new InvalidExpressionException(
-                        "StructDef " + expectedType.getStructDefId() + " does not contain field '" + fieldName + "'");
+                throw new InvalidExpressionException(typeDescription + " does not contain field '" + fieldName + "'");
             }
 
             InlineStructFieldValueModel fieldValue = entry.getValue();
@@ -163,15 +159,34 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
         }
 
         structDefId.setVersion(structDef.getObjectId().getVersion());
-        pinInlineStructVersions(value, structDef, manager);
+        pinInlineStructVersions(value, structDef.getStructDef().getFields(), manager);
+    }
+
+    private static Map<String, StructFieldDefModel> getFieldDefinitions(
+            TypeDefinitionModel typeDefinition, ReadOnlyMetadataManager manager) throws InvalidExpressionException {
+        if (typeDefinition.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+            return typeDefinition.getInlineStructDef().getFields();
+        }
+
+        if (typeDefinition.getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID) {
+            throw new InvalidExpressionException(typeDefinition + " does not resolve to a STRUCT value");
+        }
+
+        StructDefModel structDef = new WfService(manager).getStructDef(typeDefinition.getStructDefId());
+        if (structDef == null) {
+            throw new InvalidExpressionException("StructDef not found: " + typeDefinition.getStructDefId());
+        }
+        return structDef.getStructDef().getFields();
     }
 
     private void pinInlineStructVersions(
-            InlineStructBuilderModel builder, StructDefModel structDef, ReadOnlyMetadataManager manager)
+            InlineStructBuilderModel builder,
+            Map<String, StructFieldDefModel> fieldDefs,
+            ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
         for (Map.Entry<String, InlineStructFieldValueModel> entry :
                 builder.getFields().entrySet()) {
-            StructFieldDefModel fieldDef = structDef.getStructDef().getFields().get(entry.getKey());
+            StructFieldDefModel fieldDef = fieldDefs.get(entry.getKey());
             if (fieldDef == null) {
                 continue;
             }
@@ -181,13 +196,8 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
                     && fieldValue.getSimpleValue().getRhsSourceType() == SourceCase.STRUCT_BUILDER) {
                 fieldValue.getSimpleValue().getStructBuilder().pinStructVersions(manager);
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
-                StructDefModel nestedStructDef = new WfService(manager)
-                        .getStructDef(fieldDef.getFieldType().getStructDefId());
-                if (nestedStructDef == null) {
-                    throw new InvalidExpressionException(
-                            "StructDef not found: " + fieldDef.getFieldType().getStructDefId());
-                }
-                pinInlineStructVersions(fieldValue.getSubStructure(), nestedStructDef, manager);
+                pinInlineStructVersions(
+                        fieldValue.getSubStructure(), getFieldDefinitions(fieldDef.getFieldType(), manager), manager);
             }
         }
     }

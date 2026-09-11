@@ -178,8 +178,7 @@ public class LHStructDefType extends LHClassType {
         tempMarked.add(this);
 
         for (LHStructProperty property : this.getStructProperties()) {
-            LHClassType coreType =
-                    property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
+            LHClassType coreType = getResolvedDependencyType(property.getPropertyType(typeAdapterRegistry));
 
             if (coreType instanceof LHPrimitiveType) {
                 continue;
@@ -187,6 +186,9 @@ public class LHStructDefType extends LHClassType {
             if (coreType instanceof LHStructDefType) {
                 LHStructDefType propertyCoreType = (LHStructDefType) coreType;
                 propertyCoreType.detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (coreType instanceof LHInlineStructDefType) {
+                detectInlineDependencies(
+                        (LHInlineStructDefType) coreType, visited, sortedList, tempMarked, currentPath);
             } else {
                 throw new IllegalArgumentException(
                         "Missing @LHStructDef annotation on non-primitive class used in an LHStructDef getter or setter: "
@@ -199,6 +201,43 @@ public class LHStructDefType extends LHClassType {
         tempMarked.remove(this);
         visited.add(this);
         sortedList.add(this);
+    }
+
+    private LHClassType getResolvedDependencyType(LHClassType type) {
+        if (type instanceof LHArrayType) {
+            return getResolvedDependencyType(((LHArrayType) type).getResolvedComponentType());
+        }
+        if (type instanceof LHMapType) {
+            return getResolvedDependencyType(((LHMapType) type).getResolvedValueType());
+        }
+        return type;
+    }
+
+    private void detectInlineDependencies(
+            LHInlineStructDefType inlineType,
+            Set<LHClassType> visited,
+            List<LHStructDefType> sortedList,
+            Set<LHClassType> tempMarked,
+            List<LHClassType> currentPath)
+            throws IntrospectionException {
+        if (tempMarked.contains(inlineType)) {
+            currentPath.add(inlineType);
+            throw new StructDefCircularDependencyException(buildCircularDependencyExceptionMessage(currentPath));
+        }
+
+        tempMarked.add(inlineType);
+        currentPath.add(inlineType);
+        for (LHStructProperty property : inlineType.getStructProperties()) {
+            LHClassType propertyType = getResolvedDependencyType(property.getPropertyType(typeAdapterRegistry));
+            if (propertyType instanceof LHStructDefType) {
+                ((LHStructDefType) propertyType).detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (propertyType instanceof LHInlineStructDefType) {
+                detectInlineDependencies(
+                        (LHInlineStructDefType) propertyType, visited, sortedList, tempMarked, currentPath);
+            }
+        }
+        currentPath.remove(currentPath.size() - 1);
+        tempMarked.remove(inlineType);
     }
 
     private static String buildCircularDependencyExceptionMessage(List<LHClassType> classList) {

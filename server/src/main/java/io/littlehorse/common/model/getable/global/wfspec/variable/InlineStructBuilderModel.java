@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.sdk.common.proto.InlineStructBuilder;
 import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Collection;
@@ -89,7 +90,10 @@ public class InlineStructBuilderModel extends LHSerializable<InlineStructBuilder
             ReadOnlyMetadataManager manager,
             ThreadSpecModel threadSpec)
             throws InvalidExpressionException {
-        if (expectedType == null || expectedType.isNull() || expectedType.getStructDefId() == null) {
+        if (expectedType == null
+                || expectedType.isNull()
+                || (expectedType.getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID
+                        && expectedType.getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF)) {
             throw new InvalidExpressionException(source.getName() + " Does not resolve to a STRUCT value");
         }
 

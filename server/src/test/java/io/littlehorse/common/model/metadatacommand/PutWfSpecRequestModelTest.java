@@ -205,6 +205,73 @@ public class PutWfSpecRequestModelTest {
         assertThat(compilationErrors).hasSize(7);
     }
 
+    @Test
+    public void shouldRejectMapContainsExpressionAssignedToVariable() {
+        Workflow wf = Workflow.newWorkflow("map-contains-invalid", thread -> {
+            WfRunVariable map = thread.declareMap("map", String.class, Long.class);
+            WfRunVariable result = thread.declareBool("result");
+            result.assign(map.doesContain("key"));
+        });
+        String commandId = UUID.randomUUID().toString();
+        MetadataCommand command = MetadataCommand.newBuilder()
+                .setCommandId(commandId)
+                .setPutWfSpec(wf.compileWorkflow())
+                .build();
+
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+        CompletableFuture<Message> result =
+                asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+
+        Exception thrown = catchException(() -> result.getNow(null));
+        assertThat(thrown).hasCauseInstanceOf(LHApiException.class);
+        assertThat(thrown.getCause().getMessage())
+                .contains("You cannot compare RHS type")
+                .contains("Comparator IN");
+    }
+
+    @Test
+    public void shouldAllowArrayContainsExpressionAssignedToVariable() {
+        Workflow wf = Workflow.newWorkflow("array-contains-valid", thread -> {
+            WfRunVariable array = thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+            WfRunVariable result = thread.declareBool("result");
+            result.assign(array.doesContain(2L));
+        });
+        String commandId = UUID.randomUUID().toString();
+        MetadataCommand command = MetadataCommand.newBuilder()
+                .setCommandId(commandId)
+                .setPutWfSpec(wf.compileWorkflow())
+                .build();
+
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+        CompletableFuture<Message> registration =
+                asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+
+        assertThat(registration.getNow(null)).isInstanceOf(WfSpec.class);
+    }
+
+    @Test
+    public void shouldAllowArrayContainsExpressionInIfElseCondition() {
+        Workflow wf = Workflow.newWorkflow("array-contains-condition-valid", thread -> {
+            WfRunVariable array = thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+            WfRunVariable valueToCheck = thread.declareInt("value-to-check").withDefault(2L);
+            thread.doIfElse(array.doesContain(valueToCheck), ifBody -> {}, elseBody -> {});
+        });
+        String commandId = UUID.randomUUID().toString();
+        MetadataCommand command = MetadataCommand.newBuilder()
+                .setCommandId(commandId)
+                .setPutWfSpec(wf.compileWorkflow())
+                .build();
+
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+        CompletableFuture<Message> registration =
+                asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+
+        assertThat(registration.getNow(null)).isInstanceOf(WfSpec.class);
+    }
+
     private PutWfSpecRequest testWorkflowSpec() {
         return new WorkflowImpl("example-basic", wf -> {
                     wf.execute("greet");

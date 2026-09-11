@@ -52,6 +52,13 @@ public class Comparer {
     }
 
     public static boolean contains(VariableValueModel left, VariableValueModel right) throws LHVarSubError {
+        if (left.getValueType() != ValueCase.STR
+                && left.getValueType() != ValueCase.JSON_ARR
+                && left.getValueType() != ValueCase.JSON_OBJ
+                && left.getValueType() != ValueCase.ARRAY) {
+            throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getValueType());
+        }
+
         try {
             // Can only do for Str, Arr, and Obj
             if (left.getValueType() == ValueCase.STR) {
@@ -76,14 +83,8 @@ public class Comparer {
                     if (item.equals(right)) return true;
                 }
                 return false;
-            } else if (left.getValueType() == ValueCase.MAP) {
-                MapModel leftMap = left.getMap();
-                for (MapModel.MapEntryModel entry : leftMap.getEntries()) {
-                    if (entry.getKey().equals(right)) return true;
-                }
-                return false;
             } else {
-                throw new LHVarSubError(null, "Can't do CONTAINS on " + left.getValueType());
+                throw new IllegalStateException("Unhandled CONTAINS type " + left.getValueType());
             }
         } catch (Exception ex) {
             log.error("Error while evaluating CONTAINS with left={} right={}", left, right, ex);

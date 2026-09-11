@@ -142,6 +142,9 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
 
     public TypeDefinitionModel getTypeDefinition() {
         if (this.valueType == ValueCase.STRUCT) {
+            if (this.struct.getStructDefId() == null) {
+                return new TypeDefinitionModel();
+            }
             return new TypeDefinitionModel(this.struct.getStructDefId());
         } else if (this.valueType == ValueCase.ARRAY) {
             // If the ArrayModel has an authoritative element type, prefer it. This
@@ -1046,6 +1049,13 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel coerceToType(TypeDefinitionModel otherType) throws LHVarSubError {
+        if (valueType == ValueCase.STRUCT
+                && struct != null
+                && struct.getStructDefId() == null
+                && otherType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+            return new VariableValueModel(struct);
+        }
+
         if (getTypeDefinition().isNull()) {
             throw new LHVarSubError(null, "Coercing from NULL not supported.");
         } else if (otherType.isNull()) {
@@ -1090,6 +1100,11 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
                 }
             case STRUCT_DEF_ID:
                 if (otherType.getStructDefId().equals(getTypeDefinition().getStructDefId())) {
+                    return asStruct();
+                }
+                break;
+            case INLINE_STRUCT_DEF:
+                if (otherType.equals(getTypeDefinition())) {
                     return asStruct();
                 }
                 break;
@@ -1142,7 +1157,8 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     }
 
     public VariableValueModel asStruct() throws LHVarSubError {
-        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+        if (getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
+                || getTypeDefinition().getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
             return new VariableValueModel(struct);
         } else {
             throw new LHVarSubError(null, "Cant convert " + this.getTypeDefinition() + " to STRUCT");
