@@ -41,9 +41,9 @@ public class LHStructProperty {
     @Getter
     private final String description;
 
-    private final LHStructDefType parentStructDef;
+    private final LHClassType parentStructDef;
 
-    public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
+    public LHStructProperty(PropertyDescriptor pd, LHClassType parentStructDef) {
         this.pd = Objects.requireNonNull(pd);
         this.parentStructDef = parentStructDef;
 
@@ -75,16 +75,25 @@ public class LHStructProperty {
             if (val == null) return null;
 
             if (isNativeArray() && val.getClass().isArray()) {
-                return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
+                return LHLibUtil.objToVarValAsNativeArray(
+                        val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
             }
 
             if (isNativeMap() && val instanceof Map) {
+                LHMapType mapType = resolveMapType(typeAdapterRegistry);
                 return LHLibUtil.objToVarValAsNativeMap(
                         val,
-                        resolveMapType(typeAdapterRegistry).getTypeDefinition().getInlineMapDef(),
-                        typeAdapterRegistry);
+                        mapType.getTypeDefinition().getInlineMapDef(),
+                        typeAdapterRegistry,
+                        mapType.getKeyClass(),
+                        mapType.getValueClass(),
+                        placeholderValues);
             }
 
+            LHClassType propertyType = getPropertyType(typeAdapterRegistry);
+            if (propertyType instanceof LHInlineStructDefType) {
+                return LHLibUtil.objToVarValAsStruct(val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
+            }
             return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
@@ -113,8 +122,15 @@ public class LHStructProperty {
         }
 
         try {
-            pd.getWriteMethod()
-                    .invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry, placeholderValues));
+            Object propertyValue;
+            if (isNativeMap() && v.getValueCase() == VariableValue.ValueCase.MAP) {
+                LHMapType mapType = resolveMapType(typeAdapterRegistry);
+                propertyValue = LHLibUtil.varValToNativeMap(
+                        v, mapType.getKeyClass(), mapType.getValueClass(), typeAdapterRegistry, placeholderValues);
+            } else {
+                propertyValue = LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
+            }
+            pd.getWriteMethod().invoke(o, propertyValue);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
@@ -200,14 +216,22 @@ public class LHStructProperty {
         Map<String, String> placeholderValues = parentStructDef.getPlaceholderValues();
 
         if (isNativeArray()) {
-            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
+            return new LHArrayType(
+                    pd.getPropertyType(),
+                    typeAdapterRegistry,
+                    placeholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
         }
 
         if (isNativeMap()) {
             return resolveMapType(typeAdapterRegistry);
         }
 
-        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry, placeholderValues);
+        return LHClassType.resolve(
+                pd.getPropertyType(),
+                typeAdapterRegistry,
+                placeholderValues,
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
     }
 
     private boolean isNativeArray() {
@@ -232,7 +256,8 @@ public class LHStructProperty {
                         (Class<?>) typeArgs[0],
                         (Class<?>) typeArgs[1],
                         typeAdapterRegistry,
-                        parentStructDef.getPlaceholderValues());
+                        parentStructDef.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
             }
         }
 

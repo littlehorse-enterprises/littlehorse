@@ -63,6 +63,10 @@ public class InlineStructDefUtil {
         return b.build();
     }
 
+    public static boolean equals(InlineStructDefModel left, InlineStructDefModel right) {
+        return left.equals(right);
+    }
+
     public static Set<String> getIncompatibleFields(
             StructDefCompatibilityType compatibilityType,
             InlineStructDefModel newStructDef,

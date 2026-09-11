@@ -73,6 +73,40 @@ public class StructDefLifecycleTest {
     }
 
     @Test
+    void shouldStoreInlineStructFieldDefinition() {
+        String structDefName = "inline-struct-" + UUID.randomUUID();
+        InlineStructDef addressDefinition = InlineStructDef.newBuilder()
+                .putFields(
+                        "street",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(structDefName)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "address",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setInlineStructDef(addressDefinition))
+                                        .build()))
+                .build());
+
+        waitForStructDef(structDefName, null);
+
+        StructDef structDef = client.getStructDef(
+                StructDefId.newBuilder().setName(structDefName).build());
+        assertThat(structDef
+                        .getStructDef()
+                        .getFieldsOrThrow("address")
+                        .getFieldType()
+                        .getInlineStructDef())
+                .isEqualTo(addressDefinition);
+    }
+
+    @Test
     void shouldStoreStructFieldDefDescription() {
         client.putStructDef(PutStructDefRequest.newBuilder()
                 .setName("car-12")

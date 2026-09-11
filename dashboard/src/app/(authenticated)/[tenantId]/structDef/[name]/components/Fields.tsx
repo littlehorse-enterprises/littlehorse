@@ -1,4 +1,4 @@
-import { getVariableValue } from '@/app/utils'
+import { getVariableValue, isStructFieldRequired } from '@/app/utils'
 import { Badge, IdentifierBadge, MaskedBadge, RequiredBadge } from '@/components/ui/badge'
 import { InlineStructDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
@@ -16,7 +16,7 @@ export const Fields: FC<Props> = ({ fields }) => {
       {Object.entries(fields).map(([name, fieldDef]) => {
         if (!fieldDef.fieldType) return
 
-        const isRequired = !fieldDef.defaultValue
+        const isRequired = isStructFieldRequired(fieldDef)
         const fieldType = fieldDef.fieldType.definedType
         if (!fieldType) return
 

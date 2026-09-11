@@ -12,16 +12,41 @@ import io.littlehorse.sdk.wfsdk.LHStructBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.WorkflowVerifier;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@WithStructDefs({Car.class, PersonWithAddress.class, Address.class})
+@WithStructDefs({Car.class, PersonWithAddress.class, Address.class, StructBuilderTest.PersonWithInlineContact.class})
 public class StructBuilderTest {
+
+    @LHStructDef("struct-person-with-inline-contact")
+    @Getter
+    @Setter
+    public static class PersonWithInlineContact {
+        public String name;
+        public InlineContact contact;
+    }
+
+    @Getter
+    @Setter
+    public static class InlineContact {
+        public InlineAddress address;
+    }
+
+    @Getter
+    @Setter
+    public static class InlineAddress {
+        public String street;
+        public String state;
+        public int zip;
+    }
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
@@ -31,6 +56,9 @@ public class StructBuilderTest {
 
     @LHWorkflow("struct-builder-nested-wf")
     private Workflow nestedStructBuilderWorkflow;
+
+    @LHWorkflow("struct-builder-nested-inline-wf")
+    private Workflow nestedInlineStructBuilderWorkflow;
 
     @Test
     void shouldBuildStructFromInputsAndAssign() {
@@ -84,6 +112,34 @@ public class StructBuilderTest {
                 .start();
     }
 
+    @Test
+    void shouldNotSetStructDefIdOnNestedInlineStructs() {
+        verifier.prepareRun(
+                        nestedInlineStructBuilderWorkflow,
+                        Arg.of("name-input", "Obi-Wan"),
+                        Arg.of("street-input", "123 Jedi Temple"),
+                        Arg.of("state-input", "Coruscant"),
+                        Arg.of("zip-input", 12345))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "my-person-with-inline-contact", variableValue -> {
+                    var personFields = variableValue.getStruct().getStruct().getFieldsMap();
+                    var contact = personFields.get("contact").getValue().getStruct();
+                    assertThat(contact.hasStructDefId()).isFalse();
+
+                    var address = contact.getStruct()
+                            .getFieldsOrThrow("address")
+                            .getValue()
+                            .getStruct();
+                    assertThat(address.hasStructDefId()).isFalse();
+                    assertThat(address.getStruct()
+                                    .getFieldsOrThrow("street")
+                                    .getValue()
+                                    .getStr())
+                            .isEqualTo("123 Jedi Temple");
+                })
+                .start();
+    }
+
     @LHWorkflow("struct-builder-wf")
     public Workflow structBuilderWf() {
         return new WorkflowImpl("struct-builder-wf", wf -> {
@@ -124,6 +180,32 @@ public class StructBuilderTest {
 
             personVar.assign(personBuilder);
 
+            wf.execute("greet-person", personVar.get("name"));
+        });
+    }
+
+    @LHWorkflow("struct-builder-nested-inline-wf")
+    public Workflow nestedInlineStructBuilderWf() {
+        return new WorkflowImpl("struct-builder-nested-inline-wf", wf -> {
+            WfRunVariable nameInput = wf.declareStr("name-input").required();
+            WfRunVariable streetInput = wf.declareStr("street-input").required();
+            WfRunVariable stateInput = wf.declareStr("state-input").required();
+            WfRunVariable zipInput = wf.declareInt("zip-input").required();
+            WfRunVariable personVar = wf.declareStruct("my-person-with-inline-contact", PersonWithInlineContact.class);
+
+            LHStructBuilder personBuilder = wf.buildStruct("struct-person-with-inline-contact")
+                    .put("name", nameInput)
+                    .put(
+                            "contact",
+                            wf.buildInlineStruct()
+                                    .put(
+                                            "address",
+                                            wf.buildInlineStruct()
+                                                    .put("street", streetInput)
+                                                    .put("state", stateInput)
+                                                    .put("zip", zipInput)));
+
+            personVar.assign(personBuilder);
             wf.execute("greet-person", personVar.get("name"));
         });
     }
