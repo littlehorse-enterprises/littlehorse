@@ -2,9 +2,11 @@ package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -13,6 +15,7 @@ import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -128,7 +131,17 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                 VariableValueModel defaultVal = fieldDef.getDefaultValue();
                 if (defaultVal != null) {
                     StructFieldModel defaultField = new StructFieldModel();
-                    defaultField.setValue(defaultVal);
+                    VariableValueModel defaultValueCopy = defaultVal.getCopy();
+                    try {
+                        IngressTypeUtils.applyExpectedTypeAndValidate(
+                                Optional.of(fieldDef.getFieldType()), defaultValueCopy, metadataManager);
+                    } catch (TypeValidationException e) {
+                        throw new StructValidationException(
+                                e,
+                                String.format(
+                                        "Default value for field '%s' is invalid: %s", fieldName, e.getMessage()));
+                    }
+                    defaultField.setValue(defaultValueCopy);
                     defaultField.setMasked(fieldDef.getFieldType().isMasked());
                     inlineStruct.getFields().put(fieldName, defaultField);
                 }
