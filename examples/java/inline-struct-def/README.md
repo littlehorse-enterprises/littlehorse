@@ -1,30 +1,22 @@
 ## Running Inline StructDef Example
 
-Inline StructDefs embed a schema directly in a workflow or task definition. They are useful for
-POJOs that should be represented as LittleHorse `Struct` values without registering a separate,
-named `StructDef`.
+Inline StructDefs embed a schema directly in a workflow or task definition. They are useful for POJOs that should be represented as LittleHorse `Struct` values without registering a separate, named `StructDef`.
 
-This example uses the unannotated `DeliveryAddress` POJO as an inline StructDef. The `DeliveryAddress`
-schema is embedded directly in the registered `Order` StructDef (via the `deliveryAddress` field), in
-the workflow's `WfSpec`, and in the `normalize-order` and `format-shipping-label` `TaskDef`s.
+This example uses the `DeliveryAddress` POJO without a class-level `@LHStructDef`, so it becomes an inline StructDef. Its `@LHStructField` annotations add descriptions to the embedded fields without turning it into a separately registered StructDef. The `DeliveryAddress` schema is embedded directly in the registered `Order` StructDef (via the `deliveryAddress` field), in the workflow's `WfSpec`, and in the `normalize-order` and `format-shipping-label` `TaskDef`s.
 
 ### Start the workers
 
-Run the example application to register the `StructDef`, `TaskDef`s, and `WfSpec`, then start the
-task workers:
+Run the example application to register the `StructDef`, `TaskDef`s, and `WfSpec`, then start the task workers:
 
 ```bash
 ./gradlew example-inline-struct-def:run
 ```
 
-Keep this process running. Unlike the regular StructDef example, the `DeliveryAddress` schema is not
-registered as a standalone `StructDef`; it is embedded inline as a field of the `Order` StructDef and
-in the `WfSpec` and `TaskDef`s. Only the named `Order` StructDef is registered.
+Keep this process running. Unlike the regular StructDef example, the `DeliveryAddress` schema is not registered as a standalone `StructDef`; it is embedded inline as a field of the `Order` StructDef and in the `WfSpec` and `TaskDef`s. Only the named `Order` StructDef is registered.
 
 ### Run the workflow
 
-In another terminal, use `lhctl` to provide the order as a JSON-formatted Struct variable. The nested
-`deliveryAddress` object is provided inline:
+In another terminal, use `lhctl` to provide the order as a JSON-formatted Struct variable. The nested `deliveryAddress` object is provided inline:
 
 *Unnecessary spacing added to the Struct strings to fit the use case of the example, which involves trimming those Strings via our `normalize-order` TaskDef.*
 

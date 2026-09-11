@@ -1,8 +1,15 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.worker.LHStructField;
+
 public class DeliveryAddress {
+    @LHStructField(description = "The street address for the delivery destination.")
     private String street;
+
+    @LHStructField(description = "The city for the delivery destination.")
     private String city;
+
+    @LHStructField(description = "The postal code for the delivery destination.")
     private String postalCode;
 
     public DeliveryAddress() {}
