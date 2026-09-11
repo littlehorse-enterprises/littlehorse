@@ -1,10 +1,6 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
-import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
-import io.littlehorse.sdk.common.proto.RunWfRequest;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -59,11 +55,7 @@ public class InlineStructDefExample {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length == 0) {
-            runWorkers();
-        } else {
-            runWorkflow(args);
-        }
+        runWorkers();
     }
 
     public static void runWorkers() throws IOException {
@@ -81,26 +73,5 @@ public class InlineStructDefExample {
             log.info("Starting {}", worker.getTaskDefName());
             worker.start();
         }
-    }
-
-    public static void runWorkflow(String[] args) throws IOException {
-        if (args.length < 3) {
-            throw new IllegalArgumentException("Expected args: <street> <city> <postal-code>");
-        }
-
-        LHConfig config = new LHConfig(getConfigProps());
-        LittleHorseBlockingStub client = config.getBlockingStub();
-        DeliveryAddress address = new DeliveryAddress(args[0], args[1], args[2]);
-
-        String wfRunId = client.runWf(RunWfRequest.newBuilder()
-                        .setWfSpecName(WF_SPEC_NAME)
-                        .putVariables(
-                                "address",
-                                LHLibUtil.objToVarVal(address, DeliveryAddress.class, LHTypeAdapterRegistry.empty()))
-                        .build())
-                .getId()
-                .getId();
-
-        System.out.println("Started workflow run: " + wfRunId);
     }
 }

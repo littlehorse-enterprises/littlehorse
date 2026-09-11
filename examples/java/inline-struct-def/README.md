@@ -19,10 +19,10 @@ standalone `StructDef`; the `DeliveryAddress` schema is embedded in the `WfSpec`
 
 ### Run the workflow
 
-In another terminal, provide the street, city, and postal code as arguments:
+In another terminal, use `lhctl` to provide the address as a JSON input variable:
 
 ```bash
-./gradlew example-inline-struct-def:run --args='"123 Main Street" Springfield 12345'
+lhctl run example-inline-struct-def address '{"street":"123 Main Street","city":"Springfield","postalCode":"12345"}'
 ```
 
 The command prints the workflow run ID. Use it to inspect the result:
