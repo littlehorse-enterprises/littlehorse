@@ -205,6 +205,31 @@ public class PutWfSpecRequestModelTest {
         assertThat(compilationErrors).hasSize(7);
     }
 
+    @Test
+    public void shouldRejectMapContainsExpressionAssignedToVariable() {
+        Workflow wf = Workflow.newWorkflow("map-contains-invalid", thread -> {
+            WfRunVariable map = thread.declareMap("map", String.class, Long.class);
+            WfRunVariable result = thread.declareBool("result");
+            result.assign(map.doesContain("key"));
+        });
+        String commandId = UUID.randomUUID().toString();
+        MetadataCommand command = MetadataCommand.newBuilder()
+                .setCommandId(commandId)
+                .setPutWfSpec(wf.compileWorkflow())
+                .build();
+
+        metadataProcessor.init(mockProcessorContext);
+        metadataProcessor.process(new Record<>("test", command, 0L, defaultHeaders));
+        CompletableFuture<Message> result =
+                asyncWaiters.getOrRegisterFuture(commandId, WfSpec.class, new CompletableFuture<>());
+
+        Exception thrown = catchException(() -> result.getNow(null));
+        assertThat(thrown).hasCauseInstanceOf(LHApiException.class);
+        assertThat(thrown.getCause().getMessage())
+                .contains("You cannot compare RHS type")
+                .contains("Comparator IN");
+    }
+
     private PutWfSpecRequest testWorkflowSpec() {
         return new WorkflowImpl("example-basic", wf -> {
                     wf.execute("greet");

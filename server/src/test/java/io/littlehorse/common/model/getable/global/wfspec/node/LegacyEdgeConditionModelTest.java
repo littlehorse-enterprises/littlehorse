@@ -35,7 +35,7 @@ public class LegacyEdgeConditionModelTest {
                 Arguments.of(VariableType.STR, Comparator.IN, VariableType.JSON_OBJ, true),
                 Arguments.of(VariableType.BOOL, Comparator.IN, VariableType.JSON_OBJ, false),
                 Arguments.of(VariableType.INT, Comparator.IN, VariableType.JSON_ARR, true),
-                Arguments.of(VariableType.STR, Comparator.IN, new StructDefIdModel(), true),
+                Arguments.of(VariableType.STR, Comparator.IN, new StructDefIdModel(), false),
                 Arguments.of(VariableType.INT, Comparator.IN, new StructDefIdModel(), false),
                 Arguments.of(VariableType.JSON_OBJ, Comparator.EQUALS, VariableType.JSON_OBJ, true),
                 Arguments.of(VariableType.JSON_OBJ, Comparator.LESS_THAN, VariableType.JSON_OBJ, false),
