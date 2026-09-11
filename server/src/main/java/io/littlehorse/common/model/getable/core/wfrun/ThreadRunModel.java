@@ -1022,7 +1022,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 TypeDefinitionModel nestedType = fieldDefs.get(fieldName).getFieldType();
                 StructModel nestedStruct = new StructModel();
                 if (nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
-                    nestedStruct.setStructDefId(new StructDefIdModel());
                     nestedStruct.setInlineStruct(buildInlineStructValue(
                             fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
                 } else if (nestedType.getStructDefId() != null
@@ -1071,7 +1070,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                         : null;
                 StructModel nestedStruct = new StructModel();
                 if (nestedType != null && nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
-                    nestedStruct.setStructDefId(new StructDefIdModel());
                     nestedStruct.setInlineStruct(buildInlineStructValue(
                             fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
                 } else if (nestedType != null
