@@ -2,8 +2,10 @@ package io.littlehorse.common.model.getable.global.wfspec;
 
 import static org.assertj.core.api.Assertions.*;
 
+import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
@@ -107,6 +109,24 @@ class TypeDefinitionModelTest {
                         io.littlehorse.common.model.getable.core.variable.VariableValueModel.fromProto(mapValue, null),
                         null))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    public void shouldValidateInlineStructDefinitionsNestedInArrays() {
+        InlineStructDef invalidStructDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "invalid_field",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(new TypeDefinitionModel(VariableType.STR).toProto())
+                                .build())
+                .build();
+        TypeDefinitionModel inlineStructType =
+                new TypeDefinitionModel(InlineStructDefModel.fromProto(invalidStructDef, null));
+        TypeDefinitionModel arrayType = new TypeDefinitionModel(new InlineArrayDefModel(inlineStructType));
+
+        assertThatThrownBy(() -> arrayType.validateAndPin(null))
+                .isInstanceOf(StructDefValidationException.class)
+                .hasMessageContaining("invalid_field");
     }
 
     @Test

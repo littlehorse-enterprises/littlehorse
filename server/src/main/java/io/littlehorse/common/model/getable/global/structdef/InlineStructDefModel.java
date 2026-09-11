@@ -2,11 +2,9 @@ package io.littlehorse.common.model.getable.global.structdef;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
-import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -71,23 +69,10 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
             }
 
             try {
-                // Ensure any STRUCT_DEF_ID referenced in the field's type exists and is pinned to the concrete latest
-                // version
                 if (field.getValue().getFieldType() != null) {
-                    try {
-                        field.getValue().getFieldType().validateStructDefExistsAndPinVersion(metadataManager);
-                    } catch (UnknownStructDefException e) {
-                        throw new StructDefValidationException(e, e.getMessage());
-                    }
+                    field.getValue().getFieldType().validateAndPin(metadataManager);
                 }
-
                 field.getValue().validate(metadataManager);
-
-                // Recurse into nested inline struct defs for field-name validation
-                TypeDefinitionModel fieldType = field.getValue().getFieldType();
-                if (fieldType != null && fieldType.getInlineStructDef() != null) {
-                    fieldType.getInlineStructDef().validate(metadataManager);
-                }
             } catch (StructDefValidationException e) {
                 throw new StructDefValidationException(
                         e, String.format("StructDef field '%s' invalid: %s", field.getKey(), e.getMessage()));

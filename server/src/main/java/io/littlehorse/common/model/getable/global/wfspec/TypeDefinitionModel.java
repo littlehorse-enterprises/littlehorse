@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
@@ -321,7 +322,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * @param metadataManager the metadata manager to look up the StructDef.
      * @throws UnknownStructDefException if the referenced StructDef does not exist.
      */
-    public void validateStructDefExistsAndPinVersion(ReadOnlyMetadataManager metadataManager)
+    private void validateStructDefReferencesAndPinVersions(ReadOnlyMetadataManager metadataManager)
             throws UnknownStructDefException {
         if (definedTypeCase == DefinedTypeCase.STRUCT_DEF_ID) {
             WfService wfService = new WfService(metadataManager);
@@ -338,16 +339,16 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             return;
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF) {
             if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
-                inlineArrayDef.getArrayType().validateStructDefExistsAndPinVersion(metadataManager);
+                inlineArrayDef.getArrayType().validateStructDefReferencesAndPinVersions(metadataManager);
             }
             return;
         } else if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
             if (inlineMapDef != null) {
                 if (inlineMapDef.getKeyType() != null) {
-                    inlineMapDef.getKeyType().validateStructDefExistsAndPinVersion(metadataManager);
+                    inlineMapDef.getKeyType().validateStructDefReferencesAndPinVersions(metadataManager);
                 }
                 if (inlineMapDef.getValueType() != null) {
-                    inlineMapDef.getValueType().validateStructDefExistsAndPinVersion(metadataManager);
+                    inlineMapDef.getValueType().validateStructDefReferencesAndPinVersions(metadataManager);
                 }
             }
             return;
@@ -355,13 +356,72 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             if (inlineStructDef != null) {
                 for (StructFieldDefModel fieldDef : inlineStructDef.getFields().values()) {
                     if (fieldDef.getFieldType() != null) {
-                        fieldDef.getFieldType().validateStructDefExistsAndPinVersion(metadataManager);
+                        fieldDef.getFieldType().validateStructDefReferencesAndPinVersions(metadataManager);
                     }
                 }
             }
             return;
         } else {
             return;
+        }
+    }
+
+    /** Validates this type and recursively validates any embedded type definitions. */
+    public void validateAndPin(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        try {
+            validateStructDefReferencesAndPinVersions(metadataManager);
+            validateMapKeyTypes();
+        } catch (UnknownStructDefException | IllegalArgumentException e) {
+            throw new StructDefValidationException(e, e.getMessage());
+        }
+
+        switch (definedTypeCase) {
+            case INLINE_ARRAY_DEF:
+                if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
+                    inlineArrayDef.getArrayType().validateEmbeddedStructDefinitions(metadataManager);
+                }
+                break;
+            case INLINE_MAP_DEF:
+                if (inlineMapDef != null) {
+                    if (inlineMapDef.getKeyType() != null) {
+                        inlineMapDef.getKeyType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                    if (inlineMapDef.getValueType() != null) {
+                        inlineMapDef.getValueType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                }
+                break;
+            case INLINE_STRUCT_DEF:
+                inlineStructDef.validate(metadataManager);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void validateEmbeddedStructDefinitions(ReadOnlyMetadataManager metadataManager)
+            throws StructDefValidationException {
+        switch (definedTypeCase) {
+            case INLINE_ARRAY_DEF:
+                if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
+                    inlineArrayDef.getArrayType().validateEmbeddedStructDefinitions(metadataManager);
+                }
+                break;
+            case INLINE_MAP_DEF:
+                if (inlineMapDef != null) {
+                    if (inlineMapDef.getKeyType() != null) {
+                        inlineMapDef.getKeyType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                    if (inlineMapDef.getValueType() != null) {
+                        inlineMapDef.getValueType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                }
+                break;
+            case INLINE_STRUCT_DEF:
+                inlineStructDef.validate(metadataManager);
+                break;
+            default:
+                break;
         }
     }
 
@@ -581,16 +641,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
         switch (value.getValueType()) {
             case STRUCT:
-                if (this.definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF) {
-                    try {
-                        this.inlineStructDef.validateAgainstSuperset(
-                                value.getStruct().getInlineStruct(), readOnlyMetadataManager);
-                    } catch (StructValidationException e) {
-                        throw new TypeValidationException(e, "Inline struct validation failed: " + e.getMessage());
-                    }
-                } else {
-                    value.getStruct().validateAgainstStructDefId(this.getStructDefId(), readOnlyMetadataManager);
-                }
+                value.getStruct().validateAgainstStructDefId(this.getStructDefId(), readOnlyMetadataManager);
                 break;
             case ARRAY:
                 TypeDefinitionModel expectedElementType =
