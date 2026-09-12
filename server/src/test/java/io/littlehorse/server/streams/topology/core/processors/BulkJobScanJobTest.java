@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.TaskId;
@@ -165,6 +166,36 @@ public class BulkJobScanJobTest {
             assertThat(report.isCompleted()).isTrue();
             assertThat(report.getPartition()).isEqualTo(TASK_ID.partition());
         });
+    }
+
+    @Test
+    void shouldRateLimitReportsAndFlushLatestProgressOnClose() throws Exception {
+        String jobId = LHUtil.generateGuid();
+        AtomicReference<Instant> now = new AtomicReference<>(Instant.parse("2026-01-01T00:00:00Z"));
+        BulkJobScanJob throttledJob = newJob(UNLIMITED_TIME_BUDGET, UNLIMITED_COMMAND_BUDGET, now::get);
+        seedRunningJob(jobId, emptyMatchDelete());
+
+        runAndApply(throttledJob);
+        assertThat(forwardedShardReports()).hasSize(1);
+
+        mockProcessorContext.resetForwards();
+        markCursorIncomplete(jobId);
+        now.set(now.get().plusSeconds(30));
+        runAndApply(throttledJob);
+        assertThat(forwardedShardReports()).isEmpty();
+
+        now.set(now.get().plusSeconds(30));
+        runAndApply(throttledJob);
+        assertThat(forwardedShardReports()).hasSize(1);
+
+        mockProcessorContext.resetForwards();
+        markCursorIncomplete(jobId);
+        now.set(now.get().plusSeconds(30));
+        runAndApply(throttledJob);
+        assertThat(forwardedShardReports()).isEmpty();
+
+        throttledJob.flushPendingReports(mockProcessorContext::forward);
+        assertThat(forwardedShardReports()).hasSize(1);
     }
 
     @Test
@@ -425,6 +456,13 @@ public class BulkJobScanJobTest {
         // Tags are co-partitioned with the WfRun in the tenant-scoped CORE store.
         tenantCoreStore.put(tag);
         return tag;
+    }
+
+    private void markCursorIncomplete(String jobId) {
+        BulkJobShardCursorModel cursor = tenantCoreStore.get(
+                new BulkJobShardCursorModel(new BulkJobIdModel(jobId)).getStoreKey(), BulkJobShardCursorModel.class);
+        cursor.setScanCompleted(false);
+        tenantCoreStore.put(cursor);
     }
 
     private List<String> forwardedDeletedWfRunIds() {
