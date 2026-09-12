@@ -1018,7 +1018,7 @@ public class LHServerConfig extends ConfigBase {
 
         // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
         // Therefore, request timeout should be less than transaction timeout / session timeout.
-        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
+        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.30));
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
