@@ -40,9 +40,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.admin.Admin;
 import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.DescribeTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.admin.TopicDescription;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.KafkaFuture;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.apache.kafka.common.serialization.Serdes;
@@ -1158,6 +1161,14 @@ public class LHServerConfig extends ConfigBase {
                 throw e;
             }
         }
+    }
+
+    public Map<String, KafkaFuture<TopicDescription>> outputTopicExistsFor(TenantIdModel tenant) {
+        String metadataOutputTopicName = getMetadataOutputTopicName(tenant);
+        String coreCmdTopicName = getCoreCmdTopicName();
+        DescribeTopicsResult describeTopicsResult =
+                kafkaAdmin.describeTopics(List.of(metadataOutputTopicName, coreCmdTopicName));
+        return describeTopicsResult.topicNameValues();
     }
 
     private void initRocksdbSingletons() {

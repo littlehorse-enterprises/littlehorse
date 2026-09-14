@@ -1,9 +1,11 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
@@ -12,6 +14,7 @@ import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventReques
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.externalevent.CorrelatedEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
+import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
@@ -23,6 +26,7 @@ import io.littlehorse.common.model.outputtopic.OutputTopicRecordModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.auth.internalport.InternalCallCredentials;
 import io.littlehorse.server.streams.ServerTopology;
@@ -42,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.utils.Bytes;
@@ -55,7 +63,7 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
  * scheduling WfRun's is actually done.
  */
 @Slf4j
-public class CoreProcessorContext implements ExecutionContext {
+public class CoreProcessorContext extends ProcessingContext {
 
     private final LHServerConfig config;
 
@@ -81,6 +89,8 @@ public class CoreProcessorContext implements ExecutionContext {
     private final PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows;
     private final PartitionLocalBuffer<PartitionCountedTagModel> countedTags;
     private PartitionMetricsCollector metricsCollector;
+    private final OutputTopicConfig.OutputTopicRecordingLevel outputTopicRecordingLevel;
+    private final CompletableFuture<Boolean> validOutputTopicFuture;
 
     public CoreProcessorContext(
             Command currentCommand,
@@ -92,6 +102,7 @@ public class CoreProcessorContext implements ExecutionContext {
             LHServer server,
             PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows,
             PartitionLocalBuffer<PartitionCountedTagModel> countedTags) {
+        super(config);
 
         this.processorContext = processorContext;
         this.metadataCache = metadataCache;
@@ -115,6 +126,17 @@ public class CoreProcessorContext implements ExecutionContext {
         this.authContext = this.authContextFor();
         this.currentCommand = LHSerializable.fromProto(currentCommand, CommandModel.class, this);
         this.eventsToThrow = new ArrayList<>();
+        TenantModel storedTenant = metadataManager.get(tenantId);
+        if (storedTenant != null
+                && storedTenant.getOutputTopicConfig() != null
+                && storedTenant.getOutputTopicConfig().getDefaultRecordingLevel()
+                        != OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            outputTopicRecordingLevel = storedTenant.getOutputTopicConfig().getDefaultRecordingLevel();
+            validOutputTopicFuture = outputTopicsExist();
+        } else {
+            outputTopicRecordingLevel = OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS;
+            validOutputTopicFuture = CompletableFuture.completedFuture(true);
+        }
     }
 
     public PartitionLocalBuffer<PartitionCountedTagModel> getCountedTagsAccumulator() {
@@ -235,12 +257,7 @@ public class CoreProcessorContext implements ExecutionContext {
             return storageManager;
         }
         storageManager = new GetableManager(
-                coreStore,
-                processorContext,
-                config,
-                currentCommand,
-                this,
-                metadataManager.get(tenantId).getOutputTopicConfig());
+                coreStore, processorContext, config, currentCommand, this, outputTopicRecordingLevel);
         return storageManager;
     }
 
@@ -263,6 +280,15 @@ public class CoreProcessorContext implements ExecutionContext {
      * decide when to call this method
      */
     public void endExecution() {
+        try {
+            // 20 milliseconds more to the network call.
+            Boolean validTopic = validOutputTopicFuture.get(20, TimeUnit.MILLISECONDS);
+            if (!validTopic) {
+                throw new LHApiException(Status.ABORTED.withDescription("Failed to send output topic"));
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new LHApiException(Status.ABORTED.withDescription("Failed to send output topic"));
+        }
         if (storageManager != null) {
             storageManager.commit();
         }
