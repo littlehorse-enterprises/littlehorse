@@ -218,7 +218,8 @@ public class BulkJobScanJob implements PartitionBackgroundJob<CommandProcessorOu
         }
         if (!dueReports.isEmpty()) {
             ctx.submit();
-            dueReports.forEach(key -> lastReportAt.put(key, now));
+            Instant submittedAt = clock.get();
+            dueReports.forEach(key -> lastReportAt.put(key, submittedAt));
         }
     }
 

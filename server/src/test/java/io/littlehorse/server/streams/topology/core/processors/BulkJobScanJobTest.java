@@ -45,6 +45,7 @@ import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.kafka.streams.processor.api.MockProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -196,6 +197,44 @@ public class BulkJobScanJobTest {
 
         throttledJob.flushPendingReports(mockProcessorContext::forward);
         assertThat(forwardedShardReports()).hasSize(1);
+    }
+
+    @Test
+    void shouldStartReportIntervalAfterBackpressuredSubmissionCompletes() throws Exception {
+        String jobId = LHUtil.generateGuid();
+        AtomicReference<Instant> now = new AtomicReference<>(Instant.parse("2026-01-01T00:00:00Z"));
+        AtomicReference<Throwable> workerFailure = new AtomicReference<>();
+        BulkJobScanJob throttledJob = newJob(UNLIMITED_TIME_BUDGET, UNLIMITED_COMMAND_BUDGET, now::get);
+        seedRunningJob(jobId, emptyMatchDelete());
+        BulkJobShardCursorModel cursor = new BulkJobShardCursorModel(new BulkJobIdModel(jobId));
+        cursor.setScanCompleted(true);
+        tenantCoreStore.put(cursor);
+
+        // Fill the scheduler's bounded queue so publishing the report blocks in ctx.submit().
+        for (int i = 0; i < 1_000; i++) {
+            jobContext().put(tenantId, cursor);
+            jobContext().submit();
+        }
+        Thread worker = Thread.ofPlatform().start(() -> {
+            try {
+                throttledJob.run(jobContext());
+            } catch (Throwable t) {
+                workerFailure.set(t);
+            }
+        });
+        Awaitility.await().atMost(Duration.ofSeconds(5)).until(() -> worker.getState() == Thread.State.WAITING);
+
+        now.set(now.get().plusSeconds(61));
+        drain();
+        worker.join(Duration.ofSeconds(5));
+        assertThat(worker.isAlive()).isFalse();
+        assertThat(workerFailure.get()).isNull();
+        drain();
+        assertThat(forwardedShardReports()).hasSize(1);
+
+        mockProcessorContext.resetForwards();
+        runAndApply(throttledJob);
+        assertThat(forwardedShardReports()).isEmpty();
     }
 
     @Test
