@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Test;
 @Tag("slow")
 public class WfRunBulkDeletion {
 
+    private static final int BULK_JOB_COMPLETION_TIMEOUT_SECONDS = 90;
+
     private LittleHorseGrpc.LittleHorseBlockingStub client;
     private WorkflowVerifier verifier;
 
@@ -115,8 +117,8 @@ public class WfRunBulkDeletion {
     }
 
     private BulkJob waitForBulkJobCompletion(BulkJobId jobId) throws InterruptedException {
-        // The punctuator runs on a 1s schedule; poll until the job reaches a terminal state.
-        for (int i = 0; i < 40; i++) {
+        // The scan runs every second, but shard progress reaches metadata at most once per minute.
+        for (int i = 0; i < BULK_JOB_COMPLETION_TIMEOUT_SECONDS; i++) {
             BulkJob job = client.getBulkJob(
                     GetBulkJobRequest.newBuilder().setId(jobId).build());
             if (job.getStatus() != BulkJobStatus.BULK_JOB_RUNNING) {

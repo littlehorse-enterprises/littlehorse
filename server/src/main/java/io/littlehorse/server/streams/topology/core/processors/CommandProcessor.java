@@ -254,6 +254,9 @@ public class CommandProcessor implements Processor<String, Command, String, Comm
             backgroundScheduler.close();
             backgroundScheduler = null;
         }
+        if (bulkJobScanJob != null) {
+            bulkJobScanJob.flushPendingReports(ctx::forward);
+        }
         if (partitionIsClaimed) {
             this.partitionDrain.reset();
         }

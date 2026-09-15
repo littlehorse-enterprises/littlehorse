@@ -83,7 +83,9 @@ public class AwaitWorkflowEventExample {
         WorkflowEvent event = client.withDeadlineAfter(timeoutMs, TimeUnit.MILLISECONDS)
                 .awaitWorkflowEvent(AwaitWorkflowEventRequest.newBuilder()
                         .setWfRunId(WfRunId.newBuilder().setId(id))
-                        .addAllEventDefIds(List.of(WorkflowEventDefId.newBuilder().setName("sleep-done").build()))
+                        .addAllEventDefIds(List.of(WorkflowEventDefId.newBuilder()
+                                .setName("sleep-done")
+                                .build()))
                         .build());
 
         System.out.println(LHLibUtil.protoToJson(event));
