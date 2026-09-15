@@ -184,6 +184,17 @@ public class CommandProcessorTest {
         assertThat(timer.topic).isEqualTo("core-cmd");
     }
 
+    @Test
+    void shouldFlushBulkJobProgressOnClose() throws Exception {
+        commandProcessor.init(mockProcessorContext);
+        BulkJobScanJob bulkJobScanJob = mock();
+        setField(commandProcessor, "bulkJobScanJob", bulkJobScanJob);
+
+        commandProcessor.close();
+
+        verify(bulkJobScanJob).flushPendingReports(any());
+    }
+
     @SuppressWarnings("unchecked")
     private PartitionLocalBuffer<PartitionMetricWindowModel> getMetricWindows() throws Exception {
         return (PartitionLocalBuffer<PartitionMetricWindowModel>) getField(commandProcessor, "metricWindows");
