@@ -1,9 +1,11 @@
 package io.littlehorse.sdk.common.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -149,5 +151,28 @@ public class LHConfigTest {
                 .build();
 
         assertThat(lhConfig.getTaskWorkerVersion()).isEqualTo(EXPECTED_VERSION);
+    }
+
+    @Test
+    void shouldDecodeCertificateValue() {
+        LHConfig config = new LHConfig(Map.of(
+                LHConfig.API_PROTOCOL_KEY, "TLS",
+                LHConfig.CA_CERT_VALUE_KEY, "not-base64"));
+
+        assertThatThrownBy(() -> config.getBlockingStub("localhost", 2023))
+                .isInstanceOf(LHMisconfigurationException.class)
+                .hasMessage("Error decoding certificate value for " + LHConfig.CA_CERT_VALUE_KEY);
+    }
+
+    @Test
+    void shouldPreferCertificateFileOverCertificateValue() {
+        LHConfig config = new LHConfig(Map.of(
+                LHConfig.API_PROTOCOL_KEY, "TLS",
+                LHConfig.CA_CERT_KEY, "/path/that/does/not/exist",
+                LHConfig.CA_CERT_VALUE_KEY, "not-base64"));
+
+        assertThatThrownBy(() -> config.getBlockingStub("localhost", 2023))
+                .isInstanceOf(LHMisconfigurationException.class)
+                .hasMessage("Error accessing to certificate");
     }
 }
