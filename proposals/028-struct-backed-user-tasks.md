@@ -1,5 +1,7 @@
 # Struct-Backed User Tasks
 
+Author: Eduwer Camacaro
+
 ## Context
 
 Current design for `UserTaskDef` aims to define the data that a human provides when completing a `UserTaskRun`. A `WfSpec` references a `UserTaskDef` from a `UserTaskNode`, and the LittleHorse Server creates a `UserTaskRun` when workflow execution reaches that node.
