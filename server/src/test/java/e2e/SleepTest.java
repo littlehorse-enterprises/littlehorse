@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
@@ -13,6 +14,7 @@ import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import java.time.Duration;
+import java.util.ArrayList;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +25,27 @@ public class SleepTest {
 
     private WorkflowVerifier verifier;
 
+    private LHServerConfig config = new LHServerConfig();
+
     @LHWorkflow("sleep-test")
     private Workflow sleepTest;
+
+    @LHWorkflow("sleep-test-w-archived-threads")
+    private Workflow sleepTestWArchivedThreads;
+
+    @Test
+    void shouldAdvanceSleepNodesWhenMaturedWArchivedThreadRuns() {
+        int activeThreadRunCapacity = config.getActiveThreadRunsPerWfRun();
+        ArrayList<Integer> arr = new ArrayList<>();
+
+        for (int i = 0; i < activeThreadRunCapacity; i++) {
+            arr.add(i);
+        }
+
+        verifier.prepareRun(sleepTestWArchivedThreads, Arg.of("arr", arr))
+                .waitForStatus(LHStatus.COMPLETED, Duration.ofSeconds(5))
+                .start();
+    }
 
     @Test
     void shouldSleepUntilTimestampInFuture() {
@@ -112,6 +133,16 @@ public class SleepTest {
                 handler.mutate(myVar, VariableMutationType.ASSIGN, updatedTimestamp);
             });
             wf.sleepUntil(myVar);
+        });
+    }
+
+    @LHWorkflow("sleep-test-w-archived-threads")
+    public Workflow getSleepWithArchivedThreads() {
+        return Workflow.newWorkflow("sleep-test-w-archived-threads", wf -> {
+            WfRunVariable jsonArr = wf.declareJsonArr("arr").required();
+            wf.spawnThreadForEach(jsonArr, "child-thread", child -> {
+                child.sleepSeconds(1);
+            });
         });
     }
 }
