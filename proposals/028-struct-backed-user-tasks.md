@@ -30,7 +30,7 @@ When a client completes a `UserTaskRun`, the Server validates the submitted fiel
 Clients may also inspect `UserTaskDef.fields` to render forms for their users and submit the entered values through `CompleteUserTaskRun` or `SaveUserTaskRunProgress`. For the case of `lhctl`, it offers a interactive command that prompts for each field and submits the values in a `CompleteUserTaskRunRequest`.
 
 
-## Existing Limitations
+### Existing Limitations
 
 `UserTaskField` defines a separate, limited data contract for User Task results. It supports only a flat collection of primitive values and, more importantly, duplicates type information already represented by LittleHorse's `TypeDefinition` system.
 
@@ -51,6 +51,7 @@ Consequently, addressing these User Task limitations is essential to unlocking t
 - Preserve the behavior of existing field-backed `UserTaskDef`s during a deprecation period.
 - Preserve the ability to save incomplete User Task progress.
 - Allow `lhctl` users to complete and save progress on struct-backed User Tasks.
+
 
 ## Public API Changes
 
@@ -163,6 +164,45 @@ Supplying both `results` and `output`, or supplying the representation that does
 map<string, VariableValue> results = 6;
 ```
 
+## SDK Experience
+
+Before referencing a `UserTaskDef` from a workflow, the application must register the `StructDef` and `UserTaskDef` using the same exact `StructDefId`.`:
+
+```java
+// Set the type to the class of the schema form.
+LHStructDefType type = new LHStructDefType(MyForm.class);
+
+// Register the StructDef for the schema form.
+StructDef structDef = client.putStructDef(type.toPutStructDefRequest().toBuilder()
+            .setAllowedUpdates(StructDefCompatibilityType.NO_SCHEMA_UPDATES)
+            .build());
+
+// Register the UserTaskDef for the workflow.
+client.putUserTaskDef(PutUserTaskDefRequest.newBuilder()
+        .setName("my-user-task")
+        .setResultStructDefId(structDef.getId())
+        .build());
+
+```
+
+Then in the workflow, the application references the `UserTaskDef` (This behavior remains the same)
+
+```java
+UserTaskOutput requestOutput = wf.assignUserTask("my-user-task", userId, "testGroup");
+wf.execute("my-task", requestOutput); // This passes the struct output of the UserTaskNode.
+```
+
+## Design Limitations
+
+Struct-backed User Tasks require a separately registered, named `StructDef`. Clients first register the `StructDef`, then register a `UserTaskDef` referencing its exact `StructDefId`, and finally reference that `UserTaskDef` from the workflow.
+
+This proposal does not support an `InlineStructDef` as the User Task's result contract or declaring a workflow-specific form directly inside the workflow builder. Even a form used by only one workflow requires separate `StructDef` and `UserTaskDef` registration. `UserTaskNode` continues to reference a registered `UserTaskDef`; it does not own a form schema.
+
+The desired experience for inline forms is to declare them directly inside the WfSpec. Adding an `InlineStructDef` field to `PutUserTaskDefRequest` alone would not provide that experience: the form would still need separate UserTaskDef registration. Supporting workflow-local forms instead requires designing how a `UserTaskNode` owns its schema, how a `UserTaskRun` identifies that contract without a registered `UserTaskDef`, and how completion validation and form-rendering clients resolve the schema from the pinned workflow. Those changes are deferred to a separate proposal so this proposal can preserve the existing registration and lookup model while replacing the result schema with a StructDef reference.
+
+This limitation concerns the top-level result contract. Fields within the referenced `StructDef` retain the nested types supported by the existing Struct system.
+
+
 ## Backward Compatibility
 
 All new protobuf fields use previously unused field numbers. Existing field numbers are not removed or reused.
@@ -178,16 +218,17 @@ Existing clients can continue to:
 
 Existing `lhctl execute userTaskRun` and `lhctl save userTaskRun` behavior remains unchanged for legacy field-backed definitions. A version of `lhctl` built from an older protobuf API cannot complete a struct-backed User Task and must be upgraded before those definitions are introduced.
 
-### Output Compatibility
+## Author's Notes
 
-Legacy User Task nodes continue to produce `JSON_OBJ`. Only definitions explicitly registered with `result_struct_def_id` produce Struct output, so existing WfSpecs retain their current output behavior.
+I strongly recommend separating the data schema from the form schema. The data schema (`StructDef`) defines the submitted result and the contract that the Server validates. The form schema defines how a client presents and collects that data input, including layout, labels, widgets, conditional visibility, and multi-step interactions. Form schemas can become complex and should be able to evolve independently of the underlying data contract.
 
-Changing an existing UserTaskDef name from a legacy field schema to a StructDef-backed schema creates a new UserTaskDef version. Existing WfSpecs remain pinned to the previous version until they are re-registered.
+It would be useful for the LittleHorse Server to store form metadata associated with the StructDef that the form submits. A common use case is multiple form designs producing the same Struct schema—for example, a compact mobile form and a multi-step desktop form. These should share the same result contract without duplicating the StructDef or embedding presentation-specific concerns in it.
+
+This is a recommendation for a follow-up design. This proposal establishes the Struct-backed data contract; it does not define a form-schema API or how form metadata is stored, versioned, or selected by clients.
 
 ## Future Work
 
 Potential follow-up proposals may cover:
 
 - Removing `UserTaskField`, `UserTaskDef.fields`, and completion `results` in the next major API version.
-
-
+- Adding Metadata Annotations for StructDef to support storing metadata about the StructDef, such as a description or a form field label.
