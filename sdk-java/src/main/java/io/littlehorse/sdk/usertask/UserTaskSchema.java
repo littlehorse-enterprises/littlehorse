@@ -2,9 +2,11 @@ package io.littlehorse.sdk.usertask;
 
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.UserTaskField;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * Represents the schema for a user task.
@@ -14,6 +16,7 @@ public class UserTaskSchema {
     private PutUserTaskDefRequest compiled;
     private Object taskObject;
     private String userTaskDefName;
+    private StructDefId resultStructDefId;
 
     /**
      * Constructs a UserTaskSchema with the specified task object and user task definition name.
@@ -21,8 +24,20 @@ public class UserTaskSchema {
      * @param taskObject the task object
      * @param userTaskDefName the name of the user task definition
      */
+    @Deprecated
     public UserTaskSchema(Object taskObject, String userTaskDefName) {
         this.taskObject = taskObject;
+        this.userTaskDefName = userTaskDefName;
+    }
+
+    /**
+     * Constructs a strongly typed UserTaskSchema backed by an exact StructDef version.
+     *
+     * @param resultStructDefId the StructDef defining the UserTaskRun output
+     * @param userTaskDefName the name of the UserTaskDef
+     */
+    public UserTaskSchema(StructDefId resultStructDefId, String userTaskDefName) {
+        this.resultStructDefId = Objects.requireNonNull(resultStructDefId);
         this.userTaskDefName = userTaskDefName;
     }
 
@@ -40,7 +55,11 @@ public class UserTaskSchema {
     }
 
     private void compileHelper() {
-        PutUserTaskDefRequest.Builder out = PutUserTaskDefRequest.newBuilder();
+        PutUserTaskDefRequest.Builder out = PutUserTaskDefRequest.newBuilder().setName(userTaskDefName);
+        if (resultStructDefId != null) {
+            compiled = out.setResultStructDefId(resultStructDefId).build();
+            return;
+        }
         // todo
         Class<?> cls = taskObject.getClass();
         for (Field field : cls.getFields()) {
@@ -73,8 +92,6 @@ public class UserTaskSchema {
 
             out.addFields(fieldBuilder);
         }
-
-        out.setName(userTaskDefName);
 
         compiled = out.build();
     }
