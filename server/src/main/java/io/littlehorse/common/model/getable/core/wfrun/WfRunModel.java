@@ -889,11 +889,11 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationException {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
-        if (threadRunNumber >= threadRunsUseMeCarefully.size() || threadRunNumber < 0) {
+        ThreadRunModel thread = getThreadRun(threadRunNumber);
+
+        if (thread == null) {
             throw new LHValidationException(null, "Reference to nonexistent thread.");
         }
-
-        ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationException(null, "Reference to nonexistent nodeRun");
