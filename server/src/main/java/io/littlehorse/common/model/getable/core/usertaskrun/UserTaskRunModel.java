@@ -6,6 +6,7 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.CoreOutputTopicGetable;
@@ -22,9 +23,14 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECom
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTECompletedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UTESavedModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
+import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -74,6 +80,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     private List<UserTaskEventModel> events = new ArrayList<>();
 
     private Map<String, VariableValueModel> results = new HashMap<>();
+    private VariableValueModel output;
     private String userGroup;
     private String userId;
 
@@ -137,6 +144,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         for (Map.Entry<String, VariableValueModel> result : results.entrySet()) {
             out.putResults(result.getKey(), result.getValue().toProto().build());
         }
+        if (output != null) out.setOutput(output.toProto());
         out.setEpoch(this.epoch);
 
         return out;
@@ -167,6 +175,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         for (Map.Entry<String, VariableValue> result : p.getResultsMap().entrySet()) {
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
+        if (p.hasOutput()) output = VariableValueModel.fromProto(p.getOutput(), context);
 
         lastEventForComment = new HashMap<>();
         commentIdCounter = 0;
@@ -368,9 +377,63 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             throw new LHApiException(Status.FAILED_PRECONDITION, "UserTaskRun is in status " + status);
         }
 
-        this.results = req.getResults();
-        UTESavedModel saved = new UTESavedModel(req.getUserId(), req.getResults());
+        UserTaskDefModel userTaskDef = executionContext.metadataManager().get(userTaskDefId);
+        if (userTaskDef.getResultStructDefId() != null) {
+            if (!req.getResults().isEmpty()) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Use output instead of results for a struct-backed UserTaskDef");
+            }
+            VariableValueModel partialProgress = req.getOutput();
+            if (partialProgress == null || partialProgress.getStruct() == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Progress for a struct-backed UserTaskDef must contain a Struct output");
+            }
+            validatePartialStructResults(
+                    partialProgress.getStruct().getInlineStruct().getFields(), userTaskDef);
+            output = partialProgress;
+            results.clear();
+            UTESavedModel saved = new UTESavedModel(
+                    req.getUserId(),
+                    partialProgress.getStruct().getInlineStruct().getFields().entrySet().stream()
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey, entry -> entry.getValue().getValue())));
+            this.events.add(new UserTaskEventModel(saved, ctx.currentCommand().getTime()));
+            return;
+        }
+
+        Map<String, VariableValueModel> progress = legacyResults(req.getResults(), req.getOutput());
+        if (req.getOutput() != null) {
+            validateLegacyResults(progress, userTaskDef, false);
+        }
+        this.results = progress;
+        this.output = null;
+        UTESavedModel saved = new UTESavedModel(req.getUserId(), progress);
         this.events.add(new UserTaskEventModel(saved, ctx.currentCommand().getTime()));
+    }
+
+    private void validatePartialStructResults(
+            Map<String, StructFieldModel> partialResults, UserTaskDefModel userTaskDef) {
+        StructDefModel structDef = executionContext.metadataManager().get(userTaskDef.getResultStructDefId());
+        Map<String, StructFieldDefModel> fieldDefs = structDef.getStructDef().getFields();
+
+        for (Map.Entry<String, StructFieldModel> result : partialResults.entrySet()) {
+            StructFieldDefModel fieldDef = fieldDefs.get(result.getKey());
+            if (fieldDef == null) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Field '%s' is not defined in StructDef %s"
+                                .formatted(result.getKey(), userTaskDef.getResultStructDefId()));
+            }
+
+            try {
+                fieldDef.validateAgainst(result.getValue(), executionContext.metadataManager());
+            } catch (StructValidationException exn) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "Field '%s' is invalid: %s".formatted(result.getKey(), exn.getMessage()));
+            }
+        }
     }
 
     public void processTaskCompletedEvent(CompleteUserTaskRunRequestModel event) throws LHApiException {
@@ -395,10 +458,76 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                 .get(new UserTaskDefIdModel(
                         getUserTaskDefId().getName(), getUserTaskDefId().getVersion()));
 
+        if (userTaskDef.getResultStructDefId() != null) {
+            processStructTaskCompletedEvent(event, userTaskDef);
+        } else if (!userTaskDef.getFields().isEmpty()) {
+            processLegacyTaskCompletedEvent(event, userTaskDef);
+        } else {
+            if (event.getOutput() != null || !event.getResults().isEmpty()) {
+                throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDef does not define an output");
+            }
+            results.clear();
+            output = null;
+        }
+
+        this.status = UserTaskRunStatus.DONE;
+        this.events.add(new UserTaskEventModel(
+                new UTECompletedModel(), processorContext.currentCommand().getTime()));
+    }
+
+    private void processStructTaskCompletedEvent(CompleteUserTaskRunRequestModel event, UserTaskDefModel userTaskDef) {
+        if (!event.getResults().isEmpty()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Use output instead of results for a struct-backed UserTaskDef");
+        }
+        VariableValueModel output = event.getOutput();
+        if (output == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Missing output for struct-backed UserTaskDef");
+        }
+        if (output.getStruct() == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Output for a struct-backed UserTaskDef must contain a Struct value");
+        }
+
+        try {
+            new TypeDefinitionModel(userTaskDef.getResultStructDefId())
+                    .validateCompatibility(output, executionContext.metadataManager());
+        } catch (TypeValidationException exn) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid UserTaskRun output: " + exn.getMessage());
+        }
+
+        this.output = output;
+        results.clear();
+    }
+
+    private void processLegacyTaskCompletedEvent(CompleteUserTaskRunRequestModel event, UserTaskDefModel userTaskDef) {
+        Map<String, VariableValueModel> completedResults = legacyResults(event.getResults(), event.getOutput());
+        validateLegacyResults(completedResults, userTaskDef, true);
+        results.putAll(completedResults);
+        output = null;
+    }
+
+    private Map<String, VariableValueModel> legacyResults(
+            Map<String, VariableValueModel> legacyResults, VariableValueModel structOutput) {
+        if (structOutput == null) return legacyResults;
+        if (!legacyResults.isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Cannot supply both results and output");
+        }
+        if (structOutput.getStruct() == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "Output for a legacy UserTaskDef must contain a Struct value");
+        }
+        return structOutput.getStruct().getInlineStruct().getFields().entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, entry -> entry.getValue().getValue()));
+    }
+
+    private void validateLegacyResults(
+            Map<String, VariableValueModel> submittedResults, UserTaskDefModel userTaskDef, boolean completing) {
         Map<String, UserTaskFieldModel> userTaskFieldsGroupedByName = userTaskDef.getFields().stream()
                 .collect(Collectors.toMap(UserTaskFieldModel::getName, Function.identity()));
 
-        for (Map.Entry<String, VariableValueModel> field : event.getResults().entrySet()) {
+        for (Map.Entry<String, VariableValueModel> field : submittedResults.entrySet()) {
             UserTaskFieldModel userTaskFieldFromTaskDef = userTaskFieldsGroupedByName.get(field.getKey());
             // TODO: Support StructDefs
             if (field.getValue().getTypeDefinition().getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
@@ -421,13 +550,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                                         field.getKey(),
                                         field.getValue().getTypeDefinition().getPrimitiveType()));
             }
-            results.put(field.getKey(), field.getValue());
         }
-        validateMandatoryFieldsFromCompletedEvent(
-                userTaskFieldsGroupedByName.values(), event.getResults().keySet());
-        this.status = UserTaskRunStatus.DONE;
-        this.events.add(new UserTaskEventModel(
-                new UTECompletedModel(), processorContext.currentCommand().getTime()));
+        if (completing) {
+            validateMandatoryFieldsFromCompletedEvent(userTaskFieldsGroupedByName.values(), submittedResults.keySet());
+        }
     }
 
     private void validateMandatoryFieldsFromCompletedEvent(
