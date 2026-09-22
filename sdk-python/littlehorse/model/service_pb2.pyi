@@ -124,14 +124,16 @@ class PutWorkflowEventDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
-    __slots__ = ("name", "fields", "description")
+    __slots__ = ("name", "fields", "description", "result_struct_def_id")
     NAME_FIELD_NUMBER: _ClassVar[int]
     FIELDS_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    RESULT_STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     name: str
     fields: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskField]
     description: str
-    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
+    result_struct_def_id: _object_id_pb2.StructDefId
+    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ..., result_struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
     __slots__ = ("name", "retention_policy", "content_type", "correlated_event_config")
