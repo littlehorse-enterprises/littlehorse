@@ -1,9 +1,25 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.sdk.usertask.annotations.UserTaskField;
+import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructField;
 
+@LHStructDef(value = "approval-form", description = "empty")
 public class ApprovalForm {
 
-    @UserTaskField(displayName = "Approved?", description = "Reply 'true' if this is an acceptable request.")
+    @LHStructField(description = "Whether the request is approved or not.")
     public boolean isApproved;
+
+    public ApprovalForm() {}
+
+    public ApprovalForm(boolean isApproved) {
+        this.isApproved = isApproved;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
+    }
 }
