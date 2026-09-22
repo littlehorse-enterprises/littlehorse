@@ -152,23 +152,62 @@ The accepted completion representation depends on the `UserTaskDef`:
 
 | UserTaskDef type | Accepted request field | Node output |
 |---|---|---|
-| Legacy `fields` | `results` | `JSON_OBJ` |
+| Legacy `fields` | `results` or compatible Struct `output` | `JSON_OBJ` |
 | `result_struct_def_id` | `output` | `STRUCT` |
 | No result schema | Neither | `VOID` |
 
-Supplying both `results` and `output`, or supplying the representation that does not match the `UserTaskDef`, returns `INVALID_ARGUMENT`.
+Legacy field-backed definitions also accept Struct `output`. Its supplied fields must match the names and primitive types declared in `UserTaskDef.fields`, and completion requires all required fields. The server stores those values in `UserTaskRun.results`, leaves `UserTaskRun.output` unset, and continues producing a `JSON_OBJ` workflow node output. Clients do not need to supply a StructDefId for this compatibility path.
 
-### `UserTaskRun.results`
+Supplying both nonempty `results` and `output`, non-Struct `output`, or legacy `results` for a Struct-backed definition will return `INVALID_ARGUMENT`.
 
-`UserTaskRun.results` remains unchanged during the initial migration:
+### `SaveUserTaskRunProgressRequest`
+
+Use the same representation as completion: Struct-backed tasks accept `output`, while legacy field-backed tasks accept either `results` or compatible Struct `output`. When saving Struct output against legacy fields, validate each supplied field but allow required fields to be omitted. Store the snapshot and saved-event values in the legacy results maps. The existing assignment policy remains unchanged.
 
 ```protobuf
-map<string, VariableValue> results = 6;
+message SaveUserTaskRunProgressRequest {
+  UserTaskRunId user_task_run_id = 1;
+
+  // Deprecated: supported for legacy field-backed UserTaskDefs.
+  map<string, VariableValue> results = 2 [deprecated = true];
+
+  string user_id = 3;
+
+  enum SaveUserTaskRunAssignmentPolicy {
+    FAIL_IF_CLAIMED_BY_OTHER = 0;
+    IGNORE_CLAIM = 1;
+  }
+  SaveUserTaskRunAssignmentPolicy policy = 4;
+
+  // A Struct value containing the current, possibly incomplete form output.
+  VariableValue output = 5;
+}
 ```
+
+For Struct-backed tasks, `output` must contain a Struct with the exact `result_struct_def_id` of the UserTaskDef. Missing top-level fields are allowed, including required fields, and omitted top-level defaults are not applied when saving. Supplied fields must conform to their definitions; a supplied nested Struct still undergoes normal validation. Supplying both `results` and `output`, a non-Struct output, an incorrect StructDef ID, or the representation for the wrong definition type returns `INVALID_ARGUMENT`.
+
+Saving replaces the previous progress snapshot rather than merging fields. An empty Struct with the correct ID clears the draft. Saved values remain available through `UserTaskRun.output` and the saved event's results map. Saving does not complete the task or advance the workflow; completion must still submit the full output.
+
+### `UserTaskRun.output`
+
+Add the same strongly typed `output` to `UserTaskRun` and deprecate `results`:
+
+```protobuf
+message UserTaskRun {
+  // Deprecated: populated for legacy field-backed UserTaskRuns.
+  map<string, VariableValue> results = 6 [deprecated = true];
+
+  // Current output for a Struct-backed UserTaskRun. It may be incomplete until
+  // the task is completed.
+  VariableValue output = 13;
+}
+```
+
+Struct-backed runs retain the actual Struct value, including its exact StructDef ID and Struct field metadata. They do not flatten fields into `results`. Legacy field-backed runs continue to populate `results` and leave `output` unset.
 
 ## SDK Experience
 
-Before referencing a `UserTaskDef` from a workflow, the application must register the `StructDef` and `UserTaskDef` using the same exact `StructDefId`.`:
+Before referencing a `UserTaskDef` from a workflow, the application must register the `StructDef` and `UserTaskDef` using the same exact `StructDefId`:
 
 ```java
 // Set the type to the class of the schema form.
@@ -216,9 +255,12 @@ Existing clients can continue to:
 - Register legacy field-backed definitions during the deprecation period.
 - Render legacy definitions from `UserTaskDef.fields`.
 - Complete legacy User Tasks using `CompleteUserTaskRunRequest.results`.
-- Read all completed values from `UserTaskRun.results`.
+- Read legacy field-backed values from `UserTaskRun.results`.
+- Read Struct-backed values from `UserTaskRun.output`.
 
 Existing `lhctl execute userTaskRun` and `lhctl save userTaskRun` behavior remains unchanged for legacy field-backed definitions. A version of `lhctl` built from an older protobuf API cannot complete a struct-backed User Task and must be upgraded before those definitions are introduced.
+
+Likewise, older clients only understand `UserTaskRun.results` and cannot read the `output` of a Struct-backed run. Clients must be upgraded before they render, save, complete, or inspect Struct-backed User Tasks.
 
 ## Author's Notes
 
@@ -232,5 +274,5 @@ This is a recommendation for a follow-up design. This proposal establishes the S
 
 Potential follow-up proposals may cover:
 
-- Removing `UserTaskField`, `UserTaskDef.fields`, and completion `results` in the next major API version.
+- Removing `UserTaskField`, `UserTaskDef.fields`, and the deprecated `results` fields from completion, progress-saving, and UserTaskRun messages in the next major API version.
 - Adding Metadata Annotations for StructDef to support storing metadata about the StructDef, such as a description or a form field label.
