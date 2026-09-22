@@ -309,8 +309,10 @@ export interface PutUserTaskDefRequest {
      * The fields that should be presented to the user on the screen in order to fill
      * out the User Task. Note that these fields also define a data contract for the
      * result of the UserTaskDef.
+     * Deprecated: use result_struct_def_id.
      *
-     * @generated from protobuf field: repeated littlehorse.UserTaskField fields = 2
+     * @deprecated
+     * @generated from protobuf field: repeated littlehorse.UserTaskField fields = 2 [deprecated = true]
      */
     fields: UserTaskField[];
     /**
@@ -320,6 +322,12 @@ export interface PutUserTaskDefRequest {
      * @generated from protobuf field: optional string description = 3
      */
     description?: string;
+    /**
+     * The exact StructDef that defines the result of this UserTaskDef.
+     *
+     * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 4
+     */
+    resultStructDefId?: StructDefId;
 }
 /**
  * Field to create an ExternalEventDef.
@@ -3580,7 +3588,8 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
         super("littlehorse.PutUserTaskDefRequest", [
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "fields", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => UserTaskField },
-            { no: 3, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
         ]);
     }
     create(value?: PartialMessage<PutUserTaskDefRequest>): PutUserTaskDefRequest {
@@ -3599,11 +3608,14 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
                 case /* string name */ 1:
                     message.name = reader.string();
                     break;
-                case /* repeated littlehorse.UserTaskField fields */ 2:
+                case /* repeated littlehorse.UserTaskField fields = 2 [deprecated = true] */ 2:
                     message.fields.push(UserTaskField.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 case /* optional string description */ 3:
                     message.description = reader.string();
+                    break;
+                case /* littlehorse.StructDefId result_struct_def_id */ 4:
+                    message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -3620,12 +3632,15 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
         /* string name = 1; */
         if (message.name !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.name);
-        /* repeated littlehorse.UserTaskField fields = 2; */
+        /* repeated littlehorse.UserTaskField fields = 2 [deprecated = true]; */
         for (let i = 0; i < message.fields.length; i++)
             UserTaskField.internalBinaryWrite(message.fields[i], writer.tag(2, WireType.LengthDelimited).fork(), options).join();
         /* optional string description = 3; */
         if (message.description !== undefined)
             writer.tag(3, WireType.LengthDelimited).string(message.description);
+        /* littlehorse.StructDefId result_struct_def_id = 4; */
+        if (message.resultStructDefId)
+            StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
