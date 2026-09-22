@@ -28,14 +28,21 @@ message UserTaskDef {
   // These are the fields comprise the User Task. A User Task Manager application, or
   // any application used to complete a UserTaskRun, should inspect these fields and
   // display form entries for each one.
-  repeated UserTaskField fields = 4;
+  // Deprecated: use result_struct_def_id.
+  repeated UserTaskField fields = 4 [deprecated = true];
 
-  // The time the UserTaskRun was created.
+  // The time the UserTaskDef was created.
   google.protobuf.Timestamp created_at = 5;
+
+  // The exact StructDef that defines the result of a UserTaskRun.
+  // Unset for legacy UserTaskDefs that use fields.
+  StructDefId result_struct_def_id = 6;
 }
 
 // A UserTaskField is a specific field of data to be entered into a UserTaskRun.
 message UserTaskField {
+  option deprecated = true;
+
   // The name of the field. When a UserTaskRun is completed, the NodeOutput is a
   // single-level JSON_OBJ. Each key is the name of the field. Must be unique.
   string name = 1;
@@ -92,10 +99,9 @@ message UserTaskRun {
   // Either `user_id` or `user_group` or both are set at any time.
   optional string user_id = 4;
 
-  // The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-  // Each key in this map is the `name` of a corresponding `UserTaskField` on the
-  // UserTaskDef.
-  map<string, VariableValue> results = 6;
+  // Deprecated: the results of a legacy field-backed UserTaskRun.
+  // Use output for Struct-backed UserTaskRuns.
+  map<string, VariableValue> results = 6 [deprecated = true];
 
   // Status of the UserTaskRun. Can be UNASSIGNED, ASSIGNED, DONE, or CANCELLED.
   UserTaskRunStatus status = 7;
@@ -120,6 +126,10 @@ message UserTaskRun {
   // tasks.
   int32 epoch = 12;
 
+  // The current output of a Struct-backed UserTaskRun. While the task is in
+  // progress, the Struct may omit top-level fields. Once the task is DONE, the
+  // Struct is complete and compatible with UserTaskDef.result_struct_def_id.
+  VariableValue output = 13;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.
@@ -151,10 +161,15 @@ message CompleteUserTaskRunRequest {
 
   // A map from UserTaskField.name to a VariableValue containing the results of the
   // user filling out the form.
-  map<string, VariableValue> results = 2;
+  // Deprecated: use output.
+  map<string, VariableValue> results = 2 [deprecated = true];
 
   // The ID of the user who executed the task.
   string user_id = 3;
+
+  // The output of a struct-backed UserTaskRun. Must contain a Struct value
+  // compatible with UserTaskDef.result_struct_def_id.
+  VariableValue output = 4;
 }
 
 // Saves the results of a UserTaskRun and logs who saved the content.<br/>
@@ -168,7 +183,8 @@ message SaveUserTaskRunProgressRequest {
 
   // A map from UserTaskField.name to a VariableValue containing the results of the
   // user filling out the form.
-  map<string, VariableValue> results = 2;
+  // Deprecated: use output for struct-backed UserTaskDefs.
+  map<string, VariableValue> results = 2 [deprecated = true];
 
   // The ID of the user who saved the task.
   string user_id = 3;
@@ -187,6 +203,11 @@ message SaveUserTaskRunProgressRequest {
 
   // Configures how to handle `UserTaskRun` ownership when saving it.
   SaveUserTaskRunAssignmentPolicy policy = 4;
+
+  // Partial output of a struct-backed UserTaskRun. Must contain a Struct with
+  // the UserTaskDef's result_struct_def_id. Missing top-level fields are allowed;
+  // supplied fields must conform to their definitions. Replaces saved progress.
+  VariableValue output = 5;
 }
 
 
