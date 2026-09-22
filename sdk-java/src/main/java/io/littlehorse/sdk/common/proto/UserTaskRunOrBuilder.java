@@ -163,24 +163,22 @@ public interface UserTaskRunOrBuilder extends
 
   /**
    * <pre>
-   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-   * UserTaskDef.
+   * Deprecated: the results of a legacy field-backed UserTaskRun.
+   * Use output for Struct-backed UserTaskRuns.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6 [deprecated = true];</code>
    */
-  int getResultsCount();
+  @java.lang.Deprecated int getResultsCount();
   /**
    * <pre>
-   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-   * UserTaskDef.
+   * Deprecated: the results of a legacy field-backed UserTaskRun.
+   * Use output for Struct-backed UserTaskRuns.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6 [deprecated = true];</code>
    */
-  boolean containsResults(
+  @java.lang.Deprecated boolean containsResults(
       java.lang.String key);
   /**
    * Use {@link #getResultsMap()} instead.
@@ -190,39 +188,36 @@ public interface UserTaskRunOrBuilder extends
   getResults();
   /**
    * <pre>
-   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-   * UserTaskDef.
+   * Deprecated: the results of a legacy field-backed UserTaskRun.
+   * Use output for Struct-backed UserTaskRuns.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6 [deprecated = true];</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  @java.lang.Deprecated java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getResultsMap();
   /**
    * <pre>
-   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-   * UserTaskDef.
+   * Deprecated: the results of a legacy field-backed UserTaskRun.
+   * Use output for Struct-backed UserTaskRuns.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6 [deprecated = true];</code>
    */
-  /* nullable */
+  @java.lang.Deprecated /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
       java.lang.String key,
       /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue defaultValue);
   /**
    * <pre>
-   * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-   * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-   * UserTaskDef.
+   * Deprecated: the results of a legacy field-backed UserTaskRun.
+   * Use output for Struct-backed UserTaskRuns.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 6 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
       java.lang.String key);
 
   /**
@@ -391,4 +386,37 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * @return The epoch.
    */
   int getEpoch();
+
+  /**
+   * <pre>
+   * The current output of a Struct-backed UserTaskRun. While the task is in
+   * progress, the Struct may omit top-level fields. Once the task is DONE, the
+   * Struct is complete and compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 13;</code>
+   * @return Whether the output field is set.
+   */
+  boolean hasOutput();
+  /**
+   * <pre>
+   * The current output of a Struct-backed UserTaskRun. While the task is in
+   * progress, the Struct may omit top-level fields. Once the task is DONE, the
+   * Struct is complete and compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 13;</code>
+   * @return The output.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
+  /**
+   * <pre>
+   * The current output of a Struct-backed UserTaskRun. While the task is in
+   * progress, the Struct may omit top-level fields. Once the task is DONE, the
+   * Struct is complete and compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 }

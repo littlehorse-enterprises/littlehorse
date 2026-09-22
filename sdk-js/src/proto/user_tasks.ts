@@ -16,6 +16,7 @@ import { VariableValue } from "./type_definition";
 import { UserTaskDefId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { VariableType } from "./common_enums";
+import { StructDefId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";
 /**
  * UserTaskDef is the metadata blueprint for UserTaskRuns.
@@ -47,20 +48,30 @@ export interface UserTaskDef {
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      *
-     * @generated from protobuf field: repeated littlehorse.UserTaskField fields = 4
+     * @deprecated
+     * @generated from protobuf field: repeated littlehorse.UserTaskField fields = 4 [deprecated = true]
      */
     fields: UserTaskField[];
     /**
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      *
      * @generated from protobuf field: google.protobuf.Timestamp created_at = 5
      */
     createdAt?: Timestamp;
+    /**
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     *
+     * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 6
+     */
+    resultStructDefId?: StructDefId;
 }
 /**
  * A UserTaskField is a specific field of data to be entered into a UserTaskRun.
  *
+ * @deprecated
  * @generated from protobuf message littlehorse.UserTaskField
  */
 export interface UserTaskField {
@@ -145,11 +156,11 @@ export interface UserTaskRun {
      */
     userId?: string;
     /**
-     * The results of the UserTaskRun. Empty if the UserTaskRun has not yet been completed.
-     * Each key in this map is the `name` of a corresponding `UserTaskField` on the
-     * UserTaskDef.
+     * Deprecated: the results of a legacy field-backed UserTaskRun.
+     * Use output for Struct-backed UserTaskRuns.
      *
-     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 6
+     * @deprecated
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 6 [deprecated = true]
      */
     results: {
         [key: string]: VariableValue;
@@ -195,6 +206,14 @@ export interface UserTaskRun {
      * @generated from protobuf field: int32 epoch = 12
      */
     epoch: number;
+    /**
+     * The current output of a Struct-backed UserTaskRun. While the task is in
+     * progress, the Struct may omit top-level fields. Once the task is DONE, the
+     * Struct is complete and compatible with UserTaskDef.result_struct_def_id.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue output = 13
+     */
+    output?: VariableValue;
 }
 /**
  * Re-Assigns a UserTaskRun to a specific userId or userGroup.
@@ -249,8 +268,10 @@ export interface CompleteUserTaskRunRequest {
     /**
      * A map from UserTaskField.name to a VariableValue containing the results of the
      * user filling out the form.
+     * Deprecated: use output.
      *
-     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2
+     * @deprecated
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2 [deprecated = true]
      */
     results: {
         [key: string]: VariableValue;
@@ -261,6 +282,13 @@ export interface CompleteUserTaskRunRequest {
      * @generated from protobuf field: string user_id = 3
      */
     userId: string;
+    /**
+     * The output of a struct-backed UserTaskRun. Must contain a Struct value
+     * compatible with UserTaskDef.result_struct_def_id.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue output = 4
+     */
+    output?: VariableValue;
 }
 /**
  * Saves the results of a UserTaskRun and logs who saved the content.<br/>
@@ -281,8 +309,10 @@ export interface SaveUserTaskRunProgressRequest {
     /**
      * A map from UserTaskField.name to a VariableValue containing the results of the
      * user filling out the form.
+     * Deprecated: use output for struct-backed UserTaskDefs.
      *
-     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2
+     * @deprecated
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2 [deprecated = true]
      */
     results: {
         [key: string]: VariableValue;
@@ -299,6 +329,14 @@ export interface SaveUserTaskRunProgressRequest {
      * @generated from protobuf field: littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy policy = 4
      */
     policy: SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy;
+    /**
+     * Partial output of a struct-backed UserTaskRun. Must contain a Struct with
+     * the UserTaskDef's result_struct_def_id. Missing top-level fields are allowed;
+     * supplied fields must conform to their definitions. Replaces saved progress.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue output = 5
+     */
+    output?: VariableValue;
 }
 /**
  * Configures how to handle `UserTaskRun` ownership when saving it.
@@ -711,7 +749,8 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
             { no: 2, name: "version", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 3, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "fields", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => UserTaskField },
-            { no: 5, name: "created_at", kind: "message", T: () => Timestamp }
+            { no: 5, name: "created_at", kind: "message", T: () => Timestamp },
+            { no: 6, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
         ]);
     }
     create(value?: PartialMessage<UserTaskDef>): UserTaskDef {
@@ -737,11 +776,14 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
                 case /* optional string description */ 3:
                     message.description = reader.string();
                     break;
-                case /* repeated littlehorse.UserTaskField fields */ 4:
+                case /* repeated littlehorse.UserTaskField fields = 4 [deprecated = true] */ 4:
                     message.fields.push(UserTaskField.internalBinaryRead(reader, reader.uint32(), options));
                     break;
                 case /* google.protobuf.Timestamp created_at */ 5:
                     message.createdAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdAt);
+                    break;
+                case /* littlehorse.StructDefId result_struct_def_id */ 6:
+                    message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -764,12 +806,15 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
         /* optional string description = 3; */
         if (message.description !== undefined)
             writer.tag(3, WireType.LengthDelimited).string(message.description);
-        /* repeated littlehorse.UserTaskField fields = 4; */
+        /* repeated littlehorse.UserTaskField fields = 4 [deprecated = true]; */
         for (let i = 0; i < message.fields.length; i++)
             UserTaskField.internalBinaryWrite(message.fields[i], writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         /* google.protobuf.Timestamp created_at = 5; */
         if (message.createdAt)
             Timestamp.internalBinaryWrite(message.createdAt, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.StructDefId result_struct_def_id = 6; */
+        if (message.resultStructDefId)
+            StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -855,6 +900,7 @@ class UserTaskField$Type extends MessageType<UserTaskField> {
     }
 }
 /**
+ * @deprecated
  * @generated MessageType for protobuf message littlehorse.UserTaskField
  */
 export const UserTaskField = new UserTaskField$Type();
@@ -872,7 +918,8 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
             { no: 9, name: "notes", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 10, name: "scheduled_time", kind: "message", T: () => Timestamp },
             { no: 11, name: "node_run_id", kind: "message", T: () => NodeRunId },
-            { no: 12, name: "epoch", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+            { no: 12, name: "epoch", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 13, name: "output", kind: "message", T: () => VariableValue }
         ]);
     }
     create(value?: PartialMessage<UserTaskRun>): UserTaskRun {
@@ -902,7 +949,7 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
                 case /* optional string user_id */ 4:
                     message.userId = reader.string();
                     break;
-                case /* map<string, littlehorse.VariableValue> results */ 6:
+                case /* map<string, littlehorse.VariableValue> results = 6 [deprecated = true] */ 6:
                     this.binaryReadMap6(message.results, reader, options);
                     break;
                 case /* littlehorse.UserTaskRunStatus status */ 7:
@@ -922,6 +969,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
                     break;
                 case /* int32 epoch */ 12:
                     message.epoch = reader.int32();
+                    break;
+                case /* littlehorse.VariableValue output */ 13:
+                    message.output = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.output);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -963,7 +1013,7 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
         /* optional string user_id = 4; */
         if (message.userId !== undefined)
             writer.tag(4, WireType.LengthDelimited).string(message.userId);
-        /* map<string, littlehorse.VariableValue> results = 6; */
+        /* map<string, littlehorse.VariableValue> results = 6 [deprecated = true]; */
         for (let k of globalThis.Object.keys(message.results)) {
             writer.tag(6, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
             writer.tag(2, WireType.LengthDelimited).fork();
@@ -988,6 +1038,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
         /* int32 epoch = 12; */
         if (message.epoch !== 0)
             writer.tag(12, WireType.Varint).int32(message.epoch);
+        /* littlehorse.VariableValue output = 13; */
+        if (message.output)
+            VariableValue.internalBinaryWrite(message.output, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1072,7 +1125,8 @@ class CompleteUserTaskRunRequest$Type extends MessageType<CompleteUserTaskRunReq
         super("littlehorse.CompleteUserTaskRunRequest", [
             { no: 1, name: "user_task_run_id", kind: "message", T: () => UserTaskRunId },
             { no: 2, name: "results", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } },
-            { no: 3, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+            { no: 3, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "output", kind: "message", T: () => VariableValue }
         ]);
     }
     create(value?: PartialMessage<CompleteUserTaskRunRequest>): CompleteUserTaskRunRequest {
@@ -1091,11 +1145,14 @@ class CompleteUserTaskRunRequest$Type extends MessageType<CompleteUserTaskRunReq
                 case /* littlehorse.UserTaskRunId user_task_run_id */ 1:
                     message.userTaskRunId = UserTaskRunId.internalBinaryRead(reader, reader.uint32(), options, message.userTaskRunId);
                     break;
-                case /* map<string, littlehorse.VariableValue> results */ 2:
+                case /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true] */ 2:
                     this.binaryReadMap2(message.results, reader, options);
                     break;
                 case /* string user_id */ 3:
                     message.userId = reader.string();
+                    break;
+                case /* littlehorse.VariableValue output */ 4:
+                    message.output = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.output);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1128,7 +1185,7 @@ class CompleteUserTaskRunRequest$Type extends MessageType<CompleteUserTaskRunReq
         /* littlehorse.UserTaskRunId user_task_run_id = 1; */
         if (message.userTaskRunId)
             UserTaskRunId.internalBinaryWrite(message.userTaskRunId, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* map<string, littlehorse.VariableValue> results = 2; */
+        /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true]; */
         for (let k of globalThis.Object.keys(message.results)) {
             writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
             writer.tag(2, WireType.LengthDelimited).fork();
@@ -1138,6 +1195,9 @@ class CompleteUserTaskRunRequest$Type extends MessageType<CompleteUserTaskRunReq
         /* string user_id = 3; */
         if (message.userId !== "")
             writer.tag(3, WireType.LengthDelimited).string(message.userId);
+        /* littlehorse.VariableValue output = 4; */
+        if (message.output)
+            VariableValue.internalBinaryWrite(message.output, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1155,7 +1215,8 @@ class SaveUserTaskRunProgressRequest$Type extends MessageType<SaveUserTaskRunPro
             { no: 1, name: "user_task_run_id", kind: "message", T: () => UserTaskRunId },
             { no: 2, name: "results", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } },
             { no: 3, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "policy", kind: "enum", T: () => ["littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy", SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy] }
+            { no: 4, name: "policy", kind: "enum", T: () => ["littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy", SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy] },
+            { no: 5, name: "output", kind: "message", T: () => VariableValue }
         ]);
     }
     create(value?: PartialMessage<SaveUserTaskRunProgressRequest>): SaveUserTaskRunProgressRequest {
@@ -1175,7 +1236,7 @@ class SaveUserTaskRunProgressRequest$Type extends MessageType<SaveUserTaskRunPro
                 case /* littlehorse.UserTaskRunId user_task_run_id */ 1:
                     message.userTaskRunId = UserTaskRunId.internalBinaryRead(reader, reader.uint32(), options, message.userTaskRunId);
                     break;
-                case /* map<string, littlehorse.VariableValue> results */ 2:
+                case /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true] */ 2:
                     this.binaryReadMap2(message.results, reader, options);
                     break;
                 case /* string user_id */ 3:
@@ -1183,6 +1244,9 @@ class SaveUserTaskRunProgressRequest$Type extends MessageType<SaveUserTaskRunPro
                     break;
                 case /* littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy policy */ 4:
                     message.policy = reader.int32();
+                    break;
+                case /* littlehorse.VariableValue output */ 5:
+                    message.output = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.output);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1215,7 +1279,7 @@ class SaveUserTaskRunProgressRequest$Type extends MessageType<SaveUserTaskRunPro
         /* littlehorse.UserTaskRunId user_task_run_id = 1; */
         if (message.userTaskRunId)
             UserTaskRunId.internalBinaryWrite(message.userTaskRunId, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        /* map<string, littlehorse.VariableValue> results = 2; */
+        /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true]; */
         for (let k of globalThis.Object.keys(message.results)) {
             writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
             writer.tag(2, WireType.LengthDelimited).fork();
@@ -1228,6 +1292,9 @@ class SaveUserTaskRunProgressRequest$Type extends MessageType<SaveUserTaskRunPro
         /* littlehorse.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy policy = 4; */
         if (message.policy !== 0)
             writer.tag(4, WireType.Varint).int32(message.policy);
+        /* littlehorse.VariableValue output = 5; */
+        if (message.output)
+            VariableValue.internalBinaryWrite(message.output, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
