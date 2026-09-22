@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -11,6 +12,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -88,6 +90,24 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
         if (userTask.getStatus() != UserTaskRunStatus.DONE) {
             throw new IllegalStateException("Tried to get output of non-DONE user task");
+        }
+
+        UserTaskDefModel userTaskDef = processorContext.metadataManager().get(userTask.getUserTaskDefId());
+        if (userTaskDef.getResultStructDefId() != null) {
+            VariableValueModel outputModel = userTask.getOutput();
+            if (outputModel == null) {
+                throw new IllegalStateException("Completed Struct-backed UserTaskRun has no output");
+            }
+            try {
+                new TypeDefinitionModel(userTaskDef.getResultStructDefId())
+                        .validateCompatibility(outputModel, processorContext.metadataManager());
+            } catch (TypeValidationException exn) {
+                throw new IllegalStateException("Stored UserTaskRun output is invalid", exn);
+            }
+            return Optional.of(outputModel);
+        }
+        if (userTaskDef.getFields().isEmpty()) {
+            return Optional.empty();
         }
 
         Map<String, Object> rawOutput = new HashMap<>();
