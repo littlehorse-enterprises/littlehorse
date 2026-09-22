@@ -1,4 +1,4 @@
-import { UserTaskNodeRun as UserTaskNodeRunProto, UserTaskRun } from 'littlehorse-client/proto'
+import { UserTaskNodeRun as UserTaskNodeRunProto, UserTaskRun, VariableValue } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { NodeVariable } from '../../Components/NodeVariable'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -17,7 +17,11 @@ export const UserTaskNodeRun: FC<{ node: UserTaskNodeRunProto }> = ({ node }) =>
     return getUserTaskRun({ tenantId, ...userTaskRunId })
   })
 
-  const resultsArray = Object.entries(nodeTask?.results || {})
+  const structFields =
+    nodeTask?.output?.value.oneofKind === 'struct' ? (nodeTask.output.value.struct.struct?.fields ?? {}) : undefined
+  const resultsArray: [string, VariableValue][] = structFields
+    ? Object.entries(structFields).flatMap(([name, field]) => (field.value ? [[name, field.value]] : []))
+    : Object.entries(nodeTask?.results || {})
   return (
     <div>
       <NodeVariable label="Node Type:" text="User task" />
