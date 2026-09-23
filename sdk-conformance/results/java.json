@@ -1,8 +1,8 @@
 {
   "sdk": "java",
-  "corpusRevision": "410fc56c0",
+  "corpusRevision": "77c107982",
   "summary": {
-    "PASS": 147,
+    "PASS": 149,
     "FAIL": 0,
     "SKIP": 0,
     "MISSING": 0
@@ -113,6 +113,22 @@
       }
     },
     "declare-map": {
+      "area": "wfsdk",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "map-put": {
+      "area": "wfsdk",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "build-map": {
       "area": "wfsdk",
       "outcome": "PASS",
       "units": {

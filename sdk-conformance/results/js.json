@@ -1,10 +1,10 @@
 {
   "sdk": "js",
-  "corpusRevision": "410fc56c0",
+  "corpusRevision": "77c107982",
   "summary": {
     "PASS": 147,
     "FAIL": 0,
-    "SKIP": 0,
+    "SKIP": 2,
     "MISSING": 0
   },
   "outcomes": {
@@ -119,6 +119,16 @@
         "base": "PASS",
         "feature": "PASS"
       }
+    },
+    "map-put": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
+    },
+    "build-map": {
+      "area": "wfsdk",
+      "outcome": "SKIP",
+      "excuse": "todo"
     },
     "declare-str": {
       "area": "wfsdk",
