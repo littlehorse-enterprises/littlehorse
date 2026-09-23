@@ -601,8 +601,16 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(
-                name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry(), parent.getPlaceholderValues()));
+        LHClassType classType = LHClassType.resolve(
+                clazz,
+                parent.getTypeAdapterRegistry(),
+                parent.getPlaceholderValues(),
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (!(classType instanceof LHStructDefType)) {
+            throw new IllegalArgumentException(
+                    "Cannot create LHStructDefType, missing `@LHStructDef` annotation on provided class: " + clazz);
+        }
+        return addStructVariable(name, (LHStructDefType) classType);
     }
 
     @Override

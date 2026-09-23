@@ -244,6 +244,16 @@ public abstract class Workflow {
     public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
 
     /**
+     * Returns the Java classes referenced while compiling this workflow.
+     *
+     * <p>This includes classes used by variable declarations, event registrations, child threads,
+     * handlers, and recursively discovered JavaBean properties.
+     *
+     * @return an immutable set of referenced Java classes
+     */
+    public abstract Set<Class<?>> getReferencedJavaTypes();
+
+    /**
      * Returns the names of all `TaskDef`s used by this workflow.
      *
      * @return a Set of Strings containing the names of all `TaskDef`s used by this workflow.

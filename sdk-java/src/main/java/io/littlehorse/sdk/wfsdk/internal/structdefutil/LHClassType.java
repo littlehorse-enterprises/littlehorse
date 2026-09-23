@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * LHClassType is an abstract class that represents a Java class type in the context of LittleHorse's workflow SDK.
@@ -25,6 +27,7 @@ public abstract class LHClassType {
     }
 
     private static final ThreadLocal<HashSet<Class<?>>> inlineStructBuildPath = new ThreadLocal<>();
+    private static final ThreadLocal<Consumer<Class<?>>> referencedJavaTypeCollector = new ThreadLocal<>();
     protected Class<?> clazz;
     protected LHTypeAdapterRegistry typeAdapterRegistry;
     protected Map<String, String> placeholderValues = Map.of();
@@ -72,7 +75,14 @@ public abstract class LHClassType {
         Objects.requireNonNull(context, "Resolution context should not be null");
         if (classType == null) {
             throw new IllegalArgumentException("Class type should not be null");
-        } else if (void.class.equals(classType) || Void.class.equals(classType)) {
+        }
+
+        Consumer<Class<?>> collector = referencedJavaTypeCollector.get();
+        if (collector != null) {
+            collector.accept(classType);
+        }
+
+        if (void.class.equals(classType) || Void.class.equals(classType)) {
             throw new IllegalArgumentException(
                     "Void type is not supported as a variable type in LittleHorse. Void cases should be handled before creating LHClassTypes.");
         } else if (LHLibUtil.getTypeAdapterForClass(classType, typeAdapterRegistry)
@@ -104,6 +114,23 @@ public abstract class LHClassType {
             buildPath.remove(classType);
             if (buildPath.isEmpty()) {
                 inlineStructBuildPath.remove();
+            }
+        }
+    }
+
+    public static <T> T collectReferencedJavaTypes(Consumer<Class<?>> collector, Supplier<T> action) {
+        Objects.requireNonNull(collector, "Referenced Java type collector should not be null");
+        Objects.requireNonNull(action, "Collection action should not be null");
+
+        Consumer<Class<?>> previousCollector = referencedJavaTypeCollector.get();
+        referencedJavaTypeCollector.set(collector);
+        try {
+            return action.get();
+        } finally {
+            if (previousCollector == null) {
+                referencedJavaTypeCollector.remove();
+            } else {
+                referencedJavaTypeCollector.set(previousCollector);
             }
         }
     }
