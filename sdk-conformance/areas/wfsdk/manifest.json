@@ -171,6 +171,30 @@
       ]
     },
     {
+      "id": "map-put",
+      "title": "map put",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#put"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "build-map",
+      "title": "build map",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#buildMap"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
       "id": "declare-str",
       "title": "declare str",
       "level": "required",

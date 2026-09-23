@@ -2,6 +2,10 @@
 # ways, so a stale entry fails. todo = awaiting a case; not_applicable = no
 # compiled-output effect (with the reason).
 todo:
+  - id: SpawnedChildWf#withChildId
+    reason: child wf id override needs its own probe pair; awaiting a case
+  - id: WorkflowThread#declareInlineStruct
+    reason: inline struct declaration needs a struct-shaped probe pair; awaiting a case
   - id: Workflow#getPlaceholderValues
     reason: the placeholder mechanism substitutes names at build time and deserves its own case family; nothing examines it yet
   - id: Workflow#getTypeAdapterRegistry

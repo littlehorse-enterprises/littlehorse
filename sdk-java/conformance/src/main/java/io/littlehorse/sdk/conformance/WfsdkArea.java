@@ -90,6 +90,14 @@ public final class WfsdkArea {
         pair("declare-map", f -> wf -> {
             if (f) wf.declareMap("v", String.class, String.class);
         });
+        pair("map-put", f -> wf -> {
+            WfRunVariable v = wf.declareMap("v", String.class, String.class);
+            if (f) v.put("k", "val");
+        });
+        pair("build-map", f -> wf -> {
+            WfRunVariable v = wf.declareMap("v", String.class, String.class);
+            if (f) v.assign(wf.buildMap().put("k", "val"));
+        });
         pair("declare-struct", f -> wf -> {
             if (f) wf.declareStruct("v", "customer");
         });

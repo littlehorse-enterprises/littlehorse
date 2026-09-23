@@ -1,2 +1,6 @@
-todo: []
+todo:
+  - id: map-put
+    reason: sdk-js has no WfRunVariable.put yet
+  - id: build-map
+    reason: sdk-js has no buildMap yet
 not_applicable: []
