@@ -2,9 +2,13 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
-import io.littlehorse.sdk.usertask.UserTaskSchema;
+import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
+import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.*;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,7 +30,7 @@ public class UserTasksExample {
 
     public void wf(WorkflowThread wf) {
         WfRunVariable userId = wf.declareStr("user-id");
-        WfRunVariable itRequest = wf.declareJsonObj("it-request");
+        WfRunVariable itRequest = wf.declareStruct("it-request", ItemRequestForm.class);
         WfRunVariable isApproved = wf.declareBool("is-approved");
 
         // Get the IT Request
@@ -43,13 +47,13 @@ public class UserTasksExample {
         UserTaskOutput financeUserTaskOutput = wf.assignUserTask(APPROVAL_FORM, null, "finance")
                 .withNotes(wf.format(
                         "User {0} is requesting to buy item {1}.\nJustification: {2}",
-                        userId, itRequest.jsonPath("$.requestedItem"), itRequest.jsonPath("$.justification")));
+                        userId, itRequest.get("requestedItem"), itRequest.get("justification")));
         String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
         String financeTeamEmail = "finance@gmail.com";
         wf.scheduleReminderTask(financeUserTaskOutput, 2, EMAIL_TASK_NAME, financeTeamEmail, financeTeamEmailBody);
         wf.reassignUserTask(financeUserTaskOutput, "test-eduwer", null, 60);
 
-        isApproved.assign(financeUserTaskOutput.jsonPath("$.isApproved"));
+        isApproved.assign(financeUserTaskOutput.get("approved"));
 
         wf.doIf(
                         isApproved.isEqualTo(true),
@@ -60,7 +64,7 @@ public class UserTasksExample {
                                     userId,
                                     wf.format(
                                             "Dear {0}, your request for {1} has been approved!",
-                                            userId, itRequest.jsonPath("$.requestedItem")));
+                                            userId, itRequest.get("requestedItem")));
                         })
                 .doElse(
                         // Request denied ):
@@ -70,7 +74,7 @@ public class UserTasksExample {
                                     userId,
                                     wf.format(
                                             "Dear {0}, your request for {1} has been denied.",
-                                            userId, itRequest.jsonPath("$.requestedItem")));
+                                            userId, itRequest.get("requestedItem")));
                         });
     }
 
@@ -103,6 +107,9 @@ public class UserTasksExample {
         LHConfig config = new LHConfig(props);
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
+        StructDef itemRequestFormStructDef = registerStructDef(client, ItemRequestForm.class);
+        StructDef approvalFormStructDef = registerStructDef(client, ApprovalForm.class);
+
         // New workflow
         Workflow workflow = getWorkflow();
 
@@ -111,15 +118,34 @@ public class UserTasksExample {
         worker.registerTaskDef();
 
         // Create the User Task Def
-        UserTaskSchema requestForm = new UserTaskSchema(new ItemRequestForm(), IT_REQUEST_FORM);
-        client.putUserTaskDef(requestForm.compile());
+        PutUserTaskDefRequest requestForm = PutUserTaskDefRequest.newBuilder()
+                .setName(IT_REQUEST_FORM)
+                .setResultStructDefId(itemRequestFormStructDef.getId())
+                .build();
+        client.putUserTaskDef(requestForm);
 
-        UserTaskSchema approvalForm = new UserTaskSchema(new ApprovalForm(), APPROVAL_FORM);
-        client.putUserTaskDef(approvalForm.compile());
+        PutUserTaskDefRequest approvalForm = PutUserTaskDefRequest.newBuilder()
+                .setName(APPROVAL_FORM)
+                .setResultStructDefId(approvalFormStructDef.getId())
+                .build();
+        client.putUserTaskDef(approvalForm);
 
         workflow.registerWfSpec(client);
 
         // Run the worker
         worker.start();
+    }
+
+    private static StructDef registerStructDef(
+            LittleHorseGrpc.LittleHorseBlockingStub client, Class<?> structDefClass) {
+        StructDefCompatibilityType compatibilityType = StructDefCompatibilityType.NO_SCHEMA_UPDATES;
+
+        LHStructDefType structDefType = new LHStructDefType(structDefClass);
+
+        PutStructDefRequest request = structDefType.toPutStructDefRequest().toBuilder()
+                .setAllowedUpdates(compatibilityType)
+                .build();
+
+        return client.putStructDef(request);
     }
 }
