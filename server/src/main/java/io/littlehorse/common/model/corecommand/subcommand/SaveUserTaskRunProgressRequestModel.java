@@ -24,6 +24,7 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
 
     private UserTaskRunIdModel userTaskRunId;
     private Map<String, VariableValueModel> results;
+    private VariableValueModel output;
     private String userId;
     private SaveUserTaskRunAssignmentPolicy policy;
 
@@ -45,6 +46,9 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
         for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
             builder.putResults(entry.getKey(), entry.getValue().toProto().build());
         }
+        if (output != null) {
+            builder.setOutput(output.toProto());
+        }
         return builder;
     }
 
@@ -54,6 +58,9 @@ public class SaveUserTaskRunProgressRequestModel extends CoreSubCommand<SaveUser
         userTaskRunId = UserTaskRunIdModel.fromProto(p.getUserTaskRunId(), UserTaskRunIdModel.class, context);
         userId = p.getUserId();
         policy = p.getPolicy();
+        if (p.hasOutput()) {
+            output = VariableValueModel.fromProto(p.getOutput(), context);
+        }
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             VariableValueModel model = VariableValueModel.fromProto(entry.getValue(), context);
             results.put(entry.getKey(), model);
