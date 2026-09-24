@@ -6,17 +6,27 @@ This example will show you how to define a `StructDef` and use it in a workflow.
 
 ### Generating the `StructDef`
 
-#### StructDef Classes
+#### StructDef Types
 
-In this example, you will find three Java classes each representing their own StructDef: `Person`, `Address`, and `ParkingTicketReport`.
+In this example, you will find three Java types that each represent a StructDef: the `Person` and `ParkingTicketReport` records, and the `Address` POJO.
 
-Note that each class is a POJO (Plain Old Java Object) with a simple `@LHStructDef` annotation attached to it.
+Records use the same `@LHStructDef` annotation as POJOs. Place `@LHStructField` directly on a record component to configure its StructDef field:
 
-In `Person`, the `homeAddress` field is marked with `@LHStructField(masked = true)`. This is a common privacy use case: your task workers still need the full address to deliver or mail something, but public API responses should not expose that sensitive PII. 
+```java
+@LHStructDef("parking-ticket-report")
+public record ParkingTicketReport(
+	@LHStructField(description = "The vehicle's manufacturer") String vehicleMake,
+	@LHStructField(description = "The vehicle model") String vehicleModel,
+	@LHStructField(description = "The license plate number") String licensePlateNumber) {}
+```
+
+The SDK reads record components through their generated accessors, such as `licensePlateNumber()`, and invokes the canonical constructor when deserializing a `Struct` back into a record.
+
+In `Person`, the `homeAddress` record component is marked with `@LHStructField(masked = true)`. This is a common privacy use case: your task workers still need the full address to deliver or mail something, but public API responses should not expose that sensitive PII.
 
 #### Task Workers
 
-In `MyWorker.java`, you will find a Task Method `get-car-owner` which takes in a `ParkingTicketReport` as its first parameter and returns the `Person` who owns the car.
+In `MyWorker.java`, you will find a Task Method `get-car-owner` which takes in a `ParkingTicketReport` as its first parameter and returns the `Person` who owns the car. The workflow then passes that `Person` to `mail-ticket`, demonstrating that records can be serialized and deserialized across task boundaries.
 
 You will also find the Task Method `mail-ticket` which takes in a `Person` as its first parameter.
 
