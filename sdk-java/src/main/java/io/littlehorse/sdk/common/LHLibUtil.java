@@ -660,7 +660,6 @@ public class LHLibUtil {
             }
 
             Object structObject = lhClassType.createInstance();
-
             List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
                     ? ((LHStructDefType) lhClassType).getStructProperties()
                     : ((LHInlineStructDefType) lhClassType).getStructProperties();
@@ -698,8 +697,8 @@ public class LHLibUtil {
             throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
-            ? ((LHStructDefType) lhClassType).getStructProperties()
-            : ((LHInlineStructDefType) lhClassType).getStructProperties();
+                ? ((LHStructDefType) lhClassType).getStructProperties()
+                : ((LHInlineStructDefType) lhClassType).getStructProperties();
         Map<String, LHStructProperty> byPropertyName = new HashMap<>();
 
         for (LHStructProperty property : structProperties) {

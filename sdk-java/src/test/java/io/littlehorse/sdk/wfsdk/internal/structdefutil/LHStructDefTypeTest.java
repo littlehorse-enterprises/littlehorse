@@ -355,7 +355,7 @@ public class LHStructDefTypeTest {
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
 
-        @Test
+    @Test
     public void getInlineStructDefFromRecordComponents() {
         InlineStructDef actualInlineStructDef =
                 new LHStructDefType(PersonRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
@@ -514,7 +514,7 @@ public class LHStructDefTypeTest {
     void shouldComputeDefaultValuesFromNoArgConstructor() {
         assertThat(ConfigWithDefaultUx.class.getDeclaredConstructors()).hasSize(2); // canonical + no-arg
         assertThat(ConfigNoDefaultUx.class.getDeclaredConstructors()).hasSize(1); // canonical only
-        }
+    }
 
     @Test
     public void getInlineStructDefSetsDescriptionFromLHStructFieldAnnotation() {

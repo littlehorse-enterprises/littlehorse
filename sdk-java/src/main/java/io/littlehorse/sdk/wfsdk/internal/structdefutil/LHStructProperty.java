@@ -98,7 +98,7 @@ public class LHStructProperty {
 
             if (isNativeArray() && val.getClass().isArray()) {
                 return LHLibUtil.objToVarValAsNativeArray(
-                    val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
+                        val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
             }
 
             if (isNativeMap() && val instanceof Map) {
@@ -246,7 +246,7 @@ public class LHStructProperty {
 
         if (isNativeArray()) {
             return new LHArrayType(
-                getPropertyTypeClass(),
+                    getPropertyTypeClass(),
                     typeAdapterRegistry,
                     placeholderValues,
                     LHClassType.ResolutionContext.STRUCT_MEMBER);
@@ -257,7 +257,7 @@ public class LHStructProperty {
         }
 
         return LHClassType.resolve(
-        getPropertyTypeClass(),
+                getPropertyTypeClass(),
                 typeAdapterRegistry,
                 placeholderValues,
                 LHClassType.ResolutionContext.STRUCT_MEMBER);
