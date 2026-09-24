@@ -31,6 +31,11 @@ jest.mock('../../Components/Attempts', () => ({
     <div data-testid="attempts">{`attempts:${attempts?.length ?? 0}:index:${attemptIndex}`}</div>
   ),
 }))
+jest.mock('../../Components/Checkpoints', () => ({
+  Checkpoints: ({ checkpoints }: any) => (
+    <div data-testid="checkpoints">{`checkpoints:${checkpoints?.length ?? 0}`}</div>
+  ),
+}))
 jest.mock('../../Components/NodeStatus', () => ({
   NodeStatus: ({ status, type }: any) => {
     const { TaskStatus, LHStatus } = require('littlehorse-client/proto')
