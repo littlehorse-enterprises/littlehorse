@@ -1,7 +1,7 @@
 package io.littlehorse.common.model;
 
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -20,7 +20,7 @@ public interface CoreOutputTopicGetable<T extends Message> {
             T previousValue,
             ReadOnlyMetadataManager metadataManager,
             ReadOnlyGetableManager getableManager,
-            OutputTopicConfigModel config) {
-        return config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.ALL_ENTITY_EVENTS;
+            OutputTopicConfig.OutputTopicRecordingLevel outputTopicRecordingLevel) {
+        return outputTopicRecordingLevel == OutputTopicRecordingLevel.ALL_ENTITY_EVENTS;
     }
 }

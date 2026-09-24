@@ -1,8 +1,10 @@
 package io.littlehorse.server.streams.topology.core;
 
+import io.grpc.Status;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
@@ -11,8 +13,10 @@ import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPl
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.model.outputtopic.MetadataOutputTopicRecordModel;
 import io.littlehorse.common.proto.MetadataCommand;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
@@ -21,6 +25,10 @@ import io.littlehorse.server.streams.util.HeadersUtil;
 import io.littlehorse.server.streams.util.MetadataCache;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.common.header.Headers;
@@ -29,7 +37,7 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-public class MetadataProcessorContext implements ExecutionContext {
+public class MetadataProcessorContext extends ProcessingContext {
 
     private final ProcessorContext<String, CommandProcessorOutput> processorContext;
     private final MetadataCache metadataCache;
@@ -37,6 +45,8 @@ public class MetadataProcessorContext implements ExecutionContext {
     private MetadataManager metadataManager;
     private LHServerConfig lhConfig;
     private final MetadataCommandModel currentCommand;
+    private final OutputTopicConfigModel outputTopicConfig;
+    private final CompletableFuture<Boolean> outputTopicExistsFuture;
 
     public MetadataProcessorContext(
             Headers recordMetadata,
@@ -44,6 +54,7 @@ public class MetadataProcessorContext implements ExecutionContext {
             MetadataCache metadataCache,
             LHServerConfig lhConfig,
             MetadataCommand currentCommand) {
+        super(lhConfig);
         this.processorContext = processorContext;
 
         this.metadataCache = metadataCache;
@@ -60,6 +71,17 @@ public class MetadataProcessorContext implements ExecutionContext {
         this.authContext = this.authContextFor(
                 HeadersUtil.tenantIdFromMetadata(recordMetadata), HeadersUtil.principalIdFromMetadata(recordMetadata));
         this.lhConfig = lhConfig;
+        TenantModel storedTenant = metadataManager.get(tenantId);
+        if (storedTenant != null
+                && storedTenant.getOutputTopicConfig() != null
+                && !(storedTenant.getOutputTopicConfig().getDefaultRecordingLevel()
+                        == OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS)) {
+            this.outputTopicConfig = storedTenant.getOutputTopicConfig();
+            this.outputTopicExistsFuture = outputTopicsExist();
+        } else {
+            this.outputTopicConfig = null;
+            this.outputTopicExistsFuture = CompletableFuture.completedFuture(true);
+        }
     }
 
     @Override
@@ -107,7 +129,14 @@ public class MetadataProcessorContext implements ExecutionContext {
     private void maybeForwardMetadataGetableToOutputTopic(TenantIdModel tenantId, MetadataGetable<?> getable) {
         TenantModel tenant = metadataManager.get(tenantId);
         if (tenant.getOutputTopicConfig() == null) return;
-
+        try {
+            Boolean valid = outputTopicExistsFuture.get(20, TimeUnit.MILLISECONDS);
+            if (!valid) {
+                return;
+            }
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new LHApiException(Status.ABORTED.withDescription(e.getMessage()));
+        }
         if (getable instanceof WorkflowMigrationPlanModel) return;
 
         MetadataOutputTopicRecordModel output = new MetadataOutputTopicRecordModel(getable);

@@ -43,6 +43,7 @@ import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
@@ -110,8 +111,13 @@ public class GetableManagerTest {
         when(executionContext.nativeCoreStore()).thenReturn(store);
         when(executionContext.getCountedTagsAccumulator()).thenReturn(countedTags);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
-        getableManager =
-                new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);
+        getableManager = new GetableManager(
+                localStoreWrapper,
+                mockProcessorContext,
+                lhConfig,
+                mock(),
+                executionContext,
+                OutputTopicConfig.OutputTopicRecordingLevel.NO_ENTITY_EVENTS);
         store.init(mockProcessorContext.getStateStoreContext(), store);
     }
 
