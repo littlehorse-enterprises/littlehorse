@@ -743,6 +743,7 @@ public class LHLibUtil {
         return cons.newInstance(canonicalArgValues);
     }
 
+    // Ignored record components still need an argument for the canonical constructor.
     private static Object defaultValueForType(Class<?> type) {
         if (!type.isPrimitive()) return null;
 
