@@ -53,4 +53,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 025 | [StructFieldDef Descriptions](./025-structfielddef-descriptions.md)                                | Jacob Snarr                      | TODO |
 | 026 | [Thread Run Queue](./026-thread-run-queue.md)                                                      | Jake Rose                        | TODO |
 | 027 | [RunChildWf with Specific ID](./027-runchildwf-with-id.md)                                         | Colt McNealy                     | [#2501](https://github.com/littlehorse-enterprises/littlehorse/issues/2501) |
-| 028 | [Java Records as `StructDef` Types](./028-java-records-for-structdefs.md)                           | Jacob Snarr                      | TODO |
+| 028 | [Java Records as `StructDef` Types](./028-java-records-for-structdefs.md)                           | Jacob Snarr                      | [#2295](https://github.com/littlehorse-enterprises/littlehorse/pull/2295) |

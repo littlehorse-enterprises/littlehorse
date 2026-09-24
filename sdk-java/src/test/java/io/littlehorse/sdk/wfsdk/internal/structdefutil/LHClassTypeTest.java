@@ -119,19 +119,15 @@ public class LHClassTypeTest {
     }
 
     @Test
-    public void recordInstanceCreationPrefersNoArgOrFallsBackToCanonical() throws Exception {
-        // record with no-arg ctor should yield greeting="hello"
+    public void recordInstanceCreationRequiresNoArgConstructor() throws Exception {
         Object rec = LHClassType.fromJavaClass(RecordWithDefaultCtor.class, LHTypeAdapterRegistry.empty())
                 .createInstance();
         assertThat(rec).isInstanceOf(RecordWithDefaultCtor.class);
         assertThat(((RecordWithDefaultCtor) rec).greeting()).isEqualTo("hello");
 
-        // record without no-arg ctor should fall back to canonical with defaults
-        Object cfg = LHClassType.fromJavaClass(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty())
-                .createInstance();
-        assertThat(cfg).isInstanceOf(ConfigNoDefaultUx.class);
-        assertThat(((ConfigNoDefaultUx) cfg).mode()).isNull();
-        assertThat(((ConfigNoDefaultUx) cfg).retries()).isEqualTo(0);
+        assertThatThrownBy(() -> LHClassType.fromJavaClass(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty())
+                        .createInstance())
+                .isInstanceOf(NoSuchMethodException.class);
     }
 
     @Test

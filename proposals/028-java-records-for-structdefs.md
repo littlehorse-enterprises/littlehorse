@@ -82,6 +82,8 @@ public record Customer(String name, String ssn) {
 
 Both styles produce identical `InlineStructDef` output. Annotation lookup checks the record component first, then the accessor method, then the backing field (consistent with the existing POJO annotation resolution order).
 
+A field annotated with `@LHStructIgnore` is omitted from both the generated `StructDef` and serialized `Struct`. Because a record's canonical constructor still requires an argument for every component, deserialization supplies Java's default value for an ignored component: `null` for reference types and the corresponding zero value for primitive types.
+
 ## Default Values
 
 The SDK computes default `StructFieldDef` values by instantiating the class with a no-arg constructor and reading the resulting field values. For records, the no-arg constructor does not exist by default, so **no default values are emitted** unless the record explicitly declares one:

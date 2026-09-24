@@ -19,6 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import io.littlehorse.sdk.worker.LHStructIgnore;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -579,6 +580,37 @@ public class LHLibUtilTest {
     @LHStructDef("adapter-record-struct")
     public record AdapterRecordStruct(UUID id, String name) {}
 
+    @LHStructDef("record-map-holder")
+    public record RecordMapHolder(Map<String, InlineAddress> addresses) {}
+
+    @LHStructDef("ignored-record-struct")
+    public record IgnoredRecordStruct(String name, @LHStructIgnore String internalId, @LHStructIgnore int revision) {}
+
+    @Test
+    void shouldRoundTripTypedMapInsideRecordStruct() {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        RecordMapHolder original = new RecordMapHolder(Map.of("home", address));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        RecordMapHolder deserialized = (RecordMapHolder) LHLibUtil.varValToObj(serialized, RecordMapHolder.class);
+
+        assertThat(deserialized.addresses().get("home")).isInstanceOf(InlineAddress.class);
+        assertThat(deserialized.addresses().get("home").getStreet()).isEqualTo("Main St");
+    }
+
+    @Test
+    void shouldUseJavaDefaultsForIgnoredRecordComponents() {
+        IgnoredRecordStruct original = new IgnoredRecordStruct("Leia", "internal-123", 7);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        IgnoredRecordStruct deserialized =
+                (IgnoredRecordStruct) LHLibUtil.varValToObj(serialized, IgnoredRecordStruct.class);
+
+        assertThat(serialized.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("name");
+        assertThat(deserialized).isEqualTo(new IgnoredRecordStruct("Leia", null, 0));
+    }
+
     @Test
     void shouldRoundTripInlinePojoFieldsAndArrayElements() throws LHSerdeException {
         InlineAddress address = new InlineAddress();
@@ -756,6 +788,9 @@ public class LHLibUtilTest {
         }
     }
 
+    @LHStructDef("${company}-record-order")
+    public record PlaceholderRecordOrder(String orderId, PlaceholderCustomer customer) {}
+
     @Test
     void shouldResolvePlaceholdersInNestedStruct() {
         PlaceholderCustomer customer = new PlaceholderCustomer();
@@ -804,6 +839,21 @@ public class LHLibUtilTest {
         Assertions.assertThat(roundTripped.getOrderId()).isEqualTo("order-2");
         Assertions.assertThat(roundTripped.getCustomer()).isNotNull();
         Assertions.assertThat(roundTripped.getCustomer().getName()).isEqualTo("Grace");
+    }
+
+    @Test
+    void shouldRoundTripNestedPlaceholderStructInsideRecord() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Han");
+        PlaceholderRecordOrder order = new PlaceholderRecordOrder("order-3", customer);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(
+                order, PlaceholderRecordOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        PlaceholderRecordOrder deserialized = (PlaceholderRecordOrder) LHLibUtil.varValToObj(
+                serialized, PlaceholderRecordOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        assertThat(deserialized.orderId()).isEqualTo("order-3");
+        assertThat(deserialized.customer().getName()).isEqualTo("Han");
     }
 
     @LHStructDef("customer-v2-ux")

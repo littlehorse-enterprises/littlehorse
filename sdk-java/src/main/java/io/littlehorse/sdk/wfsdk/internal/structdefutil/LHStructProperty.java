@@ -146,16 +146,7 @@ public class LHStructProperty {
         }
 
         try {
-            Object propertyValue;
-            if (isNativeMap() && v.getValueCase() == VariableValue.ValueCase.MAP) {
-                LHMapType mapType = resolveMapType(typeAdapterRegistry);
-                propertyValue = LHLibUtil.varValToNativeMap(
-                        v, mapType.getKeyClass(), mapType.getValueClass(), typeAdapterRegistry, placeholderValues);
-            } else {
-                propertyValue =
-                        LHLibUtil.varValToObj(v, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
-            }
-            writeMethod.invoke(o, propertyValue);
+            writeMethod.invoke(o, deserializeValue(v, typeAdapterRegistry, placeholderValues));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
@@ -165,7 +156,17 @@ public class LHStructProperty {
     }
 
     public Object deserializeValue(VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry) {
-        return LHLibUtil.varValToObj(value, getPropertyTypeClass(), typeAdapterRegistry);
+        return deserializeValue(value, typeAdapterRegistry, Map.of());
+    }
+
+    public Object deserializeValue(
+            VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        if (isNativeMap() && value.getValueCase() == VariableValue.ValueCase.MAP) {
+            LHMapType mapType = resolveMapType(typeAdapterRegistry);
+            return LHLibUtil.varValToNativeMap(
+                    value, mapType.getKeyClass(), mapType.getValueClass(), typeAdapterRegistry, placeholderValues);
+        }
+        return LHLibUtil.varValToObj(value, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
     }
 
     /**

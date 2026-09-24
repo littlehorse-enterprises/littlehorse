@@ -511,9 +511,19 @@ public class LHStructDefTypeTest {
     public record ConfigNoDefaultUx(String mode, int retries) {}
 
     @Test
-    void shouldComputeDefaultValuesFromNoArgConstructor() {
-        assertThat(ConfigWithDefaultUx.class.getDeclaredConstructors()).hasSize(2); // canonical + no-arg
-        assertThat(ConfigNoDefaultUx.class.getDeclaredConstructors()).hasSize(1); // canonical only
+    void shouldOnlyComputeRecordDefaultValuesFromNoArgConstructor() {
+        InlineStructDef withDefaults =
+                new LHStructDefType(ConfigWithDefaultUx.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef withoutDefaults =
+                new LHStructDefType(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(withDefaults.getFieldsOrThrow("mode").getDefaultValue().getStr())
+                .isEqualTo("standard");
+        assertThat(withDefaults.getFieldsOrThrow("retries").getDefaultValue().getInt())
+                .isEqualTo(3);
+        assertThat(withoutDefaults.getFieldsOrThrow("mode").hasDefaultValue()).isFalse();
+        assertThat(withoutDefaults.getFieldsOrThrow("retries").hasDefaultValue())
+                .isFalse();
     }
 
     @Test

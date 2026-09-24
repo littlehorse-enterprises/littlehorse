@@ -11,6 +11,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
+import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -20,12 +21,19 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @LHTest
-@WithStructDefs({Car.class})
+@WithStructDefs({Car.class, StructValidationsTest.RecordCar.class})
 public class StructValidationsTest {
+
+    @LHStructDef("struct-record-car")
+    public record RecordCar(String brand, String model, int mileage) {}
+
     private WorkflowVerifier verifier;
 
     @LHWorkflow("structs-wf")
     private Workflow structWorkflow;
+
+    @LHWorkflow("record-structs-wf")
+    private Workflow recordStructWorkflow;
 
     @Test
     void shouldPassWithValidStruct() {
@@ -33,6 +41,22 @@ public class StructValidationsTest {
 
         verifier.prepareRun(structWorkflow, structArg)
                 .waitForStatus(LHStatus.COMPLETED)
+                .start();
+    }
+
+    @Test
+    void shouldUseRecordStructAsTaskInputAndOutput() {
+        verifier.prepareRun(recordStructWorkflow, Arg.of("my-car", new RecordCar("Honda", "Civic", 42)))
+                .waitForStatus(LHStatus.COMPLETED)
+                .thenVerifyVariable(0, "parked-car", variableValue -> {
+                    var fields = variableValue.getStruct().getStruct().getFieldsMap();
+                    Assertions.assertThat(fields.get("brand").getValue().getStr())
+                            .isEqualTo("Honda");
+                    Assertions.assertThat(fields.get("model").getValue().getStr())
+                            .isEqualTo("Civic");
+                    Assertions.assertThat(fields.get("mileage").getValue().getInt())
+                            .isEqualTo(42);
+                })
                 .start();
     }
 
@@ -64,8 +88,23 @@ public class StructValidationsTest {
         });
     }
 
+    @LHWorkflow("record-structs-wf")
+    public Workflow recordStructsWf() {
+        return new WorkflowImpl("record-structs-wf", wf -> {
+            WfRunVariable carVar = wf.declareStruct("my-car", RecordCar.class).required();
+            WfRunVariable parkedCar = wf.declareStruct("parked-car", RecordCar.class);
+
+            parkedCar.assign(wf.execute("park-record-car", carVar));
+        });
+    }
+
     @LHTaskMethod("park-car")
     public String parkCar(Car car) {
         return "asdf";
+    }
+
+    @LHTaskMethod("park-record-car")
+    public RecordCar parkRecordCar(RecordCar car) {
+        return car;
     }
 }

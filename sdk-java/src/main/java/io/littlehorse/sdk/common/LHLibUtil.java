@@ -656,7 +656,7 @@ public class LHLibUtil {
 
         try {
             if (clazz.isRecord()) {
-                return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry);
+                return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
             }
 
             Object structObject = lhClassType.createInstance();
@@ -693,7 +693,11 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToRecord(
-            Struct struct, Class<?> clazz, LHClassType lhClassType, LHTypeAdapterRegistry typeAdapterRegistry)
+            Struct struct,
+            Class<?> clazz,
+            LHClassType lhClassType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
             throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
@@ -712,13 +716,11 @@ public class LHLibUtil {
         for (int i = 0; i < recordComponents.length; i++) {
             RecordComponent recordComponent = recordComponents[i];
             LHStructProperty property = byPropertyName.get(recordComponent.getName());
+            canonicalArgTypes[i] = recordComponent.getType();
 
             if (property == null) {
-                throw new LHSerdeException(
-                        null,
-                        String.format(
-                                "Failed deserializing VariableValue into Struct because no such record component [%s] exists on class [%s]",
-                                recordComponent.getName(), clazz.getName()));
+                canonicalArgValues[i] = defaultValueForType(recordComponent.getType());
+                continue;
             }
 
             String fieldName = property.getFieldName();
@@ -734,12 +736,26 @@ public class LHLibUtil {
 
             VariableValue fieldValue =
                     struct.getStruct().getFieldsMap().get(fieldName).getValue();
-            canonicalArgTypes[i] = recordComponent.getType();
-            canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry);
+            canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry, placeholderValues);
         }
 
         java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
         return cons.newInstance(canonicalArgValues);
+    }
+
+    private static Object defaultValueForType(Class<?> type) {
+        if (!type.isPrimitive()) return null;
+
+        if (type == boolean.class) return false;
+        if (type == byte.class) return (byte) 0;
+        if (type == char.class) return (char) 0;
+        if (type == short.class) return (short) 0;
+        if (type == int.class) return 0;
+        if (type == long.class) return 0L;
+        if (type == float.class) return 0.0f;
+        if (type == double.class) return 0.0d;
+
+        return null;
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {
