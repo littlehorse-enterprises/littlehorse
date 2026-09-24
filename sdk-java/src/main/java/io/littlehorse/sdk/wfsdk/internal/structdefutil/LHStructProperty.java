@@ -155,10 +155,17 @@ public class LHStructProperty {
         }
     }
 
+    /** Deserializes this property without StructDef placeholder values. */
     public Object deserializeValue(VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry) {
         return deserializeValue(value, typeAdapterRegistry, Map.of());
     }
 
+    /**
+     * Deserializes this property for setters and record constructor arguments.
+     *
+     * <p>Map conversion belongs here because the accessor retains generic key and value types that are erased from
+     * {@code Map.class}. Placeholder values are passed through to nested structs.
+     */
     public Object deserializeValue(
             VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         if (isNativeMap() && value.getValueCase() == VariableValue.ValueCase.MAP) {
