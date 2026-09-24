@@ -19,6 +19,8 @@ export const BUCKET_OPTIONS = [
   { value: '1440', label: '1 day' },
 ] as const
 
+export const REFRESH_SPIN_MS = 1000
+
 export const COUNT_CHART_CONFIG = {
   started: { label: 'Started', color: 'hsl(221, 83%, 53%)' },
   completed: { label: 'Completed', color: 'hsl(142, 71%, 45%)' },
