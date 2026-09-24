@@ -160,6 +160,28 @@ describe('enumerateBucketStarts', () => {
       new Date(2026, 3, 7).getTime(),
     ])
   })
+
+  it('starts at the bucket containing an unaligned range start', () => {
+    const fiveMin = 5 * 60 * 1000
+    const start = new Date('2026-04-07T10:03:30Z').getTime()
+    const end = new Date('2026-04-07T10:14:59Z').getTime()
+    expect(enumerateBucketStarts(start, end, fiveMin)).toEqual([
+      new Date('2026-04-07T10:00:00Z').getTime(),
+      new Date('2026-04-07T10:05:00Z').getTime(),
+      new Date('2026-04-07T10:10:00Z').getTime(),
+    ])
+  })
+
+  it('starts day buckets at the local midnight before an unaligned range start', () => {
+    const dayMs = 86_400_000
+    const start = new Date(2026, 3, 5, 15, 0).getTime()
+    const end = new Date(2026, 3, 7, 15, 0).getTime()
+    expect(enumerateBucketStarts(start, end, dayMs)).toEqual([
+      new Date(2026, 3, 5).getTime(),
+      new Date(2026, 3, 6).getTime(),
+      new Date(2026, 3, 7).getTime(),
+    ])
+  })
 })
 
 // ─── aggregateByBucket ────────────────────────────────────────────

@@ -2,6 +2,7 @@ package io.littlehorse.common.model.getable.core.variable;
 
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
@@ -27,7 +28,7 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         Struct p = (Struct) proto;
 
-        this.structDefId = StructDefIdModel.fromProto(p.getStructDefId(), context);
+        this.structDefId = p.hasStructDefId() ? StructDefIdModel.fromProto(p.getStructDefId(), context) : null;
         this.inlineStruct = InlineStructModel.fromProto(p.getStruct(), InlineStructModel.class, context);
     }
 
@@ -35,7 +36,9 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
     public Struct.Builder toProto() {
         Struct.Builder out = Struct.newBuilder();
 
-        out.setStructDefId(structDefId.toProto());
+        if (structDefId != null) {
+            out.setStructDefId(structDefId.toProto());
+        }
         out.setStruct(inlineStruct.toProto());
 
         return out;
@@ -62,6 +65,20 @@ public class StructModel extends LHSerializable<Struct> implements Comparable<St
         }
 
         this.structDefId = expectedStructDefId;
+    }
+
+    public void validateAgainstInlineStructDef(
+            InlineStructDefModel expectedInlineStructDef, ReadOnlyMetadataManager metadataManager)
+            throws StructValidationException {
+        if (expectedInlineStructDef == null) {
+            throw new StructValidationException("Expected InlineStructDef cannot be null");
+        }
+        if (inlineStruct == null) {
+            throw new StructValidationException("Struct payload cannot be null");
+        }
+
+        expectedInlineStructDef.validateAgainstSuperset(inlineStruct, metadataManager);
+        this.structDefId = null;
     }
 
     @Override

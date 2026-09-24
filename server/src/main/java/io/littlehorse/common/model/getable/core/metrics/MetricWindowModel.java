@@ -9,6 +9,7 @@ import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.sdk.common.proto.CountAndTiming;
 import io.littlehorse.sdk.common.proto.MetricWindow;
 import io.littlehorse.sdk.common.proto.MetricWindowType;
+import io.littlehorse.sdk.common.proto.QuotaUsageMetrics;
 import io.littlehorse.sdk.common.proto.TaskMetrics;
 import io.littlehorse.sdk.common.proto.WfMetrics;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
@@ -48,6 +49,8 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
     public static final String TASKATTEMPT_RUNNING_TO_ERROR = "taskattempt_running_to_error";
     public static final String TASKATTEMPT_RUNNING_TO_SUCCESS = "taskattempt_running_to_success";
     public static final String TASKATTEMPT_RUNNING_TO_EXCEPTION = "taskattempt_running_to_exception";
+    public static final String REQUESTS_OBSERVED = "requests_observed";
+    public static final String REQUESTS_THROTTLED = "requests_throttled";
 
     private MetricWindowIdModel id;
     private Map<String, CountAndTimingModel> metrics;
@@ -176,6 +179,19 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
                     taskMetrics.hasTaskattemptRunningToException(),
                     taskMetrics.getTaskattemptRunningToException(),
                     context);
+            return;
+        }
+
+        if (p.hasQuotaUsage()) {
+            QuotaUsageMetrics quotaMetrics = p.getQuotaUsage();
+            CountAndTimingModel observed = new CountAndTimingModel();
+            observed.setCount(quotaMetrics.getRequestsObserved());
+            metrics.put(REQUESTS_OBSERVED, observed);
+
+            CountAndTimingModel throttled = new CountAndTimingModel();
+            throttled.setCount(quotaMetrics.getRequestsThrottled());
+            throttled.setTotalLatencyMs(quotaMetrics.getTotalThrottleTimeMs());
+            metrics.put(REQUESTS_THROTTLED, throttled);
         }
     }
 
@@ -205,6 +221,19 @@ public class MetricWindowModel extends CoreGetable<MetricWindow> {
             putMetricIfPresent(taskMetrics::setTaskattemptRunningToSuccess, TASKATTEMPT_RUNNING_TO_SUCCESS);
             putMetricIfPresent(taskMetrics::setTaskattemptRunningToException, TASKATTEMPT_RUNNING_TO_EXCEPTION);
             out.setTask(taskMetrics);
+        } else if (id.getMetricType() == MetricWindowType.QUOTA_USAGE_METRIC) {
+            QuotaUsageMetrics.Builder quotaMetrics = QuotaUsageMetrics.newBuilder();
+            CountAndTimingModel observed = metrics.get(REQUESTS_OBSERVED);
+            CountAndTimingModel throttled = metrics.get(REQUESTS_THROTTLED);
+            if (observed != null) {
+                quotaMetrics.setRequestsObserved(observed.getCount());
+            }
+            if (throttled != null) {
+                quotaMetrics
+                        .setRequestsThrottled(throttled.getCount())
+                        .setTotalThrottleTimeMs(throttled.getTotalLatencyMs());
+            }
+            out.setQuotaUsage(quotaMetrics);
         }
 
         return out;

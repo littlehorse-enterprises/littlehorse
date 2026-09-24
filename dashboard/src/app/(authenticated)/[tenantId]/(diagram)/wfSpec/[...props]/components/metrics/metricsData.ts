@@ -90,15 +90,9 @@ export function aggregateByBucket(points: { ts: number; wf: WfMetrics }[], bucke
 export const EMPTY_WF_METRICS: WfMetrics = mergeWfMetricsGroup([])
 
 export function enumerateBucketStarts(rangeStartMs: number, rangeEndMs: number, bucketMs: number): number[] {
+  const out: number[] = []
   if (bucketMs >= DAY_MS) {
-    const out: number[] = []
-    const d = new Date(rangeStartMs)
-    let current = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
-    if (current < rangeStartMs) {
-      const next = new Date(current)
-      next.setDate(next.getDate() + 1)
-      current = next.getTime()
-    }
+    let current = bucketStartMs(rangeStartMs, bucketMs)
     while (current <= rangeEndMs) {
       out.push(current)
       const next = new Date(current)
@@ -107,10 +101,8 @@ export function enumerateBucketStarts(rangeStartMs: number, rangeEndMs: number, 
     }
     return out
   }
-  const first = Math.ceil(rangeStartMs / bucketMs) * bucketMs
   const last = Math.floor(rangeEndMs / bucketMs) * bucketMs
-  const out: number[] = []
-  for (let t = first; t <= last; t += bucketMs) {
+  for (let t = bucketStartMs(rangeStartMs, bucketMs); t <= last; t += bucketMs) {
     out.push(t)
   }
   return out

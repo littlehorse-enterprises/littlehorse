@@ -2,6 +2,8 @@ package io.littlehorse.sdk.wfsdk.internal.taskdefutil;
 
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.lang.reflect.AnnotatedElement;
@@ -24,19 +26,29 @@ public final class LHTypeMetadata {
     @Getter
     private final boolean isLHMap;
 
+    @Getter
+    private final boolean isInlineStruct;
+
     private final String name;
     private final String structDefName;
 
-    private LHTypeMetadata(boolean masked, boolean isLHArray, boolean isLHMap, String name, String structDefName) {
+    private LHTypeMetadata(
+            boolean masked,
+            boolean isLHArray,
+            boolean isLHMap,
+            boolean isInlineStruct,
+            String name,
+            String structDefName) {
         this.masked = masked;
         this.isLHArray = isLHArray;
         this.isLHMap = isLHMap;
+        this.isInlineStruct = isInlineStruct;
         this.name = name;
         this.structDefName = structDefName;
     }
 
     private LHTypeMetadata() {
-        this(false, false, false, null, null);
+        this(false, false, false, false, null, null);
     }
 
     public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
@@ -58,6 +70,7 @@ public final class LHTypeMetadata {
                 typeAnnotation.masked(),
                 typeAnnotation.isLHArray(),
                 typeAnnotation.isLHMap(),
+                typeAnnotation.isInlineStruct(),
                 parsedName,
                 parsedStructDefName);
     }
@@ -104,6 +117,34 @@ public final class LHTypeMetadata {
         if (!Map.class.isAssignableFrom(javaType)) {
             throw new TaskSchemaMismatchError(buildUnexpectedLHMapMessage(context, contextName, javaType));
         }
+    }
+
+    void validateInlineStructUsage(Class<?> javaType, ValidationContext context, String contextName) {
+        if (!isInlineStruct) {
+            return;
+        }
+
+        if (InlineStruct.class.isAssignableFrom(javaType)) {
+            throw new TaskSchemaMismatchError("@LHType(isInlineStruct = true) cannot be used with InlineStruct "
+                    + buildContextDescription(context, contextName));
+        }
+    }
+
+    void validateInlineStructType(LHClassType classType, ValidationContext context, String contextName) {
+        if (!isInlineStruct) {
+            return;
+        }
+
+        if (classType == null || classType.getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF) {
+            throw new TaskSchemaMismatchError("@LHType(isInlineStruct = true) requires an unannotated POJO "
+                    + buildContextDescription(context, contextName));
+        }
+    }
+
+    private static String buildContextDescription(ValidationContext context, String contextName) {
+        return context == ValidationContext.PARAMETER
+                ? "parameter " + contextName + "."
+                : "return type for method " + contextName + ".";
     }
 
     private static String normalize(String value) {

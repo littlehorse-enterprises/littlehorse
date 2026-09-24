@@ -25,9 +25,14 @@ export const NodeRunComponent: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex })
   }
 
   const nodeRun = selectedNode.data.nodeRunsList[nodeRunIndex]
+  if (!nodeRun) {
+    return null
+  }
 
   const nodeType = nodeRun.nodeType!
-  if (nodeType.oneofKind === 'task') return <TaskNodeRun node={nodeType.task} />
+  // Key by taskGuid so switching to a different TaskRun remounts TaskNodeRun and
+  // resets its internal attemptIndex, instead of reusing the previous node's index.
+  if (nodeType.oneofKind === 'task') return <TaskNodeRun key={nodeType.task.taskRunId?.taskGuid} node={nodeType.task} />
   if (nodeType.oneofKind === 'externalEvent') return <ExternalEventNodeRun node={nodeType.externalEvent} />
   if (nodeType.oneofKind === 'userTask') return <UserTaskNodeRun node={nodeType.userTask} />
   if (nodeType.oneofKind === 'sleep') return <SleepNodeRun node={nodeType.sleep} />

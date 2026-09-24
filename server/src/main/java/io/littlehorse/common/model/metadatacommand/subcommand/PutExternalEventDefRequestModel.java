@@ -4,10 +4,10 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.getable.global.externaleventdef.CorrelatedEventConfigModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventRetentionPolicyModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
@@ -91,8 +91,8 @@ public class PutExternalEventDefRequestModel extends MetadataSubCommand<PutExter
 
         contentType.getOutputType().ifPresent(typeDef -> {
             try {
-                typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
-            } catch (UnknownStructDefException e) {
+                typeDef.validateAndPin(context.metadataManager());
+            } catch (StructDefValidationException e) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }
         });

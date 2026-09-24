@@ -85,7 +85,7 @@ export const ExecuteWorkflowRun: FC<Modal<WfSpec>> = ({ data: wfSpec }) => {
           return acc
         }
 
-        const caseName = matchVariableType(transformedKey)
+        const caseName = matchVariableType(key)
 
         // Container types (Map/Array) are entered as human-friendly JSON in a textarea
         // (e.g. {"one":1}) and need the declared key/element types to build proper entries.

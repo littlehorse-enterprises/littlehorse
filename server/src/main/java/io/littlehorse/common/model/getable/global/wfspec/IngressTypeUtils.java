@@ -8,6 +8,7 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.WfService;
@@ -89,6 +90,7 @@ public class IngressTypeUtils {
                 }
                 break;
             case STRUCT_DEF_ID:
+            case INLINE_STRUCT_DEF:
                 if (value.getValueType() == VariableValue.ValueCase.STRUCT) {
                     applyExpectedTypeToStructFields(typeDef, value.getStruct(), metadataManager);
                 }
@@ -100,18 +102,24 @@ public class IngressTypeUtils {
     }
 
     /**
-     * Pins the authoritative type onto each field of a STRUCT value by resolving its StructDef and
-     * recursing into the declared type of every present field. If the StructDef cannot be resolved,
-     * pinning is skipped and the subsequent validation will surface the appropriate error.
+     * Pins the authoritative type onto each field of a STRUCT value and recurses into each present
+     * field. Named StructDefs resolve their fields from metadata; inline structs carry their field
+     * definitions directly in the expected type.
      */
     private static void applyExpectedTypeToStructFields(
             TypeDefinitionModel typeDef, StructModel struct, ReadOnlyMetadataManager metadataManager) {
-        if (metadataManager == null || struct == null || struct.getInlineStruct() == null) return;
+        if (struct == null || struct.getInlineStruct() == null) return;
 
-        StructDefModel structDef = new WfService(metadataManager).getStructDef(typeDef.getStructDefId());
-        if (structDef == null || structDef.getStructDef() == null) return;
+        Map<String, StructFieldDefModel> fieldDefs;
+        if (typeDef.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF) {
+            fieldDefs = typeDef.getInlineStructDef().getFields();
+        } else {
+            if (metadataManager == null) return;
+            StructDefModel structDef = new WfService(metadataManager).getStructDef(typeDef.getStructDefId());
+            if (structDef == null || structDef.getStructDef() == null) return;
+            fieldDefs = structDef.getStructDef().getFields();
+        }
 
-        Map<String, StructFieldDefModel> fieldDefs = structDef.getStructDef().getFields();
         Map<String, StructFieldModel> fieldValues = struct.getInlineStruct().getFields();
         if (fieldDefs == null || fieldValues == null) return;
 

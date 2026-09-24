@@ -160,8 +160,8 @@ public class LHServerConfig extends ConfigBase {
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
 
-    // Maximum number of thread runs per workflow run.
-    public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
+    // Number of active thread runs allowed per workflow run.
+    public static final String X_ACTIVE_THREAD_RUNS_PER_WF_RUN = "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
     private String lhsMetricsLevel;
 
@@ -515,8 +515,8 @@ public class LHServerConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
-    public int getMaxThreadRunsPerWfRun() {
-        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_MAX_THREAD_RUNS_PER_WF_RUN, "65"));
+    public int getActiveThreadRunsPerWfRun() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_ACTIVE_THREAD_RUNS_PER_WF_RUN, "65"));
     }
 
     public OAuthConfig getOAuthConfig() {
@@ -1018,7 +1018,11 @@ public class LHServerConfig extends ConfigBase {
 
         // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
         // Therefore, request timeout should be less than transaction timeout / session timeout.
-        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
+        //
+        // During rolling bounces of the Kafka brokers, sometimes a shutting-down broker fails to abort the
+        // request, and the server hangs out waiting until the request timeout. Using 0.3 as the buffer
+        // allows this to safely happen three times before causing a transaction timeout.
+        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.3));
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));

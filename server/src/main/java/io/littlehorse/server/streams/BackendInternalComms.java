@@ -51,7 +51,6 @@ import io.littlehorse.common.proto.WaitForCommandRequest;
 import io.littlehorse.common.proto.WaitForCommandResponse;
 import io.littlehorse.common.util.LHProducer;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHHostInfo;
 import io.littlehorse.sdk.common.proto.WorkflowEvent;
@@ -813,8 +812,9 @@ public class BackendInternalComms implements Closeable {
                         ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             } else {
                 // search for global getables
-                return ByteString.copyFrom(ObjectIdModel.fromString(storeableKey.split("/")[1], idCls)
-                        .toBytes());
+                String objectIdStr = storeableKey.substring(storeableKey.indexOf('/') + 1);
+                return ByteString.copyFrom(
+                        ObjectIdModel.fromString(objectIdStr, idCls).toBytes());
             }
         } else {
             throw new RuntimeException("Impossible: unknown result type");
@@ -889,7 +889,7 @@ public class BackendInternalComms implements Closeable {
 
     private HostInfo getHostForPartition(int partition) {
         if (partition >= config.getClusterPartitions()) {
-            throw new LHMisconfigurationException("Unrecognized partition");
+            throw new IllegalStateException("Unrecognized partition");
         }
 
         Collection<StreamsMetadata> all = coreStreams.metadataForAllStreamsClients();

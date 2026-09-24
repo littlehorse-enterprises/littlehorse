@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
     WF_SPEC_ID(1),
     TASK_DEF_ID(2),
     USER_TASK_DEF_ID(3),
+    QUOTA_ID(4),
     ID_NOT_SET(0);
     private final int value;
     private IdCase(int value) {
@@ -79,6 +80,7 @@ private static final long serialVersionUID = 0L;
         case 1: return WF_SPEC_ID;
         case 2: return TASK_DEF_ID;
         case 3: return USER_TASK_DEF_ID;
+        case 4: return QUOTA_ID;
         case 0: return ID_NOT_SET;
         default: return null;
       }
@@ -185,6 +187,37 @@ private static final long serialVersionUID = 0L;
        return (io.littlehorse.sdk.common.proto.UserTaskDefId) id_;
     }
     return io.littlehorse.sdk.common.proto.UserTaskDefId.getDefaultInstance();
+  }
+
+  public static final int QUOTA_ID_FIELD_NUMBER = 4;
+  /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   * @return Whether the quotaId field is set.
+   */
+  @java.lang.Override
+  public boolean hasQuotaId() {
+    return idCase_ == 4;
+  }
+  /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   * @return The quotaId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QuotaId getQuotaId() {
+    if (idCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.QuotaId) id_;
+    }
+    return io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QuotaIdOrBuilder getQuotaIdOrBuilder() {
+    if (idCase_ == 4) {
+       return (io.littlehorse.sdk.common.proto.QuotaId) id_;
+    }
+    return io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
   }
 
   public static final int TENANT_ID_FIELD_NUMBER = 6;
@@ -323,6 +356,9 @@ private static final long serialVersionUID = 0L;
     if (idCase_ == 3) {
       output.writeMessage(3, (io.littlehorse.sdk.common.proto.UserTaskDefId) id_);
     }
+    if (idCase_ == 4) {
+      output.writeMessage(4, (io.littlehorse.sdk.common.proto.QuotaId) id_);
+    }
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(6, getTenantId());
     }
@@ -352,6 +388,10 @@ private static final long serialVersionUID = 0L;
     if (idCase_ == 3) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, (io.littlehorse.sdk.common.proto.UserTaskDefId) id_);
+    }
+    if (idCase_ == 4) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, (io.littlehorse.sdk.common.proto.QuotaId) id_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
@@ -408,6 +448,10 @@ private static final long serialVersionUID = 0L;
         if (!getUserTaskDefId()
             .equals(other.getUserTaskDefId())) return false;
         break;
+      case 4:
+        if (!getQuotaId()
+            .equals(other.getQuotaId())) return false;
+        break;
       case 0:
       default:
     }
@@ -446,6 +490,10 @@ private static final long serialVersionUID = 0L;
       case 3:
         hash = (37 * hash) + USER_TASK_DEF_ID_FIELD_NUMBER;
         hash = (53 * hash) + getUserTaskDefId().hashCode();
+        break;
+      case 4:
+        hash = (37 * hash) + QUOTA_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getQuotaId().hashCode();
         break;
       case 0:
       default:
@@ -602,6 +650,9 @@ private static final long serialVersionUID = 0L;
       if (userTaskDefIdBuilder_ != null) {
         userTaskDefIdBuilder_.clear();
       }
+      if (quotaIdBuilder_ != null) {
+        quotaIdBuilder_.clear();
+      }
       tenantId_ = null;
       if (tenantIdBuilder_ != null) {
         tenantIdBuilder_.dispose();
@@ -650,19 +701,19 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.MetricWindowId result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.tenantId_ = tenantIdBuilder_ == null
             ? tenantId_
             : tenantIdBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.windowStart_ = windowStartBuilder_ == null
             ? windowStart_
             : windowStartBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.metricType_ = metricType_;
         to_bitField0_ |= 0x00000004;
       }
@@ -683,6 +734,10 @@ private static final long serialVersionUID = 0L;
       if (idCase_ == 3 &&
           userTaskDefIdBuilder_ != null) {
         result.id_ = userTaskDefIdBuilder_.build();
+      }
+      if (idCase_ == 4 &&
+          quotaIdBuilder_ != null) {
+        result.id_ = quotaIdBuilder_.build();
       }
     }
 
@@ -718,6 +773,10 @@ private static final long serialVersionUID = 0L;
         }
         case USER_TASK_DEF_ID: {
           mergeUserTaskDefId(other.getUserTaskDefId());
+          break;
+        }
+        case QUOTA_ID: {
+          mergeQuotaId(other.getQuotaId());
           break;
         }
         case ID_NOT_SET: {
@@ -771,23 +830,30 @@ private static final long serialVersionUID = 0L;
               idCase_ = 3;
               break;
             } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetQuotaIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              idCase_ = 4;
+              break;
+            } // case 34
             case 50: {
               input.readMessage(
                   internalGetTenantIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   internalGetWindowStartFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 58
             case 64: {
               metricType_ = input.readEnum();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 64
             default: {
@@ -1248,6 +1314,148 @@ private static final long serialVersionUID = 0L;
       return userTaskDefIdBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder> quotaIdBuilder_;
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     * @return Whether the quotaId field is set.
+     */
+    @java.lang.Override
+    public boolean hasQuotaId() {
+      return idCase_ == 4;
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     * @return The quotaId.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QuotaId getQuotaId() {
+      if (quotaIdBuilder_ == null) {
+        if (idCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.QuotaId) id_;
+        }
+        return io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
+      } else {
+        if (idCase_ == 4) {
+          return quotaIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    public Builder setQuotaId(io.littlehorse.sdk.common.proto.QuotaId value) {
+      if (quotaIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
+        onChanged();
+      } else {
+        quotaIdBuilder_.setMessage(value);
+      }
+      idCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    public Builder setQuotaId(
+        io.littlehorse.sdk.common.proto.QuotaId.Builder builderForValue) {
+      if (quotaIdBuilder_ == null) {
+        id_ = builderForValue.build();
+        onChanged();
+      } else {
+        quotaIdBuilder_.setMessage(builderForValue.build());
+      }
+      idCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    public Builder mergeQuotaId(io.littlehorse.sdk.common.proto.QuotaId value) {
+      if (quotaIdBuilder_ == null) {
+        if (idCase_ == 4 &&
+            id_ != io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance()) {
+          id_ = io.littlehorse.sdk.common.proto.QuotaId.newBuilder((io.littlehorse.sdk.common.proto.QuotaId) id_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          id_ = value;
+        }
+        onChanged();
+      } else {
+        if (idCase_ == 4) {
+          quotaIdBuilder_.mergeFrom(value);
+        } else {
+          quotaIdBuilder_.setMessage(value);
+        }
+      }
+      idCase_ = 4;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    public Builder clearQuotaId() {
+      if (quotaIdBuilder_ == null) {
+        if (idCase_ == 4) {
+          idCase_ = 0;
+          id_ = null;
+          onChanged();
+        }
+      } else {
+        if (idCase_ == 4) {
+          idCase_ = 0;
+          id_ = null;
+        }
+        quotaIdBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.QuotaId.Builder getQuotaIdBuilder() {
+      return internalGetQuotaIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QuotaIdOrBuilder getQuotaIdOrBuilder() {
+      if ((idCase_ == 4) && (quotaIdBuilder_ != null)) {
+        return quotaIdBuilder_.getMessageOrBuilder();
+      } else {
+        if (idCase_ == 4) {
+          return (io.littlehorse.sdk.common.proto.QuotaId) id_;
+        }
+        return io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QuotaId quota_id = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder> 
+        internalGetQuotaIdFieldBuilder() {
+      if (quotaIdBuilder_ == null) {
+        if (!(idCase_ == 4)) {
+          id_ = io.littlehorse.sdk.common.proto.QuotaId.getDefaultInstance();
+        }
+        quotaIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.QuotaId, io.littlehorse.sdk.common.proto.QuotaId.Builder, io.littlehorse.sdk.common.proto.QuotaIdOrBuilder>(
+                (io.littlehorse.sdk.common.proto.QuotaId) id_,
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      idCase_ = 4;
+      onChanged();
+      return quotaIdBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.TenantId tenantId_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TenantId, io.littlehorse.sdk.common.proto.TenantId.Builder, io.littlehorse.sdk.common.proto.TenantIdOrBuilder> tenantIdBuilder_;
@@ -1260,7 +1468,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the tenantId field is set.
      */
     public boolean hasTenantId() {
-      return ((bitField0_ & 0x00000008) != 0);
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <pre>
@@ -1293,7 +1501,7 @@ private static final long serialVersionUID = 0L;
       } else {
         tenantIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1311,7 +1519,7 @@ private static final long serialVersionUID = 0L;
       } else {
         tenantIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -1324,7 +1532,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTenantId(io.littlehorse.sdk.common.proto.TenantId value) {
       if (tenantIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000008) != 0) &&
+        if (((bitField0_ & 0x00000010) != 0) &&
           tenantId_ != null &&
           tenantId_ != io.littlehorse.sdk.common.proto.TenantId.getDefaultInstance()) {
           getTenantIdBuilder().mergeFrom(value);
@@ -1335,7 +1543,7 @@ private static final long serialVersionUID = 0L;
         tenantIdBuilder_.mergeFrom(value);
       }
       if (tenantId_ != null) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       return this;
@@ -1348,7 +1556,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public Builder clearTenantId() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       tenantId_ = null;
       if (tenantIdBuilder_ != null) {
         tenantIdBuilder_.dispose();
@@ -1365,7 +1573,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TenantId tenant_id = 6;</code>
      */
     public io.littlehorse.sdk.common.proto.TenantId.Builder getTenantIdBuilder() {
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return internalGetTenantIdFieldBuilder().getBuilder();
     }
@@ -1417,7 +1625,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the windowStart field is set.
      */
     public boolean hasWindowStart() {
-      return ((bitField0_ & 0x00000010) != 0);
+      return ((bitField0_ & 0x00000020) != 0);
     }
     /**
      * <pre>
@@ -1450,7 +1658,7 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1468,7 +1676,7 @@ private static final long serialVersionUID = 0L;
       } else {
         windowStartBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -1481,7 +1689,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeWindowStart(com.google.protobuf.Timestamp value) {
       if (windowStartBuilder_ == null) {
-        if (((bitField0_ & 0x00000010) != 0) &&
+        if (((bitField0_ & 0x00000020) != 0) &&
           windowStart_ != null &&
           windowStart_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getWindowStartBuilder().mergeFrom(value);
@@ -1492,7 +1700,7 @@ private static final long serialVersionUID = 0L;
         windowStartBuilder_.mergeFrom(value);
       }
       if (windowStart_ != null) {
-        bitField0_ |= 0x00000010;
+        bitField0_ |= 0x00000020;
         onChanged();
       }
       return this;
@@ -1505,7 +1713,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public Builder clearWindowStart() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       windowStart_ = null;
       if (windowStartBuilder_ != null) {
         windowStartBuilder_.dispose();
@@ -1522,7 +1730,7 @@ private static final long serialVersionUID = 0L;
      * <code>.google.protobuf.Timestamp window_start = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getWindowStartBuilder() {
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return internalGetWindowStartFieldBuilder().getBuilder();
     }
@@ -1572,7 +1780,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the metricType field is set.
      */
     @java.lang.Override public boolean hasMetricType() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <pre>
@@ -1596,7 +1804,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setMetricTypeValue(int value) {
       metricType_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1624,7 +1832,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setMetricType(io.littlehorse.sdk.common.proto.MetricWindowType value) {
       if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       metricType_ = value.getNumber();
       onChanged();
       return this;
@@ -1638,7 +1846,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMetricType() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       metricType_ = 0;
       onChanged();
       return this;

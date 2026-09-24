@@ -1,6 +1,7 @@
 package io.littlehorse.common.model.getable.global.wfspec.variable.expression;
 
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
@@ -8,15 +9,19 @@ import java.util.Optional;
 
 public class StructReturnTypeStrategy implements LHTypeStrategy {
 
-    private final StructDefIdModel structDefId;
+    private final TypeDefinitionModel identity;
 
     public StructReturnTypeStrategy(StructDefIdModel structDefId) {
-        this.structDefId = structDefId;
+        this.identity = new TypeDefinitionModel(structDefId);
+    }
+
+    public StructReturnTypeStrategy(InlineStructDefModel inlineStructDef) {
+        this.identity = new TypeDefinitionModel(inlineStructDef);
     }
 
     @Override
     public TypeDefinitionModel getIdentity() {
-        return new TypeDefinitionModel(structDefId);
+        return identity;
     }
 
     @Override

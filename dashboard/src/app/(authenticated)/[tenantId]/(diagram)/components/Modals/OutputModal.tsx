@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { FC, useState } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
@@ -11,7 +12,7 @@ export const OutputModal: FC<Modal<{ message: string; label: string }>> = ({ dat
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(message)
+      await copyToClipboard(message)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
     } catch (err) {

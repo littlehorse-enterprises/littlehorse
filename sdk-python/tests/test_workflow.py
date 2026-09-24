@@ -4002,6 +4002,22 @@ class TestRunWf(unittest.TestCase):
 
         self.assertEqual(expected_run_wf_node, actual_run_wf_node)
 
+    def test_run_wf_with_child_id(self):
+        def wf_func(wf: WorkflowThread) -> None:
+            child_id = wf.declare_str("child-id").required()
+            wf.run_wf("child-wf-spec", child_id=child_id)
+
+        compiled_wf_spec = Workflow("some-wf", wf_func).compile()
+
+        run_wf_node = (
+            compiled_wf_spec.thread_specs["entrypoint"]
+            .nodes["1-run-child-wf-spec-RUN_CHILD_WF"]
+            .run_child_wf
+        )
+        self.assertEqual(
+            run_wf_node.child_id, VariableAssignment(variable_name="child-id")
+        )
+
 
 class TestWaitForChildWf(unittest.TestCase):
     def test_wait_for_child_wf(self):

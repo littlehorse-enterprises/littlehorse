@@ -1,0 +1,1435 @@
+{
+  "cases": [
+    {
+      "id": "add-variable",
+      "title": "add variable",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#addVariable"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "assign-user-task",
+      "title": "assign user task",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#assignUserTask"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "build-inline-struct",
+      "title": "build inline struct",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#buildInlineStruct",
+        "InlineLHStructBuilder#put"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "build-struct",
+      "title": "build struct",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#buildStruct",
+        "LHStructBuilder#put"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "cancel-user-task-after-assignment",
+      "title": "cancel user task after assignment",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#cancelUserTaskRunAfterAssignment"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "cancel-user-task-run-after",
+      "title": "cancel user task run after",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#cancelUserTaskRunAfter"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-array",
+      "title": "declare array",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareArray"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-bool",
+      "title": "declare bool",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareBool"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-bytes",
+      "title": "declare bytes",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareBytes"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-double",
+      "title": "declare double",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareDouble"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-int",
+      "title": "declare int",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareInt"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-json-arr",
+      "title": "declare json arr",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareJsonArr"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-json-obj",
+      "title": "declare json obj",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareJsonObj"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-map",
+      "title": "declare map",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareMap"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-str",
+      "title": "declare str",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareStr"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-struct",
+      "title": "declare struct",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareStruct"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "declare-timestamp",
+      "title": "declare timestamp",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#declareTimestamp"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "do-else",
+      "title": "do else",
+      "level": "required",
+      "covers": [
+        "WorkflowIfStatement#doElse"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "do-else-if",
+      "title": "do else if",
+      "level": "required",
+      "covers": [
+        "WorkflowIfStatement#doElseIf"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "do-if",
+      "title": "do if",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#doIf",
+        "WorkflowThread#condition"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "do-if-else",
+      "title": "do if else",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#doIfElse"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "do-while",
+      "title": "do while",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#doWhile"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "execute-args",
+      "title": "execute args",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#execute"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-add",
+      "title": "expr add",
+      "level": "required",
+      "covers": [
+        "LHExpression#add"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-and",
+      "title": "expr and",
+      "level": "required",
+      "covers": [
+        "LHExpression#and"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to",
+      "title": "expr cast to",
+      "level": "required",
+      "covers": [
+        "LHExpression#castTo"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-bool",
+      "title": "expr cast to bool",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToBool"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-bytes",
+      "title": "expr cast to bytes",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToBytes"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-double",
+      "title": "expr cast to double",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToDouble"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-int",
+      "title": "expr cast to int",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToInt"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-str",
+      "title": "expr cast to str",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToStr"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-cast-to-wf-run-id",
+      "title": "expr cast to wf run id",
+      "level": "required",
+      "covers": [
+        "LHExpression#castToWfRunId"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-divide",
+      "title": "expr divide",
+      "level": "required",
+      "covers": [
+        "LHExpression#divide"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-does-contain",
+      "title": "expr does contain",
+      "level": "required",
+      "covers": [
+        "LHExpression#doesContain"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-does-not-contain",
+      "title": "expr does not contain",
+      "level": "required",
+      "covers": [
+        "LHExpression#doesNotContain"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-extend",
+      "title": "expr extend",
+      "level": "required",
+      "covers": [
+        "LHExpression#extend"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-equal-to",
+      "title": "expr is equal to",
+      "level": "required",
+      "covers": [
+        "LHExpression#isEqualTo"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-greater-than",
+      "title": "expr is greater than",
+      "level": "required",
+      "covers": [
+        "LHExpression#isGreaterThan"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-in",
+      "title": "expr is in",
+      "level": "required",
+      "covers": [
+        "LHExpression#isIn"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-less-than",
+      "title": "expr is less than",
+      "level": "required",
+      "covers": [
+        "LHExpression#isLessThan"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-not-equal-to",
+      "title": "expr is not equal to",
+      "level": "required",
+      "covers": [
+        "LHExpression#isNotEqualTo"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-is-not-in",
+      "title": "expr is not in",
+      "level": "required",
+      "covers": [
+        "LHExpression#isNotIn"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-multiply",
+      "title": "expr multiply",
+      "level": "required",
+      "covers": [
+        "LHExpression#multiply"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-or",
+      "title": "expr or",
+      "level": "required",
+      "covers": [
+        "LHExpression#or"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-pow",
+      "title": "expr pow",
+      "level": "required",
+      "covers": [
+        "LHExpression#pow"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-remove-if-present",
+      "title": "expr remove if present",
+      "level": "required",
+      "covers": [
+        "LHExpression#removeIfPresent"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-remove-index",
+      "title": "expr remove index",
+      "level": "required",
+      "covers": [
+        "LHExpression#removeIndex"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-remove-key",
+      "title": "expr remove key",
+      "level": "required",
+      "covers": [
+        "LHExpression#removeKey"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-size",
+      "title": "expr size",
+      "level": "required",
+      "covers": [
+        "LHExpression#size"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "expr-subtract",
+      "title": "expr subtract",
+      "level": "required",
+      "covers": [
+        "LHExpression#subtract"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "external-event-correlation",
+      "title": "external event correlation",
+      "level": "required",
+      "covers": [
+        "ExternalEventNodeOutput#withCorrelationId"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "external-event-timeout",
+      "title": "external event timeout",
+      "level": "required",
+      "covers": [
+        "ExternalEventNodeOutput#timeout"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "fail",
+      "title": "fail",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#fail"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "format",
+      "title": "format",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#format"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "handle-any-failure",
+      "title": "handle any failure",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#handleAnyFailure"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "handle-error-any",
+      "title": "handle error any",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#handleError"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "handle-exception-named",
+      "title": "handle exception named",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#handleException"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "interrupt-handler",
+      "title": "interrupt handler",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#registerInterruptHandler"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "mutate",
+      "title": "mutate",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#mutate"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "node-output-get",
+      "title": "node output get",
+      "level": "required",
+      "covers": [
+        "NodeOutput#get"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "node-output-json-path",
+      "title": "node output json path",
+      "level": "required",
+      "covers": [
+        "NodeOutput#jsonPath"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "reassign-user-task",
+      "title": "reassign user task",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#reassignUserTask"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "release-to-group-on-deadline",
+      "title": "release to group on deadline",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#releaseToGroupOnDeadline"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "run-wf-inputs",
+      "title": "run wf inputs",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#runWf"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "schedule-reminder-on-assignment",
+      "title": "schedule reminder on assignment",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#scheduleReminderTaskOnAssignment"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "schedule-reminder-task",
+      "title": "schedule reminder task",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#scheduleReminderTask"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "sleep-seconds",
+      "title": "sleep seconds",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#sleepSeconds"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "sleep-until",
+      "title": "sleep until",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#sleepUntil"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "spawn-thread-for-each",
+      "title": "spawn thread for each",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#spawnThreadForEach"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "spawn-thread-input-vars",
+      "title": "spawn thread input vars",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#spawnThread"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "spawned-thread-number",
+      "title": "spawned thread number",
+      "level": "required",
+      "covers": [
+        "SpawnedThread#getThreadNumberVariable"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "spawned-threads-of",
+      "title": "spawned threads of",
+      "level": "required",
+      "covers": [
+        "SpawnedThreads#of"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "task-exponential-backoff",
+      "title": "task exponential backoff",
+      "level": "required",
+      "covers": [
+        "TaskNodeOutput#withExponentialBackoff"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "task-timeout",
+      "title": "task timeout",
+      "level": "required",
+      "covers": [
+        "TaskNodeOutput#timeout"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "task-with-retries",
+      "title": "task with retries",
+      "level": "required",
+      "covers": [
+        "TaskNodeOutput#withRetries"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "throw-event",
+      "title": "throw event",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#throwEvent"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "user-task-notes",
+      "title": "user task notes",
+      "level": "required",
+      "covers": [
+        "UserTaskOutput#withNotes"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "user-task-on-cancellation-exception",
+      "title": "user task on cancellation exception",
+      "level": "required",
+      "covers": [
+        "UserTaskOutput#withOnCancellationException"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-as-inherited",
+      "title": "var as inherited",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#asInherited"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-as-public",
+      "title": "var as public",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#asPublic"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-assign",
+      "title": "var assign",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#assign"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-get-field",
+      "title": "var get field",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#get"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-is-greater-than-eq",
+      "title": "var is greater than eq",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#isGreaterThanEq"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-is-less-than-eq",
+      "title": "var is less than eq",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#isLessThanEq"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-json-path",
+      "title": "var json path",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#jsonPath"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-masked",
+      "title": "var masked",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#masked"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-required",
+      "title": "var required",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#required"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-searchable",
+      "title": "var searchable",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#searchable"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-searchable-on",
+      "title": "var searchable on",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#searchableOn"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-with-access-level",
+      "title": "var with access level",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#withAccessLevel"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "var-with-default",
+      "title": "var with default",
+      "level": "required",
+      "covers": [
+        "WfRunVariable#withDefault"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-any-of",
+      "title": "wait for any of",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForAnyOf"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-child-wf",
+      "title": "wait for child wf",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForChildWf"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-condition",
+      "title": "wait for condition",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForCondition"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-event",
+      "title": "wait for event",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForEvent"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-first-of",
+      "title": "wait for first of",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForFirstOf"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-for-threads",
+      "title": "wait for threads",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#waitForThreads"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-threads-handle-any-failure-on-child",
+      "title": "wait threads handle any failure on child",
+      "level": "required",
+      "covers": [
+        "WaitForThreadsNodeOutput#handleAnyFailureOnChild"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-threads-handle-error-on-child",
+      "title": "wait threads handle error on child",
+      "level": "required",
+      "covers": [
+        "WaitForThreadsNodeOutput#handleErrorOnChild"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wait-threads-handle-exception-on-child",
+      "title": "wait threads handle exception on child",
+      "level": "required",
+      "covers": [
+        "WaitForThreadsNodeOutput#handleExceptionOnChild"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-default-task-backoff",
+      "title": "wf default task backoff",
+      "level": "required",
+      "covers": [
+        "Workflow#setDefaultTaskExponentialBackoffPolicy"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-default-task-retries",
+      "title": "wf default task retries",
+      "level": "required",
+      "covers": [
+        "Workflow#setDefaultTaskRetries"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-default-task-timeout",
+      "title": "wf default task timeout",
+      "level": "required",
+      "covers": [
+        "Workflow#setDefaultTaskTimeout"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-default-thread-retention",
+      "title": "wf default thread retention",
+      "level": "required",
+      "covers": [
+        "Workflow#withDefaultThreadRetentionPolicy"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-retention-policy",
+      "title": "wf retention policy",
+      "level": "required",
+      "covers": [
+        "Workflow#withRetentionPolicy"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-set-parent",
+      "title": "wf set parent",
+      "level": "required",
+      "covers": [
+        "Workflow#setParent"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wf-update-type",
+      "title": "wf update type",
+      "level": "required",
+      "covers": [
+        "Workflow#withUpdateType"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "workflow-minimal",
+      "title": "workflow minimal",
+      "level": "required",
+      "covers": [
+        "Workflow#newWorkflow",
+        "Workflow#compileWorkflow"
+      ],
+      "variants": [
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-add",
+      "title": "wt add",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#add"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-complete",
+      "title": "wt complete",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#complete"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-divide",
+      "title": "wt divide",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#divide"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-extend",
+      "title": "wt extend",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#extend"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-multiply",
+      "title": "wt multiply",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#multiply"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-pow",
+      "title": "wt pow",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#pow"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-remove-if-present",
+      "title": "wt remove if present",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#removeIfPresent"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-remove-index",
+      "title": "wt remove index",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#removeIndex"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-remove-key",
+      "title": "wt remove key",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#removeKey"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-retention-policy",
+      "title": "wt retention policy",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#withRetentionPolicy"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
+      "id": "wt-subtract",
+      "title": "wt subtract",
+      "level": "required",
+      "covers": [
+        "WorkflowThread#subtract"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    }
+  ]
+}

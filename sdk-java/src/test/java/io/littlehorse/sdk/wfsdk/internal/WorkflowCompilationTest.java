@@ -2,7 +2,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class WorkflowCompilationTest {
         Throwable throwable = Assertions.catchThrowable(() -> wf.compileWorkflow());
         Assertions.assertThat(throwable).isNotNull();
         Assertions.assertThat(throwable)
-                .isInstanceOf(LHMisconfigurationException.class)
+                .isInstanceOf(LHWfSpecBuilderException.class)
                 .hasMessage("Thread my-thread already exists");
     }
 

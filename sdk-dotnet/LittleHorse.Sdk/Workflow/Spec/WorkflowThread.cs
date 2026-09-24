@@ -1231,9 +1231,8 @@ public class WorkflowThread
         {
             node.Inputs.Add(keyValuePair.Key, AssignVariableHelper(keyValuePair.Value));
         }
-
         string nodeName = AddNode("run-" + wfSpecName, Node.NodeOneofCase.RunChildWf, node);
-        return new SpawnedChildWf(nodeName, this);
+        return new SpawnedChildWf(nodeName, this, node);
 
     }
 

@@ -34,4 +34,11 @@ public @interface LHStructField {
      * @return whether or not this field is nullable.
      */
     boolean isNullable() default false;
+
+    /**
+     * OPTIONAL: Human-readable description of this field's purpose.
+     *
+     * @return the description of the field.
+     */
+    String description() default "";
 }

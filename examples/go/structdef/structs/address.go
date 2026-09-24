@@ -7,7 +7,7 @@ import (
 )
 
 const AddressStructDefName string = "address"
-const AddressStructDefDescription string = "Address represents a physical address."
+const AddressStructDefDescription string = "A physical address, including street, city, planet, and postal code."
 
 // Address represents a physical address.
 type Address struct {

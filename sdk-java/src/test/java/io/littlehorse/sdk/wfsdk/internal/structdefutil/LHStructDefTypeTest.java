@@ -94,6 +94,15 @@ public class LHStructDefTypeTest {
         public String displayName;
     }
 
+    @LHStructDef("described-field-demo")
+    @Getter
+    class DescribedFieldDemo {
+        @LHStructField(description = "The user's primary contact email")
+        public String email;
+
+        public String name;
+    }
+
     @LHStructDef("boolean-field-annotation-demo")
     @Getter
     class BooleanFieldAnnotationDemo {
@@ -131,14 +140,26 @@ public class LHStructDefTypeTest {
             @LHStructField(name = "displayName", isNullable = true) String name,
             @LHStructField(masked = true) String secret) {}
 
+    @Getter
     class UnannotatedNestedPojo {
         public String value;
+    }
+
+    @Getter
+    class InlinePojoWithNamedDependency {
+        public Author author;
     }
 
     @LHStructDef("invalid-json-obj-holder")
     @Getter
     class InvalidJsonObjHolder {
         public UnannotatedNestedPojo nestedPojo;
+    }
+
+    @LHStructDef("inline-struct-array-holder")
+    @Getter
+    class InlineStructArrayHolder {
+        public UnannotatedNestedPojo[] nestedPojos;
     }
 
     @LHStructDef("invalid-json-arr-holder")
@@ -334,7 +355,7 @@ public class LHStructDefTypeTest {
         assertThat(actualTypeDefinition).isEqualTo(expectedTypeDefinition);
     }
 
-    @Test
+        @Test
     public void getInlineStructDefFromRecordComponents() {
         InlineStructDef actualInlineStructDef =
                 new LHStructDefType(PersonRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
@@ -417,10 +438,59 @@ public class LHStructDefTypeTest {
     }
 
     @Test
-    public void shouldRejectStructDefFieldResolvingToJsonObj() {
-        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    public void shouldInlineUnannotatedNestedPojo() {
+        InlineStructDef definition =
+                new LHStructDefType(InvalidJsonObjHolder.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(definition.getFieldsOrThrow("nestedPojo").getFieldType().getInlineStructDef())
+                .isEqualTo(InlineStructDef.newBuilder()
+                        .putFields(
+                                "value",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .build())
+                        .build());
+    }
+
+    @Test
+    public void shouldBuildInlineArrayDefOfInlineStructDefs() {
+        TypeDefinition fieldType = new LHStructDefType(InlineStructArrayHolder.class, LHTypeAdapterRegistry.empty())
+                .getInlineStructDef()
+                .getFieldsOrThrow("nestedPojos")
+                .getFieldType();
+
+        assertThat(fieldType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF);
+        TypeDefinition elementType = fieldType.getInlineArrayDef().getArrayType();
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(elementType
+                        .getInlineStructDef()
+                        .getFieldsOrThrow("value")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
+    public void shouldRetainJsonObjectFallbackOutsideStructDefFields() {
+        assertThat(LHClassType.fromJavaClass(UnannotatedNestedPojo.class, LHTypeAdapterRegistry.empty())
+                        .getTypeDefinition()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.JSON_OBJ);
+    }
+
+    @Test
+    public void shouldCollectNamedDependenciesNestedInsideInlinePojos() {
+        @LHStructDef("inline-dependency-holder")
+        @Getter
+        class InlineDependencyHolder {
+            private InlinePojoWithNamedDependency nestedPojo;
+        }
+
+        assertThat(new LHStructDefType(InlineDependencyHolder.class, LHTypeAdapterRegistry.empty())
+                        .getDependencyClasses())
+                .extracting(dependency -> dependency.getStructDefId().getName())
+                .containsExactly("author", "inline-dependency-holder");
     }
 
     @Test
@@ -444,5 +514,16 @@ public class LHStructDefTypeTest {
     void shouldComputeDefaultValuesFromNoArgConstructor() {
         assertThat(ConfigWithDefaultUx.class.getDeclaredConstructors()).hasSize(2); // canonical + no-arg
         assertThat(ConfigNoDefaultUx.class.getDeclaredConstructors()).hasSize(1); // canonical only
+        }
+
+    @Test
+    public void getInlineStructDefSetsDescriptionFromLHStructFieldAnnotation() {
+        InlineStructDef actualInlineStructDef =
+                new LHStructDefType(DescribedFieldDemo.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(actualInlineStructDef.getFieldsMap().get("email").getDescription())
+                .isEqualTo("The user's primary contact email");
+        assertThat(actualInlineStructDef.getFieldsMap().get("name").hasDescription())
+                .isFalse();
     }
 }

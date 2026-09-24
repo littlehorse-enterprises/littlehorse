@@ -1,0 +1,8 @@
+{
+  "externalEventDefs": [  ],
+  "workflowEventDefs": [  ],
+  "requiredTaskDefNames": [],
+  "requiredExternalEventDefNames": ["payment-received"],
+  "requiredChildWfSpecNames": [],
+  "requiredWorkflowEventDefNames": []
+}

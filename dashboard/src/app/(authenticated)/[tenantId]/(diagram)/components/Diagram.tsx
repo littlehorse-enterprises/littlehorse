@@ -58,10 +58,10 @@ const threadFromUrl = (
     const tr = wfRun.threadRuns.find(t => t.number === threadRunNumber)
     if (tr) return { name: tr.threadSpecName, number: tr.number }
   }
-  const greatest = wfRun.threadRuns.find(tr => tr.number === wfRun.greatestThreadrunNumber)
+  const entrypoint = wfRun.threadRuns.find(tr => tr.number === 0)
   return {
-    name: greatest?.threadSpecName ?? spec.entrypointThreadName,
-    number: wfRun.greatestThreadrunNumber ?? 0,
+    name: entrypoint?.threadSpecName ?? spec.entrypointThreadName,
+    number: entrypoint?.number ?? 0,
   }
 }
 

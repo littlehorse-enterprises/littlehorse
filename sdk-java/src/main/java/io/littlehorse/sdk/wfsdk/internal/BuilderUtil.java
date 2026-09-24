@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.MapBuilder;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructBuilder;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -39,6 +40,9 @@ class BuilderUtil {
         }
         if (variable instanceof LHStructBuilderImpl) {
             return buildFromStructBuilder((LHStructBuilderImpl) variable);
+        }
+        if (variable instanceof LHMapBuilderImpl) {
+            return buildFromMapBuilder((LHMapBuilderImpl) variable);
         }
         if (variable instanceof CastExpressionImpl) {
             return buildFromCastExpression((CastExpressionImpl) variable, typeAdapterRegistry);
@@ -116,6 +120,11 @@ class BuilderUtil {
     private static VariableAssignment buildFromStructBuilder(LHStructBuilderImpl structBuilder) {
         StructBuilder builderProto = structBuilder.toProto();
         return VariableAssignment.newBuilder().setStructBuilder(builderProto).build();
+    }
+
+    private static VariableAssignment buildFromMapBuilder(LHMapBuilderImpl mapBuilder) {
+        MapBuilder builderProto = mapBuilder.toProto();
+        return VariableAssignment.newBuilder().setMapBuilder(builderProto).build();
     }
 
     private static VariableAssignment buildFromLHExpression(

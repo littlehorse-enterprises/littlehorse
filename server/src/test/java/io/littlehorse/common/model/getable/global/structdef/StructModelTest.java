@@ -1,11 +1,16 @@
 package io.littlehorse.common.model.getable.global.structdef;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
+import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
@@ -242,6 +247,53 @@ public class StructModelTest {
 
         // should not throw
         model.validateAgainstSuperset(sm, metadataManager);
+    }
+
+    @Test
+    public void emptyArrayDefaultShouldBeCopiedAndPinnedToInlineStructElementType() throws Exception {
+        ReadOnlyMetadataManager metadataManager = null;
+
+        InlineStructDef addressDef = InlineStructDef.newBuilder()
+                .putFields(
+                        "street",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+        StructFieldDef addressesFieldDef = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder()
+                        .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                .setArrayType(TypeDefinition.newBuilder().setInlineStructDef(addressDef))))
+                .setDefaultValue(VariableValue.newBuilder().setArray(Array.getDefaultInstance()))
+                .build();
+
+        InlineStructDefModel def = new InlineStructDefModel();
+        def.getFields().put("addresses", LHSerializable.fromProto(addressesFieldDef, StructFieldDefModel.class, null));
+
+        StructDefModel model = new StructDefModel();
+        model.setStructDef(def);
+        model.setId(new StructDefIdModel("test-empty-array-default", 1));
+
+        StructModel sm = new StructModel();
+        sm.initFrom(
+                Struct.newBuilder()
+                        .setStruct(InlineStruct.getDefaultInstance())
+                        .setStructDefId(StructDefId.newBuilder()
+                                .setName("test-empty-array-default")
+                                .build())
+                        .build(),
+                null);
+
+        model.validateAgainstSuperset(sm, metadataManager);
+
+        VariableValueModel storedDefault = def.getFields().get("addresses").getDefaultValue();
+        VariableValueModel appliedDefault =
+                sm.getInlineStruct().getFields().get("addresses").getValue();
+        assertThat(appliedDefault).isNotSameAs(storedDefault);
+        assertThat(appliedDefault.getArray().getItems()).isEmpty();
+        assertThat(appliedDefault.getArray().getElementType().getInlineStructDef())
+                .isEqualTo(InlineStructDefModel.fromProto(addressDef, null));
+        assertThat(storedDefault.getArray().getElementType()).isNull();
     }
 
     @Test

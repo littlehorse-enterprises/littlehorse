@@ -78,11 +78,12 @@ export const searchExternalEvent = async ({
 
   const externalEventWithDetails: runDetails[] = await Promise.all(hydrateWithExternalEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...externalEventIdListRest } = externalEventIdList
   return {
-    ...externalEventIdList,
-    bookmarkAsString: externalEventIdList.bookmark
-      ? Buffer.from(externalEventIdList.bookmark).toString('base64')
-      : undefined,
+    ...externalEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: externalEventWithDetails,
   }
 }
@@ -108,11 +109,12 @@ export const searchCorrelatedEvent = async ({
 
   const correlatedEventWithDetails: correlatedEventDetails[] = await Promise.all(hydrateWithCorrelatedEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...correlatedEventIdListRest } = correlatedEventIdList
   return {
-    ...correlatedEventIdList,
-    bookmarkAsString: correlatedEventIdList.bookmark
-      ? Buffer.from(correlatedEventIdList.bookmark).toString('base64')
-      : undefined,
+    ...correlatedEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: correlatedEventWithDetails,
   }
 }

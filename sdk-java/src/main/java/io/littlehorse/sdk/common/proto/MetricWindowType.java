@@ -27,6 +27,10 @@ public enum MetricWindowType
    * <code>NODE_METRIC = 3;</code>
    */
   NODE_METRIC(3),
+  /**
+   * <code>QUOTA_USAGE_METRIC = 4;</code>
+   */
+  QUOTA_USAGE_METRIC(4),
   UNRECOGNIZED(-1),
   ;
 
@@ -55,6 +59,10 @@ public enum MetricWindowType
    * <code>NODE_METRIC = 3;</code>
    */
   public static final int NODE_METRIC_VALUE = 3;
+  /**
+   * <code>QUOTA_USAGE_METRIC = 4;</code>
+   */
+  public static final int QUOTA_USAGE_METRIC_VALUE = 4;
 
 
   public final int getNumber() {
@@ -85,6 +93,7 @@ public enum MetricWindowType
       case 1: return TASK_METRIC;
       case 2: return USER_TASK_METRIC;
       case 3: return NODE_METRIC;
+      case 4: return QUOTA_USAGE_METRIC;
       default: return null;
     }
   }

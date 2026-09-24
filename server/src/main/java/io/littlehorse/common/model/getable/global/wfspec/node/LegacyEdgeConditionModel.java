@@ -113,18 +113,17 @@ public class LegacyEdgeConditionModel extends LHSerializable<LegacyEdgeCondition
         }
 
         if (rule == LHComparisonRule.INCLUDES) {
-            boolean rhsSupportsIncludes = rhsType.getComparisonRules().contains(LHComparisonRule.INCLUDES);
-
-            if (!rhsSupportsIncludes) {
-                return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
-            }
-
             boolean isJsonArr = (rhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                     && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
-            boolean lhsIsString = (lhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+            boolean isStringContainer = (rhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
+                    && (rhsType.getPrimitiveType() == VariableType.STR
+                            || rhsType.getPrimitiveType() == VariableType.JSON_OBJ));
+            boolean isStringElement = (lhsType.getDefinedTypeCase() == DefinedTypeCase.PRIMITIVE_TYPE
                     && lhsType.getPrimitiveType() == VariableType.STR);
+            boolean isCompatibleArrayElement = rhsType.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
+                    && rhsType.getInlineArrayDef().getArrayType().isCompatibleWith(lhsType);
 
-            if (!isJsonArr && !lhsIsString) {
+            if (!isJsonArr && !(isStringContainer && isStringElement) && !isCompatibleArrayElement) {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
             }
         }

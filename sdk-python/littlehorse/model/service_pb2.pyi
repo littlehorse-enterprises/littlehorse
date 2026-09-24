@@ -599,6 +599,26 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "wf_spec_name", "prefix")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    wf_spec_name: str
+    prefix: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., prefix: _Optional[str] = ...) -> None: ...
+
+class WorkflowMigrationPlanIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowMigrationPlanId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchWorkflowEventDefRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "prefix")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
@@ -673,9 +693,9 @@ class QuotaIdList(_message.Message):
     __slots__ = ("results", "bookmark")
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    results: _containers.RepeatedCompositeFieldContainer[_acls_pb2.QuotaId]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.QuotaId]
     bookmark: bytes
-    def __init__(self, results: _Optional[_Iterable[_Union[_acls_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "is_claimed")

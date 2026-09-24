@@ -5,12 +5,7 @@ import { z } from 'zod'
  * Simulates verifying a customer's identity using their full name, email, and SSN.
  * In a real application this would call an external identity service.
  */
-function verifyIdentity(
-  fullName: string,
-  email: string,
-  ssn: number,
-  ctx: WorkerContext
-): void {
+function verifyIdentity(fullName: string, email: string, ssn: number, ctx: WorkerContext): void {
   const msg = `[verify-identity] Verifying identity for ${fullName} (${email}) — WfRun ${ctx.getWfRunId()?.id}`
   ctx.log(msg)
   console.log(msg)
@@ -42,15 +37,21 @@ async function main() {
   const config = LHConfig.from({})
 
   const verifyIdentityWorker = createTaskWorker(verifyIdentity, 'verify-identity', config, {
-    inputVars: { 'full-name': z.string(), email: z.string(), ssn: z.number().int() },
+    inputVars: {
+      'full-name': z.string(),
+      email: z.string(),
+      ssn: z.number().int(),
+    },
   })
 
   const notifyVerifiedWorker = createTaskWorker(notifyCustomerVerified, 'notify-customer-verified', config, {
     inputVars: { 'full-name': z.string(), email: z.string() },
+    outputSchema: z.string(),
   })
 
   const notifyNotVerifiedWorker = createTaskWorker(notifyCustomerNotVerified, 'notify-customer-not-verified', config, {
     inputVars: { 'full-name': z.string(), email: z.string() },
+    outputSchema: z.string(),
   })
 
   // Register TaskDefs if they don't exist yet
@@ -71,16 +72,12 @@ async function main() {
   // Graceful shutdown on Ctrl+C
   process.on('SIGINT', async () => {
     console.log('\nShutting down...')
-    await Promise.all([
-      verifyIdentityWorker.close(),
-      notifyVerifiedWorker.close(),
-      notifyNotVerifiedWorker.close(),
-    ])
+    await Promise.all([verifyIdentityWorker.close(), notifyVerifiedWorker.close(), notifyNotVerifiedWorker.close()])
     process.exit(0)
   })
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

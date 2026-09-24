@@ -1,10 +1,16 @@
 package io.littlehorse.sdk.worker.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
+import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDef;
@@ -12,7 +18,11 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHType;
+import io.littlehorse.sdk.worker.WorkerContext;
+import io.littlehorse.sdk.worker.internal.util.VariableMapping;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -54,6 +64,30 @@ public class ScheduledTaskExecutorTest {
                                     .build())
                     .build();
         }
+
+        @LHType(isInlineStruct = true)
+        public InlineAddress inlinePojoReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return address;
+        }
+
+        public InlineAddress jsonPojoReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return address;
+        }
+
+        @LHType(isLHMap = true)
+        public Map<String, InlineAddress> nativeMapReturn() {
+            InlineAddress address = new InlineAddress();
+            address.setStreet("123 Main St");
+            return Map.of("home", address);
+        }
+
+        public String primitiveInput(long value) {
+            return "value:" + value;
+        }
     }
 
     @LHStructDef("${company}-customer")
@@ -69,6 +103,18 @@ public class ScheduledTaskExecutorTest {
         }
     }
 
+    public static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
     @Test
     void shouldSerializeReturnAsNativeArrayWhenAnnotated() throws Exception {
         ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
@@ -79,6 +125,53 @@ public class ScheduledTaskExecutorTest {
         assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
         assertThat(out.getArray().getItemsCount()).isEqualTo(3);
         assertThat(out.getArray().getItems(0).getInt()).isEqualTo(1L);
+    }
+
+    @Test
+    void shouldSerializeAnnotatedPojoReturnAsInlineStruct() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("inlinePojoReturn");
+        InlineAddress address = new InlineAddress();
+        address.setStreet("123 Main St");
+
+        VariableValue out = executor.serializeResult(address, method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(out.getStruct().hasStructDefId()).isFalse();
+        assertThat(out.getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("street")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("123 Main St");
+    }
+
+    @Test
+    void shouldKeepUnannotatedPojoReturnAsJsonObject() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("jsonPojoReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().jsonPojoReturn(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.JSON_OBJ);
+    }
+
+    @Test
+    void shouldSerializeInlinePojoValuesInNativeMapReturn() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("nativeMapReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().nativeMapReturn(), method);
+
+        VariableValue value = out.getMap().getEntries(0).getValue();
+        assertThat(value.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(value.getStruct().hasStructDefId()).isFalse();
+        assertThat(value.getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("street")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("123 Main St");
     }
 
     @Test
@@ -152,6 +245,30 @@ public class ScheduledTaskExecutorTest {
                         .getValue()
                         .getStr())
                 .isEqualTo("Leia");
+    }
+
+    @Test
+    void shouldFailFastWhenPrimitiveParamReceivesNullDuringInvoke() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method invokeMethod = ScheduledTaskExecutor.class.getDeclaredMethod(
+                "invoke", ScheduledTask.class, WorkerContext.class, List.class, Object.class, Method.class);
+        invokeMethod.setAccessible(true);
+
+        Method taskMethod = ReturnTasks.class.getMethod("primitiveInput", long.class);
+        VariableMapping mapping = mock(VariableMapping.class);
+        when(mapping.assign(any())).thenReturn(null);
+
+        assertThatThrownBy(() -> invokeMethod.invoke(
+                        executor,
+                        ScheduledTask.newBuilder().build(),
+                        null,
+                        List.of(mapping),
+                        new ReturnTasks(),
+                        taskMethod))
+                .isInstanceOf(InvocationTargetException.class)
+                .cause()
+                .isInstanceOf(InputVarSubstitutionException.class)
+                .hasMessageContaining("Primitive parameters cannot accept null");
     }
 
     private static TaskDef taskDefWithStructReturn(String structDefName) {

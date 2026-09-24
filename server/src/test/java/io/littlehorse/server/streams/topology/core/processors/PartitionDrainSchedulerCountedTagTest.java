@@ -68,7 +68,9 @@ public class PartitionDrainSchedulerCountedTagTest {
 
     @BeforeEach
     void setup() {
-        scheduler = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx);
+        // The historical metric-window replay now runs in PartitionMetricsCatchUpJob, off the
+        // Streams thread. These tests exercise the Streams-thread half, so treat it as done.
+        scheduler = new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, () -> true);
     }
 
     @Test
@@ -78,7 +80,6 @@ public class PartitionDrainSchedulerCountedTagTest {
         PartitionCountedTagModel tagA = countedTag("attr-a", 3);
         PartitionCountedTagModel tagB = countedTag("attr-b", 7);
         stubCountedTagPrefixScan(tagA, tagB);
-        stubMissingMetricsHint();
 
         scheduler.punctuate(store);
 
@@ -93,13 +94,35 @@ public class PartitionDrainSchedulerCountedTagTest {
         assertThat(deletedCaptor.getAllValues())
                 .extracting(PartitionCountedTagModel::getAttributeString)
                 .containsExactlyInAnyOrder("attr-a", "attr-b");
-        // catch-up never falls back to range scan when there is no metrics hint
+        // the metric window range scan has moved to the background worker
         verify(store, never()).range(anyString(), anyString(), any());
     }
 
     @Test
+    void shouldOnlyCatchUpCountedTagsOnce() {
+        stubCountedTagPrefixScan();
+
+        scheduler.punctuate(store);
+        scheduler.punctuate(store);
+
+        verify(store, times(1)).prefixScan(anyString(), eq(PartitionCountedTagModel.class));
+    }
+
+    @Test
+    void shouldNotWriteTheHintWhileTheCatchUpJobIsStillRunning() {
+        PartitionDrainScheduler notCaughtUp =
+                new PartitionDrainScheduler(metricWindows, countedTags, config, ctx, () -> false);
+        stubCountedTagPrefixScan();
+
+        notCaughtUp.punctuate(store);
+
+        // The background job owns the hint until it has replayed all history.
+        verify(store, never()).put(any(MetricsHintModel.class));
+    }
+
+    @Test
     void shouldDrainCountedTagsFromMemoryInMemoryMode() {
-        forceMemoryMode();
+        completeCountedTagCatchUp();
         when(config.getCoreCmdTopicName()).thenReturn(CORE_CMD_TOPIC);
 
         PartitionCountedTagModel tagA = countedTag("attr-a", 1);
@@ -120,7 +143,7 @@ public class PartitionDrainSchedulerCountedTagTest {
 
     @Test
     void shouldForwardNothingWhenMemoryBufferIsEmpty() {
-        forceMemoryMode();
+        completeCountedTagCatchUp();
 
         scheduler.punctuate(store);
 
@@ -131,7 +154,7 @@ public class PartitionDrainSchedulerCountedTagTest {
 
     @Test
     void shouldForwardCountedTagAsRepartitionTimerWithTenantAndAttributes() {
-        forceMemoryMode();
+        completeCountedTagCatchUp();
         when(config.getCoreCmdTopicName()).thenReturn(CORE_CMD_TOPIC);
 
         countedTags.put(countedTag("my-attribute", 42));
@@ -158,20 +181,14 @@ public class PartitionDrainSchedulerCountedTagTest {
     }
 
     /**
-     * Transitions the scheduler from the initial STORE source to MEMORY by running a single
-     * punctuation against an empty store, then clears the resulting mock interactions so each
-     * test can assert only the memory-drain behavior.
+     * Runs a single punctuation against an empty store so the one-shot counted-tag replay is out of
+     * the way, then clears the resulting mock interactions so each test can assert only the
+     * memory-drain behavior.
      */
-    private void forceMemoryMode() {
+    private void completeCountedTagCatchUp() {
         stubCountedTagPrefixScan();
-        stubMissingMetricsHint();
         scheduler.punctuate(store);
         clearInvocations(ctx, store);
-    }
-
-    private void stubMissingMetricsHint() {
-        when(store.get(eq(MetricsHintModel.METRICS_HINT_KEY), eq(MetricsHintModel.class)))
-                .thenReturn(null);
     }
 
     private void stubCountedTagPrefixScan(PartitionCountedTagModel... tags) {

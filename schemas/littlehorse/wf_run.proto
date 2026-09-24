@@ -77,6 +77,9 @@ message WfRun {
   // Map to determine how to reassign varaible values during Migration
   // newThreadName -> MigrationVar
   map<string, MigrationVars> migration_variables = 13;
+
+  repeated int32 thread_run_queue = 14;
+
 }
 
 // The type of a ThreadRUn.
@@ -163,10 +166,25 @@ message ThreadRun {
   optional VariableValue output = 16;
 }
 
-// Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+// Represents an inactive ThreadRun, either archived or queued 
 message InactiveThreadRun {
   ThreadRun thread_run = 1;
+
+  oneof inactive_reason {
+    ArchivedThreadRunInfo archived = 2;
+    QueuedThreadRunInfo queued = 3;
+  }
+
+  InactiveThreadRunId id = 4;
+
 }
+
+message ArchivedThreadRunInfo {}
+
+message QueuedThreadRunInfo {
+  map<string, VariableValue> input_vars = 1;
+}
+
 
 // Points to the Failure that is currently being handled in the ThreadRun.
 message FailureBeingHandled {

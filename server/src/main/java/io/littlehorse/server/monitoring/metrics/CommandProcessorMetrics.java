@@ -4,8 +4,11 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.proto.Command;
 import io.littlehorse.common.proto.MetadataCommand;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
+import java.util.EnumMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,63 +21,65 @@ public class CommandProcessorMetrics implements MeterBinder {
     static final String METRIC_NAME = "lh.commands.processed";
     static final String METRIC_NAME_BY_TYPE = "lh.subcommands.processed";
     static final String COMMAND_TYPE_TAG = "type";
-    private MeterRegistry registry;
+
+    private final Map<Command.CommandCase, Counter> coreCountersByType = new EnumMap<>(Command.CommandCase.class);
+    private final Map<MetadataCommand.MetadataCommandCase, Counter> metadataCountersByType =
+            new EnumMap<>(MetadataCommand.MetadataCommandCase.class);
+
+    private volatile Counter coreCommandCounter;
+    private volatile Counter metadataCommandCounter;
 
     @Override
     public void bindTo(MeterRegistry registry) {
-        this.registry = registry;
-        registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, CORE_COMMAND_TYPE);
-        registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, METADATA_COMMAND_TYPE);
         // Register core subcommands
         for (Command.CommandCase commandType : Command.CommandCase.values()) {
             if (commandType != Command.CommandCase.COMMAND_NOT_SET) {
-                registry.counter(METRIC_NAME_BY_TYPE, COMMAND_TYPE_TAG, commandType.name());
+                coreCountersByType.put(
+                        commandType, registry.counter(METRIC_NAME_BY_TYPE, COMMAND_TYPE_TAG, commandType.name()));
             }
         }
         // Register metadata subcommands
         for (MetadataCommand.MetadataCommandCase metadataCommandType : MetadataCommand.MetadataCommandCase.values()) {
             if (metadataCommandType != MetadataCommand.MetadataCommandCase.METADATACOMMAND_NOT_SET) {
-                registry.counter(METRIC_NAME_BY_TYPE, COMMAND_TYPE_TAG, metadataCommandType.name());
+                metadataCountersByType.put(
+                        metadataCommandType,
+                        registry.counter(METRIC_NAME_BY_TYPE, COMMAND_TYPE_TAG, metadataCommandType.name()));
             }
         }
+        // Assigned last: these act as the "metrics are initialized" flag for observe()
+        coreCommandCounter = registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, CORE_COMMAND_TYPE);
+        metadataCommandCounter = registry.counter(METRIC_NAME, COMMAND_TYPE_TAG, METADATA_COMMAND_TYPE);
     }
 
     public void observe(CommandModel command) {
-        if (registry == null) {
-            logger.warn("Ignoring command: " + command.getType().name() + " because metrics are initialized yet.");
+        Counter total = coreCommandCounter;
+        if (total == null) {
+            logger.warn("Ignoring command: {} because metrics are not initialized yet.", command.getType());
             return;
         }
-        if (command.getType() != Command.CommandCase.COMMAND_NOT_SET) {
-            // Increase both the general counter and the counter for the specific command type
-            registry.get(METRIC_NAME)
-                    .tag(COMMAND_TYPE_TAG, CORE_COMMAND_TYPE)
-                    .counter()
-                    .increment();
-            registry.counter(
-                            METRIC_NAME_BY_TYPE,
-                            COMMAND_TYPE_TAG,
-                            command.getType().name())
-                    .increment();
+        // Increase both the general counter and the counter for the specific command type
+        Counter byType = coreCountersByType.get(command.getType());
+        if (byType == null) {
+            // COMMAND_NOT_SET
+            return;
         }
+        total.increment();
+        byType.increment();
     }
 
     public void observe(MetadataCommandModel metadataCommand) {
-        if (registry == null) {
-            logger.warn(
-                    "Ignoring command: " + metadataCommand.getType().name() + " because metrics are initialized yet.");
+        Counter total = metadataCommandCounter;
+        if (total == null) {
+            logger.warn("Ignoring command: {} because metrics are not initialized yet.", metadataCommand.getType());
             return;
         }
-        if (metadataCommand.getType() != MetadataCommand.MetadataCommandCase.METADATACOMMAND_NOT_SET) {
-            // Increase both the general counter and the counter for the specific command type
-            registry.get(METRIC_NAME)
-                    .tag(COMMAND_TYPE_TAG, METADATA_COMMAND_TYPE)
-                    .counter()
-                    .increment();
-            registry.counter(
-                            METRIC_NAME_BY_TYPE,
-                            COMMAND_TYPE_TAG,
-                            metadataCommand.getType().name())
-                    .increment();
+        // Increase both the general counter and the counter for the specific command type
+        Counter byType = metadataCountersByType.get(metadataCommand.getType());
+        if (byType == null) {
+            // METADATACOMMAND_NOT_SET
+            return;
         }
+        total.increment();
+        byType.increment();
     }
 }

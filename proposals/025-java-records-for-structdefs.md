@@ -82,31 +82,6 @@ public record Customer(String name, String ssn) {
 
 Both styles produce identical `InlineStructDef` output. Annotation lookup checks the record component first, then the accessor method, then the backing field (consistent with the existing POJO annotation resolution order).
 
-## Serialization Semantics
-
-Serialization (object → `VariableValue`) for Record defined StructDefs works identically to POJO defined StructDefs. For each record component, the SDK invokes the compiler-generated accessor method (e.g. `name()` for a `String name` component) to read the field value, then delegates to the existing type conversion pipeline.
-
-Type adapters registered with `LHTypeAdapterRegistry` are applied to individual component values in the same way they are for POJO fields:
-
-```java
-@LHStructDef("adapter-record")
-public record AdapterRecord(UUID id, String name) {}
-
-// UUID is serialized as STR via the registered adapter
-VariableValue val = LHLibUtil.objToVarVal(new AdapterRecord(uuid, "alice"), registry);
-```
-
-## Deserialization Semantics
-
-Deserialization (`VariableValue` → object) cannot use the POJO approach (create empty instance, then call setters field-by-field) because records are immutable. Instead, the SDK:
-
-1. Looks up the `LHStructProperty` for each record component by name.
-2. Reads the corresponding `StructField` from the incoming `Struct` payload.
-3. Deserializes each field value into the component's declared Java type.
-4. Calls the **canonical constructor** (the compiler-generated all-args constructor) with the deserialized values in component declaration order.
-
-All fields present in the record's component list **must** be present in the incoming `Struct` payload. If a field is absent, deserialization throws an `LHSerdeException`.
-
 ## Default Values
 
 The SDK computes default `StructFieldDef` values by instantiating the class with a no-arg constructor and reading the resulting field values. For records, the no-arg constructor does not exist by default, so **no default values are emitted** unless the record explicitly declares one:

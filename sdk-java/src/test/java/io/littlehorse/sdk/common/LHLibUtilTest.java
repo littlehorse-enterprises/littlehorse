@@ -7,11 +7,13 @@ import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskRunId;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
@@ -432,6 +434,49 @@ public class LHLibUtilTest {
         }
     }
 
+    public static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
+    @LHStructDef("inline-address-holder")
+    public static class InlineAddressHolder {
+        private InlineAddress address;
+        private InlineAddress[] previousAddresses;
+        private Map<String, InlineAddress> addressesByLabel;
+
+        public InlineAddress getAddress() {
+            return address;
+        }
+
+        public void setAddress(InlineAddress address) {
+            this.address = address;
+        }
+
+        public InlineAddress[] getPreviousAddresses() {
+            return previousAddresses;
+        }
+
+        public void setPreviousAddresses(InlineAddress[] previousAddresses) {
+            this.previousAddresses = previousAddresses;
+        }
+
+        public Map<String, InlineAddress> getAddressesByLabel() {
+            return addressesByLabel;
+        }
+
+        public void setAddressesByLabel(Map<String, InlineAddress> addressesByLabel) {
+            this.addressesByLabel = addressesByLabel;
+        }
+    }
+
     @Test
     void shouldSerializeNullFieldAsValueNotSet() {
         NullableFieldStruct pojo = new NullableFieldStruct();
@@ -535,12 +580,56 @@ public class LHLibUtilTest {
     public record AdapterRecordStruct(UUID id, String name) {}
 
     @Test
+    void shouldRoundTripInlinePojoFieldsAndArrayElements() throws LHSerdeException {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        InlineAddressHolder holder = new InlineAddressHolder();
+        holder.setAddress(address);
+        holder.setPreviousAddresses(new InlineAddress[] {address});
+        holder.setAddressesByLabel(Map.of("home", address));
+
+        Struct struct = LHLibUtil.serializeToStruct(holder);
+        VariableValue nestedAddress =
+                struct.getStruct().getFieldsMap().get("address").getValue();
+        VariableValue arrayAddress = struct.getStruct()
+                .getFieldsMap()
+                .get("previousAddresses")
+                .getValue()
+                .getArray()
+                .getItems(0);
+        VariableValue mapAddress = struct.getStruct()
+                .getFieldsMap()
+                .get("addressesByLabel")
+                .getValue()
+                .getMap()
+                .getEntries(0)
+                .getValue();
+
+        assertThat(nestedAddress.getStruct().hasStructDefId()).isFalse();
+        assertThat(arrayAddress.getStruct().hasStructDefId()).isFalse();
+        assertThat(mapAddress.getStruct().hasStructDefId()).isFalse();
+
+        InlineAddressHolder result = (InlineAddressHolder) LHLibUtil.varValToObj(
+                VariableValue.newBuilder().setStruct(struct).build(), InlineAddressHolder.class);
+        assertThat(result.getAddress().getStreet()).isEqualTo("Main St");
+        assertThat(result.getPreviousAddresses()[0].getStreet()).isEqualTo("Main St");
+        assertThat(result.getAddressesByLabel().get("home").getStreet()).isEqualTo("Main St");
+    }
+
+    @Test
     void shouldSerializeMapAsNativeLHMapWhenRequested() {
         Map<String, Long> items = Map.of("apples", 3L, "bananas", 5L);
 
-        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, LHTypeAdapterRegistry.empty());
+        InlineMapDef mapType = InlineMapDef.newBuilder()
+                .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .build();
+
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(items, mapType, LHTypeAdapterRegistry.empty());
 
         Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
+        Assertions.assertThat(val.getMap().hasMapType()).isTrue();
+        Assertions.assertThat(val.getMap().getMapType()).isEqualTo(mapType);
         Assertions.assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
 
         Map<String, Long> roundTripped = new HashMap<>();
@@ -553,8 +642,8 @@ public class LHLibUtilTest {
     @Test
     void shouldFailNativeMapSerializationForNonMapObject() {
         Assertions.assertThatThrownBy(
-                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", LHTypeAdapterRegistry.empty()))
-                .isInstanceOf(io.littlehorse.sdk.common.exception.LHSerdeException.class)
+                        () -> LHLibUtil.objToVarValAsNativeMap("not-a-map", null, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(LHSerdeException.class)
                 .hasMessageContaining("java.util.Map");
     }
 
@@ -579,7 +668,7 @@ public class LHLibUtilTest {
 
     @Test
     void shouldSerializeNullMapAsValueNotSet() {
-        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, LHTypeAdapterRegistry.empty());
+        VariableValue val = LHLibUtil.objToVarValAsNativeMap(null, null, LHTypeAdapterRegistry.empty());
         Assertions.assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
     }
 

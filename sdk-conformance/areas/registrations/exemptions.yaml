@@ -1,0 +1,4 @@
+# Surface capabilities excused from needing a case; freshness ratchets both
+# ways, so a stale entry fails.
+todo: []
+not_applicable: []

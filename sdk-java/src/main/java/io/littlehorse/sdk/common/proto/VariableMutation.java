@@ -1204,6 +1204,47 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int LHS_LH_PATH_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.LHPath lhsLhPath_;
+  /**
+   * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   * @return Whether the lhsLhPath field is set.
+   */
+  @java.lang.Override
+  public boolean hasLhsLhPath() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   * @return The lhsLhPath.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHPath getLhsLhPath() {
+    return lhsLhPath_ == null ? io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance() : lhsLhPath_;
+  }
+  /**
+   * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhsLhPathOrBuilder() {
+    return lhsLhPath_ == null ? io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance() : lhsLhPath_;
+  }
+
   public static final int OPERATION_FIELD_NUMBER = 3;
   private int operation_ = 0;
   /**
@@ -1397,6 +1438,9 @@ private static final long serialVersionUID = 0L;
     if (rhsValueCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource) rhsValue_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(7, getLhsLhPath());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1428,6 +1472,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.VariableMutation.NodeOutputSource) rhsValue_);
     }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getLhsLhPath());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -1449,6 +1497,11 @@ private static final long serialVersionUID = 0L;
     if (hasLhsJsonPath()) {
       if (!getLhsJsonPath()
           .equals(other.getLhsJsonPath())) return false;
+    }
+    if (hasLhsLhPath() != other.hasLhsLhPath()) return false;
+    if (hasLhsLhPath()) {
+      if (!getLhsLhPath()
+          .equals(other.getLhsLhPath())) return false;
     }
     if (operation_ != other.operation_) return false;
     if (!getRhsValueCase().equals(other.getRhsValueCase())) return false;
@@ -1484,6 +1537,10 @@ private static final long serialVersionUID = 0L;
     if (hasLhsJsonPath()) {
       hash = (37 * hash) + LHS_JSON_PATH_FIELD_NUMBER;
       hash = (53 * hash) + getLhsJsonPath().hashCode();
+    }
+    if (hasLhsLhPath()) {
+      hash = (37 * hash) + LHS_LH_PATH_FIELD_NUMBER;
+      hash = (53 * hash) + getLhsLhPath().hashCode();
     }
     hash = (37 * hash) + OPERATION_FIELD_NUMBER;
     hash = (53 * hash) + operation_;
@@ -1631,13 +1688,19 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.littlehorse.sdk.common.proto.VariableMutation.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage
+              .alwaysUseFieldBuilders) {
+        internalGetLhsLhPathFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -1645,6 +1708,11 @@ private static final long serialVersionUID = 0L;
       bitField0_ = 0;
       lhsName_ = "";
       lhsJsonPath_ = "";
+      lhsLhPath_ = null;
+      if (lhsLhPathBuilder_ != null) {
+        lhsLhPathBuilder_.dispose();
+        lhsLhPathBuilder_ = null;
+      }
       operation_ = 0;
       if (rhsAssignmentBuilder_ != null) {
         rhsAssignmentBuilder_.clear();
@@ -1700,6 +1768,12 @@ private static final long serialVersionUID = 0L;
         to_bitField0_ |= 0x00000001;
       }
       if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.lhsLhPath_ = lhsLhPathBuilder_ == null
+            ? lhsLhPath_
+            : lhsLhPathBuilder_.build();
+        to_bitField0_ |= 0x00000002;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
         result.operation_ = operation_;
       }
       result.bitField0_ |= to_bitField0_;
@@ -1743,6 +1817,9 @@ private static final long serialVersionUID = 0L;
         lhsJsonPath_ = other.lhsJsonPath_;
         bitField0_ |= 0x00000002;
         onChanged();
+      }
+      if (other.hasLhsLhPath()) {
+        mergeLhsLhPath(other.getLhsLhPath());
       }
       if (other.operation_ != 0) {
         setOperationValue(other.getOperationValue());
@@ -1802,7 +1879,7 @@ private static final long serialVersionUID = 0L;
             } // case 18
             case 24: {
               operation_ = input.readEnum();
-              bitField0_ |= 0x00000004;
+              bitField0_ |= 0x00000008;
               break;
             } // case 24
             case 34: {
@@ -1826,6 +1903,13 @@ private static final long serialVersionUID = 0L;
               rhsValueCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetLhsLhPathFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2059,6 +2143,172 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private io.littlehorse.sdk.common.proto.LHPath lhsLhPath_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> lhsLhPathBuilder_;
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     * @return Whether the lhsLhPath field is set.
+     */
+    public boolean hasLhsLhPath() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     * @return The lhsLhPath.
+     */
+    public io.littlehorse.sdk.common.proto.LHPath getLhsLhPath() {
+      if (lhsLhPathBuilder_ == null) {
+        return lhsLhPath_ == null ? io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance() : lhsLhPath_;
+      } else {
+        return lhsLhPathBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public Builder setLhsLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+      if (lhsLhPathBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        lhsLhPath_ = value;
+      } else {
+        lhsLhPathBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public Builder setLhsLhPath(
+        io.littlehorse.sdk.common.proto.LHPath.Builder builderForValue) {
+      if (lhsLhPathBuilder_ == null) {
+        lhsLhPath_ = builderForValue.build();
+      } else {
+        lhsLhPathBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public Builder mergeLhsLhPath(io.littlehorse.sdk.common.proto.LHPath value) {
+      if (lhsLhPathBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) != 0) &&
+          lhsLhPath_ != null &&
+          lhsLhPath_ != io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance()) {
+          getLhsLhPathBuilder().mergeFrom(value);
+        } else {
+          lhsLhPath_ = value;
+        }
+      } else {
+        lhsLhPathBuilder_.mergeFrom(value);
+      }
+      if (lhsLhPath_ != null) {
+        bitField0_ |= 0x00000004;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public Builder clearLhsLhPath() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      lhsLhPath_ = null;
+      if (lhsLhPathBuilder_ != null) {
+        lhsLhPathBuilder_.dispose();
+        lhsLhPathBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHPath.Builder getLhsLhPathBuilder() {
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return internalGetLhsLhPathFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhsLhPathOrBuilder() {
+      if (lhsLhPathBuilder_ != null) {
+        return lhsLhPathBuilder_.getMessageOrBuilder();
+      } else {
+        return lhsLhPath_ == null ?
+            io.littlehorse.sdk.common.proto.LHPath.getDefaultInstance() : lhsLhPath_;
+      }
+    }
+    /**
+     * <pre>
+     * A typed path resolving to a nested value to mutate. Supports Struct,
+     * Array, JSON, and Map values.
+     * </pre>
+     *
+     * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder> 
+        internalGetLhsLhPathFieldBuilder() {
+      if (lhsLhPathBuilder_ == null) {
+        lhsLhPathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.LHPath, io.littlehorse.sdk.common.proto.LHPath.Builder, io.littlehorse.sdk.common.proto.LHPathOrBuilder>(
+                getLhsLhPath(),
+                getParentForChildren(),
+                isClean());
+        lhsLhPath_ = null;
+      }
+      return lhsLhPathBuilder_;
+    }
+
     private int operation_ = 0;
     /**
      * <pre>
@@ -2082,7 +2332,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setOperationValue(int value) {
       operation_ = value;
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       onChanged();
       return this;
     }
@@ -2110,7 +2360,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setOperation(io.littlehorse.sdk.common.proto.VariableMutationType value) {
       if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000004;
+      bitField0_ |= 0x00000008;
       operation_ = value.getNumber();
       onChanged();
       return this;
@@ -2124,7 +2374,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearOperation() {
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       operation_ = 0;
       onChanged();
       return this;

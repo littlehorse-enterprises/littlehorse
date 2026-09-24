@@ -89,12 +89,11 @@ public class ExpressionModel extends LHSerializable<Expression> {
         }
     }
 
-    public VariableValueModel evaluate(ThreadRunModel threadRun, VariableAssignerFunc variableFinder)
-            throws LHVarSubError {
+    public VariableValueModel evaluate(VariableAssignerFunc variableFinder) throws LHVarSubError {
         if (mutateWithOperation != null) {
             return evaluateMutationWithOperation(variableFinder);
         } else {
-            return new VariableValueModel(isSatisfied(threadRun));
+            return new VariableValueModel(isSatisfied(variableFinder));
         }
     }
 
@@ -169,18 +168,18 @@ public class ExpressionModel extends LHSerializable<Expression> {
         }
 
         if (rule == LHUtil.LHComparisonRule.INCLUDES) {
-            boolean rhsSupportsIncludes = rhsType.getComparisonRules().contains(LHUtil.LHComparisonRule.INCLUDES);
-
-            if (!rhsSupportsIncludes) {
-                return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
-            }
-
             boolean isJsonArr = (rhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
                     && rhsType.getPrimitiveType() == VariableType.JSON_ARR);
-            boolean lhsIsString = (lhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
+            boolean isStringContainer = (rhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
+                    && (rhsType.getPrimitiveType() == VariableType.STR
+                            || rhsType.getPrimitiveType() == VariableType.JSON_OBJ));
+            boolean isStringElement = (lhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.PRIMITIVE_TYPE
                     && lhsType.getPrimitiveType() == VariableType.STR);
+            boolean isCompatibleArrayElement =
+                    rhsType.getDefinedTypeCase() == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF
+                            && rhsType.getInlineArrayDef().getArrayType().isCompatibleWith(lhsType);
 
-            if (!isJsonArr && !lhsIsString) {
+            if (!isJsonArr && !(isStringContainer && isStringElement) && !isCompatibleArrayElement) {
                 return Optional.of(String.format("You cannot use LHS type %s with Comparator %s", lhsType, comparator));
             }
         }
@@ -188,9 +187,9 @@ public class ExpressionModel extends LHSerializable<Expression> {
     }
 
     /**
-     * Given a ThreadRunModel representing a ThreadRun in a WfRun, returns true if
-     * the represented EdgeCondition is satisfied by the variables in that
-     * ThreadRun.
+     * Convenience wrapper that evaluates this condition against the variables currently
+     * persisted on the ThreadRun. Unlike {@link #isSatisfied(VariableAssignerFunc)}, it does
+     * not observe any in-flight write-ahead buffer of uncommitted mutations.
      *
      * @param threadRun is the ThreadRunModel representing the ThreadRun to evaluate
      *                  against.
@@ -198,9 +197,25 @@ public class ExpressionModel extends LHSerializable<Expression> {
      * @throws LHVarSubError if there is a problem getting variables.
      */
     public boolean isSatisfied(ThreadRunModel threadRun) throws LHVarSubError {
+        return isSatisfied(threadRun::assignVariable);
+    }
 
-        VariableValueModel lhs = threadRun.assignVariable(this.lhs);
-        VariableValueModel rhs = threadRun.assignVariable(this.rhs);
+    /**
+     * Evaluates this comparison/boolean expression, resolving the operand variables
+     * through the provided {@link VariableAssignerFunc}. Using the assigner allows the
+     * expression to observe uncommitted mutations buffered earlier on the same edge
+     * (see GH #2181), rather than only the variables currently persisted on the
+     * ThreadRun.
+     *
+     * @param variableFinder resolves a VariableAssignmentModel to its current value,
+     *                       honoring any in-flight write-ahead buffer.
+     * @return true if the expression is satisfied.
+     * @throws LHVarSubError if there is a problem getting variables.
+     */
+    public boolean isSatisfied(VariableAssignerFunc variableFinder) throws LHVarSubError {
+
+        VariableValueModel lhs = variableFinder.assign(this.lhs);
+        VariableValueModel rhs = variableFinder.assign(this.rhs);
 
         if (mutateWithOperation != null) {
             return switch (this.mutateWithOperation) {

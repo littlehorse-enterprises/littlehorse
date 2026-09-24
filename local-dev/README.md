@@ -61,7 +61,7 @@ This repository requires the following system dependencies:
     - [server](server): Java 25
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
-- `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
+- `go` 1.25 or newer, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
     - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
     - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
     - This needs to be put somewhere in your `PATH`.

@@ -1,3 +1,5 @@
 dist
 node_modules
 src/proto
+pnpm-lock.yaml
+conformance/build

@@ -20,11 +20,15 @@ import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTypeMetadata;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -171,7 +175,19 @@ public class ScheduledTaskExecutor {
                     methodParamCount, inputs.size()));
         }
 
-        return taskMethod.invoke(executable, inputs.toArray());
+        Class<?>[] parameterTypes = taskMethod.getParameterTypes();
+        Object[] args = inputs.toArray();
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] == null && parameterTypes[i].isPrimitive()) {
+                throw new InputVarSubstitutionException(
+                        String.format(
+                                "Task method <%s> parameter #%d type <%s> received null. Primitive parameters cannot accept null. Use boxed type or ensure value is always present.",
+                                taskMethod.getName(), i, parameterTypes[i].getName()),
+                        null);
+            }
+        }
+
+        return taskMethod.invoke(executable, args);
     }
 
     /**
@@ -199,10 +215,38 @@ public class ScheduledTaskExecutor {
         }
 
         if (metadata.isLHMap()) {
-            return LHLibUtil.objToVarValAsNativeMap(result, typeAdapterRegistry);
+            LHMapType mapType = resolveTaskMapType(taskMethod);
+            return LHLibUtil.objToVarValAsNativeMap(
+                    result,
+                    mapType.getTypeDefinition().getInlineMapDef(),
+                    typeAdapterRegistry,
+                    mapType.getKeyClass(),
+                    mapType.getValueClass(),
+                    placeholderValues);
+        }
+
+        if (metadata.isInlineStruct()) {
+            return LHLibUtil.objToVarValAsStruct(result, returnType, typeAdapterRegistry, placeholderValues);
         }
 
         return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);
+    }
+
+    private LHMapType resolveTaskMapType(Method taskMethod) {
+        Type generic = taskMethod.getGenericReturnType();
+        if (generic instanceof ParameterizedType) {
+            Type[] args = ((ParameterizedType) generic).getActualTypeArguments();
+            if (args.length == 2 && args[0] instanceof Class && args[1] instanceof Class) {
+                return new LHMapType(
+                        (Class<?>) args[0],
+                        (Class<?>) args[1],
+                        typeAdapterRegistry,
+                        placeholderValues,
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
+            }
+        }
+        throw new IllegalArgumentException("Task method '" + taskMethod.getName()
+                + "' returning a native Map must declare generic type parameters (e.g. Map<String, Integer>).");
     }
 
     private VariableValue serializeInlineStructResult(Object result) {

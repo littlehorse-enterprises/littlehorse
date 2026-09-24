@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { FC, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useDiagram } from '../../hooks/useDiagram'
 import { Node } from './Node'
 import { NodeInfo } from './NodeInfo/NodeInfo'
@@ -12,6 +12,12 @@ export const Sidebar: FC<{ showNodeRun?: boolean }> = ({ showNodeRun }) => {
   const { selectedNode } = useDiagram()
   const [currentTab, setCurrentTab] = useState('overview')
   const [nodeRunIndex, setNodeRunIndex] = useState<number>(0)
+
+  // Reset the selected NodeRun whenever a different node is picked. Without this the
+  // index survives into a node with fewer NodeRuns and indexes past the end of the list.
+  useEffect(() => {
+    setNodeRunIndex(0)
+  }, [selectedNode?.id])
 
   const isValidNode = useMemo(() => {
     if (!selectedNode) return false

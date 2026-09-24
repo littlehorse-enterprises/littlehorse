@@ -9,15 +9,24 @@ import org.slf4j.LoggerFactory;
 public class MapWorker {
     private static final Logger log = LoggerFactory.getLogger(MapWorker.class);
 
-    @LHTaskMethod("consume-map")
-    public String consumeMap(@LHType(isLHMap = true) Map<String, Long> items) {
-        log.info("Consuming LHMap: {}", items);
-        return "consumed:" + items.toString();
+    @LHTaskMethod("get-inventory")
+    @LHType(isLHMap = true)
+    public Map<String, Integer> getInventory() {
+        return Map.of("apples", 3, "bananas", 5, "cherries", 12);
     }
 
-    @LHTaskMethod("consume-value")
-    public String consumeValue(long value) {
-        log.info("Consuming single map value: {}", value);
-        return "value:" + value;
+    @LHTaskMethod("reserve-items")
+    public void reserveItems(@LHType(isLHMap = true) Map<String, Integer> reservation) {
+        log.info("Reserved items: {}", reservation);
+    }
+
+    @LHTaskMethod("save-inventory")
+    public void saveInventory(@LHType(isLHMap = true) Map<String, Integer> inventory) {
+        log.info("Saved inventory: {}", inventory);
+    }
+
+    @LHTaskMethod("notify-out-of-stock")
+    public void notifyOutOfStock(String sku, int requested, Integer available) {
+        log.info("Insufficient stock for {}: requested {}, available {}", sku, requested, available);
     }
 }

@@ -1,18 +1,21 @@
 import {
   Array$ as LHArray,
+  LHPath,
   Map as LHMap,
   Struct,
+  StructField,
+  StructFieldDef,
   Timestamp,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
+  VariableMutation,
   VariableMutationType,
   VariableType,
   VariableValue,
 } from 'littlehorse-client/proto'
 import { getComparatorSymbol } from './comparatorUtils'
 import { normalizeUtcTimestampString } from './timestamp'
-import { lhPathToString } from './lhPath'
 import { flattenWfRunId, wfRunIdFromFlattenedId } from './wfRun'
 
 /**
@@ -26,6 +29,8 @@ export const getVariableCaseFromTypeDef = (typeDef: TypeDefinition): VariableVal
     case 'primitiveType':
       return getVariableCaseFromType(typeDef.definedType.primitiveType)
     case 'structDefId':
+      return 'struct'
+    case 'inlineStructDef':
       return 'struct'
     case 'inlineArrayDef':
       return 'array'
@@ -47,6 +52,8 @@ export const formatTypeDefinition = (typeDef?: TypeDefinition | TypeDefinition['
     }
     case 'structDefId':
       return `Struct<${definedType.structDefId.name},${definedType.structDefId.version}>`
+    case 'inlineStructDef':
+      return 'InlineStruct'
     case 'inlineArrayDef': {
       const nested = definedType.inlineArrayDef.arrayType
       return `Array<${formatTypeDefinition(nested)}>`
@@ -79,6 +86,9 @@ export const VARIABLE_CASE_LABELS: Record<VariableValueCase, string> = {
   map: 'Map',
 }
 
+export const isStructFieldRequired = (fieldDef: StructFieldDef): boolean =>
+  fieldDef.defaultValue === undefined && !fieldDef.isNullable
+
 /**
  * Retrieves the value of a variable based on its assignment and source.
  * Handles different types of variable sources including expressions, format strings, literals, node outputs, and variable names.
@@ -103,9 +113,41 @@ export const getVariable = (variable: VariableAssignment, depth = 0): string => 
       return getValueFromVariableName(variable.source, variable.path)
     case 'sizeOf':
       return `${getVariable(variable.source.sizeOf.operand!, depth + 1)}.size()`
+    case 'mapBuilder':
+      return `{${variable.source.mapBuilder.entries
+        .map(e => `${getVariable(e.key!, depth + 1)}: ${getVariable(e.value!, depth + 1)}`)
+        .join(', ')}}`
     default:
       return ''
   }
+}
+
+export const lhPathToString = (lhPath: LHPath): string => {
+  return lhPath.path.reduce((outputStr, selector) => {
+    switch (selector.selectorType?.oneofKind) {
+      case 'index':
+        return `${outputStr}[${selector.selectorType.index}]`
+      case 'key':
+        return `${outputStr}.${selector.selectorType.key}`
+      case 'dynamic': {
+        const assignment = selector.selectorType.dynamic
+        const literal =
+          assignment.source?.oneofKind === 'literalValue' ? assignment.source.literalValue.value : undefined
+        const selectorValue = literal?.oneofKind === 'str' ? JSON.stringify(literal.str) : getVariable(assignment)
+        return `${outputStr}[${selectorValue}]`
+      }
+      default:
+        return outputStr
+    }
+  }, '$')
+}
+
+export const variableMutationLhsToString = (
+  mutation: Pick<VariableMutation, 'lhsName' | 'lhsJsonPath' | 'lhsLhPath'>
+): string => {
+  if (mutation.lhsLhPath) return lhPathToString(mutation.lhsLhPath).replace('$', mutation.lhsName)
+  if (mutation.lhsJsonPath) return mutation.lhsJsonPath.replace('$', mutation.lhsName)
+  return mutation.lhsName
 }
 
 /**
@@ -324,6 +366,41 @@ const jsonValueToVariableValue = (typeDef: TypeDefinition | undefined, value: un
         value: jsonValueToVariableValue(valueType, v),
       }))
       return VariableValue.create({ value: { oneofKind: 'map', map: { entries } } })
+    }
+    case 'inlineStructDef': {
+      if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        throw new Error('Expected a JSON object for InlineStruct')
+      }
+
+      const inputFields = value as Record<string, unknown>
+      const fieldDefs = definedType.inlineStructDef.fields
+      const unknownField = Object.keys(inputFields).find(fieldName => !fieldDefs[fieldName])
+      if (unknownField) throw new Error(`Unknown InlineStruct field: ${unknownField}`)
+
+      const fields: Record<string, StructField> = {}
+      for (const [fieldName, fieldDef] of Object.entries(fieldDefs)) {
+        if (!Object.hasOwn(inputFields, fieldName)) {
+          if (isStructFieldRequired(fieldDef)) throw new Error(`Missing required InlineStruct field: ${fieldName}`)
+          continue
+        }
+        if (!fieldDef.fieldType) throw new Error(`InlineStruct field has no type: ${fieldName}`)
+
+        const fieldValue = inputFields[fieldName]
+        if (fieldValue === null) {
+          if (!fieldDef.isNullable) throw new Error(`InlineStruct field is not nullable: ${fieldName}`)
+          fields[fieldName] = { value: VariableValue.create(), masked: fieldDef.fieldType.masked }
+          continue
+        }
+
+        fields[fieldName] = {
+          value: jsonValueToVariableValue(fieldDef.fieldType, fieldValue),
+          masked: fieldDef.fieldType.masked,
+        }
+      }
+
+      return VariableValue.create({
+        value: { oneofKind: 'struct', struct: { struct: { fields } } },
+      })
     }
     case 'primitiveType':
       return getTypedVariableValue(

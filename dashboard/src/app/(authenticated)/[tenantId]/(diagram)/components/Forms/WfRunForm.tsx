@@ -47,6 +47,10 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
 
   const methods = useForm<FormValues>({ defaultValues })
 
+  // formState is a Proxy: dirtyFields must be read during render to activate its
+  // subscription, otherwise it is empty when read later inside the submit callback.
+  const { dirtyFields } = methods.formState
+
   // sorted by required first
   const sortedVariables = useMemo(
     () =>
@@ -58,21 +62,26 @@ export const WfRunForm = forwardRef<HTMLFormElement, WfRunFormProps>(({ wfSpecVa
   )
 
   const handleSubmit = (data: FormValues) => {
-    onSubmit(data, { dirtyFields: methods.formState.dirtyFields as Record<string, boolean | undefined> })
+    onSubmit(data, { dirtyFields: dirtyFields as Record<string, boolean | undefined> })
   }
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="space-y-4">
+      <form onSubmit={methods.handleSubmit(handleSubmit)} ref={ref} className="min-w-0 space-y-4">
         <FormField
           label={'Custom WfRun Id'}
           as={Input}
           id="customWfRunId"
           type="text"
-          variableType={VariableType.STR}
+          typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
         />
         {wfSpec.parentWfSpec && (
-          <FormField label={'Parent WfRun Id'} as={Input} id="parentWfRunId" variableType={VariableType.STR} />
+          <FormField
+            label={'Parent WfRun Id'}
+            as={Input}
+            id="parentWfRunId"
+            typeDef={{ oneofKind: 'primitiveType', primitiveType: VariableType.STR }}
+          />
         )}
 
         {sortedVariables.map((variable: ThreadVarDef, index) => (

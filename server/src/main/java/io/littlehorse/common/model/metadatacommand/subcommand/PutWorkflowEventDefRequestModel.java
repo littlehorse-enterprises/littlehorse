@@ -4,9 +4,9 @@ import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.model.ClusterLevelCommand;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
@@ -74,8 +74,8 @@ public class PutWorkflowEventDefRequestModel extends MetadataSubCommand<PutWorkf
     private void validateReferencedStructDefs(MetadataProcessorContext context) {
         contentType.getOutputType().ifPresent(typeDef -> {
             try {
-                typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
-            } catch (UnknownStructDefException e) {
+                typeDef.validateAndPin(context.metadataManager());
+            } catch (StructDefValidationException e) {
                 throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
             }
         });

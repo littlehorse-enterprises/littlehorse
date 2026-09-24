@@ -70,6 +70,7 @@ const (
 	LittleHorse_GetWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/GetWorkflowMigrationPlan"
 	LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan"
 	LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName  = "/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan"
+	LittleHorse_SearchWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/SearchWorkflowMigrationPlan"
 	LittleHorse_SearchCorrelatedEvent_FullMethodName       = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
 	LittleHorse_SearchNodeRun_FullMethodName               = "/littlehorse.LittleHorse/SearchNodeRun"
 	LittleHorse_SearchTaskRun_FullMethodName               = "/littlehorse.LittleHorse/SearchTaskRun"
@@ -113,6 +114,7 @@ const (
 	LittleHorse_GetTaskDefMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
 	LittleHorse_GetWfSpecMetricsWindow_FullMethodName      = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
 	LittleHorse_ListTaskMetrics_FullMethodName             = "/littlehorse.LittleHorse/ListTaskMetrics"
+	LittleHorse_ListQuotaUsageMetrics_FullMethodName       = "/littlehorse.LittleHorse/ListQuotaUsageMetrics"
 	LittleHorse_ListWfMetrics_FullMethodName               = "/littlehorse.LittleHorse/ListWfMetrics"
 	LittleHorse_GetMetricWindow_FullMethodName             = "/littlehorse.LittleHorse/GetMetricWindow"
 	LittleHorse_SearchWfMetricWindow_FullMethodName        = "/littlehorse.LittleHorse/SearchWfMetricWindow"
@@ -273,6 +275,8 @@ type LittleHorseClient interface {
 	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
 	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
@@ -389,6 +393,8 @@ type LittleHorseClient interface {
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -878,6 +884,15 @@ func (c *littleHorseClient) ApplyWorkflowMigrationPlan(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error) {
+	out := new(WorkflowMigrationPlanIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error) {
 	out := new(CorrelatedEventIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchCorrelatedEvent_FullMethodName, in, out, opts...)
@@ -1287,6 +1302,15 @@ func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMet
 	return out, nil
 }
 
+func (c *littleHorseClient) ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListQuotaUsageMetrics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
 	out := new(MetricsList)
 	err := c.cc.Invoke(ctx, LittleHorse_ListWfMetrics_FullMethodName, in, out, opts...)
@@ -1549,6 +1573,8 @@ type LittleHorseServer interface {
 	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
 	// destination WfSpec.
 	ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
@@ -1665,6 +1691,8 @@ type LittleHorseServer interface {
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -1851,6 +1879,9 @@ func (UnimplementedLittleHorseServer) DeleteWorkflowMigrationPlan(context.Contex
 func (UnimplementedLittleHorseServer) ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyWorkflowMigrationPlan not implemented")
 }
+func (UnimplementedLittleHorseServer) SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWorkflowMigrationPlan not implemented")
+}
 func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
 }
@@ -1979,6 +2010,9 @@ func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *W
 }
 func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListQuotaUsageMetrics not implemented")
 }
 func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
@@ -2932,6 +2966,24 @@ func _LittleHorse_ApplyWorkflowMigrationPlan_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, req.(*SearchWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_SearchCorrelatedEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchCorrelatedEventRequest)
 	if err := dec(in); err != nil {
@@ -3714,6 +3766,24 @@ func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_ListQuotaUsageMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListQuotaUsageMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListQuotaUsageMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, req.(*ListQuotaUsageMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_ListWfMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListWfMetricsRequest)
 	if err := dec(in); err != nil {
@@ -4156,6 +4226,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_ApplyWorkflowMigrationPlan_Handler,
 		},
 		{
+			MethodName: "SearchWorkflowMigrationPlan",
+			Handler:    _LittleHorse_SearchWorkflowMigrationPlan_Handler,
+		},
+		{
 			MethodName: "SearchCorrelatedEvent",
 			Handler:    _LittleHorse_SearchCorrelatedEvent_Handler,
 		},
@@ -4322,6 +4396,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTaskMetrics",
 			Handler:    _LittleHorse_ListTaskMetrics_Handler,
+		},
+		{
+			MethodName: "ListQuotaUsageMetrics",
+			Handler:    _LittleHorse_ListQuotaUsageMetrics_Handler,
 		},
 		{
 			MethodName: "ListWfMetrics",

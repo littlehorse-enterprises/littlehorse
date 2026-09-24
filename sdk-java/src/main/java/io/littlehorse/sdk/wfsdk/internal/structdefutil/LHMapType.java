@@ -14,18 +14,30 @@ public final class LHMapType extends LHClassType {
     private final LHClassType keyType;
     private final LHClassType valueType;
 
+    /** Creates a map whose values use Struct-member resolution. Keys always use value resolution. */
     public LHMapType(Class<?> keyClazz, Class<?> valueClazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        this(keyClazz, valueClazz, typeAdapterRegistry, Map.of());
+        this(keyClazz, valueClazz, typeAdapterRegistry, Map.of(), ResolutionContext.STRUCT_MEMBER);
+    }
+
+    /** Creates a map whose values use Struct-member resolution. Keys always use value resolution. */
+    public LHMapType(
+            Class<?> keyClazz,
+            Class<?> valueClazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues) {
+        this(keyClazz, valueClazz, typeAdapterRegistry, placeholderValues, ResolutionContext.STRUCT_MEMBER);
     }
 
     public LHMapType(
             Class<?> keyClazz,
             Class<?> valueClazz,
             LHTypeAdapterRegistry typeAdapterRegistry,
-            Map<String, String> placeholderValues) {
-        super(java.util.Map.class, typeAdapterRegistry, placeholderValues);
+            Map<String, String> placeholderValues,
+            ResolutionContext valueResolutionContext) {
+        super(Map.class, typeAdapterRegistry, placeholderValues);
 
-        LHClassType resolvedKeyType = LHClassType.fromJavaClass(keyClazz, typeAdapterRegistry, this.placeholderValues);
+        LHClassType resolvedKeyType =
+                LHClassType.resolve(keyClazz, typeAdapterRegistry, this.placeholderValues, ResolutionContext.VALUE);
         if (resolvedKeyType.getDefinedTypeCase() != DefinedTypeCase.PRIMITIVE_TYPE) {
             throw new IllegalArgumentException(
                     "Map key type must resolve to a primitive VariableType. Provided key class: " + keyClazz.getName()
@@ -35,9 +47,11 @@ public final class LHMapType extends LHClassType {
         this.keyType = resolvedKeyType;
 
         if (valueClazz.isArray()) {
-            this.valueType = new LHArrayType(valueClazz, typeAdapterRegistry, this.placeholderValues);
+            this.valueType =
+                    new LHArrayType(valueClazz, typeAdapterRegistry, this.placeholderValues, valueResolutionContext);
         } else {
-            this.valueType = LHClassType.fromJavaClass(valueClazz, typeAdapterRegistry, this.placeholderValues);
+            this.valueType = LHClassType.resolve(
+                    valueClazz, typeAdapterRegistry, this.placeholderValues, valueResolutionContext);
         }
 
         try {
@@ -59,6 +73,18 @@ public final class LHMapType extends LHClassType {
     @Override
     public DefinedTypeCase getDefinedTypeCase() {
         return DefinedTypeCase.INLINE_MAP_DEF;
+    }
+
+    public Class<?> getKeyClass() {
+        return keyType.getClassType();
+    }
+
+    public Class<?> getValueClass() {
+        return valueType.getClassType();
+    }
+
+    LHClassType getResolvedValueType() {
+        return valueType;
     }
 
     @Override

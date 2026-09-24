@@ -25,6 +25,9 @@ public class LHStructPropertyTest
         [LHStructField(name: "custom_name")]
         public string? CustomNamed { get; set; }
 
+        [LHStructField(description: "The user's primary contact email")]
+        public string? DescribedField { get; set; }
+
         public string StringWithDefault { get; set; } = "hello";
 
         public string ReadOnly => "readonly";
@@ -176,5 +179,25 @@ public class LHStructPropertyTest
         var properties = structDef.GetStructProperties();
 
         Assert.DoesNotContain(properties, p => p.FieldName == nameof(Library.IgnoredField));
+    }
+
+    [Fact]
+    public void ToStructFieldDef_SetsDescription_WhenAttributeProvided()
+    {
+        var property = CreateProperty(nameof(Library.DescribedField));
+
+        StructFieldDef fieldDef = property.ToStructFieldDef();
+
+        Assert.Equal("The user's primary contact email", fieldDef.Description);
+    }
+
+    [Fact]
+    public void ToStructFieldDef_DoesNotSetDescription_WhenAttributeOmitted()
+    {
+        var property = CreateProperty(nameof(Library.Name));
+
+        StructFieldDef fieldDef = property.ToStructFieldDef();
+
+        Assert.False(fieldDef.HasDescription);
     }
 }

@@ -1,4 +1,5 @@
 'use client'
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/components/utils'
 import { CheckIcon, CopyIcon } from 'lucide-react'
@@ -16,10 +17,14 @@ export const CopyButton: FC<CopyButtonProps> = ({ value, className }) => {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => {
-        navigator.clipboard.writeText(value)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 1000)
+      onClick={async () => {
+        try {
+          await copyToClipboard(value)
+          setCopied(true)
+          setTimeout(() => setCopied(false), 1000)
+        } catch (err) {
+          console.error('Failed to copy text: ', err)
+        }
       }}
       className={cn(className, 'cursor-pointer')}
     >

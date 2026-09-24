@@ -48,6 +48,12 @@ public class LHStructDefPlaceholderTest {
         public String street;
     }
 
+    @LHStructDef("${company:acme-default}-address")
+    @Getter
+    static class AddressWithDefault {
+        public String street;
+    }
+
     @Test
     public void shouldResolvePlaceholderInStructDefId() {
         LHStructDefType type = new LHStructDefType(Address.class, LHTypeAdapterRegistry.empty(), PLACEHOLDERS);
@@ -131,6 +137,13 @@ public class LHStructDefPlaceholderTest {
     }
 
     @Test
+    public void shouldUseDefaultValueWhenStructDefPlaceholderMissing() {
+        LHStructDefType type = new LHStructDefType(AddressWithDefault.class, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThat(type.getStructDefId().getName()).isEqualTo("acme-default-address");
+    }
+
+    @Test
     public void shouldResolvePlaceholderInDeclareStructWithClass() {
         Workflow wf = Workflow.newWorkflow(
                 "placeholder-struct-wf", thread -> thread.declareStruct("my-address", Address.class), PLACEHOLDERS);
@@ -150,6 +163,18 @@ public class LHStructDefPlaceholderTest {
         VariableDef varDef = declaredVarDef(wf);
 
         assertThat(varDef.getTypeDef().getStructDefId().getName()).isEqualTo("acme-address");
+    }
+
+    @Test
+    public void shouldUseDefaultValueInDeclareStructWithStringNameWhenPlaceholderMissing() {
+        Workflow wf = Workflow.newWorkflow(
+                "placeholder-struct-default-name-wf",
+                thread -> thread.declareStruct("my-address", "${company:acme-default}-address"),
+                Map.of());
+
+        VariableDef varDef = declaredVarDef(wf);
+
+        assertThat(varDef.getTypeDef().getStructDefId().getName()).isEqualTo("acme-default-address");
     }
 
     private static VariableDef declaredVarDef(Workflow wf) {

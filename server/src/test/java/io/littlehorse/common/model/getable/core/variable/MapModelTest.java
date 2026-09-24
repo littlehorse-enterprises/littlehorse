@@ -68,6 +68,33 @@ public class MapModelTest {
     }
 
     @Test
+    void shouldBackfillMapTypeFromEntriesWhenProtoHasNoMapType() {
+        // Legacy persisted Maps may have no map_type; on read the type is inferred from the entries
+        // so native Maps are never untyped in memory.
+        Map legacyProto = Map.newBuilder()
+                .addEntries(Map.Entry.newBuilder()
+                        .setKey(new VariableValueModel("one").toProto())
+                        .setValue(new VariableValueModel(1L).toProto()))
+                .build();
+
+        MapModel reloaded = new MapModel();
+        reloaded.initFrom(legacyProto, context);
+
+        assertThat(reloaded.getMapType()).isEqualTo(strToIntMapType());
+    }
+
+    @Test
+    void shouldLeaveMapTypeNullForEmptyLegacyMap() {
+        // An empty legacy Map has no entries to infer from; it stays untyped and is pinned on assign.
+        Map emptyLegacyProto = Map.newBuilder().build();
+
+        MapModel reloaded = new MapModel();
+        reloaded.initFrom(emptyLegacyProto, context);
+
+        assertThat(reloaded.getMapType()).isNull();
+    }
+
+    @Test
     void listConstructorShouldDeepCopyEntries() {
         List<MapEntryModel> entries = new ArrayList<>();
         entries.add(new MapEntryModel(new VariableValueModel("one"), new VariableValueModel(1L)));

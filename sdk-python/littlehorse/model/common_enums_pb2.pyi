@@ -68,6 +68,7 @@ class MetricWindowType(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     TASK_METRIC: _ClassVar[MetricWindowType]
     USER_TASK_METRIC: _ClassVar[MetricWindowType]
     NODE_METRIC: _ClassVar[MetricWindowType]
+    QUOTA_USAGE_METRIC: _ClassVar[MetricWindowType]
 STARTING: LHStatus
 RUNNING: LHStatus
 COMPLETED: LHStatus
@@ -112,3 +113,4 @@ WORKFLOW_METRIC: MetricWindowType
 TASK_METRIC: MetricWindowType
 USER_TASK_METRIC: MetricWindowType
 NODE_METRIC: MetricWindowType
+QUOTA_USAGE_METRIC: MetricWindowType

@@ -39,30 +39,30 @@ logging.basicConfig(level=logging.INFO)
 # ---------------------------------------------------------------------------
 
 
-@lh_struct_def(name="address", description="A physical address.")
+@lh_struct_def(name="address", description="A physical address, including street, city, planet, and postal code.")
 class Address:
-    house_number: int
-    street: str
-    city: str
-    planet: str
-    zip_code: int
+    house_number: Annotated[int, LHStructField(description="The street number of the building.")]
+    street: Annotated[str, LHStructField(description="The name of the street.")]
+    city: Annotated[str, LHStructField(description="The city or municipality.")]
+    planet: Annotated[str, LHStructField(description="The planet where the address is located.")]
+    zip_code: Annotated[int, LHStructField(description="The postal code for the location.")]
 
 
-@lh_struct_def(name="person", description="A person with a name and address.")
+@lh_struct_def(name="person", description="A person with a name and home address.")
 class Person:
-    first_name: str
-    last_name: str
-    home_address: Annotated[Address, LHStructField(masked=True)]
+    first_name: Annotated[str, LHStructField(description="This is the first name of the person, i.e. their given name.")]
+    last_name: Annotated[str, LHStructField(description="This is the last name of the person, i.e. their family name.")]
+    home_address: Annotated[Address, LHStructField(masked=True, description="The home address of the person.")]
 
 
 @lh_struct_def(
     name="parking-ticket-report",
-    description="A parking ticket report for a vehicle.",
+    description="A parking ticket report capturing vehicle details and license plate at the time of the violation.",
 )
 class ParkingTicketReport:
-    vehicle_make: str
-    vehicle_model: str
-    license_plate_number: str
+    vehicle_make: Annotated[str, LHStructField(description="The vehicle's manufacturer or brand name, ex: Suzuki")]
+    vehicle_model: Annotated[str, LHStructField(description="The specific model and iteration of the vehicle, ex: Swift")]
+    license_plate_number: Annotated[str, LHStructField(description="The license plate number for the vehicle at the time of writing the report, ex: C90-ELE")]
 
 
 # ---------------------------------------------------------------------------

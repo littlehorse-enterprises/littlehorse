@@ -104,6 +104,7 @@ import io.littlehorse.server.streams.lhinternalscan.count.CountRequest;
 import io.littlehorse.server.streams.lhinternalscan.count.CountTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListQuotaUsageMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
@@ -130,6 +131,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRe
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowMigrationPlanRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
@@ -157,6 +159,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowMigrationPlanReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -649,6 +652,16 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWorkflowMigrationPlan(
+            SearchWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlanIdList> ctx) {
+        handleScan(
+                SearchWorkflowMigrationPlanRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWorkflowMigrationPlanReply.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskRuns(ListTaskRunsRequest req, StreamObserver<TaskRunList> ctx) {
         ListTaskRunsRequestModel reqModel =
@@ -1080,10 +1093,28 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskMetrics(ListTaskMetricsRequest req, StreamObserver<MetricsList> ctx) {
         ListTaskMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
+        handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.READ)
+    public void listQuotaUsageMetrics(ListQuotaUsageMetricsRequest req, StreamObserver<MetricsList> ctx) {
+        RequestExecutionContext requestContext = requestContext();
+        if (!req.hasQuotaId()
+                || !req.getQuotaId().hasTenant()
+                || !req.getQuotaId()
+                        .getTenant()
+                        .getId()
+                        .equals(requestContext.authorization().tenantId().toString())) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
+        ListQuotaUsageMetricsRequestModel reqModel =
+                LHSerializable.fromProto(req, ListQuotaUsageMetricsRequestModel.class, requestContext);
         handleScan(reqModel, ctx, ListMetricsReply.class);
     }
 
@@ -1098,6 +1129,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getMetricWindow(MetricWindowId req, StreamObserver<MetricWindow> ctx) {
+        if (req.getIdCase() == MetricWindowId.IdCase.QUOTA_ID
+                && (!req.getQuotaId().hasTenant()
+                        || !req.getQuotaId()
+                                .getTenant()
+                                .getId()
+                                .equals(requestContext()
+                                        .authorization()
+                                        .tenantId()
+                                        .toString()))) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
         MetricWindowIdModel id = LHSerializable.fromProto(req, MetricWindowIdModel.class, requestContext());
         MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
         ctx.onNext(metricWindow.toProto().build());

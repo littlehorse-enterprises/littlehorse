@@ -1,3 +1,4 @@
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { DateLike, utcToLocalDateTime } from '@/app/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
@@ -22,7 +23,7 @@ export const NodeVariable = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(displayText)
+      await copyToClipboard(displayText)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
     } catch (err) {

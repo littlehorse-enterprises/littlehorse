@@ -210,6 +210,9 @@ message RunChildWfNode {
 
   // The input variables to pass into the Child ThreadRun.
   map<string, VariableAssignment> inputs = 3;
+
+  // Optional assignment resolving to the ID for the child WfRun.
+  VariableAssignment child_id = 5;
 }
 
 // This node acceptss a WfRunId and waits for the specified WfRun to complete.

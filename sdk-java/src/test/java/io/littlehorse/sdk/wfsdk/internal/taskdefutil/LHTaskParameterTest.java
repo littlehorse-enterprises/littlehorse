@@ -27,6 +27,18 @@ public class LHTaskParameterTest {
 
     static class UnannotatedArrayElement {}
 
+    static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
     public class ParameterTestTasks {
         @LHTaskMethod("test-primitive")
         public void primitiveParamTask(@LHType(name = "param1") String param1) {}
@@ -45,6 +57,9 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("test-inline-struct-param")
         public void inlineStructTask(@LHType(name = "param1", structDefName = "customer") InlineStruct param1) {}
+
+        @LHTaskMethod("inline-pojo-param")
+        public void inlinePojoParam(@LHType(name = "param1", isInlineStruct = true) InlineAddress param1) {}
 
         @LHTaskMethod("inline-struct-placeholder-task")
         public void inlineStructPlaceholderTask(
@@ -193,6 +208,23 @@ public class LHTaskParameterTest {
     }
 
     @Test
+    void shouldInferInlineStructSchemaForAnnotatedPojoParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "inline-pojo-param");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        TypeDefinition typeDef = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of())
+                .getVariableDef()
+                .getTypeDef();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(typeDef.getInlineStructDef()
+                        .getFieldsOrThrow("street")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
     void shouldResolvePlaceholdersForInlineStructTypes() {
         Map<String, String> placeholderValues = Map.of("inputStruct", "customer-request");
 
@@ -246,15 +278,17 @@ public class LHTaskParameterTest {
     }
 
     @Test
-    void shouldFailWhenNativeArrayElementResolvesToJsonObj() {
+    void shouldResolveNativeArrayPojoElementAsInlineStruct() {
         Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "invalid-native-arr-pojo");
         Parameter parameter = taskMethod.getParameters()[0];
 
-        assertThatThrownBy(() -> {
-                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
-                })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        TypeDefinition elementType = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of())
+                .getVariableDef()
+                .getTypeDef()
+                .getInlineArrayDef()
+                .getArrayType();
+
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
     }
 
     @Test

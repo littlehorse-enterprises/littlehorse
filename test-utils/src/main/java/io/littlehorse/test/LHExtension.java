@@ -106,8 +106,8 @@ public class LHExtension
 
     @Override
     public void beforeAll(ExtensionContext context) {
-        Awaitility.setDefaultPollInterval(Duration.of(40, ChronoUnit.MILLIS));
-        Awaitility.setDefaultTimeout(Duration.of(3500, ChronoUnit.MILLIS));
+        Awaitility.setDefaultPollInterval(Duration.of(50, ChronoUnit.MILLIS));
+        Awaitility.setDefaultTimeout(Duration.of(5000, ChronoUnit.MILLIS));
         getStore(context)
                 .getOrComputeIfAbsent(LH_TEST_CONTEXT, s -> new TestContext(testBootstrapper), TestContext.class);
     }

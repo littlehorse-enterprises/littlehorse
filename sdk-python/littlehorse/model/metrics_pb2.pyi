@@ -23,14 +23,26 @@ class CountAndTiming(_message.Message):
     def __init__(self, count: _Optional[int] = ..., min_latency_ms: _Optional[int] = ..., max_latency_ms: _Optional[int] = ..., total_latency_ms: _Optional[int] = ...) -> None: ...
 
 class MetricWindow(_message.Message):
-    __slots__ = ("id", "workflow", "task")
+    __slots__ = ("id", "workflow", "task", "quota_usage")
     ID_FIELD_NUMBER: _ClassVar[int]
     WORKFLOW_FIELD_NUMBER: _ClassVar[int]
     TASK_FIELD_NUMBER: _ClassVar[int]
+    QUOTA_USAGE_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.MetricWindowId
     workflow: WfMetrics
     task: TaskMetrics
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricWindowId, _Mapping]] = ..., workflow: _Optional[_Union[WfMetrics, _Mapping]] = ..., task: _Optional[_Union[TaskMetrics, _Mapping]] = ...) -> None: ...
+    quota_usage: QuotaUsageMetrics
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.MetricWindowId, _Mapping]] = ..., workflow: _Optional[_Union[WfMetrics, _Mapping]] = ..., task: _Optional[_Union[TaskMetrics, _Mapping]] = ..., quota_usage: _Optional[_Union[QuotaUsageMetrics, _Mapping]] = ...) -> None: ...
+
+class QuotaUsageMetrics(_message.Message):
+    __slots__ = ("requests_observed", "requests_throttled", "total_throttle_time_ms")
+    REQUESTS_OBSERVED_FIELD_NUMBER: _ClassVar[int]
+    REQUESTS_THROTTLED_FIELD_NUMBER: _ClassVar[int]
+    TOTAL_THROTTLE_TIME_MS_FIELD_NUMBER: _ClassVar[int]
+    requests_observed: int
+    requests_throttled: int
+    total_throttle_time_ms: int
+    def __init__(self, requests_observed: _Optional[int] = ..., requests_throttled: _Optional[int] = ..., total_throttle_time_ms: _Optional[int] = ...) -> None: ...
 
 class WfMetrics(_message.Message):
     __slots__ = ("started", "running_to_completed", "running_to_error", "running_to_exception", "running_to_halting", "running_to_halted", "halting_to_halted", "halted_to_running")
@@ -91,6 +103,16 @@ class ListTaskMetricsRequest(_message.Message):
     window_start: _timestamp_pb2.Timestamp
     window_end: _timestamp_pb2.Timestamp
     def __init__(self, task_def: _Optional[_Union[_object_id_pb2.TaskDefId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_end: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
+
+class ListQuotaUsageMetricsRequest(_message.Message):
+    __slots__ = ("quota_id", "window_start", "window_end")
+    QUOTA_ID_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_START_FIELD_NUMBER: _ClassVar[int]
+    WINDOW_END_FIELD_NUMBER: _ClassVar[int]
+    quota_id: _object_id_pb2.QuotaId
+    window_start: _timestamp_pb2.Timestamp
+    window_end: _timestamp_pb2.Timestamp
+    def __init__(self, quota_id: _Optional[_Union[_object_id_pb2.QuotaId, _Mapping]] = ..., window_start: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., window_end: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ...) -> None: ...
 
 class MetricsList(_message.Message):
     __slots__ = ("windows",)

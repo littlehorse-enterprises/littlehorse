@@ -26,6 +26,18 @@ public class LHTaskReturnTypeTest {
 
     static class UnannotatedArrayElement {}
 
+    static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
+
     public class ReturnTypeTestTasks {
         @LHTaskMethod("test-void")
         public void testVoidReturnType() {}
@@ -60,6 +72,12 @@ public class LHTaskReturnTypeTest {
         @LHTaskMethod("test-inline-struct-param")
         @LHType(name = "param1", structDefName = "customer")
         public InlineStruct inlineStructTask() {
+            return null;
+        }
+
+        @LHTaskMethod("inline-pojo-return")
+        @LHType(isInlineStruct = true)
+        public InlineAddress inlinePojoReturn() {
             return null;
         }
 
@@ -231,6 +249,22 @@ public class LHTaskReturnTypeTest {
     }
 
     @Test
+    void shouldInferInlineStructSchemaForAnnotatedPojoReturn() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "inline-pojo-return");
+
+        TypeDefinition typeDef = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of())
+                .getReturnType()
+                .getReturnType();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(typeDef.getInlineStructDef()
+                        .getFieldsOrThrow("street")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
     void shouldResolvePlaceholdersForInlineStructTypes() {
         Map<String, String> placeholderValues = Map.of("outputStruct", "customer");
 
@@ -280,14 +314,16 @@ public class LHTaskReturnTypeTest {
     }
 
     @Test
-    void shouldFailWhenNativeArrayReturnElementResolvesToJsonObj() {
+    void shouldResolveNativeArrayPojoReturnElementAsInlineStruct() {
         Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "invalid-native-arr-pojo");
 
-        assertThatThrownBy(() -> {
-                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
-                })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        TypeDefinition elementType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of())
+                .getReturnType()
+                .getReturnType()
+                .getInlineArrayDef()
+                .getArrayType();
+
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
     }
 
     @Test

@@ -5,7 +5,7 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -112,17 +112,17 @@ public class PutTaskDefRequestModel extends MetadataSubCommand<PutTaskDefRequest
     private void validateReferencedStructDefs(MetadataProcessorContext context) {
         try {
             for (VariableDefModel inputVar : inputVars) {
-                inputVar.getTypeDef().validateStructDefExistsAndPinVersion(context.metadataManager());
+                inputVar.getTypeDef().validateAndPin(context.metadataManager());
             }
 
             returnType.getOutputType().ifPresent(typeDef -> {
                 try {
-                    typeDef.validateStructDefExistsAndPinVersion(context.metadataManager());
-                } catch (UnknownStructDefException e) {
+                    typeDef.validateAndPin(context.metadataManager());
+                } catch (StructDefValidationException e) {
                     throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
                 }
             });
-        } catch (UnknownStructDefException e) {
+        } catch (StructDefValidationException e) {
             throw new LHApiException(Status.INVALID_ARGUMENT, e.getMessage());
         }
     }

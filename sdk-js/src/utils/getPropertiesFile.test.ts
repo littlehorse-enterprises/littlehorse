@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals'
 import getPropertiesFile from './getPropertiesFile'
 
 describe('getPropertiesFile', () => {

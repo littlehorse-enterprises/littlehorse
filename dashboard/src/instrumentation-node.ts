@@ -6,7 +6,13 @@ import { HostMetrics } from '@opentelemetry/host-metrics'
 import { registerInstrumentations } from '@opentelemetry/instrumentation'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { RuntimeNodeInstrumentation } from '@opentelemetry/instrumentation-runtime-node'
-import { detectResourcesSync, envDetector, hostDetector, processDetector, Resource } from '@opentelemetry/resources'
+import {
+  detectResources,
+  envDetector,
+  hostDetector,
+  processDetector,
+  resourceFromAttributes,
+} from '@opentelemetry/resources'
 import { MeterProvider } from '@opentelemetry/sdk-metrics'
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions'
 import { IncomingMessage } from 'http'
@@ -17,11 +23,11 @@ context.setGlobalContextManager(new AsyncLocalStorageContextManager())
 const exporter = new PrometheusExporter({
   port: 9464,
 })
-const detectedResources = detectResourcesSync({
+const detectedResources = detectResources({
   detectors: [envDetector, processDetector, hostDetector],
 })
 
-const customResources = new Resource({
+const customResources = resourceFromAttributes({
   [ATTR_SERVICE_NAME]: 'LH Dashboard',
   [ATTR_SERVICE_VERSION]: '0.1.0',
 })

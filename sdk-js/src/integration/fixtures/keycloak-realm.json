@@ -1,0 +1,16 @@
+{
+  "realm": "lhtest",
+  "enabled": true,
+  "clients": [
+    {
+      "clientId": "lh-sdk-js",
+      "secret": "sdk-js-secret",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ]
+}

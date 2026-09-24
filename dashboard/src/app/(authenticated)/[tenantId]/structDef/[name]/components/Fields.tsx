@@ -1,7 +1,8 @@
-import { getVariableValue } from '@/app/utils'
+import { getVariableValue, isStructFieldRequired } from '@/app/utils'
 import { Badge, IdentifierBadge, MaskedBadge, RequiredBadge } from '@/components/ui/badge'
 import { InlineStructDef } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { OverflowText } from '../../../components/OverflowText'
 import { TypeDisplay } from '../../../components/TypeDisplay'
 
 type Props = {
@@ -15,7 +16,7 @@ export const Fields: FC<Props> = ({ fields }) => {
       {Object.entries(fields).map(([name, fieldDef]) => {
         if (!fieldDef.fieldType) return
 
-        const isRequired = !fieldDef.defaultValue
+        const isRequired = isStructFieldRequired(fieldDef)
         const fieldType = fieldDef.fieldType.definedType
         if (!fieldType) return
 
@@ -27,6 +28,14 @@ export const Fields: FC<Props> = ({ fields }) => {
             {fieldDef.fieldType.masked && <MaskedBadge />}
             {fieldDef.defaultValue && (
               <Badge className="bg-green-100">Default: {getVariableValue(fieldDef.defaultValue)}</Badge>
+            )}
+            {fieldDef.description && (
+              <OverflowText
+                prose
+                clampLines={1}
+                className="max-w-xl text-xs text-muted-foreground"
+                text={fieldDef.description}
+              />
             )}
           </div>
         )

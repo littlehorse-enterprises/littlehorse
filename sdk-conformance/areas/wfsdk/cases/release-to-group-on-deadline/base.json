@@ -1,0 +1,49 @@
+{
+  "name": "probe-release-to-group-on-deadline",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [{
+            "sinkNodeName": "1-approve-request-USER_TASK",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "entrypoint": {
+          }
+        },
+        "1-approve-request-USER_TASK": {
+          "outgoingEdges": [{
+            "sinkNodeName": "2-exit-EXIT",
+            "variableMutations": []
+          }],
+          "failureHandlers": [],
+          "userTask": {
+            "userTaskDefName": "approve-request",
+            "userGroup": {
+              "literalValue": {
+                "str": "approvers"
+              }
+            },
+            "userId": {
+              "literalValue": {
+                "str": "alice"
+              }
+            },
+            "actions": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {
+          }
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  },
+  "entrypointThreadName": "entrypoint",
+  "allowedUpdates": "ALL_UPDATES"
+}

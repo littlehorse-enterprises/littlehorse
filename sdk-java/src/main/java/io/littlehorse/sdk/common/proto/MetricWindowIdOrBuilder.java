@@ -56,6 +56,21 @@ public interface MetricWindowIdOrBuilder extends
   io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder getUserTaskDefIdOrBuilder();
 
   /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   * @return Whether the quotaId field is set.
+   */
+  boolean hasQuotaId();
+  /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   * @return The quotaId.
+   */
+  io.littlehorse.sdk.common.proto.QuotaId getQuotaId();
+  /**
+   * <code>.littlehorse.QuotaId quota_id = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.QuotaIdOrBuilder getQuotaIdOrBuilder();
+
+  /**
    * <pre>
    * Tenant for this window (optional).
    * </pre>

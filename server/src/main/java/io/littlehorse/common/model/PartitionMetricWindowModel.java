@@ -43,6 +43,13 @@ public class PartitionMetricWindowModel extends Storeable<PartitionMetricWindow>
         timing.incrementCount();
     }
 
+    public void incrementQuotaUsage(boolean throttled, long throttleTimeMs) {
+        incrementCount("requests_observed");
+        if (throttled) {
+            incrementCountAndLatency("requests_throttled", throttleTimeMs);
+        }
+    }
+
     public void mergeFrom(PartitionMetricWindowModel other) {
         if (other == null) {
             return;

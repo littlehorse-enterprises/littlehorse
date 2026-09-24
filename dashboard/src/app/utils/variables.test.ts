@@ -1,4 +1,5 @@
 import {
+  LHPath,
   Timestamp,
   TypeDefinition,
   VariableAssignment,
@@ -17,6 +18,9 @@ import {
   getVariableDefType,
   getVariableFilterValue,
   getVariableValue,
+  isStructFieldRequired,
+  lhPathToString,
+  variableMutationLhsToString,
 } from './variables'
 import { normalizeUtcTimestampString } from './timestamp'
 
@@ -335,6 +339,96 @@ describe('getVariable', () => {
   })
 })
 
+describe('lhPathToString', () => {
+  it('should create string from index selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'index', index: 0 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[0]')
+  })
+
+  it('should create string from key selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car')
+  })
+
+  it('should create string from dynamic selector', () => {
+    const lhPath: LHPath = {
+      path: [
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: { oneofKind: 'variableName', variableName: 'key' },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[{key}]')
+  })
+
+  it('should create string from nested static and dynamic selectors', () => {
+    const lhPath: LHPath = {
+      path: [
+        { selectorType: { oneofKind: 'key', key: 'anotherMap' } },
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: {
+                oneofKind: 'literalValue',
+                literalValue: { value: { oneofKind: 'str', str: 'key' } },
+              },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.anotherMap["key"]')
+  })
+
+  it('should create string from selector list', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }, { selectorType: { oneofKind: 'index', index: 10 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car[10]')
+  })
+})
+
+describe('variableMutationLhsToString', () => {
+  it('formats a root variable target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory' })).toEqual('inventory')
+  })
+
+  it('formats a legacy JSONPath target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory', lhsJsonPath: '$.apples' })).toEqual('inventory.apples')
+  })
+
+  it('formats a typed LHPath target', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'apples' } }] },
+      })
+    ).toEqual('inventory.apples')
+  })
+
+  it('prefers a typed LHPath over a legacy JSONPath', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsJsonPath: '$.legacy',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'typed' } }] },
+      })
+    ).toEqual('inventory.typed')
+  })
+})
+
 describe('getTypedContent', () => {
   it('should return str', async () => {
     const content = getTypedVariableValue('str', 'test')
@@ -502,6 +596,15 @@ describe('getVariableCaseFromTypeDef', () => {
     expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
   })
 
+  it('should return struct for inlineStructDef', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
+  })
+
   it('should throw on unknown type', () => {
     const typeDef = {} as TypeDefinition
     expect(() => getVariableCaseFromTypeDef(typeDef)).toThrow('Unknown variable type.')
@@ -625,6 +728,15 @@ describe('formatTypeDefinition', () => {
 
     expect(formatTypeDefinition(typeDef)).toEqual('Struct<customer,1>')
   })
+
+  it('should format inline struct type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('InlineStruct')
+  })
 })
 
 describe('getVariableValue', () => {
@@ -685,6 +797,31 @@ describe('getTypedVariableValueFromTypeDef', () => {
     masked: false,
   }
 
+  const inlineAddress: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineStructDef',
+      inlineStructDef: {
+        fields: {
+          street: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: false,
+          },
+          unit: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: true,
+          },
+        },
+      },
+    },
+    masked: false,
+  }
+
   it('converts friendly Map JSON into a proto Map that round-trips back to the same display', () => {
     const vv = getTypedVariableValueFromTypeDef(mapStrInt, '{"apples":3,"bananas":5}')
     expect(vv.value.oneofKind).toEqual('map')
@@ -722,6 +859,39 @@ describe('getTypedVariableValueFromTypeDef', () => {
     expect(getVariableValue(vv)).toEqual('{"a":[1,2],"b":[3]}')
   })
 
+  it('converts inline structs nested in arrays without a StructDefId', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    const vv = getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","unit":null}]')
+    const address = vv.value.oneofKind === 'array' ? vv.value.array.items[0] : undefined
+
+    expect(address?.value.oneofKind).toBe('struct')
+    if (address?.value.oneofKind !== 'struct') throw new Error('Expected Struct value')
+    expect(address.value.struct.structDefId).toBeUndefined()
+    expect(address.value.struct.struct?.fields.street.value?.value).toEqual({ oneofKind: 'str', str: 'Main' })
+    expect(address.value.struct.struct?.fields.unit.value?.value.oneofKind).toBeUndefined()
+  })
+
+  it('rejects invalid inline struct objects nested in arrays', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"unit":"2A"}]')).toThrow(
+      'Missing required InlineStruct field: street'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","extra":true}]')).toThrow(
+      'Unknown InlineStruct field: extra'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '["Main"]')).toThrow(
+      'Expected a JSON object for InlineStruct'
+    )
+  })
+
   it('throws on malformed JSON so callers can surface a validation error instead of crashing', () => {
     expect(() => getTypedVariableValueFromTypeDef(mapStrInt, 'not json')).toThrow()
   })
@@ -730,5 +900,13 @@ describe('getTypedVariableValueFromTypeDef', () => {
     const varDef: VariableDef = { name: 'settings', typeDef: mapStrInt } as VariableDef
     const vv = getVariableFilterValue(varDef, '{"x":1}')
     expect(getVariableValue(vv)).toEqual('{"x":1}')
+  })
+})
+
+describe('isStructFieldRequired', () => {
+  it('treats nullable and defaulted fields as optional', () => {
+    expect(isStructFieldRequired({ isNullable: false })).toBe(true)
+    expect(isStructFieldRequired({ isNullable: true })).toBe(false)
+    expect(isStructFieldRequired({ isNullable: false, defaultValue: VariableValue.create() })).toBe(false)
   })
 })
