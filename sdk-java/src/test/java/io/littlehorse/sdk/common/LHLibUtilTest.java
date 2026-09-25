@@ -577,14 +577,47 @@ public class LHLibUtilTest {
     @LHStructDef("person-record-struct")
     public record PersonRecordStruct(String name, String address) {}
 
+    @LHStructDef("nullable-record-struct")
+    public record NullableRecordStruct(@LHStructField(isNullable = true) String nullableField) {}
+
     @LHStructDef("adapter-record-struct")
     public record AdapterRecordStruct(UUID id, String name) {}
 
     @LHStructDef("record-map-holder")
     public record RecordMapHolder(Map<String, InlineAddress> addresses) {}
 
+    @LHStructDef("record-array-holder")
+    public record RecordArrayHolder(InlineAddress[] addresses) {}
+
     @LHStructDef("ignored-record-struct")
-    public record IgnoredRecordStruct(String name, @LHStructIgnore String internalId, @LHStructIgnore int revision) {}
+    public record IgnoredRecordStruct(
+            String name,
+            @LHStructIgnore String internalId,
+            @LHStructIgnore boolean booleanValue,
+            @LHStructIgnore byte byteValue,
+            @LHStructIgnore char charValue,
+            @LHStructIgnore short shortValue,
+            @LHStructIgnore int intValue,
+            @LHStructIgnore long longValue,
+            @LHStructIgnore float floatValue,
+            @LHStructIgnore double doubleValue) {}
+
+    @Test
+    void shouldRoundTripNullFieldInsideRecord() {
+        NullableRecordStruct original = new NullableRecordStruct(null);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        NullableRecordStruct deserialized =
+                (NullableRecordStruct) LHLibUtil.varValToObj(serialized, NullableRecordStruct.class);
+
+        VariableValue nullableField = serialized
+                .getStruct()
+                .getStruct()
+                .getFieldsOrThrow("nullableField")
+                .getValue();
+        assertThat(nullableField.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+        assertThat(deserialized).isEqualTo(original);
+    }
 
     @Test
     void shouldRoundTripTypedMapInsideRecordStruct() {
@@ -600,15 +633,35 @@ public class LHLibUtilTest {
     }
 
     @Test
+    void shouldRoundTripInlineStructArrayInsideRecord() {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        RecordArrayHolder original = new RecordArrayHolder(new InlineAddress[] {address});
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        RecordArrayHolder deserialized = (RecordArrayHolder) LHLibUtil.varValToObj(serialized, RecordArrayHolder.class);
+
+        VariableValue arrayValue =
+                serialized.getStruct().getStruct().getFieldsOrThrow("addresses").getValue();
+        assertThat(arrayValue.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        assertThat(arrayValue.getArray().getItems(0).getStruct().hasStructDefId())
+                .isFalse();
+        assertThat(deserialized.addresses()).hasSize(1);
+        assertThat(deserialized.addresses()[0].getStreet()).isEqualTo("Main St");
+    }
+
+    @Test
     void shouldUseJavaDefaultsForIgnoredRecordComponents() {
-        IgnoredRecordStruct original = new IgnoredRecordStruct("Leia", "internal-123", 7);
+        IgnoredRecordStruct original =
+                new IgnoredRecordStruct("Leia", "internal-123", true, (byte) 1, 'x', (short) 2, 3, 4L, 5.0f, 6.0d);
 
         VariableValue serialized = LHLibUtil.objToVarVal(original);
         IgnoredRecordStruct deserialized =
                 (IgnoredRecordStruct) LHLibUtil.varValToObj(serialized, IgnoredRecordStruct.class);
 
         assertThat(serialized.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("name");
-        assertThat(deserialized).isEqualTo(new IgnoredRecordStruct("Leia", null, 0));
+        assertThat(deserialized)
+                .isEqualTo(new IgnoredRecordStruct("Leia", null, false, (byte) 0, '\0', (short) 0, 0, 0L, 0.0f, 0.0d));
     }
 
     @Test
@@ -927,10 +980,21 @@ public class LHLibUtilTest {
     }
 
     @Test
-    void shouldWarnOrFailOnConflictingAnnotations() {
+    void shouldPreferRecordComponentAnnotationOverAccessorAnnotation() {
         PersonConflictedUx person = new PersonConflictedUx("Alice", "123-45-6789");
         VariableValue serialized = LHLibUtil.objToVarVal(person);
-        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        PersonConflictedUx deserialized =
+                (PersonConflictedUx) LHLibUtil.varValToObj(serialized, PersonConflictedUx.class);
+
+        assertThat(serialized.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("fullName", "ssn");
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("fullName")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Alice");
+        assertThat(deserialized).isEqualTo(person);
     }
 
     @LHStructDef("product-ux")
@@ -971,10 +1035,15 @@ public class LHLibUtilTest {
     @LHStructDef("person-v1-ux")
     public record PersonV1Ux(String name, int age) {}
 
+    @LHStructDef("person-v1-ux")
+    public record PersonReorderedUx(int age, String name) {}
+
     @Test
-    void shouldFailOrWarnWhenRecordComponentOrderChanges() {
+    void shouldDeserializeRecordWhenComponentOrderChanges() {
         PersonV1Ux original = new PersonV1Ux("Alice", 30);
         VariableValue serialized = LHLibUtil.objToVarVal(original);
-        assertThat(serialized).isNotNull();
+        PersonReorderedUx deserialized = (PersonReorderedUx) LHLibUtil.varValToObj(serialized, PersonReorderedUx.class);
+
+        assertThat(deserialized).isEqualTo(new PersonReorderedUx(30, "Alice"));
     }
 }
