@@ -55,6 +55,7 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class LHLibUtil {
 
@@ -653,8 +655,11 @@ public class LHLibUtil {
         }
 
         try {
-            Object structObject = lhClassType.createInstance();
+            if (clazz.isRecord()) {
+                return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
+            }
 
+            Object structObject = lhClassType.createInstance();
             List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
                     ? ((LHStructDefType) lhClassType).getStructProperties()
                     : ((LHInlineStructDefType) lhClassType).getStructProperties();
@@ -685,6 +690,73 @@ public class LHLibUtil {
                 | SecurityException e) {
             throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
+    }
+
+    private static Object deserializeStructToRecord(
+            Struct struct,
+            Class<?> clazz,
+            LHClassType lhClassType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
+                    InstantiationException, IllegalAccessException {
+        List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
+                ? ((LHStructDefType) lhClassType).getStructProperties()
+                : ((LHInlineStructDefType) lhClassType).getStructProperties();
+        Map<String, LHStructProperty> byPropertyName = new HashMap<>();
+
+        for (LHStructProperty property : structProperties) {
+            byPropertyName.put(property.getPropertyName(), property);
+        }
+
+        RecordComponent[] recordComponents = clazz.getRecordComponents();
+        Class<?>[] canonicalArgTypes = new Class<?>[recordComponents.length];
+        Object[] canonicalArgValues = new Object[recordComponents.length];
+
+        for (int i = 0; i < recordComponents.length; i++) {
+            RecordComponent recordComponent = recordComponents[i];
+            LHStructProperty property = byPropertyName.get(recordComponent.getName());
+            canonicalArgTypes[i] = recordComponent.getType();
+
+            if (property == null) {
+                canonicalArgValues[i] = defaultValueForType(recordComponent.getType());
+                continue;
+            }
+
+            String fieldName = property.getFieldName();
+            if (!struct.getStruct().containsFields(fieldName)) {
+                Set<String> availableFields = struct.getStruct().getFieldsMap().keySet();
+                throw new LHSerdeException(
+                        null,
+                        String.format(
+                                "Failed deserializing VariableValue into Struct: expected field [%s] on class [%s] not found in Struct. "
+                                        + "Available fields in Struct: %s",
+                                fieldName, clazz.getName(), availableFields));
+            }
+
+            VariableValue fieldValue =
+                    struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry, placeholderValues);
+        }
+
+        java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
+        return cons.newInstance(canonicalArgValues);
+    }
+
+    // Ignored record components still need an argument for the canonical constructor.
+    private static Object defaultValueForType(Class<?> type) {
+        if (!type.isPrimitive()) return null;
+
+        if (type == boolean.class) return false;
+        if (type == byte.class) return (byte) 0;
+        if (type == char.class) return (char) 0;
+        if (type == short.class) return (short) 0;
+        if (type == int.class) return 0;
+        if (type == long.class) return 0L;
+        if (type == float.class) return 0.0f;
+        if (type == double.class) return 0.0d;
+
+        return null;
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {

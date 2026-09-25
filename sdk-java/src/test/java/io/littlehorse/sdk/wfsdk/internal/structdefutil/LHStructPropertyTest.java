@@ -10,12 +10,39 @@ import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 public class LHStructPropertyTest {
+
+    @LHStructDef("property-address")
+    public record PropertyAddress(String street) {}
+
+    @LHStructDef("record-map-property")
+    public record RecordMapProperty(Map<String, PropertyAddress> addresses) {}
+
+    @LHStructDef("pojo-map-property")
+    public static class PojoMapProperty {
+        private Map<String, PropertyAddress> addresses;
+
+        public Map<String, PropertyAddress> getAddresses() {
+            return addresses;
+        }
+
+        public void setAddresses(Map<String, PropertyAddress> addresses) {
+            this.addresses = addresses;
+        }
+    }
+
+    @LHStructDef("${company}-property-address")
+    public record PlaceholderPropertyAddress(String street) {}
+
+    @LHStructDef("${company}-record-property")
+    public record PlaceholderRecordProperty(PlaceholderPropertyAddress address) {}
 
     @Test
     public void testGetFieldName() throws IntrospectionException {
@@ -171,5 +198,46 @@ public class LHStructPropertyTest {
 
         assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.MAP);
         assertThat(val.getMap().getEntriesCount()).isEqualTo(2);
+    }
+
+    @Test
+    void deserializeValue_returnsTypedNativeMapForRecordComponent() throws Exception {
+        LHStructDefType parent = new LHStructDefType(RecordMapProperty.class, LHTypeAdapterRegistry.empty());
+        LHStructProperty property = parent.getStructProperties().get(0);
+        RecordMapProperty original = new RecordMapProperty(Map.of("home", new PropertyAddress("Main St")));
+
+        VariableValue serialized = property.getValueFrom(original, LHTypeAdapterRegistry.empty());
+        Object deserialized = property.deserializeValue(serialized, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThat(deserialized).isInstanceOf(Map.class);
+        assertThat(((Map<?, ?>) deserialized).get("home")).isEqualTo(new PropertyAddress("Main St"));
+    }
+
+    @Test
+    void setValueTo_usesTypedNativeMapDeserialization() throws Exception {
+        LHStructDefType parent = new LHStructDefType(PojoMapProperty.class, LHTypeAdapterRegistry.empty());
+        LHStructProperty property = parent.getStructProperties().get(0);
+        PojoMapProperty source = new PojoMapProperty();
+        source.setAddresses(Map.of("home", new PropertyAddress("Main St")));
+        VariableValue serialized = property.getValueFrom(source, LHTypeAdapterRegistry.empty());
+        PojoMapProperty target = new PojoMapProperty();
+
+        property.setValueTo(target, serialized, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThat(target.getAddresses()).containsEntry("home", new PropertyAddress("Main St"));
+    }
+
+    @Test
+    void deserializeValue_propagatesPlaceholdersToNestedRecord() throws Exception {
+        Map<String, String> placeholders = Map.of("company", "acme");
+        LHStructDefType parent =
+                new LHStructDefType(PlaceholderRecordProperty.class, LHTypeAdapterRegistry.empty(), placeholders);
+        LHStructProperty property = parent.getStructProperties().get(0);
+        PlaceholderRecordProperty original = new PlaceholderRecordProperty(new PlaceholderPropertyAddress("Main St"));
+
+        VariableValue serialized = property.getValueFrom(original, LHTypeAdapterRegistry.empty(), placeholders);
+        Object deserialized = property.deserializeValue(serialized, LHTypeAdapterRegistry.empty(), placeholders);
+
+        assertThat(deserialized).isEqualTo(new PlaceholderPropertyAddress("Main St"));
     }
 }

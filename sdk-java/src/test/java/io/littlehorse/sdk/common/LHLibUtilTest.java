@@ -1,6 +1,7 @@
 package io.littlehorse.sdk.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
@@ -18,6 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import io.littlehorse.sdk.worker.LHStructIgnore;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
@@ -514,6 +516,155 @@ public class LHLibUtilTest {
     }
 
     @Test
+    void shouldSerializeAndDeserializeRecordStruct() {
+        PersonRecordStruct original = new PersonRecordStruct("Leia", "Alderaan");
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original, LHTypeAdapterRegistry.empty());
+        PersonRecordStruct deserialized = (PersonRecordStruct)
+                LHLibUtil.varValToObj(serialized, PersonRecordStruct.class, LHTypeAdapterRegistry.empty());
+
+        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @Test
+    void shouldUseTypeAdapterInsideRecordStructFields() {
+        LHStringAdapter<UUID> uuidAdapter = new LHStringAdapter<UUID>() {
+            @Override
+            public String toString(UUID src) {
+                return src.toString();
+            }
+
+            @Override
+            public UUID fromString(String src) {
+                return UUID.fromString(src);
+            }
+
+            @Override
+            public Class<UUID> getTypeClass() {
+                return UUID.class;
+            }
+        };
+
+        UUID uuid = UUID.randomUUID();
+        AdapterRecordStruct original = new AdapterRecordStruct(uuid, "test-name");
+        LHTypeAdapterRegistry typeAdapterRegistry = LHTypeAdapterRegistry.from(Map.of(UUID.class, uuidAdapter));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original, typeAdapterRegistry);
+        AdapterRecordStruct deserialized =
+                (AdapterRecordStruct) LHLibUtil.varValToObj(serialized, AdapterRecordStruct.class, typeAdapterRegistry);
+
+        assertThat(serialized.getValueCase()).isEqualTo(VariableValue.ValueCase.STRUCT);
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getValueCase())
+                .isEqualTo(VariableValue.ValueCase.STR);
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsMap()
+                        .get("id")
+                        .getValue()
+                        .getStr())
+                .isEqualTo(uuid.toString());
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @LHStructDef("person-record-struct")
+    public record PersonRecordStruct(String name, String address) {}
+
+    @LHStructDef("nullable-record-struct")
+    public record NullableRecordStruct(@LHStructField(isNullable = true) String nullableField) {}
+
+    @LHStructDef("adapter-record-struct")
+    public record AdapterRecordStruct(UUID id, String name) {}
+
+    @LHStructDef("record-map-holder")
+    public record RecordMapHolder(Map<String, InlineAddress> addresses) {}
+
+    @LHStructDef("record-array-holder")
+    public record RecordArrayHolder(InlineAddress[] addresses) {}
+
+    @LHStructDef("ignored-record-struct")
+    public record IgnoredRecordStruct(
+            String name,
+            @LHStructIgnore String internalId,
+            @LHStructIgnore boolean booleanValue,
+            @LHStructIgnore byte byteValue,
+            @LHStructIgnore char charValue,
+            @LHStructIgnore short shortValue,
+            @LHStructIgnore int intValue,
+            @LHStructIgnore long longValue,
+            @LHStructIgnore float floatValue,
+            @LHStructIgnore double doubleValue) {}
+
+    @Test
+    void shouldRoundTripNullFieldInsideRecord() {
+        NullableRecordStruct original = new NullableRecordStruct(null);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        NullableRecordStruct deserialized =
+                (NullableRecordStruct) LHLibUtil.varValToObj(serialized, NullableRecordStruct.class);
+
+        VariableValue nullableField = serialized
+                .getStruct()
+                .getStruct()
+                .getFieldsOrThrow("nullableField")
+                .getValue();
+        assertThat(nullableField.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @Test
+    void shouldRoundTripTypedMapInsideRecordStruct() {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        RecordMapHolder original = new RecordMapHolder(Map.of("home", address));
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        RecordMapHolder deserialized = (RecordMapHolder) LHLibUtil.varValToObj(serialized, RecordMapHolder.class);
+
+        assertThat(deserialized.addresses().get("home")).isInstanceOf(InlineAddress.class);
+        assertThat(deserialized.addresses().get("home").getStreet()).isEqualTo("Main St");
+    }
+
+    @Test
+    void shouldRoundTripInlineStructArrayInsideRecord() {
+        InlineAddress address = new InlineAddress();
+        address.setStreet("Main St");
+        RecordArrayHolder original = new RecordArrayHolder(new InlineAddress[] {address});
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        RecordArrayHolder deserialized = (RecordArrayHolder) LHLibUtil.varValToObj(serialized, RecordArrayHolder.class);
+
+        VariableValue arrayValue =
+                serialized.getStruct().getStruct().getFieldsOrThrow("addresses").getValue();
+        assertThat(arrayValue.getValueCase()).isEqualTo(VariableValue.ValueCase.ARRAY);
+        assertThat(arrayValue.getArray().getItems(0).getStruct().hasStructDefId())
+                .isFalse();
+        assertThat(deserialized.addresses()).hasSize(1);
+        assertThat(deserialized.addresses()[0].getStreet()).isEqualTo("Main St");
+    }
+
+    @Test
+    void shouldUseJavaDefaultsForIgnoredRecordComponents() {
+        IgnoredRecordStruct original =
+                new IgnoredRecordStruct("Leia", "internal-123", true, (byte) 1, 'x', (short) 2, 3, 4L, 5.0f, 6.0d);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        IgnoredRecordStruct deserialized =
+                (IgnoredRecordStruct) LHLibUtil.varValToObj(serialized, IgnoredRecordStruct.class);
+
+        assertThat(serialized.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("name");
+        assertThat(deserialized)
+                .isEqualTo(new IgnoredRecordStruct("Leia", null, false, (byte) 0, '\0', (short) 0, 0, 0L, 0.0f, 0.0d));
+    }
+
+    @Test
     void shouldRoundTripInlinePojoFieldsAndArrayElements() throws LHSerdeException {
         InlineAddress address = new InlineAddress();
         address.setStreet("Main St");
@@ -690,6 +841,9 @@ public class LHLibUtilTest {
         }
     }
 
+    @LHStructDef("${company}-record-order")
+    public record PlaceholderRecordOrder(String orderId, PlaceholderCustomer customer) {}
+
     @Test
     void shouldResolvePlaceholdersInNestedStruct() {
         PlaceholderCustomer customer = new PlaceholderCustomer();
@@ -738,5 +892,158 @@ public class LHLibUtilTest {
         Assertions.assertThat(roundTripped.getOrderId()).isEqualTo("order-2");
         Assertions.assertThat(roundTripped.getCustomer()).isNotNull();
         Assertions.assertThat(roundTripped.getCustomer().getName()).isEqualTo("Grace");
+    }
+
+    @Test
+    void shouldRoundTripNestedPlaceholderStructInsideRecord() {
+        PlaceholderCustomer customer = new PlaceholderCustomer();
+        customer.setName("Han");
+        PlaceholderRecordOrder order = new PlaceholderRecordOrder("order-3", customer);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(
+                order, PlaceholderRecordOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+        PlaceholderRecordOrder deserialized = (PlaceholderRecordOrder) LHLibUtil.varValToObj(
+                serialized, PlaceholderRecordOrder.class, LHTypeAdapterRegistry.empty(), Map.of("company", "acme"));
+
+        assertThat(deserialized.orderId()).isEqualTo("order-3");
+        assertThat(deserialized.customer().getName()).isEqualTo("Han");
+    }
+
+    @LHStructDef("customer-v2-ux")
+    public record CustomerV2Ux(String id, String name, String email) {}
+
+    @Test
+    void shouldFailDeserializingPartialStructPayloadWithMissingField() {
+        Struct partialStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("customer-v2-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "id",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("cust-123"))
+                                        .build())
+                        .putFields(
+                                "name",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Alice"))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(partialStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, CustomerV2Ux.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [email]")
+                .hasMessageContaining("Available fields");
+    }
+
+    @Test
+    void shouldDeserializePartialPayloadIfFieldIsNullable() {
+        @LHStructDef("customer-nullable-ux")
+        record CustomerNullableUx(String id, String name, @LHStructField(isNullable = true) String email) {}
+
+        Struct partialStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("customer-nullable-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "id",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("cust-456"))
+                                        .build())
+                        .putFields(
+                                "name",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Bob"))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(partialStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, CustomerNullableUx.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [email]")
+                .hasMessageContaining("Available fields");
+    }
+
+    @LHStructDef("person-conflicted-ux")
+    public record PersonConflictedUx(
+            @LHStructField(name = "fullName") String name, @LHStructField(masked = true) String ssn) {
+        @Override
+        @LHStructField(name = "givenName", masked = false)
+        public String name() {
+            return name;
+        }
+    }
+
+    @Test
+    void shouldPreferRecordComponentAnnotationOverAccessorAnnotation() {
+        PersonConflictedUx person = new PersonConflictedUx("Alice", "123-45-6789");
+        VariableValue serialized = LHLibUtil.objToVarVal(person);
+        PersonConflictedUx deserialized =
+                (PersonConflictedUx) LHLibUtil.varValToObj(serialized, PersonConflictedUx.class);
+
+        assertThat(serialized.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("fullName", "ssn");
+        assertThat(serialized
+                        .getStruct()
+                        .getStruct()
+                        .getFieldsOrThrow("fullName")
+                        .getValue()
+                        .getStr())
+                .isEqualTo("Alice");
+        assertThat(deserialized).isEqualTo(person);
+    }
+
+    @LHStructDef("product-ux")
+    public record ProductUx(String sku, String title, double price) {}
+
+    @Test
+    void shouldProvideHelpfulErrorWhenFieldsMismatch() {
+        Struct mismatchedStruct = Struct.newBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("product-ux"))
+                .setStruct(InlineStruct.newBuilder()
+                        .putFields(
+                                "product_sku",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("SKU-001"))
+                                        .build())
+                        .putFields(
+                                "title",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setStr("Widget"))
+                                        .build())
+                        .putFields(
+                                "price",
+                                StructField.newBuilder()
+                                        .setValue(VariableValue.newBuilder().setDouble(19.99))
+                                        .build())
+                        .build())
+                .build();
+
+        VariableValue varVal =
+                VariableValue.newBuilder().setStruct(mismatchedStruct).build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(varVal, ProductUx.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [sku]")
+                .hasMessageContaining("product_sku");
+    }
+
+    @LHStructDef("person-v1-ux")
+    public record PersonV1Ux(String name, int age) {}
+
+    @LHStructDef("person-v1-ux")
+    public record PersonReorderedUx(int age, String name) {}
+
+    @Test
+    void shouldDeserializeRecordWhenComponentOrderChanges() {
+        PersonV1Ux original = new PersonV1Ux("Alice", 30);
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        PersonReorderedUx deserialized = (PersonReorderedUx) LHLibUtil.varValToObj(serialized, PersonReorderedUx.class);
+
+        assertThat(deserialized).isEqualTo(new PersonReorderedUx(30, "Alice"));
     }
 }

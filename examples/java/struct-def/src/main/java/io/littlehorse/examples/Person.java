@@ -2,31 +2,13 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @LHStructDef(value = "person", description = "A person with a name and optional home address.")
-public class Person {
-
-    @LHStructField(description = "This is the first name of the person, i.e. their given name.")
-    private String firstName;
-
-    @LHStructField(description = "This is the last name of the person, i.e. their family name.")
-    private String lastName;
-
-    @LHStructField(description = "The home address of the person.", masked = true, isNullable = true)
-    private Address homeAddress;
-
-    public Person() {}
-
-    public Person(String firstName, String lastName, Address homeAddress) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.homeAddress = homeAddress;
-    }
-
+public record Person(
+        @LHStructField(description = "This is the first name of the person, i.e. their given name.") String firstName,
+        @LHStructField(description = "This is the last name of the person, i.e. their family name.") String lastName,
+        @LHStructField(description = "The home address of the person.", masked = true, isNullable = true)
+                Address homeAddress) {
     @Override
     public String toString() {
         return String.format("%s %s", firstName, lastName);
