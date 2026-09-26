@@ -1,36 +1,35 @@
-import { ThreadSpec } from 'littlehorse-client/proto'
+import { Edge as EdgeProto, ThreadSpec, VariableValue } from 'littlehorse-client/proto'
 import { Edge, MarkerType } from 'reactflow'
+import { isNopConditionalBranch } from './edgeConditionDisplay'
+import type { EdgeRoute } from './elkRoute'
 
-export const extractEdges = (spec: ThreadSpec): Edge[] => {
-  const targetMap = new Map<string, number>()
-  const sourceMap = new Map<string, number>()
+export type DiagramEdgeData = EdgeProto & {
+  isElseEdge?: boolean
+  isConditionalBranchEdge?: boolean
+  fade?: boolean
+  nodeOutputValues?: Record<string, VariableValue>
+  route?: EdgeRoute
+}
+
+export const extractEdges = (spec: ThreadSpec): Edge<DiagramEdgeData>[] => {
   return Object.entries(spec.nodes).flatMap(([source, node]) => {
-    return node.outgoingEdges.map(edge => {
-      const sourceIndex = sourceMap.get(source) ?? 0
-      let targetIndex = targetMap.get(edge.sinkNodeName) ?? 0
-      const sourceTarget = sourceMap.get(edge.sinkNodeName) ?? 0
-
-      if (sourceTarget > 0 && targetIndex !== 0) targetIndex++
-      const edgeId = `${source}-${edge.sinkNodeName}`
-      const id = sourceIndex === 0 && targetIndex === 0 ? edgeId : `${edgeId}-${sourceIndex}-${targetIndex}`
-      targetMap.set(edge.sinkNodeName, targetIndex + 1)
-      sourceMap.set(source, sourceIndex + 1)
-
-      const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
+    const hasMultipleOutgoingEdges = node.outgoingEdges.length > 1
+    const isNopBranch = node.node.oneofKind === 'nop' && isNopConditionalBranch(node.outgoingEdges)
+    return node.outgoingEdges.map((edge, index) => {
       const isElseEdge = hasMultipleOutgoingEdges && edge.edgeCondition?.oneofKind === undefined
+      const isConditionalBranchEdge = isNopBranch && (edge.edgeCondition?.oneofKind !== undefined || isElseEdge)
       return {
-        id,
+        id: `${source}-${edge.sinkNodeName}-${index}`,
         source,
         type: 'custom',
         target: edge.sinkNodeName,
-        data: { ...edge, isElseEdge },
-        targetHandle: `target-${targetIndex}`,
-        sourceHandle: `source-${sourceIndex}`,
+        data: { ...edge, isElseEdge, isConditionalBranchEdge },
+        sourceHandle: edge.sinkNodeName.startsWith('cycle-') ? 'source-loop' : 'source-0',
+        targetHandle: 'target-0',
         markerEnd: {
           type: MarkerType.ArrowClosed,
         },
         animated: true,
-        arrowHeadType: 'arrowclosed',
       }
     })
   })

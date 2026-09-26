@@ -93,12 +93,11 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
     // Add the cycle node to the graph
     threadSpec.nodes[cycleNodeId] = cycleNode as unknown as NodeProto
 
-    // Remove back edge from target to source (if it exists)
-    if (threadSpec.nodes[targetId]) {
-      threadSpec.nodes[targetId].outgoingEdges = threadSpec.nodes[targetId].outgoingEdges.filter(
-        edge => edge.sinkNodeName !== sourceId
-      )
-    }
+    // NOTE: only the back edge itself may be rewritten. An earlier version
+    // also removed every target->source edge here, which deleted a while
+    // loop's FORWARD edges whenever its body was empty (root->end skip and
+    // body edges both connect the same two nops) — leaving the loop-end nop
+    // floating with no incoming edge and the loop root with no outgoing.
 
     // Replace the direct cycle edge with an edge to the cycle node
     if (!sourceNode.outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {

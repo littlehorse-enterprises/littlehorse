@@ -1,52 +1,51 @@
-import { getVariable } from '@/app/utils'
-import { getComparatorSymbol } from '@/app/utils/comparatorUtils'
-import { Edge as EdgeProto } from 'littlehorse-client/proto'
+import { GitBranch } from 'lucide-react'
 import { FC } from 'react'
+import { conditionLabelParts, LabelEdge, LabelPartKind } from './edgeLabel'
 
-const variableBadgeClass = 'rounded px-1 py-0.5 text-[10px] font-mono bg-gray-100 text-fuchsia-500'
+const chipClass: Record<Exclude<LabelPartKind, 'keyword' | 'operator'>, string> = {
+  source: 'bg-fuchsia-50 text-fuchsia-800 ring-fuchsia-200/80',
+  output: 'bg-emerald-50 text-emerald-800 ring-emerald-200/80',
+  literal: 'bg-slate-50 text-slate-700 ring-slate-200/80',
+}
 
-export const EdgeConditionLabel: FC<{ edge: EdgeProto }> = ({ edge }) => {
-  const { edgeCondition } = edge
-  if (edgeCondition.oneofKind === undefined) return null
-
-  if (edgeCondition.oneofKind === 'legacyCondition') {
-    const { left: leftOperand, right: rightOperand, comparator } = edgeCondition.legacyCondition ?? {}
-    const operatorSymbol = comparator != null ? getComparatorSymbol(comparator) : ''
-    return (
-      <span className="inline-flex items-center gap-1">
-        {leftOperand != null ? <span className={variableBadgeClass}>{getVariable(leftOperand)}</span> : null}
-        <span className="text-[10px] text-gray-500">{operatorSymbol}</span>
-        {rightOperand != null ? <span className={variableBadgeClass}>{getVariable(rightOperand)}</span> : null}
-      </span>
-    )
-  }
-
-  if (edgeCondition.oneofKind === 'condition') {
-    const variableAssignment = edgeCondition.condition
-    if (!variableAssignment?.source) return null
-
-    if (variableAssignment.source.oneofKind === 'expression') {
-      const expression = variableAssignment.source.expression
-      const { lhs: leftOperand, rhs: rightOperand, operation } = expression ?? {}
-      if (!operation || operation.oneofKind !== 'comparator') {
-        return <span className={variableBadgeClass}>{getVariable(variableAssignment)}</span>
-      }
-      const operatorSymbol = getComparatorSymbol(operation.comparator)
-      return (
-        <span className="inline-flex items-center gap-1">
-          {leftOperand != null ? <span className={variableBadgeClass}>{getVariable(leftOperand)}</span> : null}
-          <span className="text-[10px] text-gray-500">{operatorSymbol}</span>
-          {rightOperand != null ? <span className={variableBadgeClass}>{getVariable(rightOperand)}</span> : null}
-        </span>
-      )
-    }
-
-    return <span className={variableBadgeClass}>{getVariable(variableAssignment)}</span>
-  }
-
+export const EdgeConditionLabel: FC<{ edge: LabelEdge }> = ({ edge }) => {
+  const parts = conditionLabelParts(edge)
+  if (parts.length === 0) return null
   return (
-    <span className="rounded bg-amber-100 px-1 py-0.5 font-mono text-[10px] text-amber-700">
-      Unimplemented Conditional Case
+    <span
+      className="inline-flex items-center gap-1 whitespace-nowrap"
+      title={parts.map(part => part.title ?? part.text).join(' ')}
+    >
+      {parts.map((part, index) => {
+        if (part.kind === 'keyword') {
+          return (
+            <span key={index} className="inline-flex items-center gap-0.5">
+              <GitBranch className="h-2.5 w-2.5 shrink-0 text-violet-600" aria-hidden />
+              <span className="text-[8px] font-bold uppercase tracking-wide text-violet-800">{part.text}</span>
+            </span>
+          )
+        }
+        if (part.kind === 'operator') {
+          return (
+            <span
+              key={index}
+              className="shrink-0 rounded-full bg-violet-100 px-1 py-px text-[8px] font-semibold leading-none text-violet-800"
+              aria-label={part.title}
+            >
+              {part.text}
+            </span>
+          )
+        }
+        return (
+          <span
+            key={index}
+            className={`max-w-[5.5rem] truncate rounded px-1 py-px font-mono text-[9px] leading-tight ring-1 ${chipClass[part.kind]}`}
+            title={part.title ?? part.text}
+          >
+            {part.text}
+          </span>
+        )
+      })}
     </span>
   )
 }
