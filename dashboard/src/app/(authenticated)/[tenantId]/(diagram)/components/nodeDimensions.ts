@@ -22,11 +22,11 @@ const GLYPH_DIMS: Record<string, { w: number; h: number }> = {
   nop: { w: 32, h: 32 },
   cycle: { w: 40, h: 40 },
   sleep: { w: 40, h: 40 },
-  startThread: { w: 40, h: 40 },
+  startThread: { w: 160, h: 50 },
   waitForThreads: { w: 40, h: 40 },
-  runChildWf: { w: 40, h: 40 },
+  runChildWf: { w: 160, h: 50 },
   waitForChildWf: { w: 40, h: 40 },
-  startMultipleThreads: { w: 40, h: 40 },
+  startMultipleThreads: { w: 32, h: 32 },
 }
 
 /** `<index>-<label>-<TYPE>` -> `<label>`; tolerant of unexpected shapes. */

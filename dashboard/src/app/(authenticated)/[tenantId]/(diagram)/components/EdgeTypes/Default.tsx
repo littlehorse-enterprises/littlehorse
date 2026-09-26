@@ -2,13 +2,12 @@ import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
 import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
-import { Edge as EdgeProto } from 'littlehorse-client/proto'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
-import { routeLabelPoint, routeToPath, type RoutePoint } from './elkRoute'
+import { pathReachesTarget, routeLabelPoint, routeToPath, snapEdgeRoute } from './elkRoute'
+import { edgeLabelSize } from './edgeLabel'
+import type { DiagramEdgeData } from './extractEdges'
 
-type EdgeData = EdgeProto & { isElseEdge?: boolean; elkRoute?: RoutePoint[] }
-
-const CustomEdge: FC<EdgeProps<EdgeData>> = ({
+const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
   id,
   sourceX,
   sourceY,
@@ -18,50 +17,30 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
   targetPosition = Position.Top,
   data,
   style,
+  markerEnd,
   ...rest
 }) => {
-  // Prefer the orthogonal route ELK computed for this edge — it respects the
-  // configured edge-edge and edge-node clearances, which a path re-derived
-  // from handle positions cannot. The smooth-step fallback only covers the
-  // frames before the first layout pass has attached routes.
-  const route = data?.elkRoute
+  const route = data?.route
   let edgePath: string
   let labelX: number
   let labelY: number
-  if (route !== undefined && route.length >= 2) {
-    // ELK routed against deterministic node footprints (nodeDimensions.ts),
-    // which over-reserve width for boxed nodes, so a route can stop short of
-    // the drawn border. Close the gap by extending/trimming each terminal
-    // segment ALONG ITS OWN AXIS to the real handle coordinate — and ONLY
-    // when ELK attached on the same side the handle actually faces. ELK is
-    // free to attach a back edge to the far border; snapping such an endpoint
-    // to the handle would drag the path straight through the node and flip
-    // the arrowhead.
-    const snapped = route.map(p => ({ ...p }))
-    if (snapped.length >= 2) {
-      const [p0, p1] = [snapped[0], snapped[1]]
-      if (Math.abs(p0.y - p1.y) <= 1) {
-        // horizontal departure: exits Right border when traveling +x
-        const exitSide = p1.x > p0.x ? Position.Right : Position.Left
-        if (exitSide === sourcePosition) p0.x = sourceX
-      } else if (Math.abs(p0.x - p1.x) <= 1) {
-        const exitSide = p1.y > p0.y ? Position.Bottom : Position.Top
-        if (exitSide === sourcePosition) p0.y = sourceY
-      }
-      const [pn, pm] = [snapped[snapped.length - 1], snapped[snapped.length - 2]]
-      if (Math.abs(pn.y - pm.y) <= 1) {
-        // horizontal arrival: enters Left border when traveling +x
-        const entrySide = pn.x > pm.x ? Position.Left : Position.Right
-        if (entrySide === targetPosition) pn.x = targetX
-      } else if (Math.abs(pn.x - pm.x) <= 1) {
-        const entrySide = pn.y > pm.y ? Position.Top : Position.Bottom
-        if (entrySide === targetPosition) pn.y = targetY
-      }
-    }
-    edgePath = routeToPath(snapped)
-    const labelPoint = routeLabelPoint(snapped)
+  let paths: { path: string; terminal: boolean }[]
+  if (route) {
+    const snapped = snapEdgeRoute(
+      route,
+      { x: sourceX, y: sourceY },
+      { x: targetX, y: targetY },
+      sourcePosition,
+      targetPosition
+    )
+    edgePath = routeToPath(snapped.points)
+    const labelPoint = snapped.labelPoint ?? routeLabelPoint(snapped.points)
     labelX = labelPoint.x
     labelY = labelPoint.y
+    paths = snapped.paths.map(path => ({
+      path: routeToPath(path),
+      terminal: pathReachesTarget(path, snapped.points),
+    }))
   } else {
     ;[edgePath, labelX, labelY] = getSmoothStepPath({
       sourceX,
@@ -72,48 +51,67 @@ const CustomEdge: FC<EdgeProps<EdgeData>> = ({
       targetPosition,
       borderRadius: 0,
     })
+    paths = [{ path: edgePath, terminal: true }]
   }
 
+  const size = edgeLabelSize(data)
+  const hasMutation = (data?.variableMutations.length ?? 0) > 0
+  const hasChip = data?.edgeCondition.oneofKind !== undefined || data?.isElseEdge
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
-    setModal({ type: 'edge', data: data as EdgeProto })
+    setModal({ type: 'edge', data })
     setShowModal(true)
   }, [data, setModal, setShowModal])
 
   return (
     <>
-      <BaseEdge id={id} path={edgePath} style={style} {...rest} />
-      <EdgeLabelRenderer>
-        <div
-          style={{
-            position: 'absolute',
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            pointerEvents: 'all',
-          }}
-        >
-          <div onClick={onClick} className="flex cursor-pointer flex-col items-center">
-            {(data?.variableMutations?.length ?? 0) > 0 && <CircleAlertIcon size={16} className={`fill-gray-200`} />}
-            {data?.edgeCondition?.oneofKind !== undefined ? (
-              <div
-                className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
-                style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
-              >
-                <EdgeConditionLabel edge={data} />
-              </div>
-            ) : (
-              data?.isElseEdge && (
-                <div
-                  className="flex items-center justify-center rounded-md bg-gray-200 px-2 py-1 text-gray-600"
-                  style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}
-                >
-                  <span className="text-[10px] text-gray-600">else</span>
+      {paths.map(({ path, terminal }, index) => (
+        <BaseEdge
+          key={index}
+          id={`${id}-${index}`}
+          path={path}
+          style={style}
+          {...rest}
+          interactionWidth={0}
+          markerEnd={terminal ? markerEnd : undefined}
+        />
+      ))}
+      {/* Keep each logical edge selectable even when another edge owns its trunk. */}
+      <path d={edgePath} className="react-flow__edge-interaction" fill="none" strokeOpacity={0} strokeWidth={20} />
+      {size && (
+        <EdgeLabelRenderer>
+          <div
+            data-testid="edge-label"
+            data-edge-id={id}
+            style={{
+              position: 'absolute',
+              width: size.w,
+              height: size.h,
+              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+              pointerEvents: 'all',
+            }}
+          >
+            <div onClick={onClick} className="flex h-full cursor-pointer flex-col items-center">
+              {hasMutation && <CircleAlertIcon size={16} className="shrink-0 fill-gray-200" />}
+              {hasChip && (
+                <div className="relative w-full flex-1">
+                  <div
+                    className="absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md bg-gray-200 px-2 py-1 text-gray-600"
+                    style={{ transform: 'translate(-50%, -50%) scale(0.75)' }}
+                  >
+                    {data?.edgeCondition.oneofKind !== undefined ? (
+                      <EdgeConditionLabel edge={data} />
+                    ) : (
+                      <span className="text-[10px] text-gray-600">else</span>
+                    )}
+                  </div>
                 </div>
-              )
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </EdgeLabelRenderer>
+        </EdgeLabelRenderer>
+      )}
     </>
   )
 }

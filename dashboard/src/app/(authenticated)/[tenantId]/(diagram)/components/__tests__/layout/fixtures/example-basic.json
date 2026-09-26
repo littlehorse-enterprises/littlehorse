@@ -1,0 +1,547 @@
+{
+  "name": "example-basic",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-greet-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "variableName": "input-name"
+              }
+            ]
+          }
+        },
+        "10-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-in"
+                }
+              }
+            ]
+          }
+        },
+        "11-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-not-in"
+                }
+              }
+            ]
+          }
+        },
+        "12-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-else"
+                }
+              }
+            ]
+          }
+        },
+        "13-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "14-greet-TASK",
+              "condition": {
+                "variableName": "enabled"
+              }
+            },
+            {
+              "sinkNodeName": "16-greet-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "14-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "15-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "truthy-yes"
+                }
+              }
+            ]
+          }
+        },
+        "15-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "17-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "16-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "15-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "truthy-no"
+                }
+              }
+            ]
+          }
+        },
+        "17-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "18-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "nodeOutput": {
+                      "nodeName": "1-greet-TASK"
+                    }
+                  },
+                  "comparator": "EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "hello there, Obi-Wan"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "20-greet-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "18-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "19-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "output-match"
+                }
+              }
+            ]
+          }
+        },
+        "19-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "21-exit-EXIT"
+            }
+          ],
+          "nop": {}
+        },
+        "2-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "score"
+                  },
+                  "comparator": "LESS_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "10"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "5-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "score"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "100"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "6-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "score"
+                  },
+                  "comparator": "LESS_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "50"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "7-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "score"
+                  },
+                  "comparator": "GREATER_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "90"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "8-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "status"
+                  },
+                  "comparator": "EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "alpha"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "9-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "status"
+                  },
+                  "comparator": "NOT_EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "denied"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "10-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "status"
+                  },
+                  "comparator": "IN",
+                  "rhs": {
+                    "literalValue": {
+                      "jsonArr": "[\"alpha\",\"beta\",\"gamma\"]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "11-greet-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "status"
+                  },
+                  "comparator": "NOT_IN",
+                  "rhs": {
+                    "literalValue": {
+                      "jsonArr": "[\"denied\",\"blocked\"]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "12-greet-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "20-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "19-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "output-mismatch"
+                }
+              }
+            ]
+          }
+        },
+        "21-exit-EXIT": {
+          "exit": {}
+        },
+        "3-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-lt"
+                }
+              }
+            ]
+          }
+        },
+        "4-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "13-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "5-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-gt"
+                }
+              }
+            ]
+          }
+        },
+        "6-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-lte"
+                }
+              }
+            ]
+          }
+        },
+        "7-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-gte"
+                }
+              }
+            ]
+          }
+        },
+        "8-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-eq"
+                }
+              }
+            ]
+          }
+        },
+        "9-greet-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "greet"
+            },
+            "timeoutSeconds": 60,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "branch-neq"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "input-name",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "score",
+            "defaultValue": {
+              "int": "42"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "status",
+            "defaultValue": {
+              "str": "alpha"
+            },
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "enabled",
+            "defaultValue": {
+              "bool": true
+            },
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}

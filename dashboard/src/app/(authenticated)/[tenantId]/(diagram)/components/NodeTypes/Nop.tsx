@@ -11,8 +11,6 @@ const NopNode: FC<NodeProps<'entrypoint', Node>> = props => {
   const { fade, nodeRunsList } = data
   const nodeRun = nodeRunsList?.[0]
 
-  // One handle per outgoing edge, id-aligned with the edge's index — see
-  // nopHandleLayout.ts for the contract and placement rules.
   const sourceHandles = nopSourceHandlePlacements(data.outgoingEdges || []).map(placement => (
     <Handle
       key={placement.id}

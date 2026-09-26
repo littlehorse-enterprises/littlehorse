@@ -8,6 +8,7 @@
  * backwards is.
  */
 import { Scene } from './layoutModel'
+import { pathReachesTarget } from '../EdgeTypes/elkRoute'
 import {
   collinearOverlapLength,
   crossingCount,
@@ -23,6 +24,8 @@ export type DefectType =
   | 'edges-share-lane' // two edges drawn collinearly on top of each other
   | 'forward-edge-goes-backwards' // a non-loop edge flows right-to-left
   | 'label-covers-node' // an edge label chip sits on a node
+  | 'label-covers-label'
+  | 'handle-fan-in'
   | 'missing-handle' // extractEdges addressed a handle the component never renders
   | 'node-unreachable' // a non-entrypoint node has no incoming edge (graph transform lost edges)
   | 'node-dead-end' // a non-exit node has no outgoing edge (graph transform lost edges)
@@ -72,16 +75,32 @@ export const checkScene = (scene: Scene): Verdict => {
     for (let j = i + 1; j < edges.length; j++) {
       const a = edges[i]
       const b = edges[j]
-      // Stubs leaving/entering the same handle necessarily share a few px;
-      // only flag pairs that do not share an endpoint node.
-      const sharesNode =
-        a.source === b.source || a.source === b.target || a.target === b.source || a.target === b.target
-      if (sharesNode) continue
-      const overlap = collinearOverlapLength(a.polyline, b.polyline, 2, LANE_OVERLAP_MIN)
+      const overlap = a.paths.reduce(
+        (total, path) =>
+          total + b.paths.reduce((sum, other) => sum + collinearOverlapLength(path, other, 2, LANE_OVERLAP_MIN), 0),
+        0
+      )
       if (overlap > 0) {
         defects.push({ type: 'edges-share-lane', detail: `${a.id} ~ ${b.id} (${Math.round(overlap)}px)` })
       }
     }
+  }
+
+  const arrivals = new Map<string, number>()
+  for (let i = 0; i < edges.length; i++) {
+    const edge = edges[i]
+    const handle = `${edge.target}/${edge.targetHandle}`
+    // Logical fan-in is valid; only separately painted terminals pile up.
+    const terminals = edge.paths.filter(path => pathReachesTarget(path, edge.polyline)).length
+    arrivals.set(handle, (arrivals.get(handle) ?? 0) + terminals)
+    for (const other of edges.slice(i + 1)) {
+      if (edge.labelRect && other.labelRect && rectsIntersect(edge.labelRect, other.labelRect)) {
+        defects.push({ type: 'label-covers-label', detail: `${edge.id} ~ ${other.id}` })
+      }
+    }
+  }
+  for (const [handle, count] of arrivals) {
+    if (count > 1) defects.push({ type: 'handle-fan-in', detail: `${handle}: ${count} terminal edges (maximum 1)` })
   }
 
   // 4. In a left-to-right layered layout, every non-loop edge flows forward.
@@ -130,7 +149,9 @@ export const checkScene = (scene: Scene): Verdict => {
   let crossings = 0
   for (let i = 0; i < edges.length; i++) {
     for (let j = i + 1; j < edges.length; j++) {
-      crossings += crossingCount(edges[i].polyline, edges[j].polyline)
+      for (const a of edges[i].paths) {
+        for (const b of edges[j].paths) crossings += crossingCount(a, b)
+      }
     }
   }
 

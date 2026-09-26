@@ -1,11 +1,10 @@
-import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
-import type { RoutePoint } from './EdgeTypes/elkRoute'
 import { nodeDimensions } from './nodeDimensions'
+import { layoutDiagram } from './graphLayout'
 
-const elk = new ELK()
+export { ELK_LAYOUT_OPTIONS } from './graphLayout'
 
 export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[] | undefined =>
   nodeRuns
@@ -15,27 +14,6 @@ export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[]
       const bPos = b.id?.position ?? 0
       return bPos - aPos
     })
-
-/** The layout options are shared with the headless layout tests. */
-export const ELK_LAYOUT_OPTIONS = {
-  'elk.algorithm': 'layered',
-  'elk.direction': 'RIGHT',
-  'elk.spacing.nodeNode': '75',
-  'elk.layered.spacing.nodeNodeBetweenLayers': '120',
-  'elk.spacing.edgeEdge': '25',
-  'elk.spacing.edgeNode': '40',
-  'elk.layered.spacing.edgeNodeBetweenLayers': '40',
-  'elk.layered.spacing.edgeEdgeBetweenLayers': '25',
-  'elk.edgeRouting': 'ORTHOGONAL',
-  'elk.layered.nodePlacement.strategy': 'BRANDES_KOEPF',
-  'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
-  'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
-  'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
-  'elk.layered.unnecessaryBendpoints': 'true',
-  'elk.padding': '[top=50,left=50,bottom=50,right=50]',
-  'elk.separateConnectedComponents': 'false',
-  'org.eclipse.elk.layered.mergeEdges': 'false',
-}
 
 type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
@@ -83,49 +61,22 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
 
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[]) => {
-      const elkGraph: ElkNode = {
-        id: 'root',
-        layoutOptions: ELK_LAYOUT_OPTIONS,
-        children: nodes.map(node => {
-          // Deterministic footprints (see nodeDimensions.ts): layout must not
-          // depend on live-measured DOM sizes, or any re-layout after a
-          // remount/HMR/selection reshuffles an already-displayed diagram.
-          const { w, h } = nodeDimensions(node.type, node.id)
-          return { id: node.id, width: w, height: h }
-        }),
-        edges: edges.map(edge => ({
-          id: edge.id,
-          sources: [edge.source],
-          targets: [edge.target],
-        })),
-      }
-
       try {
-        const laidOutGraph = await elk.layout(elkGraph)
-
-        // ELK routed every edge orthogonally, respecting the edge-edge and
-        // edge-node clearances configured above. Keep those routes: node
-        // positions may NOT be adjusted after this point, or the routes (and
-        // their clearances) stop being true.
-        const routeById = new Map<string, RoutePoint[]>(
-          (laidOutGraph.edges ?? []).flatMap(edge => {
-            const section = edge.sections?.[0]
-            if (!section) return []
-            const points = [section.startPoint, ...(section.bendPoints ?? []), section.endPoint]
-            return [[edge.id, points.map(p => ({ x: p.x, y: p.y }))]]
-          })
-        )
+        const { graph: laidOutGraph, routes } = await layoutDiagram(nodes, edges)
 
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
           const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
+          const { w, h } = nodeDimensions(node.type, node.id)
           return {
             ...node,
             data: { ...node.data, fade, nodeRunsList },
             position: {
-              x: elkNode?.x ?? 0,
-              y: elkNode?.y ?? 0,
+              // Center the real glyph in its reserved footprint so fixed-side
+              // ports and rendered handles share the same orthogonal lane.
+              x: (elkNode?.x ?? 0) + (w - (node.width ?? w)) / 2,
+              y: (elkNode?.y ?? 0) + (h - (node.height ?? h)) / 2,
             },
             isLaidOut: true,
           }
@@ -134,7 +85,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
         setEdges(
           edges.map(edge => ({
             ...edge,
-            data: { ...edge.data, elkRoute: routeById.get(edge.id) },
+            data: { ...edge.data, route: routes.get(edge.id) },
           }))
         )
         onLayoutComplete?.(laidOutNodes)

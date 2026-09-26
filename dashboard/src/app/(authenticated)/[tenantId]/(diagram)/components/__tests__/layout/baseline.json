@@ -139,6 +139,10 @@
     "defects": {},
     "crossings": 0
   },
+  "example-basic.json::entrypoint": {
+    "defects": {},
+    "crossings": 0
+  },
   "foreach--rw-c29cq-11.json::entrypoint": {
     "defects": {},
     "crossings": 0

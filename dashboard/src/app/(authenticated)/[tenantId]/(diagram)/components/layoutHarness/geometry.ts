@@ -46,7 +46,7 @@ export const pathToPolyline = (path: string): Polyline => {
   return points
 }
 
-const between = (v: number, lo: number, hi: number): boolean => v >= Math.min(lo, hi) && v <= Math.max(lo, hi)
+const between = (v: number, lo: number, hi: number): boolean => v > Math.min(lo, hi) && v < Math.max(lo, hi)
 
 /** Segment/rect intersection (segments here are axis-aligned or near enough). */
 export const segmentIntersectsRect = (p1: Pt, p2: Pt, r: Rect): boolean => {
@@ -109,7 +109,7 @@ export const collinearOverlapLength = (a: Polyline, b: Polyline, laneTolerance =
   return total
 }
 
-/** Number of transversal crossings (h-segment of one crossing v-segment of the other). */
+/** Interior crossings only: a shared trunk's T-junction is not a crossing. */
 export const crossingCount = (a: Polyline, b: Polyline): number => {
   const segsA = toAxisSegments(a)
   const segsB = toAxisSegments(b)
