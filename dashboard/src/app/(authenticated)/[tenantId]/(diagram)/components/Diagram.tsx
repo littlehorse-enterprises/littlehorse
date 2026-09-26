@@ -31,6 +31,7 @@ import ReactFlow, {
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
+import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { getNodeRunsList, LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
@@ -96,10 +97,9 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
   const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes, onNodesChange] = useNodesState(extractNodes(threadSpec))
 
-  const threadNodeRuns = useMemo(() => {
-    if (!wfRun) return
-    return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
-  }, [thread.number, wfRun])
+  const threadRun = useMemo(() => wfRun?.threadRuns.find(tr => tr.number === thread.number), [thread.number, wfRun])
+  const threadNodeRuns = threadRun?.nodeRuns
+  const nodeOutputValues = threadRun?.nodeOutputValues
 
   const lastAppliedThread = useRef<string | null>(null)
 
@@ -164,6 +164,24 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     setNodes(current => current.map(withNodeRuns))
     setNode(current => (current ? withNodeRuns(current) : current))
   }, [threadNodeRuns, wfRun, setNodes])
+
+  useEffect(() => {
+    if (!wfRun) return
+    setEdges(current =>
+      current.map(edge =>
+        edge.data
+          ? {
+              ...edge,
+              data: {
+                ...edge.data,
+                nodeOutputValues,
+                fade: edge.data.isConditionalBranchEdge ? !isBranchEdgeReached(edge.target, threadNodeRuns) : undefined,
+              },
+            }
+          : edge
+      )
+    )
+  }, [threadNodeRuns, nodeOutputValues, wfRun, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)

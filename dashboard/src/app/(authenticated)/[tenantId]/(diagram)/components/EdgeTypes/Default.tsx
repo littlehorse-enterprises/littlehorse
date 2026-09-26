@@ -1,6 +1,7 @@
 import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
-import { CircleAlertIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { CircleAlertIcon, GitBranch } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
 import { pathReachesTarget, routeLabelPoint, routeToPath, snapEdgeRoute } from './elkRoute'
@@ -56,7 +57,8 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
 
   const size = edgeLabelSize(data)
   const hasMutation = (data?.variableMutations.length ?? 0) > 0
-  const hasChip = data?.edgeCondition.oneofKind !== undefined || data?.isElseEdge
+  const hasCondition = data?.edgeCondition.oneofKind !== undefined
+  const hasChip = hasCondition || data?.isElseEdge
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
@@ -97,13 +99,19 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
               {hasChip && (
                 <div className="relative w-full flex-1">
                   <div
-                    className="absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md bg-gray-200 px-2 py-1 text-gray-600"
+                    className={cn(
+                      'absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md border border-violet-200 bg-white px-1.5 py-1',
+                      data?.fade && 'opacity-25'
+                    )}
                     style={{ transform: 'translate(-50%, -50%) scale(0.75)' }}
                   >
-                    {data?.edgeCondition.oneofKind !== undefined ? (
+                    {hasCondition ? (
                       <EdgeConditionLabel edge={data} />
                     ) : (
-                      <span className="text-[10px] text-gray-600">else</span>
+                      <span className="inline-flex items-center gap-0.5">
+                        <GitBranch className="h-2.5 w-2.5 shrink-0 text-violet-600" aria-hidden />
+                        <span className="text-[8px] font-bold uppercase tracking-wide text-violet-800">Else</span>
+                      </span>
                     )}
                   </div>
                 </div>

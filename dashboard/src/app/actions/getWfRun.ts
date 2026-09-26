@@ -2,7 +2,18 @@
 
 import { lhClient } from '@/app/lhClient'
 import { isResourceExhausted } from 'littlehorse-client'
-import { NodeRun, ThreadRun, Variable, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import {
+  NodeRun,
+  TaskRun,
+  TaskRunId,
+  ThreadRun,
+  Variable,
+  VariableValue,
+  WfRun,
+  WfRunId,
+  WfSpec,
+} from 'littlehorse-client/proto'
+import { buildNodeOutputValuesFromNodeRuns } from '@/app/utils/taskRunOutput'
 import { getInheritedVariables } from './getInheritedVariables'
 
 type Props = {
@@ -10,7 +21,10 @@ type Props = {
   tenantId: string
 }
 
-export type ThreadRunWithNodeRuns = ThreadRun & { nodeRuns: NodeRun[] }
+export type ThreadRunWithNodeRuns = ThreadRun & {
+  nodeRuns: NodeRun[]
+  nodeOutputValues?: Record<string, VariableValue>
+}
 
 export type WfRunResponse = {
   wfRun: WfRun & { threadRuns: ThreadRunWithNodeRuns[] }
@@ -46,7 +60,14 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
       )
     : { variables: [], tooLarge: false }
 
-  const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns))
+  const taskRunIds = nodeRuns
+    .map(nodeRun => (nodeRun.nodeType.oneofKind === 'task' ? nodeRun.nodeType.task.taskRunId : undefined))
+    .filter((id): id is TaskRunId => id !== undefined)
+  const taskRunsByGuid = new Map<string, TaskRun>(
+    await Promise.all(taskRunIds.map(async id => [id.taskGuid, await client.getTaskRun(id)] as const))
+  )
+
+  const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns, taskRunsByGuid))
   return {
     wfRun: { ...wfRun, threadRuns },
     wfSpec,
@@ -55,11 +76,17 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
   }
 }
 
-const mergeThreadRunsWithNodeRuns = (threadRun: ThreadRun, nodeRuns: NodeRun[]): ThreadRunWithNodeRuns => {
+const mergeThreadRunsWithNodeRuns = (
+  threadRun: ThreadRun,
+  nodeRuns: NodeRun[],
+  taskRunsByGuid: Map<string, TaskRun>
+): ThreadRunWithNodeRuns => {
+  const threadNodeRuns = nodeRuns.filter(
+    nodeRun => nodeRun.threadSpecName === threadRun.threadSpecName && nodeRun.id?.threadRunNumber === threadRun.number
+  )
   return {
     ...threadRun,
-    nodeRuns: nodeRuns.filter(
-      nodeRun => nodeRun.threadSpecName === threadRun.threadSpecName && nodeRun.id?.threadRunNumber === threadRun.number
-    ),
+    nodeRuns: threadNodeRuns,
+    nodeOutputValues: buildNodeOutputValuesFromNodeRuns(threadNodeRuns, taskRunsByGuid),
   }
 }
