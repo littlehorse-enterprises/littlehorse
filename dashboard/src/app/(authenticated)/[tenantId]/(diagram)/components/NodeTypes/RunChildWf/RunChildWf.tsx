@@ -1,13 +1,15 @@
+import { getVariable } from '@/app/utils'
 import { RunChildWfNode } from 'littlehorse-client/proto'
-import { Workflow } from 'lucide-react'
+import { TrendingUpDown, Workflow } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '..'
+import { DiagramNodeDiamond, DiagramNodeShell } from '../DiagramNodeChrome'
 import { Fade } from '../Fade'
+import { emeraldNodeTheme } from '../nodeThemes'
 import { SelectedNode } from '../SelectedNode'
-import { getVariable } from '@/app/utils'
 
-const Node: FC<NodeProps<'runChildWf', RunChildWfNode>> = ({ data }) => {
+const Node: FC<NodeProps<'runChildWf', RunChildWfNode>> = ({ id, data, selected }) => {
   const { fade, nodeRunsList, wfSpec } = data
   const nodeRun = nodeRunsList?.[0]
   const wfSpecName =
@@ -21,12 +23,18 @@ const Node: FC<NodeProps<'runChildWf', RunChildWfNode>> = ({ data }) => {
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="flex w-40 cursor-pointer flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-center text-xs">
-          <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
-          <Workflow className="h-4 w-4 stroke-orange-500" strokeWidth={2} />
-          <span className="truncate">{wfSpecName}</span>
-          <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
-        </div>
+        <DiagramNodeShell id={id} label="Run Child Wf" icon={Workflow} theme={emeraldNodeTheme} subtitle={wfSpecName}>
+          <div className="relative flex cursor-pointer items-center">
+            <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
+            <DiagramNodeDiamond selected={selected} theme={emeraldNodeTheme}>
+              <TrendingUpDown className="h-5 w-5 shrink-0 stroke-emerald-950" strokeWidth={1.5} />
+              <div className="absolute -bottom-1 -right-1 grid h-4 w-4 place-items-center rounded border border-emerald-500 bg-emerald-200">
+                <Workflow className="h-2.5 w-2.5 stroke-emerald-950" strokeWidth={1.5} />
+              </div>
+            </DiagramNodeDiamond>
+            <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
+          </div>
+        </DiagramNodeShell>
       </Fade>
     </>
   )
