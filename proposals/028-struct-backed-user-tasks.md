@@ -79,7 +79,7 @@ message UserTaskDef {
   // The time the UserTaskDef was created.
   google.protobuf.Timestamp created_at = 5;
 
-  // The exact StructDef that defines the result of a UserTaskRun.
+  // The minimum StructDef version that defines the output contract.
   // Unset for legacy UserTaskDefs that use fields.
   StructDefId result_struct_def_id = 6;
 }
@@ -114,7 +114,7 @@ message PutUserTaskDefRequest {
   // Optional metadata that does not affect workflow execution.
   optional string description = 3;
 
-  // The exact StructDef that defines the result of this UserTaskDef.
+  // The minimum StructDef version that defines this UserTaskDef's output contract.
   StructDefId result_struct_def_id = 4;
 }
 ```
@@ -141,7 +141,7 @@ message CompleteUserTaskRunRequest {
   string user_id = 3;
 
   // The output of a struct-backed UserTaskRun. Must contain a Struct value
-  // compatible with UserTaskDef.result_struct_def_id.
+  // conforming to UserTaskRun.result_struct_def_id.
   VariableValue output = 4;
 }
 ```
@@ -180,6 +180,7 @@ message SaveUserTaskRunProgressRequest {
   SaveUserTaskRunAssignmentPolicy policy = 4;
 
   // A Struct value containing the current, possibly incomplete form output.
+  // Supplied fields are validated against UserTaskRun.result_struct_def_id.
   VariableValue output = 5;
 }
 ```
@@ -188,9 +189,9 @@ For Struct-backed tasks, `output` must contain a Struct with the exact `result_s
 
 Saving replaces the previous progress snapshot rather than merging fields. An empty Struct with the correct ID clears the draft. Saved values remain available through `UserTaskRun.output` and the saved event's results map. Saving does not complete the task or advance the workflow; completion must still submit the full output.
 
-### `UserTaskRun.output`
+### `UserTaskRun`
 
-Add the same strongly typed `output` to `UserTaskRun` and deprecate `results`:
+Add the same strongly typed `output` and the resolved `result_struct_def_id` to `UserTaskRun`, and deprecate `results`:
 
 ```protobuf
 message UserTaskRun {
@@ -200,10 +201,34 @@ message UserTaskRun {
   // Current output for a Struct-backed UserTaskRun. It may be incomplete until
   // the task is completed.
   VariableValue output = 13;
+  
+  // Used by clients to render fields and by the server to validate submissions.
+  // Unset for legacy field-backed runs and runs without a result schema.
+  StructDefId result_struct_def_id = 14;
 }
 ```
 
 Struct-backed runs retain the actual Struct value, including its exact StructDef ID and Struct field metadata. They do not flatten fields into `results`. Legacy field-backed runs continue to populate `results` and leave `output` unset.
+
+## Schema and UserTaskDef versioning
+
+StructDef and UserTaskDef are independently versioned: A `StructDef` version identifies a data schema, while a `UserTaskDef` 
+version establishes the minimum output schema that a WfSpec can depend on through its `result_struct_def_id`. This means that a 
+StructDef for a UserTaskDef can evolve without needing to update the `UserTaskDef` or the `WfSpec` that references it, and registering a new `UserTaskDef` version can raise the minimum StructDef version that the workflow depends on..
+
+The resulting behavior is:
+- The actual `StructDef` gets resolved when the `UserTaskRun` is created. The server fetches the latest version of the same `StructDef`, at or above the minimum referenced by the `UserTaskDef`.
+- Clients can retrieve the resolved `StrucDef` via `UserTaskRun` and use its schema to render the fields.
+- Existing `UserTaskRun`s keep their resolved version. Publishing a new StructDef version affects subsequently created `UserTaskRun`s.
+- `SaveProgress` and `CompleteUserTaskRun` use the `UserTaskRun`’s schema. Clients submit Struct fields without needing to supply a `StructDefId`; the server validates them and assigns the resolved ID.
+- The NodeRun output preserves the resolved schema and accepted fields. `WfSpec`s can reference fields guaranteed by the minimum schema, while downstream workers receiving the entire Struct can consume newer fields.
+- Referencing new form's fields in `WfSpec` requires updating the UserTaskDef version and point to a newer version of a `StructDef`..
+
+Important: This decision relies on StructDef’s existing compatibility rules: newer versions preserve the contract established by the minimum version.
+
+### InlineStructDef
+
+InlineStructDef is not supported by this proposal because this proposal aims to make the Business people to own a form schema and the `WfSpec` to reference it.
 
 ## SDK Experience
 
