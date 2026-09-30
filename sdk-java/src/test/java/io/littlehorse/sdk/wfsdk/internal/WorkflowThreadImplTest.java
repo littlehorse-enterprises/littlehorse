@@ -151,10 +151,31 @@ public class WorkflowThreadImplTest {
         });
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
-        Node lastNodeInLoopBody =
-                wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("2-nop-NOP");
+        ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
+        Node loopDecision = entrypoint.getNodesOrThrow("2-nop-NOP");
+        Node loopJoin = entrypoint.getNodesOrThrow("4-nop-NOP");
 
-        assertThat(lastNodeInLoopBody.getOutgoingEdgesCount()).isEqualTo(2);
+        assertThat(loopDecision.getOutgoingEdgesList())
+                .extracting(Edge::getSinkNodeName)
+                .containsExactly("3-fdsa-TASK", "4-nop-NOP");
+        assertThat(loopDecision
+                        .getOutgoingEdges(0)
+                        .getCondition()
+                        .getExpression()
+                        .getComparator())
+                .isEqualTo(Comparator.EQUALS);
+        assertThat(loopDecision
+                        .getOutgoingEdges(1)
+                        .getCondition()
+                        .getExpression()
+                        .getComparator())
+                .isEqualTo(Comparator.NOT_EQUALS);
+        assertThat(loopJoin.getOutgoingEdgesList())
+                .extracting(Edge::getSinkNodeName)
+                .containsExactly("2-nop-NOP", "5-exit-EXIT");
+        assertThat(loopJoin.getOutgoingEdges(0).getCondition().getExpression().getComparator())
+                .isEqualTo(Comparator.EQUALS);
+        assertThat(loopJoin.getOutgoingEdges(1).hasCondition()).isFalse();
     }
 
     @Test
