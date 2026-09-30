@@ -1386,14 +1386,11 @@ func (t *WorkflowThread) doWhile(cond LHExpression, whileBody ThreadFunc) {
 		t.throwError(tracerr.Wrap(condErr))
 	}
 
-	// Now add the sideways path from T directly to B
+	// Now add the unconditioned sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			EdgeCondition: &lhproto.Edge_Condition{
-				Condition: condAssn,
-			},
 		},
 	)
 
