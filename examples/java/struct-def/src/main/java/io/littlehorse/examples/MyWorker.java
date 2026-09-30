@@ -10,17 +10,17 @@ public class MyWorker {
 
     @LHTaskMethod("get-car-owner")
     public Person getCarOwner(ParkingTicketReport report) {
-        return lookupCarOwnerInDb(report.getLicensePlateNumber());
+        return lookupCarOwnerInDb(report.licensePlateNumber());
     }
 
     @LHTaskMethod("mail-ticket")
     public String mailTicket(Person person) {
-        if (person.getHomeAddress() == null) {
+        if (person.homeAddress() == null) {
             log.debug("No address for {}. Routing ticket to manual follow-up queue.", person);
             return "Ticket queued for manual follow-up for %s".formatted(person);
         }
 
-        log.debug("Sending mail to %s at address %s".formatted(person, person.getHomeAddress()));
+        log.debug("Sending mail to %s at address %s".formatted(person, person.homeAddress()));
         return "Ticket sent to %s".formatted(person);
     }
 

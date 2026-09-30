@@ -13,8 +13,13 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import io.littlehorse.sdk.worker.LHStructIgnore;
+import java.util.stream.Stream;
 import lombok.Getter;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class LHStructDefTypeTest {
 
@@ -47,6 +52,12 @@ public class LHStructDefTypeTest {
         public WfRunId wfRunId;
     }
 
+    @LHStructDef("author")
+    record AuthorRecord(String name, int age, boolean alive, double heightCm, byte[] bytes, WfRunId wfRunId) {}
+
+    @LHStructDef("book")
+    record BookRecord(String title, int numPages, Author author) {}
+
     @LHStructDef("library")
     class Library {
         public String name;
@@ -62,6 +73,9 @@ public class LHStructDefTypeTest {
         }
     }
 
+    @LHStructDef("library")
+    record LibraryRecord(String name, Book[] books) {}
+
     @Getter
     @LHStructDef("maskedValueDemo")
     class MaskedValueDemo {
@@ -73,6 +87,9 @@ public class LHStructDefTypeTest {
         }
     }
 
+    @LHStructDef("maskedValueDemo")
+    record MaskedValueRecord(@LHStructField(masked = true) String maskedValue) {}
+
     @LHStructDef("named-field-demo")
     class NamedFieldDemo {
         public int inferredFieldName;
@@ -83,15 +100,23 @@ public class LHStructDefTypeTest {
         }
     }
 
+    @LHStructDef("named-field-demo")
+    record NamedFieldRecord(@LHStructField(name = "customFieldName") int inferredFieldName) {}
+
     @LHStructDef("field-annotation-demo")
     @Getter
     class FieldAnnotationDemo {
         @LHStructField(masked = true)
         public String secret;
 
-        @LHStructField(name = "publicLabel")
+        @LHStructField(name = "publicLabel", isNullable = true)
         public String displayName;
     }
+
+    @LHStructDef("field-annotation-demo")
+    record FieldAnnotationRecord(
+            @LHStructField(masked = true) String secret,
+            @LHStructField(name = "publicLabel", isNullable = true) String displayName) {}
 
     @LHStructDef("described-field-demo")
     @Getter
@@ -102,11 +127,64 @@ public class LHStructDefTypeTest {
         public String name;
     }
 
+    @LHStructDef("described-field-demo")
+    record DescribedFieldRecord(
+            @LHStructField(description = "The user's primary contact email") String email, String name) {}
+
+    @LHStructDef("ignored-field-demo")
+    @Getter
+    class IgnoredFieldDemo {
+        public String included;
+        public String ignored;
+
+        @LHStructIgnore
+        public String getIgnored() {
+            return ignored;
+        }
+    }
+
+    @LHStructDef("ignored-field-demo")
+    record IgnoredFieldRecord(String included, @LHStructIgnore String ignored) {}
+
     @LHStructDef("boolean-field-annotation-demo")
     @Getter
     class BooleanFieldAnnotationDemo {
         @LHStructField(name = "isPersonAlive")
         public boolean isAlive;
+    }
+
+    @LHStructDef("boolean-field-annotation-demo")
+    record BooleanFieldAnnotationRecord(@LHStructField(name = "isPersonAlive") boolean alive) {}
+
+    @LHStructDef("annotated-person")
+    class AnnotatedPersonDemo {
+        private String name;
+        private String ssn;
+
+        @LHStructField(name = "fullName", isNullable = true)
+        public String getName() {
+            return name;
+        }
+
+        @LHStructField(masked = true)
+        public String getSsn() {
+            return ssn;
+        }
+    }
+
+    @LHStructDef("annotated-person")
+    record AnnotatedPersonRecord(String name, String ssn) {
+        @Override
+        @LHStructField(name = "fullName", isNullable = true)
+        public String name() {
+            return name;
+        }
+
+        @Override
+        @LHStructField(masked = true)
+        public String ssn() {
+            return ssn;
+        }
     }
 
     @Getter
@@ -125,16 +203,56 @@ public class LHStructDefTypeTest {
         public UnannotatedNestedPojo nestedPojo;
     }
 
+    @LHStructDef("invalid-json-obj-holder")
+    record InlineRecordHolder(UnannotatedNestedPojo nestedPojo) {}
+
     @LHStructDef("inline-struct-array-holder")
     @Getter
     class InlineStructArrayHolder {
         public UnannotatedNestedPojo[] nestedPojos;
     }
 
+    @LHStructDef("inline-struct-array-holder")
+    record InlineStructArrayRecordHolder(UnannotatedNestedPojo[] nestedPojos) {}
+
     @LHStructDef("invalid-json-arr-holder")
     @Getter
     class InvalidJsonArrHolder {
         public java.util.List<String> names;
+    }
+
+    @LHStructDef("invalid-json-arr-holder")
+    record InvalidJsonArrRecordHolder(java.util.List<String> names) {}
+
+    @LHStructDef("inline-dependency-holder")
+    @Getter
+    class InlineDependencyHolder {
+        private InlinePojoWithNamedDependency nestedPojo;
+    }
+
+    @LHStructDef("inline-dependency-holder")
+    record InlineDependencyRecordHolder(InlinePojoWithNamedDependency nestedPojo) {}
+
+    static Stream<Arguments> structDefinitionParityTypes() {
+        return Stream.of(
+                Arguments.of("primitive fields", Author.class, AuthorRecord.class),
+                Arguments.of("named struct fields", Book.class, BookRecord.class),
+                Arguments.of("arrays of named structs", Library.class, LibraryRecord.class),
+                Arguments.of("masked fields", MaskedValueDemo.class, MaskedValueRecord.class),
+                Arguments.of("custom field names", NamedFieldDemo.class, NamedFieldRecord.class),
+                Arguments.of("field annotations", FieldAnnotationDemo.class, FieldAnnotationRecord.class),
+                Arguments.of("accessor annotations", AnnotatedPersonDemo.class, AnnotatedPersonRecord.class),
+                Arguments.of("ignored fields", IgnoredFieldDemo.class, IgnoredFieldRecord.class),
+                Arguments.of(
+                        "boolean field annotations",
+                        BooleanFieldAnnotationDemo.class,
+                        BooleanFieldAnnotationRecord.class),
+                Arguments.of("field descriptions", DescribedFieldDemo.class, DescribedFieldRecord.class),
+                Arguments.of("inline structs", InvalidJsonObjHolder.class, InlineRecordHolder.class),
+                Arguments.of(
+                        "arrays of inline structs", InlineStructArrayHolder.class, InlineStructArrayRecordHolder.class),
+                Arguments.of(
+                        "nested named dependencies", InlineDependencyHolder.class, InlineDependencyRecordHolder.class));
     }
 
     @Test
@@ -290,6 +408,7 @@ public class LHStructDefTypeTest {
                         "publicLabel",
                         StructFieldDef.newBuilder()
                                 .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .setIsNullable(true)
                                 .build())
                 .build();
 
@@ -368,23 +487,48 @@ public class LHStructDefTypeTest {
 
     @Test
     public void shouldCollectNamedDependenciesNestedInsideInlinePojos() {
-        @LHStructDef("inline-dependency-holder")
-        @Getter
-        class InlineDependencyHolder {
-            private InlinePojoWithNamedDependency nestedPojo;
-        }
-
         assertThat(new LHStructDefType(InlineDependencyHolder.class, LHTypeAdapterRegistry.empty())
                         .getDependencyClasses())
                 .extracting(dependency -> dependency.getStructDefId().getName())
                 .containsExactly("author", "inline-dependency-holder");
     }
 
-    @Test
-    public void shouldRejectStructDefFieldResolvingToJsonArr() {
-        assertThatThrownBy(() -> new LHStructDefType(InvalidJsonArrHolder.class, LHTypeAdapterRegistry.empty()))
+    @ParameterizedTest
+    @MethodSource("invalidJsonArrayTypes")
+    public void shouldRejectStructDefFieldResolvingToJsonArr(Class<?> structDefType) {
+        assertThatThrownBy(() -> new LHStructDefType(structDefType, LHTypeAdapterRegistry.empty()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_ARR");
+    }
+
+    static Stream<Class<?>> invalidJsonArrayTypes() {
+        return Stream.of(InvalidJsonArrHolder.class, InvalidJsonArrRecordHolder.class);
+    }
+
+    @LHStructDef("config-with-default-ux")
+    public record ConfigWithDefaultUx(String mode, int retries) {
+        public ConfigWithDefaultUx() {
+            this("standard", 3);
+        }
+    }
+
+    @LHStructDef("config-no-default-ux")
+    public record ConfigNoDefaultUx(String mode, int retries) {}
+
+    @Test
+    void shouldOnlyComputeRecordDefaultValuesFromNoArgConstructor() {
+        InlineStructDef withDefaults =
+                new LHStructDefType(ConfigWithDefaultUx.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef withoutDefaults =
+                new LHStructDefType(ConfigNoDefaultUx.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(withDefaults.getFieldsOrThrow("mode").getDefaultValue().getStr())
+                .isEqualTo("standard");
+        assertThat(withDefaults.getFieldsOrThrow("retries").getDefaultValue().getInt())
+                .isEqualTo(3);
+        assertThat(withoutDefaults.getFieldsOrThrow("mode").hasDefaultValue()).isFalse();
+        assertThat(withoutDefaults.getFieldsOrThrow("retries").hasDefaultValue())
+                .isFalse();
     }
 
     @Test
@@ -396,5 +540,21 @@ public class LHStructDefTypeTest {
                 .isEqualTo("The user's primary contact email");
         assertThat(actualInlineStructDef.getFieldsMap().get("name").hasDescription())
                 .isFalse();
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("structDefinitionParityTypes")
+    public void recordsProduceTheSameStructDefinitionsAsClasses(
+            String scenario, Class<?> classType, Class<?> recordType) {
+        LHStructDefType classStructDef = new LHStructDefType(classType, LHTypeAdapterRegistry.empty());
+        LHStructDefType recordStructDef = new LHStructDefType(recordType, LHTypeAdapterRegistry.empty());
+
+        assertThat(recordStructDef.getInlineStructDef()).isEqualTo(classStructDef.getInlineStructDef());
+        assertThat(recordStructDef.getTypeDefinition()).isEqualTo(classStructDef.getTypeDefinition());
+        assertThat(recordStructDef.getDependencyClasses())
+                .extracting(LHStructDefType::getStructDefId)
+                .containsExactlyElementsOf(classStructDef.getDependencyClasses().stream()
+                        .map(LHStructDefType::getStructDefId)
+                        .toList());
     }
 }

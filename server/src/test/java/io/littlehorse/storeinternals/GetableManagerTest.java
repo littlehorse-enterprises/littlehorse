@@ -1,13 +1,16 @@
 package io.littlehorse.storeinternals;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.AuthorizationContextImpl;
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.CoreGetable;
 import io.littlehorse.common.model.PartitionCountedTagModel;
 import io.littlehorse.common.model.ScheduledTaskModel;
@@ -36,10 +39,12 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.repartitioncommand.RepartitionCommand;
 import io.littlehorse.common.model.repartitioncommand.repartitionsubcommand.CreateRemoteTag;
+import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
@@ -70,6 +75,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -119,6 +125,40 @@ public class GetableManagerTest {
         assertThat(localStoreWrapper.get(getable.getObjectId().getStoreableKey(), StoredGetable.class))
                 .isNotNull();
         assertThat(keys).hasSize(1 + expectedTagsCount);
+    }
+
+    @Test
+    void commitsSuccessfullyWhenToProtoLoadsAnotherGetable() {
+        WfRunIdModel relatedWfRunId = new WfRunIdModel("related-wf-run");
+        WfRunModel relatedWfRun = TestUtil.wfRun(relatedWfRunId.getId());
+        getableManager.put(relatedWfRun);
+        getableManager.commit();
+
+        WfRunModel getableWithSideEffect = new WfRunModel() {
+            @Override
+            public WfRun.Builder toProto() {
+                getableManager.get(relatedWfRunId);
+                return super.toProto();
+            }
+        };
+        getableWithSideEffect.setId(new WfRunIdModel("a-getable-with-side-effect"));
+        getableWithSideEffect.setWfSpecId(new WfSpecIdModel("test-spec-name", 0, 0));
+        getableWithSideEffect.setStatus(LHStatus.RUNNING);
+        getableWithSideEffect.setStartTime(new Date());
+
+        WfRunModel trailingGetable = TestUtil.wfRun("z-trailing-getable");
+
+        Class<? extends AbstractGetable<?>> anonymousClass = getableWithSideEffect.getClass();
+
+        try (MockedStatic<AbstractGetable> typeLookup = mockStatic(AbstractGetable.class, CALLS_REAL_METHODS)) {
+            typeLookup.when(() -> AbstractGetable.getTypeEnum(anonymousClass)).thenReturn(GetableClassEnum.WF_RUN);
+
+            getableManager.put(getableWithSideEffect);
+            getableManager.put(trailingGetable);
+            getableManager.commit();
+            WfRunModel storedWfRun = getableManager.get(new WfRunIdModel("a-getable-with-side-effect"));
+            assertThat(storedWfRun).isNotNull();
+        }
     }
 
     @Test
