@@ -56,6 +56,22 @@ func TestPartialStructResultsFromJSONRejectsUnknownField(t *testing.T) {
 	}
 }
 
+func TestPartialStructResultsFromJSONPreservesString(t *testing.T) {
+	definition := &lhproto.StructDef{
+		StructDef: &lhproto.InlineStructDef{Fields: map[string]*lhproto.StructFieldDef{
+			"requestedItem": {FieldType: primitiveType(lhproto.VariableType_STR)},
+			"justification": {FieldType: primitiveType(lhproto.VariableType_STR)},
+		}},
+	}
+	results, err := partialStructResultsFromJSON([]byte(`{"requestedItem":"the rank of master"}`), definition, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(results) != 1 || results["requestedItem"].GetStr() != "the rank of master" {
+		t.Fatalf("incorrect draft: %v", results)
+	}
+}
+
 func primitiveType(variableType lhproto.VariableType) *lhproto.TypeDefinition {
 	return &lhproto.TypeDefinition{
 		DefinedType: &lhproto.TypeDefinition_PrimitiveType{PrimitiveType: variableType},
