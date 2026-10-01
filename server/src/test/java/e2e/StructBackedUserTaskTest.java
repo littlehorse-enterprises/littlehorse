@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.PutUserTaskDefRequest;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDef;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
@@ -141,6 +142,19 @@ public class StructBackedUserTaskTest {
     @Test
     void shouldCompleteWithoutClientStructDefId() {
         StructBackedTask task = registerStructBackedTask();
+        StructDef latestStructDef = client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(task.structDef().getId().getName())
+                .setStructDef(task.structDef().getStructDef().toBuilder()
+                        .putFields(
+                                "comment",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .setDefaultValue(
+                                                VariableValue.newBuilder().setStr(""))
+                                        .build()))
+                .setAllowedUpdates(StructDefCompatibilityType.FULLY_COMPATIBLE_SCHEMA_UPDATES)
+                .build());
         VariableValue output = structOutput(task.structDef(), true);
         VariableValue submitted = output.toBuilder()
                 .setStruct(output.getStruct().toBuilder().clearStructDefId())
@@ -149,17 +163,23 @@ public class StructBackedUserTaskTest {
         workflowVerifier
                 .prepareRun(workflow(task.userTaskDefName()))
                 .waitForStatus(RUNNING)
-                .thenVerifyWfRun(wfRun -> client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
-                        .setUserTaskRunId(getUserTaskRunId(wfRun.getId()))
-                        .setUserId("obiwan")
-                        .setOutput(submitted)
-                        .build()))
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId runId = getUserTaskRunId(wfRun.getId());
+                    assertThat(client.getUserTaskRun(runId).getResultStructDefId())
+                            .isEqualTo(latestStructDef.getId());
+                    client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(runId)
+                            .setUserId("obiwan")
+                            .setOutput(submitted)
+                            .build());
+                })
                 .waitForStatus(COMPLETED)
                 .thenVerifyNodeRun(0, 1, nodeRun -> {
                     UserTaskRun completed =
                             client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+                    assertThat(completed.getResultStructDefId()).isEqualTo(latestStructDef.getId());
                     assertThat(completed.getOutput().getStruct().getStructDefId())
-                            .isEqualTo(task.structDef().getId());
+                            .isEqualTo(latestStructDef.getId());
                     assertThat(completed.getStatus()).isEqualTo(UserTaskRunStatus.DONE);
                 })
                 .start();
