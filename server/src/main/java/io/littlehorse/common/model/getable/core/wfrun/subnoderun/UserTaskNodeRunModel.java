@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
@@ -99,7 +100,10 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
                 throw new IllegalStateException("Completed Struct-backed UserTaskRun has no output");
             }
             try {
-                new TypeDefinitionModel(userTaskDef.getResultStructDefId())
+                new TypeDefinitionModel(
+                                userTask.getResultStructDefId() != null
+                                        ? userTask.getResultStructDefId()
+                                        : userTaskDef.getResultStructDefId())
                         .validateCompatibility(outputModel, processorContext.metadataManager());
             } catch (TypeValidationException exn) {
                 throw new IllegalStateException("Stored UserTaskRun output is invalid", exn);
@@ -132,6 +136,18 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
                     new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR));
         }
         UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun(), processorContext);
+        if (utd.getResultStructDefId() != null) {
+            StructDefModel latest = processorContext
+                    .service()
+                    .getStructDef(utd.getResultStructDefId().getName(), null);
+            if (latest == null
+                    || latest.getObjectId().getVersion()
+                            < utd.getResultStructDefId().getVersion()) {
+                throw new NodeFailureException(new FailureModel(
+                        "No compatible StructDef found for UserTaskDef " + utd.getObjectId(), LHConstants.TASK_ERROR));
+            }
+            out.setResultStructDefId(latest.getObjectId());
+        }
         // Now we create a new UserTaskRun.
 
         userTaskRunId = out.getObjectId();
