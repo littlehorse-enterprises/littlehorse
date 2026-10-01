@@ -139,6 +139,33 @@ public class StructBackedUserTaskTest {
     }
 
     @Test
+    void shouldCompleteWithoutClientStructDefId() {
+        StructBackedTask task = registerStructBackedTask();
+        VariableValue output = structOutput(task.structDef(), true);
+        VariableValue submitted = output.toBuilder()
+                .setStruct(output.getStruct().toBuilder().clearStructDefId())
+                .build();
+
+        workflowVerifier
+                .prepareRun(workflow(task.userTaskDefName()))
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                        .setUserTaskRunId(getUserTaskRunId(wfRun.getId()))
+                        .setUserId("obiwan")
+                        .setOutput(submitted)
+                        .build()))
+                .waitForStatus(COMPLETED)
+                .thenVerifyNodeRun(0, 1, nodeRun -> {
+                    UserTaskRun completed =
+                            client.getUserTaskRun(nodeRun.getUserTask().getUserTaskRunId());
+                    assertThat(completed.getOutput().getStruct().getStructDefId())
+                            .isEqualTo(task.structDef().getId());
+                    assertThat(completed.getStatus()).isEqualTo(UserTaskRunStatus.DONE);
+                })
+                .start();
+    }
+
+    @Test
     void shouldRejectOutputWithWrongFieldType() {
         StructBackedTask task = registerStructBackedTask();
         Workflow workflow = workflow(task.userTaskDefName());
