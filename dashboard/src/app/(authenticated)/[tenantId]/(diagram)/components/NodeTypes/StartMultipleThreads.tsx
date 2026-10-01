@@ -1,27 +1,33 @@
 import { StartMultipleThreadsNode as StartMultipleThreadsNodeProto } from 'littlehorse-client/proto'
-import { PlusIcon } from 'lucide-react'
+import { Ellipsis, Spool } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { SelectedNode } from './SelectedNode'
 
+const STACKED_CARD = 'absolute inset-0 rounded-md border-[1px] border-orange-500 bg-orange-100'
+
 const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>> = ({ data }) => {
-  const { fade, nodeRunsList } = data
+  const { fade, nodeRunsList, threadSpecName } = data
   const nodeRun = nodeRunsList?.[0]
 
   return (
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="flex">
-          <div className="cursor-pointer1 relative grid h-8 w-8 place-items-center">
-            <PlusIcon className="z-10 h-4 w-4 fill-gray-500" />
-            <div className="absolute inset-0 bg-gray-400 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
-            <div className="absolute inset-[2px] bg-gray-200 [clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]"></div>
+        <div className="relative w-40 cursor-pointer">
+          <div className={`${STACKED_CARD} translate-x-2 translate-y-2`} />
+          <div className={`${STACKED_CARD} translate-x-1 translate-y-1`} />
+          <div className="relative flex flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-center text-xs">
+            <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+            <div className="flex items-center">
+              <Spool className="h-4 w-4 stroke-orange-500" strokeWidth={1.5} />
+              <Ellipsis className="h-4 w-4 stroke-orange-500" strokeWidth={1.5} />
+            </div>
+            <span className="max-w-full truncate">{threadSpecName}</span>
+            <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
           </div>
-          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
         </div>
       </Fade>
     </>

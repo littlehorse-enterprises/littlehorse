@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { ExitNode } from './ExitNode'
 import { ExternalEventNode } from './ExternalEventNode'
+import { StartMultipleThreadsNode } from './StartMultipleThreadsNode'
 import { StartThreadNode } from './StartThreadNode'
 import { TaskNode } from './TaskNode'
 import { ThrowEventNode } from './ThrowEventNode'
@@ -22,6 +23,7 @@ export const Node: FC = () => {
   if (node.oneofKind === 'exit') return <ExitNode node={node.exit} />
   if (node.oneofKind === 'externalEvent') return <ExternalEventNode node={node.externalEvent} />
   if (node.oneofKind === 'startThread') return <StartThreadNode node={node.startThread} />
+  if (node.oneofKind === 'startMultipleThreads') return <StartMultipleThreadsNode node={node.startMultipleThreads} />
   if (node.oneofKind === 'waitForThreads') return <WaitForThreadsNode node={node.waitForThreads} />
   if (node.oneofKind === 'throwEvent') return <ThrowEventNode node={node.throwEvent} />
   if (node.oneofKind === 'sleep') return <SleepNode node={node.sleep} />
