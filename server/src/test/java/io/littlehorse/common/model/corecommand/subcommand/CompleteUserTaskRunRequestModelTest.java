@@ -47,6 +47,7 @@ class CompleteUserTaskRunRequestModelTest {
     private static final String NESTED_STRUCT_DEF_NAME = "item-request-details";
     private static final int STRUCT_DEF_VERSION = 0;
     private static final String STR_FIELD = "strField";
+    private static final String NEW_STR_FIELD = "newStrField";
     private static final TypeDefinition STR_FIELD_TYPE =
             TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR).build();
     private static final String STRUCT_FIELD = "structField";
@@ -84,6 +85,27 @@ class CompleteUserTaskRunRequestModelTest {
                         .getBool())
                 .isTrue();
         assertThat(submitted.getStruct().hasStructDefId()).isFalse();
+    }
+
+    @Test
+    void shouldCompleteWithMostRecentStructDefId() {
+        VariableValue newFieldValue =
+                VariableValue.newBuilder().setStr("additional details").build();
+        VariableValue submittedByClient = structOutput(validFields().toBuilder()
+                .putFields(NEW_STR_FIELD, field(newFieldValue))
+                .build());
+        TestData data = arrangeStructScenario(request -> request.setOutput(submittedByClient));
+        StructDefIdModel pinnedStructDefId = pinLatestResultStructDef(data);
+
+        UserTaskRunModel storedRun = completeAndReload(data);
+
+        assertThat(submittedByClient.getStruct().hasStructDefId()).isFalse(); // Clients should not supply this.
+        assertThat(storedRun.getResultStructDefId()).isEqualTo(pinnedStructDefId);
+        Struct output = storedRun.getOutput().toProto().getStruct();
+        assertThat(output.getStructDefId())
+                .isEqualTo(pinnedStructDefId.toProto().build());
+        assertThat(output.getStruct().getFieldsOrThrow(NEW_STR_FIELD).getValue())
+                .isEqualTo(newFieldValue);
     }
 
     @Test
@@ -263,6 +285,25 @@ class CompleteUserTaskRunRequestModelTest {
                 "unknownField", VariableValue.newBuilder().setStr("value").build()));
 
         assertInvalidRequest(data, "is not defined in UserTask schema or has different type");
+    }
+
+    private StructDefIdModel pinLatestResultStructDef(TestData data) {
+        StructDefIdModel latestId = new StructDefIdModel(RESULT_STRUCT_DEF_NAME, STRUCT_DEF_VERSION + 1);
+        InlineStructDef latestFields = InlineStructDef.newBuilder()
+                .putFields(STR_FIELD, fieldDef(STR_FIELD_TYPE))
+                .putFields(STRUCT_FIELD, fieldDef(STRUCT_FIELD_TYPE))
+                .putFields(
+                        NEW_STR_FIELD,
+                        fieldDef(STR_FIELD_TYPE).toBuilder()
+                                .setDefaultValue(VariableValue.newBuilder().setStr(""))
+                                .build())
+                .build();
+        data.context().metadataManager().put(createStructDef(latestId, latestFields, data.context()));
+        UserTaskRunModel task = data.context().getableManager().get(data.taskId());
+        task.setResultStructDefId(latestId);
+        data.context().getableManager().put(task);
+        data.context().endExecution();
+        return latestId;
     }
 
     private UserTaskRunModel completeAndReload(TestData data) {

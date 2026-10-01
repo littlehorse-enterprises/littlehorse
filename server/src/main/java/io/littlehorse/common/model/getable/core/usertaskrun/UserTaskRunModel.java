@@ -496,8 +496,10 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         }
 
         try {
-            new TypeDefinitionModel(userTaskDef.getResultStructDefId())
-                    .validateCompatibility(output, executionContext.metadataManager());
+            // UserTaskRuns created before schema pinning use the UserTaskDef's output schema.
+            StructDefIdModel outputSchemaId =
+                    resultStructDefId != null ? resultStructDefId : userTaskDef.getResultStructDefId();
+            new TypeDefinitionModel(outputSchemaId).validateCompatibility(output, executionContext.metadataManager());
         } catch (TypeValidationException exn) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Invalid UserTaskRun output: " + exn.getMessage());
         }
