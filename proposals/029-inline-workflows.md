@@ -82,6 +82,7 @@ message RunInlineWfRequest {
 service LittleHorse {
   
   rpc RunInlineWf(RunInlineWfRequest) returns (WfRun) {}
+  rpc GetInlineWfSpec(InlineWfSpecId) returns(InlineWfSpec) {}
   
 }
 ```
