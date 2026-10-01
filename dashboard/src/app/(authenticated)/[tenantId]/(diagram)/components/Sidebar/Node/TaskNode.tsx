@@ -2,7 +2,10 @@ import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWith
 import { routes } from '@/app/routes'
 import { TaskNode as TaskNodeProto } from 'littlehorse-client/proto'
 import { LinkIcon } from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { FC } from 'react'
+import useSWR from 'swr'
+import { getTaskDef } from '@/app/(authenticated)/[tenantId]/taskDef/[name]/getTaskDef'
 import { VariableAssignment } from '../Components'
 import { TaskNodeMetric } from '../Components/TaskNodeMetric'
 import './node.css'
@@ -10,6 +13,12 @@ import { getTaskName } from '../../NodeTypes/Task'
 
 export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
   const { taskToExecute, exponentialBackoff, retries, timeoutSeconds, variables } = node
+  const tenantId = useParams().tenantId as string
+  const taskDefName = taskToExecute?.oneofKind === 'taskDefId' ? taskToExecute.taskDefId.name : undefined
+  const { data: taskDef } = useSWR(
+    taskDefName ? ['taskDef', tenantId, taskDefName] : null,
+    async () => await getTaskDef(tenantId, { name: taskDefName! })
+  )
   return (
     <div className="flex max-w-full flex-1 flex-col">
       <small className="node-title">Task</small>
@@ -37,12 +46,17 @@ export const TaskNode: FC<{ node: TaskNodeProto }> = ({ node }) => {
       {variables && variables.length > 0 && (
         <div className="flex flex-col gap-2">
           <small className="node-title">Inputs</small>
-          {variables.map((v, i) => (
-            <div key={JSON.stringify(v)} className="flex">
-              <span className="bg-gray-200 px-2 font-mono">{i}</span>
-              <VariableAssignment variableAssigment={v} />
-            </div>
-          ))}
+          {variables.map((v, i) => {
+            const label = taskDef?.inputVars[i]?.name ?? `${i}`
+            return (
+              <div key={JSON.stringify(v)} className="flex">
+                <span className="max-w-[50%] shrink-0 truncate bg-gray-200 px-2 font-mono" title={label}>
+                  {label}
+                </span>
+                <VariableAssignment variableAssigment={v} />
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
