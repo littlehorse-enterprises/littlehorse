@@ -246,7 +246,7 @@ to save current progress on a UserTask before executing the it.
 		}
 		saveUserTaskRunProgress.Policy = lhproto.SaveUserTaskRunProgressRequest_SaveUserTaskRunAssignmentPolicy(assignmentPolicy.GetInt())
 
-		fmt.Println("completing userTaskRun!")
+		fmt.Println("Saving userTaskRun progress!")
 		// Post the result
 		littlehorse.PrintResp(
 			(client).SaveUserTaskRunProgress(requestContext(cmd), saveUserTaskRunProgress),
@@ -591,19 +591,27 @@ func partialStructResultsFromJSON(
 		return nil, fmt.Errorf("failed parsing result file as a JSON object: %w", err)
 	}
 
-	results := make(map[string]*lhproto.VariableValue)
-	for name, rawValue := range rawFields {
+	partialFields := make(map[string]*lhproto.StructFieldDef)
+	for name := range rawFields {
 		fieldDef, ok := structDef.GetStructDef().GetFields()[name]
 		if !ok {
 			return nil, fmt.Errorf("unknown field %q for StructDef %s", name, structDef.GetId().GetName())
 		}
-		value, err := littlehorse.TypeDefToVarValWithResolver(
-			string(rawValue), fieldDef.GetFieldType(), resolver,
-		)
-		if err != nil {
-			return nil, fmt.Errorf("failed converting field %q: %w", name, err)
-		}
-		results[name] = value
+		partialFields[name] = fieldDef
+	}
+	// Parse JSON leaves through the Struct converter, rather than treating their
+	// JSON representation (including quotes) as raw CLI scalar input.
+	value, err := littlehorse.TypeDefToVarValWithResolver(string(contents), &lhproto.TypeDefinition{
+		DefinedType: &lhproto.TypeDefinition_InlineStructDef{
+			InlineStructDef: &lhproto.InlineStructDef{Fields: partialFields},
+		},
+	}, resolver)
+	if err != nil {
+		return nil, err
+	}
+	results := make(map[string]*lhproto.VariableValue)
+	for name, field := range value.GetStruct().GetStruct().GetFields() {
+		results[name] = field.GetValue()
 	}
 	return results, nil
 }
