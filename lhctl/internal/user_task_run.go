@@ -198,12 +198,16 @@ to save current progress on a UserTask before executing the it.
 		saveUserTaskRunProgress.UserId = userIdVarVal.GetStr()
 
 		if userTaskDef.ResultStructDefId != nil {
+			resultStructDefId := userTaskRun.GetResultStructDefId()
+			if resultStructDefId == nil {
+				resultStructDefId = userTaskDef.ResultStructDefId
+			}
 			resultFile, _ := cmd.Flags().GetString("resultFile")
 			if resultFile == "" {
 				log.Fatal("--resultFile is required when saving progress for a struct-backed UserTaskRun")
 			}
 			var results map[string]*lhproto.VariableValue
-			results, err = readPartialStructResults(cmd, resultFile, userTaskDef.ResultStructDefId, &client)
+			results, err = readPartialStructResults(cmd, resultFile, resultStructDefId, &client)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -212,7 +216,7 @@ to save current progress on a UserTask before executing the it.
 				fields[name] = &lhproto.StructField{Value: value}
 			}
 			saveUserTaskRunProgress.Output = &lhproto.VariableValue{Value: &lhproto.VariableValue_Struct{
-				Struct: &lhproto.Struct{StructDefId: userTaskDef.ResultStructDefId, Struct: &lhproto.InlineStruct{Fields: fields}},
+				Struct: &lhproto.Struct{Struct: &lhproto.InlineStruct{Fields: fields}},
 			}}
 		} else {
 			for _, field := range userTaskDef.Fields {
@@ -471,16 +475,20 @@ func executeUserTask(cmd *cobra.Command, wfRunId string, userTaskGuid string, cl
 	completeUserTask.UserId = userID
 
 	if userTaskDef.ResultStructDefId != nil {
+		resultStructDefId := userTaskRun.GetResultStructDefId()
+		if resultStructDefId == nil {
+			resultStructDefId = userTaskDef.ResultStructDefId
+		}
 		resultFile, _ := cmd.Flags().GetString("resultFile")
 		if resultFile == "" {
 			completeUserTask.Output, err = prompter.value("", &lhproto.TypeDefinition{
-				DefinedType: &lhproto.TypeDefinition_StructDefId{StructDefId: userTaskDef.ResultStructDefId},
+				DefinedType: &lhproto.TypeDefinition_StructDefId{StructDefId: resultStructDefId},
 			})
 		} else {
 			var contents []byte
 			contents, err = os.ReadFile(resultFile)
 			if err == nil {
-				completeUserTask.Output, err = structInputToVarVal(cmd, string(contents), userTaskDef.ResultStructDefId, client)
+				completeUserTask.Output, err = structInputToVarVal(cmd, string(contents), resultStructDefId, client)
 			}
 		}
 		if err != nil {
