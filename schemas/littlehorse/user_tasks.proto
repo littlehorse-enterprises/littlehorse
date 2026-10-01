@@ -130,6 +130,10 @@ message UserTaskRun {
   // progress, the Struct may omit top-level fields. Once the task is DONE, the
   // Struct is complete and compatible with UserTaskDef.result_struct_def_id.
   VariableValue output = 13;
+
+  // Used by clients to render fields and by the server to validate submissions.
+  // Unset for legacy field-backed runs and runs without a result schema.
+  StructDefId result_struct_def_id = 14;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.

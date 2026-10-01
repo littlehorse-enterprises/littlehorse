@@ -253,7 +253,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_descriptor,
+                io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_SaveUserTaskRunProgressRequest_ResultsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -367,7 +367,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       userId_ = s;
@@ -387,7 +387,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       getUserIdBytes() {
     java.lang.Object ref = userId_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       userId_ = b;
@@ -1078,7 +1078,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.UserTaskRunId user_task_run_id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder>
+        io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> 
         internalGetUserTaskRunIdFieldBuilder() {
       if (userTaskRunIdBuilder_ == null) {
         userTaskRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1327,7 +1327,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         getUserIdBytes() {
       java.lang.Object ref = userId_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         userId_ = b;
@@ -1619,7 +1619,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.VariableValue output = 5;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         internalGetOutputFieldBuilder() {
       if (outputBuilder_ == null) {
         outputBuilder_ = new com.google.protobuf.SingleFieldBuilder<
