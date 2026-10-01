@@ -10,12 +10,14 @@ import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -26,6 +28,7 @@ import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.util.Arg;
@@ -112,6 +115,55 @@ public class UserTaskTest {
                     String taskResult = taskRun.getAttempts(0).getOutput().getStr();
                     Assertions.assertThat(taskResult).contains("kenobi");
                     Assertions.assertThat(taskResult).contains("137");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldSaveAndCompleteLegacyUserTaskWithStructOutput() {
+        workflowVerifier
+                .prepareRun(deadlineReassignmentWorkflow)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResults(0)
+                            .getId();
+                    InlineStruct.Builder fields = InlineStruct.newBuilder()
+                            .putFields(
+                                    "myStr",
+                                    io.littlehorse.sdk.common.proto.StructField.newBuilder()
+                                            .setValue(LHLibUtil.objToVarVal("kenobi"))
+                                            .build());
+                    UserTaskRun saved = client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId("obiwan")
+                            .setPolicy(SaveUserTaskRunAssignmentPolicy.IGNORE_CLAIM)
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder().setStruct(fields)))
+                            .build());
+                    Assertions.assertThat(saved.getResultsMap()).containsOnlyKeys("myStr");
+                    Assertions.assertThat(saved.hasOutput()).isFalse();
+                    Assertions.assertThat(saved.getStatus()).isNotEqualTo(UserTaskRunStatus.DONE);
+
+                    fields.putFields(
+                            "myInt",
+                            io.littlehorse.sdk.common.proto.StructField.newBuilder()
+                                    .setValue(LHLibUtil.objToVarVal(137))
+                                    .build());
+                    client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId("obiwan")
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder().setStruct(fields)))
+                            .build());
+                })
+                .waitForStatus(COMPLETED)
+                .thenVerifyTaskRun(0, 2, taskRun -> {
+                    Assertions.assertThat(taskRun.getAttempts(0).getOutput().getStr())
+                            .contains("kenobi")
+                            .contains("137");
                 })
                 .start();
     }

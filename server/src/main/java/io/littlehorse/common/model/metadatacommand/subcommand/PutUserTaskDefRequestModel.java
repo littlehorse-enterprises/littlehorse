@@ -5,8 +5,10 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataSubCommand;
 import io.littlehorse.common.util.LHUtil;
@@ -26,6 +28,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
     public String name;
     public String description;
     public List<UserTaskFieldModel> fields;
+    private StructDefIdModel resultStructDefId;
 
     public PutUserTaskDefRequestModel() {
         fields = new ArrayList<>();
@@ -40,6 +43,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         if (description != null) {
             out.setDescription(description);
         }
+        if (resultStructDefId != null) {
+            out.setResultStructDefId(resultStructDefId.toProto());
+        }
         for (UserTaskFieldModel f : fields) {
             out.addFields(f.toProto());
         }
@@ -51,6 +57,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         PutUserTaskDefRequest p = (PutUserTaskDefRequest) proto;
         name = p.getName();
         if (p.hasDescription()) description = p.getDescription();
+        if (p.hasResultStructDefId()) {
+            resultStructDefId = StructDefIdModel.fromProto(p.getResultStructDefId(), context);
+        }
         for (UserTaskField utfpb : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class, context));
         }
@@ -66,11 +75,21 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         if (!LHUtil.isValidLHName(name)) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "UserTaskDefName must be a valid hostname");
         }
+        if (!fields.isEmpty() && resultStructDefId != null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "UserTaskDef cannot define both fields and result_struct_def_id");
+        }
+        StructDefModel resultStructDef = resultStructDefId == null ? null : metadataManager.get(resultStructDefId);
+        if (resultStructDefId != null && resultStructDef == null) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, "StructDef %s does not exist".formatted(resultStructDefId));
+        }
 
         UserTaskDefModel spec = new UserTaskDefModel();
         spec.name = name;
         spec.description = description;
         spec.fields = fields;
+        spec.setResultStructDefId(resultStructDefId);
         spec.createdAt = new Date();
 
         UserTaskDefModel oldVersion =
