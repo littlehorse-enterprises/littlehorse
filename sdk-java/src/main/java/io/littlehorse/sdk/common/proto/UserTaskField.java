@@ -13,7 +13,7 @@ package io.littlehorse.sdk.common.proto;
  * Protobuf type {@code littlehorse.UserTaskField}
  */
 @com.google.protobuf.Generated
-public final class UserTaskField extends
+@java.lang.Deprecated public final class UserTaskField extends
     com.google.protobuf.GeneratedMessage implements
     // @@protoc_insertion_point(message_implements:littlehorse.UserTaskField)
     UserTaskFieldOrBuilder {

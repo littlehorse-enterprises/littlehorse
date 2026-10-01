@@ -186,12 +186,13 @@ private static final long serialVersionUID = 0L;
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
+  @java.lang.Deprecated public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
     return fields_;
   }
   /**
@@ -199,12 +200,13 @@ private static final long serialVersionUID = 0L;
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
+  @java.lang.Deprecated public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList() {
     return fields_;
   }
@@ -213,12 +215,13 @@ private static final long serialVersionUID = 0L;
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
   @java.lang.Override
-  public int getFieldsCount() {
+  @java.lang.Deprecated public int getFieldsCount() {
     return fields_.size();
   }
   /**
@@ -226,12 +229,13 @@ private static final long serialVersionUID = 0L;
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
+  @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
     return fields_.get(index);
   }
   /**
@@ -239,12 +243,13 @@ private static final long serialVersionUID = 0L;
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
+  @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index) {
     return fields_.get(index);
   }
@@ -253,7 +258,7 @@ private static final long serialVersionUID = 0L;
   private com.google.protobuf.Timestamp createdAt_;
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -265,7 +270,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -277,7 +282,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -285,6 +290,47 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder() {
     return createdAt_ == null ? com.google.protobuf.Timestamp.getDefaultInstance() : createdAt_;
+  }
+
+  public static final int RESULT_STRUCT_DEF_ID_FIELD_NUMBER = 6;
+  private io.littlehorse.sdk.common.proto.StructDefId resultStructDefId_;
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   * @return Whether the resultStructDefId field is set.
+   */
+  @java.lang.Override
+  public boolean hasResultStructDefId() {
+    return ((bitField0_ & 0x00000004) != 0);
+  }
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   * @return The resultStructDefId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId() {
+    return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+  }
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder() {
+    return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -316,6 +362,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(5, getCreatedAt());
     }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      output.writeMessage(6, getResultStructDefId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -342,6 +391,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(5, getCreatedAt());
+    }
+    if (((bitField0_ & 0x00000004) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(6, getResultStructDefId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -374,6 +427,11 @@ private static final long serialVersionUID = 0L;
       if (!getCreatedAt()
           .equals(other.getCreatedAt())) return false;
     }
+    if (hasResultStructDefId() != other.hasResultStructDefId()) return false;
+    if (hasResultStructDefId()) {
+      if (!getResultStructDefId()
+          .equals(other.getResultStructDefId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -400,6 +458,10 @@ private static final long serialVersionUID = 0L;
     if (hasCreatedAt()) {
       hash = (37 * hash) + CREATED_AT_FIELD_NUMBER;
       hash = (53 * hash) + getCreatedAt().hashCode();
+    }
+    if (hasResultStructDefId()) {
+      hash = (37 * hash) + RESULT_STRUCT_DEF_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getResultStructDefId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -537,6 +599,7 @@ private static final long serialVersionUID = 0L;
               .alwaysUseFieldBuilders) {
         internalGetFieldsFieldBuilder();
         internalGetCreatedAtFieldBuilder();
+        internalGetResultStructDefIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -557,6 +620,11 @@ private static final long serialVersionUID = 0L;
       if (createdAtBuilder_ != null) {
         createdAtBuilder_.dispose();
         createdAtBuilder_ = null;
+      }
+      resultStructDefId_ = null;
+      if (resultStructDefIdBuilder_ != null) {
+        resultStructDefIdBuilder_.dispose();
+        resultStructDefIdBuilder_ = null;
       }
       return this;
     }
@@ -621,6 +689,12 @@ private static final long serialVersionUID = 0L;
             : createdAtBuilder_.build();
         to_bitField0_ |= 0x00000002;
       }
+      if (((from_bitField0_ & 0x00000020) != 0)) {
+        result.resultStructDefId_ = resultStructDefIdBuilder_ == null
+            ? resultStructDefId_
+            : resultStructDefIdBuilder_.build();
+        to_bitField0_ |= 0x00000004;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -677,6 +751,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasCreatedAt()) {
         mergeCreatedAt(other.getCreatedAt());
+      }
+      if (other.hasResultStructDefId()) {
+        mergeResultStructDefId(other.getResultStructDefId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -739,6 +816,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000010;
               break;
             } // case 42
+            case 50: {
+              input.readMessage(
+                  internalGetResultStructDefIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000020;
+              break;
+            } // case 50
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1024,11 +1108,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
+    @java.lang.Deprecated public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> getFieldsList() {
       if (fieldsBuilder_ == null) {
         return java.util.Collections.unmodifiableList(fields_);
       } else {
@@ -1040,11 +1125,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public int getFieldsCount() {
+    @java.lang.Deprecated public int getFieldsCount() {
       if (fieldsBuilder_ == null) {
         return fields_.size();
       } else {
@@ -1056,11 +1142,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskField getFields(int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);
       } else {
@@ -1072,11 +1159,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder setFields(
+    @java.lang.Deprecated public Builder setFields(
         int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
@@ -1095,11 +1183,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder setFields(
+    @java.lang.Deprecated public Builder setFields(
         int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
@@ -1115,11 +1204,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
+    @java.lang.Deprecated public Builder addFields(io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
@@ -1137,11 +1227,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder addFields(
+    @java.lang.Deprecated public Builder addFields(
         int index, io.littlehorse.sdk.common.proto.UserTaskField value) {
       if (fieldsBuilder_ == null) {
         if (value == null) {
@@ -1160,11 +1251,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder addFields(
+    @java.lang.Deprecated public Builder addFields(
         io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
@@ -1180,11 +1272,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder addFields(
+    @java.lang.Deprecated public Builder addFields(
         int index, io.littlehorse.sdk.common.proto.UserTaskField.Builder builderForValue) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
@@ -1200,11 +1293,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder addAllFields(
+    @java.lang.Deprecated public Builder addAllFields(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.UserTaskField> values) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
@@ -1221,11 +1315,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder clearFields() {
+    @java.lang.Deprecated public Builder clearFields() {
       if (fieldsBuilder_ == null) {
         fields_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -1240,11 +1335,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public Builder removeFields(int index) {
+    @java.lang.Deprecated public Builder removeFields(int index) {
       if (fieldsBuilder_ == null) {
         ensureFieldsIsMutable();
         fields_.remove(index);
@@ -1259,11 +1355,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskField.Builder getFieldsBuilder(
         int index) {
       return internalGetFieldsFieldBuilder().getBuilder(index);
     }
@@ -1272,11 +1369,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
         int index) {
       if (fieldsBuilder_ == null) {
         return fields_.get(index);  } else {
@@ -1288,11 +1386,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
+    @java.lang.Deprecated public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
          getFieldsOrBuilderList() {
       if (fieldsBuilder_ != null) {
         return fieldsBuilder_.getMessageOrBuilderList();
@@ -1305,11 +1404,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder() {
       return internalGetFieldsFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
     }
@@ -1318,11 +1418,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.UserTaskField.Builder addFieldsBuilder(
         int index) {
       return internalGetFieldsFieldBuilder().addBuilder(
           index, io.littlehorse.sdk.common.proto.UserTaskField.getDefaultInstance());
@@ -1332,11 +1433,12 @@ private static final long serialVersionUID = 0L;
      * These are the fields comprise the User Task. A User Task Manager application, or
      * any application used to complete a UserTaskRun, should inspect these fields and
      * display form entries for each one.
+     * Deprecated: use result_struct_def_id.
      * </pre>
      *
-     * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+     * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
+    @java.lang.Deprecated public java.util.List<io.littlehorse.sdk.common.proto.UserTaskField.Builder> 
          getFieldsBuilderList() {
       return internalGetFieldsFieldBuilder().getBuilderList();
     }
@@ -1360,7 +1462,7 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> createdAtBuilder_;
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1371,7 +1473,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1386,7 +1488,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1406,7 +1508,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1424,7 +1526,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1449,7 +1551,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1466,7 +1568,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1478,7 +1580,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1493,7 +1595,7 @@ private static final long serialVersionUID = 0L;
     }
     /**
      * <pre>
-     * The time the UserTaskRun was created.
+     * The time the UserTaskDef was created.
      * </pre>
      *
      * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -1510,6 +1612,172 @@ private static final long serialVersionUID = 0L;
         createdAt_ = null;
       }
       return createdAtBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.StructDefId resultStructDefId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> resultStructDefIdBuilder_;
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     * @return Whether the resultStructDefId field is set.
+     */
+    public boolean hasResultStructDefId() {
+      return ((bitField0_ & 0x00000020) != 0);
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     * @return The resultStructDefId.
+     */
+    public io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId() {
+      if (resultStructDefIdBuilder_ == null) {
+        return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+      } else {
+        return resultStructDefIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public Builder setResultStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (resultStructDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        resultStructDefId_ = value;
+      } else {
+        resultStructDefIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public Builder setResultStructDefId(
+        io.littlehorse.sdk.common.proto.StructDefId.Builder builderForValue) {
+      if (resultStructDefIdBuilder_ == null) {
+        resultStructDefId_ = builderForValue.build();
+      } else {
+        resultStructDefIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public Builder mergeResultStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (resultStructDefIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000020) != 0) &&
+          resultStructDefId_ != null &&
+          resultStructDefId_ != io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance()) {
+          getResultStructDefIdBuilder().mergeFrom(value);
+        } else {
+          resultStructDefId_ = value;
+        }
+      } else {
+        resultStructDefIdBuilder_.mergeFrom(value);
+      }
+      if (resultStructDefId_ != null) {
+        bitField0_ |= 0x00000020;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public Builder clearResultStructDefId() {
+      bitField0_ = (bitField0_ & ~0x00000020);
+      resultStructDefId_ = null;
+      if (resultStructDefIdBuilder_ != null) {
+        resultStructDefIdBuilder_.dispose();
+        resultStructDefIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefId.Builder getResultStructDefIdBuilder() {
+      bitField0_ |= 0x00000020;
+      onChanged();
+      return internalGetResultStructDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder() {
+      if (resultStructDefIdBuilder_ != null) {
+        return resultStructDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        return resultStructDefId_ == null ?
+            io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+      }
+    }
+    /**
+     * <pre>
+     * The exact StructDef that defines the result of a UserTaskRun.
+     * Unset for legacy UserTaskDefs that use fields.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> 
+        internalGetResultStructDefIdFieldBuilder() {
+      if (resultStructDefIdBuilder_ == null) {
+        resultStructDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder>(
+                getResultStructDefId(),
+                getParentForChildren(),
+                isClean());
+        resultStructDefId_ = null;
+      }
+      return resultStructDefIdBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskDef)

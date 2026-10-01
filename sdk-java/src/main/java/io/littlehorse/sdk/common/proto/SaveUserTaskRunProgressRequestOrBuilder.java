@@ -41,20 +41,22 @@ public interface SaveUserTaskRunProgressRequestOrBuilder extends
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output for struct-backed UserTaskDefs.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  int getResultsCount();
+  @java.lang.Deprecated int getResultsCount();
   /**
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output for struct-backed UserTaskDefs.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  boolean containsResults(
+  @java.lang.Deprecated boolean containsResults(
       java.lang.String key);
   /**
    * Use {@link #getResultsMap()} instead.
@@ -66,21 +68,23 @@ public interface SaveUserTaskRunProgressRequestOrBuilder extends
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output for struct-backed UserTaskDefs.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  @java.lang.Deprecated java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getResultsMap();
   /**
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output for struct-backed UserTaskDefs.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  /* nullable */
+  @java.lang.Deprecated /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
       java.lang.String key,
       /* nullable */
@@ -89,11 +93,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output for struct-backed UserTaskDefs.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
       java.lang.String key);
 
   /**
@@ -134,4 +139,37 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * @return The policy.
    */
   io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy getPolicy();
+
+  /**
+   * <pre>
+   * Partial output of a struct-backed UserTaskRun. Must contain a Struct with
+   * the UserTaskDef's result_struct_def_id. Missing top-level fields are allowed;
+   * supplied fields must conform to their definitions. Replaces saved progress.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 5;</code>
+   * @return Whether the output field is set.
+   */
+  boolean hasOutput();
+  /**
+   * <pre>
+   * Partial output of a struct-backed UserTaskRun. Must contain a Struct with
+   * the UserTaskDef's result_struct_def_id. Missing top-level fields are allowed;
+   * supplied fields must conform to their definitions. Replaces saved progress.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 5;</code>
+   * @return The output.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
+  /**
+   * <pre>
+   * Partial output of a struct-backed UserTaskRun. Must contain a Struct with
+   * the UserTaskDef's result_struct_def_id. Missing top-level fields are allowed;
+   * supplied fields must conform to their definitions. Replaces saved progress.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 5;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 }

@@ -547,11 +547,15 @@ message PutUserTaskDefRequest {
   // The fields that should be presented to the user on the screen in order to fill
   // out the User Task. Note that these fields also define a data contract for the
   // result of the UserTaskDef.
-  repeated UserTaskField fields = 2;
+  // Deprecated: use result_struct_def_id.
+  repeated UserTaskField fields = 2 [deprecated = true];
 
   // Optional metadata field to store user-defined data. Does not impact workflow
   // execution. Fine to store up to a few KB of text here.
   optional string description = 3;
+
+  // The exact StructDef that defines the result of this UserTaskDef.
+  StructDefId result_struct_def_id = 4;
 }
 
 // Field to create an ExternalEventDef.

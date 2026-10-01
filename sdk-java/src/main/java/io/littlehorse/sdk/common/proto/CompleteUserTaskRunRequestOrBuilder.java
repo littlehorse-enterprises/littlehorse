@@ -41,20 +41,22 @@ public interface CompleteUserTaskRunRequestOrBuilder extends
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  int getResultsCount();
+  @java.lang.Deprecated int getResultsCount();
   /**
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  boolean containsResults(
+  @java.lang.Deprecated boolean containsResults(
       java.lang.String key);
   /**
    * Use {@link #getResultsMap()} instead.
@@ -66,21 +68,23 @@ public interface CompleteUserTaskRunRequestOrBuilder extends
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+  @java.lang.Deprecated java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
   getResultsMap();
   /**
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  /* nullable */
+  @java.lang.Deprecated /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
       java.lang.String key,
       /* nullable */
@@ -89,11 +93,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * <pre>
    * A map from UserTaskField.name to a VariableValue containing the results of the
    * user filling out the form.
+   * Deprecated: use output.
    * </pre>
    *
-   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+   * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
       java.lang.String key);
 
   /**
@@ -115,4 +120,34 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    */
   com.google.protobuf.ByteString
       getUserIdBytes();
+
+  /**
+   * <pre>
+   * The output of a struct-backed UserTaskRun. Must contain a Struct value
+   * compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   * @return Whether the output field is set.
+   */
+  boolean hasOutput();
+  /**
+   * <pre>
+   * The output of a struct-backed UserTaskRun. Must contain a Struct value
+   * compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   * @return The output.
+   */
+  io.littlehorse.sdk.common.proto.VariableValue getOutput();
+  /**
+   * <pre>
+   * The output of a struct-backed UserTaskRun. Must contain a Struct value
+   * compatible with UserTaskDef.result_struct_def_id.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableValue output = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
 }
