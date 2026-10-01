@@ -419,4 +419,34 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * <code>.littlehorse.VariableValue output = 13;</code>
    */
   io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
+
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   * @return Whether the resultStructDefId field is set.
+   */
+  boolean hasResultStructDefId();
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   * @return The resultStructDefId.
+   */
+  io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId();
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder();
 }

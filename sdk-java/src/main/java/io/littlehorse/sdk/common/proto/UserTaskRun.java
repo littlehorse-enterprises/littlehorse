@@ -183,7 +183,7 @@ private static final long serialVersionUID = 0L;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       userGroup_ = s;
@@ -209,7 +209,7 @@ private static final long serialVersionUID = 0L;
       getUserGroupBytes() {
     java.lang.Object ref = userGroup_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       userGroup_ = b;
@@ -262,7 +262,7 @@ private static final long serialVersionUID = 0L;
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       userId_ = s;
@@ -289,7 +289,7 @@ private static final long serialVersionUID = 0L;
       getUserIdBytes() {
     java.lang.Object ref = userId_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       userId_ = b;
@@ -305,7 +305,7 @@ private static final long serialVersionUID = 0L;
         java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> defaultEntry =
             com.google.protobuf.MapEntry
             .<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>newDefaultInstance(
-                io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRun_ResultsEntry_descriptor,
+                io.littlehorse.sdk.common.proto.UserTasks.internal_static_littlehorse_UserTaskRun_ResultsEntry_descriptor, 
                 com.google.protobuf.WireFormat.FieldType.STRING,
                 "",
                 com.google.protobuf.WireFormat.FieldType.MESSAGE,
@@ -446,7 +446,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
    * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
    */
   @java.lang.Override
-  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder>
+  public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> 
       getEventsOrBuilderList() {
     return events_;
   }
@@ -520,7 +520,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (ref instanceof java.lang.String) {
       return (java.lang.String) ref;
     } else {
-      com.google.protobuf.ByteString bs =
+      com.google.protobuf.ByteString bs = 
           (com.google.protobuf.ByteString) ref;
       java.lang.String s = bs.toStringUtf8();
       notes_ = s;
@@ -543,7 +543,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       getNotesBytes() {
     java.lang.Object ref = notes_;
     if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b =
+      com.google.protobuf.ByteString b = 
           com.google.protobuf.ByteString.copyFromUtf8(
               (java.lang.String) ref);
       notes_ = b;
@@ -690,6 +690,47 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
   }
 
+  public static final int RESULT_STRUCT_DEF_ID_FIELD_NUMBER = 14;
+  private io.littlehorse.sdk.common.proto.StructDefId resultStructDefId_;
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   * @return Whether the resultStructDefId field is set.
+   */
+  @java.lang.Override
+  public boolean hasResultStructDefId() {
+    return ((bitField0_ & 0x00000100) != 0);
+  }
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   * @return The resultStructDefId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId() {
+    return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+  }
+  /**
+   * <pre>
+   * Used by clients to render fields and by the server to validate submissions.
+   * Unset for legacy field-backed runs and runs without a result schema.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder() {
+    return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -742,6 +783,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (((bitField0_ & 0x00000080) != 0)) {
       output.writeMessage(13, getOutput());
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      output.writeMessage(14, getResultStructDefId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -802,6 +846,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (((bitField0_ & 0x00000080) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(13, getOutput());
+    }
+    if (((bitField0_ & 0x00000100) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(14, getResultStructDefId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -865,6 +913,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (!getOutput()
           .equals(other.getOutput())) return false;
     }
+    if (hasResultStructDefId() != other.hasResultStructDefId()) return false;
+    if (hasResultStructDefId()) {
+      if (!getResultStructDefId()
+          .equals(other.getResultStructDefId())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -919,6 +972,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (hasOutput()) {
       hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
       hash = (53 * hash) + getOutput().hashCode();
+    }
+    if (hasResultStructDefId()) {
+      hash = (37 * hash) + RESULT_STRUCT_DEF_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getResultStructDefId().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1083,6 +1140,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         internalGetScheduledTimeFieldBuilder();
         internalGetNodeRunIdFieldBuilder();
         internalGetOutputFieldBuilder();
+        internalGetResultStructDefIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1126,6 +1184,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (outputBuilder_ != null) {
         outputBuilder_.dispose();
         outputBuilder_ = null;
+      }
+      resultStructDefId_ = null;
+      if (resultStructDefIdBuilder_ != null) {
+        resultStructDefIdBuilder_.dispose();
+        resultStructDefIdBuilder_ = null;
       }
       return this;
     }
@@ -1225,6 +1288,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
             : outputBuilder_.build();
         to_bitField0_ |= 0x00000080;
       }
+      if (((from_bitField0_ & 0x00001000) != 0)) {
+        result.resultStructDefId_ = resultStructDefIdBuilder_ == null
+            ? resultStructDefId_
+            : resultStructDefIdBuilder_.build();
+        to_bitField0_ |= 0x00000100;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -1280,7 +1349,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
             eventsBuilder_ = null;
             events_ = other.events_;
             bitField0_ = (bitField0_ & ~0x00000040);
-            eventsBuilder_ =
+            eventsBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  internalGetEventsFieldBuilder() : null;
           } else {
@@ -1304,6 +1373,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       if (other.hasOutput()) {
         mergeOutput(other.getOutput());
+      }
+      if (other.hasResultStructDefId()) {
+        mergeResultStructDefId(other.getResultStructDefId());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1413,6 +1485,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               bitField0_ |= 0x00000800;
               break;
             } // case 106
+            case 114: {
+              input.readMessage(
+                  internalGetResultStructDefIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00001000;
+              break;
+            } // case 114
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1574,7 +1653,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.UserTaskRunId id = 1;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder>
+        io.littlehorse.sdk.common.proto.UserTaskRunId, io.littlehorse.sdk.common.proto.UserTaskRunId.Builder, io.littlehorse.sdk.common.proto.UserTaskRunIdOrBuilder> 
         internalGetIdFieldBuilder() {
       if (idBuilder_ == null) {
         idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1731,7 +1810,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.UserTaskDefId user_task_def_id = 2;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder>
+        io.littlehorse.sdk.common.proto.UserTaskDefId, io.littlehorse.sdk.common.proto.UserTaskDefId.Builder, io.littlehorse.sdk.common.proto.UserTaskDefIdOrBuilder> 
         internalGetUserTaskDefIdFieldBuilder() {
       if (userTaskDefIdBuilder_ == null) {
         userTaskDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -1806,7 +1885,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         getUserGroupBytes() {
       java.lang.Object ref = userGroup_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         userGroup_ = b;
@@ -1948,7 +2027,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         getUserIdBytes() {
       java.lang.Object ref = userId_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         userId_ = b;
@@ -2549,7 +2628,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
-    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder>
+    public java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> 
          getEventsOrBuilderList() {
       if (eventsBuilder_ != null) {
         return eventsBuilder_.getMessageOrBuilderList();
@@ -2587,12 +2666,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      *
      * <code>repeated .littlehorse.UserTaskEvent events = 8;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent.Builder>
+    public java.util.List<io.littlehorse.sdk.common.proto.UserTaskEvent.Builder> 
          getEventsBuilderList() {
       return internalGetEventsFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
-        io.littlehorse.sdk.common.proto.UserTaskEvent, io.littlehorse.sdk.common.proto.UserTaskEvent.Builder, io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder>
+        io.littlehorse.sdk.common.proto.UserTaskEvent, io.littlehorse.sdk.common.proto.UserTaskEvent.Builder, io.littlehorse.sdk.common.proto.UserTaskEventOrBuilder> 
         internalGetEventsFieldBuilder() {
       if (eventsBuilder_ == null) {
         eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
@@ -2659,7 +2738,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         getNotesBytes() {
       java.lang.Object ref = notes_;
       if (ref instanceof String) {
-        com.google.protobuf.ByteString b =
+        com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         notes_ = b;
@@ -2871,7 +2950,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.google.protobuf.Timestamp scheduled_time = 10;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder>
+        com.google.protobuf.Timestamp, com.google.protobuf.Timestamp.Builder, com.google.protobuf.TimestampOrBuilder> 
         internalGetScheduledTimeFieldBuilder() {
       if (scheduledTimeBuilder_ == null) {
         scheduledTimeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -3028,7 +3107,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.NodeRunId node_run_id = 11;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder>
+        io.littlehorse.sdk.common.proto.NodeRunId, io.littlehorse.sdk.common.proto.NodeRunId.Builder, io.littlehorse.sdk.common.proto.NodeRunIdOrBuilder> 
         internalGetNodeRunIdFieldBuilder() {
       if (nodeRunIdBuilder_ == null) {
         nodeRunIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -3253,7 +3332,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
      * <code>.littlehorse.VariableValue output = 13;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>
+        io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
         internalGetOutputFieldBuilder() {
       if (outputBuilder_ == null) {
         outputBuilder_ = new com.google.protobuf.SingleFieldBuilder<
@@ -3264,6 +3343,172 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         output_ = null;
       }
       return outputBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.StructDefId resultStructDefId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> resultStructDefIdBuilder_;
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     * @return Whether the resultStructDefId field is set.
+     */
+    public boolean hasResultStructDefId() {
+      return ((bitField0_ & 0x00001000) != 0);
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     * @return The resultStructDefId.
+     */
+    public io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId() {
+      if (resultStructDefIdBuilder_ == null) {
+        return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+      } else {
+        return resultStructDefIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public Builder setResultStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (resultStructDefIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        resultStructDefId_ = value;
+      } else {
+        resultStructDefIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00001000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public Builder setResultStructDefId(
+        io.littlehorse.sdk.common.proto.StructDefId.Builder builderForValue) {
+      if (resultStructDefIdBuilder_ == null) {
+        resultStructDefId_ = builderForValue.build();
+      } else {
+        resultStructDefIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00001000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public Builder mergeResultStructDefId(io.littlehorse.sdk.common.proto.StructDefId value) {
+      if (resultStructDefIdBuilder_ == null) {
+        if (((bitField0_ & 0x00001000) != 0) &&
+          resultStructDefId_ != null &&
+          resultStructDefId_ != io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance()) {
+          getResultStructDefIdBuilder().mergeFrom(value);
+        } else {
+          resultStructDefId_ = value;
+        }
+      } else {
+        resultStructDefIdBuilder_.mergeFrom(value);
+      }
+      if (resultStructDefId_ != null) {
+        bitField0_ |= 0x00001000;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public Builder clearResultStructDefId() {
+      bitField0_ = (bitField0_ & ~0x00001000);
+      resultStructDefId_ = null;
+      if (resultStructDefIdBuilder_ != null) {
+        resultStructDefIdBuilder_.dispose();
+        resultStructDefIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefId.Builder getResultStructDefIdBuilder() {
+      bitField0_ |= 0x00001000;
+      onChanged();
+      return internalGetResultStructDefIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder() {
+      if (resultStructDefIdBuilder_ != null) {
+        return resultStructDefIdBuilder_.getMessageOrBuilder();
+      } else {
+        return resultStructDefId_ == null ?
+            io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
+      }
+    }
+    /**
+     * <pre>
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     * </pre>
+     *
+     * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder> 
+        internalGetResultStructDefIdFieldBuilder() {
+      if (resultStructDefIdBuilder_ == null) {
+        resultStructDefIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.StructDefId, io.littlehorse.sdk.common.proto.StructDefId.Builder, io.littlehorse.sdk.common.proto.StructDefIdOrBuilder>(
+                getResultStructDefId(),
+                getParentForChildren(),
+                isClean());
+        resultStructDefId_ = null;
+      }
+      return resultStructDefIdBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskRun)

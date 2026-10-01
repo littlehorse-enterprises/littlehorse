@@ -214,6 +214,13 @@ export interface UserTaskRun {
      * @generated from protobuf field: littlehorse.VariableValue output = 13
      */
     output?: VariableValue;
+    /**
+     * Used by clients to render fields and by the server to validate submissions.
+     * Unset for legacy field-backed runs and runs without a result schema.
+     *
+     * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 14
+     */
+    resultStructDefId?: StructDefId;
 }
 /**
  * Re-Assigns a UserTaskRun to a specific userId or userGroup.
@@ -919,7 +926,8 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
             { no: 10, name: "scheduled_time", kind: "message", T: () => Timestamp },
             { no: 11, name: "node_run_id", kind: "message", T: () => NodeRunId },
             { no: 12, name: "epoch", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
-            { no: 13, name: "output", kind: "message", T: () => VariableValue }
+            { no: 13, name: "output", kind: "message", T: () => VariableValue },
+            { no: 14, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
         ]);
     }
     create(value?: PartialMessage<UserTaskRun>): UserTaskRun {
@@ -972,6 +980,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
                     break;
                 case /* littlehorse.VariableValue output */ 13:
                     message.output = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.output);
+                    break;
+                case /* littlehorse.StructDefId result_struct_def_id */ 14:
+                    message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1041,6 +1052,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
         /* littlehorse.VariableValue output = 13; */
         if (message.output)
             VariableValue.internalBinaryWrite(message.output, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.StructDefId result_struct_def_id = 14; */
+        if (message.resultStructDefId)
+            StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
