@@ -92,17 +92,24 @@ describe('UserTaskRunNode', () => {
         wfRunId: undefined,
       },
       epoch: 42,
-      results: {
-        requestedItem: {
-          value: {
-            oneofKind: 'str',
-            str: 'testing',
-          },
-        },
-        justification: {
-          value: {
-            oneofKind: 'str',
-            str: 'as',
+      results: {},
+      output: {
+        value: {
+          oneofKind: 'struct',
+          struct: {
+            structDefId: { name: 'item-request-form', version: 0 },
+            struct: {
+              fields: {
+                requestedItem: {
+                  value: { value: { oneofKind: 'str', str: 'testing' } },
+                  masked: false,
+                },
+                justification: {
+                  value: { value: { oneofKind: 'str', str: 'as' } },
+                  masked: false,
+                },
+              },
+            },
           },
         },
       },
