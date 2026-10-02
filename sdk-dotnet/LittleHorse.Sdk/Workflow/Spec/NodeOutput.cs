@@ -51,7 +51,7 @@ public class NodeOutput
     /// <returns>A NodeOutput.</returns>
     public NodeOutput WithJsonPath(string path) 
     {
-        if (JsonPath != null) 
+        if (JsonPath != null || LhPath != null)
         {
             throw new Exception("Cannot use jsonpath() twice on same node!");
         }
@@ -61,6 +61,19 @@ public class NodeOutput
         };
 
         return nodeOutput;
+    }
+
+    internal LHPath? LhPath { get; private set; }
+
+    /// <summary>Returns a handle to a Struct or JSON object field. Calls can be chained.</summary>
+    /// <param name="field">The field name.</param>
+    /// <returns>A new output handle selecting the field.</returns>
+    public NodeOutput Get(string field)
+    {
+        if (JsonPath != null) throw new InvalidOperationException("Cannot mix Get and WithJsonPath.");
+        var path = LhPath?.Clone() ?? new LHPath();
+        path.Path.Add(new LHPath.Types.Selector { Key = field });
+        return new NodeOutput(NodeName, Parent) { LhPath = path };
     }
 
     /// <summary>
