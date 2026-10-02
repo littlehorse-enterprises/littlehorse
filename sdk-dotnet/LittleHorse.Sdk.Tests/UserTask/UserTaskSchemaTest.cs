@@ -2,12 +2,44 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Nodes;
 using LittleHorse.Sdk.UserTask;
+using LittleHorse.Sdk.Common.Proto;
 using Xunit;
 
 namespace LittleHorse.Sdk.Tests.UserTask;
 
 public class UserTaskSchemaTest
 {
+    [Fact]
+    public void StructBackedSchema_ShouldUseResolvedIdWithoutLegacyFields()
+    {
+        var id = new StructDefId { Name = "customer", Version = 3 };
+        var schema = new UserTaskSchema(id, "customer-data");
+        id.Version = 4;
+
+        var request = schema.Compile();
+        Assert.Equal("customer-data", request.Name);
+        Assert.Equal(new StructDefId { Name = "customer", Version = 3 }, request.ResultStructDefId);
+        Assert.Empty(request.Fields);
+        request.ResultStructDefId.Version = 5;
+        Assert.Equal(3, schema.Compile().ResultStructDefId.Version);
+    }
+
+    [Theory]
+    [InlineData("", 0, "task")]
+    [InlineData("customer", -1, "task")]
+    [InlineData("customer", 0, " ")]
+    public void StructBackedSchema_ShouldRejectUnresolvedSchemaOrEmptyNames(string name, int version, string task)
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new UserTaskSchema(new StructDefId { Name = name, Version = version }, task));
+    }
+
+    [Fact]
+    public void StructBackedSchema_ShouldRejectNullId()
+    {
+        Assert.Throws<ArgumentNullException>(() => new UserTaskSchema((StructDefId)null!, "task"));
+    }
+
     [Fact]
     public void UserTaskSchema_WithUTFieldsOfSupportedVariableTypesInForm_ShouldCompile()
     {
