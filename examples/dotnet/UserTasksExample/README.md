@@ -1,227 +1,133 @@
-## User Tasks
+# Struct-backed user tasks
 
-User Tasks are a type of `Node` in LittleHorse which allow you to assign a task (in this case, filling out a form) to a human. User Tasks have the following features:
+This example implements an IT purchase request followed by Finance approval.
+`ItemRequestForm` and `ApprovalForm` use `[LHStructDef]` and `[LHStructField]`
+properties. Startup registers those StructDefs, then passes their returned IDs to
+`UserTaskSchema` as the minimum output schemas for the UserTaskDefs.
 
-- Can be assigned to a specific User ID or a User Group.
-- Produce output that can be saved into a Workflow Run `Variable` and used elsewhere in the `WfRun`.
-- Reminder Tasks are supported, such that a regular `TaskRun` is executed some period of time after the User Task is scheduled (if the User Task has not been completed yet). This is not included in this example.
-- Can include notes which are presented to the person executing the User Task. Notes are unique for each instance of the Workflow.
+The workflow stores the first user task's output in a Struct variable and uses
+`Get("requestedItem")` and `Get("justification")` to build Finance's notes. It reads
+`Get("isApproved")` from the second user task's Struct output to choose an approval
+or denial email. Emails are printed by the worker; nothing is actually sent.
 
-For more information about User Tasks, please consult the [User Task Documentation](https://littlehorse.io/docs/server/concepts/user-tasks) on our website.
+## Start the example
 
-### The Business Logic
+Start a local server using the [local development instructions](../../../local-dev/README.md).
+You also need the .NET 6 SDK. From the repository root:
 
-This example mimics a common Corporate workflow in which some employee requests an item from the IT Department, and the Finance Department must approve the purchase request first. The steps of the Workflow are roughly as follows:
-
-* A User Task is assigned to the `user-id` who initiated the `WfRun`, which involves filling out a description of the requested item and a justification.
-* A User Task is assigned to the `finance` User Group. The User Task contains notes from the output of the first User Task, and has one field: a `boolean` which determines whether the purchase is approved.
-* If the purchase is approved, the requester is notified of approval.
-
-### Running the Example
-
-Let's take it slow and run the example step-by-step so that we can see exactly what's going on.
-
-**As a PreRequisite, get a running copy of the LittleHorse Server, as in the [Java Quickstart](../../docs/QUICKSTART_JAVA.md).**
-
-#### Deploy It
-
-First, run the `UserTasksExample` application to:
-* Deploy your `TaskDef`, `UserTaskDef`s, and `WfSpec`
-* Start the `EmailSender` task worker which sends fake "emails".
-
-
-```
-dotnet build
-dotnet run
+```bash
+go -C lhctl install .
+export PATH="$(go env GOPATH)/bin:$PATH"
+lhctl whoami
+dotnet build examples/dotnet/UserTasksExample
+dotnet run --project examples/dotnet/UserTasksExample --no-build
 ```
 
-#### Start the Workflow
+Leave the worker running. It reads `~/.config/littlehorse.config` when present and
+registers the TaskDef, StructDefs, UserTaskDefs, and WfSpec before polling for tasks.
 
-In another terminal, use `lhctl` to run the workflow. Note that we set the initial `user-id` of the person requesting the new item to `anakin`.
+## Request an item
 
-```
+In a second terminal, use the same CLI installation:
+
+```bash
+export PATH="$(go env GOPATH)/bin:$PATH"
 lhctl run it-request user-id anakin
+lhctl list userTaskRun <wf_run_id>
+lhctl get userTaskRun <wf_run_id> <request_guid>
 ```
 
-We check the status of the `WfRun` and see that it's running:
+Use the ID returned by `run` and the GUID from `list`. The task is initially
+`ASSIGNED` to `anakin`. After 60 seconds without completion, it is released to
+`testGroup` and becomes `UNASSIGNED`.
+
+The run's `resultStructDefId` identifies the pinned form schema. Inspect it with:
+
+```bash
+lhctl get structDef item-request-form <version>
 ```
+
+Use the version from the run. Clients should render this schema, which contains
+`requestedItem` and `justification`, both strings.
+
+### Save a draft
+
+Before completing the request:
+
+```bash
+cat > /tmp/it-request-progress.json <<'JSON'
+{"requestedItem": "the rank of master"}
+JSON
+lhctl save userTaskRun --wfRunId <wf_run_id> --userTaskGuid <request_guid> --resultFile /tmp/it-request-progress.json
+lhctl get userTaskRun <wf_run_id> <request_guid>
+```
+
+Enter `anakin` as the user ID and `0` as the assignment policy. The draft appears
+in `output.struct.struct.fields`, while the task remains unfinished. Saving
+replaces the previous draft, so send every field you want to retain.
+
+### Complete the request
+
+```bash
+lhctl execute userTaskRun <wf_run_id> <request_guid>
+```
+
+Enter `anakin`. The .NET Struct mapper includes property defaults (empty strings
+and `false`) in the schema, so the CLI first asks whether to include each field.
+Answer `y` to each `Include ...?` prompt, then enter the values in alphabetical order:
+
+| Field | Value |
+| --- | --- |
+| justification | it's not fair to be on this council and not be a Master! |
+| requestedItem | the rank of master |
+
+Submit both fields, including the previously saved value. Fetching the task now
+shows `DONE` and a Struct output with the pinned StructDef ID.
+
+## Finance approval
+
+```bash
+lhctl list userTaskRun <wf_run_id>
+lhctl get userTaskRun <wf_run_id> <approval_guid>
+```
+
+Use the second task's GUID. It starts `UNASSIGNED` in `finance`, with notes containing
+the submitted item and justification. Its pinned schema is `approval-form`.
+After two seconds, the worker prints the reminder message:
+
+```text
+Hi finance team, you have a new assigned task
+```
+
+Assign and complete it:
+
+```bash
+lhctl assign userTaskRun <wf_run_id> <approval_guid> --userId mace
+lhctl execute userTaskRun <wf_run_id> <approval_guid>
+```
+
+Enter `mace`, answer `y` to `Include isApproved?`, then enter `true`. The worker prints:
+
+```text
+Dear anakin, your request for the rank of master has been approved!
+```
+
+With `false`, it prints:
+
+```text
+Dear anakin, your request for the rank of master has been denied.
+```
+
+The Finance task is reassigned to `test-eduwer` 60 seconds after assignment to an
+individual. If that deadline passes, complete as `test-eduwer`, or reassign to
+`mace` with `--overrideClaim`.
+
+Verify completion and inspect worker results:
+
+```bash
 lhctl get wfRun <wf_run_id>
+lhctl list taskRun <wf_run_id>
+lhctl get taskRun <wf_run_id> <task_guid>
 ```
 
-Note that there is only one `ThreadRun` in the `WfRun`, and the current `NodeRun` position is `1`. If you recall our `WfRun`, we've arrived at a User Task Run, and it should be assigned to `anakin`, but if the assigned user does not complete the task in less than 1 minute, then the task will be released to `testGroup` group.
-
-#### Find the User Task
-
-There are two general ways to find the User Task Run that is assigned to `anakin`
-1. Using the `SearchUserTaskRun` rpc, for example via `lhctl search userTaskRun`
-2. Looking at the `NodeRun` to get the `UserTaskRunId`.
-
-In most production use-cases, we would use option `1` since there would be a frontend that someone logs into which displays tasks assigned to them. Any of the following commands should work to find the User Task Run Id (note that it is a composite ID consisting of `wfRunId` and `userTaskGuid`).
-
-```
-lhctl search userTaskRun --userId anakin
-
-lhctl search userTaskRun --userId anakin --userTaskStatus ASSIGNED
-
-lhctl search userTaskRun --userTaskStatus ASSIGNED --userTaskDefName it-request
-```
-
-The commands behave roughly like they sound.
-
-The second option to find the UserTaskRun's ID is to check the `NodeRun`. Recall that there is only one `ThreadRun` (with number `0`), and that `ThreadRun` is on `NodeRun` 1. We can get tne `NodeRun` as follows:
-
-```
-# provide wfRunId, threadRun number, and nodeRun position
-lhctl get nodeRun <wfRunId> 0 1
-```
-
-You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all the searches above.
-
-#### Execute the User Task Run
-
-Now that we have the `userTaskGuid`, we can use `lhctl` to execute the User Task Run. But first, let's inspect the `userTaskRun`:
-
-```
-lhctl get userTaskRun <wfRunId> <userTaskGuid>
-```
-
-Note that its status is `CLAIMED` and it's assigned to `anakin`.
-
-_Note that in production, there would be a web frontend that users log in to in order to execute the User Task Runs. The LittleHorse server tracks the state of these User Tasks (including whom they are assigned to) but does not present them on a web front-end. This is because each user would likely need a highly-customized presentation of the tasks, such as on their mobile-app, internal tooling, customer-facing web app, etc. If you wish for a custom web front-end, please contact LittleHorse Professional Services (`sales@littlehorse.io`)._
-
-Let's execute the task:
-
-```
-lhctl execute userTaskRun <wfRunId> <userTaskGuid>
-```
-
-Follow the prompts, entering your user-id (be sure to enter `anakin`), the item `description`, and the `justification`. For example:
-
-```
-->lhctl execute userTaskRun 89962fbd15e748358f2df1c130b34403 4579d4bd166d4156bda49042b10ad7bb
-
-Executing UserTaskRun  89962fbd15e748358f2df1c130b34403   4579d4bd166d4156bda49042b10ad7bb
-Enter the userId of the person completing the task: anakin
-
-Field:  Your Request
-The item you are requesting.
-Please enter the response for this field (STR): the rank of master
-
-Field:  Request Justification
-Why you need this request.
-Please enter the response for this field (STR): it's not fair to be on this council and not be a Master!
-Saving userTaskRun progress!
-{}
-```
-
-Now let's get the `userTaskRun` again:
-
-```
-lhctl get userTaskRun <wfRunId> <userTaskGuid>
-```
-
-It's now `DONE`! And we can see the results: Anakin is requesting the Rank of Jedi Master. Note that the searches are also updated:
-
-```
-# Doesn't show our User Task Run from before
-lhctl search userTaskRun --userId anakin --userTaskStatus ASSIGNED
-
-# DOES show the User Task Run
-lhctl search userTaskRun --userId anakin --userTaskStatus DONE
-```
-
-#### Execute the Next User Task
-
-Now let's check back on our `WfRun`.
-
-```
-lhctl get wfRun <wfRunId>
-```
-
-It's now on `NodeRun` with position `2`! That makes sense. It's that `UserTaskRun` that's assigned to the `finance` department. Let's find the ID:
-
-```
-lhctl search userTaskRun --userGroup finance --userTaskStatus UNASSIGNED
-```
-
-Now let's inspect the UserTaskRun again (use the new `userTaskGuid` from the search we just ran):
-
-```
-`lhctl get userTaskRun` <wfRunId> <userTaskGuid>
-```
-
-Note that `userId` is not set, but `userGroup` is set to `finance`. Let's assign it to `mace` (because we know Mace Windu and Anakin are besties).
-
-
-```
-lhctl assign userTaskRun <wfRunId> <userTaskGuid> --userId 'mace'
-```
-
-Now look at the `UserTaskRun` and note its status:
-
-```
-->lhctl get userTaskRun <wfRunId> <userTaskGuid>
-->lhctl get userTaskRun a406153687d846fea339855149576aac 5414a9c058364717a237871e30d9cbeb
-{
-  "id":  {
-    "wfRunId":  {
-      "id":  "a406153687d846fea339855149576aac"
-    },
-    "userTaskGuid":  "5414a9c058364717a237871e30d9cbeb"
-  },
-  "userTaskDefId":  {
-    "name":  "approve-it-request",
-    "version":  0
-  },
-  "userId":  "mace",
-  "results":  {},
-  "status":  "ASSIGNED",
-  "events":  [
-    {
-      "time":  "2025-03-18T21:40:21.770Z",
-      "assigned":  {
-        "newUserGroup":  "finance"
-      }
-    },
-    {
-      "time":  "2025-03-18T21:40:23.982Z",
-      "taskExecuted":  {
-        "taskRun":  {
-          "wfRunId":  {
-            "id":  "a406153687d846fea339855149576aac"
-          },
-          "taskGuid":  "d9f6ae202aad443995107ae1e92562b6"
-        }
-      }
-    },
-    {
-      "time":  "2025-03-18T21:43:05.276Z",
-      "assigned":  {
-        "oldUserGroup":  "finance",
-        "newUserId":  "mace"
-      }
-    }
-  ],
-  "notes":  "User anakin is requesting to buy item the rank of master.\nJustification: it's not fair to be on this council and not be a Master!",
-  "scheduledTime":  "2025-03-18T21:40:21.772Z",
-  "nodeRunId":  {
-    "wfRunId":  {
-      "id":  "a406153687d846fea339855149576aac"
-    },
-    "threadRunNumber":  0,
-    "position":  2
-  },
-  "epoch":  2
-}
-```
-
-It's now `ASSIGNED`! And assigned to `mace`. Also, notice the `.result.notes` field.
-
-Let's execute the `UserTaskRun`.
-
-```
--> lhctl execute userTaskRun <wfRunId> <userTaskGuid>
-
-```
-
-Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `dotnet run`.
+The workflow reaches `COMPLETED`. Stop the worker with Ctrl+C when finished.
