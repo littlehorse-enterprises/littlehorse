@@ -1,11 +1,10 @@
-using LittleHorse.Sdk.UserTask;
+using LittleHorse.Sdk.Worker;
 
 namespace UserTasksExample;
 
+[LHStructDef("approval-form")]
 public class ApprovalForm
 {
-    [UserTaskField(
-        DisplayName = "Approved?",
-        Description = "Reply 'false' if this is an acceptable request.")]
-    public bool IsApproved;
+    [LHStructField(name: "isApproved", description: "Whether the request is approved.")]
+    public bool IsApproved { get; set; }
 }
