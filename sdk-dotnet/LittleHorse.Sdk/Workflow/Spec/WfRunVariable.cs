@@ -385,7 +385,7 @@ public class WfRunVariable
     /// </returns>
     public WfRunVariable WithJsonPath(string path) 
     {
-        if (JsonPath != null)
+        if (JsonPath != null || lhPath.Count > 0)
         {
             throw new LHMisconfigurationException("Cannot use jsonpath() twice on same var!");
         }
@@ -400,6 +400,19 @@ public class WfRunVariable
         return outVariable;
     }
     
+    internal LHPath? LhPath => lhPath.Count == 0 ? null : new LHPath { Path = { lhPath } };
+
+    /// <summary>Returns a handle to a Struct or JSON object field. Calls can be chained.</summary>
+    /// <param name="field">The field name.</param>
+    /// <returns>A new variable handle selecting the field.</returns>
+    public WfRunVariable Get(string field)
+    {
+        if (JsonPath != null) throw new InvalidOperationException("Cannot mix Get and WithJsonPath.");
+        var result = Clone();
+        result.lhPath.Add(new LHPath.Types.Selector { Key = field });
+        return result;
+    }
+
     /// <summary>
     /// Mutates the value of this WfRunVariable and sets it to the value provided on the RHS.
     ///
