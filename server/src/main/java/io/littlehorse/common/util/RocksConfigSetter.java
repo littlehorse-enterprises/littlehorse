@@ -92,9 +92,8 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
 
         // In Universal compaction this is not so much "files" as it is "sorted runs" which are actually
         // partitioned into many files. But the point remains, we need to open every single sorted run
-        // when doing a range scan, which is expensive...and universal is good enough at write amp anyways
-        // so using the default (4) is fine.
-        options.setLevel0FileNumCompactionTrigger(4);
+        // when doing a range scan, which is expensive...otherwise, we would set this higher.
+        options.setLevel0FileNumCompactionTrigger(5);
 
         CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
         cou.setAllowTrivialMove(true);
@@ -112,7 +111,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // does reduce disk usage. For now, we care more about throughput and stability, so we are
         // willing to pay for more disk. If needed we may make this a configurable option in the
         // future.
-        cou.setMaxSizeAmplificationPercent(100);
+        cou.setMaxSizeAmplificationPercent(150);
 
         options.setCompactionOptionsUniversal(cou);
         cou.close();
@@ -138,8 +137,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
 
         // Open the DB faster
-        options.setSkipCheckingSstFileSizesOnDbOpen(true);
-        options.setSkipStatsUpdateOnDbOpen(true);
+        options.setSkipCheckingSstFileSizesOnDbOpen(true); // Reduces one disk read per SST file.
+        options.setSkipStatsUpdateOnDbOpen(true); // Reduces one disk read per SST file.
+        options.setMaxManifestFileSize(8 * MB); // entire manifest is replayed on db startup.
 
         options.setTableFormatConfig(tableConfig);
     }
