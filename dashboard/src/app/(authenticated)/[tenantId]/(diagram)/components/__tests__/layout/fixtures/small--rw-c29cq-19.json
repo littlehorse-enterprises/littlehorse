@@ -1,0 +1,173 @@
+{
+  "name": "rw-c29cq-19",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-add-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "v2_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-pckn"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-rw-noop-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "v1_int",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "1-rw-add-TASK"
+                    }
+                  }
+                },
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-t6np"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "retries": 1,
+            "variables": [
+              {
+                "variableName": "v1_int"
+              },
+              {
+                "literalValue": {
+                  "int": "22"
+                }
+              }
+            ]
+          }
+        },
+        "2-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-exit-EXIT",
+              "variableMutations": [
+                {
+                  "lhsName": "outcome",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "done"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "3-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "defaultValue": {
+              "str": "default-u4ke"
+            },
+            "typeDef": {
+              "primitiveType": "STR",
+              "masked": true
+            }
+          },
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_str",
+            "typeDef": {
+              "primitiveType": "STR",
+              "masked": true
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_jsonarr",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_bytes",
+            "typeDef": {
+              "primitiveType": "BYTES"
+            }
+          },
+          "required": true
+        },
+        {
+          "varDef": {
+            "name": "v5_arrstr",
+            "typeDef": {
+              "inlineArrayDef": {
+                "arrayType": {
+                  "primitiveType": "STR"
+                }
+              }
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}

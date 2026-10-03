@@ -1,0 +1,294 @@
+{
+  "name": "rw-c29cq-24",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-wait-for-condition-WAIT_FOR_CONDITION",
+              "variableMutations": [
+                {
+                  "lhsName": "v3_int",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "int": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-wait-for-condition-WAIT_FOR_CONDITION": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-nop-NOP"
+            }
+          ],
+          "waitForCondition": {
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "v3_int"
+                },
+                "comparator": "GREATER_THAN",
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "2-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-rw-noop-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "GREATER_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "36"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "5-rw-noop-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v1_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "56"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "6-rw-add-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v4_bool"
+                  },
+                  "comparator": "EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "bool": true
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "7-rw-not-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "3-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "3-rw-noop-TASK"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            },
+            "timeoutSeconds": 15
+          }
+        },
+        "4-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-complete-EXIT",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-xfch"
+                    }
+                  }
+                },
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "set-sb04"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "nop": {}
+        },
+        "5-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            },
+            "retries": 2
+          }
+        },
+        "6-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v3_int",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "6-rw-add-TASK"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "timeoutSeconds": 15,
+            "retries": 2,
+            "variables": [
+              {
+                "variableName": "v1_int"
+              },
+              {
+                "variableName": "v3_int"
+              }
+            ]
+          }
+        },
+        "7-rw-not-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-not"
+            },
+            "timeoutSeconds": 15,
+            "variables": [
+              {
+                "literalValue": {
+                  "bool": true
+                }
+              }
+            ]
+          }
+        },
+        "8-complete-EXIT": {
+          "exit": {
+            "returnContent": {
+              "literalValue": {
+                "str": "completed-24"
+              }
+            }
+          }
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "typeDef": {
+              "primitiveType": "STR",
+              "masked": true
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_bytes",
+            "typeDef": {
+              "primitiveType": "BYTES"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_int",
+            "defaultValue": {
+              "int": "1"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_bool",
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "required": true,
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}
