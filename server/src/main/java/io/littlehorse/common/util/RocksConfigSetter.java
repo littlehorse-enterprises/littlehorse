@@ -63,9 +63,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         BlockBasedTableConfigWithAccessibleCache tableConfig =
                 (BlockBasedTableConfigWithAccessibleCache) options.tableFormatConfig();
 
-        BloomFilter bloomFilterNativeHandle = new BloomFilter(10);
-        tableConfig.setFilterPolicy(bloomFilterNativeHandle); // 10 bits per key is default.
-        bloomFilterNativeHandle.close();
+        tableConfig.setFilterPolicy(new BloomFilter(10)); // 10 bits per key is default.
         tableConfig.setOptimizeFiltersForMemory(true);
         tableConfig.setBlockSize(64 * KB);
         tableConfig.setPinL0FilterAndIndexBlocksInCache(true);
