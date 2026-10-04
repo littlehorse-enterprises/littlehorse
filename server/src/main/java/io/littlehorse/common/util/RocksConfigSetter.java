@@ -91,7 +91,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setCompactionStyle(CompactionStyle.LEVEL);
         options.setCompressionType(CompressionType.LZ4_COMPRESSION);
         options.setLevel0FileNumCompactionTrigger(6);
-        options.setLevel0SlowdownWritesTrigger(9);
+        options.setLevel0SlowdownWritesTrigger(20); // default
         options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
         options.setTargetFileSizeBase(32 * MB);
