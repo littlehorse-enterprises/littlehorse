@@ -89,12 +89,12 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         // Use level compaction in order to keep predictable range scan performance for searches, and
         // to create more predictable compaction workloads.
         options.setCompactionStyle(CompactionStyle.LEVEL);
-        options.setBottommostCompressionType(CompressionType.LZ4_COMPRESSION);
+        options.setCompressionType(CompressionType.LZ4_COMPRESSION);
         options.setLevel0FileNumCompactionTrigger(6);
         options.setLevel0SlowdownWritesTrigger(9);
         options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
-        options.setTargetFileSizeBase(128 * MB);
+        options.setTargetFileSizeBase(32 * MB);
         options.setMaxWriteBufferNumber(3);
 
         // I/O Configurations
