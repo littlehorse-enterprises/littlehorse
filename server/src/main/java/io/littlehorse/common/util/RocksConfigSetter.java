@@ -86,51 +86,39 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
         }
 
-        // Compaction configs
-        if (storeName.contains("timer")) {
-            // Timer stores rely on range scans a lot and have less data which is more short-lived,
-            // so we rely on the Level compaction style.
-            options.setCompactionStyle(CompactionStyle.LEVEL);
-            options.setMaxBytesForLevelBase(128 * MB * 12);
+        // Compaction and Compression
+        options.setCompactionStyle(CompactionStyle.UNIVERSAL);
+        options.setCompressionType(CompressionType.LZ4_COMPRESSION);
 
-            // Default 4. Higher means less write amp at the cost of slower reads. In Level compaction
-            // that's a good tradeoff.
-            options.setLevel0FileNumCompactionTrigger(12);
+        // In Universal compaction this is not so much "files" as it is "sorted runs" which are actually
+        // partitioned into many files. But the point remains, we need to open every single sorted run
+        // when doing a range scan, which is expensive...otherwise, we would set this higher.
+        options.setLevel0FileNumCompactionTrigger(5);
 
-        } else {
-            // Core stores are very write-heavy and have fewer range scans, so we use Universal.
-            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
-            options.setCompressionType(CompressionType.LZ4_COMPRESSION);
+        CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
+        cou.setAllowTrivialMove(true);
+        cou.setCompressionSizePercent(70);
 
-            // In Universal compaction this is not so much "files" as it is "sorted runs" which are actually
-            // partitioned into many files. But the point remains, we need to open every single sorted run
-            // when doing a range scan, which is expensive...and universal is good enough at write amp anyways
-            // so using the default (4) is fine.
-            options.setLevel0FileNumCompactionTrigger(4);
+        // Default 2, higher means fewer + larger compactions and overall lower WA. TODO: tune this
+        // carefully in conjunction with the level 0 file num compaction trigger.
+        cou.setMinMergeWidth(2);
 
-            CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
-            cou.setAllowTrivialMove(true);
+        // Allow compacting files that are within 20% the size of the sorted run. Encourages larger
+        // and more efficient compactions to reduce write amplification.
+        cou.setSizeRatio(20);
 
-            // Default 2, higher means fewer + larger compactions and overall lower WA. TODO: tune this
-            // carefully in conjunction with the level 0 file num compaction trigger.
-            cou.setMinMergeWidth(2);
+        // Default is 100. Reducing this causes more WA (bad), doesn't affect RA (also sad), but it
+        // does reduce disk usage. For now, we care more about throughput and stability, so we are
+        // willing to pay for more disk. If needed we may make this a configurable option in the
+        // future.
+        cou.setMaxSizeAmplificationPercent(150);
 
-            // Allow compacting files that are within 20% the size of the sorted run. Encourages larger
-            // and more efficient compactions to reduce write amplification.
-            cou.setSizeRatio(20);
+        options.setCompactionOptionsUniversal(cou);
+        cou.close();
 
-            // Default is 100. Reducing this causes more WA (bad), doesn't affect RA (also sad), but it
-            // does reduce disk usage. For now, we care more about throughput and stability, so we are
-            // willing to pay for more disk. If needed we may make this a configurable option in the
-            // future.
-            cou.setMaxSizeAmplificationPercent(100);
+        // See: https://github.com/facebook/rocksdb/wiki/universal-compaction#db-column-family-size-if-num_levels
+        // options.setNumLevels(10);
 
-            options.setCompactionOptionsUniversal(cou);
-            cou.close();
-
-            // See: https://github.com/facebook/rocksdb/wiki/universal-compaction#db-column-family-size-if-num_levels
-            // options.setNumLevels(10);
-        }
         options.setTargetFileSizeBase(128 * MB);
         options.setMaxWriteBufferNumber(3);
 
@@ -149,8 +137,9 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         }
 
         // Open the DB faster
-        options.setSkipCheckingSstFileSizesOnDbOpen(true);
-        options.setSkipStatsUpdateOnDbOpen(true);
+        options.setSkipCheckingSstFileSizesOnDbOpen(true); // Reduces one disk read per SST file.
+        options.setSkipStatsUpdateOnDbOpen(true); // Reduces one disk read per SST file.
+        options.setMaxManifestFileSize(8 * MB); // entire manifest is replayed on db startup.
 
         options.setTableFormatConfig(tableConfig);
     }
