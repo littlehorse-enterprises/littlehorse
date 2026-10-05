@@ -159,6 +159,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
+    public static final String X_ROCKSDB_PENDING_COMPACTION_BYTES_SOFT_LIMIT_KEY =
+            "LHS_X_ROCKSDB_PENDING_COMPACTION_BYTES_SOFT_LIMIT";
 
     // Number of active thread runs allowed per workflow run.
     public static final String X_ACTIVE_THREAD_RUNS_PER_WF_RUN = "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN";
@@ -775,6 +777,11 @@ public class LHServerConfig extends ConfigBase {
 
     public int getRocksDBCompactionThreads() {
         return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
+    }
+
+    public Long getRocksDBPendingCompactionBytesSoftLimit() {
+        String value = getOrSetDefault(X_ROCKSDB_PENDING_COMPACTION_BYTES_SOFT_LIMIT_KEY, null);
+        return value == null ? null : Long.valueOf(value);
     }
 
     public long getCoreMemtableSize() {

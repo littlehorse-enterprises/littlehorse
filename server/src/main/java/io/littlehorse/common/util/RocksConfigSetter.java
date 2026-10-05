@@ -92,6 +92,10 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         options.setCompressionType(CompressionType.LZ4_COMPRESSION);
         options.setLevel0FileNumCompactionTrigger(6);
         options.setLevel0SlowdownWritesTrigger(20); // default
+        Long softLimit = serverConfig.getRocksDBPendingCompactionBytesSoftLimit();
+        if (softLimit != null) {
+            options.setSoftPendingCompactionBytesLimit(softLimit);
+        }
         options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
 
         options.setTargetFileSizeBase(32 * MB);
