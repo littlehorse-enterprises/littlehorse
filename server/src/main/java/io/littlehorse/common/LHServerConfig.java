@@ -779,7 +779,7 @@ public class LHServerConfig extends ConfigBase {
 
     public long getCoreMemtableSize() {
         // 64MB default
-        return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
+        return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 128)));
     }
 
     public boolean useDirectIOForRocksDB() {
