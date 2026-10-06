@@ -1,9 +1,10 @@
-import ELK from 'elkjs/lib/elk.bundled.js'
 import { NodeRun } from 'littlehorse-client/proto'
-import { FC, useCallback, useEffect } from 'react'
+import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
+import { nodeDimensions } from './nodeDimensions'
+import { layoutDiagram } from './graphLayout'
 
-const elk = new ELK()
+export { ELK_LAYOUT_OPTIONS } from './graphLayout'
 
 export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[] | undefined =>
   nodeRuns
@@ -16,15 +17,37 @@ export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[]
 
 type LayoutManagerProps = {
   nodeRuns?: NodeRun[]
+  /**
+   * Identity of the graph currently displayed (spec/run/thread). Layout runs
+   * exactly once per key: reruns triggered by anything else — selection
+   * changes, modals opening, node re-measurement on container resize — must
+   * not re-layout or touch the user's viewport.
+   */
+  layoutKey: string
   viewportKey: string
   setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
+  /**
+   * The parent's useEdgesState setter. Routes MUST be written through the
+   * controlled `edges` prop, exactly like node positions: writing them only
+   * into reactflow's internal store looks right until the next parent
+   * re-render, when the route-less prop re-syncs the store and every edge
+   * falls back to the naive path — the diagram visibly "reshuffles" on the
+   * first click.
+   */
+  setEdges: (edges: Edge[] | ((edges: Edge[]) => Edge[])) => void
   onLayoutComplete?: (nodes: Node[]) => void
 }
 
-export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, setNodes, onLayoutComplete }) => {
+export const LayoutManager: FC<LayoutManagerProps> = ({
+  nodeRuns,
+  layoutKey,
+  viewportKey,
+  setNodes,
+  setEdges,
+  onLayoutComplete,
+}) => {
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
-  const setEdges = useStore(store => store.setEdges)
   const { fitView, setViewport } = useReactFlow()
 
   useOnViewportChange({
@@ -38,70 +61,33 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
 
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[]) => {
-      const elkGraph = {
-        id: 'root',
-        layoutOptions: {
-          'elk.algorithm': 'layered',
-          'elk.direction': 'RIGHT',
-          'elk.spacing.nodeNode': '150',
-          'elk.layered.spacing.nodeNodeBetweenLayers': '200',
-          'elk.spacing.edgeEdge': '100',
-          'elk.spacing.edgeNode': '100',
-          'elk.edgeRouting': 'ORTHOGONAL',
-          'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
-          'elk.layered.cycleBreaking.strategy': 'DEPTH_FIRST',
-          'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
-          'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
-          'elk.layered.unnecessaryBendpoints': 'true',
-          'elk.layered.compaction.postCompaction.strategy': 'EDGE_LENGTH',
-          'elk.padding': '[top=100,left=100,bottom=100,right=100]',
-          'elk.separateConnectedComponents': 'false',
-          'org.eclipse.elk.layered.mergeEdges': 'false',
-        },
-        children: nodes.map(node => ({
-          id: node.id,
-          width: node.width ?? 150,
-          height: node.height ?? 50,
-        })),
-        edges: edges.map(edge => ({
-          id: `${edge.source}-${edge.target}`,
-          sources: [edge.source],
-          targets: [edge.target],
-        })),
-      }
-
       try {
-        const laidOutGraph = await elk.layout(elkGraph)
-        const hasCycles = nodes.some(node => node.type === 'cycle')
-        // Layout the original workflow nodes
+        const { graph: laidOutGraph, routes } = await layoutDiagram(nodes, edges)
+
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
           const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
-          if (node.type === 'cycle' && elkNode?.x !== undefined) {
-            const initialNode = laidOutGraph.children?.find(n => n.id === node.data.outgoingEdges[0].sinkNodeName)
-            const cycleNodeX = elkNode.x - initialNode?.x!
-            elkNode.x = (initialNode?.x! + cycleNodeX) / 2
-          }
-
-          if (node.type === 'exit' && hasCycles) {
-            const initialNode = laidOutGraph.children?.find(n => n.id.includes('ENTRYPOINT'))
-            if (elkNode && initialNode?.y !== undefined && elkNode.y !== initialNode.y) {
-              elkNode.y = initialNode.y
-            }
-          }
+          const { w, h } = nodeDimensions(node.type, node.id)
           return {
             ...node,
             data: { ...node.data, fade, nodeRunsList },
             position: {
-              x: elkNode?.x ?? 0,
-              y: elkNode?.y ?? 0,
+              // Center the real glyph in its reserved footprint so fixed-side
+              // ports and rendered handles share the same orthogonal lane.
+              x: (elkNode?.x ?? 0) + (w - (node.width ?? w)) / 2,
+              y: (elkNode?.y ?? 0) + (h - (node.height ?? h)) / 2,
             },
             isLaidOut: true,
           }
         })
         setNodes(laidOutNodes)
-        setEdges(edges)
+        setEdges(
+          edges.map(edge => ({
+            ...edge,
+            data: { ...edge.data, route: routes.get(edge.id) },
+          }))
+        )
         onLayoutComplete?.(laidOutNodes)
         setTimeout(() => {
           const saved = sessionStorage.getItem(viewportKey)
@@ -122,15 +108,16 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
     [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
+  const laidOutKey = useRef<string | null>(null)
   useEffect(() => {
-    if (
-      nodes.some(
-        (node: Node & { isLaidOut?: boolean }) =>
-          node.width !== undefined && node.height !== undefined && !node.isLaidOut
-      )
-    ) {
-      onLoad(nodes, edges)
-    }
-  }, [nodes, edges, onLoad])
+    if (laidOutKey.current === layoutKey) return
+    // ELK's inputs are deterministic (nodeDimensions), but waiting for
+    // reactflow's first measurement pass guarantees the instance is live, so
+    // the post-layout fitView/viewport restore isn't a no-op on a cold load.
+    const ready = nodes.length > 0 && nodes.every(node => node.width !== undefined && node.height !== undefined)
+    if (!ready) return
+    laidOutKey.current = layoutKey
+    onLoad(nodes, edges)
+  }, [layoutKey, nodes, edges, onLoad])
   return <></>
 }

@@ -1,23 +1,33 @@
 import { variableMutationLhsToString } from '@/app/utils/variables'
 import { IdentifierBadge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Edge as EdgeProto, VariableMutationType } from 'littlehorse-client/proto'
+import { VariableMutationType } from 'littlehorse-client/proto'
 import { FC } from 'react'
 import { Modal } from '../../context'
 import { useModal } from '../../hooks/useModal'
 import { MutationRhS } from '../../wfSpec/[...props]/components/Mutations'
+import { EdgeConditionDetail } from '../EdgeTypes/EdgeConditionDetail'
+import type { DiagramEdgeData } from '../EdgeTypes/extractEdges'
 
-export const Edge: FC<Modal<EdgeProto>> = ({ data }) => {
-  const { variableMutations } = data
+export const Edge: FC<Modal<DiagramEdgeData>> = ({ data }) => {
+  const { variableMutations, edgeCondition } = data
   const { showModal, setShowModal } = useModal()
-  if (variableMutations.length === 0) return
+  const hasMutations = variableMutations.length > 0
+  const hasCondition = edgeCondition?.oneofKind !== undefined
+  if (!hasMutations && !hasCondition) return
+  const title = hasCondition && hasMutations ? 'Edge' : hasCondition ? 'Branch Condition' : 'Mutations'
 
   return (
     <Dialog open={showModal} onOpenChange={open => setShowModal(open)}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Mutations</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
+        {hasCondition && (
+          <div className={hasMutations ? 'mb-4 border-b border-slate-200 pb-4' : undefined}>
+            <EdgeConditionDetail edge={data} />
+          </div>
+        )}
         {variableMutations.map(mutation => {
           const lhs = variableMutationLhsToString(mutation)
           return (

@@ -1,0 +1,378 @@
+{
+  "name": "rw-c29cq-137",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-not-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-not-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-rw-crash-TASK"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-not"
+            },
+            "variables": [
+              {
+                "variableName": "v4_bool"
+              }
+            ]
+          }
+        },
+        "2-rw-crash-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-each137_k0mh-START_MULTIPLE_THREADS"
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-2-rw-crash-TASK-any-failure"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-crash"
+            }
+          }
+        },
+        "3-each137_k0mh-START_MULTIPLE_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-threads-WAIT_FOR_THREADS",
+              "variableMutations": [
+                {
+                  "lhsName": "3-each137_k0mh-START_MULTIPLE_THREADS",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "3-each137_k0mh-START_MULTIPLE_THREADS"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startMultipleThreads": {
+            "threadSpecName": "each137_k0mh",
+            "iterable": {
+              "variableName": "v5_jsonarr"
+            }
+          }
+        },
+        "4-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-rw-flaky-TASK"
+            }
+          ],
+          "waitForThreads": {
+            "threadList": {
+              "variableName": "3-each137_k0mh-START_MULTIPLE_THREADS"
+            }
+          }
+        },
+        "5-rw-flaky-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-rw-evt-beta-EXTERNAL_EVENT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-flaky"
+            },
+            "retries": 2
+          }
+        },
+        "6-rw-evt-beta-EXTERNAL_EVENT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "7-rw-crash-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "6-rw-evt-beta-EXTERNAL_EVENT"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "externalEvent": {
+            "externalEventDefId": {
+              "name": "rw-evt-beta"
+            }
+          }
+        },
+        "7-rw-crash-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-rw-crash-TASK"
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-7-rw-crash-TASK-FAILURE_TYPE_ERROR",
+              "anyFailureOfType": "FAILURE_TYPE_ERROR"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-crash"
+            }
+          }
+        },
+        "8-rw-crash-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "9-complete-EXIT"
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-8-rw-crash-TASK-any-failure"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-crash"
+            }
+          }
+        },
+        "9-complete-EXIT": {
+          "exit": {
+            "returnContent": {
+              "literalValue": {
+                "str": "completed-137"
+              }
+            }
+          }
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "defaultValue": {
+              "str": "default-r77c"
+            },
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "defaultValue": {
+              "int": "9"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_bool",
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_double",
+            "typeDef": {
+              "primitiveType": "DOUBLE"
+            }
+          },
+          "required": true
+        },
+        {
+          "varDef": {
+            "name": "v4_bool",
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "required": true
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v5_jsonarr",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "3-each137_k0mh-START_MULTIPLE_THREADS",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "exn-handler-2-rw-crash-TASK-any-failure": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "each137_k0mh": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-add-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "variables": [
+              {
+                "variableName": "INPUT"
+              },
+              {
+                "literalValue": {
+                  "int": "1"
+                }
+              }
+            ]
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "INPUT",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "exn-handler-7-rw-crash-TASK-FAILURE_TYPE_ERROR": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "exn-handler-8-rw-crash-TASK-any-failure": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}
