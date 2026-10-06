@@ -11,8 +11,8 @@ The workflow:
 ## Prerequisites
 
 - Node.js >= 18
-- A running LittleHorse server on `localhost:2023` (see [local-dev/README.md](../../local-dev/README.md))
-- Build the SDK first: `cd ../../sdk-js && npm install && npm run build`
+- A running LittleHorse server on `localhost:2023` (see [local-dev/README.md](../../../local-dev/README.md))
+- Build the SDK first: `cd ../../../sdk-js && npm install && npm run build`
 
 ## Setup
 
@@ -20,9 +20,9 @@ The workflow:
 npm install
 ```
 
-## Start the Task Workers
+## Start the App
 
-In one terminal, start the task workers (this also registers the required `TaskDef`s):
+In one terminal, register the workflow and start the task workers:
 
 ```bash
 npm start
@@ -30,16 +30,8 @@ npm start
 
 This will:
 1. Register the `verify-identity`, `notify-customer-verified`, and `notify-customer-not-verified` TaskDefs if they don't exist.
-2. Start polling for tasks from the LH Server.
-
-## Register the WfSpec
-
-This quickstart deploys its metadata with `lhctl` (every other example in `examples/js` builds and registers the `WfSpec` in code instead). Once the workers are running, deploy the `ExternalEventDef` and then the `WfSpec` in another terminal:
-
-```bash
-lhctl deploy externalEventDef identity-verified-external-event-def.json
-lhctl deploy wfSpec quickstart-wfspec.json
-```
+2. Register the `identity-verified` ExternalEventDef and `quickstart` WfSpec using the JS SDK.
+3. Start polling for tasks from the LH Server.
 
 ## Run a Workflow
 
