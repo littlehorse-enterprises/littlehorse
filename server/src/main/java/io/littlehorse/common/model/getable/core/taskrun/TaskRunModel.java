@@ -294,7 +294,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         int latestAttemptNumber = attempts.size() - 1;
         taskResult.setAttemptNumber(Math.max(latestAttemptNumber, 0));
         taskResult.setTaskRunId(id);
-        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
+        taskResult.setTime(new Date(System.currentTimeMillis() + (1000L * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         taskResult.setTotalCheckpoints(totalCheckpoints);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());
@@ -312,8 +312,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
 
-        if (totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
-            log.trace("Ignoring stale ReportTaskRun from previous observed generation.");
+        if (taskRunReport.getStatus() == TaskStatus.TASK_TIMEOUT
+                && totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
+            log.trace("Ignoring timeout timer superseded by a later checkpoint.");
+            return;
         }
 
         TaskAttemptModel attempt = attempts.get(taskRunReport.getAttemptNumber());

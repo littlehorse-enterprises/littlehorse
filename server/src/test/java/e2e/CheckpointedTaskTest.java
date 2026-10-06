@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ListTaskRunsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
@@ -35,6 +36,9 @@ public class CheckpointedTaskTest {
 
     @LHWorkflow("checkpointed-task-test")
     private Workflow workflow;
+
+    @LHWorkflow("checkpoint-extends-timeout-test")
+    private Workflow checkpointExtendsTimeoutWorkflow;
 
     @Test
     public void checkpointedTasksTest() {
@@ -77,6 +81,35 @@ public class CheckpointedTaskTest {
         assertThrows(StatusRuntimeException.class, () -> {
             client.getCheckpoint(checkpointId);
         });
+    }
+
+    @Test
+    public void checkpointsShouldExtendTheTaskTimeout() {
+        WfRunId result = workflowVerifier
+                .prepareRun(checkpointExtendsTimeoutWorkflow)
+                .waitForStatus(LHStatus.COMPLETED)
+                .start();
+
+        TaskRun taskRun = client.listTaskRuns(
+                        ListTaskRunsRequest.newBuilder().setWfRunId(result).build())
+                .getResults(0);
+        assertThat(taskRun.getAttemptsCount()).isEqualTo(1);
+    }
+
+    @LHWorkflow("checkpoint-extends-timeout-test")
+    public Workflow buildCheckpointExtendsTimeoutWorkflow() {
+        return new WorkflowImpl("checkpoint-extends-timeout-test", thread -> {
+            thread.execute("task-that-outlives-its-timeout").timeout(2);
+        });
+    }
+
+    @LHTaskMethod("task-that-outlives-its-timeout")
+    public String outliveTimeout(WorkerContext context) throws InterruptedException {
+        for (int i = 0; i < 4; i++) {
+            Thread.sleep(750);
+            context.executeAndCheckpoint(checkpoint -> "still working", String.class);
+        }
+        return "done";
     }
 
     @LHWorkflow("checkpointed-task-test")
