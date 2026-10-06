@@ -1,12 +1,12 @@
 import { StartMultipleThreadsNode as StartMultipleThreadsNodeProto } from 'littlehorse-client/proto'
-import { Ellipsis, Spool } from 'lucide-react'
+import { Spool, TrendingUpDown } from 'lucide-react'
 import { FC, memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { NodeProps } from '.'
 import { Fade } from './Fade'
 import { SelectedNode } from './SelectedNode'
 
-const STACKED_CARD = 'absolute inset-0 rounded-md border-[1px] border-orange-500 bg-orange-100'
+const DIAMOND = '[clip-path:polygon(50%_0,100%_50%,50%_100%,0_50%)]'
 
 const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>> = ({ data }) => {
   const { fade, nodeRunsList, threadSpecName } = data
@@ -16,18 +16,20 @@ const Node: FC<NodeProps<'startMultipleThreads', StartMultipleThreadsNodeProto>>
     <>
       <SelectedNode />
       <Fade fade={fade} status={nodeRun?.status}>
-        <div className="relative w-40 cursor-pointer">
-          <div className={`${STACKED_CARD} translate-x-2 translate-y-2`} />
-          <div className={`${STACKED_CARD} translate-x-1 translate-y-1`} />
-          <div className="relative flex flex-col items-center rounded-md border-[1px] border-orange-500 bg-orange-200 px-2 pt-1 text-center text-xs">
-            <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
-            <div className="flex items-center">
-              <Spool className="h-4 w-4 stroke-orange-500" strokeWidth={1.5} />
-              <Ellipsis className="h-4 w-4 stroke-orange-500" strokeWidth={1.5} />
+        <div className="flex cursor-pointer items-center">
+          <Handle type="target" position={Position.Left} id="target-0" className="bg-transparent" />
+          <div className="relative grid h-10 w-10 place-items-center">
+            <div className={`absolute inset-0 bg-emerald-500 ${DIAMOND}`} />
+            <div className={`absolute inset-[2px] bg-emerald-200 ${DIAMOND}`} />
+            <TrendingUpDown className="relative z-10 h-5 w-5 shrink-0 stroke-emerald-950" strokeWidth={1.5} />
+            <div className="absolute -bottom-1 -right-1 z-10 grid h-4 w-4 place-items-center rounded border border-emerald-500 bg-emerald-200">
+              <Spool className="h-2.5 w-2.5 stroke-emerald-950" strokeWidth={1.5} />
             </div>
-            <span className="max-w-full truncate">{threadSpecName}</span>
-            <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
+            <span className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap text-xs text-slate-700">
+              {threadSpecName}
+            </span>
           </div>
+          <Handle type="source" position={Position.Right} id="source-0" className="bg-transparent" />
         </div>
       </Fade>
     </>
