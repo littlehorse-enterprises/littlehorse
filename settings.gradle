@@ -24,7 +24,6 @@ include(
         'hierarchical-workflow',
         'run-child-workflow',
         'conditionals-while',
-        'endless',
         'conditionals',
         'correlated-event',
         'exception-handler',

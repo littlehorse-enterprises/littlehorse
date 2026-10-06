@@ -42,7 +42,6 @@ Most Java examples start a long-lived worker process. Keep that command running 
 - [`conditionals/`](./conditionals/README.md): `if/else` workflow logic.
 - [`conditionals-while/`](./conditionals-while/README.md): `while` loops in workflows.
 - [`correlated-event/`](./correlated-event/README.md): Correlate events into workflows.
-- [`endless/`](./endless/README.md): `WfRun`s that stay `RUNNING` forever (or for N iterations).
 - [`exception-handler/`](./exception-handler/README.md): Error handling paths.
 - [`expressions/`](./expressions/README.md): Expressions and variable manipulation.
 - [`external-event/`](./external-event/README.md): Wait for external events.
