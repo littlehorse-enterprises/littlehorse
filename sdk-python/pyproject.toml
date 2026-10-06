@@ -18,14 +18,14 @@ classifiers = [
 ]
 requires-python = ">=3.10,<3.14"
 dependencies = [
-    "protobuf==6.33.5",
-    # compile-proto.sh is using grpcio 1.75.1 (local-dev/Dockerfile)
-    "grpcio==1.75.1",
+    "protobuf>=6.33.5,<7",
+    # compile-proto.sh is using grpcio 1.75.1 (local-dev/Dockerfile), the oldest the generated stubs accept
+    "grpcio>=1.75.1,<2",
     "googleapis-common-protos>=1.63.0",
     # other utilities
     "jproperties>=2.1,<2.2",
-    "authlib==1.6.12",
-    "requests>=2.33,<2.34"
+    "authlib>=1.6.12,<2",
+    "requests>=2.33,<3"
 ]
 
 [project.urls]
