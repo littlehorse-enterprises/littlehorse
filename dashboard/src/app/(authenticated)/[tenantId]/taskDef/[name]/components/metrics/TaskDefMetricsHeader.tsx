@@ -9,6 +9,7 @@ import { CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { RefreshCwIcon } from 'lucide-react'
 import { FC } from 'react'
 
 export type TaskDefMetricsHeaderProps = {
@@ -18,6 +19,8 @@ export type TaskDefMetricsHeaderProps = {
   onBucketMinutesChange: (value: string) => void
   rangeMinutes: string
   onRangeMinutesChange: (value: string) => void
+  isRefreshing: boolean
+  onRefresh: () => void
 }
 
 export const TaskDefMetricsHeader: FC<TaskDefMetricsHeaderProps> = ({
@@ -27,6 +30,8 @@ export const TaskDefMetricsHeader: FC<TaskDefMetricsHeaderProps> = ({
   onBucketMinutesChange,
   rangeMinutes,
   onRangeMinutesChange,
+  isRefreshing,
+  onRefresh,
 }) => (
   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
     <div className="flex items-center gap-3">
@@ -89,6 +94,15 @@ export const TaskDefMetricsHeader: FC<TaskDefMetricsHeaderProps> = ({
           </SelectContent>
         </Select>
       </div>
+      <button
+        type="button"
+        onClick={onRefresh}
+        disabled={isRefreshing}
+        className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-60"
+        aria-label="Refresh task metrics"
+      >
+        <RefreshCwIcon className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+      </button>
     </div>
   </CardHeader>
 )
