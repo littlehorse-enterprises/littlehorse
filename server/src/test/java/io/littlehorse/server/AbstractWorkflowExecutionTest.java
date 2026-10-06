@@ -39,7 +39,14 @@ public abstract class AbstractWorkflowExecutionTest extends AbstractCommandProce
     protected final NodeRunModel currentNode(WfRun run) {
         WfRunIdModel id = new WfRunIdModel(run.getId().getId());
         ThreadRun thread = readGetable(id).toProto().getThreadRuns(0);
-        return readGetable(new NodeRunIdModel(id, 0, thread.getCurrentNodePosition()));
+        for (int position = thread.getCurrentNodePosition(); position >= 0; position--) {
+            NodeRunModel node = readGetable(new NodeRunIdModel(id, 0, position));
+            NodeRun.NodeTypeCase type = node.toProto().getNodeTypeCase();
+            if (type != NodeRun.NodeTypeCase.ENTRYPOINT && type != NodeRun.NodeTypeCase.EXIT) {
+                return node;
+            }
+        }
+        throw new IllegalStateException("Workflow has no non-entrypoint or non-exit node");
     }
 
     protected final TaskRunModel currentTask(WfRun run) {
@@ -65,6 +72,10 @@ public abstract class AbstractWorkflowExecutionTest extends AbstractCommandProce
 
     protected final void reportTaskError(TaskRunModel task, LHTaskError error) {
         reportTask(task, report -> report.setStatus(TaskStatus.TASK_FAILED).setError(error));
+    }
+
+    protected final void reportTaskError(TaskRunModel task, TaskStatus taskStatus, LHTaskError error) {
+        reportTask(task, report -> report.setStatus(taskStatus).setError(error));
     }
 
     protected final void reportTaskException(TaskRunModel task, LHTaskException exception) {
