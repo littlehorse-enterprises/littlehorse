@@ -2,6 +2,7 @@ import { getVariableValue } from '@/app/utils'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { Checkpoint } from 'littlehorse-client/proto'
 import { NodeVariable } from './NodeVariable'
+import { OutputModal } from './OutputModal'
 
 export const Checkpoints = ({ checkpoints }: { checkpoints: Checkpoint[] }) => {
   if (!checkpoints.length) return null
@@ -15,8 +16,8 @@ export const Checkpoints = ({ checkpoints }: { checkpoints: Checkpoint[] }) => {
             <div key={`checkpoint-${index}`} className="mb-2 rounded border border-gray-200 p-1">
               <div className="ml-1 text-sm font-bold ">#{checkpoint.id?.checkpointNumber}</div>
               <NodeVariable label="Created At:" text={checkpoint.createdAt} type="date" />
-              {checkpoint.value && <NodeVariable label="value:" text={getVariableValue(checkpoint.value)} />}
-              {checkpoint.logs && <NodeVariable label="logs:" text={checkpoint.logs} />}
+              {checkpoint.value && <OutputModal label="value:" message={getVariableValue(checkpoint.value)} />}
+              {checkpoint.logs && <OutputModal label="logs:" message={checkpoint.logs} />}
             </div>
           ))}
         </AccordionContent>
