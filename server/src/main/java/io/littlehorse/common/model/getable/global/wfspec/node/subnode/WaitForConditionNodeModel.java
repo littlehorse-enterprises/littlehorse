@@ -17,7 +17,6 @@ import io.littlehorse.sdk.common.proto.WaitForConditionNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
@@ -60,7 +59,7 @@ public class WaitForConditionNodeModel extends SubNode<WaitForConditionNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext context) throws InvalidNodeException {
+    public void validate(ExecutionContext context) throws InvalidNodeException {
         try {
             if (condition != null) {
                 condition.validate(node, context.metadataManager(), node.threadSpec);

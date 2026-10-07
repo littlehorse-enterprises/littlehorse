@@ -8,7 +8,7 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
+import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,7 +19,7 @@ public abstract class SubNode<T extends Message> extends LHSerializable<T> {
 
     public abstract SubNodeRun<?> createSubNodeRun(Date time, CoreProcessorContext processorContext);
 
-    public abstract void validate(MetadataProcessorContext ctx) throws InvalidNodeException;
+    public abstract void validate(ExecutionContext ctx) throws InvalidNodeException;
 
     protected NodeModel node;
 

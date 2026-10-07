@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.ExitNode.ResultCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -69,7 +68,7 @@ public class ExitNodeModel extends SubNode<ExitNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {
+    public void validate(ExecutionContext ctx) throws LHApiException {
         if (failureDef != null) failureDef.validate();
     }
 
