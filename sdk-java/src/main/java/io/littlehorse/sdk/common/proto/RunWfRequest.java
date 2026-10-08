@@ -6,10 +6,6 @@
 package io.littlehorse.sdk.common.proto;
 
 /**
- * <pre>
- * Create a Workflow Run.
- * </pre>
- *
  * Protobuf type {@code littlehorse.RunWfRequest}
  */
 @com.google.protobuf.Generated
@@ -603,10 +599,6 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return builder;
   }
   /**
-   * <pre>
-   * Create a Workflow Run.
-   * </pre>
-   *
    * Protobuf type {@code littlehorse.RunWfRequest}
    */
   public static final class Builder extends

@@ -20,7 +20,6 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableAssignment.Expression;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
@@ -111,7 +110,7 @@ public class ExpressionModel extends LHSerializable<Expression> {
         return lhsVal.operate(mutateWithOperation, rhsVal, typeToCoerceTo);
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException {
         if (mutateByComparison == null) return;
         // TODO (#1458): after we support using VariableAssignment, make sure that the

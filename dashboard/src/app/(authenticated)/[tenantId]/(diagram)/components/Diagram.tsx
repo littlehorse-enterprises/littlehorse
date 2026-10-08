@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -40,13 +41,14 @@ import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
   wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
-  spec: WfSpec
+  spec: WorkflowDefinition
+  definitionId: string
   onThreadChange?: (thread: ThreadType) => void
   headerActions?: ReactNode
 }
 const threadFromUrl = (
   wfRun: Props['wfRun'],
-  spec: WfSpec,
+  spec: WorkflowDefinition,
   threadRunNumber: number | null,
   threadName: string | null
 ): ThreadType => {
@@ -65,7 +67,7 @@ const threadFromUrl = (
   }
 }
 
-export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions }) => {
+export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, headerActions }) => {
   const { tenantId } = useWhoAmI()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -123,9 +125,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     [wfRun, threadSpec, thread.name, setNodes]
   )
 
-  const resetKey = `${spec.id ? `${spec.id.name}/${spec.id.majorVersion}/${spec.id.revision}` : ''}|${
-    wfRun?.id ? JSON.stringify(wfRun.id) : ''
-  }|${thread.name}`
+  const resetKey = `${definitionId}|${wfRun?.id ? JSON.stringify(wfRun.id) : ''}|${thread.name}`
   const appliedResetKey = useRef<string | null>(null)
 
   useLayoutEffect(() => {

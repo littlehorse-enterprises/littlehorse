@@ -315,7 +315,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
         failedChildThread.setWaitingStatus(WaitingThreadStatus.THREAD_HANDLING_FAILURE);
 
-        WfSpecModel wfSpec = processorContext.service().getWfSpec(nodeRun.getWfSpecId());
+        WfSpecModel wfSpec = nodeRun.getWfSpec();
         ThreadSpecModel handlerSpec = wfSpec.threadSpecs.get(failureHandlerDef.getHandlerSpecName());
         Map<String, VariableValueModel> vars = new HashMap<>();
         if (handlerSpec.variableDefs.size() > 0) {

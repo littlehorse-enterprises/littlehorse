@@ -24,7 +24,6 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -156,7 +155,7 @@ public class WaitForThreadsNodeModel extends SubNode<WaitForThreadsNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         switch (type) {
             case THREADS:
                 for (ThreadToWaitForModel ttwf : threads.getThreads()) {

@@ -23,7 +23,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,7 +125,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
             utd = metadataManager.getLastFromPrefix(

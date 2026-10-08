@@ -44,7 +44,7 @@ export const WfSpec: FC<WfSpecProps> = ({ spec }) => {
       <Breadcrumb items={breadcrumbItems} />
       <WfSpecMetadata spec={spec} actions={executeButton} />
       <DiagramProvider value={{ thread, setThread, selectedNode, setSelectedNode }}>
-        <Diagram spec={spec} />
+        <Diagram spec={spec} definitionId={JSON.stringify(spec.id) ?? ''} />
       </DiagramProvider>
       {spec.id && (
         <div className="mb-12">

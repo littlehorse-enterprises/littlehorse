@@ -27,7 +27,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -270,7 +269,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         return nodes.get(name);
     }
 
-    public void validate(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
+    public void validate(ExecutionContext ctx) throws InvalidThreadSpecException {
         if (entrypointNodeName == null) {
             throw new InvalidThreadSpecException(this, "missing ENTRYPOINT node!");
         }
@@ -327,7 +326,7 @@ public class ThreadSpecModel extends LHSerializable<ThreadSpec> {
         }
     }
 
-    private void validateExitNodeReturnTypes(MetadataProcessorContext ctx) throws InvalidThreadSpecException {
+    private void validateExitNodeReturnTypes(ExecutionContext ctx) throws InvalidThreadSpecException {
         List<ExitNodeModel> exitNodes = nodes.values().stream()
                 .filter(node -> node.getType() == NodeCase.EXIT)
                 // ignore nodes that throw exceptions

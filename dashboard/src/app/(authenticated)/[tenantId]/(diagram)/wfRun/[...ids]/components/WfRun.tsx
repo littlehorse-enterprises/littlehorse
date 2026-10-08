@@ -45,10 +45,10 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   }, [wfSpec, selectedThread.name])
 
   const wfSpecUrl = useMemo(() => {
-    const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
-    if (name == null || majorVersion == null || revision == null) return ''
+    if (wfRun.wfSpecSource.oneofKind !== 'wfSpecId') return undefined
+    const { name, majorVersion, revision } = wfRun.wfSpecSource.wfSpecId
     return routes.wfSpec.detailWithRevision(name, majorVersion, revision)
-  }, [wfRun.wfSpecId])
+  }, [wfRun.wfSpecSource])
 
   if (!wfRunId) {
     return null
@@ -56,11 +56,16 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
   return (
     <div className="mb-16">
-      <Navigation href={wfSpecUrl} title="Go back to WfSpec" />
+      {wfSpecUrl && <Navigation href={wfSpecUrl} title="Go back to WfSpec" />}
 
       <Details {...wfRun} selectedThread={selectedThread} />
 
-      <Diagram spec={wfSpec} wfRun={wfRun} onThreadChange={onThreadChange} />
+      <Diagram
+        spec={wfSpec}
+        definitionId={wfSpecUrl ?? `inline/${wfRunIdToPath(wfRunId)}`}
+        wfRun={wfRun}
+        onThreadChange={onThreadChange}
+      />
 
       {wfRun.id && (
         <>

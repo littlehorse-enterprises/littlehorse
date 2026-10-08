@@ -16,11 +16,67 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.TestTemplate;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContext;
+import org.junit.jupiter.api.extension.TestTemplateInvocationContextProvider;
 
-/** Runs node behavior through registered workflow commands. */
+/** Runs node behavior through both registered and inline workflow commands. */
+@ExtendWith(AbstractWorkflowExecutionTest.WorkflowModeExtension.class)
 public abstract class AbstractWorkflowExecutionTest extends AbstractCommandProcessorTest {
+    private enum WorkflowMode {
+        WF_SPEC,
+        INLINE_SPEC
+    }
+
+    private WorkflowMode workflowMode;
+
+    public static class WorkflowModeExtension implements TestTemplateInvocationContextProvider, BeforeEachCallback {
+        @Override
+        public boolean supportsTestTemplate(ExtensionContext context) {
+            return true;
+        }
+
+        @Override
+        public Stream<TestTemplateInvocationContext> provideTestTemplateInvocationContexts(ExtensionContext context) {
+            return Stream.of(WorkflowMode.values()).map(mode -> new TestTemplateInvocationContext() {
+                @Override
+                public String getDisplayName(int invocationIndex) {
+                    return mode.name().toLowerCase();
+                }
+
+                @Override
+                public java.util.List<Extension> getAdditionalExtensions() {
+                    return java.util.List.of((BeforeEachCallback) invocation ->
+                            ((AbstractWorkflowExecutionTest) invocation.getRequiredTestInstance()).workflowMode = mode);
+                }
+            });
+        }
+
+        @Override
+        public void beforeEach(ExtensionContext context) {
+            if (!context.getRequiredTestMethod().isAnnotationPresent(TestTemplate.class)) {
+                throw new IllegalStateException("Workflow execution tests must use @TestTemplate");
+            }
+        }
+    }
+
     protected final WfRun startWorkflow(ThreadFunc workflow, Map<String, VariableValue> inputs) {
         String runId = UUID.randomUUID().toString();
+        if (workflowMode == WorkflowMode.INLINE_SPEC) {
+            RunInlineWfRequest request =
+                    Workflow.inlineWorkflow(workflow).withWfRunId(runId).compileWorkflow().toBuilder()
+                            .putAllVariables(inputs)
+                            .build();
+            WfRun run = execute(runId, command -> command.setRunInlineWf(request), WfRun.class);
+            assertThat(run.getIsInline()).isTrue();
+            assertThat(run.hasWfSpecId()).isFalse();
+            return run;
+        }
         PutWfSpecRequest definition =
                 Workflow.newWorkflow("node-test-" + runId, workflow).compileWorkflow();
         WfSpec spec = executeMetadata(command -> command.setPutWfSpec(definition), WfSpec.class);

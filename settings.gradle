@@ -33,6 +33,7 @@ include(
         'interrupt-handler',
         'inline-struct-def',
         'inline-struct-placeholder',
+        'inline-workflow',
         'json',
         'maps',
         'mutation',
