@@ -312,8 +312,10 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
             throw new LHApiException(Status.INVALID_ARGUMENT, "Specified Task Attempt does not exist!");
         }
 
-        if (totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
-            log.trace("Ignoring stale ReportTaskRun from previous observed generation.");
+        if (taskRunReport.getStatus() == TaskStatus.TASK_TIMEOUT
+                && totalCheckpoints != taskRunReport.getTotalCheckpoints()) {
+            log.trace("Ignoring timeout timer superseded by a later checkpoint.");
+            return;
         }
 
         TaskAttemptModel attempt = attempts.get(taskRunReport.getAttemptNumber());
