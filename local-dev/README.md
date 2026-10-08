@@ -68,7 +68,7 @@ This repository requires the following system dependencies:
 - `pre-commit` (this is a dev dependency)
 - `python` and [poetry](https://python-poetry.org/).
     - [sdk-python](sdk-python): >= 3.9
-- `nvm` and `node` >= 20
+- `nvm` and Node 24 LTS (run `nvm install && nvm use` from the repository root).
 
 ### Setup Pre-commit
 
@@ -142,12 +142,12 @@ Result:
 
 ### Running the Dashboard
 
-To run the dashboard, you can do the following (it requires `npm` to be installed).
+To run the dashboard, use Node 24 and pnpm 10.19.0 as described in the [dashboard requirements](../dashboard/README.md#requirements).
 
 ```
 cd dashboard
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 The dashboard will be accessible on `localhost:3000` by default. This assumes that you have the LH Server accessible and running on `localhost:2023` with no authentication. That can be done as described above.
