@@ -120,18 +120,28 @@ client that carries a freshly minted token.
 
 ## Development
 
-This project uses [pnpm](https://pnpm.io/) 10.19.0 as its package manager.
+Develop, build, and test the SDK with Node.js 24 and
+[pnpm](https://pnpm.io/) 10.19.0. From `sdk-js/`, select the runtime declared
+in `.nvmrc` and use the package manager declared in `package.json`:
 
 ```bash
-pnpm install
-pnpm run build
-pnpm run test
+nvm install
+nvm use
+corepack pnpm install --frozen-lockfile
+corepack pnpm run build
+corepack pnpm run test
 ```
+
+The published SDK retains its `engines.node` range of `>=18.14.0` for
+consumers. The Node 20 TypeScript compiler preset and TypeScript 5.3.3 are
+retained to preserve the existing emitted JavaScript target; the compiler
+preset does not select the development runtime. Node type definitions
+already target Node 24.
 
 Integration tests run against a real server in docker:
 
 ```bash
-pnpm run test:integration
+corepack pnpm run test:integration
 ```
 
 The SDK is also a testee of the cross-SDK conformance suite; see

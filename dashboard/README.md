@@ -23,9 +23,10 @@
 
 ## Requirements
 
-- This project requires Node v20. You can install [`nvm`](https://github.com/nvm-sh/nvm/blob/master/README.md#intro) and run the following command in the dashboard directory:
+- This project requires Node 24 LTS. You can install [`nvm`](https://github.com/nvm-sh/nvm/blob/master/README.md#intro) and run the following commands in the dashboard directory:
 
 ```shell
+nvm install
 nvm use
 ```
 
@@ -37,7 +38,7 @@ npm install -g pnpm@10.19.0
 
 ## Environment Variables
 
-If running the app without Docker, you need to fill in the environment variables in the `.env` file inside `apps/web`. The `.env` file in the root folder is not being read by the app.
+If running the app without Docker, put environment variables in `dashboard/.env.local`. The `.env` file in the repository root is not read by the app.
 
 - `LHC_API_HOST` littlehorse hostname
 - `LHC_API_PORT` littlehorse port
@@ -55,7 +56,7 @@ If running the app without Docker, you need to fill in the environment variables
 
 ## Development
 
-Create a copy of `.env-sample` as `.env-local` and modify it accordingly to your littlehorse-server configuration.
+Create a copy of `.env-sample` as `.env.local` and modify it for your LittleHorse server configuration.
 
 Then simply run
 
@@ -286,6 +287,14 @@ If you wanna watch your tests while developing execute:
 ```
 pnpm run test --watch
 ```
+
+To verify development startup and Tailwind compilation on Node 24, start a LittleHorse server without authentication and run:
+
+```shell
+pnpm run test:smoke
+```
+
+The smoke test requests a real dashboard page and its stylesheets. It uses `LHC_API_HOST` and `LHC_API_PORT`, defaulting to `localhost:2023`, and stops its development server when finished.
 
 ### Environment variables
 

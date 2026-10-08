@@ -1,4 +1,14 @@
-FROM amazoncorretto:25
+FROM node:24-bookworm-slim AS node
+
+FROM amazoncorretto:25 AS runtime
+
+RUN yum install -y bash wget tar gzip libstdc++ findutils && \
+  yum clean all && \
+  rm -rf /var/cache/yum
+# Use the official Node runtime instead of the distribution's nodejs package.
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+
+FROM runtime AS runner
 
 LABEL maintainer="engineering@littlehorse.io"
 
@@ -11,10 +21,6 @@ ENV DASHBOARD_NEXT=true
 ENV NODE_ENV=production
 
 RUN mkdir /kafka /lh
-
-RUN yum install -y bash wget tar gzip nodejs findutils  && \
-  yum clean all && \
-  rm -rf /var/cache/yum
 
 RUN wget -q https://dlcdn.apache.org/kafka/${KAFKA_VERSION}/kafka_2.13-${KAFKA_VERSION}.tgz -O /tmp/kafka.tgz \
     && tar -xzf /tmp/kafka.tgz --strip-components 1 -C /kafka \
