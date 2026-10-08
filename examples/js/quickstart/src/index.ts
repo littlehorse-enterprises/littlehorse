@@ -1,4 +1,5 @@
-import { LHConfig, createTaskWorker, WorkerContext } from 'littlehorse-client'
+import { LHConfig, Workflow, createTaskWorker, WorkerContext } from 'littlehorse-client'
+import { LHErrorType } from 'littlehorse-client/proto'
 import { z } from 'zod'
 
 /**
@@ -61,6 +62,36 @@ async function main() {
       await worker.registerTaskDef()
     }
   }
+
+  const wf = Workflow.newWorkflow('quickstart', thread => {
+    const fullName = thread.declareStr('full-name').searchable().required()
+    const email = thread.declareStr('email').searchable().required()
+    const ssn = thread.declareInt('ssn').masked().required()
+    const identityVerified = thread.declareBool('identity-verified').searchable()
+
+    thread.execute('verify-identity', fullName, email, ssn).withRetries(3)
+
+    const result = thread
+      .waitForEvent('identity-verified')
+      .timeout(300)
+      .withCorrelationId(email)
+      .registeredAs(z.boolean())
+
+    thread.handleError(result, LHErrorType.TIMEOUT, handler => {
+      handler.execute('notify-customer-not-verified', fullName, email)
+      handler.fail('customer-not-verified', 'Unable to verify customer identity in time.')
+    })
+
+    identityVerified.assign(result)
+    thread
+      .doIf(identityVerified.isEqualTo(true), ifBody => {
+        ifBody.execute('notify-customer-verified', fullName, email)
+      })
+      .doElse(elseBody => {
+        elseBody.execute('notify-customer-not-verified', fullName, email)
+      })
+  })
+  await wf.registerWfSpec(config)
 
   // Start polling for tasks
   await verifyIdentityWorker.start()
