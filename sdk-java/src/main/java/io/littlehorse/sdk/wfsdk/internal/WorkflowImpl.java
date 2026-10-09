@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
 import io.littlehorse.sdk.common.proto.WfSpec.ParentWfSpecReference;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class WorkflowImpl extends Workflow {
     private Set<String> requiredEedNames;
     private Set<String> requiredChildWfSpecNames;
     private Set<String> requiredWorkflowEventDefNames;
+    private Set<Class<?>> referencedJavaTypes;
     private Stack<WorkflowThreadImpl> threads;
     private Set<ExternalEventDefRegistration> externalEventsToRegister;
 
@@ -46,6 +48,7 @@ public class WorkflowImpl extends Workflow {
         this.requiredWorkflowEventDefNames = new HashSet<>();
         this.requiredEedNames = new HashSet<>();
         this.requiredChildWfSpecNames = new HashSet<>();
+        this.referencedJavaTypes = new HashSet<>();
         this.threads = new Stack<>();
         this.externalEventsToRegister = new HashSet<>();
     }
@@ -97,6 +100,12 @@ public class WorkflowImpl extends Workflow {
     public PutWfSpecRequest compileWorkflow(LHConfig config) {
         lhTypeAdapterRegistry = config.getTypeAdapterRegistry();
         return compileWorkflow();
+    }
+
+    @Override
+    public Set<Class<?>> getReferencedJavaTypes() {
+        compileWorkflow();
+        return Set.copyOf(referencedJavaTypes);
     }
 
     void addTaskDefName(String taskDefName) {
@@ -172,25 +181,30 @@ public class WorkflowImpl extends Workflow {
     }
 
     private PutWfSpecRequest compileWorkflowHelper() {
-        String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
-        spec.setEntrypointThreadName(entrypointThreadName);
+        return LHClassType.collectReferencedJavaTypes(referencedJavaTypes::add, () -> {
+            String entrypointThreadName = this.addSubThread("entrypoint", entrypointThread);
+            spec.setEntrypointThreadName(entrypointThreadName);
 
-        while (!threadFuncs.isEmpty()) {
-            Pair<String, ThreadFunc> nextFunc = threadFuncs.remove();
-            ThreadFunc threadObj = nextFunc.getValue();
-            String funcName = nextFunc.getKey();
-            WorkflowThreadImpl thr = new WorkflowThreadImpl(name, this, threadObj);
-            spec.putThreadSpecs(funcName, thr.getSpec().build());
-        }
+            while (!threadFuncs.isEmpty()) {
+                Pair<String, ThreadFunc> nextFunc = threadFuncs.remove();
+                ThreadFunc threadObj = nextFunc.getValue();
+                String funcName = nextFunc.getKey();
+                WorkflowThreadImpl thr = new WorkflowThreadImpl(name, this, threadObj);
+                spec.putThreadSpecs(funcName, thr.getSpec().build());
+            }
 
-        if (wfRetentionPolicy != null) {
-            spec.setRetentionPolicy(wfRetentionPolicy);
-        }
-        if (parentWfSpecName != null) {
-            spec.setParentWfSpec(ParentWfSpecReference.newBuilder().setWfSpecName(parentWfSpecName));
-        }
+            externalEventsToRegister.forEach(ExternalEventDefRegistration::toPutExtDefRequest);
+            workflowEventsToRegister.forEach(ThrowEventNodeOutputImpl::toPutWorkflowEventDefRequest);
 
-        return spec.build();
+            if (wfRetentionPolicy != null) {
+                spec.setRetentionPolicy(wfRetentionPolicy);
+            }
+            if (parentWfSpecName != null) {
+                spec.setParentWfSpec(ParentWfSpecReference.newBuilder().setWfSpecName(parentWfSpecName));
+            }
+
+            return spec.build();
+        });
     }
 
     ThreadRetentionPolicy getDefaultThreadRetentionPolicy() {
