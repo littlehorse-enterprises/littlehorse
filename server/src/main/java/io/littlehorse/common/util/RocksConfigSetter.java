@@ -114,6 +114,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
         }
+        serverConfig.getRocksDBDelayedWriteRateBytes().ifPresent(options::setDelayedWriteRate);
 
         // Open the DB faster
         options.setSkipCheckingSstFileSizesOnDbOpen(true);

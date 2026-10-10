@@ -86,6 +86,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
     public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
     public static final String ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY = "LHS_ROCKSDB_RATE_LIMIT_INCLUDE_READS";
+    public static final String ROCKSDB_DELAYED_WRITE_RATE_BYTES_KEY = "LHS_ROCKSDB_DELAYED_WRITE_RATE_BYTES";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
@@ -503,6 +504,11 @@ public class LHServerConfig extends ConfigBase {
 
     public long getCoreStoreRateLimitBytes() {
         return Long.valueOf(getOrSetDefault(LHServerConfig.ROCKSDB_RATE_LIMIT_BYTES_KEY, "-1"));
+    }
+
+    public Optional<Long> getRocksDBDelayedWriteRateBytes() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_DELAYED_WRITE_RATE_BYTES_KEY, null))
+                .map(Long::valueOf);
     }
 
     public String getDiskUsagePath() {
