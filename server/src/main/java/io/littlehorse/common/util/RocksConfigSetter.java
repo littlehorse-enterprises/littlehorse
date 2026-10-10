@@ -8,7 +8,7 @@ import org.apache.kafka.streams.state.RocksDBConfigSetter;
 import org.apache.kafka.streams.state.internals.BlockBasedTableConfigWithAccessibleCache;
 import org.rocksdb.BloomFilter;
 import org.rocksdb.Cache;
-import org.rocksdb.CompactionOptionsUniversal;
+import org.rocksdb.CompactionPriority;
 import org.rocksdb.CompactionStyle;
 import org.rocksdb.CompressionType;
 import org.rocksdb.Env;
@@ -86,52 +86,19 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
             options.setWriteBufferManager(serverConfig.getGlobalRocksdbWriteBufferManager());
         }
 
-        // Compaction configs
-        if (storeName.contains("timer")) {
-            // Timer stores rely on range scans a lot and have less data which is more short-lived,
-            // so we rely on the Level compaction style.
-            options.setCompactionStyle(CompactionStyle.LEVEL);
-            options.setMaxBytesForLevelBase(128 * MB * 12);
-
-            // Default 4. Higher means less write amp at the cost of slower reads. In Level compaction
-            // that's a good tradeoff.
-            options.setLevel0FileNumCompactionTrigger(12);
-
-        } else {
-            // Core stores are very write-heavy and have fewer range scans, so we use Universal.
-            options.setCompactionStyle(CompactionStyle.UNIVERSAL);
-            options.setCompressionType(CompressionType.LZ4_COMPRESSION);
-
-            // In Universal compaction this is not so much "files" as it is "sorted runs" which are actually
-            // partitioned into many files. But the point remains, we need to open every single sorted run
-            // when doing a range scan, which is expensive...and universal is good enough at write amp anyways
-            // so using the default (4) is fine.
-            options.setLevel0FileNumCompactionTrigger(4);
-
-            CompactionOptionsUniversal cou = new CompactionOptionsUniversal();
-            cou.setAllowTrivialMove(true);
-
-            // Default 2, higher means fewer + larger compactions and overall lower WA. TODO: tune this
-            // carefully in conjunction with the level 0 file num compaction trigger.
-            cou.setMinMergeWidth(2);
-
-            // Allow compacting files that are within 20% the size of the sorted run. Encourages larger
-            // and more efficient compactions to reduce write amplification.
-            cou.setSizeRatio(20);
-
-            // Default is 100. Reducing this causes more WA (bad), doesn't affect RA (also sad), but it
-            // does reduce disk usage. For now, we care more about throughput and stability, so we are
-            // willing to pay for more disk. If needed we may make this a configurable option in the
-            // future.
-            cou.setMaxSizeAmplificationPercent(100);
-
-            options.setCompactionOptionsUniversal(cou);
-            cou.close();
-
-            // See: https://github.com/facebook/rocksdb/wiki/universal-compaction#db-column-family-size-if-num_levels
-            // options.setNumLevels(10);
+        // Use level compaction in order to keep predictable range scan performance for searches, and
+        // to create more predictable compaction workloads.
+        options.setCompactionStyle(CompactionStyle.LEVEL);
+        options.setCompressionType(CompressionType.LZ4_COMPRESSION);
+        options.setLevel0FileNumCompactionTrigger(6);
+        options.setLevel0SlowdownWritesTrigger(20); // default
+        Long softLimit = serverConfig.getRocksDBPendingCompactionBytesSoftLimit();
+        if (softLimit != null) {
+            options.setSoftPendingCompactionBytesLimit(softLimit);
         }
-        options.setTargetFileSizeBase(128 * MB);
+        options.setCompactionPriority(CompactionPriority.MinOverlappingRatio);
+
+        options.setTargetFileSizeBase(32 * MB);
         options.setMaxWriteBufferNumber(3);
 
         // I/O Configurations
@@ -147,10 +114,12 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         if (serverConfig.getGlobalRocksdbRateLimiter() != null) {
             options.setRateLimiter(serverConfig.getGlobalRocksdbRateLimiter());
         }
+        serverConfig.getRocksDBDelayedWriteRateBytes().ifPresent(options::setDelayedWriteRate);
 
         // Open the DB faster
         options.setSkipCheckingSstFileSizesOnDbOpen(true);
         options.setSkipStatsUpdateOnDbOpen(true);
+        options.setMaxManifestFileSize(4 * MB);
 
         options.setTableFormatConfig(tableConfig);
     }
