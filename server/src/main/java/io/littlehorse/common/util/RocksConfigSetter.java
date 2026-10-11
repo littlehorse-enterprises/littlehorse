@@ -41,7 +41,7 @@ public class RocksConfigSetter implements RocksDBConfigSetter {
         rocksEnv.setBackgroundThreads(threads, Priority.HIGH);
         options.setEnv(rocksEnv);
         options.setMaxBackgroundJobs(threads); // Rocksdb tuning guide recommendation
-        options.setMaxSubcompactions(3);
+        options.setMaxSubcompactions(1);
 
         // Info LOG file configurations
         switch (serverConfig.getServerMetricLevel()) {
