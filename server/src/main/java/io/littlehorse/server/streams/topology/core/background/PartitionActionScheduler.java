@@ -251,7 +251,6 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
             jobContext.discardStaged();
             log.debug("IQ store unavailable for job {} on partition {}; backing off", job.name(), taskId.partition());
             Thread.sleep(STORE_UNAVAILABLE_BACKOFF.toMillis());
-            running = false;
         } catch (Exception e) {
             if (e instanceof IllegalStateException && e.getMessage().contains("PENDING_SHUTDOWN")) {
                 // This is the way.
