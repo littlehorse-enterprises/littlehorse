@@ -6,16 +6,19 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.wfspec.IngressTypeUtils;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Optional;
 
 public class PutVariableRequestModel extends CoreSubCommand<PutVariableRequest> {
     private VariableIdModel id;
@@ -44,6 +47,10 @@ public class PutVariableRequestModel extends CoreSubCommand<PutVariableRequest> 
         }
         id = LHSerializable.fromProto(request.getId(), VariableIdModel.class, context);
         value = LHSerializable.fromProto(request.getValue(), VariableValueModel.class, context);
+        if (value.getDeserializationError().isPresent()) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT, value.getDeserializationError().get());
+        }
     }
 
     @Override
@@ -60,6 +67,18 @@ public class PutVariableRequestModel extends CoreSubCommand<PutVariableRequest> 
         WfRunModel wfRun = context.getableManager().get(id.getWfRunId());
         if (wfRun.getStatus() == LHStatus.COMPLETED) {
             throw new LHApiException(Status.FAILED_PRECONDITION, "Cannot update variables on a completed WfRun");
+        }
+        var typeDef = wfRun.getThreadRun(id.getThreadRunNumber())
+                .getThreadSpec()
+                .getVarDef(id.getName())
+                .getVarDef()
+                .getTypeDef();
+        try {
+            IngressTypeUtils.applyExpectedTypeAndValidate(Optional.of(typeDef), value, context.metadataManager());
+        } catch (TypeValidationException ex) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "Replacement incompatible with declared variable type: " + ex.getMessage());
         }
         VariableValue previousValue = variable.isMasked()
                 ? VariableValue.newBuilder().setStr(LHConstants.STRING_MASK).build()

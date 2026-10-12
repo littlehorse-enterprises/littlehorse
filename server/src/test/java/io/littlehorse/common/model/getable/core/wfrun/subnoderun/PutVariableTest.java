@@ -14,10 +14,13 @@ import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.PutVariableRequest;
 import io.littlehorse.sdk.common.proto.RescueThreadRunRequest;
 import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRun;
@@ -27,6 +30,146 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class PutVariableTest extends AbstractWorkflowExecutionTest {
+
+    @Test
+    void shouldValidateArrayElements() {
+        WfRun run = startWorkflow(
+                thread -> {
+                    thread.declareArray("numbers", Long.class).withDefault(new Long[] {1L});
+                    thread.sleepSeconds(3600);
+                },
+                Map.of());
+        VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "numbers");
+        Array validArray = Array.newBuilder()
+                .setElementType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                .addItems(VariableValue.newBuilder().setInt(2))
+                .addItems(VariableValue.newBuilder().setInt(3))
+                .build();
+        VariableValue valid = VariableValue.newBuilder().setArray(validArray).build();
+        VariableValue before = readGetable(id).getValue().toProto().build();
+
+        assertThat(replaceVariable(id, valid)).isEqualTo(before);
+        assertThat(readGetable(id).getValue().toProto().build()).isEqualTo(valid);
+
+        // The client claims INT elements, but the second element is incompatible.
+        VariableValue invalid = VariableValue.newBuilder()
+                .setArray(validArray.toBuilder()
+                        .setItems(1, VariableValue.newBuilder().setBool(true)))
+                .build();
+        assertRejectedWithoutChangingState(run, id, invalid);
+    }
+
+    @Test
+    void shouldRejectNumericStringReplacementForIntVariable() {
+        WfRun run = startWorkflow(
+                thread -> {
+                    thread.declareInt("number").withDefault(1);
+                    thread.sleepSeconds(3600);
+                },
+                Map.of());
+        VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "number");
+
+        assertRejectedWithoutChangingState(
+                run, id, VariableValue.newBuilder().setStr("42").build());
+    }
+
+    @Test
+    void shouldRejectNonNumericStringReplacementForIntVariable() {
+        WfRun run = startWorkflow(
+                thread -> {
+                    thread.declareInt("number").withDefault(1);
+                    thread.sleepSeconds(3600);
+                },
+                Map.of());
+        VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "number");
+
+        assertRejectedWithoutChangingState(
+                run, id, VariableValue.newBuilder().setStr("not-an-int").build());
+    }
+
+    @Test
+    void shouldRejectJsonObjectKeyForStringKeyedMap() {
+        WfRun run = startMapWorkflow();
+        VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "numbers");
+        var validMap = replaceWithValidMap(id);
+        var invalidEntry = validMap.getEntries(1).toBuilder()
+                .setKey(VariableValue.newBuilder().setJsonObj("{}"));
+
+        // Valid map metadata must not bypass validation of individual keys.
+        VariableValue invalid = VariableValue.newBuilder()
+                .setMap(validMap.toBuilder().setEntries(1, invalidEntry))
+                .build();
+        assertRejectedWithoutChangingState(run, id, invalid);
+    }
+
+    @Test
+    void shouldRejectBooleanValueForIntValuedMap() {
+        WfRun run = startMapWorkflow();
+        VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "numbers");
+        var validMap = replaceWithValidMap(id);
+        var invalidEntry = validMap.getEntries(1).toBuilder()
+                .setValue(VariableValue.newBuilder().setBool(true));
+
+        // Valid map metadata must not bypass validation of individual values.
+        VariableValue invalid = VariableValue.newBuilder()
+                .setMap(validMap.toBuilder().setEntries(1, invalidEntry))
+                .build();
+        assertRejectedWithoutChangingState(run, id, invalid);
+    }
+
+    private WfRun startMapWorkflow() {
+        return startWorkflow(
+                thread -> {
+                    thread.declareMap("numbers", String.class, Long.class).withDefault(Map.of("original", 1L));
+                    thread.sleepSeconds(3600);
+                },
+                Map.of());
+    }
+
+    private io.littlehorse.sdk.common.proto.Map replaceWithValidMap(VariableIdModel id) {
+        io.littlehorse.sdk.common.proto.Map validMap = io.littlehorse.sdk.common.proto.Map.newBuilder()
+                .setMapType(InlineMapDef.newBuilder()
+                        .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                        .setValueType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT)))
+                .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                        .setKey(VariableValue.newBuilder().setStr("first"))
+                        .setValue(VariableValue.newBuilder().setInt(2)))
+                .addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                        .setKey(VariableValue.newBuilder().setStr("second"))
+                        .setValue(VariableValue.newBuilder().setInt(3)))
+                .build();
+        VariableValue valid = VariableValue.newBuilder().setMap(validMap).build();
+        VariableValue before = readGetable(id).getValue().toProto().build();
+
+        assertThat(replaceVariable(id, valid)).isEqualTo(before);
+        assertThat(readGetable(id).getValue().toProto().build()).isEqualTo(valid);
+
+        return validMap;
+    }
+
+    private VariableValue replaceVariable(VariableIdModel id, VariableValue value) {
+        return execute(
+                id.getPartitionKey().orElseThrow(),
+                command -> command.setPutVariable(
+                        PutVariableRequest.newBuilder().setId(id.toProto()).setValue(value)),
+                VariableValue.class);
+    }
+
+    private void assertRejectedWithoutChangingState(WfRun run, VariableIdModel id, VariableValue value) {
+        WfRunIdModel wfRunId = id.getWfRunId();
+        var beforeVariable = readGetable(id).toProto().build();
+        var beforeWfRun = readGetable(wfRunId).toProto().build();
+        var nodeId = currentNode(run).getId();
+        var beforeNode = readGetable(nodeId).toProto().build();
+
+        StatusRuntimeException error = assertThrows(StatusRuntimeException.class, () -> replaceVariable(id, value));
+
+        assertThat(error.getStatus().getCode()).isEqualTo(Status.Code.INVALID_ARGUMENT);
+        assertThat(readGetable(id).toProto().build()).isEqualTo(beforeVariable);
+        assertThat(readGetable(wfRunId).toProto().build()).isEqualTo(beforeWfRun);
+        assertThat(readGetable(nodeId).toProto().build()).isEqualTo(beforeNode);
+        assertThat(forwardedCommands()).isEmpty();
+    }
 
     @Test
     void shouldReplaceWorkflowVariableValue() {
