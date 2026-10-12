@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.TestUtil;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -45,6 +46,32 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
 
         assertThat(previous.getStr()).isEqualTo("original");
         assertThat(readGetable(variableId).getValue().toProto().getStr()).isEqualTo("updated");
+    }
+
+    @Test
+    void shouldReturnMaskedValueWhenReplacingMaskedWorkflowVariable() {
+        WfRun run = startWorkflow(
+                thread -> {
+                    thread.declareStr("message").withDefault("original").masked();
+                    thread.sleepSeconds(3600);
+                },
+                Map.of());
+        WfRunIdModel wfRunId = new WfRunIdModel(run.getId().getId());
+        VariableIdModel variableId = new VariableIdModel(wfRunId, 0, "message");
+
+        VariableValue previous = execute(
+                wfRunId.getPartitionKey().orElseThrow(),
+                command -> command.setPutVariable(PutVariableRequest.newBuilder()
+                        .setId(variableId.toProto())
+                        .setValue(VariableValue.newBuilder().setStr("updated"))),
+                VariableValue.class);
+
+        assertThat(previous)
+                .isEqualTo(VariableValue.newBuilder()
+                        .setStr(LHConstants.STRING_MASK)
+                        .build());
+        assertThat(readGetable(variableId).isMasked()).isTrue();
+        assertThat(readGetable(variableId).getValue().toProto().getStr()).isEqualTo(LHConstants.STRING_MASK);
     }
 
     @Test
