@@ -13,9 +13,9 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefMode
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
-import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.proto.OutputTopicConfig;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.Variable;
@@ -175,8 +175,8 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
             Variable previousValue,
             ReadOnlyMetadataManager metadataManager,
             ReadOnlyGetableManager getableManager,
-            OutputTopicConfigModel config) {
-        if (config.getDefaultRecordingLevel() == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
+            OutputTopicConfig.OutputTopicRecordingLevel recordingLevel) {
+        if (recordingLevel == OutputTopicRecordingLevel.NO_ENTITY_EVENTS) {
             return false;
         }
 
