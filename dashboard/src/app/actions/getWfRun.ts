@@ -2,24 +2,17 @@
 
 import { lhClient } from '@/app/lhClient'
 import { isResourceExhausted } from 'littlehorse-client'
-import {
-  NodeRun,
-  TaskRun,
-  TaskRunId,
-  ThreadRun,
-  Variable,
-  VariableValue,
-  WfRun,
-  WfRunId,
-  WfSpec,
-} from 'littlehorse-client/proto'
-import { buildNodeOutputValuesFromNodeRuns } from '@/app/utils/taskRunOutput'
+import { NodeRun, TaskRun, ThreadRun, Variable, VariableValue, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { buildNodeOutputValuesFromNodeRuns, getConditionTaskRunIds } from '@/app/utils/taskRunOutput'
 import { getInheritedVariables } from './getInheritedVariables'
 
 type Props = {
   wfRunId: WfRunId
   tenantId: string
+  includeNodeOutputs?: boolean
 }
+
+const TASK_RUN_FETCH_CONCURRENCY = 10
 
 export type ThreadRunWithNodeRuns = ThreadRun & {
   nodeRuns: NodeRun[]
@@ -32,7 +25,7 @@ export type WfRunResponse = {
   variables: Variable[]
   variablesTooLarge: boolean
 }
-export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunResponse> => {
+export const getWfRun = async ({ wfRunId, tenantId, includeNodeOutputs = true }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
   const wfRun = await client.getWfRun(wfRunId)
   const [wfSpec, { results: nodeRuns }, ownVariables] = await Promise.all([
@@ -60,12 +53,20 @@ export const getWfRun = async ({ wfRunId, tenantId }: Props): Promise<WfRunRespo
       )
     : { variables: [], tooLarge: false }
 
-  const taskRunIds = nodeRuns
-    .map(nodeRun => (nodeRun.nodeType.oneofKind === 'task' ? nodeRun.nodeType.task.taskRunId : undefined))
-    .filter((id): id is TaskRunId => id !== undefined)
-  const taskRunsByGuid = new Map<string, TaskRun>(
-    await Promise.all(taskRunIds.map(async id => [id.taskGuid, await client.getTaskRun(id)] as const))
-  )
+  const taskRunIds = includeNodeOutputs ? getConditionTaskRunIds(wfSpec, nodeRuns) : []
+  const taskRunsByGuid = new Map<string, TaskRun>()
+  // Outputs enrich the diagram; a missing or unavailable task must not hide the workflow.
+  for (let i = 0; i < taskRunIds.length; i += TASK_RUN_FETCH_CONCURRENCY) {
+    await Promise.all(
+      taskRunIds.slice(i, i + TASK_RUN_FETCH_CONCURRENCY).map(async id => {
+        try {
+          taskRunsByGuid.set(id.taskGuid, await client.getTaskRun(id))
+        } catch (error) {
+          console.error('Error getting task output for diagram', id, error)
+        }
+      })
+    )
+  }
 
   const threadRuns = wfRun.threadRuns.map(threadRun => mergeThreadRunsWithNodeRuns(threadRun, nodeRuns, taskRunsByGuid))
   return {
