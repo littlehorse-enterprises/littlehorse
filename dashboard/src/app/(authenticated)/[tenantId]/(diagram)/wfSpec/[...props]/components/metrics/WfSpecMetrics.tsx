@@ -15,6 +15,7 @@ import {
   transformToLatencyData,
   transformToPieData,
 } from './metricsData'
+import { useMetricsRefresh } from './useMetricsRefresh'
 import { WfSpecMetricsContent } from './WfSpecMetricsContent'
 import { WfSpecMetricsHeader } from './WfSpecMetricsHeader'
 import { ViewMode } from './wfSpecMetricsTypes'
@@ -41,11 +42,13 @@ export const WfSpecMetrics: FC<WfSpecMetricsProps> = ({ wfSpecId }) => {
     return { result, rangeStartMs, rangeEndMs: nowMs }
   }, [wfSpecId, rangeNum, tenantId])
 
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
     ['wfMetrics', wfSpecId.name, wfSpecId.majorVersion, tenantId, rangeMinutes],
     fetcher,
     { refreshInterval: 120_000, revalidateOnFocus: true, revalidateOnMount: true }
   )
+
+  const { isManualRefreshing, redrawKey, refresh } = useMetricsRefresh(mutate)
 
   const { countData, latencyData, pieData } = useMemo(() => {
     if (data === undefined) {
@@ -73,8 +76,11 @@ export const WfSpecMetrics: FC<WfSpecMetricsProps> = ({ wfSpecId }) => {
           onBucketMinutesChange={setBucketMinutes}
           rangeMinutes={rangeMinutes}
           onRangeMinutesChange={setRangeMinutes}
+          isRefreshing={isManualRefreshing || isValidating}
+          onRefresh={refresh}
         />
         <WfSpecMetricsContent
+          redrawKey={redrawKey}
           isLoading={isLoading}
           error={error}
           hasData={hasData}
