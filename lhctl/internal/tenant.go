@@ -16,6 +16,11 @@ var putTenantCmd = &cobra.Command{
 			Id: args[0],
 		}
 
+		if cmd.Flags().Changed("name") {
+			name, _ := cmd.Flags().GetString("name")
+			putTenantReq.Name = &name
+		}
+
 		if cmd.Flag("all-entity-events").Changed {
 			putTenantReq.OutputTopicConfig = &lhproto.OutputTopicConfig{
 				DefaultRecordingLevel: lhproto.OutputTopicConfig_ALL_ENTITY_EVENTS,
@@ -37,12 +42,14 @@ var searchTenantCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		bookmark, _ := cmd.Flags().GetBytesBase64("bookmark")
 		limit, _ := cmd.Flags().GetInt32("limit")
+		req := &lhproto.SearchTenantRequest{Bookmark: bookmark, Limit: &limit}
+		if cmd.Flags().Changed("name") {
+			name, _ := cmd.Flags().GetString("name")
+			req.Name = &name
+		}
 		littlehorse.PrintResp(getGlobalClient(cmd).SearchTenant(
 			requestContext(cmd),
-			&lhproto.SearchTenantRequest{
-				Bookmark: bookmark,
-				Limit:    &limit,
-			},
+			req,
 		))
 	},
 }
@@ -63,6 +70,8 @@ var getTenantCmd = &cobra.Command{
 
 func init() {
 	putCmd.AddCommand(putTenantCmd)
+	putTenantCmd.Flags().String("name", "", "Human-readable tenant name; an empty string clears it.")
+	searchTenantCmd.Flags().String("name", "", "Return tenants whose name contains this string.")
 	putTenantCmd.Flags().Bool("all-entity-events", false, "If set, the output topic will be enabled for this Tenant for all eligible entities.")
 	putTenantCmd.Flags().Bool("no-entity-events", false, "If set, the output topic will be enabled for this Tenant, but only for explicitly-enabled entities.")
 	putTenantCmd.MarkFlagsMutuallyExclusive("all-entity-events", "no-entity-events")

@@ -8015,7 +8015,7 @@ private static final long serialVersionUID = 0L;
      * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
      */
     private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.PutVariableRequest, io.littlehorse.sdk.common.proto.PutVariableRequest.Builder, io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder>
+        io.littlehorse.sdk.common.proto.PutVariableRequest, io.littlehorse.sdk.common.proto.PutVariableRequest.Builder, io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder> 
         internalGetPutVariableFieldBuilder() {
       if (putVariableBuilder_ == null) {
         if (!(commandCase_ == 39)) {
@@ -8083,3 +8083,4 @@ private static final long serialVersionUID = 0L;
   }
 
 }
+
