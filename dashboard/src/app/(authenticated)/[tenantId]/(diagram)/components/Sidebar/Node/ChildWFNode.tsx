@@ -34,7 +34,9 @@ export const ChildWFNode: FC<{ node: RunChildWfNode }> = ({ node }) => {
           <div className="flex flex-col gap-2">
             {Object.entries(inputs).map(([name, assignment]: [string, VariableAssignmentProto]) => (
               <div key={name} className="flex items-center">
-                <span className="flex-1 truncate bg-gray-200 px-2 font-mono">{name}</span>
+                <span className="max-w-[50%] shrink-0 truncate bg-gray-200 px-2 font-mono" title={name}>
+                  {name}
+                </span>
                 <VariableAssignment variableAssigment={assignment} />
               </div>
             ))}
