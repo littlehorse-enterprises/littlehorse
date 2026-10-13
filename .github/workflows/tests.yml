@@ -60,7 +60,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -106,7 +106,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -301,6 +301,21 @@ jobs:
           pnpm install
           pnpm run build
           pnpm run test
+
+      - name: Start Smoke Test Backend
+        run: docker run --detach --name lh-dashboard-smoke --publish 127.0.0.1:2023:2023 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
+
+      - name: Development Smoke Test
+        working-directory: ./dashboard
+        run: pnpm run test:smoke
+
+      - name: Cleanup Smoke Test Backend
+        if: always()
+        run: |
+          if [ "${{ job.status }}" != "success" ]; then
+            docker logs --tail 80 lh-dashboard-smoke || true
+          fi
+          docker rm --force lh-dashboard-smoke || true
 
   tests-sdk-dotnet:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}

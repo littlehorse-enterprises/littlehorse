@@ -1,10 +1,19 @@
-FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:v1 AS runner
+FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:v1 AS nginx-config
+
+FROM node:24-alpine AS runtime
+
+# Keep the existing SSL proxy configuration while selecting Node independently.
+RUN apk add --no-cache nginx supervisor uuidgen
+COPY --from=nginx-config /etc/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=nginx-config /etc/supervisord.conf /etc/supervisord.conf
+COPY --from=nginx-config /etc/supervisor.d /etc/supervisor.d
+COPY --from=nginx-config /entrypoint.sh /entrypoint.sh
+
+FROM runtime AS runner
 
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-
-RUN apk add --no-cache uuidgen
 
 RUN mkdir /app
 WORKDIR /app
@@ -19,6 +28,6 @@ COPY ./dashboard/.next/static ./dashboard/.next/static
 RUN ln -s /app/dashboard/server.js /app/server.js
 
 COPY ./docker/dashboard/entrypoint.sh ./entrypoint.sh
-EXPOSE 3000
+EXPOSE 3000 3443
 
 ENTRYPOINT [ "/app/entrypoint.sh" ]
