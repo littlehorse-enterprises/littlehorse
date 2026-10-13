@@ -103,6 +103,12 @@ service LittleHorse {
   // Runs a WfSpec to create a WfRun.
   rpc RunWf(RunWfRequest) returns (WfRun) {}
 
+  // Starts a durable run from an unregistered workflow definition.
+  rpc RunInlineWf(RunInlineWfRequest) returns (WfRun) {}
+
+  // Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
+  rpc GetInlineWfSpec(WfRunId) returns (InlineWfSpec) {}
+
   // Schedule repeated WfRun based on a cron expression
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
@@ -681,10 +687,17 @@ message DeleteWorkflowEventDefRequest {
 }
 
 // Create a Workflow Run.
+message RunInlineWfRequest {
+  // Supply only thread_specs, entrypoint_thread_name, and retention_policy.
+  InlineWfSpec wf_spec = 1;
+  map<string, VariableValue> variables = 2;
+  // Reusing an existing run ID returns ALREADY_EXISTS, as with RunWf.
+  optional string id = 3;
+}
+
 message RunWfRequest {
   // The name of the WfSpec to run.
   string wf_spec_name = 1;
-
   // Optionally specify the major version of the WfSpec to run. This guarantees that
   // the "signature" of the WfSpec (i.e. the required input variables, and searchable
   // variables) will not change for this app.

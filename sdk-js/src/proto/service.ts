@@ -83,6 +83,7 @@ import { WorkflowEventId } from "./object_id";
 import { MigrationVars } from "./workflow_migration";
 import { WorkflowMigrationPlanId } from "./object_id";
 import { ThreadMigrationPlanRequest } from "./workflow_migration";
+import { InlineWfSpec } from "./wf_run";
 import { WorkflowEventDefId } from "./object_id";
 import { WfSpecId } from "./object_id";
 import { UserTaskDefId } from "./object_id";
@@ -570,6 +571,29 @@ export interface DeleteWorkflowEventDefRequest {
 /**
  * Create a Workflow Run.
  *
+ * @generated from protobuf message littlehorse.RunInlineWfRequest
+ */
+export interface RunInlineWfRequest {
+    /**
+     * Supply only thread_specs, entrypoint_thread_name, and retention_policy.
+     *
+     * @generated from protobuf field: littlehorse.InlineWfSpec wf_spec = 1
+     */
+    wfSpec?: InlineWfSpec;
+    /**
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> variables = 2
+     */
+    variables: {
+        [key: string]: VariableValue;
+    };
+    /**
+     * Reusing an existing run ID returns ALREADY_EXISTS, as with RunWf.
+     *
+     * @generated from protobuf field: optional string id = 3
+     */
+    id?: string;
+}
+/**
  * @generated from protobuf message littlehorse.RunWfRequest
  */
 export interface RunWfRequest {
@@ -4306,6 +4330,87 @@ class DeleteWorkflowEventDefRequest$Type extends MessageType<DeleteWorkflowEvent
  * @generated MessageType for protobuf message littlehorse.DeleteWorkflowEventDefRequest
  */
 export const DeleteWorkflowEventDefRequest = new DeleteWorkflowEventDefRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class RunInlineWfRequest$Type extends MessageType<RunInlineWfRequest> {
+    constructor() {
+        super("littlehorse.RunInlineWfRequest", [
+            { no: 1, name: "wf_spec", kind: "message", T: () => InlineWfSpec },
+            { no: 2, name: "variables", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } },
+            { no: 3, name: "id", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<RunInlineWfRequest>): RunInlineWfRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.variables = {};
+        if (value !== undefined)
+            reflectionMergePartial<RunInlineWfRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: RunInlineWfRequest): RunInlineWfRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.InlineWfSpec wf_spec */ 1:
+                    message.wfSpec = InlineWfSpec.internalBinaryRead(reader, reader.uint32(), options, message.wfSpec);
+                    break;
+                case /* map<string, littlehorse.VariableValue> variables */ 2:
+                    this.binaryReadMap2(message.variables, reader, options);
+                    break;
+                case /* optional string id */ 3:
+                    message.id = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap2(map: RunInlineWfRequest["variables"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof RunInlineWfRequest["variables"] | undefined, val: RunInlineWfRequest["variables"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = VariableValue.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.RunInlineWfRequest.variables");
+            }
+        }
+        map[key ?? ""] = val ?? VariableValue.create();
+    }
+    internalBinaryWrite(message: RunInlineWfRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.InlineWfSpec wf_spec = 1; */
+        if (message.wfSpec)
+            InlineWfSpec.internalBinaryWrite(message.wfSpec, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.VariableValue> variables = 2; */
+        for (let k of globalThis.Object.keys(message.variables)) {
+            writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            VariableValue.internalBinaryWrite(message.variables[k], writer, options);
+            writer.join().join();
+        }
+        /* optional string id = 3; */
+        if (message.id !== undefined)
+            writer.tag(3, WireType.LengthDelimited).string(message.id);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.RunInlineWfRequest
+ */
+export const RunInlineWfRequest = new RunInlineWfRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class RunWfRequest$Type extends MessageType<RunWfRequest> {
     constructor() {
@@ -9814,6 +9919,8 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "GetUserTaskDef", options: {}, I: UserTaskDefId, O: UserTaskDef },
     { name: "GetLatestUserTaskDef", options: {}, I: GetLatestUserTaskDefRequest, O: UserTaskDef },
     { name: "RunWf", options: {}, I: RunWfRequest, O: WfRun },
+    { name: "RunInlineWf", options: {}, I: RunInlineWfRequest, O: WfRun },
+    { name: "GetInlineWfSpec", options: {}, I: WfRunId, O: InlineWfSpec },
     { name: "ScheduleWf", options: {}, I: ScheduleWfRequest, O: ScheduledWfRun },
     { name: "SearchScheduledWfRun", options: {}, I: SearchScheduledWfRunRequest, O: ScheduledWfRunIdList },
     { name: "GetScheduledWfRun", options: {}, I: ScheduledWfRunId, O: ScheduledWfRun },

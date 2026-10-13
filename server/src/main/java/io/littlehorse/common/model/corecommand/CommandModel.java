@@ -56,6 +56,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public TaskClaimEventModel taskClaimEvent;
     public PutExternalEventRequestModel putExternalEventRequest;
     public RunWfRequestModel runWf;
+    private RunInlineWfRequestModel runInlineWf;
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
     public SleepNodeMaturedModel sleepNodeMatured;
@@ -123,6 +124,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RUN_WF:
                 out.setRunWf(runWf.toProto());
+                break;
+            case RUN_INLINE_WF:
+                out.setRunInlineWf(runInlineWf.toProto());
                 break;
             case STOP_WF_RUN:
                 out.setStopWfRun(stopWfRun.toProto());
@@ -242,6 +246,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RUN_WF:
                 runWf = RunWfRequestModel.fromProto(p.getRunWf(), context);
+                break;
+            case RUN_INLINE_WF:
+                runInlineWf = LHSerializable.fromProto(p.getRunInlineWf(), RunInlineWfRequestModel.class, context);
                 break;
             case STOP_WF_RUN:
                 stopWfRun = StopWfRunRequestModel.fromProto(p.getStopWfRun(), context);
@@ -370,6 +377,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return putExternalEventRequest;
             case RUN_WF:
                 return runWf;
+            case RUN_INLINE_WF:
+                return runInlineWf;
             case STOP_WF_RUN:
                 return stopWfRun;
             case RESUME_WF_RUN:
@@ -437,7 +446,10 @@ public class CommandModel extends AbstractCommand<Command> {
 
     public void setSubCommand(CoreSubCommand<?> cmd) {
         Class<?> cls = cmd.getClass();
-        if (cls.equals(RunWfRequestModel.class)) {
+        if (cls.equals(RunInlineWfRequestModel.class)) {
+            type = CommandCase.RUN_INLINE_WF;
+            runInlineWf = (RunInlineWfRequestModel) cmd;
+        } else if (cls.equals(RunWfRequestModel.class)) {
             type = CommandCase.RUN_WF;
             runWf = (RunWfRequestModel) cmd;
         } else if (cls.equals(PutExternalEventRequestModel.class)) {

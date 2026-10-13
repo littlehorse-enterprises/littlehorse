@@ -136,6 +136,16 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.RunWfRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 _registered_method=True)
+        self.RunInlineWf = channel.unary_unary(
+                '/littlehorse.LittleHorse/RunInlineWf',
+                request_serializer=service__pb2.RunInlineWfRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
+                _registered_method=True)
+        self.GetInlineWfSpec = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetInlineWfSpec',
+                request_serializer=object__id__pb2.WfRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.InlineWfSpec.FromString,
+                _registered_method=True)
         self.ScheduleWf = channel.unary_unary(
                 '/littlehorse.LittleHorse/ScheduleWf',
                 request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
@@ -729,6 +739,20 @@ class LittleHorseServicer(object):
 
     def RunWf(self, request, context):
         """Runs a WfSpec to create a WfRun.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RunInlineWf(self, request, context):
+        """Starts a durable run from an unregistered workflow definition.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetInlineWfSpec(self, request, context):
+        """Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1514,6 +1538,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.RunWf,
                     request_deserializer=service__pb2.RunWfRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'RunInlineWf': grpc.unary_unary_rpc_method_handler(
+                    servicer.RunInlineWf,
+                    request_deserializer=service__pb2.RunInlineWfRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'GetInlineWfSpec': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInlineWfSpec,
+                    request_deserializer=object__id__pb2.WfRunId.FromString,
+                    response_serializer=wf__run__pb2.InlineWfSpec.SerializeToString,
             ),
             'ScheduleWf': grpc.unary_unary_rpc_method_handler(
                     servicer.ScheduleWf,
@@ -2430,6 +2464,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/RunWf',
             service__pb2.RunWfRequest.SerializeToString,
             wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RunInlineWf(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/RunInlineWf',
+            service__pb2.RunInlineWfRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetInlineWfSpec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetInlineWfSpec',
+            object__id__pb2.WfRunId.SerializeToString,
+            wf__run__pb2.InlineWfSpec.FromString,
             options,
             channel_credentials,
             insecure,
