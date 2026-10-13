@@ -23,7 +23,9 @@ export const searchWfRun = async ({
   const requestWithBookmark = bookmarkAsString ? { ...req, bookmark: Buffer.from(bookmarkAsString, 'base64') } : req
   const wfRunIdList = await client.searchWfRun(requestWithBookmark)
 
-  const wfRunData = await Promise.all(wfRunIdList.results.map(wfRunId => getWfRun({ wfRunId, tenantId })))
+  const wfRunData = await Promise.all(
+    wfRunIdList.results.map(wfRunId => getWfRun({ wfRunId, tenantId, includeNodeOutputs: false }))
+  )
 
   return {
     results: wfRunData,
