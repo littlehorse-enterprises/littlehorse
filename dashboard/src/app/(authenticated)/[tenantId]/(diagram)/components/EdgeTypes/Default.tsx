@@ -1,6 +1,5 @@
 import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
-import { cn } from '@/lib/utils'
 import { CircleAlertIcon, GitBranch } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
@@ -99,10 +98,7 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
               {hasChip && (
                 <div className="relative w-full flex-1">
                   <div
-                    className={cn(
-                      'absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md border border-violet-200 bg-white px-1.5 py-1',
-                      data?.fade && 'opacity-25'
-                    )}
+                    className="absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md border border-violet-200 bg-white px-1.5 py-1"
                     style={{ transform: 'translate(-50%, -50%) scale(0.75)' }}
                   >
                     {hasCondition ? (
