@@ -114,11 +114,12 @@ public class SleepNodeModel extends SubNode<SleepNode> {
         return new SleepNodeRunModel(processorContext);
     }
 
-    public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {
+    /** Calculates relative sleep deadlines from the stable NodeRun arrival time. */
+    public Date getMaturationTime(ThreadRunModel thread, Date arrivalTime) throws LHVarSubError {
         switch (type) {
             case RAW_SECONDS:
                 long timeToSleep = thread.assignVariable(rawSeconds).asInt().getIntVal();
-                return new Date(System.currentTimeMillis() + (1000 * timeToSleep));
+                return new Date(arrivalTime.getTime() + (1000 * timeToSleep));
             case ISO_DATE:
                 String dateStr = thread.assignVariable(isoDate).asStr().getStrVal();
                 try {

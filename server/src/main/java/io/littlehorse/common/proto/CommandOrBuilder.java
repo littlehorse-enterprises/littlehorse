@@ -552,5 +552,20 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return Whether the putVariable field is set.
+   */
+  boolean hasPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return The putVariable.
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }
