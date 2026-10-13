@@ -29,6 +29,7 @@ import lombok.Setter;
 public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> implements ClusterLevelCommand {
 
     private String id;
+    private String name;
     private OutputTopicConfigModel outputTopicConfig;
 
     public PutTenantRequestModel() {}
@@ -41,6 +42,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
         PutTenantRequest putTenantRequest = (PutTenantRequest) proto;
         this.id = putTenantRequest.getId();
+        this.name = putTenantRequest.hasName() ? putTenantRequest.getName() : null;
         if (putTenantRequest.hasOutputTopicConfig()) {
             this.outputTopicConfig = LHSerializable.fromProto(
                     putTenantRequest.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
@@ -54,6 +56,8 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
         if (outputTopicConfig != null) {
             result.setOutputTopicConfig(this.outputTopicConfig.toProto());
         }
+
+        if (name != null) result.setName(name);
 
         return result;
     }
@@ -77,6 +81,13 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
 
+        if (name != null
+                && !name.isEmpty()
+                && name.codePoints()
+                        .allMatch(codePoint -> Character.isWhitespace(codePoint) || Character.isSpaceChar(codePoint))) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tenant name must not contain only whitespace");
+        }
+
         TenantModel tenant = metadataManager.get(new TenantIdModel(id));
         if (tenant == null) {
             if (this.id.isEmpty() || !LHUtil.isValidLHName(this.id) || Character.isDigit(this.id.charAt(0))) {
@@ -86,6 +97,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             tenant = new TenantModel(id);
             tenant.setCreatedAt(context.currentCommand().getTime());
         }
+        if (name != null) tenant.setName(name.isEmpty() ? null : name);
         tenant.setOutputTopicConfig(outputTopicConfig);
         metadataManager.put(tenant);
         if (outputTopicConfig != null && context.serverConfig().shouldCreateOutputTopics()) {

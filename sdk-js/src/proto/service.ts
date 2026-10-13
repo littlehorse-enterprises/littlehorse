@@ -1658,6 +1658,12 @@ export interface SearchTenantRequest {
      * @generated from protobuf field: optional bytes bookmark = 2
      */
     bookmark?: Uint8Array;
+    /**
+     * Return tenants whose name contains this string.
+     *
+     * @generated from protobuf field: optional string name = 3
+     */
+    name?: string;
 }
 /**
  * List of Tenant Id's
@@ -6621,7 +6627,8 @@ class SearchTenantRequest$Type extends MessageType<SearchTenantRequest> {
     constructor() {
         super("littlehorse.SearchTenantRequest", [
             { no: 1, name: "limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
-            { no: 2, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+            { no: 2, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
+            { no: 3, name: "name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<SearchTenantRequest>): SearchTenantRequest {
@@ -6641,6 +6648,9 @@ class SearchTenantRequest$Type extends MessageType<SearchTenantRequest> {
                 case /* optional bytes bookmark */ 2:
                     message.bookmark = reader.bytes();
                     break;
+                case /* optional string name */ 3:
+                    message.name = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -6659,6 +6669,9 @@ class SearchTenantRequest$Type extends MessageType<SearchTenantRequest> {
         /* optional bytes bookmark = 2; */
         if (message.bookmark !== undefined)
             writer.tag(2, WireType.LengthDelimited).bytes(message.bookmark);
+        /* optional string name = 3; */
+        if (message.name !== undefined)
+            writer.tag(3, WireType.LengthDelimited).string(message.name);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

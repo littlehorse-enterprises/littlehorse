@@ -26,6 +26,7 @@ import lombok.Setter;
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     private TenantIdModel id;
+    private String name;
     private Date createdAt;
     private OutputTopicConfigModel outputTopicConfig;
 
@@ -52,6 +53,8 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
             result.setOutputTopicConfig(outputTopicConfig.toProto());
         }
 
+        if (name != null) result.setName(name);
+
         return result;
     }
 
@@ -61,6 +64,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
 
+        this.name = tenant.hasName() ? tenant.getName() : null;
         if (tenant.hasOutputTopicConfig()) {
             this.outputTopicConfig =
                     LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);

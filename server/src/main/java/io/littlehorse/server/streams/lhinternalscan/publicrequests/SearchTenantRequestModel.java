@@ -22,12 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 public class SearchTenantRequestModel
         extends PublicScanRequest<
                 SearchTenantRequest, TenantIdList, TenantId, TenantIdModel, SearchTenantRequestReply> {
-    private ExecutionContext context;
+    private String name;
 
     @Override
     public void initFrom(Message proto, ExecutionContext context) throws LHSerdeException {
-        this.context = context;
         SearchTenantRequest p = (SearchTenantRequest) proto;
+        name = p.hasName() ? p.getName() : null;
         if (p.hasBookmark()) {
             try {
                 this.bookmark = BookmarkPb.parseFrom(p.getBookmark());
@@ -47,6 +47,8 @@ public class SearchTenantRequestModel
         if (bookmark != null) builder.setBookmark(bookmark.toByteString());
 
         if (limit != null) builder.setLimit(limit);
+
+        if (name != null) builder.setName(name);
 
         return builder;
     }

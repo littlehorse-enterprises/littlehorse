@@ -4,6 +4,7 @@ import { DefaultSession } from 'next-auth'
 export type WhoAmI = {
   user: DefaultSession['user']
   tenants: string[]
+  tenantNames: Record<string, string>
 }
 
 export type WithTenant = {

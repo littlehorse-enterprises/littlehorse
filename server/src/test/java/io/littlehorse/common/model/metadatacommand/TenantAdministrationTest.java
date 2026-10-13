@@ -74,10 +74,6 @@ public class TenantAdministrationTest {
     private Headers metadata = HeadersUtil.metadataHeadersFor(
             new TenantIdModel(tenantId), new PrincipalIdModel(LHConstants.ANONYMOUS_PRINCIPAL));
 
-    private final ReadOnlyMetadataManager metadataManager = new ReadOnlyMetadataManager(
-            ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
-            TenantScopedStore.newInstance(nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext),
-            metadataCache);
     private final AsyncWaiters asyncWaiters = new AsyncWaiters();
 
     @BeforeEach
@@ -152,8 +148,37 @@ public class TenantAdministrationTest {
                 .hasRootCauseMessage("INVALID_ARGUMENT: Tenant id must be a valid hostname and not start with a digit");
     }
 
+    @Test
+    void shouldPreserveAndClearStoredName() {
+        metadataProcessor.init(mockProcessorContext);
+        putTenantRequest.setName("Acme — Production");
+        storeTenantRequest();
+        assertThat(storedTenant().getName()).isEqualTo("Acme — Production");
+        putTenantRequest.setName(null);
+        storeTenantRequest();
+        assertThat(storedTenant().getName()).isEqualTo("Acme — Production");
+        putTenantRequest.setName("Acme — US Production");
+        storeTenantRequest();
+        assertThat(storedTenant().getName()).isEqualTo("Acme — US Production");
+        putTenantRequest.setName("");
+        storeTenantRequest();
+        assertThat(storedTenant().getName()).isNull();
+        assertThat(storedTenant().toProto().hasName()).isFalse();
+    }
+
+    private void storeTenantRequest() {
+        MetadataCommandModel command = new MetadataCommandModel(putTenantRequest);
+        metadataProcessor.process(
+                new Record<>(UUID.randomUUID().toString(), command.toProto().build(), 0L, metadata));
+    }
+
     private TenantModel storedTenant() {
-        return metadataManager.get(new TenantIdModel(tenantId));
+        return new ReadOnlyMetadataManager(
+                        ClusterScopedStore.newInstance(nativeMetadataStore, executionContext),
+                        TenantScopedStore.newInstance(
+                                nativeMetadataStore, new TenantIdModel("my-tenant"), executionContext),
+                        metadataCache)
+                .get(new TenantIdModel(tenantId));
     }
 
     private PutTenantRequest putTenantRequest(String tenantId) {

@@ -67,14 +67,16 @@ class Principal(_message.Message):
     def __init__(self, id: _Optional[_Union[_object_id_pb2.PrincipalId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., per_tenant_acls: _Optional[_Mapping[str, ServerACLs]] = ..., global_acls: _Optional[_Union[ServerACLs, _Mapping]] = ...) -> None: ...
 
 class Tenant(_message.Message):
-    __slots__ = ("id", "created_at", "output_topic_config")
+    __slots__ = ("id", "created_at", "output_topic_config", "name")
     ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_AT_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_TOPIC_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.TenantId
     created_at: _timestamp_pb2.Timestamp
     output_topic_config: OutputTopicConfig
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...
+    name: str
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.TenantId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ..., name: _Optional[str] = ...) -> None: ...
 
 class Quota(_message.Message):
     __slots__ = ("id", "created_at", "write_requests_per_second")
@@ -142,12 +144,14 @@ class OutputTopicConfig(_message.Message):
     def __init__(self, default_recording_level: _Optional[_Union[OutputTopicConfig.OutputTopicRecordingLevel, str]] = ...) -> None: ...
 
 class PutTenantRequest(_message.Message):
-    __slots__ = ("id", "output_topic_config")
+    __slots__ = ("id", "output_topic_config", "name")
     ID_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_TOPIC_CONFIG_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
     id: str
     output_topic_config: OutputTopicConfig
-    def __init__(self, id: _Optional[str] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ...) -> None: ...
+    name: str
+    def __init__(self, id: _Optional[str] = ..., output_topic_config: _Optional[_Union[OutputTopicConfig, _Mapping]] = ..., name: _Optional[str] = ...) -> None: ...
 
 class PutQuotaRequest(_message.Message):
     __slots__ = ("tenant", "principal", "write_requests_per_second")
