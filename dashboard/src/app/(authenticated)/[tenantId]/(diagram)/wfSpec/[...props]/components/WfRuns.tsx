@@ -22,6 +22,7 @@ import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
 import { VariableFilter } from './types'
 import { VariableValuePillRow } from './VariableValuePillRow'
+import { WfRunDuration } from './WfRunDuration'
 import { WfRunsHeader } from './WfRunsHeader'
 import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
@@ -47,20 +48,9 @@ const buildVariableFilters = (filter: VariableFilter | null): VariableMatch[] =>
 
 const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
 
-// Local helper kept distinct from utils/dateTime#formatDuration which takes ms.
-const formatRangeDuration = (start?: DateLike, end?: DateLike) => {
-  const s = toDate(start)?.getTime()
-  if (s === undefined) return EMPTY
-  const e = toDate(end)?.getTime() ?? Date.now()
-  const sec = Math.max(0, Math.floor((e - s) / 1000))
-  if (sec < 60) return `${sec}s`
-  const m = Math.floor(sec / 60)
-  const rs = sec % 60
-  if (m < 60) return `${m}m ${rs}s`
-  const h = Math.floor(m / 60)
-  const rm = m % 60
-  return `${h}h ${rm}m`
-}
+const RUNNING_POLL_MS = 15_000
+const pollWhileRunning = (pages: PaginatedWfRunResponseList[]) =>
+  pages.some(p => p.results.some(r => r.wfRun.status === LHStatus.RUNNING)) ? RUNNING_POLL_MS : 0
 
 const entrypointVariablesText = (variables: Variable[]) =>
   variables.map(v => `${v.id!.name}: ${getVariableValue(v.value!)}`).join(' · ')
@@ -144,6 +134,7 @@ export const WfRuns: FC<WfSpec> = spec => {
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const [sort, setSort] = useState<SortState>(defaultSort)
   const [variableFilter, setVariableFilter] = useState<VariableFilter | null>(null)
+  const [pollMs, setPollMs] = useState(0)
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
@@ -189,21 +180,26 @@ export const WfRuns: FC<WfSpec> = spec => {
     [status, tenantId, limit, startTime, wfSpecName, wfSpecMajorVersion, wfSpecRevision, filterKey]
   )
 
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(getKey, async (key: WfRunsKey) => {
-    const [, wfStatus, tId, lim, stWin, bookmarkAsString, name, major, revision] = key
-    return await searchWfRun({
-      wfSpecName: name,
-      wfSpecMajorVersion: major,
-      wfSpecRevision: revision,
-      variableFilters,
-      limit: lim,
-      status: wfStatus === 'ALL' ? undefined : wfStatus,
-      tenantId: tId,
-      bookmarkAsString,
-      earliestStart: toTimestamp(stWin?.earliestStart),
-      latestStart: toTimestamp(stWin?.latestStart),
-    })
-  })
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(
+    getKey,
+    async (key: WfRunsKey) => {
+      const [, wfStatus, tId, lim, stWin, bookmarkAsString, name, major, revision] = key
+      return await searchWfRun({
+        wfSpecName: name,
+        wfSpecMajorVersion: major,
+        wfSpecRevision: revision,
+        variableFilters,
+        limit: lim,
+        status: wfStatus === 'ALL' ? undefined : wfStatus,
+        tenantId: tId,
+        bookmarkAsString,
+        earliestStart: toTimestamp(stWin?.earliestStart),
+        latestStart: toTimestamp(stWin?.latestStart),
+      })
+    },
+    // SWR reads a function refreshInterval only on mount, so keep it in state.
+    { refreshInterval: pollMs, onSuccess: pages => setPollMs(pollWhileRunning(pages)) }
+  )
 
   const rows = useMemo(() => (data ? data.flatMap(p => p.results) : []), [data])
   const sortedRows = useMemo(() => [...rows].sort((a, b) => compareRows(a, b, sort)), [rows, sort])
@@ -297,7 +293,7 @@ export const WfRuns: FC<WfSpec> = spec => {
                           {w.endTime ? formatDate(toDate(w.endTime)) : EMPTY}
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {formatRangeDuration(w.startTime, w.endTime)}
+                          <WfRunDuration startTime={w.startTime} endTime={w.endTime} status={w.status} />
                         </TableCell>
                         <TableCell>
                           {w.id.parentWfRunId?.id ? (
