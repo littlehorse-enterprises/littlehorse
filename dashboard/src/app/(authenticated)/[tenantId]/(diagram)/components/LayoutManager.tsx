@@ -49,6 +49,8 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   const nodes = useStore(store => store.getNodes())
   const edges = useStore(store => store.edges)
   const { fitView, setViewport } = useReactFlow()
+  const currentLayoutKey = useRef(layoutKey)
+  currentLayoutKey.current = layoutKey
 
   useOnViewportChange({
     onChange: useCallback(
@@ -60,9 +62,10 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   })
 
   const onLoad = useCallback(
-    async (nodes: Node[], edges: Edge[]) => {
+    async (nodes: Node[], edges: Edge[], key: string) => {
       try {
         const { graph: laidOutGraph, routes } = await layoutDiagram(nodes, edges)
+        if (currentLayoutKey.current !== key) return
 
         const laidOutNodes = nodes.map(node => {
           const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
@@ -90,6 +93,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
         )
         onLayoutComplete?.(laidOutNodes)
         setTimeout(() => {
+          if (currentLayoutKey.current !== key) return
           const saved = sessionStorage.getItem(viewportKey)
           if (saved) {
             try {
@@ -114,10 +118,14 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
     // ELK's inputs are deterministic (nodeDimensions), but waiting for
     // reactflow's first measurement pass guarantees the instance is live, so
     // the post-layout fitView/viewport restore isn't a no-op on a cold load.
-    const ready = nodes.length > 0 && nodes.every(node => node.width !== undefined && node.height !== undefined)
+    // The store may still contain the previous thread's measured nodes while
+    // React Flow synchronizes the new controlled nodes.
+    const ready =
+      nodes.length > 0 &&
+      nodes.every(node => node.data.layoutKey === layoutKey && node.width !== undefined && node.height !== undefined)
     if (!ready) return
     laidOutKey.current = layoutKey
-    onLoad(nodes, edges)
+    onLoad(nodes, edges, layoutKey)
   }, [layoutKey, nodes, edges, onLoad])
   return <></>
 }

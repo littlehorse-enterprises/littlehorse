@@ -28,11 +28,9 @@ export type WfRunResponse = {
 export const getWfRun = async ({ wfRunId, tenantId, includeNodeOutputs = true }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
   const wfRun = await client.getWfRun(wfRunId)
-  const [wfSpec, { results: nodeRuns }, ownVariables] = await Promise.all([
+  const [wfSpec, nodeRuns, ownVariables] = await Promise.all([
     client.getWfSpec(wfRun.wfSpecId!),
-    client.listNodeRuns({
-      wfRunId,
-    }),
+    listAllNodeRuns(client, wfRunId),
     client.listVariables({ wfRunId }).then(
       ({ results }) => ({ results, tooLarge: false }),
       error => {
@@ -75,6 +73,17 @@ export const getWfRun = async ({ wfRunId, tenantId, includeNodeOutputs = true }:
     variables: [...ownVariables.results, ...inheritedVariables.variables],
     variablesTooLarge: ownVariables.tooLarge || inheritedVariables.tooLarge,
   }
+}
+
+const listAllNodeRuns = async (client: Awaited<ReturnType<typeof lhClient>>, wfRunId: WfRunId): Promise<NodeRun[]> => {
+  const nodeRuns: NodeRun[] = []
+  let bookmark: Uint8Array | undefined
+  do {
+    const page = await client.listNodeRuns({ wfRunId, bookmark })
+    nodeRuns.push(...page.results)
+    bookmark = page.bookmark
+  } while (bookmark && bookmark.length > 0)
+  return nodeRuns
 }
 
 const mergeThreadRunsWithNodeRuns = (

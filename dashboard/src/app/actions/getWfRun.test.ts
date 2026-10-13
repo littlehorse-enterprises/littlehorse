@@ -56,16 +56,16 @@ const configureWorkflow = (referencedNames: string[], allNames = referencedNames
       },
     })
   )
-  client.listNodeRuns.mockResolvedValue({
-    results: allNames.map((nodeName, position) =>
-      NodeRun.create({
-        id: { wfRunId, threadRunNumber: 0, position },
-        nodeName,
-        threadSpecName: 'main',
-        nodeType: { oneofKind: 'task', task: { taskRunId: { wfRunId, taskGuid: nodeName } } },
-      })
-    ),
-  })
+  const nodeRuns = allNames.map((nodeName, position) =>
+    NodeRun.create({
+      id: { wfRunId, threadRunNumber: 0, position },
+      nodeName,
+      threadSpecName: 'main',
+      nodeType: { oneofKind: 'task', task: { taskRunId: { wfRunId, taskGuid: nodeName } } },
+    })
+  )
+  client.listNodeRuns.mockResolvedValue({ results: nodeRuns })
+  return nodeRuns
 }
 
 beforeEach(() => {
@@ -109,6 +109,28 @@ it('makes no task requests for a workflow without output conditions', async () =
   configureWorkflow([], ['unused'])
   await getWfRun(props)
   expect(client.getTaskRun).not.toHaveBeenCalled()
+})
+
+it('reads every node-run page before selecting the latest loop output', async () => {
+  const [first] = configureWorkflow(['loop'])
+  const last = NodeRun.create({
+    ...first,
+    id: { wfRunId, threadRunNumber: 0, position: 200 },
+    nodeType: { oneofKind: 'task', task: { taskRunId: { wfRunId, taskGuid: 'last-loop' } } },
+  })
+  const bookmark = new Uint8Array([1, 2, 3])
+  client.listNodeRuns
+    .mockResolvedValueOnce({ results: [first], bookmark })
+    .mockResolvedValueOnce({ results: [last], bookmark: new Uint8Array() })
+
+  const result = await getWfRun(props)
+  expect(client.listNodeRuns).toHaveBeenCalledTimes(2)
+  expect(client.listNodeRuns).toHaveBeenLastCalledWith({ wfRunId, bookmark })
+  expect(client.getTaskRun.mock.calls.map(([id]) => id.taskGuid)).toEqual(['last-loop'])
+  expect(result.wfRun.threadRuns[0].nodeRuns).toHaveLength(2)
+  expect(result.wfRun.threadRuns[0].nodeOutputValues).toEqual({
+    loop: { value: { oneofKind: 'str', str: 'last-loop' } },
+  })
 })
 
 it('skips task outputs for run-list searches even when conditions reference them', async () => {

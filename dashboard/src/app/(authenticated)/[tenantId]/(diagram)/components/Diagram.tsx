@@ -132,7 +132,10 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     if (appliedResetKey.current === resetKey) return
     appliedResetKey.current = resetKey
     lastAppliedThread.current = null
-    const extractedNodes = extractNodes(threadSpec)
+    const extractedNodes = extractNodes(threadSpec).map(node => ({
+      ...node,
+      data: { ...node.data, layoutKey: resetKey },
+    }))
     const extractedEdges = extractEdges(threadSpec)
 
     if (!wfRun) {
@@ -280,7 +283,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             nodesDraggable={false}
             elementsSelectable
             onlyRenderVisibleElements={true}
-            minZoom={0.3}
+            minZoom={0.01}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             snapToGrid={true}
