@@ -167,6 +167,38 @@ jobs:
         working-directory: ./sdk-python
         run: poetry run python -m unittest -v
 
+  tests-sdk-python-dependency-bounds:
+    if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
+    strategy:
+      matrix:
+        include:
+          - resolution: lowest-direct
+            python-version: "3.10"
+          - resolution: highest
+            python-version: "3.13"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the ${{ matrix.resolution }} allowed dependency versions
+        working-directory: ./sdk-python
+        run: |
+          python -m pip install uv
+          uv venv --python python .venv
+          uv pip install --python .venv --resolution ${{ matrix.resolution }} -e .
+          uv pip install --python .venv faker parameterized
+          uv pip list --python .venv
+
+      - name: Tests
+        working-directory: ./sdk-python
+        run: .venv/bin/python -m unittest -v
+
   tests-canary:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-latest
