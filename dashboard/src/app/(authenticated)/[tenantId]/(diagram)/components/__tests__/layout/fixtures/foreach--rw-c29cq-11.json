@@ -1,0 +1,469 @@
+{
+  "name": "rw-c29cq-11",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-wait-for-condition-WAIT_FOR_CONDITION",
+              "variableMutations": [
+                {
+                  "lhsName": "v3_int",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "int": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-wait-for-condition-WAIT_FOR_CONDITION": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-rw-echo-TASK"
+            }
+          ],
+          "waitForCondition": {
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "v3_int"
+                },
+                "comparator": "GREATER_THAN",
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "2-rw-echo-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-rw-decline-TASK"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-echo"
+            },
+            "retries": 2,
+            "variables": [
+              {
+                "variableName": "v0_str"
+              }
+            ]
+          }
+        },
+        "3-rw-decline-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-throw-rw-wfevt-c29cq-11-THROW_EVENT"
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-3-rw-decline-TASK-rw-declined",
+              "specificFailure": "rw-declined"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-decline"
+            }
+          }
+        },
+        "4-throw-rw-wfevt-c29cq-11-THROW_EVENT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-rw-flaky-TASK"
+            }
+          ],
+          "throwEvent": {
+            "eventDefId": {
+              "name": "rw-wfevt-c29cq-11"
+            },
+            "content": {
+              "literalValue": {
+                "str": "lit-8fx0"
+              }
+            }
+          }
+        },
+        "5-rw-flaky-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-child11x0_iih5-START_THREAD"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-flaky"
+            },
+            "retries": 2
+          }
+        },
+        "6-child11x0_iih5-START_THREAD": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "7-child11x1_ulzw-START_THREAD",
+              "variableMutations": [
+                {
+                  "lhsName": "6-child11x0_iih5-START_THREAD",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "6-child11x0_iih5-START_THREAD"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startThread": {
+            "threadSpecName": "child11x0_iih5"
+          }
+        },
+        "7-child11x1_ulzw-START_THREAD": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-threads-WAIT_FOR_THREADS",
+              "variableMutations": [
+                {
+                  "lhsName": "7-child11x1_ulzw-START_THREAD",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "7-child11x1_ulzw-START_THREAD"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startThread": {
+            "threadSpecName": "child11x1_ulzw"
+          }
+        },
+        "8-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "9-each11_wtaa-START_MULTIPLE_THREADS"
+            }
+          ],
+          "waitForThreads": {
+            "threads": {
+              "threads": [
+                {
+                  "threadRunNumber": {
+                    "variableName": "6-child11x0_iih5-START_THREAD"
+                  }
+                },
+                {
+                  "threadRunNumber": {
+                    "variableName": "7-child11x1_ulzw-START_THREAD"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "9-each11_wtaa-START_MULTIPLE_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "10-threads-WAIT_FOR_THREADS",
+              "variableMutations": [
+                {
+                  "lhsName": "9-each11_wtaa-START_MULTIPLE_THREADS",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "9-each11_wtaa-START_MULTIPLE_THREADS"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startMultipleThreads": {
+            "threadSpecName": "each11_wtaa",
+            "iterable": {
+              "variableName": "v4_jsonarr"
+            }
+          }
+        },
+        "10-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "11-rw-noop-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "v2_int",
+                  "rhsAssignment": {
+                    "sizeOf": {
+                      "operand": {
+                        "variableName": "v4_jsonarr"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "waitForThreads": {
+            "threadList": {
+              "variableName": "9-each11_wtaa-START_MULTIPLE_THREADS"
+            }
+          }
+        },
+        "11-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "12-exit-EXIT",
+              "variableMutations": [
+                {
+                  "lhsName": "outcome",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "done"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "12-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_int",
+            "defaultValue": {
+              "int": "15"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "searchable": true
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true
+        },
+        {
+          "varDef": {
+            "name": "6-child11x0_iih5-START_THREAD",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "7-child11x1_ulzw-START_THREAD",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_jsonarr",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "9-each11_wtaa-START_MULTIPLE_THREADS",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "exn-handler-3-rw-decline-TASK-rw-declined": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "child11x0_iih5": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "child11x1_ulzw": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "each11_wtaa": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-add-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "variables": [
+              {
+                "variableName": "INPUT"
+              },
+              {
+                "literalValue": {
+                  "int": "1"
+                }
+              }
+            ]
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "INPUT",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}
