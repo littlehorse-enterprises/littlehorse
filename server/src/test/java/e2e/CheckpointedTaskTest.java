@@ -104,12 +104,21 @@ public class CheckpointedTaskTest {
     }
 
     @LHTaskMethod("task-that-outlives-its-timeout")
-    public String outliveTimeout(WorkerContext context) throws InterruptedException {
+    public String outliveTimeout(WorkerContext context) {
         for (int i = 0; i < 4; i++) {
-            Thread.sleep(750);
-            context.executeAndCheckpoint(checkpoint -> "still working", String.class);
+            context.executeAndCheckpoint(checkpoint -> doSomeWork(), String.class);
         }
         return "done";
+    }
+
+    private static String doSomeWork() {
+        try {
+            Thread.sleep(750);
+        } catch (InterruptedException exn) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(exn);
+        }
+        return "still working";
     }
 
     @LHWorkflow("checkpointed-task-test")
