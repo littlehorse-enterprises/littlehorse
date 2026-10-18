@@ -933,6 +933,14 @@ class ReportTaskRun(_message.Message):
     total_checkpoints: int
     def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
 
+class PutVariableRequest(_message.Message):
+    __slots__ = ("id", "value")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.VariableId
+    value: _type_definition_pb2.VariableValue
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+
 class StopWfRunRequest(_message.Message):
     __slots__ = ("wf_run_id", "thread_run_number")
     WF_RUN_ID_FIELD_NUMBER: _ClassVar[int]

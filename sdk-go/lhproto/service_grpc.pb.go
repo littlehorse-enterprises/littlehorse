@@ -55,6 +55,7 @@ const (
 	LittleHorse_GetTaskRun_FullMethodName                  = "/littlehorse.LittleHorse/GetTaskRun"
 	LittleHorse_ListTaskRuns_FullMethodName                = "/littlehorse.LittleHorse/ListTaskRuns"
 	LittleHorse_GetVariable_FullMethodName                 = "/littlehorse.LittleHorse/GetVariable"
+	LittleHorse_PutVariable_FullMethodName                 = "/littlehorse.LittleHorse/PutVariable"
 	LittleHorse_ListVariables_FullMethodName               = "/littlehorse.LittleHorse/ListVariables"
 	LittleHorse_PutExternalEvent_FullMethodName            = "/littlehorse.LittleHorse/PutExternalEvent"
 	LittleHorse_PutCorrelatedEvent_FullMethodName          = "/littlehorse.LittleHorse/PutCorrelatedEvent"
@@ -239,6 +240,9 @@ type LittleHorseClient interface {
 	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
 	// column for a specific row in a SQL table.
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
+	// Replaces the value of an existing Variable and attempts to advance its workflow.
+	// Returns the previous value, respecting the variable's masking configuration.
+	PutVariable(ctx context.Context, in *PutVariableRequest, opts ...grpc.CallOption) (*VariableValue, error)
 	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
 	// Post an ExternalEvent.
@@ -743,6 +747,15 @@ func (c *littleHorseClient) ListTaskRuns(ctx context.Context, in *ListTaskRunsRe
 func (c *littleHorseClient) GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error) {
 	out := new(Variable)
 	err := c.cc.Invoke(ctx, LittleHorse_GetVariable_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutVariable(ctx context.Context, in *PutVariableRequest, opts ...grpc.CallOption) (*VariableValue, error) {
+	out := new(VariableValue)
+	err := c.cc.Invoke(ctx, LittleHorse_PutVariable_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1537,6 +1550,9 @@ type LittleHorseServer interface {
 	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
 	// column for a specific row in a SQL table.
 	GetVariable(context.Context, *VariableId) (*Variable, error)
+	// Replaces the value of an existing Variable and attempts to advance its workflow.
+	// Returns the previous value, respecting the variable's masking configuration.
+	PutVariable(context.Context, *PutVariableRequest) (*VariableValue, error)
 	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
 	// Post an ExternalEvent.
@@ -1833,6 +1849,9 @@ func (UnimplementedLittleHorseServer) ListTaskRuns(context.Context, *ListTaskRun
 }
 func (UnimplementedLittleHorseServer) GetVariable(context.Context, *VariableId) (*Variable, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVariable not implemented")
+}
+func (UnimplementedLittleHorseServer) PutVariable(context.Context, *PutVariableRequest) (*VariableValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutVariable not implemented")
 }
 func (UnimplementedLittleHorseServer) ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariables not implemented")
@@ -2692,6 +2711,24 @@ func _LittleHorse_GetVariable_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).GetVariable(ctx, req.(*VariableId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutVariable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutVariableRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutVariable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutVariable_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutVariable(ctx, req.(*PutVariableRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4164,6 +4201,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetVariable",
 			Handler:    _LittleHorse_GetVariable_Handler,
+		},
+		{
+			MethodName: "PutVariable",
+			Handler:    _LittleHorse_PutVariable_Handler,
 		},
 		{
 			MethodName: "ListVariables",
