@@ -30,6 +30,16 @@ public class CoreStoreProvider {
     }
 
     private ReadOnlyKeyValueStore<String, Bytes> getStore(final String storeName, Integer specificPartition) {
+        // Kafka Streams only serves stores while it is RUNNING or REBALANCING. Once it starts
+        // shutting down, store() throws an IllegalStateException with a full stack trace, and the
+        // per-partition background workers keep polling until the processor is closed, so that
+        // exception lands in the log on every tick. Report the store as transiently unavailable
+        // instead: that is what it is, and every caller already handles it.
+        final KafkaStreams.State state = serverInstance.state();
+        if (state != KafkaStreams.State.RUNNING && state != KafkaStreams.State.REBALANCING) {
+            throw new LHApiException(Status.UNAVAILABLE, "Kafka Streams is not running: " + state);
+        }
+
         StoreQueryParameters<ReadOnlyKeyValueStore<String, Bytes>> params =
                 StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.keyValueStore());
 
