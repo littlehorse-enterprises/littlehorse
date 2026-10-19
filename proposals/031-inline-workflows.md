@@ -82,6 +82,8 @@ service LittleHorse {
 
 Clients can provide variables to the entrypoint thread or use literal values in the inline spec.
 
+Literal values embedded in an `InlineWfSpec`, including variable defaults, are visible through `GetInlineWfSpec`. Marking a workflow variable or TaskDef input as masked does not redact a literal embedded in the definition. For sensitive inputs, declare a masked workflow variable, reference it in the inline graph, and supply its value through `RunInlineWfRequest.variables`. Do not embed the sensitive value as a literal or default in the inline definition.
+
 Missing or invalid definitions and invalid input variables return `INVALID_ARGUMENT`. Supplying the server-managed `InlineWfSpec.id` or `created_at` also returns `INVALID_ARGUMENT`. A caller-provided run ID must satisfy the server's name validation; reusing an existing run ID returns `ALREADY_EXISTS`, rather than returning the existing run.
 
 This RPC requires both `RUN` and `WRITE_METADATA` actions on `ACL_WORKFLOW`.
@@ -164,6 +166,7 @@ Quote JSON and values containing spaces. Use `--` before positional values begin
 
 Arguments and defaults are embedded as literal task inputs, not declared as workflow variables. For non-void tasks, the task result becomes the workflow output. A task failure fails the workflow.
 
+Consequently, `lhctl execute task` arguments remain visible through `GetInlineWfSpec`, even when the corresponding TaskDef input is masked. For sensitive inputs, use an SDK to declare masked workflow variables and supply their values through `RunInlineWfRequest.variables` instead of this command.
 The command prints the returned WfRun immediately, without waiting for completion. TaskDefs and referenced metadata must already be registered, and compatible workers must be running to execute the tasks.
 
 ### Future CLI work

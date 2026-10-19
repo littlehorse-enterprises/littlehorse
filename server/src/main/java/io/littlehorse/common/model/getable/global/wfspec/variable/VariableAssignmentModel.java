@@ -20,7 +20,6 @@ import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
-import io.littlehorse.server.streams.storeinternals.MetadataManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.Collection;
@@ -387,7 +386,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         return canBeType(new TypeDefinitionModel(type), tspec);
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException, InvalidExpressionException {
         if (expression != null) {
             expression.validate(source, manager, threadSpec);

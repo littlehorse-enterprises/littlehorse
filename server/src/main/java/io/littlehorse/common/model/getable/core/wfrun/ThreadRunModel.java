@@ -129,7 +129,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, executionContext);
+        wfSpecId = proto.hasWfSpecId()
+                ? LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context)
+                : null;
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -174,8 +176,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .setThreadSpecName(threadSpecName)
                 .setCurrentNodePosition(currentNodePosition)
                 .setStartTime(LHUtil.fromDate(startTime))
-                .setType(type)
-                .setWfSpecId(wfSpecId.toProto());
+                .setType(type);
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
 
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
@@ -226,8 +228,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadSpecModel getThreadSpec() {
         if (threadSpecModel == null) {
-            threadSpecModel =
-                    executionContext.service().getWfSpec(wfSpecId).threadSpecs.get(threadSpecName);
+            WfSpecModel spec = wfSpecId == null
+                    ? wfRun.getWfSpec()
+                    : executionContext.service().getWfSpec(wfSpecId);
+            threadSpecModel = spec.threadSpecs.get(threadSpecName);
         }
         return threadSpecModel;
     }
@@ -707,7 +711,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
-            processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+            if (wfSpecId != null) {
+                processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+            }
             return true;
         }
         return false;
@@ -1374,11 +1380,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         // Last thing to check is whether the variable is inherited.
-        ThreadVarDefModel threadVarDef = processorContext
-                .service()
-                .getWfSpec(getWfSpecId())
-                .getAllVariables()
-                .get(varName);
+        WfSpecModel spec = wfSpecId == null
+                ? wfRun.getWfSpec()
+                : executionContext.service().getWfSpec(wfSpecId);
+        ThreadVarDefModel threadVarDef = spec.getAllVariables().get(varName);
         if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
             // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
             WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();
