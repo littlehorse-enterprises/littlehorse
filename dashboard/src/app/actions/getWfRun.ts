@@ -3,9 +3,8 @@
 import { lhClient } from '@/app/lhClient'
 import { WorkflowDefinition } from '@/types'
 import { isResourceExhausted } from 'littlehorse-client'
-import { NodeRun, TaskRun, ThreadRun, Variable, VariableValue, WfRun, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { NodeRun, TaskRun, ThreadRun, Variable, VariableValue, WfRun, WfRunId } from 'littlehorse-client/proto'
 import { buildNodeOutputValuesFromNodeRuns, getConditionTaskRunIds } from '@/app/utils/taskRunOutput'
-import { NodeRun, ThreadRun, Variable, WfRun, WfRunId } from 'littlehorse-client/proto'
 import { getInheritedVariables } from './getInheritedVariables'
 
 type Props = {
@@ -30,18 +29,13 @@ export type WfRunResponse = {
 export const getWfRun = async ({ wfRunId, tenantId, includeNodeOutputs = true }: Props): Promise<WfRunResponse> => {
   const client = await lhClient({ tenantId })
   const wfRun = await client.getWfRun(wfRunId)
-  const [wfSpec, nodeRuns, ownVariables] = await Promise.all([
-    client.getWfSpec(wfRun.wfSpecId!),
-    listAllNodeRuns(client, wfRunId),
   const source = wfRun.wfSpecSource
   if (source.oneofKind === undefined || (source.oneofKind === 'isInline' && !source.isInline)) {
     throw new Error('WfRun has no valid workflow definition source')
   }
-  const [wfSpec, { results: nodeRuns }, ownVariables] = await Promise.all([
+  const [wfSpec, nodeRuns, ownVariables] = await Promise.all([
     source.oneofKind === 'wfSpecId' ? client.getWfSpec(source.wfSpecId) : client.getInlineWfSpec(wfRunId),
-    client.listNodeRuns({
-      wfRunId,
-    }),
+    listAllNodeRuns(client, wfRunId),
     client.listVariables({ wfRunId }).then(
       ({ results }) => ({ results, tooLarge: false }),
       error => {
