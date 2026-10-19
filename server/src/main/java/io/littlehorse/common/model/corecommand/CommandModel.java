@@ -17,6 +17,7 @@ import io.littlehorse.common.model.corecommand.subcommand.ExternalEventTimeoutMo
 import io.littlehorse.common.model.corecommand.subcommand.InternalDeleteWfRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutCorrelatedEventRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.PutExternalEventRequestModel;
+import io.littlehorse.common.model.corecommand.subcommand.PutVariableRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.RescueThreadRunRequestModel;
 import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestModel;
@@ -58,6 +59,7 @@ public class CommandModel extends AbstractCommand<Command> {
     public RunWfRequestModel runWf;
     public StopWfRunRequestModel stopWfRun;
     public ResumeWfRunRequestModel resumeWfRun;
+    private PutVariableRequestModel putVariable;
     public SleepNodeMaturedModel sleepNodeMatured;
     public InternalDeleteWfRunRequestModel deleteWfRun;
     public ExternalEventTimeoutModel externalEventTimeout;
@@ -129,6 +131,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RESUME_WF_RUN:
                 out.setResumeWfRun(resumeWfRun.toProto());
+                break;
+            case PUT_VARIABLE:
+                out.setPutVariable(putVariable.toProto());
                 break;
             case SLEEP_NODE_MATURED:
                 out.setSleepNodeMatured(sleepNodeMatured.toProto());
@@ -248,6 +253,9 @@ public class CommandModel extends AbstractCommand<Command> {
                 break;
             case RESUME_WF_RUN:
                 resumeWfRun = ResumeWfRunRequestModel.fromProto(p.getResumeWfRun(), context);
+                break;
+            case PUT_VARIABLE:
+                putVariable = LHSerializable.fromProto(p.getPutVariable(), PutVariableRequestModel.class, context);
                 break;
             case SLEEP_NODE_MATURED:
                 sleepNodeMatured = SleepNodeMaturedModel.fromProto(p.getSleepNodeMatured(), context);
@@ -374,6 +382,8 @@ public class CommandModel extends AbstractCommand<Command> {
                 return stopWfRun;
             case RESUME_WF_RUN:
                 return resumeWfRun;
+            case PUT_VARIABLE:
+                return putVariable;
             case SLEEP_NODE_MATURED:
                 return sleepNodeMatured;
             case DELETE_WF_RUN:
@@ -452,6 +462,9 @@ public class CommandModel extends AbstractCommand<Command> {
         } else if (cls.equals(StopWfRunRequestModel.class)) {
             type = CommandCase.STOP_WF_RUN;
             stopWfRun = (StopWfRunRequestModel) cmd;
+        } else if (cls.equals(PutVariableRequestModel.class)) {
+            type = CommandCase.PUT_VARIABLE;
+            putVariable = (PutVariableRequestModel) cmd;
         } else if (cls.equals(ResumeWfRunRequestModel.class)) {
             type = CommandCase.RESUME_WF_RUN;
             resumeWfRun = (ResumeWfRunRequestModel) cmd;

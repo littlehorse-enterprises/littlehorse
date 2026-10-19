@@ -89,6 +89,7 @@ private static final long serialVersionUID = 0L;
     DELETE_METRIC_WINDOW(36),
     UPDATE_COUNTED_TAG(37),
     APPLY_WORKFLOW_MIGRATION_PLAN(38),
+    PUT_VARIABLE(39),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -140,6 +141,7 @@ private static final long serialVersionUID = 0L;
         case 36: return DELETE_METRIC_WINDOW;
         case 37: return UPDATE_COUNTED_TAG;
         case 38: return APPLY_WORKFLOW_MIGRATION_PLAN;
+        case 39: return PUT_VARIABLE;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1282,6 +1284,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest.getDefaultInstance();
   }
 
+  public static final int PUT_VARIABLE_FIELD_NUMBER = 39;
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return Whether the putVariable field is set.
+   */
+  @java.lang.Override
+  public boolean hasPutVariable() {
+    return commandCase_ == 39;
+  }
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return The putVariable.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable() {
+    if (commandCase_ == 39) {
+       return (io.littlehorse.sdk.common.proto.PutVariableRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder() {
+    if (commandCase_ == 39) {
+       return (io.littlehorse.sdk.common.proto.PutVariableRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1403,6 +1436,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 38) {
       output.writeMessage(38, (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_);
+    }
+    if (commandCase_ == 39) {
+      output.writeMessage(39, (io.littlehorse.sdk.common.proto.PutVariableRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1555,6 +1591,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 38) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(38, (io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest) command_);
+    }
+    if (commandCase_ == 39) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(39, (io.littlehorse.sdk.common.proto.PutVariableRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1719,6 +1759,10 @@ private static final long serialVersionUID = 0L;
         if (!getApplyWorkflowMigrationPlan()
             .equals(other.getApplyWorkflowMigrationPlan())) return false;
         break;
+      case 39:
+        if (!getPutVariable()
+            .equals(other.getPutVariable())) return false;
+        break;
       case 0:
       default:
     }
@@ -1877,6 +1921,10 @@ private static final long serialVersionUID = 0L;
       case 38:
         hash = (37 * hash) + APPLY_WORKFLOW_MIGRATION_PLAN_FIELD_NUMBER;
         hash = (53 * hash) + getApplyWorkflowMigrationPlan().hashCode();
+        break;
+      case 39:
+        hash = (37 * hash) + PUT_VARIABLE_FIELD_NUMBER;
+        hash = (53 * hash) + getPutVariable().hashCode();
         break;
       case 0:
       default:
@@ -2131,6 +2179,9 @@ private static final long serialVersionUID = 0L;
       if (applyWorkflowMigrationPlanBuilder_ != null) {
         applyWorkflowMigrationPlanBuilder_.clear();
       }
+      if (putVariableBuilder_ != null) {
+        putVariableBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2325,6 +2376,10 @@ private static final long serialVersionUID = 0L;
           applyWorkflowMigrationPlanBuilder_ != null) {
         result.command_ = applyWorkflowMigrationPlanBuilder_.build();
       }
+      if (commandCase_ == 39 &&
+          putVariableBuilder_ != null) {
+        result.command_ = putVariableBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2482,6 +2537,10 @@ private static final long serialVersionUID = 0L;
         }
         case APPLY_WORKFLOW_MIGRATION_PLAN: {
           mergeApplyWorkflowMigrationPlan(other.getApplyWorkflowMigrationPlan());
+          break;
+        }
+        case PUT_VARIABLE: {
+          mergePutVariable(other.getPutVariable());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2764,6 +2823,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 38;
               break;
             } // case 306
+            case 314: {
+              input.readMessage(
+                  internalGetPutVariableFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 39;
+              break;
+            } // case 314
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -7825,6 +7891,148 @@ private static final long serialVersionUID = 0L;
       return applyWorkflowMigrationPlanBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutVariableRequest, io.littlehorse.sdk.common.proto.PutVariableRequest.Builder, io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder> putVariableBuilder_;
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     * @return Whether the putVariable field is set.
+     */
+    @java.lang.Override
+    public boolean hasPutVariable() {
+      return commandCase_ == 39;
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     * @return The putVariable.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable() {
+      if (putVariableBuilder_ == null) {
+        if (commandCase_ == 39) {
+          return (io.littlehorse.sdk.common.proto.PutVariableRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 39) {
+          return putVariableBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    public Builder setPutVariable(io.littlehorse.sdk.common.proto.PutVariableRequest value) {
+      if (putVariableBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        putVariableBuilder_.setMessage(value);
+      }
+      commandCase_ = 39;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    public Builder setPutVariable(
+        io.littlehorse.sdk.common.proto.PutVariableRequest.Builder builderForValue) {
+      if (putVariableBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        putVariableBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 39;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    public Builder mergePutVariable(io.littlehorse.sdk.common.proto.PutVariableRequest value) {
+      if (putVariableBuilder_ == null) {
+        if (commandCase_ == 39 &&
+            command_ != io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.PutVariableRequest.newBuilder((io.littlehorse.sdk.common.proto.PutVariableRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 39) {
+          putVariableBuilder_.mergeFrom(value);
+        } else {
+          putVariableBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 39;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    public Builder clearPutVariable() {
+      if (putVariableBuilder_ == null) {
+        if (commandCase_ == 39) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 39) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        putVariableBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    public io.littlehorse.sdk.common.proto.PutVariableRequest.Builder getPutVariableBuilder() {
+      return internalGetPutVariableFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder() {
+      if ((commandCase_ == 39) && (putVariableBuilder_ != null)) {
+        return putVariableBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 39) {
+          return (io.littlehorse.sdk.common.proto.PutVariableRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.PutVariableRequest, io.littlehorse.sdk.common.proto.PutVariableRequest.Builder, io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder>
+        internalGetPutVariableFieldBuilder() {
+      if (putVariableBuilder_ == null) {
+        if (!(commandCase_ == 39)) {
+          command_ = io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
+        }
+        putVariableBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.PutVariableRequest, io.littlehorse.sdk.common.proto.PutVariableRequest.Builder, io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.PutVariableRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 39;
+      onChanged();
+      return putVariableBuilder_;
+    }
+
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)
   }
 
@@ -7875,4 +8083,3 @@ private static final long serialVersionUID = 0L;
   }
 
 }
-
