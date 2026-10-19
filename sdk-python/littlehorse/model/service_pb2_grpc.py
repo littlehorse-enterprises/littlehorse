@@ -15,6 +15,7 @@ import littlehorse.model.service_pb2 as service__pb2
 import littlehorse.model.struct_def_pb2 as struct__def__pb2
 import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
+import littlehorse.model.type_definition_pb2 as type__definition__pb2
 import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
@@ -235,6 +236,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/GetVariable',
                 request_serializer=object__id__pb2.VariableId.SerializeToString,
                 response_deserializer=variable__pb2.Variable.FromString,
+                _registered_method=True)
+        self.PutVariable = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutVariable',
+                request_serializer=service__pb2.PutVariableRequest.SerializeToString,
+                response_deserializer=type__definition__pb2.VariableValue.FromString,
                 _registered_method=True)
         self.ListVariables = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListVariables',
@@ -896,6 +902,14 @@ class LittleHorseServicer(object):
         """Get the value of a specific Variable. When using a WfRun to model an entity, this
         RPC is useful for retrieving information. It is equivalent to looking up the value of a
         column for a specific row in a SQL table.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutVariable(self, request, context):
+        """Replaces the value of an existing Variable and attempts to advance its workflow.
+        Returns the previous value, respecting the variable's masking configuration.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1638,6 +1652,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.GetVariable,
                     request_deserializer=object__id__pb2.VariableId.FromString,
                     response_serializer=variable__pb2.Variable.SerializeToString,
+            ),
+            'PutVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutVariable,
+                    request_deserializer=service__pb2.PutVariableRequest.FromString,
+                    response_serializer=type__definition__pb2.VariableValue.SerializeToString,
             ),
             'ListVariables': grpc.unary_unary_rpc_method_handler(
                     servicer.ListVariables,
@@ -3004,6 +3023,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/GetVariable',
             object__id__pb2.VariableId.SerializeToString,
             variable__pb2.Variable.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutVariable(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutVariable',
+            service__pb2.PutVariableRequest.SerializeToString,
+            type__definition__pb2.VariableValue.FromString,
             options,
             channel_credentials,
             insecure,

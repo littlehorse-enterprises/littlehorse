@@ -27,6 +27,7 @@ from littlehorse.model import (
 
 from littlehorse.worker import (
     LHTask,
+    LHTaskWorker,
     WorkerContext,
     CheckpointContext,
     LHLivenessController,
@@ -491,6 +492,47 @@ class TestLHTask(unittest.TestCase):
             VariableType.TIMESTAMP: type(datetime.datetime),
         }.items():
             test(variable_type, callable_type)
+
+
+class TestInitialRegistrationRetry(unittest.IsolatedAsyncioTestCase):
+    async def check_heartbeat_delays(self, results, expected_delays):
+        config = Mock(task_worker_id="retry-worker")
+        stub = config.stub.return_value
+        stub.RegisterTaskWorker = AsyncMock(side_effect=results)
+
+        async def task():
+            pass
+
+        worker = LHTaskWorker(task, "retry-task", config)
+        worker._task = Mock(task_name="retry-task", task_def=TaskDef())
+        delays = []
+
+        async def sleep(delay):
+            delays.append(delay)
+            if len(delays) == len(results):
+                worker._liveness_controller.stop()
+
+        with patch("littlehorse.worker.asyncio.sleep", side_effect=sleep):
+            await worker._heartbeat()
+
+        self.assertEqual(delays, expected_delays)
+        self.assertEqual(stub.RegisterTaskWorker.await_count, len(results))
+
+    async def test_retries_initial_failures_and_preserves_interval_after_success(self):
+        await self.check_heartbeat_delays(
+            [
+                Exception("unavailable"),
+                Exception("unavailable"),
+                RegisterTaskWorkerResponse(),
+                Exception("unavailable"),
+            ],
+            [1, 1, 60, 60],
+        )
+
+    async def test_first_registration_success_uses_normal_interval(self):
+        await self.check_heartbeat_delays(
+            [RegisterTaskWorkerResponse(), Exception("unavailable")], [60, 60]
+        )
 
 
 class TestLHLivenessController(unittest.TestCase):

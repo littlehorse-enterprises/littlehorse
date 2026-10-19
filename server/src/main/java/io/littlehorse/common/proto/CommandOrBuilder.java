@@ -553,19 +553,19 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
 
   /**
-   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 39;</code>
-   * @return Whether the runInlineWf field is set.
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return Whether the putVariable field is set.
    */
-  boolean hasRunInlineWf();
+  boolean hasPutVariable();
   /**
-   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 39;</code>
-   * @return The runInlineWf.
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return The putVariable.
    */
-  io.littlehorse.sdk.common.proto.RunInlineWfRequest getRunInlineWf();
+  io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable();
   /**
-   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 39;</code>
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
    */
-  io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder getRunInlineWfOrBuilder();
+  io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

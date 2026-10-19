@@ -11,6 +11,7 @@ namespace LittleHorse.Sdk.Worker.Internal
     internal class LHServerConnectionManager<T>
     {
         private const int HeartBeatIntervalMs = 60000;
+        private const int InitialRegistrationRetryMs = 1000;
         private const int GrpcUnaryCallTimeoutSeconds = 30;
 
         private readonly LHConfig _config;
@@ -21,15 +22,19 @@ namespace LittleHorse.Sdk.Worker.Internal
         private readonly LHTask<T> _task;
         private readonly CancellationToken _cancellationToken;
         private readonly RegisterTaskWorkerRequest _registerTaskWorkerRequest;
+        private readonly Func<int, Task> _delay;
+        private bool _registered;
 
         internal LHServerConnectionManager(LHConfig config,
-                                         LHTask<T> task, LittleHorseClient bootstrapClient, CancellationToken cancellationToken = default)
+                                         LHTask<T> task, LittleHorseClient bootstrapClient, CancellationToken cancellationToken = default,
+                                         Func<int, Task>? delay = null)
         {
             _config = config;
             _logger = LHLoggerFactoryProvider.GetLogger<LHServerConnectionManager<T>>();
             _task = task;
             _bootstrapClient = bootstrapClient;
             _cancellationToken = cancellationToken;
+            _delay = delay ?? (milliseconds => Task.Delay(milliseconds));
             _runningConnections = new Dictionary<LHHostInfo, List<LHServerConnection<T>>>();
             _cancellationTokenSource = new Dictionary<LHHostInfo, CancellationTokenSource>();
             _registerTaskWorkerRequest = new RegisterTaskWorkerRequest
@@ -47,7 +52,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             while (!_cancellationToken.IsCancellationRequested)
             {
                 await DoHeartBeat();
-                await Task.Delay(HeartBeatIntervalMs);
+                await _delay(_registered ? HeartBeatIntervalMs : InitialRegistrationRetryMs);
             }
         }
 
@@ -57,6 +62,7 @@ namespace LittleHorse.Sdk.Worker.Internal
             {
                 var response = await _bootstrapClient.RegisterTaskWorkerAsync(request: _registerTaskWorkerRequest,
                     deadline: DateTime.UtcNow.AddSeconds(GrpcUnaryCallTimeoutSeconds));
+                _registered = true;
                 
                 CancelUnassignedHosts(response.YourHosts);
                 RemoveDeadConnections();
