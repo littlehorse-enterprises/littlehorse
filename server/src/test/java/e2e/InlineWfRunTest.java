@@ -8,7 +8,9 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.InlineWorkflow;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -24,8 +26,10 @@ public class InlineWfRunTest {
 
     private InlineWorkflow inlineWorkflow() {
         return Workflow.inlineWorkflow(thread -> {
-            var input = thread.declareStr("input").withDefault("hello");
+            WfRunVariable input = thread.declareStr("input").withDefault("hello");
             thread.waitForEvent("inline-prototype-release");
+            NodeOutput result = thread.execute("inline-prototype-task", input).withRetries(1);
+            thread.complete(result);
         });
     }
 
