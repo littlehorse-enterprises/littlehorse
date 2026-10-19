@@ -5,7 +5,7 @@ import { NodeTypeDocumentation } from '../Components/NodeTypeDocumentation'
 import { NodeVariable } from '../Components/NodeVariable'
 
 export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
-  const { selectedNode } = useDiagram()
+  const { selectedNode, wfRun } = useDiagram()
 
   if (!selectedNode) {
     return null
@@ -26,7 +26,11 @@ export const NodeRunInfo: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
       <NodeTypeDocumentation nodeType={selectedNode.type} showNodeRun={true} className="ml-1 mt-1 text-sm font-bold" />
       <NodeVariable label="position:" text={`${nodeRun.id?.position}`} />
       <NodeVariable label="wfRunId:" text={nodeRun.id?.wfRunId?.id} />
-      <NodeVariable label="wfSpecId:" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
+      {wfRun?.wfSpecSource.oneofKind === 'isInline' ? (
+        <NodeVariable label="workflow:" text="Inline workflow" />
+      ) : (
+        <NodeVariable label="wfSpecId:" text={nodeRun.wfSpecId?.name ?? 'N/A'} />
+      )}
       <NodeVariable label="threadSpecName:" text={nodeRun.threadSpecName} />
       <NodeVariable label="arrivalTime:" text={nodeRun.arrivalTime} type={'date'} />
       {nodeRun.endTime && <NodeVariable label="endTime:" text={nodeRun.endTime} type={'date'} />}
