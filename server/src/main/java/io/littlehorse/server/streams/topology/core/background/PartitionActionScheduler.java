@@ -252,15 +252,23 @@ public final class PartitionActionScheduler<VOut> implements Closeable {
             log.debug("IQ store unavailable for job {} on partition {}; backing off", job.name(), taskId.partition());
             Thread.sleep(STORE_UNAVAILABLE_BACKOFF.toMillis());
         } catch (Exception e) {
-            // A run that failed part-way through produces nothing, rather than a half-finished unit.
-            int dropped = jobContext.stagedCount();
-            jobContext.discardStaged();
-            log.error(
-                    "Background job {} failed on partition {}, discarding {} staged action(s)",
-                    job.name(),
-                    taskId.partition(),
-                    dropped,
-                    e);
+            if (e instanceof IllegalStateException
+                    && e.getMessage() != null
+                    && e.getMessage().contains("PENDING_SHUTDOWN")) {
+                // This is the way.
+                jobContext.discardStaged();
+                running = false;
+            } else {
+                // A run that failed part-way through produces nothing, rather than a half-finished unit.
+                int dropped = jobContext.stagedCount();
+                jobContext.discardStaged();
+                log.error(
+                        "Background job {} failed on partition {}, discarding {} staged action(s)",
+                        job.name(),
+                        taskId.partition(),
+                        dropped,
+                        e);
+            }
         }
     }
 }
