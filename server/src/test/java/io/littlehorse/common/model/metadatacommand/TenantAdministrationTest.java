@@ -17,6 +17,7 @@ import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.stores.ClusterScopedStore;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
@@ -164,6 +165,30 @@ public class TenantAdministrationTest {
         storeTenantRequest();
         assertThat(storedTenant().getName()).isNull();
         assertThat(storedTenant().toProto().hasName()).isFalse();
+    }
+
+    @Test
+    void shouldUpdateNameIndexWhenRenamingAndClearingTenant() {
+        metadataProcessor.init(mockProcessorContext);
+        storeTenantRequest();
+        assertThat(storedTenant().getIndexEntries()).isEmpty();
+
+        putTenantRequest.setName("Acme — Production");
+        storeTenantRequest();
+        Tag originalTag = storedTenant().getIndexEntries().getFirst();
+        ClusterScopedStore store = ClusterScopedStore.newInstance(nativeMetadataStore, executionContext);
+        assertThat(store.get(originalTag.getStoreKey(), Tag.class)).isNotNull();
+
+        putTenantRequest.setName("Acme — US Production");
+        storeTenantRequest();
+        Tag renamedTag = storedTenant().getIndexEntries().getFirst();
+        assertThat(store.get(originalTag.getStoreKey(), Tag.class)).isNull();
+        assertThat(store.get(renamedTag.getStoreKey(), Tag.class)).isNotNull();
+
+        putTenantRequest.setName("");
+        storeTenantRequest();
+        assertThat(storedTenant().getIndexEntries()).isEmpty();
+        assertThat(store.get(renamedTag.getStoreKey(), Tag.class)).isNull();
     }
 
     private void storeTenantRequest() {

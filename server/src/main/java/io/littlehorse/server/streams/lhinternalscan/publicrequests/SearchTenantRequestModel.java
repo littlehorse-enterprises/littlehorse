@@ -7,6 +7,7 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
 import io.littlehorse.common.proto.GetableClassEnum;
 import io.littlehorse.common.proto.TagStorageType;
+import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.SearchTenantRequest;
 import io.littlehorse.sdk.common.proto.TenantId;
@@ -14,8 +15,12 @@ import io.littlehorse.sdk.common.proto.TenantIdList;
 import io.littlehorse.server.streams.lhinternalscan.ObjectIdScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
+import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchTenantRequestReply;
+import io.littlehorse.server.streams.storeinternals.index.Attribute;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -75,7 +80,13 @@ public class SearchTenantRequestModel
 
     @Override
     public SearchScanBoundaryStrategy getScanBoundary(String searchAttributeString) throws LHApiException {
-        return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+        if (name == null) return ObjectIdScanBoundaryStrategy.prefixMetadataScan();
+        return new TagScanBoundaryStrategy(searchAttributeString, Optional.empty(), Optional.empty());
+    }
+
+    @Override
+    public List<Attribute> getSearchAttributes() {
+        return name == null ? List.of() : List.of(new Attribute("name", LHUtil.toLHDbSearchFormat(name)));
     }
 
     public static SearchTenantRequestModel fromProto(SearchTenantRequest proto, ExecutionContext context) {
