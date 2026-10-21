@@ -13,11 +13,12 @@ import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColo
 type DetailsProps = WfRun & { selectedThread?: ThreadType }
 
 export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
-  const { id, status, wfSpecId, startTime } = wfRun
+  const { id, status, wfSpecSource, startTime } = wfRun
+  const wfSpecId = wfSpecSource.oneofKind === 'wfSpecId' ? wfSpecSource.wfSpecId : undefined
   const { threadError, onExpandError } = useSelectedThreadError(wfRun, selectedThread)
   const [isHovered, setIsHovered] = useState(false)
 
-  if (!id || !wfSpecId) return null
+  if (!id) return null
 
   return (
     <div className="mb-4">
@@ -37,12 +38,16 @@ export const Details: FC<DetailsProps> = ({ selectedThread, ...wfRun }) => {
       <div className="flex flex-row gap-2 text-sm text-gray-500">
         <div className="flex items-center gap-2">
           WfSpec:
-          <LinkWithTenant
-            href={routes.wfSpec.detailWithRevision(wfSpecId.name, wfSpecId.majorVersion, wfSpecId.revision)}
-            className="flex items-center gap-2 text-blue-500 underline"
-          >
-            {`${wfSpecId.name} ${wfSpecId.majorVersion}.${wfSpecId.revision}`}
-          </LinkWithTenant>
+          {wfSpecId ? (
+            <LinkWithTenant
+              href={routes.wfSpec.detailWithRevision(wfSpecId.name, wfSpecId.majorVersion, wfSpecId.revision)}
+              className="flex items-center gap-2 text-blue-500 underline"
+            >
+              {`${wfSpecId.name} ${wfSpecId.majorVersion}.${wfSpecId.revision}`}
+            </LinkWithTenant>
+          ) : (
+            <span>Inline workflow</span>
+          )}
         </div>
         <div className="flex items-center">
           Status:{' '}

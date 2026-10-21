@@ -14,7 +14,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -72,7 +71,7 @@ public class SleepNodeModel extends SubNode<SleepNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         switch (type) {
             case RAW_SECONDS:
                 boolean canResolveToInt = rawSeconds.canBeType(VariableType.INT, node.threadSpec);
@@ -114,11 +113,12 @@ public class SleepNodeModel extends SubNode<SleepNode> {
         return new SleepNodeRunModel(processorContext);
     }
 
-    public Date getMaturationTime(ThreadRunModel thread) throws LHVarSubError {
+    /** Calculates relative sleep deadlines from the stable NodeRun arrival time. */
+    public Date getMaturationTime(ThreadRunModel thread, Date arrivalTime) throws LHVarSubError {
         switch (type) {
             case RAW_SECONDS:
                 long timeToSleep = thread.assignVariable(rawSeconds).asInt().getIntVal();
-                return new Date(System.currentTimeMillis() + (1000 * timeToSleep));
+                return new Date(arrivalTime.getTime() + (1000 * timeToSleep));
             case ISO_DATE:
                 String dateStr = thread.assignVariable(isoDate).asStr().getStrVal();
                 try {

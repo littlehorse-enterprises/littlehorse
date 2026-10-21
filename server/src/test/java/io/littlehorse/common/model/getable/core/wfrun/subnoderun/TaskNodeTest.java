@@ -9,15 +9,31 @@ import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
-import io.littlehorse.sdk.common.proto.*;
+import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LHTaskError;
+import io.littlehorse.sdk.common.proto.LHTaskException;
+import io.littlehorse.sdk.common.proto.StopWfRunRequest;
+import io.littlehorse.sdk.common.proto.TaskAttempt;
+import io.littlehorse.sdk.common.proto.TaskRun;
+import io.littlehorse.sdk.common.proto.TaskStatus;
+import io.littlehorse.sdk.common.proto.ThreadRun;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
+import io.littlehorse.sdk.common.proto.VarNameAndVal;
+import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableMutationType;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.server.AbstractWorkflowExecutionTest;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
 class TaskNodeTest extends AbstractWorkflowExecutionTest {
+
     @BeforeEach
     void registerTaskDefinition() {
         TaskDefModel task = TestUtil.taskDef("greet");
@@ -30,7 +46,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
         seedMetadata(task);
     }
 
-    @Test
+    @TestTemplate
     void resolvesInputsAndCompletesWithTaskOutput() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -66,7 +82,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(task.getId()).getStatus()).isEqualTo(TaskStatus.TASK_SUCCESS);
     }
 
-    @Test
+    @TestTemplate
     void passesOutputToTheNextTask() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -93,7 +109,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
         assertThat(completed.getThreadRuns(0).getOutput()).isEqualTo(str("Hello Grace"));
     }
 
-    @Test
+    @TestTemplate
     void failsWhenTaskOutputDoesNotMatchDeclaredType() {
         TaskDefModel definition = TestUtil.taskDef("expects-int");
         definition.setReturnType(new ReturnTypeModel(VariableType.INT));
@@ -114,7 +130,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
         return VariableValue.newBuilder().setStr(value).build();
     }
 
-    @Test
+    @TestTemplate
     void failsWorkflowOnUnhandledTaskError() {
         WfRun run = startWorkflow(thread -> thread.execute("greet", "Ada"), Map.of());
         NodeRunModel node = currentNode(run);
@@ -135,7 +151,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
                 .isNull();
     }
 
-    @Test
+    @TestTemplate
     void recoversOnRetryWithoutRunningErrorHandler() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -167,7 +183,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
                 .containsExactly(TaskStatus.TASK_FAILED, TaskStatus.TASK_SUCCESS);
     }
 
-    @Test
+    @TestTemplate
     void runsErrorHandlerOnlyAfterRetriesAreExhausted() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -206,7 +222,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
                 .isNull();
     }
 
-    @Test
+    @TestTemplate
     void handlesMatchingBusinessExceptionWithoutRetrying() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -235,7 +251,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
         assertThat(completed.getThreadRuns(1).getStatus()).isEqualTo(LHStatus.COMPLETED);
     }
 
-    @Test
+    @TestTemplate
     void failsWhenNoHandlerMatchesBusinessException() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -272,7 +288,7 @@ class TaskNodeTest extends AbstractWorkflowExecutionTest {
                 .build();
     }
 
-    @Test
+    @TestTemplate
     void waitsForPendingTaskWhenWorkflowIsStopped() {
         WfRun run = startWorkflow(thread -> thread.execute("greet", "Ada"), Map.of());
         processWithoutResponse(

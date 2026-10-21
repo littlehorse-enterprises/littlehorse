@@ -4,10 +4,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// executeCmd represents the run command
+// executeCmd groups commands that execute tasks.
 var executeCmd = &cobra.Command{
 	Use:   "execute",
-	Short: "Execute something. Generally a UserTaskRun.",
+	Short: "Execute a Task or a UserTaskRun.",
 }
 
 func init() {
