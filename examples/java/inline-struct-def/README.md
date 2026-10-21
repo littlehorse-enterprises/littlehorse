@@ -9,12 +9,38 @@ This example uses the `DeliveryAddress` POJO without a class-level `@LHStructDef
 Run the example application to register the `StructDef`, `TaskDef`s, and `WfSpec`, then start the task workers:
 
 ```bash
-./gradlew example-inline-struct-def:run
+./gradlew example-inline-struct-def:run --args='workers'
 ```
 
 Keep this process running. Unlike the regular StructDef example, the `DeliveryAddress` schema is not registered as a standalone `StructDef`; it is embedded inline as a field of the `Order` StructDef and in the `WfSpec` and `TaskDef`s. Only the named `Order` StructDef is registered.
 
-### Run the workflow
+Omitting the argument also starts the workers. The supported modes are `workers` and `inline`.
+
+### Run an inline workflow
+
+With the workers running, execute this in another terminal:
+
+```bash
+./gradlew example-inline-struct-def:run --args='inline'
+```
+
+This mode uses `Workflow.inlineWorkflow(...)` to submit a one-off workflow without
+registering or looking up a WfSpec. It passes a sample `Order` as a literal to
+`normalize-order`, passes that task's output to `format-shipping-label`, and returns
+the shipping label as the workflow output:
+
+```text
+ORD-1234: 123 Main Street, Springfield 12345
+```
+
+The `order` StructDef and both TaskDefs must already be registered by the workers
+mode. Inline workflow execution and inline StructDefs are separate features: the
+former avoids registering a WfSpec, while the latter embeds a struct's schema.
+
+The command prints the WfRun ID immediately without waiting for completion. Use
+`lhctl get wfRun <wf_run_id>` and `lhctl list nodeRun <wf_run_id>` to inspect it.
+
+### Run the registered workflow
 
 In another terminal, use `lhctl` to provide the order as a JSON-formatted Struct variable. The nested `deliveryAddress` object is provided inline:
 
