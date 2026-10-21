@@ -132,4 +132,64 @@ public class TaskRunModelTest {
         assertThat(taskRun.getLatestAttempt().getError().getMessage())
                 .contains("incompatible with declared return type");
     }
+
+    @Test
+    void shouldIgnoreTimeoutTimerSupersededByLaterCheckpoint() {
+        TaskRunModel taskRun = runningTaskRunWithCheckpoints(1);
+
+        taskRun.onTaskAttemptResultReported(report(TaskStatus.TASK_TIMEOUT, 0));
+
+        assertThat(taskRun.getLatestAttempt().getStatus()).isEqualTo(TaskStatus.TASK_RUNNING);
+    }
+
+    @Test
+    void shouldTimeOutWhenTimerMatchesLatestCheckpoint() {
+        TaskRunModel taskRun = runningTaskRunWithCheckpoints(1);
+
+        taskRun.onTaskAttemptResultReported(report(TaskStatus.TASK_TIMEOUT, 1));
+
+        assertThat(taskRun.getLatestAttempt().getStatus()).isEqualTo(TaskStatus.TASK_TIMEOUT);
+    }
+
+    @Test
+    void shouldAcceptWorkerResultWithoutCheckpointCountAfterCheckpoints() {
+        TaskRunModel taskRun = runningTaskRunWithCheckpoints(2);
+        ReportTaskRunModel report = report(TaskStatus.TASK_SUCCESS, 0);
+        report.setOutput(new VariableValueModel("done"));
+
+        taskRun.onTaskAttemptResultReported(report);
+
+        assertThat(taskRun.getLatestAttempt().getStatus()).isEqualTo(TaskStatus.TASK_SUCCESS);
+    }
+
+    private TaskRunModel runningTaskRunWithCheckpoints(int totalCheckpoints) {
+        TaskRunModel taskRun = TestUtil.taskRun();
+        taskRun.setStatus(TaskStatus.TASK_RUNNING);
+        taskRun.getLatestAttempt().setStatus(TaskStatus.TASK_RUNNING);
+        taskRun.setTotalCheckpoints(totalCheckpoints);
+
+        TaskDefModel taskDef = new TaskDefModel();
+        taskDef.setId(new TaskDefIdModel("test-name"));
+        taskDef.setReturnType(new ReturnTypeModel(new TypeDefinitionModel(VariableType.STR)));
+        ReadOnlyMetadataManager metadataManager = mock(ReadOnlyMetadataManager.class);
+        when(metadataManager.get(taskRun.getTaskDefId())).thenReturn(taskDef);
+        ExecutionContext taskExecutionContext = mock(ExecutionContext.class, Answers.RETURNS_DEEP_STUBS);
+        when(taskExecutionContext.metadataManager()).thenReturn(metadataManager);
+        taskRun.setExecutionContext(taskExecutionContext);
+
+        GetableManager getableManager = mock(GetableManager.class);
+        when(processorContext.getableManager()).thenReturn(getableManager);
+        when(getableManager.get(taskRun.getWfRunId())).thenReturn(mock(WfRunModel.class));
+        taskRun.setProcessorContext(processorContext);
+        return taskRun;
+    }
+
+    private ReportTaskRunModel report(TaskStatus status, int totalCheckpoints) {
+        ReportTaskRunModel report = new ReportTaskRunModel();
+        report.setAttemptNumber(0);
+        report.setStatus(status);
+        report.setTime(new Date());
+        report.setTotalCheckpoints(totalCheckpoints);
+        return report;
+    }
 }
