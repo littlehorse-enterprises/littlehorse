@@ -56,7 +56,7 @@ If running the app without Docker, put environment variables in `dashboard/.env.
 
 ## Development
 
-Create a copy of `.env-sample` as `.env.local` and modify it for your LittleHorse server configuration.
+Create a copy of `.env.sample` as `.env.local` and modify it for your LittleHorse server configuration.
 
 Then simply run
 
@@ -294,7 +294,7 @@ To verify development startup and Tailwind compilation on Node 24, start a Littl
 pnpm run test:smoke
 ```
 
-The smoke test requests a real dashboard page and its stylesheets. It uses `LHC_API_HOST` and `LHC_API_PORT`, defaulting to `localhost:2023`, and stops its development server when finished.
+The smoke test requests a real dashboard page and its stylesheets. It uses `LHC_API_HOST` and `LHC_API_PORT`, defaulting to `localhost:2023`, and stops its development server when finished. Stop any `pnpm run dev` in this folder first: Next.js allows only one development server per project.
 
 ### Environment variables
 

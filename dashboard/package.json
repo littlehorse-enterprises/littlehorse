@@ -61,7 +61,7 @@
   },
   "packageManager": "pnpm@10.19.0",
   "engines": {
-    "node": "24.x"
+    "node": ">=24"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

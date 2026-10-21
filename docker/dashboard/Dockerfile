@@ -1,15 +1,9 @@
-FROM ghcr.io/littlehorse-enterprises/alpine-nginx-nodejs/nginx-nodejs:v1 AS nginx-config
+FROM node:24-alpine AS runner
 
-FROM node:24-alpine AS runtime
-
-# Keep the existing SSL proxy configuration while selecting Node independently.
 RUN apk add --no-cache nginx supervisor uuidgen
-COPY --from=nginx-config /etc/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=nginx-config /etc/supervisord.conf /etc/supervisord.conf
-COPY --from=nginx-config /etc/supervisor.d /etc/supervisor.d
-COPY --from=nginx-config /entrypoint.sh /entrypoint.sh
-
-FROM runtime AS runner
+COPY ./docker/dashboard/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/dashboard/supervisord.conf /etc/supervisord.conf
+COPY ./docker/dashboard/supervisor.d /etc/supervisor.d
 
 ENV NODE_ENV=production
 ENV PORT=3000
@@ -20,9 +14,10 @@ WORKDIR /app
 
 # `outputFileTracingRoot` is the repository root, so the standalone build is emitted as
 # `.next/standalone/{dashboard,sdk-js}/` rather than flat. Keep that shape -- the traced
-# paths inside server.js are relative to it -- and point the base image's `node
-# /app/server.js` at the real entrypoint. server.js does `process.chdir(__dirname)` and
-# node resolves the main module through the symlink, so it runs from /app/dashboard.
+# paths inside server.js are relative to it -- and point the `node /app/server.js` run by
+# entrypoint.sh and supervisor.d at the real entrypoint. server.js does
+# `process.chdir(__dirname)` and node resolves the main module through the symlink, so it
+# runs from /app/dashboard.
 COPY ./dashboard/.next/standalone ./
 COPY ./dashboard/.next/static ./dashboard/.next/static
 RUN ln -s /app/dashboard/server.js /app/server.js
