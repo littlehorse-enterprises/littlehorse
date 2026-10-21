@@ -2,7 +2,8 @@ import { Input } from '@/components/ui/input'
 import { Pagination, PaginationContent, PaginationItem, PaginationLink } from '@/components/ui/pagination'
 import { cn } from '@/components/utils'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeft, ChevronsRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -79,7 +80,7 @@ const ThreadRunTab: FC<{
   )
 }
 
-export const ThreadPanel: FC<{ spec: WfSpec; wfRun?: WfRun }> = ({ spec, wfRun }) => {
+export const ThreadPanel: FC<{ spec: WorkflowDefinition; wfRun?: WfRun }> = ({ spec, wfRun }) => {
   const { thread, setThread } = useDiagram()
   const { tenantId } = useWhoAmI()
   const [currentPage, setCurrentPage] = useState<number>(1)

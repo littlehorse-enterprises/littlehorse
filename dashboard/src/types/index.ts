@@ -1,5 +1,7 @@
-import { TypeDefinition } from 'littlehorse-client/proto'
+import { TypeDefinition, WfSpec } from 'littlehorse-client/proto'
 import { DefaultSession } from 'next-auth'
+
+export type WorkflowDefinition = Pick<WfSpec, 'threadSpecs' | 'entrypointThreadName'>
 
 export type WhoAmI = {
   user: DefaultSession['user']

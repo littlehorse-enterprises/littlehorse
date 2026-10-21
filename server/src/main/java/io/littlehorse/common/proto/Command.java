@@ -90,6 +90,7 @@ private static final long serialVersionUID = 0L;
     UPDATE_COUNTED_TAG(37),
     APPLY_WORKFLOW_MIGRATION_PLAN(38),
     PUT_VARIABLE(39),
+    RUN_INLINE_WF(40),
     COMMAND_NOT_SET(0);
     private final int value;
     private CommandCase(int value) {
@@ -142,6 +143,7 @@ private static final long serialVersionUID = 0L;
         case 37: return UPDATE_COUNTED_TAG;
         case 38: return APPLY_WORKFLOW_MIGRATION_PLAN;
         case 39: return PUT_VARIABLE;
+        case 40: return RUN_INLINE_WF;
         case 0: return COMMAND_NOT_SET;
         default: return null;
       }
@@ -1315,6 +1317,37 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutVariableRequest.getDefaultInstance();
   }
 
+  public static final int RUN_INLINE_WF_FIELD_NUMBER = 40;
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return Whether the runInlineWf field is set.
+   */
+  @java.lang.Override
+  public boolean hasRunInlineWf() {
+    return commandCase_ == 40;
+  }
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return The runInlineWf.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RunInlineWfRequest getRunInlineWf() {
+    if (commandCase_ == 40) {
+       return (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder getRunInlineWfOrBuilder() {
+    if (commandCase_ == 40) {
+       return (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_;
+    }
+    return io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1439,6 +1472,9 @@ private static final long serialVersionUID = 0L;
     }
     if (commandCase_ == 39) {
       output.writeMessage(39, (io.littlehorse.sdk.common.proto.PutVariableRequest) command_);
+    }
+    if (commandCase_ == 40) {
+      output.writeMessage(40, (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1595,6 +1631,10 @@ private static final long serialVersionUID = 0L;
     if (commandCase_ == 39) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(39, (io.littlehorse.sdk.common.proto.PutVariableRequest) command_);
+    }
+    if (commandCase_ == 40) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(40, (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1763,6 +1803,10 @@ private static final long serialVersionUID = 0L;
         if (!getPutVariable()
             .equals(other.getPutVariable())) return false;
         break;
+      case 40:
+        if (!getRunInlineWf()
+            .equals(other.getRunInlineWf())) return false;
+        break;
       case 0:
       default:
     }
@@ -1925,6 +1969,10 @@ private static final long serialVersionUID = 0L;
       case 39:
         hash = (37 * hash) + PUT_VARIABLE_FIELD_NUMBER;
         hash = (53 * hash) + getPutVariable().hashCode();
+        break;
+      case 40:
+        hash = (37 * hash) + RUN_INLINE_WF_FIELD_NUMBER;
+        hash = (53 * hash) + getRunInlineWf().hashCode();
         break;
       case 0:
       default:
@@ -2182,6 +2230,9 @@ private static final long serialVersionUID = 0L;
       if (putVariableBuilder_ != null) {
         putVariableBuilder_.clear();
       }
+      if (runInlineWfBuilder_ != null) {
+        runInlineWfBuilder_.clear();
+      }
       commandCase_ = 0;
       command_ = null;
       return this;
@@ -2380,6 +2431,10 @@ private static final long serialVersionUID = 0L;
           putVariableBuilder_ != null) {
         result.command_ = putVariableBuilder_.build();
       }
+      if (commandCase_ == 40 &&
+          runInlineWfBuilder_ != null) {
+        result.command_ = runInlineWfBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2541,6 +2596,10 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_VARIABLE: {
           mergePutVariable(other.getPutVariable());
+          break;
+        }
+        case RUN_INLINE_WF: {
+          mergeRunInlineWf(other.getRunInlineWf());
           break;
         }
         case COMMAND_NOT_SET: {
@@ -2830,6 +2889,13 @@ private static final long serialVersionUID = 0L;
               commandCase_ = 39;
               break;
             } // case 314
+            case 322: {
+              input.readMessage(
+                  internalGetRunInlineWfFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              commandCase_ = 40;
+              break;
+            } // case 322
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -8031,6 +8097,148 @@ private static final long serialVersionUID = 0L;
       commandCase_ = 39;
       onChanged();
       return putVariableBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.RunInlineWfRequest, io.littlehorse.sdk.common.proto.RunInlineWfRequest.Builder, io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder> runInlineWfBuilder_;
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     * @return Whether the runInlineWf field is set.
+     */
+    @java.lang.Override
+    public boolean hasRunInlineWf() {
+      return commandCase_ == 40;
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     * @return The runInlineWf.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RunInlineWfRequest getRunInlineWf() {
+      if (runInlineWfBuilder_ == null) {
+        if (commandCase_ == 40) {
+          return (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+      } else {
+        if (commandCase_ == 40) {
+          return runInlineWfBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    public Builder setRunInlineWf(io.littlehorse.sdk.common.proto.RunInlineWfRequest value) {
+      if (runInlineWfBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        command_ = value;
+        onChanged();
+      } else {
+        runInlineWfBuilder_.setMessage(value);
+      }
+      commandCase_ = 40;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    public Builder setRunInlineWf(
+        io.littlehorse.sdk.common.proto.RunInlineWfRequest.Builder builderForValue) {
+      if (runInlineWfBuilder_ == null) {
+        command_ = builderForValue.build();
+        onChanged();
+      } else {
+        runInlineWfBuilder_.setMessage(builderForValue.build());
+      }
+      commandCase_ = 40;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    public Builder mergeRunInlineWf(io.littlehorse.sdk.common.proto.RunInlineWfRequest value) {
+      if (runInlineWfBuilder_ == null) {
+        if (commandCase_ == 40 &&
+            command_ != io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance()) {
+          command_ = io.littlehorse.sdk.common.proto.RunInlineWfRequest.newBuilder((io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          command_ = value;
+        }
+        onChanged();
+      } else {
+        if (commandCase_ == 40) {
+          runInlineWfBuilder_.mergeFrom(value);
+        } else {
+          runInlineWfBuilder_.setMessage(value);
+        }
+      }
+      commandCase_ = 40;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    public Builder clearRunInlineWf() {
+      if (runInlineWfBuilder_ == null) {
+        if (commandCase_ == 40) {
+          commandCase_ = 0;
+          command_ = null;
+          onChanged();
+        }
+      } else {
+        if (commandCase_ == 40) {
+          commandCase_ = 0;
+          command_ = null;
+        }
+        runInlineWfBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    public io.littlehorse.sdk.common.proto.RunInlineWfRequest.Builder getRunInlineWfBuilder() {
+      return internalGetRunInlineWfFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder getRunInlineWfOrBuilder() {
+      if ((commandCase_ == 40) && (runInlineWfBuilder_ != null)) {
+        return runInlineWfBuilder_.getMessageOrBuilder();
+      } else {
+        if (commandCase_ == 40) {
+          return (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_;
+        }
+        return io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.RunInlineWfRequest, io.littlehorse.sdk.common.proto.RunInlineWfRequest.Builder, io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder> 
+        internalGetRunInlineWfFieldBuilder() {
+      if (runInlineWfBuilder_ == null) {
+        if (!(commandCase_ == 40)) {
+          command_ = io.littlehorse.sdk.common.proto.RunInlineWfRequest.getDefaultInstance();
+        }
+        runInlineWfBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.RunInlineWfRequest, io.littlehorse.sdk.common.proto.RunInlineWfRequest.Builder, io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder>(
+                (io.littlehorse.sdk.common.proto.RunInlineWfRequest) command_,
+                getParentForChildren(),
+                isClean());
+        command_ = null;
+      }
+      commandCase_ = 40;
+      onChanged();
+      return runInlineWfBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Command)

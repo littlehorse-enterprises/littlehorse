@@ -137,6 +137,16 @@ public final class Service extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_DeleteWorkflowEventDefRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_RunInlineWfRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_RunInlineWfRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_RunInlineWfRequest_VariablesEntry_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_RunInlineWfRequest_VariablesEntry_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_RunWfRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -676,600 +686,609 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       "\022+\n\002id\030\001 \001(\0132\037.littlehorse.ExternalEvent" +
       "DefId\"L\n\035DeleteWorkflowEventDefRequest\022+" +
       "\n\002id\030\001 \001(\0132\037.littlehorse.WorkflowEventDe" +
-      "fId\"\343\002\n\014RunWfRequest\022\024\n\014wf_spec_name\030\001 \001" +
-      "(\t\022\032\n\rmajor_version\030\002 \001(\005H\000\210\001\001\022\025\n\010revisi" +
-      "on\030\003 \001(\005H\001\210\001\001\022;\n\tvariables\030\004 \003(\0132(.littl" +
-      "ehorse.RunWfRequest.VariablesEntry\022\017\n\002id" +
-      "\030\005 \001(\tH\002\210\001\001\0223\n\020parent_wf_run_id\030\006 \001(\0132\024." +
-      "littlehorse.WfRunIdH\003\210\001\001\032L\n\016VariablesEnt" +
-      "ry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littleh" +
-      "orse.VariableValue:\0028\001B\020\n\016_major_version" +
-      "B\013\n\t_revisionB\005\n\003_idB\023\n\021_parent_wf_run_i" +
-      "d\"\206\003\n\021ScheduleWfRequest\022\017\n\002id\030\001 \001(\tH\000\210\001\001" +
-      "\022\024\n\014wf_spec_name\030\002 \001(\t\022\032\n\rmajor_version\030" +
-      "\003 \001(\005H\001\210\001\001\022\025\n\010revision\030\004 \001(\005H\002\210\001\001\022@\n\tvar" +
-      "iables\030\005 \003(\0132-.littlehorse.ScheduleWfReq" +
-      "uest.VariablesEntry\0223\n\020parent_wf_run_id\030" +
-      "\006 \001(\0132\024.littlehorse.WfRunIdH\003\210\001\001\022\027\n\017cron" +
-      "_expression\030\007 \001(\t\032L\n\016VariablesEntry\022\013\n\003k" +
-      "ey\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.Va" +
-      "riableValue:\0028\001B\005\n\003_idB\020\n\016_major_version" +
-      "B\013\n\t_revisionB\023\n\021_parent_wf_run_id\"\304\002\n\037P" +
-      "utWorkflowMigrationPlanRequest\022\014\n\004name\030\001" +
-      " \001(\t\022)\n\nold_wfSpec\030\002 \001(\0132\025.littlehorse.W" +
-      "fSpecId\022\025\n\rmajor_version\030\003 \001(\005\022\020\n\010revisi" +
-      "on\030\004 \001(\005\022]\n\021thread_migrations\030\005 \003(\0132B.li" +
-      "ttlehorse.PutWorkflowMigrationPlanReques" +
-      "t.ThreadMigrationsEntry\032`\n\025ThreadMigrati" +
-      "onsEntry\022\013\n\003key\030\001 \001(\t\0226\n\005value\030\002 \001(\0132\'.l" +
-      "ittlehorse.ThreadMigrationPlanRequest:\0028" +
-      "\001\"V\n\"DeleteWorkflowMigrationPlanRequest\022" +
-      "0\n\002id\030\001 \001(\0132$.littlehorse.WorkflowMigrat" +
-      "ionPlanId\"\304\002\n!ApplyWorkflowMigrationPlan" +
-      "Request\0220\n\002id\030\001 \001(\0132$.littlehorse.Workfl" +
-      "owMigrationPlanId\022&\n\010wfRun_id\030\002 \001(\0132\024.li" +
-      "ttlehorse.WfRunId\022k\n\030migration_vars_by_t" +
-      "hread\030\003 \003(\0132I.littlehorse.ApplyWorkflowM" +
-      "igrationPlanRequest.MigrationVarsByThrea" +
-      "dEntry\032X\n\032MigrationVarsByThreadEntry\022\013\n\003" +
-      "key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.M" +
-      "igrationVars:\0028\001\"L\n\rVariableMatch\022\020\n\010var" +
-      "_name\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse" +
-      ".VariableValue\"\275\001\n\031AwaitWorkflowEventReq" +
-      "uest\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.Wf" +
-      "RunId\0226\n\revent_def_ids\030\002 \003(\0132\037.littlehor" +
-      "se.WorkflowEventDefId\022?\n\031workflow_events" +
-      "_to_ignore\030\003 \003(\0132\034.littlehorse.WorkflowE" +
-      "ventId\"\331\004\n\022SearchWfRunRequest\022\025\n\010bookmar" +
-      "k\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022\024\n\014wf_s" +
-      "pec_name\030\003 \001(\t\022\"\n\025wf_spec_major_version\030" +
-      "\004 \001(\005H\002\210\001\001\022\035\n\020wf_spec_revision\030\005 \001(\005H\003\210\001" +
-      "\001\022*\n\006status\030\006 \001(\0162\025.littlehorse.LHStatus" +
-      "H\004\210\001\001\0227\n\016earliest_start\030\007 \001(\0132\032.google.p" +
-      "rotobuf.TimestampH\005\210\001\001\0225\n\014latest_start\030\010" +
-      " \001(\0132\032.google.protobuf.TimestampH\006\210\001\001\0224\n" +
-      "\020variable_filters\030\t \003(\0132\032.littlehorse.Va" +
-      "riableMatch\0223\n\020parent_wf_run_id\030\n \001(\0132\024." +
-      "littlehorse.WfRunIdH\007\210\001\001\022\033\n\016show_full_tr" +
-      "ee\030\013 \001(\010H\010\210\001\001B\013\n\t_bookmarkB\010\n\006_limitB\030\n\026" +
-      "_wf_spec_major_versionB\023\n\021_wf_spec_revis" +
-      "ionB\t\n\007_statusB\021\n\017_earliest_startB\017\n\r_la" +
-      "test_startB\023\n\021_parent_wf_run_idB\021\n\017_show" +
-      "_full_tree\"X\n\013WfRunIdList\022%\n\007results\030\001 \003" +
-      "(\0132\024.littlehorse.WfRunId\022\025\n\010bookmark\030\002 \001" +
-      "(\014H\000\210\001\001B\013\n\t_bookmark\"\356\002\n\034SearchCorrelate" +
-      "dEventRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005" +
-      "limit\030\002 \001(\005H\001\210\001\001\0227\n\016earliest_start\030\003 \001(\013" +
-      "2\032.google.protobuf.TimestampH\002\210\001\001\0225\n\014lat" +
-      "est_start\030\004 \001(\0132\032.google.protobuf.Timest" +
-      "ampH\003\210\001\001\022>\n\025external_event_def_id\030\005 \001(\0132" +
-      "\037.littlehorse.ExternalEventDefId\022 \n\023has_" +
-      "external_events\030\006 \001(\010H\004\210\001\001B\013\n\t_bookmarkB" +
-      "\010\n\006_limitB\021\n\017_earliest_startB\017\n\r_latest_" +
-      "startB\026\n\024_has_external_events\"l\n\025Correla" +
-      "tedEventIdList\022/\n\007results\030\001 \003(\0132\036.little" +
-      "horse.CorrelatedEventId\022\025\n\010bookmark\030\002 \001(" +
-      "\014H\000\210\001\001B\013\n\t_bookmark\"\274\002\n\024SearchTaskRunReq" +
-      "uest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001" +
-      "(\005H\001\210\001\001\022\025\n\rtask_def_name\030\003 \001(\t\022,\n\006status" +
-      "\030\004 \001(\0162\027.littlehorse.TaskStatusH\002\210\001\001\0227\n\016" +
-      "earliest_start\030\005 \001(\0132\032.google.protobuf.T" +
-      "imestampH\003\210\001\001\0225\n\014latest_start\030\006 \001(\0132\032.go" +
-      "ogle.protobuf.TimestampH\004\210\001\001B\013\n\t_bookmar" +
-      "kB\010\n\006_limitB\t\n\007_statusB\021\n\017_earliest_star" +
-      "tB\017\n\r_latest_start\"\\\n\rTaskRunIdList\022\'\n\007r" +
-      "esults\030\001 \003(\0132\026.littlehorse.TaskRunId\022\025\n\010" +
-      "bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\326\002\n\024Sea" +
-      "rchNodeRunRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001" +
-      "\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\0227\n\016earliest_start\030\003" +
-      " \001(\0132\032.google.protobuf.TimestampH\002\210\001\001\0225\n" +
-      "\014latest_start\030\004 \001(\0132\032.google.protobuf.Ti" +
-      "mestampH\003\210\001\001\022%\n\006status\030\006 \001(\0162\025.littlehor" +
-      "se.LHStatus\022;\n\022external_event_def\030\007 \001(\0132" +
-      "\037.littlehorse.ExternalEventDefIdB\013\n\t_boo" +
-      "kmarkB\010\n\006_limitB\021\n\017_earliest_startB\017\n\r_l" +
-      "atest_startJ\004\010\005\020\006\"\\\n\rNodeRunIdList\022\'\n\007re" +
-      "sults\030\001 \003(\0132\026.littlehorse.NodeRunId\022\025\n\010b" +
-      "ookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\262\003\n\030Sear" +
-      "chUserTaskRunRequest\022\025\n\010bookmark\030\001 \001(\014H\000" +
-      "\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\0223\n\006status\030\003 \001(\0162" +
-      "\036.littlehorse.UserTaskRunStatusH\002\210\001\001\022\037\n\022" +
-      "user_task_def_name\030\004 \001(\tH\003\210\001\001\022\024\n\007user_id" +
-      "\030\005 \001(\tH\004\210\001\001\022\027\n\nuser_group\030\006 \001(\tH\005\210\001\001\0227\n\016" +
-      "earliest_start\030\007 \001(\0132\032.google.protobuf.T" +
-      "imestampH\006\210\001\001\0225\n\014latest_start\030\010 \001(\0132\032.go" +
-      "ogle.protobuf.TimestampH\007\210\001\001B\013\n\t_bookmar" +
-      "kB\010\n\006_limitB\t\n\007_statusB\025\n\023_user_task_def" +
-      "_nameB\n\n\010_user_idB\r\n\013_user_groupB\021\n\017_ear" +
-      "liest_startB\017\n\r_latest_start\"d\n\021UserTask" +
-      "RunIdList\022+\n\007results\030\001 \003(\0132\032.littlehorse" +
-      ".UserTaskRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n" +
-      "\t_bookmark\"\236\002\n\025SearchVariableRequest\022\025\n\010" +
-      "bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022" +
-      ")\n\005value\030\003 \001(\0132\032.littlehorse.VariableVal" +
-      "ue\022\"\n\025wf_spec_major_version\030\004 \001(\005H\002\210\001\001\022\035" +
-      "\n\020wf_spec_revision\030\005 \001(\005H\003\210\001\001\022\020\n\010var_nam" +
-      "e\030\006 \001(\t\022\024\n\014wf_spec_name\030\007 \001(\tB\013\n\t_bookma" +
-      "rkB\010\n\006_limitB\030\n\026_wf_spec_major_versionB\023" +
-      "\n\021_wf_spec_revision\"^\n\016VariableIdList\022(\n" +
-      "\007results\030\001 \003(\0132\027.littlehorse.VariableId\022" +
-      "\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"x\n\024S" +
-      "earchTaskDefRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210" +
-      "\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022\023\n\006prefix\030\003 \001(\tH\002" +
-      "\210\001\001B\013\n\t_bookmarkB\010\n\006_limitB\t\n\007_prefix\"\\\n" +
-      "\rTaskDefIdList\022\'\n\007results\030\001 \003(\0132\026.little" +
-      "horse.TaskDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013" +
-      "\n\t_bookmark\"\230\001\n\030SearchUserTaskDefRequest" +
-      "\022\025\n\010bookmark\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002" +
-      "\210\001\001\022\020\n\006prefix\030\003 \001(\tH\000\022\016\n\004name\030\004 \001(\tH\000B\030\n" +
-      "\026user_task_def_criteriaB\013\n\t_bookmarkB\010\n\006" +
-      "_limit\"\223\001\n\026SearchStructDefRequest\022\025\n\010boo" +
-      "kmark\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\020\n\006" +
-      "prefix\030\003 \001(\tH\000\022\016\n\004name\030\004 \001(\tH\000B\025\n\023struct" +
-      "_def_criteriaB\013\n\t_bookmarkB\010\n\006_limit\"`\n\017" +
-      "StructDefIdList\022)\n\007results\030\001 \003(\0132\030.littl" +
-      "ehorse.StructDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001" +
-      "\001B\013\n\t_bookmark\"d\n\021UserTaskDefIdList\022+\n\007r" +
-      "esults\030\001 \003(\0132\032.littlehorse.UserTaskDefId" +
-      "\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\246\001\n" +
-      "\023SearchWfSpecRequest\022\025\n\010bookmark\030\001 \001(\014H\001" +
-      "\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\016\n\004name\030\003 \001(\tH\000\022" +
-      "\020\n\006prefix\030\004 \001(\tH\000\022\027\n\rtask_def_name\030\005 \001(\t" +
-      "H\000B\022\n\020wf_spec_criteriaB\013\n\t_bookmarkB\010\n\006_" +
-      "limit\"Z\n\014WfSpecIdList\022&\n\007results\030\001 \003(\0132\025" +
-      ".littlehorse.WfSpecId\022\025\n\010bookmark\030\002 \001(\014H" +
-      "\000\210\001\001B\013\n\t_bookmark\"\201\001\n\035SearchExternalEven" +
-      "tDefRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005li" +
-      "mit\030\002 \001(\005H\001\210\001\001\022\023\n\006prefix\030\003 \001(\tH\002\210\001\001B\013\n\t_" +
-      "bookmarkB\010\n\006_limitB\t\n\007_prefix\"n\n\026Externa" +
-      "lEventDefIdList\0220\n\007results\030\001 \003(\0132\037.littl" +
-      "ehorse.ExternalEventDefId\022\025\n\010bookmark\030\002 " +
-      "\001(\014H\000\210\001\001B\013\n\t_bookmark\"\264\001\n\"SearchWorkflow" +
-      "MigrationPlanRequest\022\025\n\010bookmark\030\001 \001(\014H\001" +
-      "\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\026\n\014wf_spec_name\030" +
-      "\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\"\n workflow_mi" +
-      "gration_plan_criteriaB\013\n\t_bookmarkB\010\n\006_l" +
-      "imit\"x\n\033WorkflowMigrationPlanIdList\0225\n\007r" +
-      "esults\030\001 \003(\0132$.littlehorse.WorkflowMigra" +
-      "tionPlanId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bo" +
-      "okmark\"\201\001\n\035SearchWorkflowEventDefRequest" +
-      "\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001" +
-      "\210\001\001\022\023\n\006prefix\030\003 \001(\tH\002\210\001\001B\013\n\t_bookmarkB\010\n" +
-      "\006_limitB\t\n\007_prefix\"n\n\026WorkflowEventDefId" +
-      "List\0220\n\007results\030\001 \003(\0132\037.littlehorse.Work" +
-      "flowEventDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n" +
-      "\t_bookmark\"s\n\023SearchTenantRequest\022\022\n\005lim" +
-      "it\030\001 \001(\005H\000\210\001\001\022\025\n\010bookmark\030\002 \001(\014H\001\210\001\001\022\021\n\004" +
-      "name\030\003 \001(\tH\002\210\001\001B\010\n\006_limitB\013\n\t_bookmarkB\007" +
-      "\n\005_name\"Z\n\014TenantIdList\022&\n\007results\030\001 \003(\013" +
-      "2\025.littlehorse.TenantId\022\025\n\010bookmark\030\002 \001(" +
-      "\014H\000\210\001\001B\013\n\t_bookmark\"\255\002\n\026SearchPrincipalR" +
-      "equest\022\025\n\010bookmark\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002" +
-      " \001(\005H\002\210\001\001\0227\n\016earliest_start\030\003 \001(\0132\032.goog" +
-      "le.protobuf.TimestampH\003\210\001\001\0225\n\014latest_sta" +
-      "rt\030\004 \001(\0132\032.google.protobuf.TimestampH\004\210\001" +
-      "\001\022\022\n\010is_admin\030\005 \001(\010H\000\022\023\n\ttenant_id\030\006 \001(\t" +
-      "H\000B\024\n\022principal_criteriaB\013\n\t_bookmarkB\010\n" +
-      "\006_limitB\021\n\017_earliest_startB\017\n\r_latest_st" +
-      "art\"`\n\017PrincipalIdList\022)\n\007results\030\001 \003(\0132" +
-      "\030.littlehorse.PrincipalId\022\025\n\010bookmark\030\002 " +
-      "\001(\014H\000\210\001\001B\013\n\t_bookmark\"\251\001\n\022SearchQuotaReq" +
-      "uest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001" +
-      "(\005H\001\210\001\001\022\026\n\ttenant_id\030\003 \001(\tH\002\210\001\001\022+\n\tprinc" +
-      "ipal\030\004 \001(\0132\030.littlehorse.PrincipalIdB\013\n\t" +
-      "_bookmarkB\010\n\006_limitB\014\n\n_tenant_id\"X\n\013Quo" +
-      "taIdList\022%\n\007results\030\001 \003(\0132\024.littlehorse." +
-      "QuotaId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookm" +
-      "ark\"\332\002\n\032SearchExternalEventRequest\022\025\n\010bo" +
-      "okmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\0227\n" +
-      "\016earliest_start\030\003 \001(\0132\032.google.protobuf." +
-      "TimestampH\002\210\001\001\0225\n\014latest_start\030\004 \001(\0132\032.g" +
-      "oogle.protobuf.TimestampH\003\210\001\001\022>\n\025externa" +
-      "l_event_def_id\030\005 \001(\0132\037.littlehorse.Exter" +
-      "nalEventDefId\022\027\n\nis_claimed\030\006 \001(\010H\004\210\001\001B\013" +
-      "\n\t_bookmarkB\010\n\006_limitB\021\n\017_earliest_start" +
-      "B\017\n\r_latest_startB\r\n\013_is_claimed\"h\n\023Exte" +
-      "rnalEventIdList\022-\n\007results\030\001 \003(\0132\034.littl" +
-      "ehorse.ExternalEventId\022\025\n\010bookmark\030\002 \001(\014" +
-      "H\000\210\001\001B\013\n\t_bookmark\"\262\002\n\032SearchWorkflowEve" +
+      "fId\"\351\001\n\022RunInlineWfRequest\022*\n\007wf_spec\030\001 " +
+      "\001(\0132\031.littlehorse.InlineWfSpec\022A\n\tvariab" +
+      "les\030\002 \003(\0132..littlehorse.RunInlineWfReque" +
+      "st.VariablesEntry\022\017\n\002id\030\003 \001(\tH\000\210\001\001\032L\n\016Va" +
+      "riablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\013" +
+      "2\032.littlehorse.VariableValue:\0028\001B\005\n\003_id\"" +
+      "\343\002\n\014RunWfRequest\022\024\n\014wf_spec_name\030\001 \001(\t\022\032" +
+      "\n\rmajor_version\030\002 \001(\005H\000\210\001\001\022\025\n\010revision\030\003" +
+      " \001(\005H\001\210\001\001\022;\n\tvariables\030\004 \003(\0132(.littlehor" +
+      "se.RunWfRequest.VariablesEntry\022\017\n\002id\030\005 \001" +
+      "(\tH\002\210\001\001\0223\n\020parent_wf_run_id\030\006 \001(\0132\024.litt" +
+      "lehorse.WfRunIdH\003\210\001\001\032L\n\016VariablesEntry\022\013" +
+      "\n\003key\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse" +
+      ".VariableValue:\0028\001B\020\n\016_major_versionB\013\n\t" +
+      "_revisionB\005\n\003_idB\023\n\021_parent_wf_run_id\"\206\003" +
+      "\n\021ScheduleWfRequest\022\017\n\002id\030\001 \001(\tH\000\210\001\001\022\024\n\014" +
+      "wf_spec_name\030\002 \001(\t\022\032\n\rmajor_version\030\003 \001(" +
+      "\005H\001\210\001\001\022\025\n\010revision\030\004 \001(\005H\002\210\001\001\022@\n\tvariabl" +
+      "es\030\005 \003(\0132-.littlehorse.ScheduleWfRequest" +
+      ".VariablesEntry\0223\n\020parent_wf_run_id\030\006 \001(" +
+      "\0132\024.littlehorse.WfRunIdH\003\210\001\001\022\027\n\017cron_exp" +
+      "ression\030\007 \001(\t\032L\n\016VariablesEntry\022\013\n\003key\030\001" +
+      " \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.Variab" +
+      "leValue:\0028\001B\005\n\003_idB\020\n\016_major_versionB\013\n\t" +
+      "_revisionB\023\n\021_parent_wf_run_id\"\304\002\n\037PutWo" +
+      "rkflowMigrationPlanRequest\022\014\n\004name\030\001 \001(\t" +
+      "\022)\n\nold_wfSpec\030\002 \001(\0132\025.littlehorse.WfSpe" +
+      "cId\022\025\n\rmajor_version\030\003 \001(\005\022\020\n\010revision\030\004" +
+      " \001(\005\022]\n\021thread_migrations\030\005 \003(\0132B.little" +
+      "horse.PutWorkflowMigrationPlanRequest.Th" +
+      "readMigrationsEntry\032`\n\025ThreadMigrationsE" +
+      "ntry\022\013\n\003key\030\001 \001(\t\0226\n\005value\030\002 \001(\0132\'.littl" +
+      "ehorse.ThreadMigrationPlanRequest:\0028\001\"V\n" +
+      "\"DeleteWorkflowMigrationPlanRequest\0220\n\002i" +
+      "d\030\001 \001(\0132$.littlehorse.WorkflowMigrationP" +
+      "lanId\"\304\002\n!ApplyWorkflowMigrationPlanRequ" +
+      "est\0220\n\002id\030\001 \001(\0132$.littlehorse.WorkflowMi" +
+      "grationPlanId\022&\n\010wfRun_id\030\002 \001(\0132\024.little" +
+      "horse.WfRunId\022k\n\030migration_vars_by_threa" +
+      "d\030\003 \003(\0132I.littlehorse.ApplyWorkflowMigra" +
+      "tionPlanRequest.MigrationVarsByThreadEnt" +
+      "ry\032X\n\032MigrationVarsByThreadEntry\022\013\n\003key\030" +
+      "\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.Migra" +
+      "tionVars:\0028\001\"L\n\rVariableMatch\022\020\n\010var_nam" +
+      "e\030\001 \001(\t\022)\n\005value\030\002 \001(\0132\032.littlehorse.Var" +
+      "iableValue\"\275\001\n\031AwaitWorkflowEventRequest" +
+      "\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRunI" +
+      "d\0226\n\revent_def_ids\030\002 \003(\0132\037.littlehorse.W" +
+      "orkflowEventDefId\022?\n\031workflow_events_to_" +
+      "ignore\030\003 \003(\0132\034.littlehorse.WorkflowEvent" +
+      "Id\"\331\004\n\022SearchWfRunRequest\022\025\n\010bookmark\030\001 " +
+      "\001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022\024\n\014wf_spec_" +
+      "name\030\003 \001(\t\022\"\n\025wf_spec_major_version\030\004 \001(" +
+      "\005H\002\210\001\001\022\035\n\020wf_spec_revision\030\005 \001(\005H\003\210\001\001\022*\n" +
+      "\006status\030\006 \001(\0162\025.littlehorse.LHStatusH\004\210\001" +
+      "\001\0227\n\016earliest_start\030\007 \001(\0132\032.google.proto" +
+      "buf.TimestampH\005\210\001\001\0225\n\014latest_start\030\010 \001(\013" +
+      "2\032.google.protobuf.TimestampH\006\210\001\001\0224\n\020var" +
+      "iable_filters\030\t \003(\0132\032.littlehorse.Variab" +
+      "leMatch\0223\n\020parent_wf_run_id\030\n \001(\0132\024.litt" +
+      "lehorse.WfRunIdH\007\210\001\001\022\033\n\016show_full_tree\030\013" +
+      " \001(\010H\010\210\001\001B\013\n\t_bookmarkB\010\n\006_limitB\030\n\026_wf_" +
+      "spec_major_versionB\023\n\021_wf_spec_revisionB" +
+      "\t\n\007_statusB\021\n\017_earliest_startB\017\n\r_latest" +
+      "_startB\023\n\021_parent_wf_run_idB\021\n\017_show_ful" +
+      "l_tree\"X\n\013WfRunIdList\022%\n\007results\030\001 \003(\0132\024" +
+      ".littlehorse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000" +
+      "\210\001\001B\013\n\t_bookmark\"\356\002\n\034SearchCorrelatedEve" +
       "ntRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limi" +
       "t\030\002 \001(\005H\001\210\001\001\0227\n\016earliest_start\030\003 \001(\0132\032.g" +
       "oogle.protobuf.TimestampH\002\210\001\001\0225\n\014latest_" +
       "start\030\004 \001(\0132\032.google.protobuf.TimestampH" +
-      "\003\210\001\001\022>\n\025workflow_event_def_id\030\005 \001(\0132\037.li" +
-      "ttlehorse.WorkflowEventDefIdB\013\n\t_bookmar" +
+      "\003\210\001\001\022>\n\025external_event_def_id\030\005 \001(\0132\037.li" +
+      "ttlehorse.ExternalEventDefId\022 \n\023has_exte" +
+      "rnal_events\030\006 \001(\010H\004\210\001\001B\013\n\t_bookmarkB\010\n\006_" +
+      "limitB\021\n\017_earliest_startB\017\n\r_latest_star" +
+      "tB\026\n\024_has_external_events\"l\n\025CorrelatedE" +
+      "ventIdList\022/\n\007results\030\001 \003(\0132\036.littlehors" +
+      "e.CorrelatedEventId\022\025\n\010bookmark\030\002 \001(\014H\000\210" +
+      "\001\001B\013\n\t_bookmark\"\274\002\n\024SearchTaskRunRequest" +
+      "\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001" +
+      "\210\001\001\022\025\n\rtask_def_name\030\003 \001(\t\022,\n\006status\030\004 \001" +
+      "(\0162\027.littlehorse.TaskStatusH\002\210\001\001\0227\n\016earl" +
+      "iest_start\030\005 \001(\0132\032.google.protobuf.Times" +
+      "tampH\003\210\001\001\0225\n\014latest_start\030\006 \001(\0132\032.google" +
+      ".protobuf.TimestampH\004\210\001\001B\013\n\t_bookmarkB\010\n" +
+      "\006_limitB\t\n\007_statusB\021\n\017_earliest_startB\017\n" +
+      "\r_latest_start\"\\\n\rTaskRunIdList\022\'\n\007resul" +
+      "ts\030\001 \003(\0132\026.littlehorse.TaskRunId\022\025\n\010book" +
+      "mark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\326\002\n\024SearchN" +
+      "odeRunRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005" +
+      "limit\030\002 \001(\005H\001\210\001\001\0227\n\016earliest_start\030\003 \001(\013" +
+      "2\032.google.protobuf.TimestampH\002\210\001\001\0225\n\014lat" +
+      "est_start\030\004 \001(\0132\032.google.protobuf.Timest" +
+      "ampH\003\210\001\001\022%\n\006status\030\006 \001(\0162\025.littlehorse.L" +
+      "HStatus\022;\n\022external_event_def\030\007 \001(\0132\037.li" +
+      "ttlehorse.ExternalEventDefIdB\013\n\t_bookmar" +
       "kB\010\n\006_limitB\021\n\017_earliest_startB\017\n\r_lates" +
-      "t_start\"h\n\023WorkflowEventIdList\022-\n\007result" +
-      "s\030\001 \003(\0132\034.littlehorse.WorkflowEventId\022\025\n" +
-      "\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\266\001\n\023Li" +
-      "stNodeRunsRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.l" +
-      "ittlehorse.WfRunId\022\036\n\021thread_run_number\030" +
-      "\002 \001(\005H\000\210\001\001\022\025\n\010bookmark\030\003 \001(\014H\001\210\001\001\022\022\n\005lim" +
-      "it\030\004 \001(\005H\002\210\001\001B\024\n\022_thread_run_numberB\013\n\t_" +
-      "bookmarkB\010\n\006_limit\"X\n\013NodeRunList\022%\n\007res" +
-      "ults\030\001 \003(\0132\024.littlehorse.NodeRun\022\025\n\010book" +
-      "mark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\201\001\n\024ListVar" +
-      "iablesRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.littl" +
-      "ehorse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n" +
-      "\005limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit" +
-      "\"Z\n\014VariableList\022&\n\007results\030\001 \003(\0132\025.litt" +
-      "lehorse.Variable\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B" +
-      "\013\n\t_bookmark\"\206\001\n\031ListExternalEventsReque" +
-      "st\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRu" +
-      "nId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n\005limit\030\003 \001(" +
-      "\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit\"d\n\021Externa" +
-      "lEventList\022+\n\007results\030\001 \003(\0132\032.littlehors" +
-      "e.ExternalEvent\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013" +
-      "\n\t_bookmark\"\206\001\n\031ListWorkflowEventsReques" +
-      "t\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.WfRun" +
-      "Id\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n\005limit\030\003 \001(\005" +
-      "H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit\"d\n\021Workflow" +
-      "EventList\022+\n\007results\030\001 \003(\0132\032.littlehorse" +
-      ".WorkflowEvent\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n" +
-      "\t_bookmark\"`\n\031RegisterTaskWorkerRequest\022" +
-      "\026\n\016task_worker_id\030\001 \001(\t\022+\n\013task_def_id\030\002" +
-      " \001(\0132\026.littlehorse.TaskDefId\"s\n\032TaskWork" +
-      "erHeartBeatRequest\022\021\n\tclient_id\030\001 \001(\t\022+\n" +
-      "\013task_def_id\030\002 \001(\0132\026.littlehorse.TaskDef" +
-      "Id\022\025\n\rlistener_name\030\003 \001(\t\"\201\001\n\032RegisterTa" +
-      "skWorkerResponse\022+\n\nyour_hosts\030\001 \003(\0132\027.l" +
-      "ittlehorse.LHHostInfo\022\037\n\022is_cluster_heal" +
-      "thy\030\002 \001(\010H\000\210\001\001B\025\n\023_is_cluster_healthy\"(\n" +
-      "\nLHHostInfo\022\014\n\004host\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\"" +
-      "\213\001\n\017PollTaskRequest\022+\n\013task_def_id\030\001 \001(\013" +
-      "2\026.littlehorse.TaskDefId\022\021\n\tclient_id\030\002 " +
-      "\001(\t\022 \n\023task_worker_version\030\003 \001(\tH\000\210\001\001B\026\n" +
-      "\024_task_worker_version\"\240\001\n\024PutCheckpointR" +
-      "equest\022+\n\013task_run_id\030\001 \001(\0132\026.littlehors" +
-      "e.TaskRunId\022\024\n\014task_attempt\030\002 \001(\005\022)\n\005val" +
-      "ue\030\003 \001(\0132\032.littlehorse.VariableValue\022\021\n\004" +
-      "logs\030\004 \001(\tH\000\210\001\001B\007\n\005_logs\"\375\001\n\025PutCheckpoi" +
-      "ntResponse\022Z\n\032flow_control_continue_type" +
-      "\030\001 \001(\01626.littlehorse.PutCheckpointRespon" +
-      "se.FlowControlContinue\0228\n\022created_checkp" +
-      "oint\030\002 \001(\0132\027.littlehorse.CheckpointH\000\210\001\001" +
-      "\"7\n\023FlowControlContinue\022\021\n\rCONTINUE_TASK" +
-      "\020\000\022\r\n\tSTOP_TASK\020\001B\025\n\023_created_checkpoint" +
-      "\"\260\002\n\rScheduledTask\022+\n\013task_run_id\030\001 \001(\0132" +
-      "\026.littlehorse.TaskRunId\022+\n\013task_def_id\030\002" +
-      " \001(\0132\026.littlehorse.TaskDefId\022\026\n\016attempt_" +
-      "number\030\003 \001(\005\022-\n\tvariables\030\004 \003(\0132\032.little" +
-      "horse.VarNameAndVal\022.\n\ncreated_at\030\005 \001(\0132" +
-      "\032.google.protobuf.Timestamp\022*\n\006source\030\006 " +
-      "\001(\0132\032.littlehorse.TaskRunSource\022\"\n\032total" +
-      "_observed_checkpoints\030\007 \001(\005\"N\n\020PollTaskR" +
-      "esponse\022/\n\006result\030\001 \001(\0132\032.littlehorse.Sc" +
-      "heduledTaskH\000\210\001\001B\t\n\007_result\"\234\003\n\rReportTa" +
-      "skRun\022+\n\013task_run_id\030\001 \001(\0132\026.littlehorse" +
-      ".TaskRunId\022(\n\004time\030\002 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022\'\n\006status\030\003 \001(\0162\027.littlehor" +
-      "se.TaskStatus\0223\n\nlog_output\030\005 \001(\0132\032.litt" +
-      "lehorse.VariableValueH\001\210\001\001\022\026\n\016attempt_nu" +
-      "mber\030\006 \001(\005\022,\n\006output\030\004 \001(\0132\032.littlehorse" +
-      ".VariableValueH\000\022)\n\005error\030\007 \001(\0132\030.little" +
-      "horse.LHTaskErrorH\000\0221\n\texception\030\010 \001(\0132\034" +
-      ".littlehorse.LHTaskExceptionH\000\022\031\n\021total_" +
-      "checkpoints\030\t \001(\005B\010\n\006resultB\r\n\013_log_outp" +
-      "ut\"d\n\022PutVariableRequest\022#\n\002id\030\001 \001(\0132\027.l" +
-      "ittlehorse.VariableId\022)\n\005value\030\002 \001(\0132\032.l" +
-      "ittlehorse.VariableValue\"V\n\020StopWfRunReq" +
-      "uest\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehorse.Wf" +
-      "RunId\022\031\n\021thread_run_number\030\002 \001(\005\"X\n\022Resu" +
-      "meWfRunRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.litt" +
-      "lehorse.WfRunId\022\031\n\021thread_run_number\030\002 \001" +
-      "(\005\"w\n\026RescueThreadRunRequest\022\'\n\twf_run_i" +
-      "d\030\001 \001(\0132\024.littlehorse.WfRunId\022\031\n\021thread_" +
-      "run_number\030\002 \001(\005\022\031\n\021skip_current_node\030\003 " +
-      "\001(\010\"\263\001\n\032TaskDefMetricsQueryRequest\0220\n\014wi" +
-      "ndow_start\030\001 \001(\0132\032.google.protobuf.Times" +
-      "tamp\0225\n\013window_type\030\002 \001(\0162 .littlehorse." +
-      "MetricsWindowLength\022\032\n\rtask_def_name\030\003 \001" +
-      "(\tH\000\210\001\001B\020\n\016_task_def_name\"\261\001\n\031WfSpecMetr" +
-      "icsQueryRequest\022)\n\nwf_spec_id\030\001 \001(\0132\025.li" +
-      "ttlehorse.WfSpecId\0220\n\014window_start\030\002 \001(\013" +
-      "2\032.google.protobuf.Timestamp\0227\n\rwindow_l" +
-      "ength\030\003 \001(\0162 .littlehorse.MetricsWindowL" +
-      "ength\"h\n\025ListWfMetricsResponse\022+\n\007result" +
-      "s\030\001 \003(\0132\032.littlehorse.WfSpecMetrics\022\025\n\010b" +
-      "ookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\373\002\n\016Task" +
-      "DefMetrics\022+\n\013task_def_id\030\001 \001(\0132\026.little" +
-      "horse.TaskDefId\0220\n\014window_start\030\002 \001(\0132\032." +
-      "google.protobuf.Timestamp\022.\n\004type\030\003 \001(\0162" +
-      " .littlehorse.MetricsWindowLength\022\035\n\025sch" +
-      "edule_to_start_max\030\004 \001(\003\022\035\n\025schedule_to_" +
-      "start_avg\030\005 \001(\003\022\035\n\025start_to_complete_max" +
-      "\030\006 \001(\003\022\035\n\025start_to_complete_avg\030\007 \001(\003\022\027\n" +
-      "\017total_completed\030\010 \001(\003\022\025\n\rtotal_errored\030" +
-      "\t \001(\003\022\025\n\rtotal_started\030\n \001(\003\022\027\n\017total_sc" +
-      "heduled\030\013 \001(\003\"\241\002\n\rWfSpecMetrics\022)\n\nwf_sp" +
-      "ec_id\030\001 \001(\0132\025.littlehorse.WfSpecId\0220\n\014wi" +
-      "ndow_start\030\002 \001(\0132\032.google.protobuf.Times" +
-      "tamp\022.\n\004type\030\003 \001(\0162 .littlehorse.Metrics" +
-      "WindowLength\022\025\n\rtotal_started\030\004 \001(\003\022\027\n\017t" +
-      "otal_completed\030\005 \001(\003\022\025\n\rtotal_errored\030\006 " +
-      "\001(\003\022\035\n\025start_to_complete_max\030\007 \001(\003\022\035\n\025st" +
-      "art_to_complete_avg\030\010 \001(\003\"\203\001\n\026ListUserTa" +
-      "skRunRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.little" +
-      "horse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n\005" +
-      "limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit\"" +
-      "`\n\017UserTaskRunList\022)\n\007results\030\001 \003(\0132\030.li" +
-      "ttlehorse.UserTaskRun\022\025\n\010bookmark\030\002 \001(\014H" +
-      "\000\210\001\001B\013\n\t_bookmark\"F\n\024ScheduledWfRunIdLis",
-      "t\022.\n\007results\030\001 \003(\0132\035.littlehorse.Schedul" +
-      "edWfRunId\"\205\001\n\033SearchScheduledWfRunReques" +
-      "t\022\024\n\014wf_spec_name\030\001 \001(\t\022\032\n\rmajor_version" +
-      "\030\002 \001(\005H\000\210\001\001\022\025\n\010revision\030\003 \001(\005H\001\210\001\001B\020\n\016_m" +
-      "ajor_versionB\013\n\t_revision\"\212\001\n\022TaskWorker" +
-      "Metadata\022\026\n\016task_worker_id\030\001 \001(\t\0224\n\020late" +
-      "st_heartbeat\030\002 \001(\0132\032.google.protobuf.Tim" +
-      "estamp\022&\n\005hosts\030\003 \003(\0132\027.littlehorse.LHHo" +
-      "stInfo\"\207\002\n\017TaskWorkerGroup\022*\n\002id\030\001 \001(\0132\036" +
-      ".littlehorse.TaskWorkerGroupId\022.\n\ncreate" +
-      "d_at\030\002 \001(\0132\032.google.protobuf.Timestamp\022C" +
-      "\n\014task_workers\030\003 \003(\0132-.littlehorse.TaskW" +
-      "orkerGroup.TaskWorkersEntry\032S\n\020TaskWorke" +
-      "rsEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 \001(\0132\037.li" +
-      "ttlehorse.TaskWorkerMetadata:\0028\001\"\200\001\n\023Lis" +
-      "tTaskRunsRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.li" +
-      "ttlehorse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001" +
-      "\022\022\n\005limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_li" +
-      "mit\"X\n\013TaskRunList\022%\n\007results\030\001 \003(\0132\024.li" +
-      "ttlehorse.TaskRun\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001" +
-      "B\013\n\t_bookmark\"z\n\024MigrateWfSpecRequest\022*\n" +
-      "\013old_wf_spec\030\001 \001(\0132\025.littlehorse.WfSpecI" +
-      "d\0226\n\tmigration\030\002 \001(\0132#.littlehorse.WfSpe" +
-      "cVersionMigration\"T\n\026GetLatestWfSpecRequ" +
-      "est\022\014\n\004name\030\001 \001(\t\022\032\n\rmajor_version\030\002 \001(\005" +
-      "H\000\210\001\001B\020\n\016_major_version\"\260\001\n\022LittleHorseV" +
-      "ersion\022\025\n\rmajor_version\030\001 \001(\005\022\025\n\rminor_v" +
-      "ersion\030\002 \001(\005\022\032\n\rpatch_version\030\003 \001(\005H\000\210\001\001" +
-      "\022#\n\026pre_release_identifier\030\004 \001(\tH\001\210\001\001B\020\n" +
-      "\016_patch_versionB\031\n\027_pre_release_identifi" +
-      "er\"\201\002\n\023CountNodeRunRequest\022G\n\016wf_spec_fi" +
-      "lter\030\001 \001(\0132-.littlehorse.CountNodeRunReq" +
-      "uest.WfSpecFilterH\000\032\226\001\n\014WfSpecFilter\022\024\n\014" +
-      "wf_spec_name\030\001 \001(\t\022\"\n\025wf_spec_major_vers" +
-      "ion\030\002 \001(\005H\000\210\001\001\022\035\n\020wf_spec_revision\030\003 \001(\005" +
-      "H\001\210\001\001B\030\n\026_wf_spec_major_versionB\023\n\021_wf_s" +
-      "pec_revisionB\010\n\006filter\"U\n\023CountTaskRunRe" +
-      "quest\022\025\n\rtask_def_name\030\001 \001(\t\022\'\n\006status\030\002" +
-      " \001(\0162\027.littlehorse.TaskStatus\"\026\n\005Count\022\r" +
-      "\n\005value\030\001 \001(\003*P\n\021AllowedUpdateType\022\017\n\013AL" +
-      "L_UPDATES\020\000\022\032\n\026MINOR_REVISION_UPDATES\020\001\022" +
-      "\016\n\nNO_UPDATES\020\002*X\n\032StructDefCompatibilit" +
-      "yType\022\025\n\021NO_SCHEMA_UPDATES\020\000\022#\n\037FULLY_CO" +
-      "MPATIBLE_SCHEMA_UPDATES\020\0012\304G\n\013LittleHors" +
-      "e\022D\n\nPutTaskDef\022\036.littlehorse.PutTaskDef" +
-      "Request\032\024.littlehorse.TaskDef\"\000\022<\n\nGetTa" +
-      "skDef\022\026.littlehorse.TaskDefId\032\024.littleho" +
-      "rse.TaskDef\"\000\022L\n\022GetTaskWorkerGroup\022\026.li" +
-      "ttlehorse.TaskDefId\032\034.littlehorse.TaskWo" +
-      "rkerGroup\"\000\022_\n\023PutExternalEventDef\022\'.lit" +
-      "tlehorse.PutExternalEventDefRequest\032\035.li" +
-      "ttlehorse.ExternalEventDef\"\000\022W\n\023GetExter" +
-      "nalEventDef\022\037.littlehorse.ExternalEventD" +
-      "efId\032\035.littlehorse.ExternalEventDef\"\000\022_\n" +
-      "\023PutWorkflowEventDef\022\'.littlehorse.PutWo" +
-      "rkflowEventDefRequest\032\035.littlehorse.Work" +
-      "flowEventDef\"\000\022A\n\tPutWfSpec\022\035.littlehors" +
-      "e.PutWfSpecRequest\032\023.littlehorse.WfSpec\"" +
-      "\000\0229\n\tGetWfSpec\022\025.littlehorse.WfSpecId\032\023." +
-      "littlehorse.WfSpec\"\000\022M\n\017GetLatestWfSpec\022" +
-      "#.littlehorse.GetLatestWfSpecRequest\032\023.l" +
-      "ittlehorse.WfSpec\"\000\022I\n\rMigrateWfSpec\022!.l" +
-      "ittlehorse.MigrateWfSpecRequest\032\023.little" +
-      "horse.WfSpec\"\000\022J\n\014PutStructDef\022 .littleh" +
-      "orse.PutStructDefRequest\032\026.littlehorse.S" +
-      "tructDef\"\000\022B\n\014GetStructDef\022\030.littlehorse" +
-      ".StructDefId\032\026.littlehorse.StructDef\"\000\022\177" +
-      "\n\032ValidateStructDefEvolution\022..littlehor" +
-      "se.ValidateStructDefEvolutionRequest\032/.l" +
-      "ittlehorse.ValidateStructDefEvolutionRes" +
-      "ponse\"\000\022P\n\016PutUserTaskDef\022\".littlehorse." +
-      "PutUserTaskDefRequest\032\030.littlehorse.User" +
-      "TaskDef\"\000\022H\n\016GetUserTaskDef\022\032.littlehors" +
-      "e.UserTaskDefId\032\030.littlehorse.UserTaskDe" +
-      "f\"\000\022\\\n\024GetLatestUserTaskDef\022(.littlehors" +
-      "e.GetLatestUserTaskDefRequest\032\030.littleho" +
-      "rse.UserTaskDef\"\000\0228\n\005RunWf\022\031.littlehorse" +
-      ".RunWfRequest\032\022.littlehorse.WfRun\"\000\022K\n\nS" +
-      "cheduleWf\022\036.littlehorse.ScheduleWfReques" +
-      "t\032\033.littlehorse.ScheduledWfRun\"\000\022e\n\024Sear" +
-      "chScheduledWfRun\022(.littlehorse.SearchSch" +
-      "eduledWfRunRequest\032!.littlehorse.Schedul" +
-      "edWfRunIdList\"\000\022Q\n\021GetScheduledWfRun\022\035.l" +
-      "ittlehorse.ScheduledWfRunId\032\033.littlehors" +
-      "e.ScheduledWfRun\"\000\0226\n\010GetWfRun\022\024.littleh" +
-      "orse.WfRunId\032\022.littlehorse.WfRun\"\000\022H\n\016Ge" +
-      "tUserTaskRun\022\032.littlehorse.UserTaskRunId" +
-      "\032\030.littlehorse.UserTaskRun\"\000\022T\n\021AssignUs" +
-      "erTaskRun\022%.littlehorse.AssignUserTaskRu" +
-      "nRequest\032\026.google.protobuf.Empty\"\000\022X\n\023Co" +
-      "mpleteUserTaskRun\022\'.littlehorse.Complete" +
-      "UserTaskRunRequest\032\026.google.protobuf.Emp" +
-      "ty\"\000\022T\n\021CancelUserTaskRun\022%.littlehorse." +
-      "CancelUserTaskRunRequest\032\026.google.protob" +
-      "uf.Empty\"\000\022b\n\027SaveUserTaskRunProgress\022+." +
-      "littlehorse.SaveUserTaskRunProgressReque" +
-      "st\032\030.littlehorse.UserTaskRun\"\000\022W\n\020ListUs" +
-      "erTaskRuns\022#.littlehorse.ListUserTaskRun" +
-      "Request\032\034.littlehorse.UserTaskRunList\"\000\022" +
-      "^\n\025PutUserTaskRunComment\022).littlehorse.P" +
-      "utUserTaskRunCommentRequest\032\030.littlehors" +
-      "e.UserTaskRun\"\000\022`\n\026EditUserTaskRunCommen" +
-      "t\022*.littlehorse.EditUserTaskRunCommentRe" +
-      "quest\032\030.littlehorse.UserTaskRun\"\000\022d\n\030Del" +
-      "eteUserTaskRunComment\022,.littlehorse.Dele" +
-      "teUserTaskRunCommentRequest\032\030.littlehors" +
-      "e.UserTaskRun\"\000\022<\n\nGetNodeRun\022\026.littleho" +
-      "rse.NodeRunId\032\024.littlehorse.NodeRun\"\000\022L\n" +
-      "\014ListNodeRuns\022 .littlehorse.ListNodeRuns" +
-      "Request\032\030.littlehorse.NodeRunList\"\000\022<\n\nG" +
-      "etTaskRun\022\026.littlehorse.TaskRunId\032\024.litt" +
-      "lehorse.TaskRun\"\000\022L\n\014ListTaskRuns\022 .litt" +
-      "lehorse.ListTaskRunsRequest\032\030.littlehors" +
-      "e.TaskRunList\"\000\022?\n\013GetVariable\022\027.littleh" +
-      "orse.VariableId\032\025.littlehorse.Variable\"\000" +
-      "\022L\n\013PutVariable\022\037.littlehorse.PutVariabl" +
-      "eRequest\032\032.littlehorse.VariableValue\"\000\022O" +
-      "\n\rListVariables\022!.littlehorse.ListVariab" +
-      "lesRequest\032\031.littlehorse.VariableList\"\000\022" +
-      "V\n\020PutExternalEvent\022$.littlehorse.PutExt" +
-      "ernalEventRequest\032\032.littlehorse.External" +
-      "Event\"\000\022\\\n\022PutCorrelatedEvent\022&.littleho" +
-      "rse.PutCorrelatedEventRequest\032\034.littleho" +
-      "rse.CorrelatedEvent\"\000\022N\n\020GetExternalEven" +
-      "t\022\034.littlehorse.ExternalEventId\032\032.little" +
-      "horse.ExternalEvent\"\000\022T\n\022GetCorrelatedEv" +
-      "ent\022\036.littlehorse.CorrelatedEventId\032\034.li" +
-      "ttlehorse.CorrelatedEvent\"\000\022Z\n\022AwaitWork" +
-      "flowEvent\022&.littlehorse.AwaitWorkflowEve" +
-      "ntRequest\032\032.littlehorse.WorkflowEvent\"\000\022" +
-      "W\n\023GetWorkflowEventDef\022\037.littlehorse.Wor" +
-      "kflowEventDefId\032\035.littlehorse.WorkflowEv" +
-      "entDef\"\000\022N\n\020GetWorkflowEvent\022\034.littlehor" +
-      "se.WorkflowEventId\032\032.littlehorse.Workflo" +
-      "wEvent\"\000\022^\n\022ListExternalEvents\022&.littleh" +
-      "orse.ListExternalEventsRequest\032\036.littleh" +
-      "orse.ExternalEventList\"\000\022^\n\022ListWorkflow" +
-      "Events\022&.littlehorse.ListWorkflowEventsR" +
-      "equest\032\036.littlehorse.WorkflowEventList\"\000" +
-      "\022J\n\013SearchWfRun\022\037.littlehorse.SearchWfRu" +
-      "nRequest\032\030.littlehorse.WfRunIdList\"\000\022n\n\030" +
-      "PutWorkflowMigrationPlan\022,.littlehorse.P" +
-      "utWorkflowMigrationPlanRequest\032\".littleh" +
-      "orse.WorkflowMigrationPlan\"\000\022f\n\030GetWorkf" +
-      "lowMigrationPlan\022$.littlehorse.WorkflowM" +
-      "igrationPlanId\032\".littlehorse.WorkflowMig" +
-      "rationPlan\"\000\022h\n\033DeleteWorkflowMigrationP" +
-      "lan\022/.littlehorse.DeleteWorkflowMigratio" +
-      "nPlanRequest\032\026.google.protobuf.Empty\"\000\022b" +
-      "\n\032ApplyWorkflowMigrationPlan\022..littlehor" +
-      "se.ApplyWorkflowMigrationPlanRequest\032\022.l" +
-      "ittlehorse.WfRun\"\000\022z\n\033SearchWorkflowMigr" +
-      "ationPlan\022/.littlehorse.SearchWorkflowMi" +
-      "grationPlanRequest\032(.littlehorse.Workflo" +
-      "wMigrationPlanIdList\"\000\022h\n\025SearchCorrelat" +
-      "edEvent\022).littlehorse.SearchCorrelatedEv" +
-      "entRequest\032\".littlehorse.CorrelatedEvent" +
-      "IdList\"\000\022P\n\rSearchNodeRun\022!.littlehorse." +
-      "SearchNodeRunRequest\032\032.littlehorse.NodeR" +
-      "unIdList\"\000\022P\n\rSearchTaskRun\022!.littlehors" +
-      "e.SearchTaskRunRequest\032\032.littlehorse.Tas" +
-      "kRunIdList\"\000\022\\\n\021SearchUserTaskRun\022%.litt" +
-      "lehorse.SearchUserTaskRunRequest\032\036.littl" +
-      "ehorse.UserTaskRunIdList\"\000\022S\n\016SearchVari" +
-      "able\022\".littlehorse.SearchVariableRequest" +
-      "\032\033.littlehorse.VariableIdList\"\000\022b\n\023Searc" +
-      "hExternalEvent\022\'.littlehorse.SearchExter" +
-      "nalEventRequest\032 .littlehorse.ExternalEv" +
-      "entIdList\"\000\022b\n\023SearchWorkflowEvent\022\'.lit" +
-      "tlehorse.SearchWorkflowEventRequest\032 .li" +
-      "ttlehorse.WorkflowEventIdList\"\000\022P\n\rSearc" +
-      "hTaskDef\022!.littlehorse.SearchTaskDefRequ" +
-      "est\032\032.littlehorse.TaskDefIdList\"\000\022\\\n\021Sea" +
-      "rchUserTaskDef\022%.littlehorse.SearchUserT" +
-      "askDefRequest\032\036.littlehorse.UserTaskDefI" +
-      "dList\"\000\022M\n\014SearchWfSpec\022 .littlehorse.Se" +
-      "archWfSpecRequest\032\031.littlehorse.WfSpecId" +
-      "List\"\000\022k\n\026SearchExternalEventDef\022*.littl" +
-      "ehorse.SearchExternalEventDefRequest\032#.l" +
-      "ittlehorse.ExternalEventDefIdList\"\000\022k\n\026S" +
-      "earchWorkflowEventDef\022*.littlehorse.Sear" +
-      "chWorkflowEventDefRequest\032#.littlehorse." +
-      "WorkflowEventDefIdList\"\000\022M\n\014SearchTenant" +
-      "\022 .littlehorse.SearchTenantRequest\032\031.lit" +
-      "tlehorse.TenantIdList\"\000\022V\n\017SearchPrincip" +
-      "al\022#.littlehorse.SearchPrincipalRequest\032" +
-      "\034.littlehorse.PrincipalIdList\"\000\022J\n\013Searc" +
-      "hQuota\022\037.littlehorse.SearchQuotaRequest\032" +
-      "\030.littlehorse.QuotaIdList\"\000\022V\n\017SearchStr" +
-      "uctDef\022#.littlehorse.SearchStructDefRequ" +
-      "est\032\034.littlehorse.StructDefIdList\"\000\022Z\n\024G" +
-      "etInactiveThreadRun\022 .littlehorse.Inacti" +
-      "veThreadRunId\032\036.littlehorse.InactiveThre" +
-      "adRun\"\000\022g\n\022RegisterTaskWorker\022&.littleho" +
-      "rse.RegisterTaskWorkerRequest\032\'.littleho" +
-      "rse.RegisterTaskWorkerResponse\"\000\022M\n\010Poll" +
-      "Task\022\034.littlehorse.PollTaskRequest\032\035.lit" +
-      "tlehorse.PollTaskResponse\"\000(\0010\001\022B\n\nRepor" +
-      "tTask\022\032.littlehorse.ReportTaskRun\032\026.goog" +
-      "le.protobuf.Empty\"\000\022X\n\rPutCheckpoint\022!.l" +
-      "ittlehorse.PutCheckpointRequest\032\".little" +
-      "horse.PutCheckpointResponse\"\000\022E\n\rGetChec" +
-      "kpoint\022\031.littlehorse.CheckpointId\032\027.litt" +
-      "lehorse.Checkpoint\"\000\022D\n\tStopWfRun\022\035.litt" +
-      "lehorse.StopWfRunRequest\032\026.google.protob" +
-      "uf.Empty\"\000\022H\n\013ResumeWfRun\022\037.littlehorse." +
-      "ResumeWfRunRequest\032\026.google.protobuf.Emp" +
-      "ty\"\000\022L\n\017RescueThreadRun\022#.littlehorse.Re" +
-      "scueThreadRunRequest\032\022.littlehorse.WfRun" +
-      "\"\000\022H\n\013DeleteWfRun\022\037.littlehorse.DeleteWf" +
-      "RunRequest\032\026.google.protobuf.Empty\"\000\022L\n\r" +
-      "DeleteTaskDef\022!.littlehorse.DeleteTaskDe" +
-      "fRequest\032\026.google.protobuf.Empty\"\000\022P\n\017De" +
-      "leteStructDef\022#.littlehorse.DeleteStruct" +
-      "DefRequest\032\026.google.protobuf.Empty\"\000\022J\n\014" +
-      "DeleteWfSpec\022 .littlehorse.DeleteWfSpecR" +
-      "equest\032\026.google.protobuf.Empty\"\000\022T\n\021Dele" +
-      "teUserTaskDef\022%.littlehorse.DeleteUserTa" +
-      "skDefRequest\032\026.google.protobuf.Empty\"\000\022^" +
-      "\n\026DeleteExternalEventDef\022*.littlehorse.D" +
-      "eleteExternalEventDefRequest\032\026.google.pr" +
-      "otobuf.Empty\"\000\022\\\n\025DeleteCorrelatedEvent\022" +
-      ").littlehorse.DeleteCorrelatedEventReque" +
-      "st\032\026.google.protobuf.Empty\"\000\022^\n\026DeleteWo" +
-      "rkflowEventDef\022*.littlehorse.DeleteWorkf" +
-      "lowEventDefRequest\032\026.google.protobuf.Emp" +
-      "ty\"\000\022P\n\017DeletePrincipal\022#.littlehorse.De" +
-      "letePrincipalRequest\032\026.google.protobuf.E" +
-      "mpty\"\000\022H\n\013DeleteQuota\022\037.littlehorse.Dele" +
-      "teQuotaRequest\032\026.google.protobuf.Empty\"\000" +
-      "\022Z\n\024DeleteScheduledWfRun\022(.littlehorse.D" +
-      "eleteScheduledWfRunRequest\032\026.google.prot" +
-      "obuf.Empty\"\000\022J\n\rCreateBulkJob\022!.littleho" +
-      "rse.CreateBulkJobRequest\032\024.littlehorse.B" +
-      "ulkJob\"\000\022D\n\nGetBulkJob\022\036.littlehorse.Get" +
-      "BulkJobRequest\032\024.littlehorse.BulkJob\"\000\022P" +
-      "\n\rSearchBulkJob\022!.littlehorse.SearchBulk" +
-      "JobRequest\032\032.littlehorse.BulkJobIdList\"\000" +
-      "\022L\n\rDeleteBulkJob\022!.littlehorse.DeleteBu" +
-      "lkJobRequest\032\026.google.protobuf.Empty\"\000\022a" +
-      "\n\027GetTaskDefMetricsWindow\022\'.littlehorse." +
-      "TaskDefMetricsQueryRequest\032\033.littlehorse" +
-      ".TaskDefMetrics\"\000\022^\n\026GetWfSpecMetricsWin" +
-      "dow\022&.littlehorse.WfSpecMetricsQueryRequ" +
-      "est\032\032.littlehorse.WfSpecMetrics\"\000\022R\n\017Lis" +
-      "tTaskMetrics\022#.littlehorse.ListTaskMetri" +
-      "csRequest\032\030.littlehorse.MetricsList\"\000\022^\n" +
-      "\025ListQuotaUsageMetrics\022).littlehorse.Lis" +
-      "tQuotaUsageMetricsRequest\032\030.littlehorse." +
-      "MetricsList\"\000\022N\n\rListWfMetrics\022!.littleh" +
-      "orse.ListWfMetricsRequest\032\030.littlehorse." +
-      "MetricsList\"\000\022K\n\017GetMetricWindow\022\033.littl" +
-      "ehorse.MetricWindowId\032\031.littlehorse.Metr" +
-      "icWindow\"\000\022c\n\024SearchWfMetricWindow\022(.lit" +
-      "tlehorse.SearchWfMetricWindowRequest\032\037.l" +
-      "ittlehorse.MetricWindowIdList\"\000\022A\n\tPutTe" +
-      "nant\022\035.littlehorse.PutTenantRequest\032\023.li" +
-      "ttlehorse.Tenant\"\000\0229\n\tGetTenant\022\025.little" +
-      "horse.TenantId\032\023.littlehorse.Tenant\"\000\022>\n" +
-      "\010PutQuota\022\034.littlehorse.PutQuotaRequest\032" +
-      "\022.littlehorse.Quota\"\000\0226\n\010GetQuota\022\024.litt" +
-      "lehorse.QuotaId\032\022.littlehorse.Quota\"\000\022J\n" +
-      "\014PutPrincipal\022 .littlehorse.PutPrincipal" +
-      "Request\032\026.littlehorse.Principal\"\000\022B\n\014Get" +
-      "Principal\022\030.littlehorse.PrincipalId\032\026.li" +
-      "ttlehorse.Principal\"\000\022:\n\006Whoami\022\026.google" +
-      ".protobuf.Empty\032\026.littlehorse.Principal\"" +
-      "\000\022M\n\020GetServerVersion\022\026.google.protobuf." +
-      "Empty\032\037.littlehorse.LittleHorseVersion\"\000" +
-      "\022F\n\014CountNodeRun\022 .littlehorse.CountNode" +
-      "RunRequest\032\022.littlehorse.Count\"\000\022F\n\014Coun" +
-      "tTaskRun\022 .littlehorse.CountTaskRunReque" +
-      "st\032\022.littlehorse.Count\"\000BM\n\037io.littlehor" +
-      "se.sdk.common.protoP\001Z\t.;lhproto\252\002\034Littl" +
-      "eHorse.Sdk.Common.Protob\006proto3"
+      "t_startJ\004\010\005\020\006\"\\\n\rNodeRunIdList\022\'\n\007result" +
+      "s\030\001 \003(\0132\026.littlehorse.NodeRunId\022\025\n\010bookm" +
+      "ark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\262\003\n\030SearchUs" +
+      "erTaskRunRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022" +
+      "\022\n\005limit\030\002 \001(\005H\001\210\001\001\0223\n\006status\030\003 \001(\0162\036.li" +
+      "ttlehorse.UserTaskRunStatusH\002\210\001\001\022\037\n\022user" +
+      "_task_def_name\030\004 \001(\tH\003\210\001\001\022\024\n\007user_id\030\005 \001" +
+      "(\tH\004\210\001\001\022\027\n\nuser_group\030\006 \001(\tH\005\210\001\001\0227\n\016earl" +
+      "iest_start\030\007 \001(\0132\032.google.protobuf.Times" +
+      "tampH\006\210\001\001\0225\n\014latest_start\030\010 \001(\0132\032.google" +
+      ".protobuf.TimestampH\007\210\001\001B\013\n\t_bookmarkB\010\n" +
+      "\006_limitB\t\n\007_statusB\025\n\023_user_task_def_nam" +
+      "eB\n\n\010_user_idB\r\n\013_user_groupB\021\n\017_earlies" +
+      "t_startB\017\n\r_latest_start\"d\n\021UserTaskRunI" +
+      "dList\022+\n\007results\030\001 \003(\0132\032.littlehorse.Use" +
+      "rTaskRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bo" +
+      "okmark\"\236\002\n\025SearchVariableRequest\022\025\n\010book" +
+      "mark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022)\n\005v" +
+      "alue\030\003 \001(\0132\032.littlehorse.VariableValue\022\"" +
+      "\n\025wf_spec_major_version\030\004 \001(\005H\002\210\001\001\022\035\n\020wf" +
+      "_spec_revision\030\005 \001(\005H\003\210\001\001\022\020\n\010var_name\030\006 " +
+      "\001(\t\022\024\n\014wf_spec_name\030\007 \001(\tB\013\n\t_bookmarkB\010" +
+      "\n\006_limitB\030\n\026_wf_spec_major_versionB\023\n\021_w" +
+      "f_spec_revision\"^\n\016VariableIdList\022(\n\007res" +
+      "ults\030\001 \003(\0132\027.littlehorse.VariableId\022\025\n\010b" +
+      "ookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"x\n\024Searc" +
+      "hTaskDefRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022" +
+      "\n\005limit\030\002 \001(\005H\001\210\001\001\022\023\n\006prefix\030\003 \001(\tH\002\210\001\001B" +
+      "\013\n\t_bookmarkB\010\n\006_limitB\t\n\007_prefix\"\\\n\rTas" +
+      "kDefIdList\022\'\n\007results\030\001 \003(\0132\026.littlehors" +
+      "e.TaskDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_b" +
+      "ookmark\"\230\001\n\030SearchUserTaskDefRequest\022\025\n\010" +
+      "bookmark\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022" +
+      "\020\n\006prefix\030\003 \001(\tH\000\022\016\n\004name\030\004 \001(\tH\000B\030\n\026use" +
+      "r_task_def_criteriaB\013\n\t_bookmarkB\010\n\006_lim" +
+      "it\"\223\001\n\026SearchStructDefRequest\022\025\n\010bookmar" +
+      "k\030\001 \001(\014H\001\210\001\001\022\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\020\n\006pref" +
+      "ix\030\003 \001(\tH\000\022\016\n\004name\030\004 \001(\tH\000B\025\n\023struct_def" +
+      "_criteriaB\013\n\t_bookmarkB\010\n\006_limit\"`\n\017Stru" +
+      "ctDefIdList\022)\n\007results\030\001 \003(\0132\030.littlehor" +
+      "se.StructDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n" +
+      "\t_bookmark\"d\n\021UserTaskDefIdList\022+\n\007resul" +
+      "ts\030\001 \003(\0132\032.littlehorse.UserTaskDefId\022\025\n\010" +
+      "bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\246\001\n\023Sea" +
+      "rchWfSpecRequest\022\025\n\010bookmark\030\001 \001(\014H\001\210\001\001\022" +
+      "\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\016\n\004name\030\003 \001(\tH\000\022\020\n\006p" +
+      "refix\030\004 \001(\tH\000\022\027\n\rtask_def_name\030\005 \001(\tH\000B\022" +
+      "\n\020wf_spec_criteriaB\013\n\t_bookmarkB\010\n\006_limi" +
+      "t\"Z\n\014WfSpecIdList\022&\n\007results\030\001 \003(\0132\025.lit" +
+      "tlehorse.WfSpecId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001" +
+      "B\013\n\t_bookmark\"\201\001\n\035SearchExternalEventDef" +
+      "Request\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030" +
+      "\002 \001(\005H\001\210\001\001\022\023\n\006prefix\030\003 \001(\tH\002\210\001\001B\013\n\t_book" +
+      "markB\010\n\006_limitB\t\n\007_prefix\"n\n\026ExternalEve" +
+      "ntDefIdList\0220\n\007results\030\001 \003(\0132\037.littlehor" +
+      "se.ExternalEventDefId\022\025\n\010bookmark\030\002 \001(\014H" +
+      "\000\210\001\001B\013\n\t_bookmark\"\264\001\n\"SearchWorkflowMigr" +
+      "ationPlanRequest\022\025\n\010bookmark\030\001 \001(\014H\001\210\001\001\022" +
+      "\022\n\005limit\030\002 \001(\005H\002\210\001\001\022\026\n\014wf_spec_name\030\003 \001(" +
+      "\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\"\n workflow_migrat" +
+      "ion_plan_criteriaB\013\n\t_bookmarkB\010\n\006_limit" +
+      "\"x\n\033WorkflowMigrationPlanIdList\0225\n\007resul" +
+      "ts\030\001 \003(\0132$.littlehorse.WorkflowMigration" +
+      "PlanId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookma" +
+      "rk\"\201\001\n\035SearchWorkflowEventDefRequest\022\025\n\010" +
+      "bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\022" +
+      "\023\n\006prefix\030\003 \001(\tH\002\210\001\001B\013\n\t_bookmarkB\010\n\006_li" +
+      "mitB\t\n\007_prefix\"n\n\026WorkflowEventDefIdList" +
+      "\0220\n\007results\030\001 \003(\0132\037.littlehorse.Workflow" +
+      "EventDefId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bo" +
+      "okmark\"W\n\023SearchTenantRequest\022\022\n\005limit\030\001" +
+      " \001(\005H\000\210\001\001\022\025\n\010bookmark\030\002 \001(\014H\001\210\001\001B\010\n\006_lim" +
+      "itB\013\n\t_bookmark\"Z\n\014TenantIdList\022&\n\007resul" +
+      "ts\030\001 \003(\0132\025.littlehorse.TenantId\022\025\n\010bookm" +
+      "ark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\255\002\n\026SearchPr" +
+      "incipalRequest\022\025\n\010bookmark\030\001 \001(\014H\001\210\001\001\022\022\n" +
+      "\005limit\030\002 \001(\005H\002\210\001\001\0227\n\016earliest_start\030\003 \001(" +
+      "\0132\032.google.protobuf.TimestampH\003\210\001\001\0225\n\014la" +
+      "test_start\030\004 \001(\0132\032.google.protobuf.Times" +
+      "tampH\004\210\001\001\022\022\n\010is_admin\030\005 \001(\010H\000\022\023\n\ttenant_" +
+      "id\030\006 \001(\tH\000B\024\n\022principal_criteriaB\013\n\t_boo" +
+      "kmarkB\010\n\006_limitB\021\n\017_earliest_startB\017\n\r_l" +
+      "atest_start\"`\n\017PrincipalIdList\022)\n\007result" +
+      "s\030\001 \003(\0132\030.littlehorse.PrincipalId\022\025\n\010boo" +
+      "kmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\251\001\n\022Search" +
+      "QuotaRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005l" +
+      "imit\030\002 \001(\005H\001\210\001\001\022\026\n\ttenant_id\030\003 \001(\tH\002\210\001\001\022" +
+      "+\n\tprincipal\030\004 \001(\0132\030.littlehorse.Princip" +
+      "alIdB\013\n\t_bookmarkB\010\n\006_limitB\014\n\n_tenant_i" +
+      "d\"X\n\013QuotaIdList\022%\n\007results\030\001 \003(\0132\024.litt" +
+      "lehorse.QuotaId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013" +
+      "\n\t_bookmark\"\332\002\n\032SearchExternalEventReque" +
+      "st\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001\022\022\n\005limit\030\002 \001(\005" +
+      "H\001\210\001\001\0227\n\016earliest_start\030\003 \001(\0132\032.google.p" +
+      "rotobuf.TimestampH\002\210\001\001\0225\n\014latest_start\030\004" +
+      " \001(\0132\032.google.protobuf.TimestampH\003\210\001\001\022>\n" +
+      "\025external_event_def_id\030\005 \001(\0132\037.littlehor" +
+      "se.ExternalEventDefId\022\027\n\nis_claimed\030\006 \001(" +
+      "\010H\004\210\001\001B\013\n\t_bookmarkB\010\n\006_limitB\021\n\017_earlie" +
+      "st_startB\017\n\r_latest_startB\r\n\013_is_claimed" +
+      "\"h\n\023ExternalEventIdList\022-\n\007results\030\001 \003(\013" +
+      "2\034.littlehorse.ExternalEventId\022\025\n\010bookma" +
+      "rk\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\262\002\n\032SearchWor" +
+      "kflowEventRequest\022\025\n\010bookmark\030\001 \001(\014H\000\210\001\001" +
+      "\022\022\n\005limit\030\002 \001(\005H\001\210\001\001\0227\n\016earliest_start\030\003" +
+      " \001(\0132\032.google.protobuf.TimestampH\002\210\001\001\0225\n" +
+      "\014latest_start\030\004 \001(\0132\032.google.protobuf.Ti" +
+      "mestampH\003\210\001\001\022>\n\025workflow_event_def_id\030\005 " +
+      "\001(\0132\037.littlehorse.WorkflowEventDefIdB\013\n\t" +
+      "_bookmarkB\010\n\006_limitB\021\n\017_earliest_startB\017" +
+      "\n\r_latest_start\"h\n\023WorkflowEventIdList\022-" +
+      "\n\007results\030\001 \003(\0132\034.littlehorse.WorkflowEv" +
+      "entId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmar" +
+      "k\"\266\001\n\023ListNodeRunsRequest\022\'\n\twf_run_id\030\001" +
+      " \001(\0132\024.littlehorse.WfRunId\022\036\n\021thread_run" +
+      "_number\030\002 \001(\005H\000\210\001\001\022\025\n\010bookmark\030\003 \001(\014H\001\210\001" +
+      "\001\022\022\n\005limit\030\004 \001(\005H\002\210\001\001B\024\n\022_thread_run_num" +
+      "berB\013\n\t_bookmarkB\010\n\006_limit\"X\n\013NodeRunLis" +
+      "t\022%\n\007results\030\001 \003(\0132\024.littlehorse.NodeRun" +
+      "\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"\201\001\n" +
+      "\024ListVariablesRequest\022\'\n\twf_run_id\030\001 \001(\013" +
+      "2\024.littlehorse.WfRunId\022\025\n\010bookmark\030\002 \001(\014" +
+      "H\000\210\001\001\022\022\n\005limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010" +
+      "\n\006_limit\"Z\n\014VariableList\022&\n\007results\030\001 \003(" +
+      "\0132\025.littlehorse.Variable\022\025\n\010bookmark\030\002 \001" +
+      "(\014H\000\210\001\001B\013\n\t_bookmark\"\206\001\n\031ListExternalEve" +
+      "ntsRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.littleho" +
+      "rse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n\005li" +
+      "mit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit\"d\n" +
+      "\021ExternalEventList\022+\n\007results\030\001 \003(\0132\032.li" +
+      "ttlehorse.ExternalEvent\022\025\n\010bookmark\030\002 \001(" +
+      "\014H\000\210\001\001B\013\n\t_bookmark\"\206\001\n\031ListWorkflowEven" +
+      "tsRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.littlehor" +
+      "se.WfRunId\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001\022\022\n\005lim" +
+      "it\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n\006_limit\"d\n\021" +
+      "WorkflowEventList\022+\n\007results\030\001 \003(\0132\032.lit" +
+      "tlehorse.WorkflowEvent\022\025\n\010bookmark\030\002 \001(\014" +
+      "H\000\210\001\001B\013\n\t_bookmark\"`\n\031RegisterTaskWorker" +
+      "Request\022\026\n\016task_worker_id\030\001 \001(\t\022+\n\013task_" +
+      "def_id\030\002 \001(\0132\026.littlehorse.TaskDefId\"s\n\032" +
+      "TaskWorkerHeartBeatRequest\022\021\n\tclient_id\030" +
+      "\001 \001(\t\022+\n\013task_def_id\030\002 \001(\0132\026.littlehorse" +
+      ".TaskDefId\022\025\n\rlistener_name\030\003 \001(\t\"\201\001\n\032Re" +
+      "gisterTaskWorkerResponse\022+\n\nyour_hosts\030\001" +
+      " \003(\0132\027.littlehorse.LHHostInfo\022\037\n\022is_clus" +
+      "ter_healthy\030\002 \001(\010H\000\210\001\001B\025\n\023_is_cluster_he" +
+      "althy\"(\n\nLHHostInfo\022\014\n\004host\030\001 \001(\t\022\014\n\004por" +
+      "t\030\002 \001(\005\"\213\001\n\017PollTaskRequest\022+\n\013task_def_" +
+      "id\030\001 \001(\0132\026.littlehorse.TaskDefId\022\021\n\tclie" +
+      "nt_id\030\002 \001(\t\022 \n\023task_worker_version\030\003 \001(\t" +
+      "H\000\210\001\001B\026\n\024_task_worker_version\"\240\001\n\024PutChe" +
+      "ckpointRequest\022+\n\013task_run_id\030\001 \001(\0132\026.li" +
+      "ttlehorse.TaskRunId\022\024\n\014task_attempt\030\002 \001(" +
+      "\005\022)\n\005value\030\003 \001(\0132\032.littlehorse.VariableV" +
+      "alue\022\021\n\004logs\030\004 \001(\tH\000\210\001\001B\007\n\005_logs\"\375\001\n\025Put" +
+      "CheckpointResponse\022Z\n\032flow_control_conti" +
+      "nue_type\030\001 \001(\01626.littlehorse.PutCheckpoi" +
+      "ntResponse.FlowControlContinue\0228\n\022create" +
+      "d_checkpoint\030\002 \001(\0132\027.littlehorse.Checkpo" +
+      "intH\000\210\001\001\"7\n\023FlowControlContinue\022\021\n\rCONTI" +
+      "NUE_TASK\020\000\022\r\n\tSTOP_TASK\020\001B\025\n\023_created_ch" +
+      "eckpoint\"\260\002\n\rScheduledTask\022+\n\013task_run_i" +
+      "d\030\001 \001(\0132\026.littlehorse.TaskRunId\022+\n\013task_" +
+      "def_id\030\002 \001(\0132\026.littlehorse.TaskDefId\022\026\n\016" +
+      "attempt_number\030\003 \001(\005\022-\n\tvariables\030\004 \003(\0132" +
+      "\032.littlehorse.VarNameAndVal\022.\n\ncreated_a" +
+      "t\030\005 \001(\0132\032.google.protobuf.Timestamp\022*\n\006s" +
+      "ource\030\006 \001(\0132\032.littlehorse.TaskRunSource\022" +
+      "\"\n\032total_observed_checkpoints\030\007 \001(\005\"N\n\020P" +
+      "ollTaskResponse\022/\n\006result\030\001 \001(\0132\032.little" +
+      "horse.ScheduledTaskH\000\210\001\001B\t\n\007_result\"\234\003\n\r" +
+      "ReportTaskRun\022+\n\013task_run_id\030\001 \001(\0132\026.lit" +
+      "tlehorse.TaskRunId\022(\n\004time\030\002 \001(\0132\032.googl" +
+      "e.protobuf.Timestamp\022\'\n\006status\030\003 \001(\0162\027.l" +
+      "ittlehorse.TaskStatus\0223\n\nlog_output\030\005 \001(" +
+      "\0132\032.littlehorse.VariableValueH\001\210\001\001\022\026\n\016at" +
+      "tempt_number\030\006 \001(\005\022,\n\006output\030\004 \001(\0132\032.lit" +
+      "tlehorse.VariableValueH\000\022)\n\005error\030\007 \001(\0132" +
+      "\030.littlehorse.LHTaskErrorH\000\0221\n\texception" +
+      "\030\010 \001(\0132\034.littlehorse.LHTaskExceptionH\000\022\031" +
+      "\n\021total_checkpoints\030\t \001(\005B\010\n\006resultB\r\n\013_" +
+      "log_output\"d\n\022PutVariableRequest\022#\n\002id\030\001" +
+      " \001(\0132\027.littlehorse.VariableId\022)\n\005value\030\002" +
+      " \001(\0132\032.littlehorse.VariableValue\"V\n\020Stop" +
+      "WfRunRequest\022\'\n\twf_run_id\030\001 \001(\0132\024.little" +
+      "horse.WfRunId\022\031\n\021thread_run_number\030\002 \001(\005" +
+      "\"X\n\022ResumeWfRunRequest\022\'\n\twf_run_id\030\001 \001(" +
+      "\0132\024.littlehorse.WfRunId\022\031\n\021thread_run_nu" +
+      "mber\030\002 \001(\005\"w\n\026RescueThreadRunRequest\022\'\n\t" +
+      "wf_run_id\030\001 \001(\0132\024.littlehorse.WfRunId\022\031\n" +
+      "\021thread_run_number\030\002 \001(\005\022\031\n\021skip_current" +
+      "_node\030\003 \001(\010\"\263\001\n\032TaskDefMetricsQueryReque" +
+      "st\0220\n\014window_start\030\001 \001(\0132\032.google.protob" +
+      "uf.Timestamp\0225\n\013window_type\030\002 \001(\0162 .litt" +
+      "lehorse.MetricsWindowLength\022\032\n\rtask_def_" +
+      "name\030\003 \001(\tH\000\210\001\001B\020\n\016_task_def_name\"\261\001\n\031Wf" +
+      "SpecMetricsQueryRequest\022)\n\nwf_spec_id\030\001 " +
+      "\001(\0132\025.littlehorse.WfSpecId\0220\n\014window_sta" +
+      "rt\030\002 \001(\0132\032.google.protobuf.Timestamp\0227\n\r" +
+      "window_length\030\003 \001(\0162 .littlehorse.Metric" +
+      "sWindowLength\"h\n\025ListWfMetricsResponse\022+" +
+      "\n\007results\030\001 \003(\0132\032.littlehorse.WfSpecMetr" +
+      "ics\022\025\n\010bookmark\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"" +
+      "\373\002\n\016TaskDefMetrics\022+\n\013task_def_id\030\001 \001(\0132" +
+      "\026.littlehorse.TaskDefId\0220\n\014window_start\030" +
+      "\002 \001(\0132\032.google.protobuf.Timestamp\022.\n\004typ" +
+      "e\030\003 \001(\0162 .littlehorse.MetricsWindowLengt" +
+      "h\022\035\n\025schedule_to_start_max\030\004 \001(\003\022\035\n\025sche" +
+      "dule_to_start_avg\030\005 \001(\003\022\035\n\025start_to_comp" +
+      "lete_max\030\006 \001(\003\022\035\n\025start_to_complete_avg\030" +
+      "\007 \001(\003\022\027\n\017total_completed\030\010 \001(\003\022\025\n\rtotal_" +
+      "errored\030\t \001(\003\022\025\n\rtotal_started\030\n \001(\003\022\027\n\017" +
+      "total_scheduled\030\013 \001(\003\"\241\002\n\rWfSpecMetrics\022" +
+      ")\n\nwf_spec_id\030\001 \001(\0132\025.littlehorse.WfSpec" +
+      "Id\0220\n\014window_start\030\002 \001(\0132\032.google.protob" +
+      "uf.Timestamp\022.\n\004type\030\003 \001(\0162 .littlehorse" +
+      ".MetricsWindowLength\022\025\n\rtotal_started\030\004 " +
+      "\001(\003\022\027\n\017total_completed\030\005 \001(\003\022\025\n\rtotal_er" +
+      "rored\030\006 \001(\003\022\035\n\025start_to_complete_max\030\007 \001" +
+      "(\003\022\035\n\025start_to_complete_avg\030\010 \001(\003\"\203\001\n\026Li" +
+      "stUserTaskRunRequest\022\'\n\twf_run_id\030\001 \001(\0132",
+      "\024.littlehorse.WfRunId\022\025\n\010bookmark\030\002 \001(\014H" +
+      "\000\210\001\001\022\022\n\005limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmarkB\010\n" +
+      "\006_limit\"`\n\017UserTaskRunList\022)\n\007results\030\001 " +
+      "\003(\0132\030.littlehorse.UserTaskRun\022\025\n\010bookmar" +
+      "k\030\002 \001(\014H\000\210\001\001B\013\n\t_bookmark\"F\n\024ScheduledWf" +
+      "RunIdList\022.\n\007results\030\001 \003(\0132\035.littlehorse" +
+      ".ScheduledWfRunId\"\205\001\n\033SearchScheduledWfR" +
+      "unRequest\022\024\n\014wf_spec_name\030\001 \001(\t\022\032\n\rmajor" +
+      "_version\030\002 \001(\005H\000\210\001\001\022\025\n\010revision\030\003 \001(\005H\001\210" +
+      "\001\001B\020\n\016_major_versionB\013\n\t_revision\"\212\001\n\022Ta" +
+      "skWorkerMetadata\022\026\n\016task_worker_id\030\001 \001(\t" +
+      "\0224\n\020latest_heartbeat\030\002 \001(\0132\032.google.prot" +
+      "obuf.Timestamp\022&\n\005hosts\030\003 \003(\0132\027.littleho" +
+      "rse.LHHostInfo\"\207\002\n\017TaskWorkerGroup\022*\n\002id" +
+      "\030\001 \001(\0132\036.littlehorse.TaskWorkerGroupId\022." +
+      "\n\ncreated_at\030\002 \001(\0132\032.google.protobuf.Tim" +
+      "estamp\022C\n\014task_workers\030\003 \003(\0132-.littlehor" +
+      "se.TaskWorkerGroup.TaskWorkersEntry\032S\n\020T" +
+      "askWorkersEntry\022\013\n\003key\030\001 \001(\t\022.\n\005value\030\002 " +
+      "\001(\0132\037.littlehorse.TaskWorkerMetadata:\0028\001" +
+      "\"\200\001\n\023ListTaskRunsRequest\022\'\n\twf_run_id\030\001 " +
+      "\001(\0132\024.littlehorse.WfRunId\022\025\n\010bookmark\030\002 " +
+      "\001(\014H\000\210\001\001\022\022\n\005limit\030\003 \001(\005H\001\210\001\001B\013\n\t_bookmar" +
+      "kB\010\n\006_limit\"X\n\013TaskRunList\022%\n\007results\030\001 " +
+      "\003(\0132\024.littlehorse.TaskRun\022\025\n\010bookmark\030\002 " +
+      "\001(\014H\000\210\001\001B\013\n\t_bookmark\"z\n\024MigrateWfSpecRe" +
+      "quest\022*\n\013old_wf_spec\030\001 \001(\0132\025.littlehorse" +
+      ".WfSpecId\0226\n\tmigration\030\002 \001(\0132#.littlehor" +
+      "se.WfSpecVersionMigration\"T\n\026GetLatestWf" +
+      "SpecRequest\022\014\n\004name\030\001 \001(\t\022\032\n\rmajor_versi" +
+      "on\030\002 \001(\005H\000\210\001\001B\020\n\016_major_version\"\260\001\n\022Litt" +
+      "leHorseVersion\022\025\n\rmajor_version\030\001 \001(\005\022\025\n" +
+      "\rminor_version\030\002 \001(\005\022\032\n\rpatch_version\030\003 " +
+      "\001(\005H\000\210\001\001\022#\n\026pre_release_identifier\030\004 \001(\t" +
+      "H\001\210\001\001B\020\n\016_patch_versionB\031\n\027_pre_release_" +
+      "identifier\"\201\002\n\023CountNodeRunRequest\022G\n\016wf" +
+      "_spec_filter\030\001 \001(\0132-.littlehorse.CountNo" +
+      "deRunRequest.WfSpecFilterH\000\032\226\001\n\014WfSpecFi" +
+      "lter\022\024\n\014wf_spec_name\030\001 \001(\t\022\"\n\025wf_spec_ma" +
+      "jor_version\030\002 \001(\005H\000\210\001\001\022\035\n\020wf_spec_revisi" +
+      "on\030\003 \001(\005H\001\210\001\001B\030\n\026_wf_spec_major_versionB" +
+      "\023\n\021_wf_spec_revisionB\010\n\006filter\"U\n\023CountT" +
+      "askRunRequest\022\025\n\rtask_def_name\030\001 \001(\t\022\'\n\006" +
+      "status\030\002 \001(\0162\027.littlehorse.TaskStatus\"\026\n" +
+      "\005Count\022\r\n\005value\030\001 \001(\003*P\n\021AllowedUpdateTy" +
+      "pe\022\017\n\013ALL_UPDATES\020\000\022\032\n\026MINOR_REVISION_UP" +
+      "DATES\020\001\022\016\n\nNO_UPDATES\020\002*X\n\032StructDefComp" +
+      "atibilityType\022\025\n\021NO_SCHEMA_UPDATES\020\000\022#\n\037" +
+      "FULLY_COMPATIBLE_SCHEMA_UPDATES\020\0012\320H\n\013Li" +
+      "ttleHorse\022D\n\nPutTaskDef\022\036.littlehorse.Pu" +
+      "tTaskDefRequest\032\024.littlehorse.TaskDef\"\000\022" +
+      "<\n\nGetTaskDef\022\026.littlehorse.TaskDefId\032\024." +
+      "littlehorse.TaskDef\"\000\022L\n\022GetTaskWorkerGr" +
+      "oup\022\026.littlehorse.TaskDefId\032\034.littlehors" +
+      "e.TaskWorkerGroup\"\000\022_\n\023PutExternalEventD" +
+      "ef\022\'.littlehorse.PutExternalEventDefRequ" +
+      "est\032\035.littlehorse.ExternalEventDef\"\000\022W\n\023" +
+      "GetExternalEventDef\022\037.littlehorse.Extern" +
+      "alEventDefId\032\035.littlehorse.ExternalEvent" +
+      "Def\"\000\022_\n\023PutWorkflowEventDef\022\'.littlehor" +
+      "se.PutWorkflowEventDefRequest\032\035.littleho" +
+      "rse.WorkflowEventDef\"\000\022A\n\tPutWfSpec\022\035.li" +
+      "ttlehorse.PutWfSpecRequest\032\023.littlehorse" +
+      ".WfSpec\"\000\0229\n\tGetWfSpec\022\025.littlehorse.WfS" +
+      "pecId\032\023.littlehorse.WfSpec\"\000\022M\n\017GetLates" +
+      "tWfSpec\022#.littlehorse.GetLatestWfSpecReq" +
+      "uest\032\023.littlehorse.WfSpec\"\000\022I\n\rMigrateWf" +
+      "Spec\022!.littlehorse.MigrateWfSpecRequest\032" +
+      "\023.littlehorse.WfSpec\"\000\022J\n\014PutStructDef\022 " +
+      ".littlehorse.PutStructDefRequest\032\026.littl" +
+      "ehorse.StructDef\"\000\022B\n\014GetStructDef\022\030.lit" +
+      "tlehorse.StructDefId\032\026.littlehorse.Struc" +
+      "tDef\"\000\022\177\n\032ValidateStructDefEvolution\022..l" +
+      "ittlehorse.ValidateStructDefEvolutionReq" +
+      "uest\032/.littlehorse.ValidateStructDefEvol" +
+      "utionResponse\"\000\022P\n\016PutUserTaskDef\022\".litt" +
+      "lehorse.PutUserTaskDefRequest\032\030.littleho" +
+      "rse.UserTaskDef\"\000\022H\n\016GetUserTaskDef\022\032.li" +
+      "ttlehorse.UserTaskDefId\032\030.littlehorse.Us" +
+      "erTaskDef\"\000\022\\\n\024GetLatestUserTaskDef\022(.li" +
+      "ttlehorse.GetLatestUserTaskDefRequest\032\030." +
+      "littlehorse.UserTaskDef\"\000\0228\n\005RunWf\022\031.lit" +
+      "tlehorse.RunWfRequest\032\022.littlehorse.WfRu" +
+      "n\"\000\022D\n\013RunInlineWf\022\037.littlehorse.RunInli" +
+      "neWfRequest\032\022.littlehorse.WfRun\"\000\022D\n\017Get" +
+      "InlineWfSpec\022\024.littlehorse.WfRunId\032\031.lit" +
+      "tlehorse.InlineWfSpec\"\000\022K\n\nScheduleWf\022\036." +
+      "littlehorse.ScheduleWfRequest\032\033.littleho" +
+      "rse.ScheduledWfRun\"\000\022e\n\024SearchScheduledW" +
+      "fRun\022(.littlehorse.SearchScheduledWfRunR" +
+      "equest\032!.littlehorse.ScheduledWfRunIdLis" +
+      "t\"\000\022Q\n\021GetScheduledWfRun\022\035.littlehorse.S" +
+      "cheduledWfRunId\032\033.littlehorse.ScheduledW" +
+      "fRun\"\000\0226\n\010GetWfRun\022\024.littlehorse.WfRunId" +
+      "\032\022.littlehorse.WfRun\"\000\022H\n\016GetUserTaskRun" +
+      "\022\032.littlehorse.UserTaskRunId\032\030.littlehor" +
+      "se.UserTaskRun\"\000\022T\n\021AssignUserTaskRun\022%." +
+      "littlehorse.AssignUserTaskRunRequest\032\026.g" +
+      "oogle.protobuf.Empty\"\000\022X\n\023CompleteUserTa" +
+      "skRun\022\'.littlehorse.CompleteUserTaskRunR" +
+      "equest\032\026.google.protobuf.Empty\"\000\022T\n\021Canc" +
+      "elUserTaskRun\022%.littlehorse.CancelUserTa" +
+      "skRunRequest\032\026.google.protobuf.Empty\"\000\022b" +
+      "\n\027SaveUserTaskRunProgress\022+.littlehorse." +
+      "SaveUserTaskRunProgressRequest\032\030.littleh" +
+      "orse.UserTaskRun\"\000\022W\n\020ListUserTaskRuns\022#" +
+      ".littlehorse.ListUserTaskRunRequest\032\034.li" +
+      "ttlehorse.UserTaskRunList\"\000\022^\n\025PutUserTa" +
+      "skRunComment\022).littlehorse.PutUserTaskRu" +
+      "nCommentRequest\032\030.littlehorse.UserTaskRu" +
+      "n\"\000\022`\n\026EditUserTaskRunComment\022*.littleho" +
+      "rse.EditUserTaskRunCommentRequest\032\030.litt" +
+      "lehorse.UserTaskRun\"\000\022d\n\030DeleteUserTaskR" +
+      "unComment\022,.littlehorse.DeleteUserTaskRu" +
+      "nCommentRequest\032\030.littlehorse.UserTaskRu" +
+      "n\"\000\022<\n\nGetNodeRun\022\026.littlehorse.NodeRunI" +
+      "d\032\024.littlehorse.NodeRun\"\000\022L\n\014ListNodeRun" +
+      "s\022 .littlehorse.ListNodeRunsRequest\032\030.li" +
+      "ttlehorse.NodeRunList\"\000\022<\n\nGetTaskRun\022\026." +
+      "littlehorse.TaskRunId\032\024.littlehorse.Task" +
+      "Run\"\000\022L\n\014ListTaskRuns\022 .littlehorse.List" +
+      "TaskRunsRequest\032\030.littlehorse.TaskRunLis" +
+      "t\"\000\022?\n\013GetVariable\022\027.littlehorse.Variabl" +
+      "eId\032\025.littlehorse.Variable\"\000\022L\n\013PutVaria" +
+      "ble\022\037.littlehorse.PutVariableRequest\032\032.l" +
+      "ittlehorse.VariableValue\"\000\022O\n\rListVariab" +
+      "les\022!.littlehorse.ListVariablesRequest\032\031" +
+      ".littlehorse.VariableList\"\000\022V\n\020PutExtern" +
+      "alEvent\022$.littlehorse.PutExternalEventRe" +
+      "quest\032\032.littlehorse.ExternalEvent\"\000\022\\\n\022P" +
+      "utCorrelatedEvent\022&.littlehorse.PutCorre" +
+      "latedEventRequest\032\034.littlehorse.Correlat" +
+      "edEvent\"\000\022N\n\020GetExternalEvent\022\034.littleho" +
+      "rse.ExternalEventId\032\032.littlehorse.Extern" +
+      "alEvent\"\000\022T\n\022GetCorrelatedEvent\022\036.little" +
+      "horse.CorrelatedEventId\032\034.littlehorse.Co" +
+      "rrelatedEvent\"\000\022Z\n\022AwaitWorkflowEvent\022&." +
+      "littlehorse.AwaitWorkflowEventRequest\032\032." +
+      "littlehorse.WorkflowEvent\"\000\022W\n\023GetWorkfl" +
+      "owEventDef\022\037.littlehorse.WorkflowEventDe" +
+      "fId\032\035.littlehorse.WorkflowEventDef\"\000\022N\n\020" +
+      "GetWorkflowEvent\022\034.littlehorse.WorkflowE" +
+      "ventId\032\032.littlehorse.WorkflowEvent\"\000\022^\n\022" +
+      "ListExternalEvents\022&.littlehorse.ListExt" +
+      "ernalEventsRequest\032\036.littlehorse.Externa" +
+      "lEventList\"\000\022^\n\022ListWorkflowEvents\022&.lit" +
+      "tlehorse.ListWorkflowEventsRequest\032\036.lit" +
+      "tlehorse.WorkflowEventList\"\000\022J\n\013SearchWf" +
+      "Run\022\037.littlehorse.SearchWfRunRequest\032\030.l" +
+      "ittlehorse.WfRunIdList\"\000\022n\n\030PutWorkflowM" +
+      "igrationPlan\022,.littlehorse.PutWorkflowMi" +
+      "grationPlanRequest\032\".littlehorse.Workflo" +
+      "wMigrationPlan\"\000\022f\n\030GetWorkflowMigration" +
+      "Plan\022$.littlehorse.WorkflowMigrationPlan" +
+      "Id\032\".littlehorse.WorkflowMigrationPlan\"\000" +
+      "\022h\n\033DeleteWorkflowMigrationPlan\022/.little" +
+      "horse.DeleteWorkflowMigrationPlanRequest" +
+      "\032\026.google.protobuf.Empty\"\000\022b\n\032ApplyWorkf" +
+      "lowMigrationPlan\022..littlehorse.ApplyWork" +
+      "flowMigrationPlanRequest\032\022.littlehorse.W" +
+      "fRun\"\000\022z\n\033SearchWorkflowMigrationPlan\022/." +
+      "littlehorse.SearchWorkflowMigrationPlanR" +
+      "equest\032(.littlehorse.WorkflowMigrationPl" +
+      "anIdList\"\000\022h\n\025SearchCorrelatedEvent\022).li" +
+      "ttlehorse.SearchCorrelatedEventRequest\032\"" +
+      ".littlehorse.CorrelatedEventIdList\"\000\022P\n\r" +
+      "SearchNodeRun\022!.littlehorse.SearchNodeRu" +
+      "nRequest\032\032.littlehorse.NodeRunIdList\"\000\022P" +
+      "\n\rSearchTaskRun\022!.littlehorse.SearchTask" +
+      "RunRequest\032\032.littlehorse.TaskRunIdList\"\000" +
+      "\022\\\n\021SearchUserTaskRun\022%.littlehorse.Sear" +
+      "chUserTaskRunRequest\032\036.littlehorse.UserT" +
+      "askRunIdList\"\000\022S\n\016SearchVariable\022\".littl" +
+      "ehorse.SearchVariableRequest\032\033.littlehor" +
+      "se.VariableIdList\"\000\022b\n\023SearchExternalEve" +
+      "nt\022\'.littlehorse.SearchExternalEventRequ" +
+      "est\032 .littlehorse.ExternalEventIdList\"\000\022" +
+      "b\n\023SearchWorkflowEvent\022\'.littlehorse.Sea" +
+      "rchWorkflowEventRequest\032 .littlehorse.Wo" +
+      "rkflowEventIdList\"\000\022P\n\rSearchTaskDef\022!.l" +
+      "ittlehorse.SearchTaskDefRequest\032\032.little" +
+      "horse.TaskDefIdList\"\000\022\\\n\021SearchUserTaskD" +
+      "ef\022%.littlehorse.SearchUserTaskDefReques" +
+      "t\032\036.littlehorse.UserTaskDefIdList\"\000\022M\n\014S" +
+      "earchWfSpec\022 .littlehorse.SearchWfSpecRe" +
+      "quest\032\031.littlehorse.WfSpecIdList\"\000\022k\n\026Se" +
+      "archExternalEventDef\022*.littlehorse.Searc" +
+      "hExternalEventDefRequest\032#.littlehorse.E" +
+      "xternalEventDefIdList\"\000\022k\n\026SearchWorkflo" +
+      "wEventDef\022*.littlehorse.SearchWorkflowEv" +
+      "entDefRequest\032#.littlehorse.WorkflowEven" +
+      "tDefIdList\"\000\022M\n\014SearchTenant\022 .littlehor" +
+      "se.SearchTenantRequest\032\031.littlehorse.Ten" +
+      "antIdList\"\000\022V\n\017SearchPrincipal\022#.littleh" +
+      "orse.SearchPrincipalRequest\032\034.littlehors" +
+      "e.PrincipalIdList\"\000\022J\n\013SearchQuota\022\037.lit" +
+      "tlehorse.SearchQuotaRequest\032\030.littlehors" +
+      "e.QuotaIdList\"\000\022V\n\017SearchStructDef\022#.lit" +
+      "tlehorse.SearchStructDefRequest\032\034.little" +
+      "horse.StructDefIdList\"\000\022Z\n\024GetInactiveTh" +
+      "readRun\022 .littlehorse.InactiveThreadRunI" +
+      "d\032\036.littlehorse.InactiveThreadRun\"\000\022g\n\022R" +
+      "egisterTaskWorker\022&.littlehorse.Register" +
+      "TaskWorkerRequest\032\'.littlehorse.Register" +
+      "TaskWorkerResponse\"\000\022M\n\010PollTask\022\034.littl" +
+      "ehorse.PollTaskRequest\032\035.littlehorse.Pol" +
+      "lTaskResponse\"\000(\0010\001\022B\n\nReportTask\022\032.litt" +
+      "lehorse.ReportTaskRun\032\026.google.protobuf." +
+      "Empty\"\000\022X\n\rPutCheckpoint\022!.littlehorse.P" +
+      "utCheckpointRequest\032\".littlehorse.PutChe" +
+      "ckpointResponse\"\000\022E\n\rGetCheckpoint\022\031.lit" +
+      "tlehorse.CheckpointId\032\027.littlehorse.Chec" +
+      "kpoint\"\000\022D\n\tStopWfRun\022\035.littlehorse.Stop" +
+      "WfRunRequest\032\026.google.protobuf.Empty\"\000\022H" +
+      "\n\013ResumeWfRun\022\037.littlehorse.ResumeWfRunR" +
+      "equest\032\026.google.protobuf.Empty\"\000\022L\n\017Resc" +
+      "ueThreadRun\022#.littlehorse.RescueThreadRu" +
+      "nRequest\032\022.littlehorse.WfRun\"\000\022H\n\013Delete" +
+      "WfRun\022\037.littlehorse.DeleteWfRunRequest\032\026" +
+      ".google.protobuf.Empty\"\000\022L\n\rDeleteTaskDe" +
+      "f\022!.littlehorse.DeleteTaskDefRequest\032\026.g" +
+      "oogle.protobuf.Empty\"\000\022P\n\017DeleteStructDe" +
+      "f\022#.littlehorse.DeleteStructDefRequest\032\026" +
+      ".google.protobuf.Empty\"\000\022J\n\014DeleteWfSpec" +
+      "\022 .littlehorse.DeleteWfSpecRequest\032\026.goo" +
+      "gle.protobuf.Empty\"\000\022T\n\021DeleteUserTaskDe" +
+      "f\022%.littlehorse.DeleteUserTaskDefRequest" +
+      "\032\026.google.protobuf.Empty\"\000\022^\n\026DeleteExte" +
+      "rnalEventDef\022*.littlehorse.DeleteExterna" +
+      "lEventDefRequest\032\026.google.protobuf.Empty" +
+      "\"\000\022\\\n\025DeleteCorrelatedEvent\022).littlehors" +
+      "e.DeleteCorrelatedEventRequest\032\026.google." +
+      "protobuf.Empty\"\000\022^\n\026DeleteWorkflowEventD" +
+      "ef\022*.littlehorse.DeleteWorkflowEventDefR" +
+      "equest\032\026.google.protobuf.Empty\"\000\022P\n\017Dele" +
+      "tePrincipal\022#.littlehorse.DeletePrincipa" +
+      "lRequest\032\026.google.protobuf.Empty\"\000\022H\n\013De" +
+      "leteQuota\022\037.littlehorse.DeleteQuotaReque" +
+      "st\032\026.google.protobuf.Empty\"\000\022Z\n\024DeleteSc" +
+      "heduledWfRun\022(.littlehorse.DeleteSchedul" +
+      "edWfRunRequest\032\026.google.protobuf.Empty\"\000" +
+      "\022J\n\rCreateBulkJob\022!.littlehorse.CreateBu" +
+      "lkJobRequest\032\024.littlehorse.BulkJob\"\000\022D\n\n" +
+      "GetBulkJob\022\036.littlehorse.GetBulkJobReque" +
+      "st\032\024.littlehorse.BulkJob\"\000\022P\n\rSearchBulk" +
+      "Job\022!.littlehorse.SearchBulkJobRequest\032\032" +
+      ".littlehorse.BulkJobIdList\"\000\022L\n\rDeleteBu" +
+      "lkJob\022!.littlehorse.DeleteBulkJobRequest" +
+      "\032\026.google.protobuf.Empty\"\000\022a\n\027GetTaskDef" +
+      "MetricsWindow\022\'.littlehorse.TaskDefMetri" +
+      "csQueryRequest\032\033.littlehorse.TaskDefMetr" +
+      "ics\"\000\022^\n\026GetWfSpecMetricsWindow\022&.little" +
+      "horse.WfSpecMetricsQueryRequest\032\032.little" +
+      "horse.WfSpecMetrics\"\000\022R\n\017ListTaskMetrics" +
+      "\022#.littlehorse.ListTaskMetricsRequest\032\030." +
+      "littlehorse.MetricsList\"\000\022^\n\025ListQuotaUs" +
+      "ageMetrics\022).littlehorse.ListQuotaUsageM" +
+      "etricsRequest\032\030.littlehorse.MetricsList\"" +
+      "\000\022N\n\rListWfMetrics\022!.littlehorse.ListWfM" +
+      "etricsRequest\032\030.littlehorse.MetricsList\"" +
+      "\000\022K\n\017GetMetricWindow\022\033.littlehorse.Metri" +
+      "cWindowId\032\031.littlehorse.MetricWindow\"\000\022c" +
+      "\n\024SearchWfMetricWindow\022(.littlehorse.Sea" +
+      "rchWfMetricWindowRequest\032\037.littlehorse.M" +
+      "etricWindowIdList\"\000\022A\n\tPutTenant\022\035.littl" +
+      "ehorse.PutTenantRequest\032\023.littlehorse.Te" +
+      "nant\"\000\0229\n\tGetTenant\022\025.littlehorse.Tenant" +
+      "Id\032\023.littlehorse.Tenant\"\000\022>\n\010PutQuota\022\034." +
+      "littlehorse.PutQuotaRequest\032\022.littlehors" +
+      "e.Quota\"\000\0226\n\010GetQuota\022\024.littlehorse.Quot" +
+      "aId\032\022.littlehorse.Quota\"\000\022J\n\014PutPrincipa" +
+      "l\022 .littlehorse.PutPrincipalRequest\032\026.li" +
+      "ttlehorse.Principal\"\000\022B\n\014GetPrincipal\022\030." +
+      "littlehorse.PrincipalId\032\026.littlehorse.Pr" +
+      "incipal\"\000\022:\n\006Whoami\022\026.google.protobuf.Em" +
+      "pty\032\026.littlehorse.Principal\"\000\022M\n\020GetServ" +
+      "erVersion\022\026.google.protobuf.Empty\032\037.litt" +
+      "lehorse.LittleHorseVersion\"\000\022F\n\014CountNod" +
+      "eRun\022 .littlehorse.CountNodeRunRequest\032\022" +
+      ".littlehorse.Count\"\000\022F\n\014CountTaskRun\022 .l" +
+      "ittlehorse.CountTaskRunRequest\032\022.littleh" +
+      "orse.Count\"\000BM\n\037io.littlehorse.sdk.commo" +
+      "n.protoP\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.C" +
+      "ommon.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1428,8 +1447,20 @@ public final class Service extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_DeleteWorkflowEventDefRequest_descriptor,
         new java.lang.String[] { "Id", });
-    internal_static_littlehorse_RunWfRequest_descriptor =
+    internal_static_littlehorse_RunInlineWfRequest_descriptor =
       getDescriptor().getMessageTypes().get(21);
+    internal_static_littlehorse_RunInlineWfRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_RunInlineWfRequest_descriptor,
+        new java.lang.String[] { "WfSpec", "Variables", "Id", });
+    internal_static_littlehorse_RunInlineWfRequest_VariablesEntry_descriptor =
+      internal_static_littlehorse_RunInlineWfRequest_descriptor.getNestedTypes().get(0);
+    internal_static_littlehorse_RunInlineWfRequest_VariablesEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_RunInlineWfRequest_VariablesEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
+    internal_static_littlehorse_RunWfRequest_descriptor =
+      getDescriptor().getMessageTypes().get(22);
     internal_static_littlehorse_RunWfRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_RunWfRequest_descriptor,
@@ -1441,7 +1472,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_RunWfRequest_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_ScheduleWfRequest_descriptor =
-      getDescriptor().getMessageTypes().get(22);
+      getDescriptor().getMessageTypes().get(23);
     internal_static_littlehorse_ScheduleWfRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ScheduleWfRequest_descriptor,
@@ -1453,7 +1484,7 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_ScheduleWfRequest_VariablesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_PutWorkflowMigrationPlanRequest_descriptor =
-      getDescriptor().getMessageTypes().get(23);
+      getDescriptor().getMessageTypes().get(24);
     internal_static_littlehorse_PutWorkflowMigrationPlanRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutWorkflowMigrationPlanRequest_descriptor,
@@ -1465,13 +1496,13 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_PutWorkflowMigrationPlanRequest_ThreadMigrationsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_DeleteWorkflowMigrationPlanRequest_descriptor =
-      getDescriptor().getMessageTypes().get(24);
+      getDescriptor().getMessageTypes().get(25);
     internal_static_littlehorse_DeleteWorkflowMigrationPlanRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_DeleteWorkflowMigrationPlanRequest_descriptor,
         new java.lang.String[] { "Id", });
     internal_static_littlehorse_ApplyWorkflowMigrationPlanRequest_descriptor =
-      getDescriptor().getMessageTypes().get(25);
+      getDescriptor().getMessageTypes().get(26);
     internal_static_littlehorse_ApplyWorkflowMigrationPlanRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ApplyWorkflowMigrationPlanRequest_descriptor,
@@ -1483,427 +1514,427 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_ApplyWorkflowMigrationPlanRequest_MigrationVarsByThreadEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_VariableMatch_descriptor =
-      getDescriptor().getMessageTypes().get(26);
+      getDescriptor().getMessageTypes().get(27);
     internal_static_littlehorse_VariableMatch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableMatch_descriptor,
         new java.lang.String[] { "VarName", "Value", });
     internal_static_littlehorse_AwaitWorkflowEventRequest_descriptor =
-      getDescriptor().getMessageTypes().get(27);
+      getDescriptor().getMessageTypes().get(28);
     internal_static_littlehorse_AwaitWorkflowEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_AwaitWorkflowEventRequest_descriptor,
         new java.lang.String[] { "WfRunId", "EventDefIds", "WorkflowEventsToIgnore", });
     internal_static_littlehorse_SearchWfRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(28);
+      getDescriptor().getMessageTypes().get(29);
     internal_static_littlehorse_SearchWfRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchWfRunRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "WfSpecName", "WfSpecMajorVersion", "WfSpecRevision", "Status", "EarliestStart", "LatestStart", "VariableFilters", "ParentWfRunId", "ShowFullTree", });
     internal_static_littlehorse_WfRunIdList_descriptor =
-      getDescriptor().getMessageTypes().get(29);
+      getDescriptor().getMessageTypes().get(30);
     internal_static_littlehorse_WfRunIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WfRunIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchCorrelatedEventRequest_descriptor =
-      getDescriptor().getMessageTypes().get(30);
+      getDescriptor().getMessageTypes().get(31);
     internal_static_littlehorse_SearchCorrelatedEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchCorrelatedEventRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "EarliestStart", "LatestStart", "ExternalEventDefId", "HasExternalEvents", });
     internal_static_littlehorse_CorrelatedEventIdList_descriptor =
-      getDescriptor().getMessageTypes().get(31);
+      getDescriptor().getMessageTypes().get(32);
     internal_static_littlehorse_CorrelatedEventIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_CorrelatedEventIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchTaskRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(32);
+      getDescriptor().getMessageTypes().get(33);
     internal_static_littlehorse_SearchTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchTaskRunRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "TaskDefName", "Status", "EarliestStart", "LatestStart", });
     internal_static_littlehorse_TaskRunIdList_descriptor =
-      getDescriptor().getMessageTypes().get(33);
+      getDescriptor().getMessageTypes().get(34);
     internal_static_littlehorse_TaskRunIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskRunIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchNodeRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(34);
+      getDescriptor().getMessageTypes().get(35);
     internal_static_littlehorse_SearchNodeRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchNodeRunRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "EarliestStart", "LatestStart", "Status", "ExternalEventDef", });
     internal_static_littlehorse_NodeRunIdList_descriptor =
-      getDescriptor().getMessageTypes().get(35);
+      getDescriptor().getMessageTypes().get(36);
     internal_static_littlehorse_NodeRunIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NodeRunIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchUserTaskRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(36);
+      getDescriptor().getMessageTypes().get(37);
     internal_static_littlehorse_SearchUserTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchUserTaskRunRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Status", "UserTaskDefName", "UserId", "UserGroup", "EarliestStart", "LatestStart", });
     internal_static_littlehorse_UserTaskRunIdList_descriptor =
-      getDescriptor().getMessageTypes().get(37);
+      getDescriptor().getMessageTypes().get(38);
     internal_static_littlehorse_UserTaskRunIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UserTaskRunIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchVariableRequest_descriptor =
-      getDescriptor().getMessageTypes().get(38);
+      getDescriptor().getMessageTypes().get(39);
     internal_static_littlehorse_SearchVariableRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchVariableRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Value", "WfSpecMajorVersion", "WfSpecRevision", "VarName", "WfSpecName", });
     internal_static_littlehorse_VariableIdList_descriptor =
-      getDescriptor().getMessageTypes().get(39);
+      getDescriptor().getMessageTypes().get(40);
     internal_static_littlehorse_VariableIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchTaskDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(40);
+      getDescriptor().getMessageTypes().get(41);
     internal_static_littlehorse_SearchTaskDefRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchTaskDefRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Prefix", });
     internal_static_littlehorse_TaskDefIdList_descriptor =
-      getDescriptor().getMessageTypes().get(41);
+      getDescriptor().getMessageTypes().get(42);
     internal_static_littlehorse_TaskDefIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskDefIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchUserTaskDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(42);
+      getDescriptor().getMessageTypes().get(43);
     internal_static_littlehorse_SearchUserTaskDefRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchUserTaskDefRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Prefix", "Name", "UserTaskDefCriteria", });
     internal_static_littlehorse_SearchStructDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(43);
+      getDescriptor().getMessageTypes().get(44);
     internal_static_littlehorse_SearchStructDefRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchStructDefRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Prefix", "Name", "StructDefCriteria", });
     internal_static_littlehorse_StructDefIdList_descriptor =
-      getDescriptor().getMessageTypes().get(44);
+      getDescriptor().getMessageTypes().get(45);
     internal_static_littlehorse_StructDefIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StructDefIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_UserTaskDefIdList_descriptor =
-      getDescriptor().getMessageTypes().get(45);
+      getDescriptor().getMessageTypes().get(46);
     internal_static_littlehorse_UserTaskDefIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UserTaskDefIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchWfSpecRequest_descriptor =
-      getDescriptor().getMessageTypes().get(46);
+      getDescriptor().getMessageTypes().get(47);
     internal_static_littlehorse_SearchWfSpecRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchWfSpecRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Name", "Prefix", "TaskDefName", "WfSpecCriteria", });
     internal_static_littlehorse_WfSpecIdList_descriptor =
-      getDescriptor().getMessageTypes().get(47);
+      getDescriptor().getMessageTypes().get(48);
     internal_static_littlehorse_WfSpecIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WfSpecIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchExternalEventDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(48);
+      getDescriptor().getMessageTypes().get(49);
     internal_static_littlehorse_SearchExternalEventDefRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchExternalEventDefRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Prefix", });
     internal_static_littlehorse_ExternalEventDefIdList_descriptor =
-      getDescriptor().getMessageTypes().get(49);
+      getDescriptor().getMessageTypes().get(50);
     internal_static_littlehorse_ExternalEventDefIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventDefIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchWorkflowMigrationPlanRequest_descriptor =
-      getDescriptor().getMessageTypes().get(50);
+      getDescriptor().getMessageTypes().get(51);
     internal_static_littlehorse_SearchWorkflowMigrationPlanRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchWorkflowMigrationPlanRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "WfSpecName", "Prefix", "WorkflowMigrationPlanCriteria", });
     internal_static_littlehorse_WorkflowMigrationPlanIdList_descriptor =
-      getDescriptor().getMessageTypes().get(51);
+      getDescriptor().getMessageTypes().get(52);
     internal_static_littlehorse_WorkflowMigrationPlanIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WorkflowMigrationPlanIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchWorkflowEventDefRequest_descriptor =
-      getDescriptor().getMessageTypes().get(52);
+      getDescriptor().getMessageTypes().get(53);
     internal_static_littlehorse_SearchWorkflowEventDefRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchWorkflowEventDefRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "Prefix", });
     internal_static_littlehorse_WorkflowEventDefIdList_descriptor =
-      getDescriptor().getMessageTypes().get(53);
+      getDescriptor().getMessageTypes().get(54);
     internal_static_littlehorse_WorkflowEventDefIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventDefIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchTenantRequest_descriptor =
-      getDescriptor().getMessageTypes().get(54);
+      getDescriptor().getMessageTypes().get(55);
     internal_static_littlehorse_SearchTenantRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchTenantRequest_descriptor,
-        new java.lang.String[] { "Limit", "Bookmark", "Name", });
+        new java.lang.String[] { "Limit", "Bookmark", });
     internal_static_littlehorse_TenantIdList_descriptor =
-      getDescriptor().getMessageTypes().get(55);
+      getDescriptor().getMessageTypes().get(56);
     internal_static_littlehorse_TenantIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TenantIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchPrincipalRequest_descriptor =
-      getDescriptor().getMessageTypes().get(56);
+      getDescriptor().getMessageTypes().get(57);
     internal_static_littlehorse_SearchPrincipalRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchPrincipalRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "EarliestStart", "LatestStart", "IsAdmin", "TenantId", "PrincipalCriteria", });
     internal_static_littlehorse_PrincipalIdList_descriptor =
-      getDescriptor().getMessageTypes().get(57);
+      getDescriptor().getMessageTypes().get(58);
     internal_static_littlehorse_PrincipalIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PrincipalIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchQuotaRequest_descriptor =
-      getDescriptor().getMessageTypes().get(58);
+      getDescriptor().getMessageTypes().get(59);
     internal_static_littlehorse_SearchQuotaRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchQuotaRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "TenantId", "Principal", });
     internal_static_littlehorse_QuotaIdList_descriptor =
-      getDescriptor().getMessageTypes().get(59);
+      getDescriptor().getMessageTypes().get(60);
     internal_static_littlehorse_QuotaIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_QuotaIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchExternalEventRequest_descriptor =
-      getDescriptor().getMessageTypes().get(60);
+      getDescriptor().getMessageTypes().get(61);
     internal_static_littlehorse_SearchExternalEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchExternalEventRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "EarliestStart", "LatestStart", "ExternalEventDefId", "IsClaimed", });
     internal_static_littlehorse_ExternalEventIdList_descriptor =
-      getDescriptor().getMessageTypes().get(61);
+      getDescriptor().getMessageTypes().get(62);
     internal_static_littlehorse_ExternalEventIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_SearchWorkflowEventRequest_descriptor =
-      getDescriptor().getMessageTypes().get(62);
+      getDescriptor().getMessageTypes().get(63);
     internal_static_littlehorse_SearchWorkflowEventRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchWorkflowEventRequest_descriptor,
         new java.lang.String[] { "Bookmark", "Limit", "EarliestStart", "LatestStart", "WorkflowEventDefId", });
     internal_static_littlehorse_WorkflowEventIdList_descriptor =
-      getDescriptor().getMessageTypes().get(63);
+      getDescriptor().getMessageTypes().get(64);
     internal_static_littlehorse_WorkflowEventIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventIdList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_ListNodeRunsRequest_descriptor =
-      getDescriptor().getMessageTypes().get(64);
+      getDescriptor().getMessageTypes().get(65);
     internal_static_littlehorse_ListNodeRunsRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListNodeRunsRequest_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", "Bookmark", "Limit", });
     internal_static_littlehorse_NodeRunList_descriptor =
-      getDescriptor().getMessageTypes().get(65);
+      getDescriptor().getMessageTypes().get(66);
     internal_static_littlehorse_NodeRunList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_NodeRunList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_ListVariablesRequest_descriptor =
-      getDescriptor().getMessageTypes().get(66);
+      getDescriptor().getMessageTypes().get(67);
     internal_static_littlehorse_ListVariablesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListVariablesRequest_descriptor,
         new java.lang.String[] { "WfRunId", "Bookmark", "Limit", });
     internal_static_littlehorse_VariableList_descriptor =
-      getDescriptor().getMessageTypes().get(67);
+      getDescriptor().getMessageTypes().get(68);
     internal_static_littlehorse_VariableList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_ListExternalEventsRequest_descriptor =
-      getDescriptor().getMessageTypes().get(68);
+      getDescriptor().getMessageTypes().get(69);
     internal_static_littlehorse_ListExternalEventsRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListExternalEventsRequest_descriptor,
         new java.lang.String[] { "WfRunId", "Bookmark", "Limit", });
     internal_static_littlehorse_ExternalEventList_descriptor =
-      getDescriptor().getMessageTypes().get(69);
+      getDescriptor().getMessageTypes().get(70);
     internal_static_littlehorse_ExternalEventList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ExternalEventList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_ListWorkflowEventsRequest_descriptor =
-      getDescriptor().getMessageTypes().get(70);
+      getDescriptor().getMessageTypes().get(71);
     internal_static_littlehorse_ListWorkflowEventsRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListWorkflowEventsRequest_descriptor,
         new java.lang.String[] { "WfRunId", "Bookmark", "Limit", });
     internal_static_littlehorse_WorkflowEventList_descriptor =
-      getDescriptor().getMessageTypes().get(71);
+      getDescriptor().getMessageTypes().get(72);
     internal_static_littlehorse_WorkflowEventList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WorkflowEventList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_RegisterTaskWorkerRequest_descriptor =
-      getDescriptor().getMessageTypes().get(72);
+      getDescriptor().getMessageTypes().get(73);
     internal_static_littlehorse_RegisterTaskWorkerRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_RegisterTaskWorkerRequest_descriptor,
         new java.lang.String[] { "TaskWorkerId", "TaskDefId", });
     internal_static_littlehorse_TaskWorkerHeartBeatRequest_descriptor =
-      getDescriptor().getMessageTypes().get(73);
+      getDescriptor().getMessageTypes().get(74);
     internal_static_littlehorse_TaskWorkerHeartBeatRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskWorkerHeartBeatRequest_descriptor,
         new java.lang.String[] { "ClientId", "TaskDefId", "ListenerName", });
     internal_static_littlehorse_RegisterTaskWorkerResponse_descriptor =
-      getDescriptor().getMessageTypes().get(74);
+      getDescriptor().getMessageTypes().get(75);
     internal_static_littlehorse_RegisterTaskWorkerResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_RegisterTaskWorkerResponse_descriptor,
         new java.lang.String[] { "YourHosts", "IsClusterHealthy", });
     internal_static_littlehorse_LHHostInfo_descriptor =
-      getDescriptor().getMessageTypes().get(75);
+      getDescriptor().getMessageTypes().get(76);
     internal_static_littlehorse_LHHostInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LHHostInfo_descriptor,
         new java.lang.String[] { "Host", "Port", });
     internal_static_littlehorse_PollTaskRequest_descriptor =
-      getDescriptor().getMessageTypes().get(76);
+      getDescriptor().getMessageTypes().get(77);
     internal_static_littlehorse_PollTaskRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PollTaskRequest_descriptor,
         new java.lang.String[] { "TaskDefId", "ClientId", "TaskWorkerVersion", });
     internal_static_littlehorse_PutCheckpointRequest_descriptor =
-      getDescriptor().getMessageTypes().get(77);
+      getDescriptor().getMessageTypes().get(78);
     internal_static_littlehorse_PutCheckpointRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutCheckpointRequest_descriptor,
         new java.lang.String[] { "TaskRunId", "TaskAttempt", "Value", "Logs", });
     internal_static_littlehorse_PutCheckpointResponse_descriptor =
-      getDescriptor().getMessageTypes().get(78);
+      getDescriptor().getMessageTypes().get(79);
     internal_static_littlehorse_PutCheckpointResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutCheckpointResponse_descriptor,
         new java.lang.String[] { "FlowControlContinueType", "CreatedCheckpoint", });
     internal_static_littlehorse_ScheduledTask_descriptor =
-      getDescriptor().getMessageTypes().get(79);
+      getDescriptor().getMessageTypes().get(80);
     internal_static_littlehorse_ScheduledTask_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ScheduledTask_descriptor,
         new java.lang.String[] { "TaskRunId", "TaskDefId", "AttemptNumber", "Variables", "CreatedAt", "Source", "TotalObservedCheckpoints", });
     internal_static_littlehorse_PollTaskResponse_descriptor =
-      getDescriptor().getMessageTypes().get(80);
+      getDescriptor().getMessageTypes().get(81);
     internal_static_littlehorse_PollTaskResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PollTaskResponse_descriptor,
         new java.lang.String[] { "Result", });
     internal_static_littlehorse_ReportTaskRun_descriptor =
-      getDescriptor().getMessageTypes().get(81);
+      getDescriptor().getMessageTypes().get(82);
     internal_static_littlehorse_ReportTaskRun_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ReportTaskRun_descriptor,
         new java.lang.String[] { "TaskRunId", "Time", "Status", "LogOutput", "AttemptNumber", "Output", "Error", "Exception", "TotalCheckpoints", "Result", });
     internal_static_littlehorse_PutVariableRequest_descriptor =
-      getDescriptor().getMessageTypes().get(82);
+      getDescriptor().getMessageTypes().get(83);
     internal_static_littlehorse_PutVariableRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutVariableRequest_descriptor,
         new java.lang.String[] { "Id", "Value", });
     internal_static_littlehorse_StopWfRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(83);
+      getDescriptor().getMessageTypes().get(84);
     internal_static_littlehorse_StopWfRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_StopWfRunRequest_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", });
     internal_static_littlehorse_ResumeWfRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(84);
+      getDescriptor().getMessageTypes().get(85);
     internal_static_littlehorse_ResumeWfRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ResumeWfRunRequest_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", });
     internal_static_littlehorse_RescueThreadRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(85);
+      getDescriptor().getMessageTypes().get(86);
     internal_static_littlehorse_RescueThreadRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_RescueThreadRunRequest_descriptor,
         new java.lang.String[] { "WfRunId", "ThreadRunNumber", "SkipCurrentNode", });
     internal_static_littlehorse_TaskDefMetricsQueryRequest_descriptor =
-      getDescriptor().getMessageTypes().get(86);
+      getDescriptor().getMessageTypes().get(87);
     internal_static_littlehorse_TaskDefMetricsQueryRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskDefMetricsQueryRequest_descriptor,
         new java.lang.String[] { "WindowStart", "WindowType", "TaskDefName", });
     internal_static_littlehorse_WfSpecMetricsQueryRequest_descriptor =
-      getDescriptor().getMessageTypes().get(87);
+      getDescriptor().getMessageTypes().get(88);
     internal_static_littlehorse_WfSpecMetricsQueryRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WfSpecMetricsQueryRequest_descriptor,
         new java.lang.String[] { "WfSpecId", "WindowStart", "WindowLength", });
     internal_static_littlehorse_ListWfMetricsResponse_descriptor =
-      getDescriptor().getMessageTypes().get(88);
+      getDescriptor().getMessageTypes().get(89);
     internal_static_littlehorse_ListWfMetricsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListWfMetricsResponse_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_TaskDefMetrics_descriptor =
-      getDescriptor().getMessageTypes().get(89);
+      getDescriptor().getMessageTypes().get(90);
     internal_static_littlehorse_TaskDefMetrics_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskDefMetrics_descriptor,
         new java.lang.String[] { "TaskDefId", "WindowStart", "Type", "ScheduleToStartMax", "ScheduleToStartAvg", "StartToCompleteMax", "StartToCompleteAvg", "TotalCompleted", "TotalErrored", "TotalStarted", "TotalScheduled", });
     internal_static_littlehorse_WfSpecMetrics_descriptor =
-      getDescriptor().getMessageTypes().get(90);
+      getDescriptor().getMessageTypes().get(91);
     internal_static_littlehorse_WfSpecMetrics_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_WfSpecMetrics_descriptor,
         new java.lang.String[] { "WfSpecId", "WindowStart", "Type", "TotalStarted", "TotalCompleted", "TotalErrored", "StartToCompleteMax", "StartToCompleteAvg", });
     internal_static_littlehorse_ListUserTaskRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(91);
+      getDescriptor().getMessageTypes().get(92);
     internal_static_littlehorse_ListUserTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListUserTaskRunRequest_descriptor,
         new java.lang.String[] { "WfRunId", "Bookmark", "Limit", });
     internal_static_littlehorse_UserTaskRunList_descriptor =
-      getDescriptor().getMessageTypes().get(92);
+      getDescriptor().getMessageTypes().get(93);
     internal_static_littlehorse_UserTaskRunList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UserTaskRunList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_ScheduledWfRunIdList_descriptor =
-      getDescriptor().getMessageTypes().get(93);
+      getDescriptor().getMessageTypes().get(94);
     internal_static_littlehorse_ScheduledWfRunIdList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ScheduledWfRunIdList_descriptor,
         new java.lang.String[] { "Results", });
     internal_static_littlehorse_SearchScheduledWfRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(94);
+      getDescriptor().getMessageTypes().get(95);
     internal_static_littlehorse_SearchScheduledWfRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_SearchScheduledWfRunRequest_descriptor,
         new java.lang.String[] { "WfSpecName", "MajorVersion", "Revision", });
     internal_static_littlehorse_TaskWorkerMetadata_descriptor =
-      getDescriptor().getMessageTypes().get(95);
+      getDescriptor().getMessageTypes().get(96);
     internal_static_littlehorse_TaskWorkerMetadata_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskWorkerMetadata_descriptor,
         new java.lang.String[] { "TaskWorkerId", "LatestHeartbeat", "Hosts", });
     internal_static_littlehorse_TaskWorkerGroup_descriptor =
-      getDescriptor().getMessageTypes().get(96);
+      getDescriptor().getMessageTypes().get(97);
     internal_static_littlehorse_TaskWorkerGroup_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskWorkerGroup_descriptor,
@@ -1915,37 +1946,37 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_TaskWorkerGroup_TaskWorkersEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_littlehorse_ListTaskRunsRequest_descriptor =
-      getDescriptor().getMessageTypes().get(97);
+      getDescriptor().getMessageTypes().get(98);
     internal_static_littlehorse_ListTaskRunsRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_ListTaskRunsRequest_descriptor,
         new java.lang.String[] { "WfRunId", "Bookmark", "Limit", });
     internal_static_littlehorse_TaskRunList_descriptor =
-      getDescriptor().getMessageTypes().get(98);
+      getDescriptor().getMessageTypes().get(99);
     internal_static_littlehorse_TaskRunList_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_TaskRunList_descriptor,
         new java.lang.String[] { "Results", "Bookmark", });
     internal_static_littlehorse_MigrateWfSpecRequest_descriptor =
-      getDescriptor().getMessageTypes().get(99);
+      getDescriptor().getMessageTypes().get(100);
     internal_static_littlehorse_MigrateWfSpecRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MigrateWfSpecRequest_descriptor,
         new java.lang.String[] { "OldWfSpec", "Migration", });
     internal_static_littlehorse_GetLatestWfSpecRequest_descriptor =
-      getDescriptor().getMessageTypes().get(100);
+      getDescriptor().getMessageTypes().get(101);
     internal_static_littlehorse_GetLatestWfSpecRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_GetLatestWfSpecRequest_descriptor,
         new java.lang.String[] { "Name", "MajorVersion", });
     internal_static_littlehorse_LittleHorseVersion_descriptor =
-      getDescriptor().getMessageTypes().get(101);
+      getDescriptor().getMessageTypes().get(102);
     internal_static_littlehorse_LittleHorseVersion_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_LittleHorseVersion_descriptor,
         new java.lang.String[] { "MajorVersion", "MinorVersion", "PatchVersion", "PreReleaseIdentifier", });
     internal_static_littlehorse_CountNodeRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(102);
+      getDescriptor().getMessageTypes().get(103);
     internal_static_littlehorse_CountNodeRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_CountNodeRunRequest_descriptor,
@@ -1957,13 +1988,13 @@ public final class Service extends com.google.protobuf.GeneratedFile {
         internal_static_littlehorse_CountNodeRunRequest_WfSpecFilter_descriptor,
         new java.lang.String[] { "WfSpecName", "WfSpecMajorVersion", "WfSpecRevision", });
     internal_static_littlehorse_CountTaskRunRequest_descriptor =
-      getDescriptor().getMessageTypes().get(103);
+      getDescriptor().getMessageTypes().get(104);
     internal_static_littlehorse_CountTaskRunRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_CountTaskRunRequest_descriptor,
         new java.lang.String[] { "TaskDefName", "Status", });
     internal_static_littlehorse_Count_descriptor =
-      getDescriptor().getMessageTypes().get(104);
+      getDescriptor().getMessageTypes().get(105);
     internal_static_littlehorse_Count_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Count_descriptor,
