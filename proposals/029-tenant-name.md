@@ -56,7 +56,7 @@ No changes are required to `TenantId`, `TenantIdList`, or the RPC signatures.
 - The tenant ID remains unique within the cluster and stable throughout the tenant's lifetime. This proposal does not add an operation to change it.
 - The name is optional, mutable, and does not need to be unique. Multiple tenants may share a name.
 - The optional `SearchTenantRequest.name` filter matches the complete name exactly and is case-sensitive. All tenants with that name are eligible to be returned, subject to pagination.
-- A nonempty name containing only whitespace is rejected with `INVALID_ARGUMENT`. Other nonempty names are stored as supplied.
+- A nonempty name containing only whitespace or any name containing `/` is rejected with `INVALID_ARGUMENT`. Other nonempty names are stored as supplied.
 - The name is presentation metadata. API lookups, tenant selection in client configuration, ACLs, storage keys, and output topic naming continue to use the tenant ID.
 - Renaming a tenant uses `PutTenant` with its existing ID and the new name, subject to the existing authorization requirements for that operation.
 

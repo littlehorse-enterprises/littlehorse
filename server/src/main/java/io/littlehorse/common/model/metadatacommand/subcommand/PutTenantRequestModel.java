@@ -81,6 +81,10 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
                             ACLAction.WRITE_METADATA, ACLResource.ACL_TENANT));
         }
 
+        if (name != null && name.contains("/")) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "Tenant name must not contain '/'");
+        }
+
         if (name != null
                 && !name.isEmpty()
                 && name.codePoints()
