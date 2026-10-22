@@ -272,6 +272,28 @@ public class WorkflowThreadImplTest {
     }
 
     @Test
+    void shouldUseTypeAdapterBeforeAnyWorkflowCompilation() {
+        UUID defaultValue = UUID.randomUUID();
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+        Workflow wf = Workflow.newWorkflow(
+                "configured-workflow",
+                thread -> {
+                    thread.addVariable("id", defaultValue);
+                },
+                config);
+
+        assertThat(wf.getRequiredTaskDefNames()).isEmpty();
+        VariableDef id = wf.compileWorkflow()
+                .getThreadSpecsOrThrow("entrypoint")
+                .getVariableDefs(0)
+                .getVarDef();
+
+        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.STR);
+        assertThat(id.getDefaultValue().getStr()).isEqualTo(defaultValue.toString());
+    }
+
+    @Test
     void shouldUseTypeAdapterForExternalEventRegisteredAsClass() {
         WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
             thread.waitForEvent("event-one").registeredAs(UUID.class);
