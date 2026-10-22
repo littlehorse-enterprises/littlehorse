@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -153,7 +154,7 @@ public abstract class Workflow {
     }
 
     /**
-     * Gets the workflow name passed at {@link #newWorkflow(String, ThreadFunc)}
+     * Gets the workflow name passed at {@link #newWorkflow(String, ThreadFunc, LHConfig)}.
      *
      * @return the Workflow name
      */
@@ -190,9 +191,28 @@ public abstract class Workflow {
      * @param name is the name of the `WfSpec`.
      * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
      * @return a Workflow.
+     * @deprecated use {@link #newWorkflow(String, ThreadFunc, LHConfig)} so type adapters
+     *     are available before the workflow is compiled.
      */
+    @Deprecated
     public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc) {
         return new WorkflowImpl(name, entrypointThreadFunc);
+    }
+
+    /**
+     * Creates a new Workflow using the type adapters configured in {@code config}.
+     *
+     * @param name is the name of the `WfSpec`.
+     * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
+     * @param config configuration whose type adapters are used when compiling the workflow.
+     * @return a Workflow.
+     */
+    public static Workflow newWorkflow(String name, ThreadFunc entrypointThreadFunc, LHConfig config) {
+        return WorkflowImpl.create(
+                name,
+                entrypointThreadFunc,
+                Objects.requireNonNull(config, "config").getTypeAdapterRegistry(),
+                Map.of());
     }
 
     /**
@@ -229,10 +249,31 @@ public abstract class Workflow {
      * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
      * @param placeholderValues values used to resolve {@code ${...}} placeholders in referenced StructDef names.
      * @return a Workflow.
+     * @deprecated use {@link #newWorkflow(String, ThreadFunc, LHConfig, Map)} so type adapters
+     *     are available before the workflow is compiled.
      */
+    @Deprecated
     public static Workflow newWorkflow(
             String name, ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
         return new WorkflowImpl(name, entrypointThreadFunc, placeholderValues);
+    }
+
+    /**
+     * Creates a new Workflow with type adapters and placeholder values from the provided inputs.
+     *
+     * @param name is the name of the `WfSpec`.
+     * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
+     * @param config configuration whose type adapters are used when compiling the workflow.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders in referenced StructDef names.
+     * @return a Workflow.
+     */
+    public static Workflow newWorkflow(
+            String name, ThreadFunc entrypointThreadFunc, LHConfig config, Map<String, String> placeholderValues) {
+        return WorkflowImpl.create(
+                name,
+                entrypointThreadFunc,
+                Objects.requireNonNull(config, "config").getTypeAdapterRegistry(),
+                placeholderValues);
     }
 
     /**
@@ -258,11 +299,11 @@ public abstract class Workflow {
     /**
      * Compiles this Workflow into a `WfSpec`, applying configured type adapters from the provided config first.
      *
-     * <p> <b> Use this method overload if you have type adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
-     *
      * @param config source for dynamically configured type adapters
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
+     * @deprecated pass the config to {@link #newWorkflow(String, ThreadFunc, LHConfig)} instead.
      */
+    @Deprecated
     public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
 
     /**
@@ -386,7 +427,7 @@ public abstract class Workflow {
      * Workflow::registerWfSpec() also registers ExternalEventDefs and WorkflowEventDefs
      * according to your `registeredAs` declarations on `ExternalEventNodeOutput`s and `ThrowEventNodeOutput`s.
      *
-     * <p> <b> Use this method overload if you have Type Adapters configured in your {@link LHConfig} that you want to apply to the Workflow before registration. </b>
+     * <p>Pass the same {@link LHConfig} used to create this workflow when registering it.
      *
      * @param config is an LHConfig.
      */
