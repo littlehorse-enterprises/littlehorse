@@ -5,11 +5,99 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.worker.LHStructDef;
 import java.util.Map;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class WorkflowCompilationTest {
+
+    @LHStructDef("referenced-root")
+    public static class ReferencedRoot {
+        private NestedReferencedType nested;
+
+        public NestedReferencedType getNested() {
+            return nested;
+        }
+
+        public void setNested(NestedReferencedType nested) {
+            this.nested = nested;
+        }
+    }
+
+    public static class NestedReferencedType {
+        private String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class ChildReferencedType {
+        private Long value;
+
+        public Long getValue() {
+            return value;
+        }
+
+        public void setValue(Long value) {
+            this.value = value;
+        }
+    }
+
+    @LHStructDef("referenced-event")
+    public static class EventReferencedType {
+        private Boolean active;
+
+        public Boolean getActive() {
+            return active;
+        }
+
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+    }
+
+    public static class RegisteredExternalEventType {}
+
+    public static class RegisteredWorkflowEventType {}
+
+    @Test
+    void shouldExposeJavaTypesReferencedAcrossWorkflowCompilation() {
+        WorkflowImpl workflow = new WorkflowImpl("referenced-types", thread -> {
+            thread.declareStruct("root", ReferencedRoot.class);
+            thread.declareArray("nested-array", NestedReferencedType.class);
+            thread.declareMap("nested-map", String.class, NestedReferencedType.class);
+            thread.spawnThread(
+                    child -> child.declareInlineStruct("child", ChildReferencedType.class), "child", Map.of());
+            thread.registerInterruptHandler(
+                            "interrupt", handler -> handler.declareInlineStruct("handler", ChildReferencedType.class))
+                    .withEventType(EventReferencedType.class);
+            thread.waitForEvent("external-event").registeredAs(RegisteredExternalEventType.class);
+            thread.throwEvent("workflow-event", "payload").registeredAs(RegisteredWorkflowEventType.class);
+        });
+
+        Set<Class<?>> referencedTypes = workflow.getReferencedJavaTypes();
+
+        Assertions.assertThat(referencedTypes)
+                .contains(
+                        ReferencedRoot.class,
+                        NestedReferencedType.class,
+                        ChildReferencedType.class,
+                        EventReferencedType.class,
+                        RegisteredExternalEventType.class,
+                        RegisteredWorkflowEventType.class,
+                        String.class,
+                        Long.class,
+                        Boolean.class);
+        Assertions.assertThatThrownBy(() -> referencedTypes.add(Object.class))
+                .isInstanceOf(UnsupportedOperationException.class);
+    }
 
     @Test
     // @DisabledUntil(date = "2023-07-22")
