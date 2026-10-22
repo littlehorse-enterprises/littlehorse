@@ -19,6 +19,7 @@ import java.util.Optional;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Getter
 @Setter
@@ -26,6 +27,7 @@ import lombok.Setter;
 public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     private TenantIdModel id;
+    private String name;
     private Date createdAt;
     private OutputTopicConfigModel outputTopicConfig;
 
@@ -52,6 +54,8 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
             result.setOutputTopicConfig(outputTopicConfig.toProto());
         }
 
+        if (name != null) result.setName(name);
+
         return result;
     }
 
@@ -61,6 +65,7 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
         this.id = LHSerializable.fromProto(tenant.getId(), TenantIdModel.class, context);
         this.createdAt = LHUtil.fromProtoTs(tenant.getCreatedAt());
 
+        this.name = tenant.hasName() ? tenant.getName() : null;
         if (tenant.hasOutputTopicConfig()) {
             this.outputTopicConfig =
                     LHSerializable.fromProto(tenant.getOutputTopicConfig(), OutputTopicConfigModel.class, context);
@@ -80,7 +85,10 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        return List.of();
+        return List.of(new GetableIndex<TenantModel>(
+                List.of(Pair.of("name", GetableIndex.ValueType.SINGLE)),
+                TagStorageType.LOCAL,
+                tenant -> tenant.getName() != null && !tenant.getName().isEmpty()));
     }
 
     @Override
@@ -90,6 +98,9 @@ public class TenantModel extends ClusterMetadataGetable<Tenant> {
 
     @Override
     public List<IndexedField> getIndexValues(String key, Optional<TagStorageType> tagStorageType) {
-        return null;
+        if (key.equals("name") && name != null && !name.isEmpty()) {
+            return List.of(new IndexedField(key, name, TagStorageType.LOCAL));
+        }
+        return List.of();
     }
 }

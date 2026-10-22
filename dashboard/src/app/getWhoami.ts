@@ -11,7 +11,21 @@ const getWhoAmI = async (): Promise<WhoAmI> => {
   const { id, perTenantAcls, globalAcls } = await client.whoami({})
   const tenants = hasGlobalAccess({ globalAcls }) ? await searchTenants(client) : Object.keys(perTenantAcls)
 
+  const tenantNames = Object.fromEntries(
+    await Promise.all(
+      tenants.map(async tenantId => {
+        try {
+          const tenant = await client.getTenant({ id: tenantId })
+          return [tenantId, tenant.name || tenantId]
+        } catch {
+          return [tenantId, tenantId]
+        }
+      })
+    )
+  )
+
   return {
+    tenantNames,
     user: session?.user || { name: id?.id },
     tenants,
   }

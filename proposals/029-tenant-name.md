@@ -44,7 +44,7 @@ message SearchTenantRequest {
     optional int32 limit = 1;
     optional bytes bookmark = 2;
 
-    // Return tenants whose name contains this string.
+    // Return tenants whose name exactly matches this string.
     optional string name = 3;
 }
 ```
@@ -55,7 +55,8 @@ No changes are required to `TenantId`, `TenantIdList`, or the RPC signatures.
 
 - The tenant ID remains unique within the cluster and stable throughout the tenant's lifetime. This proposal does not add an operation to change it.
 - The name is optional, mutable, and does not need to be unique. Multiple tenants may share a name.
-- A nonempty name containing only whitespace is rejected with `INVALID_ARGUMENT`. Other nonempty names are stored as supplied.
+- The optional `SearchTenantRequest.name` filter matches the complete name exactly and is case-sensitive. All tenants with that name are eligible to be returned, subject to pagination.
+- A nonempty name containing only whitespace or any name containing `/` is rejected with `INVALID_ARGUMENT`. Other nonempty names are stored as supplied.
 - The name is presentation metadata. API lookups, tenant selection in client configuration, ACLs, storage keys, and output topic naming continue to use the tenant ID.
 - Renaming a tenant uses `PutTenant` with its existing ID and the new name, subject to the existing authorization requirements for that operation.
 
@@ -67,7 +68,7 @@ Add an optional `--name` flag to the `lhctl` tenant put command. Omitting the fl
 
 The dashboard should display `name` when available and fall back to the tenant ID otherwise. Tenant selection should show the ID alongside the name to distinguish tenants with duplicate names. Selected tenant values and requests continue to use IDs.
 
-Expose the optional name filter in the `lhctl` tenant search command so clients can list tenants by a portion of their name.
+Expose the optional name filter in the `lhctl` tenant search command so clients can list tenants whose name exactly matches the supplied value.
 
 Uniqueness enforcement and addressing tenants by name are outside the scope of this proposal.
 

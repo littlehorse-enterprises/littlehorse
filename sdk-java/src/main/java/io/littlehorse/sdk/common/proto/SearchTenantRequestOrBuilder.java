@@ -47,4 +47,33 @@ public interface SearchTenantRequestOrBuilder extends
    * @return The bookmark.
    */
   com.google.protobuf.ByteString getBookmark();
+
+  /**
+   * <pre>
+   * Return tenants whose name contains this string.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return Whether the name field is set.
+   */
+  boolean hasName();
+  /**
+   * <pre>
+   * Return tenants whose name contains this string.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <pre>
+   * Return tenants whose name contains this string.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

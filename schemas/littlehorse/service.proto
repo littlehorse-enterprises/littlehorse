@@ -1231,6 +1231,8 @@ message SearchTenantRequest {
       optional int32 limit = 1;
       // Bookmark for cursor-based pagination; pass if applicable.
       optional bytes bookmark = 2;
+      // Return tenants whose name contains this string.
+      optional string name = 3;
 }
 
 // List of Tenant Id's
