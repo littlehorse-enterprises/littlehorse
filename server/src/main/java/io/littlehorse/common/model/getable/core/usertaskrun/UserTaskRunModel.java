@@ -30,6 +30,7 @@ import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -70,6 +71,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
 
     private UserTaskRunIdModel id;
     private UserTaskDefIdModel userTaskDefId;
+    private StructDefIdModel resultStructDefId;
 
     private List<UserTaskEventModel> events = new ArrayList<>();
 
@@ -130,6 +132,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         if (userGroup != null) out.setUserGroup(userGroup);
 
         if (notes != null) out.setNotes(notes);
+        if (resultStructDefId != null) out.setResultStructDefId(resultStructDefId.toProto());
 
         for (UserTaskEventModel event : events) {
             out.addEvents(event.toProto());
@@ -152,6 +155,9 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
         UserTaskRun p = (UserTaskRun) proto;
         id = LHSerializable.fromProto(p.getId(), UserTaskRunIdModel.class, context);
         userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
+        resultStructDefId = p.hasResultStructDefId()
+                ? LHSerializable.fromProto(p.getResultStructDefId(), StructDefIdModel.class, context)
+                : null;
         status = p.getStatus();
         scheduledTime = LHLibUtil.fromProtoTs(p.getScheduledTime());
         nodeRunId = LHSerializable.fromProto(p.getNodeRunId(), NodeRunIdModel.class, context);
