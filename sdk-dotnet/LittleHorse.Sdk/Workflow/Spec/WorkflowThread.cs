@@ -861,6 +861,8 @@ public class WorkflowThread
             mutation.LhsJsonPath = lhs.JsonPath;
         }
 
+        if (lhs.LhPath != null) mutation.LhsLhPath = lhs.LhPath;
+
         _variableMutations.Enqueue(mutation);
     }
     
@@ -887,6 +889,7 @@ public class WorkflowThread
             {
                 variableAssignment.JsonPath = wrVariable.JsonPath;
             }
+            if (wrVariable.LhPath != null) variableAssignment.LhPath = wrVariable.LhPath;
             variableAssignment.VariableName = wrVariable.Name;
         } 
         else if (value is NodeOutput nodeReference)
@@ -897,6 +900,7 @@ public class WorkflowThread
                 NodeName = nodeReference.NodeName
             };
             variableAssignment.NodeOutput = nodeOutputReference;
+            if (nodeReference.LhPath != null) variableAssignment.LhPath = nodeReference.LhPath;
 
             if (nodeReference.JsonPath != null)
             {

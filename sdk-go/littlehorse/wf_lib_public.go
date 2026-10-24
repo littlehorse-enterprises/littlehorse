@@ -234,15 +234,16 @@ type UserTaskNodeOutput struct {
 	node     *lhproto.Node
 }
 
-func (n *UserTaskNodeOutput) JsonPath(jsonPath string) *UserTaskNodeOutput {
+func (n *UserTaskNodeOutput) JsonPath(jsonPath string) NodeOutput {
 	return &UserTaskNodeOutput{
 		nodeName: n.nodeName,
 		jsonPath: &jsonPath,
 		thread:   n.thread,
+		node:     n.node,
 	}
 }
 
-func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
+func (n *UserTaskNodeOutput) Get(field string) NodeOutput {
 	newPath := copyLhPath(n.lhPath)
 	newPath = append(newPath, &lhproto.LHPath_Selector{
 		SelectorType: &lhproto.LHPath_Selector_Key{Key: field},
@@ -251,6 +252,7 @@ func (n *UserTaskNodeOutput) Get(field string) *UserTaskNodeOutput {
 		nodeName: n.nodeName,
 		lhPath:   newPath,
 		thread:   n.thread,
+		node:     n.node,
 	}
 }
 
