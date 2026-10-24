@@ -318,19 +318,13 @@ public class LHUtil {
                         PERMISSION_DENIED,
                         UNAUTHENTICATED,
                         FAILED_PRECONDITION,
+                        // ABORTED used to communicate that there is a misconfiguration on the tenant
+                        ABORTED,
                         // RESOURCE_EXHAUSTED used for quota violations.
                         RESOURCE_EXHAUSTED:
                     return true;
 
-                case OK,
-                        UNKNOWN,
-                        UNIMPLEMENTED,
-                        UNAVAILABLE,
-                        INTERNAL,
-                        DEADLINE_EXCEEDED,
-                        DATA_LOSS,
-                        ABORTED,
-                        CANCELLED:
+                case OK, UNKNOWN, UNIMPLEMENTED, UNAVAILABLE, INTERNAL, DEADLINE_EXCEEDED, DATA_LOSS, CANCELLED:
             }
         }
         return false;
