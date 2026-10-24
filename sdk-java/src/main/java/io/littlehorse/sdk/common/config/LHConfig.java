@@ -22,11 +22,14 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseStub;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TenantId;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -54,6 +57,9 @@ public class LHConfig extends ConfigBase {
         LHC_CLIENT_CERT,
         LHC_CLIENT_KEY,
         LHC_CA_CERT,
+        LHC_CLIENT_CERT_VALUE,
+        LHC_CLIENT_KEY_VALUE,
+        LHC_CA_CERT_VALUE,
         LHC_OAUTH_CLIENT_ID,
         LHC_OAUTH_CLIENT_SECRET,
         LHC_OAUTH_ACCESS_TOKEN_URL,
@@ -94,6 +100,15 @@ public class LHConfig extends ConfigBase {
 
     /** Optional location of CA Cert File. */
     public static final String CA_CERT_KEY = ConfigKeys.LHC_CA_CERT.name();
+
+    /** Optional base64-encoded CA certificate value. */
+    public static final String CA_CERT_VALUE_KEY = ConfigKeys.LHC_CA_CERT_VALUE.name();
+
+    /** Optional base64-encoded client certificate value. */
+    public static final String CLIENT_CERT_VALUE_KEY = ConfigKeys.LHC_CLIENT_CERT_VALUE.name();
+
+    /** Optional base64-encoded client private key value. */
+    public static final String CLIENT_KEY_VALUE_KEY = ConfigKeys.LHC_CLIENT_KEY_VALUE.name();
 
     /** OAuth client id. */
     public static final String OAUTH_CLIENT_ID_KEY = ConfigKeys.LHC_OAUTH_CLIENT_ID.name();
@@ -469,10 +484,6 @@ public class LHConfig extends ConfigBase {
 
         ManagedChannelBuilder<?> builder;
 
-        String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
-        String clientCertFile = getOrSetDefault(CLIENT_CERT_KEY, null);
-        String clientKeyFile = getOrSetDefault(CLIENT_KEY_KEY, null);
-
         if (DEFAULT_PROTOCOL.equals(getApiProtocol())) {
             log.warn("Using insecure channel!");
             builder = ManagedChannelBuilder.forAddress(host, port).usePlaintext();
@@ -480,18 +491,21 @@ public class LHConfig extends ConfigBase {
             log.info("Using secure connection!");
             TlsChannelCredentials.Builder tlsBuilder = TlsChannelCredentials.newBuilder();
 
-            if (caCertFile != null) {
+            byte[] caCert = getCertificateBytes(CA_CERT_KEY, CA_CERT_VALUE_KEY);
+            if (caCert != null) {
                 try {
-                    tlsBuilder.trustManager(new File(caCertFile));
+                    tlsBuilder.trustManager(new ByteArrayInputStream(caCert));
                 } catch (IOException e) {
                     throw new LHMisconfigurationException("Error accessing to certificate", e);
                 }
             }
 
-            if (clientCertFile != null && clientKeyFile != null) {
+            byte[] clientCert = getCertificateBytes(CLIENT_CERT_KEY, CLIENT_CERT_VALUE_KEY);
+            byte[] clientKey = getCertificateBytes(CLIENT_KEY_KEY, CLIENT_KEY_VALUE_KEY);
+            if (clientCert != null && clientKey != null) {
                 log.info("Using mtls!");
                 try {
-                    tlsBuilder.keyManager(new File(clientCertFile), new File(clientKeyFile));
+                    tlsBuilder.keyManager(new ByteArrayInputStream(clientCert), new ByteArrayInputStream(clientKey));
                 } catch (IOException e) {
                     throw new LHMisconfigurationException("Error accessing to certificate", e);
                 }
@@ -509,6 +523,28 @@ public class LHConfig extends ConfigBase {
         }
         createdChannels.put(hostKey, out);
         return out;
+    }
+
+    private byte[] getCertificateBytes(String fileKey, String valueKey) {
+        String certificateFile = getOrSetDefault(fileKey, null);
+        if (certificateFile != null) {
+            try {
+                return Files.readAllBytes(Path.of(certificateFile));
+            } catch (IOException e) {
+                throw new LHMisconfigurationException("Error accessing to certificate", e);
+            }
+        }
+
+        String certificateValue = getOrSetDefault(valueKey, null);
+        if (certificateValue == null) {
+            return null;
+        }
+
+        try {
+            return Base64.getDecoder().decode(certificateValue);
+        } catch (IllegalArgumentException e) {
+            throw new LHMisconfigurationException("Error decoding certificate value for " + valueKey, e);
+        }
     }
 
     /**
