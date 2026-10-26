@@ -102,7 +102,7 @@ public class PutTenantRequestModel extends MetadataSubCommand<PutTenantRequest> 
             tenant.setCreatedAt(context.currentCommand().getTime());
         }
         if (name != null) tenant.setName(name.isEmpty() ? null : name);
-        tenant.setOutputTopicConfig(outputTopicConfig);
+        if (outputTopicConfig != null) tenant.setOutputTopicConfig(outputTopicConfig);
         metadataManager.put(tenant);
         if (outputTopicConfig != null && context.serverConfig().shouldCreateOutputTopics()) {
             final TenantModel finalTenant = tenant;
