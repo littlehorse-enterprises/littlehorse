@@ -58,6 +58,7 @@ message Command {
         UpdateCountedTag update_counted_tag = 37;
         ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;
         PutVariableRequest put_variable = 39;
+        RunInlineWfRequest run_inline_wf = 40;
     }
 }
 

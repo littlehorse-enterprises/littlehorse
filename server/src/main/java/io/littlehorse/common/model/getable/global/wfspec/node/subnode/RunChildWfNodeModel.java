@@ -22,7 +22,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,7 +83,7 @@ public class RunChildWfNodeModel extends SubNode<RunChildWfNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         if (wfSpecName != null) {
             WfSpecModel childWfSpec =
                     ctx.service().getWfSpec(wfSpecName, majorVersion == -1 ? null : majorVersion, null);

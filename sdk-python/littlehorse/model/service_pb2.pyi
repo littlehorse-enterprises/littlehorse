@@ -231,6 +231,23 @@ class DeleteWorkflowEventDefRequest(_message.Message):
     id: _object_id_pb2.WorkflowEventDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
 
+class RunInlineWfRequest(_message.Message):
+    __slots__ = ("wf_spec", "variables", "id")
+    class VariablesEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _wf_run_pb2.InlineWfSpec
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
+    id: str
+    def __init__(self, wf_spec: _Optional[_Union[_wf_run_pb2.InlineWfSpec, _Mapping]] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
+
 class RunWfRequest(_message.Message):
     __slots__ = ("wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id")
     class VariablesEntry(_message.Message):

@@ -27,11 +27,11 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.server.AbstractWorkflowExecutionTest;
 import java.util.Map;
 import java.util.UUID;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
 class PutVariableTest extends AbstractWorkflowExecutionTest {
 
-    @Test
+    @TestTemplate
     void shouldValidateArrayElements() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -59,7 +59,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertRejectedWithoutChangingState(run, id, invalid);
     }
 
-    @Test
+    @TestTemplate
     void shouldRejectNumericStringReplacementForIntVariable() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -73,7 +73,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
                 run, id, VariableValue.newBuilder().setStr("42").build());
     }
 
-    @Test
+    @TestTemplate
     void shouldRejectNonNumericStringReplacementForIntVariable() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -87,7 +87,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
                 run, id, VariableValue.newBuilder().setStr("not-an-int").build());
     }
 
-    @Test
+    @TestTemplate
     void shouldRejectJsonObjectKeyForStringKeyedMap() {
         WfRun run = startMapWorkflow();
         VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "numbers");
@@ -102,7 +102,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertRejectedWithoutChangingState(run, id, invalid);
     }
 
-    @Test
+    @TestTemplate
     void shouldRejectBooleanValueForIntValuedMap() {
         WfRun run = startMapWorkflow();
         VariableIdModel id = new VariableIdModel(new WfRunIdModel(run.getId().getId()), 0, "numbers");
@@ -171,7 +171,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(forwardedCommands()).isEmpty();
     }
 
-    @Test
+    @TestTemplate
     void shouldReplaceWorkflowVariableValue() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -191,7 +191,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(variableId).getValue().toProto().getStr()).isEqualTo("updated");
     }
 
-    @Test
+    @TestTemplate
     void shouldReturnMaskedValueWhenReplacingMaskedWorkflowVariable() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -217,7 +217,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(variableId).getValue().toProto().getStr()).isEqualTo(LHConstants.STRING_MASK);
     }
 
-    @Test
+    @TestTemplate
     void shouldThrowForNonExistingVariable() {
         WfRun run = startWorkflow(thread -> thread.sleepSeconds(3600), Map.of());
         WfRunIdModel wfRunId = new WfRunIdModel(run.getId().getId());
@@ -237,7 +237,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(error.getStatus().getCode()).isEqualTo(Status.Code.NOT_FOUND);
     }
 
-    @Test
+    @TestTemplate
     void shouldThrowWhenUpdatingCompletedWorkflow() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -265,7 +265,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(variableId).getValue().toProto().getStr()).isEqualTo("original");
     }
 
-    @Test
+    @TestTemplate
     void shouldUpdateFailedWorkflowVariableBeforeRescue() {
         TaskDefModel taskDef = TestUtil.taskDef("rescue-put-variable");
         taskDef.setReturnType(new ReturnTypeModel(VariableType.INT));
@@ -316,7 +316,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(completed.getThreadRuns(0).getOutput().getStr()).isEqualTo("updated");
     }
 
-    @Test
+    @TestTemplate
     void shouldRescheduleSleepAfterUpdatingDuration() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -355,7 +355,7 @@ class PutVariableTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(wfRunId).getStatus()).isEqualTo(LHStatus.COMPLETED);
     }
 
-    @Test
+    @TestTemplate
     void shouldShortenSleepAfterUpdatingDuration() {
         WfRun run = startWorkflow(
                 thread -> {

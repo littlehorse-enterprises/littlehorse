@@ -10,10 +10,10 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.server.AbstractWorkflowExecutionTest;
 import java.util.Map;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestTemplate;
 
 class SleepNodeTest extends AbstractWorkflowExecutionTest {
-    @Test
+    @TestTemplate
     void completesWhenForwardedSleepCommandRuns() {
         WfRun run = startWorkflow(
                 thread -> {
@@ -38,7 +38,7 @@ class SleepNodeTest extends AbstractWorkflowExecutionTest {
         assertThat(readGetable(node.getId()).toProto().getSleep().getMatured()).isTrue();
     }
 
-    @Test
+    @TestTemplate
     void completesTimestampSleepWhenForwardedCommandRuns() {
         long wakeAt = System.currentTimeMillis() + 60_000;
         WfRun run = startWorkflow(
@@ -58,7 +58,7 @@ class SleepNodeTest extends AbstractWorkflowExecutionTest {
                 .isEqualTo(LHStatus.COMPLETED);
     }
 
-    @Test
+    @TestTemplate
     void staleCommandDoesNotAdvanceNextSleep() {
         WfRun run = startWorkflow(
                 thread -> {

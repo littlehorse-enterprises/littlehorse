@@ -10,7 +10,8 @@ import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { cn } from '@/lib/utils'
-import { LHStatus, Timestamp, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, Timestamp, WfRunId } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 import { RefreshCwIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { FC, useMemo, useState } from 'react'
@@ -23,7 +24,7 @@ type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTim
 
 const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
 
-export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ parentWfRunId, spec }) => {
+export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WorkflowDefinition }> = ({ parentWfRunId, spec }) => {
   const { tenantId } = useWhoAmI()
   const searchParams = useSearchParams()
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
