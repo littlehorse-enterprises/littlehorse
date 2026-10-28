@@ -93,4 +93,33 @@ public interface TenantOrBuilder extends
    * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 3;</code>
    */
   io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder();
+
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return Whether the name field is set.
+   */
+  boolean hasName();
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

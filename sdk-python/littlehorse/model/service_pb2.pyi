@@ -655,12 +655,14 @@ class WorkflowEventDefIdList(_message.Message):
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchTenantRequest(_message.Message):
-    __slots__ = ("limit", "bookmark")
+    __slots__ = ("limit", "bookmark", "name")
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
     limit: int
     bookmark: bytes
-    def __init__(self, limit: _Optional[int] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+    name: str
+    def __init__(self, limit: _Optional[int] = ..., bookmark: _Optional[bytes] = ..., name: _Optional[str] = ...) -> None: ...
 
 class TenantIdList(_message.Message):
     __slots__ = ("results", "bookmark")

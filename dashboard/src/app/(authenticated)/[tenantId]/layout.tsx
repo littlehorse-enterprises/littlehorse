@@ -9,7 +9,7 @@ import { QueryProvider } from './components/QueryProvider'
 
 export default async function RootLayout({ children, params }: PropsWithChildren<{ params: Promise<WithTenant> }>) {
   const { tenantId } = await params
-  const { tenants, user } = await getWhoAmI()
+  const { tenants, tenantNames, user } = await getWhoAmI()
 
   return (
     <SWRConfig
@@ -21,7 +21,7 @@ export default async function RootLayout({ children, params }: PropsWithChildren
         revalidateIfStale: true,
       }}
     >
-      <WhoAmIContext user={user} tenants={tenants} tenantId={tenantId}>
+      <WhoAmIContext user={user} tenants={tenants} tenantNames={tenantNames} tenantId={tenantId}>
         <Header />
         <QueryProvider>
           <div className="mx-auto px-8">{children}</div>

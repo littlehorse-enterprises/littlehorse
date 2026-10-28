@@ -109,50 +109,52 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
       "try\022,\n\013global_acls\030\004 \001(\0132\027.littlehorse.S" +
       "erverACLs\032M\n\022PerTenantAclsEntry\022\013\n\003key\030\001" +
       " \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehorse.Server" +
-      "ACLs:\0028\001\"\265\001\n\006Tenant\022!\n\002id\030\001 \001(\0132\025.little" +
+      "ACLs:\0028\001\"\321\001\n\006Tenant\022!\n\002id\030\001 \001(\0132\025.little" +
       "horse.TenantId\022.\n\ncreated_at\030\002 \001(\0132\032.goo" +
       "gle.protobuf.Timestamp\022@\n\023output_topic_c" +
       "onfig\030\003 \001(\0132\036.littlehorse.OutputTopicCon" +
-      "figH\000\210\001\001B\026\n\024_output_topic_config\"|\n\005Quot" +
-      "a\022 \n\002id\030\001 \001(\0132\024.littlehorse.QuotaId\022.\n\nc" +
-      "reated_at\030\002 \001(\0132\032.google.protobuf.Timest" +
-      "amp\022!\n\031write_requests_per_second\030\003 \001(\005\"2" +
-      "\n\nServerACLs\022$\n\004acls\030\001 \003(\0132\026.littlehorse" +
-      ".ServerACL\"\236\001\n\tServerACL\022+\n\tresources\030\001 " +
-      "\003(\0162\030.littlehorse.ACLResource\022/\n\017allowed" +
-      "_actions\030\002 \003(\0162\026.littlehorse.ACLAction\022\016" +
-      "\n\004name\030\003 \001(\tH\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017reso" +
-      "urce_filter\"\377\001\n\023PutPrincipalRequest\022\n\n\002i" +
-      "d\030\001 \001(\t\022L\n\017per_tenant_acls\030\002 \003(\01323.littl" +
-      "ehorse.PutPrincipalRequest.PerTenantAcls" +
-      "Entry\022,\n\013global_acls\030\003 \001(\0132\027.littlehorse" +
-      ".ServerACLs\022\021\n\toverwrite\030\005 \001(\010\032M\n\022PerTen" +
-      "antAclsEntry\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\013" +
-      "2\027.littlehorse.ServerACLs:\0028\001\">\n\026DeleteP" +
-      "rincipalRequest\022$\n\002id\030\001 \001(\0132\030.littlehors" +
-      "e.PrincipalId\"\270\001\n\021OutputTopicConfig\022Y\n\027d" +
-      "efault_recording_level\030\001 \001(\01628.littlehor" +
-      "se.OutputTopicConfig.OutputTopicRecordin" +
-      "gLevel\"H\n\031OutputTopicRecordingLevel\022\025\n\021A" +
-      "LL_ENTITY_EVENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001" +
-      "\"x\n\020PutTenantRequest\022\n\n\002id\030\001 \001(\t\022@\n\023outp" +
-      "ut_topic_config\030\002 \001(\0132\036.littlehorse.Outp" +
-      "utTopicConfigH\000\210\001\001B\026\n\024_output_topic_conf" +
-      "ig\"\210\001\n\017PutQuotaRequest\022%\n\006tenant\030\001 \001(\0132\025" +
-      ".littlehorse.TenantId\022+\n\tprincipal\030\002 \001(\013" +
-      "2\030.littlehorse.PrincipalId\022!\n\031write_requ" +
-      "ests_per_second\030\003 \001(\005\"6\n\022DeleteQuotaRequ" +
-      "est\022 \n\002id\030\001 \001(\0132\024.littlehorse.QuotaId*\344\001" +
-      "\n\013ACLResource\022\020\n\014ACL_WORKFLOW\020\000\022\014\n\010ACL_T" +
-      "ASK\020\001\022\026\n\022ACL_EXTERNAL_EVENT\020\002\022\021\n\rACL_USE" +
-      "R_TASK\020\003\022\021\n\rACL_PRINCIPAL\020\004\022\016\n\nACL_TENAN" +
-      "T\020\005\022\025\n\021ACL_ALL_RESOURCES\020\006\022\031\n\025ACL_TASK_W" +
-      "ORKER_GROUP\020\007\022\026\n\022ACL_WORKFLOW_EVENT\020\010\022\016\n" +
-      "\nACL_STRUCT\020\t\022\r\n\tACL_QUOTA\020\n*C\n\tACLActio" +
-      "n\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n\016WRITE_METADATA\020\002" +
-      "\022\017\n\013ALL_ACTIONS\020\003BM\n\037io.littlehorse.sdk." +
-      "common.protoP\001Z\t.;lhproto\252\002\034LittleHorse." +
-      "Sdk.Common.Protob\006proto3"
+      "figH\000\210\001\001\022\021\n\004name\030\004 \001(\tH\001\210\001\001B\026\n\024_output_t" +
+      "opic_configB\007\n\005_name\"|\n\005Quota\022 \n\002id\030\001 \001(" +
+      "\0132\024.littlehorse.QuotaId\022.\n\ncreated_at\030\002 " +
+      "\001(\0132\032.google.protobuf.Timestamp\022!\n\031write" +
+      "_requests_per_second\030\003 \001(\005\"2\n\nServerACLs" +
+      "\022$\n\004acls\030\001 \003(\0132\026.littlehorse.ServerACL\"\236" +
+      "\001\n\tServerACL\022+\n\tresources\030\001 \003(\0162\030.little" +
+      "horse.ACLResource\022/\n\017allowed_actions\030\002 \003" +
+      "(\0162\026.littlehorse.ACLAction\022\016\n\004name\030\003 \001(\t" +
+      "H\000\022\020\n\006prefix\030\004 \001(\tH\000B\021\n\017resource_filter\"" +
+      "\377\001\n\023PutPrincipalRequest\022\n\n\002id\030\001 \001(\t\022L\n\017p" +
+      "er_tenant_acls\030\002 \003(\01323.littlehorse.PutPr" +
+      "incipalRequest.PerTenantAclsEntry\022,\n\013glo" +
+      "bal_acls\030\003 \001(\0132\027.littlehorse.ServerACLs\022" +
+      "\021\n\toverwrite\030\005 \001(\010\032M\n\022PerTenantAclsEntry" +
+      "\022\013\n\003key\030\001 \001(\t\022&\n\005value\030\002 \001(\0132\027.littlehor" +
+      "se.ServerACLs:\0028\001\">\n\026DeletePrincipalRequ" +
+      "est\022$\n\002id\030\001 \001(\0132\030.littlehorse.PrincipalI" +
+      "d\"\270\001\n\021OutputTopicConfig\022Y\n\027default_recor" +
+      "ding_level\030\001 \001(\01628.littlehorse.OutputTop" +
+      "icConfig.OutputTopicRecordingLevel\"H\n\031Ou" +
+      "tputTopicRecordingLevel\022\025\n\021ALL_ENTITY_EV" +
+      "ENTS\020\000\022\024\n\020NO_ENTITY_EVENTS\020\001\"\224\001\n\020PutTena" +
+      "ntRequest\022\n\n\002id\030\001 \001(\t\022@\n\023output_topic_co" +
+      "nfig\030\002 \001(\0132\036.littlehorse.OutputTopicConf" +
+      "igH\000\210\001\001\022\021\n\004name\030\003 \001(\tH\001\210\001\001B\026\n\024_output_to" +
+      "pic_configB\007\n\005_name\"\210\001\n\017PutQuotaRequest\022" +
+      "%\n\006tenant\030\001 \001(\0132\025.littlehorse.TenantId\022+" +
+      "\n\tprincipal\030\002 \001(\0132\030.littlehorse.Principa" +
+      "lId\022!\n\031write_requests_per_second\030\003 \001(\005\"6" +
+      "\n\022DeleteQuotaRequest\022 \n\002id\030\001 \001(\0132\024.littl" +
+      "ehorse.QuotaId*\344\001\n\013ACLResource\022\020\n\014ACL_WO" +
+      "RKFLOW\020\000\022\014\n\010ACL_TASK\020\001\022\026\n\022ACL_EXTERNAL_E" +
+      "VENT\020\002\022\021\n\rACL_USER_TASK\020\003\022\021\n\rACL_PRINCIP" +
+      "AL\020\004\022\016\n\nACL_TENANT\020\005\022\025\n\021ACL_ALL_RESOURCE" +
+      "S\020\006\022\031\n\025ACL_TASK_WORKER_GROUP\020\007\022\026\n\022ACL_WO" +
+      "RKFLOW_EVENT\020\010\022\016\n\nACL_STRUCT\020\t\022\r\n\tACL_QU" +
+      "OTA\020\n*C\n\tACLAction\022\010\n\004READ\020\000\022\007\n\003RUN\020\001\022\022\n" +
+      "\016WRITE_METADATA\020\002\022\017\n\013ALL_ACTIONS\020\003BM\n\037io" +
+      ".littlehorse.sdk.common.protoP\001Z\t.;lhpro" +
+      "to\252\002\034LittleHorse.Sdk.Common.Protob\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -177,7 +179,7 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_Tenant_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_Tenant_descriptor,
-        new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", });
+        new java.lang.String[] { "Id", "CreatedAt", "OutputTopicConfig", "Name", });
     internal_static_littlehorse_Quota_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_littlehorse_Quota_fieldAccessorTable = new
@@ -225,7 +227,7 @@ public final class Acls extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_PutTenantRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_PutTenantRequest_descriptor,
-        new java.lang.String[] { "Id", "OutputTopicConfig", });
+        new java.lang.String[] { "Id", "OutputTopicConfig", "Name", });
     internal_static_littlehorse_PutQuotaRequest_descriptor =
       getDescriptor().getMessageTypes().get(9);
     internal_static_littlehorse_PutQuotaRequest_fieldAccessorTable = new
