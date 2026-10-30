@@ -8,6 +8,7 @@ import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.GetLatestWfSpecRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -22,7 +23,6 @@ import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
@@ -204,12 +204,16 @@ public class ArraysTest {
 
     @Test
     public void shouldRejectDynamicArraySelectorWithNonIntegerType() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-dynamic-array-selector-wf", thread -> {
-            WfRunVariable array = thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L});
-            WfRunVariable selector = thread.declareStr("selector").withDefault("not-an-index");
-            WfRunVariable picked = thread.declareInt("picked");
-            picked.assign(array.get(selector));
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-dynamic-array-selector-wf",
+                thread -> {
+                    WfRunVariable array =
+                            thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L});
+                    WfRunVariable selector = thread.declareStr("selector").withDefault("not-an-index");
+                    WfRunVariable picked = thread.declareInt("picked");
+                    picked.assign(array.get(selector));
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
                 .matches(exn -> exn instanceof StatusRuntimeException
@@ -373,131 +377,169 @@ public class ArraysTest {
 
     @LHWorkflow("array-get-wf")
     public Workflow buildArrayGetWf() {
-        return new WorkflowImpl("array-get-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            WfRunVariable picked = thread.declareInt("picked");
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            picked.assign(arrVar.get(1));
-        });
+        return Workflow.newWorkflow(
+                "array-get-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    WfRunVariable picked = thread.declareInt("picked");
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    picked.assign(arrVar.get(1));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-dynamic-get-wf")
     public Workflow buildArrayDynamicGetWf() {
-        return new WorkflowImpl("array-dynamic-get-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
-            WfRunVariable index = thread.declareInt("index").withDefault(2L);
-            WfRunVariable picked = thread.declareInt("picked");
-            picked.assign(arrVar.get(index));
-        });
+        return Workflow.newWorkflow(
+                "array-dynamic-get-wf",
+                thread -> {
+                    WfRunVariable arrVar =
+                            thread.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+                    WfRunVariable index = thread.declareInt("index").withDefault(2L);
+                    WfRunVariable picked = thread.declareInt("picked");
+                    picked.assign(arrVar.get(index));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-contains-wf")
     public Workflow buildArrayContainsWf() {
-        return new WorkflowImpl("array-contains-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            WfRunVariable found = thread.declareBool("found");
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            found.assign(arrVar.doesContain(2L));
-        });
+        return Workflow.newWorkflow(
+                "array-contains-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    WfRunVariable found = thread.declareBool("found");
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    found.assign(arrVar.doesContain(2L));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("empty-array-assign-wf")
     public Workflow buildEmptyArrayAssignWf() {
-        return new WorkflowImpl("empty-array-assign-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-empty-array");
-            arrVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "empty-array-assign-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-empty-array");
+                    arrVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("mixed-array-assign-wf")
     public Workflow buildMixedArrayAssignWf() {
-        return new WorkflowImpl("mixed-array-assign-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-mixed-array");
-            arrVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "mixed-array-assign-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-mixed-array");
+                    arrVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("filled-array-assign-wf")
     public Workflow buildFilledArrayAssignWf() {
-        return new WorkflowImpl("filled-array-assign-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "filled-array-assign-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-extend-wf")
     public Workflow buildArrayExtendWf() {
-        return new WorkflowImpl("array-extend-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            arrVar.assign(arrVar.extend(4L));
-        });
+        return Workflow.newWorkflow(
+                "array-extend-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    arrVar.assign(arrVar.extend(4L));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-concat-wf")
     public Workflow buildArrayConcatWf() {
-        return new WorkflowImpl("array-concat-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            WfRunVariable other = thread.declareArray("other", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            TaskNodeOutput producedOther = thread.execute("produce-array");
-            other.assign(producedOther);
-            // Concatenate the two native Arrays.
-            arrVar.assign(arrVar.extend(other));
-        });
+        return Workflow.newWorkflow(
+                "array-concat-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    WfRunVariable other = thread.declareArray("other", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    TaskNodeOutput producedOther = thread.execute("produce-array");
+                    other.assign(producedOther);
+                    // Concatenate the two native Arrays.
+                    arrVar.assign(arrVar.extend(other));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-of-arrays-extend-wf")
     public Workflow buildArrayOfArraysExtendWf() {
-        return new WorkflowImpl("array-of-arrays-extend-wf", thread -> {
-            // Array<Array<INT>> -- an array whose elements are themselves Array<INT>.
-            WfRunVariable arrVar = thread.declareArray("my-array", Long[].class).required();
-            // A single Array<INT> to append as a new element of the outer array.
-            WfRunVariable toAppend =
-                    thread.declareArray("to-append", Long.class).required();
-            // EXTEND a single Array<INT> onto the Array<Array<INT>>; it is appended as a new element.
-            arrVar.assign(arrVar.extend(toAppend));
-        });
+        return Workflow.newWorkflow(
+                "array-of-arrays-extend-wf",
+                thread -> {
+                    // Array<Array<INT>> -- an array whose elements are themselves Array<INT>.
+                    WfRunVariable arrVar =
+                            thread.declareArray("my-array", Long[].class).required();
+                    // A single Array<INT> to append as a new element of the outer array.
+                    WfRunVariable toAppend =
+                            thread.declareArray("to-append", Long.class).required();
+                    // EXTEND a single Array<INT> onto the Array<Array<INT>>; it is appended as a new element.
+                    arrVar.assign(arrVar.extend(toAppend));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-remove-wf")
     public Workflow buildArrayRemoveWf() {
-        return new WorkflowImpl("array-remove-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            arrVar.assign(arrVar.removeIfPresent(2L));
-        });
+        return Workflow.newWorkflow(
+                "array-remove-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    arrVar.assign(arrVar.removeIfPresent(2L));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("array-remove-index-wf")
     public Workflow buildArrayRemoveIndexWf() {
-        return new WorkflowImpl("array-remove-index-wf", thread -> {
-            WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            TaskNodeOutput produced = thread.execute("produce-array");
-            arrVar.assign(produced);
-            arrVar.assign(arrVar.removeIndex(1));
-        });
+        return Workflow.newWorkflow(
+                "array-remove-index-wf",
+                thread -> {
+                    WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-array");
+                    arrVar.assign(produced);
+                    arrVar.assign(arrVar.removeIndex(1));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("spawn-many-threads-wf-array")
     public Workflow spawnNThreadsWfArray() {
-        return new WorkflowImpl("spawn-many-threads-wf-array", wf -> {
-            WfRunVariable arr = wf.declareArray("arr", Integer.class).required();
+        return Workflow.newWorkflow(
+                "spawn-many-threads-wf-array",
+                wf -> {
+                    WfRunVariable arr = wf.declareArray("arr", Integer.class).required();
 
-            SpawnedThreads spawnedThreads = wf.spawnThreadForEach(arr, "test-thread", handler -> {
-                handler.complete();
-            });
+                    SpawnedThreads spawnedThreads = wf.spawnThreadForEach(arr, "test-thread", handler -> {
+                        handler.complete();
+                    });
 
-            wf.waitForThreads(spawnedThreads);
-        });
+                    wf.waitForThreads(spawnedThreads);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-empty-array")

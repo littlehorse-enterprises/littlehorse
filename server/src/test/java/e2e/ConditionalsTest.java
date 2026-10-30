@@ -3,13 +3,13 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import e2e.Struct.Car;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -497,27 +497,30 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-nested-if")
     public Workflow getNestedIfWorkflowImpl() {
-        return new WorkflowImpl("test-nested-if", wf -> {
-            WfRunVariable input = wf.addVariable("input", VariableType.INT);
+        return Workflow.newWorkflow(
+                "test-nested-if",
+                wf -> {
+                    WfRunVariable input = wf.addVariable("input", VariableType.INT);
 
-            /*
-            if (input < 15) {
-                if (input < 10) {
-                    execute(1);
-                }
-                execute(2);
-            }
-            execute(3);
-             */
-            wf.doIf(input.isLessThan(15), ifBlock -> {
-                wf.doIf(input.isLessThan(10), ifBlock2 -> {
-                    ifBlock2.execute("echo", 1);
-                });
-                ifBlock.execute("echo", 2);
-            });
+                    /*
+                    if (input < 15) {
+                        if (input < 10) {
+                            execute(1);
+                        }
+                        execute(2);
+                    }
+                    execute(3);
+                     */
+                    wf.doIf(input.isLessThan(15), ifBlock -> {
+                        wf.doIf(input.isLessThan(10), ifBlock2 -> {
+                            ifBlock2.execute("echo", 1);
+                        });
+                        ifBlock.execute("echo", 2);
+                    });
 
-            wf.execute("echo", 3);
-        });
+                    wf.execute("echo", 3);
+                },
+                new LHConfig());
     }
 
     @Test
@@ -549,301 +552,343 @@ public class ConditionalsTest {
 
     @LHWorkflow("test-nested-if-else")
     public Workflow getNestedIfElseWorkflow() {
-        return new WorkflowImpl("test-nested-if-else", wf -> {
-            WfRunVariable input = wf.addVariable("input", VariableType.INT);
+        return Workflow.newWorkflow(
+                "test-nested-if-else",
+                wf -> {
+                    WfRunVariable input = wf.addVariable("input", VariableType.INT);
 
-            /*
-            if (input < 10) {
-                execute(1);
-            } else {
-                if (input < 15) {
-                    execute(2);
-                }
-                execute(3);
-            }
-             */
-            wf.doIfElse(
-                    input.isLessThan(10),
-                    ifBlock -> {
-                        ifBlock.execute("echo", 1);
-                    },
-                    elseBlock -> {
-                        wf.doIf(input.isLessThan(15), ifBlock -> {
-                            ifBlock.execute("echo", 2);
-                        });
-                        elseBlock.execute("echo", 3);
-                    });
+                    /*
+                    if (input < 10) {
+                        execute(1);
+                    } else {
+                        if (input < 15) {
+                            execute(2);
+                        }
+                        execute(3);
+                    }
+                     */
+                    wf.doIfElse(
+                            input.isLessThan(10),
+                            ifBlock -> {
+                                ifBlock.execute("echo", 1);
+                            },
+                            elseBlock -> {
+                                wf.doIf(input.isLessThan(15), ifBlock -> {
+                                    ifBlock.execute("echo", 2);
+                                });
+                                elseBlock.execute("echo", 3);
+                            });
 
-            wf.execute("echo", 4);
-        });
+                    wf.execute("echo", 4);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-equals-workflow")
     public Workflow getEqualsWorkflowImpl() {
-        return new WorkflowImpl("test-conditionals-equals-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-equals-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isEqualTo(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-struct-equals-workflow")
     public Workflow getStructEqualsWorkflowImpl() {
-        return new WorkflowImpl("test-conditionals-struct-equals-workflow", thread -> {
-            WfRunVariable structA = thread.declareStruct("struct-a", Car.class);
-            WfRunVariable structB = thread.declareStruct("struct-b", Car.class);
+        return Workflow.newWorkflow(
+                "test-conditionals-struct-equals-workflow",
+                thread -> {
+                    WfRunVariable structA = thread.declareStruct("struct-a", Car.class);
+                    WfRunVariable structB = thread.declareStruct("struct-b", Car.class);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-            thread.doIfElse(
-                    structA.isEqualTo(structB),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    });
-        });
+                    thread.doIfElse(
+                            structA.isEqualTo(structB),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-not-equals-workflow")
     public Workflow getNotEqualsWorkflowImpl() {
-        return new WorkflowImpl("test-conditionals-not-equals-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-not-equals-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isNotEqualTo(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-less-than-workflow")
     public Workflow getLessThanWorkflow() {
-        return new WorkflowImpl("test-conditionals-less-than-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-less-than-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isLessThan(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-less-than-equals-workflow")
     public Workflow getLessThanEqualsWorkflow() {
-        return new WorkflowImpl("test-conditionals-less-than-equals-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-less-than-equals-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            WfRunVariable result = thread.declareBool("result");
+                    WfRunVariable result = thread.declareBool("result");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isLessThanEq(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-greater-than-workflow")
     public Workflow getGreaterThanWorkflow() {
-        return new WorkflowImpl("test-conditionals-greater-than-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-greater-than-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            WfRunVariable result = thread.declareBool("result");
+                    WfRunVariable result = thread.declareBool("result");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isGreaterThan(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-greater-than-equals-workflow")
     public Workflow getGreaterThanEqualsWorkflow() {
-        return new WorkflowImpl("test-conditionals-greater-than-equals-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-greater-than-equals-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            // So that the run request succeeds even on workflows where we want
-            // a crash.
-            thread.execute("ag-one");
+                    // So that the run request succeeds even on workflows where we want
+                    // a crash.
+                    thread.execute("ag-one");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        ifBlock.execute("ag-one");
-                    },
-                    elseBlock -> {
-                        elseBlock.execute("ag-two");
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isGreaterThanEq(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                ifBlock.execute("ag-one");
+                            },
+                            elseBlock -> {
+                                elseBlock.execute("ag-two");
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-is-in-workflow")
     public Workflow getIsInWorkflow() {
-        return new WorkflowImpl("test-conditionals-is-in-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-is-in-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            WfRunVariable result = thread.declareBool("result");
+                    WfRunVariable result = thread.declareBool("result");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isIn(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-not-in-workflow")
     public Workflow getNotInWorkflow() {
-        return new WorkflowImpl("test-conditionals-not-in-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // This allows us to test with various types on the left and the
-            // right, since right now the JSON_OBJ var type does not have a
-            // schema.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "test-conditionals-not-in-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // This allows us to test with various types on the left and the
+                    // right, since right now the JSON_OBJ var type does not have a
+                    // schema.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
 
-            WfRunVariable result = thread.declareBool("result");
+                    WfRunVariable result = thread.declareBool("result");
 
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").isNotIn(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-does-contain-workflow")
     public Workflow getDoesContainWorkflow() {
-        return new WorkflowImpl("test-conditionals-does-contain-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // LHS is the collection/string, RHS is the element to search for.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
-            WfRunVariable result = thread.declareBool("result");
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").doesContain(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+        return Workflow.newWorkflow(
+                "test-conditionals-does-contain-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // LHS is the collection/string, RHS is the element to search for.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+                    WfRunVariable result = thread.declareBool("result");
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").doesContain(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-does-not-contain-workflow")
     public Workflow getDoesNotContainWorkflow() {
-        return new WorkflowImpl("test-conditionals-does-not-contain-workflow", thread -> {
-            // Use an input JSON blob with two fields, LHS and RHS.
-            // LHS is the collection/string, RHS is the element to search for.
-            WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
-            WfRunVariable result = thread.declareBool("result");
-            thread.doIfElse(
-                    input.jsonPath("$.lhs").doesNotContain(input.jsonPath("$.rhs")),
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+        return Workflow.newWorkflow(
+                "test-conditionals-does-not-contain-workflow",
+                thread -> {
+                    // Use an input JSON blob with two fields, LHS and RHS.
+                    // LHS is the collection/string, RHS is the element to search for.
+                    WfRunVariable input = thread.addVariable("input", VariableType.JSON_OBJ);
+                    WfRunVariable result = thread.declareBool("result");
+                    thread.doIfElse(
+                            input.jsonPath("$.lhs").doesNotContain(input.jsonPath("$.rhs")),
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-bool-var-do-if")
     public Workflow getBoolVarDoIfWorkflow() {
-        return new WorkflowImpl("test-conditionals-bool-var-do-if", thread -> {
-            WfRunVariable myBool = thread.declareBool("my-bool");
-            WfRunVariable result = thread.declareBool("result");
-            thread.doIf(myBool, ifBlock -> {
-                result.assign(true);
-            });
-        });
+        return Workflow.newWorkflow(
+                "test-conditionals-bool-var-do-if",
+                thread -> {
+                    WfRunVariable myBool = thread.declareBool("my-bool");
+                    WfRunVariable result = thread.declareBool("result");
+                    thread.doIf(myBool, ifBlock -> {
+                        result.assign(true);
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-conditionals-bool-var-do-if-else")
     public Workflow getBoolVarDoIfElseWorkflow() {
-        return new WorkflowImpl("test-conditionals-bool-var-do-if-else", thread -> {
-            WfRunVariable myBool = thread.declareBool("my-bool");
-            WfRunVariable result = thread.declareBool("result");
-            thread.doIfElse(
-                    myBool,
-                    ifBlock -> {
-                        result.assign(true);
-                    },
-                    elseBlock -> {
-                        result.assign(false);
-                    });
-        });
+        return Workflow.newWorkflow(
+                "test-conditionals-bool-var-do-if-else",
+                thread -> {
+                    WfRunVariable myBool = thread.declareBool("my-bool");
+                    WfRunVariable result = thread.declareBool("result");
+                    thread.doIfElse(
+                            myBool,
+                            ifBlock -> {
+                                result.assign(true);
+                            },
+                            elseBlock -> {
+                                result.assign(false);
+                            });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("ag-one")

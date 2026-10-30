@@ -7,6 +7,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
@@ -78,9 +79,12 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migration-test-wf")
     public Workflow getMigrationWf() {
-        return Workflow.newWorkflow("migration-test-wf", wf -> {
-            wf.waitForEvent("migration-test-event");
-        });
+        return Workflow.newWorkflow(
+                "migration-test-wf",
+                wf -> {
+                    wf.waitForEvent("migration-test-event");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("migration-from-sleep")
@@ -88,9 +92,12 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migration-from-sleep")
     public Workflow getSleepWf() {
-        return Workflow.newWorkflow("migration-from-sleep", wf -> {
-            wf.sleepSeconds(300);
-        });
+        return Workflow.newWorkflow(
+                "migration-from-sleep",
+                wf -> {
+                    wf.sleepSeconds(300);
+                },
+                new LHConfig());
     }
 
     public static final String MIGRATION_USER_TASK_DEF_NAME = "migration-user-task";
@@ -103,9 +110,12 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migration-from-user-task")
     public Workflow getUserTaskWf() {
-        return Workflow.newWorkflow("migration-from-user-task", wf -> {
-            wf.assignUserTask(MIGRATION_USER_TASK_DEF_NAME, "test-user-id", null);
-        });
+        return Workflow.newWorkflow(
+                "migration-from-user-task",
+                wf -> {
+                    wf.assignUserTask(MIGRATION_USER_TASK_DEF_NAME, "test-user-id", null);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("migration-from-wait-for-condition")
@@ -113,12 +123,15 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migration-from-wait-for-condition")
     public Workflow getWaitForConditionWf() {
-        return Workflow.newWorkflow("migration-from-wait-for-condition", wf -> {
-            // counter defaults to 1 and is never mutated, so the condition (counter == 0)
-            // is never satisfied and the node parks in RUNNING until we migrate it.
-            WfRunVariable counter = wf.declareInt("counter").withDefault(1);
-            wf.waitForCondition(wf.condition(counter, Comparator.EQUALS, 0));
-        });
+        return Workflow.newWorkflow(
+                "migration-from-wait-for-condition",
+                wf -> {
+                    // counter defaults to 1 and is never mutated, so the condition (counter == 0)
+                    // is never satisfied and the node parks in RUNNING until we migrate it.
+                    WfRunVariable counter = wf.declareInt("counter").withDefault(1);
+                    wf.waitForCondition(wf.condition(counter, Comparator.EQUALS, 0));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("migrate-child-spec")
@@ -126,15 +139,18 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migrate-child-spec")
     public Workflow getChildSpecWf() {
-        return Workflow.newWorkflow("migrate-child-spec", wf -> {
-            wf.execute("migration-task");
-            wf.spawnThread(
-                    thread -> {
-                        thread.waitForEvent("migration-test-event");
-                    },
-                    "child-thread",
-                    null);
-        });
+        return Workflow.newWorkflow(
+                "migrate-child-spec",
+                wf -> {
+                    wf.execute("migration-task");
+                    wf.spawnThread(
+                            thread -> {
+                                thread.waitForEvent("migration-test-event");
+                            },
+                            "child-thread",
+                            null);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("child-depends-on-parent")
@@ -142,15 +158,18 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("child-depends-on-parent")
     public Workflow getChildDependsOnParentWf() {
-        return Workflow.newWorkflow("child-depends-on-parent", wf -> {
-            wf.spawnThread(
-                    thread -> {
-                        thread.waitForEvent("migration-test-event");
-                    },
-                    "child-thread",
-                    null);
-            wf.waitForEvent("migration-test-event");
-        });
+        return Workflow.newWorkflow(
+                "child-depends-on-parent",
+                wf -> {
+                    wf.spawnThread(
+                            thread -> {
+                                thread.waitForEvent("migration-test-event");
+                            },
+                            "child-thread",
+                            null);
+                    wf.waitForEvent("migration-test-event");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("migrate-from-second-migration-node")
@@ -158,10 +177,13 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migrate-from-second-migration-node")
     public Workflow getMigrateFromSecondMigrationNode() {
-        return Workflow.newWorkflow("migrate-from-second-migration-node", wf -> {
-            wf.execute("migration-task");
-            wf.waitForEvent("migration-test-event");
-        });
+        return Workflow.newWorkflow(
+                "migrate-from-second-migration-node",
+                wf -> {
+                    wf.execute("migration-task");
+                    wf.waitForEvent("migration-test-event");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("migrate-with-variable")
@@ -169,9 +191,12 @@ public class WorkflowMigrationTest {
 
     @LHWorkflow("migrate-with-variable")
     public Workflow getMigrateWithVariableWf() {
-        return Workflow.newWorkflow("migrate-with-variable", wf -> {
-            wf.waitForEvent("migration-test-event");
-        });
+        return Workflow.newWorkflow(
+                "migrate-with-variable",
+                wf -> {
+                    wf.waitForEvent("migration-test-event");
+                },
+                new LHConfig());
     }
 
     // Task worker used by v1 WfSpec (registered manually inside the test)
@@ -189,9 +214,12 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-test-wf", wf -> {
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migration-test-wf",
+                        wf -> {
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         // Register the migration plan: entrypoint thread, ext-event node → task node.
@@ -273,9 +301,12 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-sleep", wf -> {
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migration-from-sleep",
+                        wf -> {
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         // Register the migration plan: entrypoint thread, sleep node → task node.
@@ -353,9 +384,12 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-user-task", wf -> {
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migration-from-user-task",
+                        wf -> {
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         // Register the migration plan: entrypoint thread, user-task node → task node.
@@ -430,9 +464,12 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migration-from-wait-for-condition", wf -> {
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migration-from-wait-for-condition",
+                        wf -> {
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
@@ -511,15 +548,18 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-child-spec", wf -> {
-                    wf.execute("migration-task");
-                    wf.spawnThread(
-                            thread -> {
-                                thread.execute("migration-task");
-                            },
-                            "child-thread",
-                            null);
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migrate-child-spec",
+                        wf -> {
+                            wf.execute("migration-task");
+                            wf.spawnThread(
+                                    thread -> {
+                                        thread.execute("migration-task");
+                                    },
+                                    "child-thread",
+                                    null);
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         // Register the migration plan: entrypoint thread, wait-for-condition node → task node.
@@ -588,17 +628,20 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-child-spec", wf -> {
-                    WfRunVariable num = wf.declareInt("num").withDefault(1);
-                    wf.execute("migration-task");
-                    wf.spawnThread(
-                            thread -> {
-                                thread.execute("migration-task");
-                                num.assign(32);
-                            },
-                            "child-thread",
-                            null);
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migrate-child-spec",
+                        wf -> {
+                            WfRunVariable num = wf.declareInt("num").withDefault(1);
+                            wf.execute("migration-task");
+                            wf.spawnThread(
+                                    thread -> {
+                                        thread.execute("migration-task");
+                                        num.assign(32);
+                                    },
+                                    "child-thread",
+                                    null);
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         assertThatThrownBy(() -> client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
@@ -636,17 +679,20 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("child-depends-on-parent", wf -> {
-                    WfRunVariable num = wf.declareInt("num").withDefault(1);
-                    wf.spawnThread(
-                            thread -> {
-                                thread.execute("migration-task");
-                                num.assign(32);
-                            },
-                            "child-thread",
-                            null);
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "child-depends-on-parent",
+                        wf -> {
+                            WfRunVariable num = wf.declareInt("num").withDefault(1);
+                            wf.spawnThread(
+                                    thread -> {
+                                        thread.execute("migration-task");
+                                        num.assign(32);
+                                    },
+                                    "child-thread",
+                                    null);
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
@@ -745,10 +791,13 @@ public class WorkflowMigrationTest {
 
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-from-second-migration-node", wf -> {
-                    wf.waitForEvent("migration-test-event");
-                    wf.waitForEvent("migration-test-event");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migrate-from-second-migration-node",
+                        wf -> {
+                            wf.waitForEvent("migration-test-event");
+                            wf.waitForEvent("migration-test-event");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
@@ -830,10 +879,13 @@ public class WorkflowMigrationTest {
         // Read the actual old WfSpecId from the running WfRun so we never hardcode a version.
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-with-variable", wf -> {
-                    wf.declareInt("num").withDefault(1);
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migrate-with-variable",
+                        wf -> {
+                            wf.declareInt("num").withDefault(1);
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         WorkflowMigrationPlan plan = client.putWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest.newBuilder()
@@ -900,10 +952,13 @@ public class WorkflowMigrationTest {
         WfSpecId oldSpecId = client.getWfRun(runId).getWfSpecId();
 
         // Register v1 WfSpec: declares an int variable 'num' (default 1) and runs a task.
-        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow("migrate-with-variable", wf -> {
-                    wf.declareInt("num").withDefault(1);
-                    wf.execute("migration-task");
-                })
+        WfSpec v1Spec = client.putWfSpec(Workflow.newWorkflow(
+                        "migrate-with-variable",
+                        wf -> {
+                            wf.declareInt("num").withDefault(1);
+                            wf.execute("migration-task");
+                        },
+                        new LHConfig())
                 .compileWorkflow());
 
         // Register the migration plan: entrypoint thread, external-event node → task node.

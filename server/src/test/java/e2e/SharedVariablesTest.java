@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableId;
@@ -13,7 +14,6 @@ import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -72,17 +72,23 @@ public class SharedVariablesTest {
     void shouldNotFreezeSearchableVariables() {
         // Adding UUID makes it possible to run repeatedly with ExternalBootstrapper
         String wfSpecName = "dont-freeze-searchable-" + UUID.randomUUID();
-        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", VariableType.STR).searchable();
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", VariableType.STR).searchable();
+                },
+                new LHConfig());
         WfSpec result = client.putWfSpec(workflow.compileWorkflow());
         assertThat(result.getFrozenVariablesCount()).isEqualTo(0);
 
         // Additionally, private searchable variables do not increment the major version,
         // and I can change the type of them if they're not public.
-        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", VariableType.INT);
-        });
+        Workflow secondWorkflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", VariableType.INT);
+                },
+                new LHConfig());
         WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
         assertThat(secondVersion.getId().getMajorVersion()).isEqualTo(0);
         assertThat(secondVersion.getId().getRevision()).isEqualTo(1);
@@ -91,15 +97,21 @@ public class SharedVariablesTest {
     @Test
     void publicVariablesShouldStayFrozenThroughVersions() {
         String wfSpecName = "public-var-frozen-" + UUID.randomUUID();
-        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", VariableType.STR).asPublic();
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", VariableType.STR).asPublic();
+                },
+                new LHConfig());
         WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
         assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(1);
 
-        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-other-var", "some string value").searchable();
-        });
+        Workflow secondWorkflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-other-var", "some string value").searchable();
+                },
+                new LHConfig());
         WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
 
         // Breaking change
@@ -114,15 +126,21 @@ public class SharedVariablesTest {
     @Test
     void requiredVariablesIncrementMajorVersion() {
         String wfSpecName = "required-major-version-" + UUID.randomUUID();
-        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", VariableType.STR).required();
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", VariableType.STR).required();
+                },
+                new LHConfig());
         WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
         assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(1);
 
-        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-other-var", "not required").searchable();
-        });
+        Workflow secondWorkflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-other-var", "not required").searchable();
+                },
+                new LHConfig());
         WfSpec secondVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
 
         assertThat(secondVersion.getId().getMajorVersion()).isEqualTo(1);
@@ -132,16 +150,22 @@ public class SharedVariablesTest {
     @Test
     void publicVariablesIncrementMajorVersion() {
         String wfSpecName = "public-major-version-" + UUID.randomUUID();
-        Workflow workflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", VariableType.STR).asPublic();
-            wf.addVariable("another-var", "will-be-removed").asPublic();
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", VariableType.STR).asPublic();
+                    wf.addVariable("another-var", "will-be-removed").asPublic();
+                },
+                new LHConfig());
         WfSpec firstVersion = client.putWfSpec(workflow.compileWorkflow());
         assertThat(firstVersion.getFrozenVariablesCount()).isEqualTo(2);
 
-        Workflow secondWorkflow = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.addVariable("some-var", "not public anymore").searchable();
-        });
+        Workflow secondWorkflow = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.addVariable("some-var", "not public anymore").searchable();
+                },
+                new LHConfig());
         WfSpec thirdVersion = client.putWfSpec(secondWorkflow.compileWorkflow());
 
         assertThat(thirdVersion.getId().getMajorVersion()).isEqualTo(1);
@@ -150,28 +174,34 @@ public class SharedVariablesTest {
 
     @LHWorkflow("shared-variables-parent-wf")
     public Workflow buildParentWf() {
-        return new WorkflowImpl("shared-variables-parent-wf", thread -> {
-            WfRunVariable inputNumber =
-                    thread.addVariable("input-number", VariableType.INT).required();
-            WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
-                    .withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
-            thread.mutate(inputNumber, VariableMutationType.MULTIPLY, 2);
-            thread.mutate(publicVariable, VariableMutationType.ASSIGN, inputNumber);
-        });
+        return Workflow.newWorkflow(
+                "shared-variables-parent-wf",
+                thread -> {
+                    WfRunVariable inputNumber =
+                            thread.addVariable("input-number", VariableType.INT).required();
+                    WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
+                            .withAccessLevel(WfRunVariableAccessLevel.PUBLIC_VAR);
+                    thread.mutate(inputNumber, VariableMutationType.MULTIPLY, 2);
+                    thread.mutate(publicVariable, VariableMutationType.ASSIGN, inputNumber);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("shared-variables-child-wf")
     public Workflow buildChildWf() {
-        Workflow out = new WorkflowImpl("shared-variables-child-wf", thread -> {
-            WfRunVariable publicVariable =
-                    thread.addVariable("public-variable", VariableType.INT).asInherited();
+        Workflow out = Workflow.newWorkflow(
+                "shared-variables-child-wf",
+                thread -> {
+                    WfRunVariable publicVariable = thread.addVariable("public-variable", VariableType.INT)
+                            .asInherited();
 
-            WfRunVariable calculatedValue =
-                    thread.addVariable("calculated-value", VariableType.INT).searchable();
-            thread.mutate(publicVariable, VariableMutationType.MULTIPLY, 2);
-            thread.execute("print-output", publicVariable);
-            thread.mutate(calculatedValue, VariableMutationType.ASSIGN, publicVariable);
-        });
+                    WfRunVariable calculatedValue = thread.addVariable("calculated-value", VariableType.INT)
+                            .searchable();
+                    thread.mutate(publicVariable, VariableMutationType.MULTIPLY, 2);
+                    thread.execute("print-output", publicVariable);
+                    thread.mutate(calculatedValue, VariableMutationType.ASSIGN, publicVariable);
+                },
+                new LHConfig());
         out.setParent("shared-variables-parent-wf");
         return out;
     }

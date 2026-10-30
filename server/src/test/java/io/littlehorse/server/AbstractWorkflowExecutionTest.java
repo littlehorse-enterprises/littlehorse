@@ -9,6 +9,7 @@ import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.TaskClaimEventPb;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.Workflow;
@@ -77,8 +78,8 @@ public abstract class AbstractWorkflowExecutionTest extends AbstractCommandProce
             assertThat(run.hasWfSpecId()).isFalse();
             return run;
         }
-        PutWfSpecRequest definition =
-                Workflow.newWorkflow("node-test-" + runId, workflow).compileWorkflow();
+        PutWfSpecRequest definition = Workflow.newWorkflow("node-test-" + runId, workflow, new LHConfig())
+                .compileWorkflow();
         WfSpec spec = executeMetadata(command -> command.setPutWfSpec(definition), WfSpec.class);
         RunWfRequest request = RunWfRequest.newBuilder()
                 .setId(runId)

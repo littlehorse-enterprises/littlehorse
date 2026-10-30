@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -28,7 +29,7 @@ public class InlineStructDefTest {
     @Test
     void wfSpecVariableDeclaredAsInlineStructSurvivesRoundTrip() {
         String wfName = "inline-struct-rt-" + UUID.randomUUID();
-        PutWfSpecRequest compiled = Workflow.newWorkflow(wfName, wf -> wf.declareJsonObj("location"))
+        PutWfSpecRequest compiled = Workflow.newWorkflow(wfName, wf -> wf.declareJsonObj("location"), new LHConfig())
                 .compileWorkflow();
         InlineStructDef locationType = InlineStructDef.newBuilder()
                 .putFields("city", primitiveField(VariableType.STR))

@@ -7,11 +7,11 @@ import e2e.Struct.Car;
 import e2e.Struct.CarWithMissingField;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
@@ -166,38 +166,48 @@ public class StructValidationsTest {
 
     @LHWorkflow("structs-wf")
     public Workflow structsWf() {
-        return new WorkflowImpl("structs-wf", wf -> {
-            WfRunVariable carVar = wf.declareStruct("my-car", Car.class).required();
+        return Workflow.newWorkflow(
+                "structs-wf",
+                wf -> {
+                    WfRunVariable carVar = wf.declareStruct("my-car", Car.class).required();
 
-            wf.execute("park-car", carVar);
-        });
+                    wf.execute("park-car", carVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("record-structs-wf")
     public Workflow recordStructsWf() {
-        return new WorkflowImpl("record-structs-wf", wf -> {
-            WfRunVariable carVar = wf.declareStruct("my-car", RecordCar.class).required();
-            WfRunVariable parkedCar = wf.declareStruct("parked-car", RecordCar.class);
+        return Workflow.newWorkflow(
+                "record-structs-wf",
+                wf -> {
+                    WfRunVariable carVar =
+                            wf.declareStruct("my-car", RecordCar.class).required();
+                    WfRunVariable parkedCar = wf.declareStruct("parked-car", RecordCar.class);
 
-            parkedCar.assign(wf.execute("park-record-car", carVar));
-        });
+                    parkedCar.assign(wf.execute("park-record-car", carVar));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("nested-record-structs-wf")
     public Workflow nestedRecordStructsWf() {
-        return new WorkflowImpl("nested-record-structs-wf", wf -> {
-            WfRunVariable classWithRecord = wf.declareStruct("class-with-record", PersonWithRecordAddress.class)
-                    .required();
-            WfRunVariable recordWithClass = wf.declareStruct("record-with-class", RecordPersonWithAddress.class)
-                    .required();
-            WfRunVariable classWithRecordOutput =
-                    wf.declareStruct("class-with-record-output", PersonWithRecordAddress.class);
-            WfRunVariable recordWithClassOutput =
-                    wf.declareStruct("record-with-class-output", RecordPersonWithAddress.class);
+        return Workflow.newWorkflow(
+                "nested-record-structs-wf",
+                wf -> {
+                    WfRunVariable classWithRecord = wf.declareStruct("class-with-record", PersonWithRecordAddress.class)
+                            .required();
+                    WfRunVariable recordWithClass = wf.declareStruct("record-with-class", RecordPersonWithAddress.class)
+                            .required();
+                    WfRunVariable classWithRecordOutput =
+                            wf.declareStruct("class-with-record-output", PersonWithRecordAddress.class);
+                    WfRunVariable recordWithClassOutput =
+                            wf.declareStruct("record-with-class-output", RecordPersonWithAddress.class);
 
-            classWithRecordOutput.assign(wf.execute("echo-class-with-record", classWithRecord));
-            recordWithClassOutput.assign(wf.execute("echo-record-with-class", recordWithClass));
-        });
+                    classWithRecordOutput.assign(wf.execute("echo-class-with-record", classWithRecord));
+                    recordWithClassOutput.assign(wf.execute("echo-record-with-class", recordWithClass));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("park-car")

@@ -3,6 +3,7 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -16,7 +17,6 @@ import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -161,104 +161,116 @@ public class WaitForThreadsTest {
 
     @LHWorkflow("wait-for-threads-with-exception-handler")
     public Workflow buildWaitForThreadsWithExceptionHandlerWorkflow() {
-        return new WorkflowImpl("wait-for-threads-with-exception-handler", thread -> {
-            // Initialize variables.
-            WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
-            WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
-            WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
-            WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
+        return Workflow.newWorkflow(
+                "wait-for-threads-with-exception-handler",
+                thread -> {
+                    // Initialize variables.
+                    WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
+                    WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
+                    WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
+                    WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
 
-            // Variables are initialized to NULL. Need to set to a real value.
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+                    // Variables are initialized to NULL. Need to set to a real value.
+                    thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
 
-            BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
-                return approvalThread -> {
-                    WfRunVariable jsonVariable =
-                            approvalThread.addVariable(approvalName + "-response", VariableType.JSON_OBJ);
-                    approvalThread.mutate(
-                            jsonVariable,
-                            VariableMutationType.ASSIGN,
-                            approvalThread.waitForEvent(approvalName + "-approves"));
-                    approvalThread.doIfElse(
-                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                            ifHandler -> {
-                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
-                            },
-                            elseHandler -> {
-                                approvalThread.fail("denied-by-user", "message here");
-                            });
-                };
-            };
+                    BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread =
+                            (approvalVariable, approvalName) -> {
+                                return approvalThread -> {
+                                    WfRunVariable jsonVariable = approvalThread.addVariable(
+                                            approvalName + "-response", VariableType.JSON_OBJ);
+                                    approvalThread.mutate(
+                                            jsonVariable,
+                                            VariableMutationType.ASSIGN,
+                                            approvalThread.waitForEvent(approvalName + "-approves"));
+                                    approvalThread.doIfElse(
+                                            approvalThread.condition(
+                                                    jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                                            ifHandler -> {
+                                                approvalThread.mutate(
+                                                        person2Approved, VariableMutationType.ASSIGN, true);
+                                            },
+                                            elseHandler -> {
+                                                approvalThread.fail("denied-by-user", "message here");
+                                            });
+                                };
+                            };
 
-            // Wait for all users to approve the transaction
-            SpawnedThread p1Thread =
-                    thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
-            SpawnedThread p2Thread =
-                    thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
-            SpawnedThread p3Thread =
-                    thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
+                    // Wait for all users to approve the transaction
+                    SpawnedThread p1Thread =
+                            thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
+                    SpawnedThread p2Thread =
+                            thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
+                    SpawnedThread p3Thread =
+                            thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+                    NodeOutput nodeOutput = thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
-            thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
-                xnHandler.execute("exc-handler");
-            });
+                    thread.handleException(nodeOutput, "denied-by-user", xnHandler -> {
+                        xnHandler.execute("exc-handler");
+                    });
 
-            // Tell the reminder workflow to stop
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
-        });
+                    // Tell the reminder workflow to stop
+                    thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("wait-for-threads-without-exception-handler")
     public Workflow buildWaitForThreadsWithoutExceptionHandlerWorkflow() {
-        return new WorkflowImpl("wait-for-threads-without-exception-handler", thread -> {
-            // Initialize variables.
-            WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
-            WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
-            WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
-            WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
+        return Workflow.newWorkflow(
+                "wait-for-threads-without-exception-handler",
+                thread -> {
+                    // Initialize variables.
+                    WfRunVariable person1Approved = thread.addVariable("person-1-approved", VariableType.BOOL);
+                    WfRunVariable person2Approved = thread.addVariable("person-2-approved", VariableType.BOOL);
+                    WfRunVariable person3Approved = thread.addVariable("person-3-approved", VariableType.BOOL);
+                    WfRunVariable allApproved = thread.addVariable("all-approved", VariableType.BOOL);
 
-            // Variables are initialized to NULL. Need to set to a real value.
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
-            thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
+                    // Variables are initialized to NULL. Need to set to a real value.
+                    thread.mutate(allApproved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person1Approved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person2Approved, VariableMutationType.ASSIGN, false);
+                    thread.mutate(person3Approved, VariableMutationType.ASSIGN, false);
 
-            BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread = (approvalVariable, approvalName) -> {
-                return approvalThread -> {
-                    WfRunVariable jsonVariable =
-                            approvalThread.addVariable(approvalName + "-response", VariableType.JSON_OBJ);
-                    approvalThread.mutate(
-                            jsonVariable,
-                            VariableMutationType.ASSIGN,
-                            approvalThread.waitForEvent(approvalName + "-approves"));
-                    approvalThread.doIfElse(
-                            approvalThread.condition(jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
-                            ifHandler -> {
-                                approvalThread.mutate(person2Approved, VariableMutationType.ASSIGN, true);
-                            },
-                            elseHandler -> {
-                                approvalThread.fail("denied-by-user", "message here");
-                            });
-                };
-            };
+                    BiFunction<WfRunVariable, String, ThreadFunc> buildChildThread =
+                            (approvalVariable, approvalName) -> {
+                                return approvalThread -> {
+                                    WfRunVariable jsonVariable = approvalThread.addVariable(
+                                            approvalName + "-response", VariableType.JSON_OBJ);
+                                    approvalThread.mutate(
+                                            jsonVariable,
+                                            VariableMutationType.ASSIGN,
+                                            approvalThread.waitForEvent(approvalName + "-approves"));
+                                    approvalThread.doIfElse(
+                                            approvalThread.condition(
+                                                    jsonVariable.jsonPath("$.approval"), Comparator.EQUALS, true),
+                                            ifHandler -> {
+                                                approvalThread.mutate(
+                                                        person2Approved, VariableMutationType.ASSIGN, true);
+                                            },
+                                            elseHandler -> {
+                                                approvalThread.fail("denied-by-user", "message here");
+                                            });
+                                };
+                            };
 
-            // Wait for all users to approve the transaction
-            SpawnedThread p1Thread =
-                    thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
-            SpawnedThread p2Thread =
-                    thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
-            SpawnedThread p3Thread =
-                    thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
+                    // Wait for all users to approve the transaction
+                    SpawnedThread p1Thread =
+                            thread.spawnThread(buildChildThread.apply(person1Approved, "person-1"), "person-1", null);
+                    SpawnedThread p2Thread =
+                            thread.spawnThread(buildChildThread.apply(person2Approved, "person-2"), "person-2", null);
+                    SpawnedThread p3Thread =
+                            thread.spawnThread(buildChildThread.apply(person3Approved, "person-3"), "person-3", null);
 
-            thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
+                    thread.waitForThreads(SpawnedThreads.of(p1Thread, p2Thread, p3Thread));
 
-            // Tell the reminder workflow to stop
-            thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
-        });
+                    // Tell the reminder workflow to stop
+                    thread.mutate(allApproved, VariableMutationType.ASSIGN, true);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("simple-wait-for-threads-workflow")
@@ -271,14 +283,17 @@ public class WaitForThreadsTest {
                 spawnedThread.execute("add-1", eventOutput.jsonPath("$.myInt"));
             };
         };
-        return new WorkflowImpl("simple-wait-for-thread-workflow", thread -> {
-            SpawnedThread child1 = thread.spawnThread(
-                    buildSpawnThread.apply("input1", "thread-1-event"), "child-1", Map.of("input1", Map.of()));
-            SpawnedThread child2 = thread.spawnThread(
-                    buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
+        return Workflow.newWorkflow(
+                "simple-wait-for-thread-workflow",
+                thread -> {
+                    SpawnedThread child1 = thread.spawnThread(
+                            buildSpawnThread.apply("input1", "thread-1-event"), "child-1", Map.of("input1", Map.of()));
+                    SpawnedThread child2 = thread.spawnThread(
+                            buildSpawnThread.apply("input2", "thread-2-event"), "child-2", Map.of("input2", Map.of()));
 
-            thread.waitForThreads(SpawnedThreads.of(child1, child2));
-        });
+                    thread.waitForThreads(SpawnedThreads.of(child1, child2));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("exc-handler")

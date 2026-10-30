@@ -14,12 +14,12 @@ import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.proto.MetadataCommand;
 import io.littlehorse.common.util.LHUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.monitoring.metrics.CommandProcessorMetrics;
 import io.littlehorse.server.streams.ServerTopology;
@@ -143,10 +143,13 @@ public class PutWfSpecRequestModelTest {
         for (VariableType type : VariableType.values()) {
             if (type == VariableType.UNRECOGNIZED) continue;
             String typeName = type.name().toLowerCase();
-            Workflow wf = Workflow.newWorkflow(LHUtil.toLHName(typeName), thread -> {
-                WfRunVariable var = thread.addVariable(typeName, type);
-                thread.sleepSeconds(var);
-            });
+            Workflow wf = Workflow.newWorkflow(
+                    LHUtil.toLHName(typeName),
+                    thread -> {
+                        WfRunVariable var = thread.addVariable(typeName, type);
+                        thread.sleepSeconds(var);
+                    },
+                    new LHConfig());
             String commandId = UUID.randomUUID().toString();
             MetadataCommand command = MetadataCommand.newBuilder()
                     .setCommandId(commandId)
@@ -176,10 +179,13 @@ public class PutWfSpecRequestModelTest {
         for (VariableType type : VariableType.values()) {
             if (type == VariableType.UNRECOGNIZED) continue;
             String typeName = type.name().toLowerCase();
-            Workflow wf = Workflow.newWorkflow(LHUtil.toLHName(typeName), thread -> {
-                WfRunVariable var = thread.addVariable(typeName, type);
-                thread.sleepUntil(var);
-            });
+            Workflow wf = Workflow.newWorkflow(
+                    LHUtil.toLHName(typeName),
+                    thread -> {
+                        WfRunVariable var = thread.addVariable(typeName, type);
+                        thread.sleepUntil(var);
+                    },
+                    new LHConfig());
             String commandId = UUID.randomUUID().toString();
             MetadataCommand command = MetadataCommand.newBuilder()
                     .setCommandId(commandId)
@@ -207,11 +213,14 @@ public class PutWfSpecRequestModelTest {
 
     @Test
     public void shouldRejectMapContainsExpressionAssignedToVariable() {
-        Workflow wf = Workflow.newWorkflow("map-contains-invalid", thread -> {
-            WfRunVariable map = thread.declareMap("map", String.class, Long.class);
-            WfRunVariable result = thread.declareBool("result");
-            result.assign(map.doesContain("key"));
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "map-contains-invalid",
+                thread -> {
+                    WfRunVariable map = thread.declareMap("map", String.class, Long.class);
+                    WfRunVariable result = thread.declareBool("result");
+                    result.assign(map.doesContain("key"));
+                },
+                new LHConfig());
         String commandId = UUID.randomUUID().toString();
         MetadataCommand command = MetadataCommand.newBuilder()
                 .setCommandId(commandId)
@@ -232,11 +241,15 @@ public class PutWfSpecRequestModelTest {
 
     @Test
     public void shouldAllowArrayContainsExpressionAssignedToVariable() {
-        Workflow wf = Workflow.newWorkflow("array-contains-valid", thread -> {
-            WfRunVariable array = thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
-            WfRunVariable result = thread.declareBool("result");
-            result.assign(array.doesContain(2L));
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "array-contains-valid",
+                thread -> {
+                    WfRunVariable array =
+                            thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+                    WfRunVariable result = thread.declareBool("result");
+                    result.assign(array.doesContain(2L));
+                },
+                new LHConfig());
         String commandId = UUID.randomUUID().toString();
         MetadataCommand command = MetadataCommand.newBuilder()
                 .setCommandId(commandId)
@@ -253,11 +266,16 @@ public class PutWfSpecRequestModelTest {
 
     @Test
     public void shouldAllowArrayContainsExpressionInIfElseCondition() {
-        Workflow wf = Workflow.newWorkflow("array-contains-condition-valid", thread -> {
-            WfRunVariable array = thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
-            WfRunVariable valueToCheck = thread.declareInt("value-to-check").withDefault(2L);
-            thread.doIfElse(array.doesContain(valueToCheck), ifBody -> {}, elseBody -> {});
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "array-contains-condition-valid",
+                thread -> {
+                    WfRunVariable array =
+                            thread.declareArray("array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+                    WfRunVariable valueToCheck =
+                            thread.declareInt("value-to-check").withDefault(2L);
+                    thread.doIfElse(array.doesContain(valueToCheck), ifBody -> {}, elseBody -> {});
+                },
+                new LHConfig());
         String commandId = UUID.randomUUID().toString();
         MetadataCommand command = MetadataCommand.newBuilder()
                 .setCommandId(commandId)
@@ -273,9 +291,12 @@ public class PutWfSpecRequestModelTest {
     }
 
     private PutWfSpecRequest testWorkflowSpec() {
-        return new WorkflowImpl("example-basic", wf -> {
-                    wf.execute("greet");
-                })
+        return Workflow.newWorkflow(
+                        "example-basic",
+                        wf -> {
+                            wf.execute("greet");
+                        },
+                        new LHConfig())
                 .compileWorkflow();
     }
 }

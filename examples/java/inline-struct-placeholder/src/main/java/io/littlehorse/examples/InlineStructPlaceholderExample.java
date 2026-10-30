@@ -13,7 +13,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,18 +46,21 @@ public class InlineStructPlaceholderExample {
         return Map.of("company", COMPANY, "customerStructName", CUSTOMER_STRUCT);
     }
 
-    public static Workflow getWorkflow() {
+    public static Workflow getWorkflow(LHConfig config) {
         String createTaskName = COMPANY + "-create-customer";
         String emailTaskName = COMPANY + "-email-customer";
 
-        return new WorkflowImpl(WF_SPEC_NAME, wf -> {
-            WfRunVariable name = wf.declareStr("name").required();
-            WfRunVariable email = wf.declareStr("email").required();
-            WfRunVariable message = wf.declareStr("message").required();
+        return Workflow.newWorkflow(
+                WF_SPEC_NAME,
+                wf -> {
+                    WfRunVariable name = wf.declareStr("name").required();
+                    WfRunVariable email = wf.declareStr("email").required();
+                    WfRunVariable message = wf.declareStr("message").required();
 
-            NodeOutput customer = wf.execute(createTaskName, name, email);
-            wf.execute(emailTaskName, customer, message);
-        });
+                    NodeOutput customer = wf.execute(createTaskName, name, email);
+                    wf.execute(emailTaskName, customer, message);
+                },
+                config);
     }
 
     public static List<LHTaskWorker> getTaskWorkers(LHConfig config) {
@@ -119,7 +121,7 @@ public class InlineStructPlaceholderExample {
     public static void runWorkers() throws IOException {
         LHConfig config = new LHConfig(getConfigProps());
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         registerStructDef(config.getBlockingStub());

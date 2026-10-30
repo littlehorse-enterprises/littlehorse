@@ -8,6 +8,7 @@ import e2e.Struct.PinStructV1;
 import e2e.Struct.UnknownStructDef;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -21,7 +22,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.WithStructDefs;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -39,9 +39,12 @@ public class WfSpecLifecycleTest {
 
     @Test
     void shouldRejectPutWfSpecRequestWithInvalidStructDef() {
-        Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-            wf.declareStruct("my-struct", UnknownStructDef.class).required();
-        });
+        Workflow originalWorkflow = Workflow.newWorkflow(
+                "sample",
+                wf -> {
+                    wf.declareStruct("my-struct", UnknownStructDef.class).required();
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> {
                     client.putWfSpec(originalWorkflow.compileWorkflow());
@@ -85,15 +88,21 @@ public class WfSpecLifecycleTest {
     class AllowAllUpdates {
         @Test
         void shouldBeIdempotent() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -105,16 +114,22 @@ public class WfSpecLifecycleTest {
 
         @Test
         void shouldCreateMinorRevisionWhenUpdatingTheWorkflow() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-                wf.addVariable("optional", VariableType.STR);
-            });
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                        wf.addVariable("optional", VariableType.STR);
+                    },
+                    new LHConfig());
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -126,16 +141,22 @@ public class WfSpecLifecycleTest {
 
         @Test
         void shouldAddMajorVersionWhenWfSpecHasBreakingChanges() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-                wf.addVariable("second-required", VariableType.BOOL).required();
-            });
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                        wf.addVariable("second-required", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
 
@@ -230,21 +251,30 @@ public class WfSpecLifecycleTest {
         }
 
         public Workflow getWfPinTestImplicitVersion(String name) {
-            return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", STRUCT_DEF_NAME).required();
-            });
+            return Workflow.newWorkflow(
+                    name,
+                    thread -> {
+                        thread.declareStruct("in", STRUCT_DEF_NAME).required();
+                    },
+                    new LHConfig());
         }
 
         public Workflow getWfPinTestExplicitVersionV0(String name) {
-            return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", STRUCT_DEF_NAME, 0).required();
-            });
+            return Workflow.newWorkflow(
+                    name,
+                    thread -> {
+                        thread.declareStruct("in", STRUCT_DEF_NAME, 0).required();
+                    },
+                    new LHConfig());
         }
 
         public Workflow getWfPinTestExplicitVersionV2(String name) {
-            return new WorkflowImpl(name, thread -> {
-                thread.declareStruct("in", STRUCT_DEF_NAME, 999).required();
-            });
+            return Workflow.newWorkflow(
+                    name,
+                    thread -> {
+                        thread.declareStruct("in", STRUCT_DEF_NAME, 999).required();
+                    },
+                    new LHConfig());
         }
     }
 
@@ -260,9 +290,12 @@ public class WfSpecLifecycleTest {
 
     private PutWfSpecRequest getWfSpecWithInlineStructVariable(
             String wfSpecName, String fieldName, TypeDefinition fieldType) {
-        PutWfSpecRequest.Builder request = Workflow.newWorkflow(wfSpecName, wf -> {
+        PutWfSpecRequest.Builder request = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
                     wf.addVariable("input", VariableType.STR).required();
-                })
+                },
+                new LHConfig())
                 .compileWorkflow()
                 .toBuilder();
         String entrypointName = request.getEntrypointThreadName();
@@ -285,15 +318,21 @@ public class WfSpecLifecycleTest {
     class AllowNone {
         @Test
         void shouldReturnBeIdempotent() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                        wf.addVariable("variable", VariableType.BOOL).required();
-                    })
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                            "sample",
+                            wf -> {
+                                wf.addVariable("variable", VariableType.BOOL).required();
+                            },
+                            new LHConfig())
                     .withUpdateType(AllowedUpdateType.NO_UPDATES);
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
@@ -306,16 +345,22 @@ public class WfSpecLifecycleTest {
 
         @Test
         void shouldThrowAlreadyExistsWhenUpdatingWfSpec() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                        wf.addVariable("variable", VariableType.BOOL).required();
-                        wf.addVariable("some", VariableType.STR);
-                    })
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                            "sample",
+                            wf -> {
+                                wf.addVariable("variable", VariableType.BOOL).required();
+                                wf.addVariable("some", VariableType.STR);
+                            },
+                            new LHConfig())
                     .withUpdateType(AllowedUpdateType.NO_UPDATES);
 
             assertThatThrownBy(() -> client.putWfSpec(updatedWorkflow.compileWorkflow()))
@@ -328,15 +373,21 @@ public class WfSpecLifecycleTest {
     class MinorRevisionOnly {
         @Test
         void shouldReturnBeIdempotent() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                        wf.addVariable("variable", VariableType.BOOL).required();
-                    })
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                            "sample",
+                            wf -> {
+                                wf.addVariable("variable", VariableType.BOOL).required();
+                            },
+                            new LHConfig())
                     .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
@@ -349,16 +400,22 @@ public class WfSpecLifecycleTest {
 
         @Test
         void shouldCreateMinorRevisionWhenUpdatingTheWorkflow() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             WfSpec originalSpec = client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                        wf.addVariable("variable", VariableType.BOOL).required();
-                        wf.addVariable("optional", VariableType.STR);
-                    })
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                            "sample",
+                            wf -> {
+                                wf.addVariable("variable", VariableType.BOOL).required();
+                                wf.addVariable("optional", VariableType.STR);
+                            },
+                            new LHConfig())
                     .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             WfSpec updatedSpec = client.putWfSpec(updatedWorkflow.compileWorkflow());
@@ -371,16 +428,22 @@ public class WfSpecLifecycleTest {
 
         @Test
         void shouldThrowFailedPreconditionWhenWfSpecHasBreakingChanges() {
-            Workflow originalWorkflow = Workflow.newWorkflow("sample", wf -> {
-                wf.addVariable("variable", VariableType.BOOL).required();
-            });
+            Workflow originalWorkflow = Workflow.newWorkflow(
+                    "sample",
+                    wf -> {
+                        wf.addVariable("variable", VariableType.BOOL).required();
+                    },
+                    new LHConfig());
 
             client.putWfSpec(originalWorkflow.compileWorkflow());
 
-            Workflow updatedWorkflow = Workflow.newWorkflow("sample", wf -> {
-                        wf.addVariable("variable", VariableType.BOOL).required();
-                        wf.addVariable("searchable", VariableType.BOOL).required();
-                    })
+            Workflow updatedWorkflow = Workflow.newWorkflow(
+                            "sample",
+                            wf -> {
+                                wf.addVariable("variable", VariableType.BOOL).required();
+                                wf.addVariable("searchable", VariableType.BOOL).required();
+                            },
+                            new LHConfig())
                     .withUpdateType(AllowedUpdateType.MINOR_REVISION_UPDATES);
 
             assertThatThrownBy(() -> client.putWfSpec(updatedWorkflow.compileWorkflow()))

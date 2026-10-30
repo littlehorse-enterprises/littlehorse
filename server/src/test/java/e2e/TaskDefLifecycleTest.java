@@ -102,9 +102,12 @@ public class TaskDefLifecycleTest {
             String wfSpecName = UUID.randomUUID().toString();
             PutTaskDefRequest ptd =
                     PutTaskDefRequest.newBuilder().setName(taskDefName).build();
-            PutWfSpecRequest putWfSpec = Workflow.newWorkflow(wfSpecName, wf -> {
-                        wf.execute(taskDefName);
-                    })
+            PutWfSpecRequest putWfSpec = Workflow.newWorkflow(
+                            wfSpecName,
+                            wf -> {
+                                wf.execute(taskDefName);
+                            },
+                            new LHConfig())
                     .compileWorkflow();
 
             // Calling these two in immediate succession should guarantee that it works.
