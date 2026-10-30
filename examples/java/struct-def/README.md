@@ -87,6 +87,11 @@ lhctl list nodeRun <wf_run_id>
 lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```
 
+## Oneof example
+
+See [the oneof payment workflow](ONEOF.md) for declaring mutually exclusive fields
+and passing the same payment to workers using either Java API.
+
 ## Coming Soon
 
 Additional `StructDef` functionality and demos are coming soon, including:

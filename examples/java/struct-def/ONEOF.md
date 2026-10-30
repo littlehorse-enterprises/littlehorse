@@ -1,14 +1,54 @@
-# Two Java APIs, one protobuf representation
+# Oneof payment workflow
 
-Run the client-only example from the repository root:
+This example sends a payment through two tasks. One task reads it using annotations
+on individual fields; the other uses a separate `PaymentMethod` type. Both use the
+same registered `payment` StructDef.
+
+The example requires a running LittleHorse server and uses
+`~/.config/littlehorse.config` and the usual `LHC_*` environment variables.
+Server support for oneofs is still pending in this prototype, so registration or
+execution may fail until that support is implemented.
+
+## Start the workers
+
+From the repository root, run:
 
 ```sh
 ./gradlew :example-struct-def:runOneOfExample
 ```
 
-[OneOfStructExample.java](src/main/java/io/littlehorse/examples/OneOfStructExample.java)
-prints identical schema/value comparisons and reads the same value into both
-Java models. No server is needed.
+This registers the `payment` StructDef, both TaskDefs, and the `oneof-payment`
+WfSpec, then starts the workers. Leave it running.
+
+## Run the workflow
+
+In another terminal, submit a payment using the field annotations:
+
+```sh
+./gradlew :example-struct-def:runOneOfExample --args='fields'
+```
+
+Or submit the same payment using the helper type:
+
+```sh
+./gradlew :example-struct-def:runOneOfExample --args='helper'
+```
+
+Each command prints the WfRun ID returned by the server. Both tasks should return
+`Order order-123 uses a card`. Inspect the run and task results with:
+
+```sh
+lhctl get wfRun <wf_run_id>
+lhctl list nodeRun <wf_run_id>
+lhctl get taskRun <wf_run_id> <task_run_global_id>
+```
+
+See [OneOfStructExample.java](src/main/java/io/littlehorse/examples/OneOfStructExample.java)
+for registration and submission, and
+[OneOfPaymentWorker.java](src/main/java/io/littlehorse/examples/OneOfPaymentWorker.java)
+for the two task methods.
+
+## Declare the payment
 
 Declare alternatives directly on record components (or POJO fields/accessors):
 
@@ -17,14 +57,15 @@ Declare alternatives directly on record components (or POJO fields/accessors):
 public record FlatPayment(
         String orderId,
         @LHStructOneOf(group = "method", required = true) String cardToken,
-        @LHStructOneOf(group = "method", required = true) String bankAccountId) {}
+        @LHStructOneOf(group = "method", required = true) String bankAccountId,
+        @LHStructOneOf(group = "method", required = true) String walletId) {}
 ```
 
 Or define a helper type:
 
 ```java
 @LHStructOneOf(required = true)
-public record PaymentMethod(String cardToken, String bankAccountId) {}
+public record PaymentMethod(String cardToken, String bankAccountId, String walletId) {}
 
 @LHStructDef("payment")
 public record NestedPayment(String orderId, PaymentMethod method) {}
@@ -50,7 +91,7 @@ the nested Struct and its selected field; they do not repeat the rule.
 `required` defaults to false for either placement. Omit `group` on types;
 it is required on properties. Every flat group's members must agree on
 `required`. An optional selection still emits the container: `"method": {}`.
-The equivalent nested value is `new PaymentMethod(null, null)`. A null nested
+The equivalent nested value is `new PaymentMethod(null, null, null)`. A null nested
 parent requires the existing `@LHStructField(isNullable = true)` annotation and
 has a different meaning from an empty choice.
 

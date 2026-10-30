@@ -1,14 +1,20 @@
 package io.littlehorse.examples;
 
-import com.google.protobuf.util.JsonFormat;
 import io.littlehorse.sdk.common.LHLibUtil;
-import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructOneOf;
+import io.littlehorse.sdk.worker.LHTaskWorker;
+import java.util.List;
 
-/** Compare two Java APIs for the same schema and value, without connecting to a server. */
 public class OneOfStructExample {
+    private static final String WF_SPEC_NAME = "oneof-payment";
+
     @LHStructDef("payment")
     public record FlatPayment(
             String orderId,
@@ -22,26 +28,55 @@ public class OneOfStructExample {
     @LHStructDef("payment")
     public record NestedPayment(String orderId, PaymentMethod method) {}
 
+    public static Workflow getWorkflow() {
+        return new WorkflowImpl(WF_SPEC_NAME, wf -> {
+            WfRunVariable payment =
+                    wf.declareStruct("payment", FlatPayment.class).required();
+            wf.execute("describe-payment-fields", payment);
+            wf.execute("describe-payment-helper", payment);
+        });
+    }
+
     public static void main(String[] args) throws Exception {
-        var flatDefinition = new LHStructDefType(FlatPayment.class).toPutStructDefRequest();
-        var nestedDefinition = new LHStructDefType(NestedPayment.class).toPutStructDefRequest();
-        System.out.println("Identical schemas: " + flatDefinition.equals(nestedDefinition));
-        System.out.println(JsonFormat.printer().print(flatDefinition));
+        LHConfig config = new LHConfig(StructDefExample.getConfigProps());
+        if (args.length == 0) {
+            runWorkers(config);
+        } else {
+            runWorkflow(config, args[0]);
+        }
+    }
 
-        var flat = new FlatPayment("order-123", "tok_abc", null, null);
-        var nested = new NestedPayment("order-123", new PaymentMethod("tok_abc", null, null));
-        var flatValue = LHLibUtil.objToVarVal(flat);
-        var nestedValue = LHLibUtil.objToVarVal(nested);
-        System.out.println("Identical values: " + flatValue.equals(nestedValue));
-        System.out.println(JsonFormat.printer().print(flatValue));
+    public static void runWorkers(LHConfig config) {
+        var client = config.getBlockingStub();
+        // Both Java models describe the same named StructDef, so register it once.
+        client.putStructDef(new LHStructDefType(FlatPayment.class).toPutStructDefRequest());
 
-        // Either Java model can read the same protobuf value, including after a binary round trip.
-        var received = VariableValue.parseFrom(flatValue.toByteArray());
-        System.out.println(LHLibUtil.varValToObj(received, FlatPayment.class));
-        System.out.println(LHLibUtil.varValToObj(received, NestedPayment.class));
+        OneOfPaymentWorker executable = new OneOfPaymentWorker();
+        List<LHTaskWorker> workers = List.of(
+                new LHTaskWorker(executable, "describe-payment-fields", config),
+                new LHTaskWorker(executable, "describe-payment-helper", config));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(LHTaskWorker::close)));
 
-        // Access stays natural for the model you chose.
-        System.out.println(flat.cardToken());
-        System.out.println(nested.method().cardToken());
+        for (LHTaskWorker worker : workers) {
+            worker.registerTaskDef();
+        }
+        getWorkflow().registerWfSpec(client);
+        workers.forEach(LHTaskWorker::start);
+    }
+
+    public static void runWorkflow(LHConfig config, String style) {
+        Object payment =
+                switch (style) {
+                    case "fields" -> new FlatPayment("order-123", "tok_abc", null, null);
+                    case "helper" -> new NestedPayment("order-123", new PaymentMethod("tok_abc", null, null));
+                    default -> throw new IllegalArgumentException("Expected declaration style: fields or helper");
+                };
+
+        var run = config.getBlockingStub()
+                .runWf(RunWfRequest.newBuilder()
+                        .setWfSpecName(WF_SPEC_NAME)
+                        .putVariables("payment", LHLibUtil.objToVarVal(payment))
+                        .build());
+        System.out.println("Started workflow run: " + run.getId().getId());
     }
 }
