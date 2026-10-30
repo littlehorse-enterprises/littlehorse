@@ -212,7 +212,7 @@ class UserTaskEvent(_message.Message):
         task_run: _object_id_pb2.TaskRunId
         def __init__(self, task_run: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ...) -> None: ...
     class UTESaved(_message.Message):
-        __slots__ = ("user_id", "results")
+        __slots__ = ("user_id", "results", "output")
         class ResultsEntry(_message.Message):
             __slots__ = ("key", "value")
             KEY_FIELD_NUMBER: _ClassVar[int]
@@ -222,9 +222,11 @@ class UserTaskEvent(_message.Message):
             def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
         USER_ID_FIELD_NUMBER: _ClassVar[int]
         RESULTS_FIELD_NUMBER: _ClassVar[int]
+        OUTPUT_FIELD_NUMBER: _ClassVar[int]
         user_id: str
         results: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
-        def __init__(self, user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ...) -> None: ...
+        output: _type_definition_pb2.VariableValue
+        def __init__(self, user_id: _Optional[str] = ..., results: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
     class UTEAssigned(_message.Message):
         __slots__ = ("old_user_id", "old_user_group", "new_user_id", "new_user_group")
         OLD_USER_ID_FIELD_NUMBER: _ClassVar[int]

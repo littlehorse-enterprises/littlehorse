@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -11,6 +12,8 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -90,6 +93,27 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             throw new IllegalStateException("Tried to get output of non-DONE user task");
         }
 
+        UserTaskDefModel userTaskDef = processorContext.metadataManager().get(userTask.getUserTaskDefId());
+        if (userTaskDef.getResultStructDefId() != null) {
+            VariableValueModel outputModel = userTask.getOutput();
+            if (outputModel == null) {
+                throw new IllegalStateException("Completed Struct-backed UserTaskRun has no output");
+            }
+            try {
+                new TypeDefinitionModel(
+                                userTask.getResultStructDefId() != null
+                                        ? userTask.getResultStructDefId()
+                                        : userTaskDef.getResultStructDefId())
+                        .validateCompatibility(outputModel, processorContext.metadataManager());
+            } catch (TypeValidationException exn) {
+                throw new IllegalStateException("Stored UserTaskRun output is invalid", exn);
+            }
+            return Optional.of(outputModel);
+        }
+        if (userTaskDef.getFields().isEmpty()) {
+            return Optional.empty();
+        }
+
         Map<String, Object> rawOutput = new HashMap<>();
         for (Map.Entry<String, VariableValueModel> entry : userTask.getResults().entrySet()) {
             rawOutput.put(entry.getKey(), entry.getValue().getVal());
@@ -112,6 +136,18 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
                     new FailureModel("Appears that UserTaskDef was deleted!", LHConstants.TASK_ERROR));
         }
         UserTaskRunModel out = new UserTaskRunModel(utd, utn, getNodeRun(), processorContext);
+        if (utd.getResultStructDefId() != null) {
+            StructDefModel latest = processorContext
+                    .service()
+                    .getStructDef(utd.getResultStructDefId().getName(), null);
+            if (latest == null
+                    || latest.getObjectId().getVersion()
+                            < utd.getResultStructDefId().getVersion()) {
+                throw new NodeFailureException(new FailureModel(
+                        "No compatible StructDef found for UserTaskDef " + utd.getObjectId(), LHConstants.TASK_ERROR));
+            }
+            out.setResultStructDefId(latest.getObjectId());
+        }
         // Now we create a new UserTaskRun.
 
         userTaskRunId = out.getObjectId();

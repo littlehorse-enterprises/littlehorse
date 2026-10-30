@@ -626,13 +626,20 @@ export interface UserTaskEvent_UTESaved {
      */
     userId: string;
     /**
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      *
-     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2
+     * @deprecated
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> results = 2 [deprecated = true]
      */
     results: {
         [key: string]: VariableValue;
     };
+    /**
+     * The saved Struct output, preserving field metadata such as masking.
+     *
+     * @generated from protobuf field: littlehorse.VariableValue output = 3
+     */
+    output?: VariableValue;
 }
 /**
  * Message denoting that the UserTaskRun was assigned.
@@ -1852,7 +1859,8 @@ class UserTaskEvent_UTESaved$Type extends MessageType<UserTaskEvent_UTESaved> {
     constructor() {
         super("littlehorse.UserTaskEvent.UTESaved", [
             { no: 1, name: "user_id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "results", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } }
+            { no: 2, name: "results", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } },
+            { no: 3, name: "output", kind: "message", T: () => VariableValue }
         ]);
     }
     create(value?: PartialMessage<UserTaskEvent_UTESaved>): UserTaskEvent_UTESaved {
@@ -1871,8 +1879,11 @@ class UserTaskEvent_UTESaved$Type extends MessageType<UserTaskEvent_UTESaved> {
                 case /* string user_id */ 1:
                     message.userId = reader.string();
                     break;
-                case /* map<string, littlehorse.VariableValue> results */ 2:
+                case /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true] */ 2:
                     this.binaryReadMap2(message.results, reader, options);
+                    break;
+                case /* littlehorse.VariableValue output */ 3:
+                    message.output = VariableValue.internalBinaryRead(reader, reader.uint32(), options, message.output);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1905,13 +1916,16 @@ class UserTaskEvent_UTESaved$Type extends MessageType<UserTaskEvent_UTESaved> {
         /* string user_id = 1; */
         if (message.userId !== "")
             writer.tag(1, WireType.LengthDelimited).string(message.userId);
-        /* map<string, littlehorse.VariableValue> results = 2; */
+        /* map<string, littlehorse.VariableValue> results = 2 [deprecated = true]; */
         for (let k of globalThis.Object.keys(message.results)) {
             writer.tag(2, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
             writer.tag(2, WireType.LengthDelimited).fork();
             VariableValue.internalBinaryWrite(message.results[k], writer, options);
             writer.join().join();
         }
+        /* littlehorse.VariableValue output = 3; */
+        if (message.output)
+            VariableValue.internalBinaryWrite(message.output, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
