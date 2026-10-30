@@ -53,6 +53,7 @@ import io.littlehorse.sdk.common.util.JsonResult;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructOneOfType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructOneOf;
@@ -791,7 +792,7 @@ public class LHLibUtil {
     // A selection rule applies to a present helper; its parent controls presence and defaults.
     private static void validateOneofFields(String typeName, InlineStructDef definition, InlineStruct fields) {
         if (definition.hasOneofConfig()) {
-            validateOneofSelection(typeName, definition, fields);
+            new LHStructOneOfType(typeName, definition).validateSelection(fields);
         }
         for (var entry : definition.getFieldsMap().entrySet()) {
             String name = entry.getKey();
@@ -818,27 +819,8 @@ public class LHLibUtil {
                     || !value.getStruct().hasStruct()) {
                 throw new IllegalArgumentException("Oneof field " + name + " must be a nested inline Struct");
             }
-            validateOneofSelection(
-                    name,
-                    field.getFieldType().getInlineStructDef(),
-                    value.getStruct().getStruct());
-        }
-    }
-
-    private static void validateOneofSelection(String name, InlineStructDef definition, InlineStruct value) {
-        for (var entry : value.getFieldsMap().entrySet()) {
-            if (!definition.containsFields(entry.getKey())) {
-                throw new IllegalArgumentException("Unknown field " + entry.getKey() + " in oneof " + name);
-            }
-            if (entry.getValue().getValue().getValueCase() == ValueCase.VALUE_NOT_SET) {
-                throw new IllegalArgumentException("Oneof field " + entry.getKey() + " cannot be null");
-            }
-        }
-        boolean required = definition.getOneofConfig().getSelectionRequired();
-        int count = value.getFieldsCount();
-        if (count > 1 || (required && count != 1)) {
-            throw new IllegalArgumentException(
-                    "Oneof " + name + " requires " + (required ? "exactly" : "at most") + " one field, found " + count);
+            new LHStructOneOfType(name, field.getFieldType().getInlineStructDef())
+                    .validateSelection(value.getStruct().getStruct());
         }
     }
 
