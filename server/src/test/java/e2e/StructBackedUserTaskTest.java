@@ -43,7 +43,7 @@ public class StructBackedUserTaskTest {
 
     @Test
     void shouldMaskSavedStructEventOutput() {
-                StructBackedTask task = registerStructBackedTaskWMasked();
+        StructBackedTask task = registerStructBackedTaskWMasked();
         workflowVerifier
                 .prepareRun(workflow(task.userTaskDefName()))
                 .waitForStatus(RUNNING)
@@ -69,7 +69,8 @@ public class StructBackedUserTaskTest {
                             .orElseThrow()
                             .getSaved();
                     assertThat(savedEvent.getResultsMap()).isEmpty();
-                    assertThat(savedEvent.getOutput()
+                    assertThat(savedEvent
+                                    .getOutput()
                                     .getStruct()
                                     .getStruct()
                                     .getFieldsOrThrow("ssn")
@@ -384,6 +385,7 @@ public class StructBackedUserTaskTest {
                 .build());
         return new StructBackedTask(userTaskDefName, structDef);
     }
+
     private Workflow workflow(String userTaskDefName) {
         return new WorkflowImpl(
                 "struct-user-task-wf-" + UUID.randomUUID(),
