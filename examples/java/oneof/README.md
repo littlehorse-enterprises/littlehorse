@@ -3,8 +3,7 @@
 This example passes a payment to two tasks: one uses oneof annotations on individual
 fields, and the other uses a separate `PaymentMethod` type. Both read the same payment.
 
-A running LittleHorse server with oneof support is required. Server support is not
-implemented in this draft yet.
+A running LittleHorse server with oneof support is required.
 
 Register the workflow and start the workers:
 
