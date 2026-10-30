@@ -314,17 +314,11 @@ public class LHStructDefType extends LHClassType {
     }
 
     private InlineStructDef buildInlineStructDef() {
-        InlineStructDef.Builder inlineStructDef = InlineStructDef.newBuilder();
-
         try {
-            for (LHStructProperty property : this.getStructProperties()) {
-                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
-            }
+            return LHInlineStructDefType.buildInlineStructDef(clazz, getStructProperties(), typeAdapterRegistry);
         } catch (IntrospectionException e) {
             throw new IllegalStateException("Cannot build InlineStructDef for type: " + this.clazz.getName(), e);
         }
-
-        return inlineStructDef.build();
     }
 
     /**
