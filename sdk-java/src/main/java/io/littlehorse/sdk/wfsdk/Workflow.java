@@ -196,6 +196,28 @@ public abstract class Workflow {
     }
 
     /**
+     * Creates a workflow that can be run without registering a WfSpec.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(ThreadFunc entrypointThreadFunc) {
+        return new InlineWorkflow(entrypointThreadFunc);
+    }
+
+    /**
+     * Creates an inline workflow with placeholder values for referenced StructDef names.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(
+            ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
+        return new InlineWorkflow(entrypointThreadFunc, placeholderValues);
+    }
+
+    /**
      * Creates a new Workflow with the provided name, entrypoint thread function, and placeholder values.
      *
      * <p>The {@code placeholderValues} are used to resolve {@code ${...}} placeholders in the names of

@@ -26,6 +26,7 @@ import { type ZodTypeAny } from 'zod'
 export type TaskFunction = (...args: any[]) => any | Promise<any>
 
 const HEARTBEAT_INTERVAL_MS = 15_000
+const INITIAL_REGISTRATION_RETRY_MS = 1_000
 const REPORT_TASK_MAX_RETRIES = 5
 const REPORT_TASK_RETRY_DELAY_MS = 2_000
 const CLOSE_DRAIN_TIMEOUT_MS = 30_000
@@ -498,7 +499,8 @@ export function createTaskWorker(
   const maxInflightTasks = options.maxInflightTasks ?? config.getNumWorkerThreads()
   const connections = new Map<string, ServerConnection>()
   let running = false
-  let heartbeatTimer: ReturnType<typeof setInterval> | undefined
+  let heartbeatTimer: ReturnType<typeof setTimeout> | undefined
+  let registered = false
   let lastHeartbeatFailed = false
   let clusterHealthy = true
 
@@ -510,6 +512,7 @@ export function createTaskWorker(
         taskWorkerId,
         taskDefId: { name: taskDefName },
       })
+      registered = true
 
       const newHosts = new Set(response.yourHosts.map(h => `${h.host}:${h.port}`))
 
@@ -556,6 +559,16 @@ export function createTaskWorker(
       lastHeartbeatFailed = true
       console.error('[LHTaskWorker] Failed to register with server:', err)
     }
+  }
+
+  function scheduleHeartbeat(): void {
+    if (!running) return
+    const heartbeatIntervalMs = options.heartbeatIntervalMs ?? HEARTBEAT_INTERVAL_MS
+    const delay = registered ? heartbeatIntervalMs : Math.min(INITIAL_REGISTRATION_RETRY_MS, heartbeatIntervalMs)
+    heartbeatTimer = setTimeout(async () => {
+      await heartbeat()
+      scheduleHeartbeat()
+    }, delay)
   }
 
   const api: LHTaskWorker = {
@@ -693,13 +706,9 @@ export function createTaskWorker(
 
       console.log(`[LHTaskWorker] Starting worker for TaskDef '${taskDefName}' (id: ${taskWorkerId})`)
 
-      // Run heartbeat immediately, then on an interval
+      // Run immediately, then schedule the next attempt after this one completes.
       await heartbeat()
-      heartbeatTimer = setInterval(() => {
-        heartbeat().catch(err => {
-          console.error('[LHTaskWorker] Heartbeat error:', err)
-        })
-      }, options.heartbeatIntervalMs ?? HEARTBEAT_INTERVAL_MS)
+      scheduleHeartbeat()
     },
 
     async close(): Promise<void> {
@@ -709,7 +718,7 @@ export function createTaskWorker(
       console.log(`[LHTaskWorker] Shutting down worker for TaskDef '${taskDefName}'`)
 
       if (heartbeatTimer) {
-        clearInterval(heartbeatTimer)
+        clearTimeout(heartbeatTimer)
         heartbeatTimer = undefined
       }
 

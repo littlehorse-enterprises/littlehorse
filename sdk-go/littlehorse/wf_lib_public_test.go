@@ -8,7 +8,63 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func TestDoWhileCompilesFallbackForFalseCondition(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		numDonuts := thread.DeclareInt("number-of-donuts")
+		thread.DoWhile(numDonuts.IsGreaterThan(1), func(body *littlehorse.WorkflowThread) {
+			numDonuts.Assign(body.Execute("eat-donut", numDonuts))
+		})
+	}, "while-workflow")
+
+	compiled, err := wf.Compile()
+	require.NoError(t, err)
+	nodes := compiled.ThreadSpecs["entrypoint"].Nodes
+	variable := &lhproto.VariableAssignment{
+		Source: &lhproto.VariableAssignment_VariableName{VariableName: "number-of-donuts"},
+	}
+	expectedCondition := &lhproto.VariableAssignment{
+		Source: &lhproto.VariableAssignment_Expression_{
+			Expression: &lhproto.VariableAssignment_Expression{
+				Lhs: variable,
+				Operation: &lhproto.VariableAssignment_Expression_Comparator{
+					Comparator: lhproto.Comparator_GREATER_THAN,
+				},
+				Rhs: &lhproto.VariableAssignment{
+					Source: &lhproto.VariableAssignment_LiteralValue{
+						LiteralValue: &lhproto.VariableValue{Value: &lhproto.VariableValue_Int{Int: 1}},
+					},
+				},
+			},
+		},
+	}
+
+	expectedEntryNode := lhproto.Node{
+		Node: &lhproto.Node_Nop{},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName:  "2-eat-donut-TASK",
+				EdgeCondition: &lhproto.Edge_Condition{Condition: expectedCondition},
+			},
+			{SinkNodeName: "3-nop-NOP"},
+		},
+	}
+	expectedExitNode := lhproto.Node{
+		Node: &lhproto.Node_Nop{},
+		OutgoingEdges: []*lhproto.Edge{
+			{
+				SinkNodeName:  "1-nop-NOP",
+				EdgeCondition: &lhproto.Edge_Condition{Condition: expectedCondition},
+			},
+			{SinkNodeName: "4-exit-EXIT"},
+		},
+	}
+
+	assert.True(t, proto.Equal(&expectedEntryNode, nodes["1-nop-NOP"]), "expected %v, got %v", &expectedEntryNode, nodes["1-nop-NOP"])
+	assert.True(t, proto.Equal(&expectedExitNode, nodes["3-nop-NOP"]), "expected %v, got %v", &expectedExitNode, nodes["3-nop-NOP"])
+}
 
 func TestShouldCompileWorkflowWithContainsCondition(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {

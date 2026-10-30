@@ -3,7 +3,10 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
+import io.littlehorse.sdk.common.proto.RunInlineWfRequest;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
+import io.littlehorse.sdk.common.proto.WfRun;
+import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +79,32 @@ public class InlineStructDefExample {
     }
 
     public static void main(String[] args) throws IOException {
-        runWorkers();
+        if (args.length > 1) {
+            throw new IllegalArgumentException("Usage: InlineStructDefExample [workers|inline]");
+        }
+        String mode = args.length == 0 ? "workers" : args[0];
+        switch (mode) {
+            case "workers" -> runWorkers();
+            case "inline" -> runInlineWorkflow();
+            default -> throw new IllegalArgumentException("Usage: InlineStructDefExample [workers|inline]");
+        }
+    }
+
+    public static void runInlineWorkflow() throws IOException {
+        LHConfig config = new LHConfig(getConfigProps());
+        UUID random = UUID.randomUUID();
+        Order order = new Order(
+                "ORD-%s".formatted(random.toString()),
+                new DeliveryAddress("123 Main Street   ", "        Springfield", "      12345"));
+        RunInlineWfRequest request = Workflow.inlineWorkflow(thread -> {
+                    NodeOutput normalizedOrder = thread.execute("normalize-order", order);
+                    NodeOutput shippingLabel = thread.execute("format-shipping-label", normalizedOrder);
+                    thread.complete(shippingLabel);
+                })
+                .compileWorkflow(config);
+
+        WfRun run = config.getBlockingStub().runInlineWf(request);
+        System.out.println("Started inline WfRun: " + run.getId().getId());
     }
 
     public static void runWorkers() throws IOException {

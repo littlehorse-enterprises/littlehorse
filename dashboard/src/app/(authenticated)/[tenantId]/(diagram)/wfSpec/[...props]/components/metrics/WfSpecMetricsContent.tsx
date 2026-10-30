@@ -12,6 +12,7 @@ import { WfSpecMetricsLineChart } from './WfSpecMetricsLineChart'
 import { WfSpecMetricsPieChart } from './WfSpecMetricsPieChart'
 
 export type WfSpecMetricsContentProps = {
+  redrawKey: number
   isLoading: boolean
   error: unknown
   hasData: boolean
@@ -22,6 +23,7 @@ export type WfSpecMetricsContentProps = {
 }
 
 export const WfSpecMetricsContent: FC<WfSpecMetricsContentProps> = ({
+  redrawKey,
   isLoading,
   error,
   hasData,
@@ -50,6 +52,7 @@ export const WfSpecMetricsContent: FC<WfSpecMetricsContentProps> = ({
         <>
           <TabsContent value="line" className="mt-0">
             <WfSpecMetricsLineChart
+              key={redrawKey}
               viewMode={viewMode}
               chartConfig={chartConfig}
               countData={countData}
@@ -57,7 +60,7 @@ export const WfSpecMetricsContent: FC<WfSpecMetricsContentProps> = ({
             />
           </TabsContent>
           <TabsContent value="pie" className="mt-0">
-            <WfSpecMetricsPieChart viewMode={viewMode} pieData={pieData} />
+            <WfSpecMetricsPieChart key={redrawKey} viewMode={viewMode} pieData={pieData} />
           </TabsContent>
         </>
       )}
