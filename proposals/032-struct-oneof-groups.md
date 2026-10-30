@@ -45,7 +45,7 @@ public record Payment(
 
 Fields sharing the group name are mutually exclusive. `orderId` remains an ordinary field. Multiple groups can coexist in the same Struct, but a field can belong to only one group.
 
-The same annotation on a class or record makes all its included fields alternatives. Omit `group` on types; it is required on properties:
+The same annotation on a class or record makes all its included fields alternatives. We omit `group` when using `LHStructOneOf` on types, as the name of the group is ultimately defined by the property using that type:
 
 ```java
 @LHStructOneOf(required = true)
@@ -115,8 +115,6 @@ payment = Payment(
 
 `lh_oneof` will build an inline schema and generate a constructor that initializes omitted alternatives to `None`. Field-level markers will also allow omitted alternatives.
 
-The SDK will unwrap `T | None` or `Optional[T]` for type mapping. `None` leaves the field unset; it does not make it nullable in protobuf. Explicit defaults and unions of multiple non-None types will be rejected.
-
 In **.NET**, a separate inline type will use `[LHStructOneOf]`, following the existing [attribute conventions](../sdk-dotnet/LittleHorse.Sdk/Worker/LHStructDefAttribute.cs):
 
 ```csharp
@@ -135,8 +133,6 @@ public class Payment
     public PaymentMethod Method { get; set; } = null!;
 }
 ```
-
-Properties will use reference types or nullable value types: `int?` maps to `INT`, and null is omitted. We will keep the existing property-based serialization, without adding immutable-record constructors.
 
 In **Go**, we will add `OneOf *LHStructOneOfInfo` to [`LHStructDefInfo`](../sdk-go/littlehorse/lh_struct_def.go). `LHStructOneOfInfo` will contain a `SelectionRequired bool` field:
 
@@ -186,10 +182,6 @@ const payment = Payment.parse({
   orderId: 'order-123', method: { cardToken: 'tok_abc' },
 })
 ```
-
-`lhOneOf` will define an inline schema, make individual fields optional and check how many are populated when parsing or converting the object. It will return a new schema, preserve masking, and reject defaulted or nullable fields.
-
-TypeScript will infer optional properties; the SDK will check selections at runtime, including task inputs and results. Plain JavaScript will use the same API.
 
 #### Required Selections and Unset Fields
 
