@@ -170,6 +170,8 @@ import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import io.littlehorse.server.streams.util.AsyncWaiters;
 import io.littlehorse.server.streams.util.MetadataCache;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -207,6 +209,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     private final Duration successDurationTimeout;
     private final AsyncWaiters asyncWaiters;
     private final LHInternalClient lhInternalClient;
+    private final MeterRegistry meterRegistry;
 
     private Server grpcListener;
 
@@ -226,11 +229,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             CommandSender commandSender,
             RequestQuotaManager requestQuotaManager,
             AsyncWaiters asyncWaiters,
-            LHInternalClient lhInternalClient) {
+            LHInternalClient lhInternalClient,
+            MeterRegistry meterRegistry) {
 
         // All dependencies are passed in as arguments; nothing is instantiated here,
         // because all listeners share the same threading infrastructure.
         this.lhInternalClient = lhInternalClient;
+        this.meterRegistry = meterRegistry;
         this.asyncWaiters = asyncWaiters;
         this.metadataCache = metadataCache;
         this.serverConfig = listenerConfig.getConfig();
@@ -1054,6 +1059,9 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             return;
         }
 
+        SearchWfRunRequestModel wfRunSearch = req instanceof SearchWfRunRequestModel search ? search : null;
+        Timer.Sample sample = wfRunSearch == null ? null : Timer.start(meterRegistry);
+        String outcome = "error";
         try {
             InternalScanResponse raw = internalComms.doScan(req.getInternalSearch(requestContext()));
             if (raw.hasUpdatedBookmark()) {
@@ -1065,6 +1073,7 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
             }
             ctx.onNext((RP) out.toProto().build());
             ctx.onCompleted();
+            outcome = "success";
         } catch (StatusRuntimeException exn) {
             ctx.onError(exn);
         } catch (InvalidStateStoreException exn) {
@@ -1073,6 +1082,13 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         } catch (Exception exn) {
             log.error("Failed handling a search", exn);
             ctx.onError(LHUtil.toGrpcError(exn));
+        } finally {
+            if (sample != null) {
+                sample.stop(Timer.builder("lh.search.duration")
+                        .tags("method", "SearchWfRun", "strategy", wfRunSearch.getStrategy(), "outcome", outcome)
+                        .publishPercentileHistogram()
+                        .register(meterRegistry));
+            }
         }
     }
 

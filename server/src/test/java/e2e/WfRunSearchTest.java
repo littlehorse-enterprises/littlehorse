@@ -6,6 +6,7 @@ import static io.littlehorse.sdk.common.proto.LHStatus.RUNNING;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.SearchWfSpecRequest;
@@ -26,6 +27,7 @@ import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.internal.TestExecutionContext;
 import io.littlehorse.test.internal.step.SearchResultCaptor;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -44,6 +46,11 @@ public class WfRunSearchTest {
 
     @LHWorkflow("searchable-variable-wf")
     private Workflow searchableVariableWf;
+
+    @LHWorkflow("indexed-search-wait")
+    private Workflow indexedSearchWait;
+
+    private LittleHorseBlockingStub client;
 
     private WorkflowVerifier workflowVerifier;
     private final SearchResultCaptor<WfRunIdList> wfRunIdListCaptor = SearchResultCaptor.of(WfRunIdList.class);
@@ -185,6 +192,41 @@ public class WfRunSearchTest {
                 .filter(id -> id.getId().equals(wfRunId.getId()))
                 .toList();
         Assertions.assertThat(matchingResults).hasSize(1);
+    }
+
+    @Test
+    void shouldPaginateAllRunningRerunsWithIndexedAndUnindexedFilters() {
+        String value = UUID.randomUUID().toString();
+        List<WfRunId> expected = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            var run = workflowVerifier
+                    .prepareRun(
+                            indexedSearchWait, Arg.of("key", value), Arg.of("other", i == 3 ? "exclude" : "include"))
+                    .waitForStatus(RUNNING);
+            if (i == 2) {
+                run.thenSendExternalEventWithContent("external-event", "done").waitForStatus(COMPLETED);
+            }
+            WfRunId id = run.start();
+            if (i < 2) expected.add(id);
+        }
+
+        var request = SearchWfRunRequest.newBuilder()
+                .setWfSpecName("indexed-search-wait")
+                .setStatus(RUNNING)
+                .setLimit(1)
+                .addVariableFilters(VariableMatch.newBuilder().setVarName("key").setValue(LHLibUtil.objToVarVal(value)))
+                .addVariableFilters(
+                        VariableMatch.newBuilder().setVarName("other").setValue(LHLibUtil.objToVarVal("include")));
+        List<WfRunId> results = new ArrayList<>();
+        WfRunIdList page;
+        do {
+            page = client.searchWfRun(request.build());
+            Assertions.assertThat(page.getResultsCount()).isLessThanOrEqualTo(1);
+            results.addAll(page.getResultsList());
+            Assertions.assertThat(results.size()).isLessThanOrEqualTo(expected.size());
+            request.setBookmark(page.getBookmark());
+        } while (page.hasBookmark());
+        Assertions.assertThat(results).containsExactlyInAnyOrderElementsOf(expected);
     }
 
     @Test
@@ -385,6 +427,15 @@ public class WfRunSearchTest {
     public Workflow getSearchableVariableWf() {
         return Workflow.newWorkflow("searchable-variable-wf", wf -> {
             wf.addVariable("my-var", VariableType.STR).searchable();
+        });
+    }
+
+    @LHWorkflow("indexed-search-wait")
+    public Workflow getIndexedSearchWait() {
+        return Workflow.newWorkflow("indexed-search-wait", thread -> {
+            thread.declareStr("key").searchable();
+            thread.declareStr("other");
+            thread.waitForEvent("external-event");
         });
     }
 
