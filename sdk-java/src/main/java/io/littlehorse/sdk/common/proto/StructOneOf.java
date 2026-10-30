@@ -10,13 +10,13 @@ package io.littlehorse.sdk.common.proto;
  * Constraints for a Struct representing a choice between its fields.
  * </pre>
  *
- * Protobuf type {@code littlehorse.StructOneOfConstraints}
+ * Protobuf type {@code littlehorse.StructOneOf}
  */
 @com.google.protobuf.Generated
-public final class StructOneOfConstraints extends
+public final class StructOneOf extends
     com.google.protobuf.GeneratedMessage implements
-    // @@protoc_insertion_point(message_implements:littlehorse.StructOneOfConstraints)
-    StructOneOfConstraintsOrBuilder {
+    // @@protoc_insertion_point(message_implements:littlehorse.StructOneOf)
+    StructOneOfOrBuilder {
 private static final long serialVersionUID = 0L;
   static {
     com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
@@ -25,26 +25,26 @@ private static final long serialVersionUID = 0L;
       /* minor= */ 32,
       /* patch= */ 1,
       /* suffix= */ "",
-      StructOneOfConstraints.class.getName());
+      StructOneOf.class.getName());
   }
-  // Use StructOneOfConstraints.newBuilder() to construct.
-  private StructOneOfConstraints(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+  // Use StructOneOf.newBuilder() to construct.
+  private StructOneOf(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
     super(builder);
   }
-  private StructOneOfConstraints() {
+  private StructOneOf() {
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOfConstraints_descriptor;
+    return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOf_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOfConstraints_fieldAccessorTable
+    return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOf_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
-            io.littlehorse.sdk.common.proto.StructOneOfConstraints.class, io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder.class);
+            io.littlehorse.sdk.common.proto.StructOneOf.class, io.littlehorse.sdk.common.proto.StructOneOf.Builder.class);
   }
 
   public static final int SELECTION_REQUIRED_FIELD_NUMBER = 1;
@@ -102,10 +102,10 @@ private static final long serialVersionUID = 0L;
     if (obj == this) {
      return true;
     }
-    if (!(obj instanceof io.littlehorse.sdk.common.proto.StructOneOfConstraints)) {
+    if (!(obj instanceof io.littlehorse.sdk.common.proto.StructOneOf)) {
       return super.equals(obj);
     }
-    io.littlehorse.sdk.common.proto.StructOneOfConstraints other = (io.littlehorse.sdk.common.proto.StructOneOfConstraints) obj;
+    io.littlehorse.sdk.common.proto.StructOneOf other = (io.littlehorse.sdk.common.proto.StructOneOf) obj;
 
     if (getSelectionRequired()
         != other.getSelectionRequired()) return false;
@@ -128,44 +128,44 @@ private static final long serialVersionUID = 0L;
     return hash;
   }
 
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       java.nio.ByteBuffer data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       java.nio.ByteBuffer data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       com.google.protobuf.ByteString data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       com.google.protobuf.ByteString data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(byte[] data)
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(byte[] data)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       byte[] data,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws com.google.protobuf.InvalidProtocolBufferException {
     return PARSER.parseFrom(data, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -173,26 +173,26 @@ private static final long serialVersionUID = 0L;
         .parseWithIOException(PARSER, input, extensionRegistry);
   }
 
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseDelimitedFrom(java.io.InputStream input)
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseDelimitedFrom(java.io.InputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input);
   }
 
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseDelimitedFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseDelimitedFrom(
       java.io.InputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       com.google.protobuf.CodedInputStream input)
       throws java.io.IOException {
     return com.google.protobuf.GeneratedMessage
         .parseWithIOException(PARSER, input);
   }
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints parseFrom(
+  public static io.littlehorse.sdk.common.proto.StructOneOf parseFrom(
       com.google.protobuf.CodedInputStream input,
       com.google.protobuf.ExtensionRegistryLite extensionRegistry)
       throws java.io.IOException {
@@ -205,7 +205,7 @@ private static final long serialVersionUID = 0L;
   public static Builder newBuilder() {
     return DEFAULT_INSTANCE.toBuilder();
   }
-  public static Builder newBuilder(io.littlehorse.sdk.common.proto.StructOneOfConstraints prototype) {
+  public static Builder newBuilder(io.littlehorse.sdk.common.proto.StructOneOf prototype) {
     return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
   }
   @java.lang.Override
@@ -225,26 +225,26 @@ private static final long serialVersionUID = 0L;
    * Constraints for a Struct representing a choice between its fields.
    * </pre>
    *
-   * Protobuf type {@code littlehorse.StructOneOfConstraints}
+   * Protobuf type {@code littlehorse.StructOneOf}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:littlehorse.StructOneOfConstraints)
-      io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder {
+      // @@protoc_insertion_point(builder_implements:littlehorse.StructOneOf)
+      io.littlehorse.sdk.common.proto.StructOneOfOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOfConstraints_descriptor;
+      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOf_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOfConstraints_fieldAccessorTable
+      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOf_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              io.littlehorse.sdk.common.proto.StructOneOfConstraints.class, io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder.class);
+              io.littlehorse.sdk.common.proto.StructOneOf.class, io.littlehorse.sdk.common.proto.StructOneOf.Builder.class);
     }
 
-    // Construct using io.littlehorse.sdk.common.proto.StructOneOfConstraints.newBuilder()
+    // Construct using io.littlehorse.sdk.common.proto.StructOneOf.newBuilder()
     private Builder() {
 
     }
@@ -265,17 +265,17 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOfConstraints_descriptor;
+      return io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.internal_static_littlehorse_StructOneOf_descriptor;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructOneOfConstraints getDefaultInstanceForType() {
-      return io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance();
+    public io.littlehorse.sdk.common.proto.StructOneOf getDefaultInstanceForType() {
+      return io.littlehorse.sdk.common.proto.StructOneOf.getDefaultInstance();
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructOneOfConstraints build() {
-      io.littlehorse.sdk.common.proto.StructOneOfConstraints result = buildPartial();
+    public io.littlehorse.sdk.common.proto.StructOneOf build() {
+      io.littlehorse.sdk.common.proto.StructOneOf result = buildPartial();
       if (!result.isInitialized()) {
         throw newUninitializedMessageException(result);
       }
@@ -283,14 +283,14 @@ private static final long serialVersionUID = 0L;
     }
 
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.StructOneOfConstraints buildPartial() {
-      io.littlehorse.sdk.common.proto.StructOneOfConstraints result = new io.littlehorse.sdk.common.proto.StructOneOfConstraints(this);
+    public io.littlehorse.sdk.common.proto.StructOneOf buildPartial() {
+      io.littlehorse.sdk.common.proto.StructOneOf result = new io.littlehorse.sdk.common.proto.StructOneOf(this);
       if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
     }
 
-    private void buildPartial0(io.littlehorse.sdk.common.proto.StructOneOfConstraints result) {
+    private void buildPartial0(io.littlehorse.sdk.common.proto.StructOneOf result) {
       int from_bitField0_ = bitField0_;
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.selectionRequired_ = selectionRequired_;
@@ -299,16 +299,16 @@ private static final long serialVersionUID = 0L;
 
     @java.lang.Override
     public Builder mergeFrom(com.google.protobuf.Message other) {
-      if (other instanceof io.littlehorse.sdk.common.proto.StructOneOfConstraints) {
-        return mergeFrom((io.littlehorse.sdk.common.proto.StructOneOfConstraints)other);
+      if (other instanceof io.littlehorse.sdk.common.proto.StructOneOf) {
+        return mergeFrom((io.littlehorse.sdk.common.proto.StructOneOf)other);
       } else {
         super.mergeFrom(other);
         return this;
       }
     }
 
-    public Builder mergeFrom(io.littlehorse.sdk.common.proto.StructOneOfConstraints other) {
-      if (other == io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance()) return this;
+    public Builder mergeFrom(io.littlehorse.sdk.common.proto.StructOneOf other) {
+      if (other == io.littlehorse.sdk.common.proto.StructOneOf.getDefaultInstance()) return this;
       if (other.getSelectionRequired() != false) {
         setSelectionRequired(other.getSelectionRequired());
       }
@@ -404,23 +404,23 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    // @@protoc_insertion_point(builder_scope:littlehorse.StructOneOfConstraints)
+    // @@protoc_insertion_point(builder_scope:littlehorse.StructOneOf)
   }
 
-  // @@protoc_insertion_point(class_scope:littlehorse.StructOneOfConstraints)
-  private static final io.littlehorse.sdk.common.proto.StructOneOfConstraints DEFAULT_INSTANCE;
+  // @@protoc_insertion_point(class_scope:littlehorse.StructOneOf)
+  private static final io.littlehorse.sdk.common.proto.StructOneOf DEFAULT_INSTANCE;
   static {
-    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.StructOneOfConstraints();
+    DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.StructOneOf();
   }
 
-  public static io.littlehorse.sdk.common.proto.StructOneOfConstraints getDefaultInstance() {
+  public static io.littlehorse.sdk.common.proto.StructOneOf getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
 
-  private static final com.google.protobuf.Parser<StructOneOfConstraints>
-      PARSER = new com.google.protobuf.AbstractParser<StructOneOfConstraints>() {
+  private static final com.google.protobuf.Parser<StructOneOf>
+      PARSER = new com.google.protobuf.AbstractParser<StructOneOf>() {
     @java.lang.Override
-    public StructOneOfConstraints parsePartialFrom(
+    public StructOneOf parsePartialFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -439,17 +439,17 @@ private static final long serialVersionUID = 0L;
     }
   };
 
-  public static com.google.protobuf.Parser<StructOneOfConstraints> parser() {
+  public static com.google.protobuf.Parser<StructOneOf> parser() {
     return PARSER;
   }
 
   @java.lang.Override
-  public com.google.protobuf.Parser<StructOneOfConstraints> getParserForType() {
+  public com.google.protobuf.Parser<StructOneOf> getParserForType() {
     return PARSER;
   }
 
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.StructOneOfConstraints getDefaultInstanceForType() {
+  public io.littlehorse.sdk.common.proto.StructOneOf getDefaultInstanceForType() {
     return DEFAULT_INSTANCE;
   }
 

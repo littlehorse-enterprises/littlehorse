@@ -66,11 +66,11 @@ message InlineStructDef {
 
   // When present, all fields in this Struct are mutually exclusive alternatives.
   // The absence of this message denotes an ordinary Struct.
-  StructOneOfConstraints oneof_constraints = 2;
+  StructOneOf oneof_config = 2;
 }
 
 // Constraints for a Struct representing a choice between its fields.
-message StructOneOfConstraints {
+message StructOneOf {
   // If true, exactly one field must be present. Otherwise zero or one is allowed.
   bool selection_required = 1;
 }
@@ -82,7 +82,7 @@ message StructFieldDef {
   
   // The default value of the field, which should match the Field Type. If not
   // provided, then the field is treated as required, except for unselected fields
-  // of a Struct with oneof_constraints. Alternatives cannot have defaults.
+  // of a Struct with oneof_config. Alternatives cannot have defaults.
   optional VariableValue default_value = 2;
 
   // If true, then the field is treated as nullable, and its value may be set to null.

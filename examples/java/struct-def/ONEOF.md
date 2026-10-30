@@ -44,7 +44,7 @@ workflow paths use `method.cardToken` with either API.
 `@LHStructOneOf` on a helper generates an inline schema and needs no separate
 registration. Combining it with `@LHStructDef` on the same type is rejected.
 Named StructDefs contain choices so they can gain ordinary fields alongside them.
-`InlineStructDef.oneof_constraints` holds the selection rule. Values carry only
+`InlineStructDef.oneof_config` holds the selection rule. Values carry only
 the nested Struct and its selected field; they do not repeat the rule.
 
 `required` defaults to false for either placement. Omit `group` on types;

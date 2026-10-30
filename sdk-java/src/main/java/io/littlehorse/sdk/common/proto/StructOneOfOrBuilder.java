@@ -6,8 +6,8 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface StructOneOfConstraintsOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:littlehorse.StructOneOfConstraints)
+public interface StructOneOfOrBuilder extends
+    // @@protoc_insertion_point(interface_extends:littlehorse.StructOneOf)
     com.google.protobuf.MessageOrBuilder {
 
   /**

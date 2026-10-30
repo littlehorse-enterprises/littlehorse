@@ -6,7 +6,7 @@ import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
-import io.littlehorse.sdk.common.proto.StructOneOfConstraints;
+import io.littlehorse.sdk.common.proto.StructOneOf;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructDef;
@@ -65,9 +65,9 @@ public final class LHStructLayout {
             }
             InlineStructDef.Builder groupDef =
                     groupBuilders.computeIfAbsent(groupName, ignored -> InlineStructDef.newBuilder()
-                            .setOneofConstraints(
-                                    StructOneOfConstraints.newBuilder().setSelectionRequired(group.required())));
-            if (groupDef.getOneofConstraints().getSelectionRequired() != group.required()) {
+                            .setOneofConfig(
+                                    StructOneOf.newBuilder().setSelectionRequired(group.required())));
+            if (groupDef.getOneofConfig().getSelectionRequired() != group.required()) {
                 throw new IllegalArgumentException(
                         "Oneof group " + groupName + " has conflicting required settings; every member must agree");
             }
@@ -77,7 +77,7 @@ public final class LHStructLayout {
         InlineStructDef.Builder result = InlineStructDef.newBuilder().putAllFields(fields);
         if (choice != null) {
             requireAlternatives(typeName, fields.size());
-            result.setOneofConstraints(StructOneOfConstraints.newBuilder().setSelectionRequired(choice.required()));
+            result.setOneofConfig(StructOneOf.newBuilder().setSelectionRequired(choice.required()));
         }
         groupBuilders.forEach((name, group) -> {
             if (fields.containsKey(name)) {
@@ -103,7 +103,7 @@ public final class LHStructLayout {
     /** Groups flat properties and omits unselected alternatives; empty groups are emitted. */
     public InlineStruct toWire(InlineStruct properties) {
         InlineStruct.Builder result = properties.toBuilder();
-        if (definition.hasOneofConstraints()) {
+        if (definition.hasOneofConfig()) {
             properties.getFieldsMap().forEach((name, field) -> {
                 if (isNull(field)) result.removeFields(name);
             });
@@ -130,10 +130,10 @@ public final class LHStructLayout {
 
     /** Validates the wire representation and restores flattened Java properties. */
     public InlineStruct fromWire(InlineStruct wire) {
-        if (definition.hasOneofConstraints()) validateChoice(typeName, definition, wire);
+        if (definition.hasOneofConfig()) validateChoice(typeName, definition, wire);
         InlineStruct.Builder result = wire.toBuilder();
         checkChoiceParents(result, true);
-        if (definition.hasOneofConstraints()) {
+        if (definition.hasOneofConfig()) {
             definition.getFieldsMap().keySet().forEach(member -> {
                 if (!result.containsFields(member)) result.putFields(member, NULL_FIELD);
             });
@@ -163,11 +163,11 @@ public final class LHStructLayout {
         definition.getFieldsMap().forEach((name, field) -> {
             TypeDefinition type = field.getFieldType();
             if (!type.hasInlineStructDef()
-                    || !type.getInlineStructDef().hasOneofConstraints()
+                    || !type.getInlineStructDef().hasOneofConfig()
                     || groups.containsKey(name)) return;
             StructField value = fields.getFieldsMap().get(name);
             // An alternative can itself be a choice; its parent rules apply only when selected.
-            if (definition.hasOneofConstraints() && value == null) return;
+            if (definition.hasOneofConfig() && value == null) return;
             if (reading && value == null && field.hasDefaultValue()) {
                 value = StructField.newBuilder()
                         .setValue(field.getDefaultValue())
@@ -195,7 +195,7 @@ public final class LHStructLayout {
             if (isNull(field)) throw new IllegalArgumentException("Oneof field " + member + " cannot be null");
         });
         int count = value.getFieldsCount();
-        boolean required = schema.getOneofConstraints().getSelectionRequired();
+        boolean required = schema.getOneofConfig().getSelectionRequired();
         if (count > 1 || (required && count != 1)) {
             throw new IllegalArgumentException(
                     "Oneof " + name + " requires " + (required ? "exactly" : "at most") + " one field, found " + count);

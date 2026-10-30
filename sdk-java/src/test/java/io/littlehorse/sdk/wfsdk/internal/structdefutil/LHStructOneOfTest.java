@@ -282,7 +282,7 @@ class LHStructOneOfTest {
         assertThat(flat.getFieldsMap()).containsOnlyKeys("orderId", "method");
         InlineStructDef method = flat.getFieldsOrThrow("method").getFieldType().getInlineStructDef();
         assertThat(method.getFieldsMap()).containsOnlyKeys("cardToken", "bankAccountId");
-        assertThat(method.getOneofConstraints().getSelectionRequired()).isTrue();
+        assertThat(method.getOneofConfig().getSelectionRequired()).isTrue();
         assertThat(InlineStructDef.parseFrom(flat.toByteArray())).isEqualTo(flat);
     }
 
@@ -314,8 +314,8 @@ class LHStructOneOfTest {
                 .getFieldsOrThrow("choice")
                 .getFieldType()
                 .getInlineStructDef();
-        assertThat(schema.hasOneofConstraints()).isTrue();
-        assertThat(schema.getOneofConstraints().getSelectionRequired()).isFalse();
+        assertThat(schema.hasOneofConfig()).isTrue();
+        assertThat(schema.getOneofConfig().getSelectionRequired()).isFalse();
         assertThat(schema.getFieldsMap()).containsOnlyKeys("wireName", "alternate");
         Struct wire = LHLibUtil.serializeToStruct(flat);
         assertThat(wire).isEqualTo(LHLibUtil.serializeToStruct(nested));
@@ -482,7 +482,7 @@ class LHStructOneOfTest {
         assertThat(LHClassType.fromJavaClass(Method.class, LHTypeAdapterRegistry.empty())
                         .getTypeDefinition()
                         .getInlineStructDef()
-                        .hasOneofConstraints())
+                        .hasOneofConfig())
                 .isTrue();
         assertThat(LHLibUtil.varValToObj(root, Method.class)).isEqualTo(choice);
         ChoiceCollections input = new ChoiceCollections(new Method[] {choice}, Map.of("first", choice));
@@ -553,7 +553,7 @@ class LHStructOneOfTest {
                 LHTaskMethodHandle.fromLHTaskMethod(method, Map.of()), LHTypeAdapterRegistry.empty(), Map.of());
         var request = signature.toPutTaskDefRequest();
         var inputType = request.getInputVars(0).getTypeDef();
-        assertThat(inputType.getInlineStructDef().getOneofConstraints().getSelectionRequired())
+        assertThat(inputType.getInlineStructDef().getOneofConfig().getSelectionRequired())
                 .isTrue();
         assertThat(request.getReturnType().getReturnType()).isEqualTo(inputType);
     }
