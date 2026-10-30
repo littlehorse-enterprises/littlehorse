@@ -239,8 +239,6 @@ message StructOneOfConstraints {
 - **Where it can go:** Oneofs live in inline helper schemas. A named StructDef can contain them, but cannot itself be a oneof.
 - **In our example:** `Payment` has `orderId` and `method` fields in both APIs. The schema for `method` lists `cardToken`, `bankAccountId`, and `walletId` with the selection rule. We do not need a separate list of group members.
 - **Passing values:** Both APIs use the same nested Struct value, so either model can read values written by the other. The schema supplies the selection rule; values do not repeat it. No new `VariableValue` case is needed.
-- **Adding options:** We will add `BACKWARD_COMPATIBLE_SCHEMA_UPDATES = 2` to `StructDefCompatibilityType`, allowing users to add options without changing the StructDef name.
-- **Moving fields:** We will add `map<string, string> oneof_field_moves` to `PutStructDefRequest` and `ValidateStructDefEvolutionRequest`. For example, `"cardToken": "method.cardToken"` tells LittleHorse where an existing field moved. LittleHorse keeps these mappings with schema versions so newer versions can read older values.
 
 ### Comparison with JSON Schema and Protobuf
 
@@ -258,12 +256,8 @@ Our feature selects a named field, like protobuf's `oneof`. JSON Schema's `oneOf
 ## Backwards Compatibility
 
 - **Existing StructDefs:** Definitions without `oneof_constraints` behave as today. Servers and clients using oneofs need updated support; older servers will not enforce or preserve the constraints.
-- **Adding options:** `BACKWARD_COMPATIBLE_SCHEMA_UPDATES` allows new alternatives under the same StructDef name, creating a new version. Existing alternatives and selection requirements must remain unchanged. For example, `payment:v2` can add `walletId` while accepting all `payment:v1` values.
-- **Older consumers:** Newer schemas accept older values; the reverse is not guaranteed. Older typed SDK models reject new options explicitly, rather than returning an empty choice. Upgrade consumers before sending new options; unknown-option fallbacks are outside scope.
-- **Moving a field:** The backward-compatible mode allows moving one existing field into a new oneof using `oneof_field_moves`, preserving its type. Old defaults apply before conversion to the nested shape; null/absent values become unselected. A required selection is allowed only if the old field was guaranteed to be populated.
-- **Ambiguous moves:** Combining independent existing fields that could both be populated is incompatible. Values containing both the old and new paths are rejected; no value is silently discarded. Moves into an existing oneof must likewise preserve all previously valid combinations.
-- **Full compatibility:** `FULLY_COMPATIBLE_SCHEMA_UPDATES` remains stricter: adding options or changing wire paths is incompatible. Removing, renaming, or changing existing alternatives, or changing selection requirements, remains incompatible in both modes.
-- **Field paths:** Migrations apply when values target a newer schema. Existing versions and workflows pinned to them retain their original paths; new workflows use paths such as `method.cardToken`.
+- **Schema updates:** We will keep the existing compatibility types. Under `FULLY_COMPATIBLE_SCHEMA_UPDATES`, adding, removing, renaming, or changing the type of an alternative, changing selection requirements, or moving fields into a oneof is incompatible and requires a new StructDef name.
+- **Future evolution:** Adding options and moving fields into oneofs under the same StructDef name will be addressed in a separate proposal, including any new compatibility modes or field migrations.
 - **Switching SDK APIs:** Moving between declaration styles preserves values and paths when the generated schemas and field names are identical.
 
 ## Alternatives
