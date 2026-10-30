@@ -239,6 +239,12 @@ class LHStructOneOfTest {
         private Method method = new Method("default-token", null);
     }
 
+    @LHStructDef("mixed-choice-styles")
+    public record MixedStyles(
+            @LHStructOneOf(group = "fallback") String email,
+            @LHStructOneOf(group = "fallback") String sms,
+            Method method) {}
+
     @LHStructDef("choice-collections")
     public record ChoiceCollections(Method[] methods, Map<String, Method> byKey) {}
 
@@ -465,7 +471,7 @@ class LHStructOneOfTest {
                                 field(VariableValue.newBuilder().setStr("token").build())))
                 .build();
         assertThatThrownBy(() -> LHLibUtil.varValToObj(value(missing), Payment.class))
-                .hasMessageContaining("nested inline Struct");
+                .hasMessageContaining("Required oneof field method");
         assertThatThrownBy(() -> LHLibUtil.varValToObj(value(missing), NestedPayment.class))
                 .hasMessageContaining("Required oneof field method");
         Struct namedHelper = child(wire, "method").toBuilder()
@@ -511,6 +517,21 @@ class LHStructOneOfTest {
                 .hasMessageContaining("Required oneof field method");
         assertThat(LHLibUtil.varValToObj(value(explicitNull), OptionalParent.class))
                 .isEqualTo(new OptionalParent(null));
+    }
+
+    @Test
+    void fieldGroupsAndHelperTypesCanBeUsedTogether() {
+        for (MixedStyles input : new MixedStyles[] {
+            new MixedStyles(null, null, new Method("token", null)),
+            new MixedStyles("contact@example.com", null, new Method(null, "bank"))
+        }) {
+            VariableValue wire = LHLibUtil.objToVarVal(input);
+            assertThat(wire.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("fallback", "method");
+            assertThat(LHLibUtil.varValToObj(wire, MixedStyles.class)).isEqualTo(input);
+        }
+        assertThatThrownBy(() -> LHLibUtil.objToVarVal(
+                        new MixedStyles("contact@example.com", "555-0100", new Method("token", null))))
+                .hasMessageContaining("fallback requires at most one field");
     }
 
     @Test

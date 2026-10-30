@@ -37,9 +37,11 @@ import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskRunSourceOrBuilder;
@@ -51,10 +53,10 @@ import io.littlehorse.sdk.common.util.JsonResult;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructLayout;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructOneOf;
+import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
@@ -64,6 +66,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -656,25 +659,26 @@ public class LHLibUtil {
         }
 
         try {
-            LHStructLayout layout = getStructLayout(lhClassType);
-            InlineStruct fields = layout.fromWire(struct.getStruct());
+            List<LHStructProperty> properties = getStructProperties(lhClassType);
+            InlineStructDef definition = getStructDefinition(lhClassType);
+            InlineStruct fields = struct.getStruct();
+            validateOneofFields(clazz.getSimpleName(), definition, fields);
             if (clazz.isRecord()) {
                 return deserializeStructToRecord(
-                        fields, clazz, layout.getProperties(), typeAdapterRegistry, placeholderValues);
+                        fields, definition, clazz, properties, typeAdapterRegistry, placeholderValues);
             }
 
             Object structObject = lhClassType.createInstance();
-            for (LHStructProperty property : layout.getProperties()) {
+            for (LHStructProperty property : properties) {
                 String fieldName = property.getFieldName();
-                if (!fields.containsFields(fieldName)) {
+                VariableValue fieldValue = getStructPropertyValue(fields, definition, property);
+                if (fieldValue == null) {
                     throw new LHSerdeException(
                             null,
                             String.format(
                                     "Failed deserializing VariableValue into Struct because no such field [%s] exists on class [%s]",
                                     fieldName, clazz.getName()));
                 }
-
-                VariableValue fieldValue = fields.getFieldsMap().get(fieldName).getValue();
 
                 property.setValueTo(structObject, fieldValue, typeAdapterRegistry, placeholderValues);
             }
@@ -686,6 +690,7 @@ public class LHLibUtil {
                 | IllegalAccessException
                 | InvocationTargetException
                 | NoSuchMethodException
+                | IntrospectionException
                 | SecurityException e) {
             throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
@@ -693,6 +698,7 @@ public class LHLibUtil {
 
     private static Object deserializeStructToRecord(
             InlineStruct fields,
+            InlineStructDef definition,
             Class<?> clazz,
             List<LHStructProperty> structProperties,
             LHTypeAdapterRegistry typeAdapterRegistry,
@@ -720,7 +726,8 @@ public class LHLibUtil {
             }
 
             String fieldName = property.getFieldName();
-            if (!fields.containsFields(fieldName)) {
+            VariableValue fieldValue = getStructPropertyValue(fields, definition, property);
+            if (fieldValue == null) {
                 Set<String> availableFields = fields.getFieldsMap().keySet();
                 throw new LHSerdeException(
                         null,
@@ -730,7 +737,6 @@ public class LHLibUtil {
                                 fieldName, clazz.getName(), availableFields));
             }
 
-            VariableValue fieldValue = fields.getFieldsMap().get(fieldName).getValue();
             canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry, placeholderValues);
         }
 
@@ -738,10 +744,102 @@ public class LHLibUtil {
         return cons.newInstance(canonicalArgValues);
     }
 
-    private static LHStructLayout getStructLayout(LHClassType classType) {
+    private static List<LHStructProperty> getStructProperties(LHClassType classType) throws IntrospectionException {
         return classType instanceof LHStructDefType
-                ? ((LHStructDefType) classType).getStructLayout()
-                : ((LHInlineStructDefType) classType).getStructLayout();
+                ? ((LHStructDefType) classType).getStructProperties()
+                : ((LHInlineStructDefType) classType).getStructProperties();
+    }
+
+    private static InlineStructDef getStructDefinition(LHClassType classType) {
+        return classType instanceof LHStructDefType
+                ? ((LHStructDefType) classType).getInlineStructDef()
+                : classType.getTypeDefinition().getInlineStructDef();
+    }
+
+    private static VariableValue getStructPropertyValue(
+            InlineStruct fields, InlineStructDef definition, LHStructProperty property) {
+        String name = property.getFieldName();
+        LHStructOneOf group = property.getOneOf();
+        if (group != null) {
+            if (fields.containsFields(name)) {
+                throw new IllegalArgumentException("Field " + name + " must be nested under " + group.group());
+            }
+            fields = fields.getFieldsOrThrow(group.group())
+                    .getValue()
+                    .getStruct()
+                    .getStruct();
+        }
+        if (fields.containsFields(name)) {
+            return fields.getFieldsOrThrow(name).getValue();
+        }
+        if (group != null || definition.hasOneofConfig()) {
+            return VariableValue.getDefaultInstance();
+        }
+        StructFieldDef field = definition.getFieldsOrThrow(name);
+        if (field.getFieldType().hasInlineStructDef()
+                && field.getFieldType().getInlineStructDef().hasOneofConfig()) {
+            if (field.hasDefaultValue()) {
+                return field.getDefaultValue();
+            }
+            if (field.getIsNullable()) {
+                return VariableValue.getDefaultInstance();
+            }
+        }
+        return null;
+    }
+
+    // A selection rule applies to a present helper; its parent controls presence and defaults.
+    private static void validateOneofFields(String typeName, InlineStructDef definition, InlineStruct fields) {
+        if (definition.hasOneofConfig()) {
+            validateOneofSelection(typeName, definition, fields);
+        }
+        for (var entry : definition.getFieldsMap().entrySet()) {
+            String name = entry.getKey();
+            StructFieldDef field = entry.getValue();
+            if (!field.getFieldType().hasInlineStructDef()
+                    || !field.getFieldType().getInlineStructDef().hasOneofConfig()) {
+                continue;
+            }
+            // An unselected alternative may itself be a oneof helper.
+            if (definition.hasOneofConfig() && !fields.containsFields(name)) {
+                continue;
+            }
+            VariableValue value = fields.containsFields(name)
+                    ? fields.getFieldsOrThrow(name).getValue()
+                    : field.hasDefaultValue() ? field.getDefaultValue() : null;
+            if (value == null || value.getValueCase() == ValueCase.VALUE_NOT_SET) {
+                if (!field.getIsNullable()) {
+                    throw new IllegalArgumentException("Required oneof field " + name + " cannot be absent or null");
+                }
+                continue;
+            }
+            if (!value.hasStruct()
+                    || value.getStruct().hasStructDefId()
+                    || !value.getStruct().hasStruct()) {
+                throw new IllegalArgumentException("Oneof field " + name + " must be a nested inline Struct");
+            }
+            validateOneofSelection(
+                    name,
+                    field.getFieldType().getInlineStructDef(),
+                    value.getStruct().getStruct());
+        }
+    }
+
+    private static void validateOneofSelection(String name, InlineStructDef definition, InlineStruct value) {
+        for (var entry : value.getFieldsMap().entrySet()) {
+            if (!definition.containsFields(entry.getKey())) {
+                throw new IllegalArgumentException("Unknown field " + entry.getKey() + " in oneof " + name);
+            }
+            if (entry.getValue().getValue().getValueCase() == ValueCase.VALUE_NOT_SET) {
+                throw new IllegalArgumentException("Oneof field " + entry.getKey() + " cannot be null");
+            }
+        }
+        boolean required = definition.getOneofConfig().getSelectionRequired();
+        int count = value.getFieldsCount();
+        if (count > 1 || (required && count != 1)) {
+            throw new IllegalArgumentException(
+                    "Oneof " + name + " requires " + (required ? "exactly" : "at most") + " one field, found " + count);
+        }
     }
 
     // Ignored record components still need an argument for the canonical constructor.
@@ -1171,20 +1269,35 @@ public class LHLibUtil {
         InlineStruct.Builder inlineStruct = InlineStruct.newBuilder();
 
         try {
-            LHStructLayout layout = getStructLayout(lhClassType);
-            for (LHStructProperty property : layout.getProperties()) {
-                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
-
-                if (fieldValue == null) {
-                    fieldValue = VariableValue.newBuilder().build();
+            InlineStructDef definition = getStructDefinition(lhClassType);
+            Map<String, InlineStruct.Builder> groups = new LinkedHashMap<>();
+            for (LHStructProperty property : getStructProperties(lhClassType)) {
+                VariableValue value = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
+                if (value == null) {
+                    value = VariableValue.getDefaultInstance();
                 }
-
-                StructField structField =
-                        StructField.newBuilder().setValue(fieldValue).build();
-
-                inlineStruct.putFields(property.getFieldName(), structField);
+                InlineStruct.Builder target = inlineStruct;
+                LHStructOneOf group = property.getOneOf();
+                if (group != null) {
+                    // Create the group even when none of its alternatives is selected.
+                    target = groups.computeIfAbsent(group.group(), ignored -> InlineStruct.newBuilder());
+                }
+                if ((group != null || definition.hasOneofConfig()) && value.getValueCase() == ValueCase.VALUE_NOT_SET) {
+                    continue;
+                }
+                target.putFields(
+                        property.getFieldName(),
+                        StructField.newBuilder().setValue(value).build());
             }
-            outputStruct.setStruct(layout.toWire(inlineStruct.build()));
+            groups.forEach((name, group) -> inlineStruct.putFields(
+                    name,
+                    StructField.newBuilder()
+                            .setValue(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder().setStruct(group)))
+                            .build()));
+            InlineStruct fields = inlineStruct.build();
+            validateOneofFields(o.getClass().getSimpleName(), definition, fields);
+            outputStruct.setStruct(fields);
         } catch (IllegalArgumentException e) {
             throw new LHSerdeException(e, e.getMessage());
         } catch (Exception e) {

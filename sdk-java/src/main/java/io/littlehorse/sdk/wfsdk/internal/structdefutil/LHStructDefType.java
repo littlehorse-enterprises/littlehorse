@@ -11,6 +11,8 @@ import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * LHStructDefType is a class that represents a StructDef type in the LittleHorse workflow SDK.
@@ -26,7 +29,9 @@ import java.util.Set;
  */
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
-    private final LHStructLayout structLayout;
+    private InlineStructDef inlineStructDef;
+
+    private List<LHStructProperty> structProperties;
 
     /**
      * Constructor for LHStructDefType that does not take a type adapter registry.
@@ -74,11 +79,7 @@ public class LHStructDefType extends LHClassType {
             validateRecordCanonicalConstructor();
         }
 
-        try {
-            this.structLayout = new LHStructLayout(this, typeAdapterRegistry);
-        } catch (IntrospectionException e) {
-            throw new IllegalStateException("Cannot build StructDef for " + clazz.getName(), e);
-        }
+        this.inlineStructDef = this.buildInlineStructDef();
     }
 
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
@@ -277,7 +278,30 @@ public class LHStructDefType extends LHClassType {
      *                                introspection of your class
      */
     public List<LHStructProperty> getStructProperties() throws IntrospectionException {
-        return structLayout.getProperties();
+        if (this.structProperties == null) {
+            this.structProperties = this.buildStructProperties();
+        }
+        return this.structProperties;
+    }
+
+    private List<LHStructProperty> buildStructProperties() throws IntrospectionException {
+        if (this.clazz.isRecord()) {
+            return List.of(this.clazz.getRecordComponents()).stream()
+                    .map((RecordComponent recordComponent) -> new LHStructProperty(recordComponent, this))
+                    .filter((LHStructProperty property) -> !property.isIgnored())
+                    .collect(Collectors.toUnmodifiableList());
+        }
+
+        return List.of(Introspector.getBeanInfo(this.clazz).getPropertyDescriptors()).stream()
+                // Default property descriptor provided by Java, should be filtered out
+                .filter((PropertyDescriptor pd) -> !"class".equals(pd.getName()))
+
+                // Convert to our domain LHStructProperty class
+                .map((PropertyDescriptor pd) -> new LHStructProperty(pd, this))
+
+                // Property descriptors with the LHStructIgnore annotation should be skipped
+                .filter((LHStructProperty property) -> !property.isIgnored())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -286,11 +310,15 @@ public class LHStructDefType extends LHClassType {
      * @return an InlineStructDef representing the class stored in this LHClassType
      */
     public InlineStructDef getInlineStructDef() {
-        return this.structLayout.getDefinition();
+        return this.inlineStructDef;
     }
 
-    public LHStructLayout getStructLayout() {
-        return structLayout;
+    private InlineStructDef buildInlineStructDef() {
+        try {
+            return LHInlineStructDefType.buildInlineStructDef(clazz, getStructProperties(), typeAdapterRegistry);
+        } catch (IntrospectionException e) {
+            throw new IllegalStateException("Cannot build InlineStructDef for type: " + this.clazz.getName(), e);
+        }
     }
 
     /**
