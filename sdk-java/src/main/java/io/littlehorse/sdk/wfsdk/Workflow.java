@@ -271,6 +271,9 @@ public abstract class Workflow {
      * <p>This includes classes used by variable declarations, event registrations, child threads,
      * handlers, and recursively discovered JavaBean properties.
      *
+     * <p>Only classes encountered during SDK type resolution are collected. Default values and
+     * other runtime objects are not inspected to discover additional classes.
+     *
      * @return an immutable set of referenced Java classes
      */
     public abstract Set<Class<?>> getReferencedJavaTypes();
