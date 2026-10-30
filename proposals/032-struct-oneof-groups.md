@@ -193,10 +193,8 @@ TypeScript will infer optional properties; the SDK will check selections at runt
 
 #### Required Selections and Unset Fields
 
-- **Group members:** At least one field must remain after ignored fields are removed. Alternatives can use any supported Struct field type, including a Struct such as `card` containing a token and billing address.
-- **Field metadata:** Existing naming, descriptions, masking, and serialized-name overrides still apply. Duplicate serialized names are rejected; flat properties must have unique names before grouping.
 - **Required selection:** `required` defaults to false, allowing zero or one populated alternative. Setting it to true requires exactly one. All members of a field group must agree; conflicting settings fail metadata generation.
-- **Empty selection:** Flat groups always emit their container, so an unselected optional group becomes `"method": {}`. The equivalent nested model supplies an empty `PaymentMethod`.
+- **Empty selection:** With `required = false`, users can leave the payment method undecided. With field annotations, set all three payment fields to `null`. With the helper type, use `new PaymentMethod(null, null, null)`. Both produce `"method": {}`, meaning no payment method was selected.
 - **Required parent:** A required `method` field must contain a Struct even when its selection is optional; `method: {}` is valid with `required = false`.
 - **Optional parent:** Only the nested API can represent an absent or null parent. Existing defaults and nullability rules apply. When a non-null parent is provided, it must satisfy the oneof's selection rule.
 
