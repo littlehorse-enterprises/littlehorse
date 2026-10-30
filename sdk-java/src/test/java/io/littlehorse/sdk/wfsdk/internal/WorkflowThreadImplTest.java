@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.adapter.LHIntegerAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
@@ -308,7 +309,7 @@ public class WorkflowThreadImplTest {
     void shouldUseTypeAdapterBeforeAnyWorkflowCompilation() {
         UUID defaultValue = UUID.randomUUID();
         LHConfig config =
-                LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+                LHConfig.newBuilder().addTypeAdapter(new UUIDIntegerAdapter()).build();
         Workflow wf = Workflow.newWorkflow(
                 "configured-workflow",
                 thread -> {
@@ -322,8 +323,8 @@ public class WorkflowThreadImplTest {
                 .getVariableDefs(0)
                 .getVarDef();
 
-        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.STR);
-        assertThat(id.getDefaultValue().getStr()).isEqualTo(defaultValue.toString());
+        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(id.getDefaultValue().getInt()).isEqualTo(defaultValue.hashCode());
     }
 
     @Test
@@ -1028,6 +1029,23 @@ public class WorkflowThreadImplTest {
         @Override
         public UUID fromString(String src) {
             return UUID.fromString(src);
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
+    }
+
+    private static class UUIDIntegerAdapter extends LHIntegerAdapter<UUID> {
+        @Override
+        public Integer toInteger(UUID src) {
+            return src.hashCode();
+        }
+
+        @Override
+        public UUID fromInteger(Integer src) {
+            return new UUID(0, src);
         }
 
         @Override

@@ -2,7 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.littlehorse.sdk.common.adapter.LHStringAdapter;
+import io.littlehorse.sdk.common.adapter.LHIntegerAdapter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.VariableDef;
@@ -37,19 +37,19 @@ public class WorkflowConfigTest {
                 .getVariableDefs(0)
                 .getVarDef();
 
-        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.STR);
-        assertThat(id.getDefaultValue().getStr()).isEqualTo(defaultValue.toString());
+        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(id.getDefaultValue().getInt()).isEqualTo(defaultValue.hashCode());
     }
 
-    private static class UUIDAdapter implements LHStringAdapter<UUID> {
+    private static class UUIDAdapter extends LHIntegerAdapter<UUID> {
         @Override
-        public String toString(UUID src) {
-            return src.toString();
+        public Integer toInteger(UUID src) {
+            return src.hashCode();
         }
 
         @Override
-        public UUID fromString(String src) {
-            return UUID.fromString(src);
+        public UUID fromInteger(Integer src) {
+            return new UUID(0, src);
         }
 
         @Override
