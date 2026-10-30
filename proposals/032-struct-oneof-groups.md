@@ -235,9 +235,8 @@ message StructOneOfConstraints {
 }
 ```
 
-- **Defining a oneof:** When `oneof_constraints` is set, only one field can be populated. Without it, the Struct behaves as it does today. Setting `selection_required = false` also allows no selection.
-- **Where it can go:** Oneofs live in inline helper schemas. A named StructDef can contain them, but cannot itself be a oneof.
-- **In our example:** `Payment` has `orderId` and `method` fields in both APIs. The schema for `method` lists `cardToken`, `bankAccountId`, and `walletId` with the selection rule. We do not need a separate list of group members.
+- **Defining a oneof:** An absent `oneof_constraints` means a normal Struct; a present message means a oneof. Within that message, `selection_required = false` allows zero or one populated field, while `true` requires exactly one.
+- **Usage:** Oneofs live in inline helper schemas. A named StructDef can contain them, but cannot itself be a oneof.
 - **Passing values:** Both APIs use the same nested Struct value, so either model can read values written by the other. The schema supplies the selection rule; values do not repeat it. No new `VariableValue` case is needed.
 
 ### Comparison with JSON Schema and Protobuf
