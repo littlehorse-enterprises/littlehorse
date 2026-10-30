@@ -37,6 +37,7 @@ include(
         'json',
         'maps',
         'mutation',
+        'oneof',
         'output-topic',
         'parallel-approval',
         'run-wf',

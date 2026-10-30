@@ -14,7 +14,7 @@ execution may fail until that support is implemented.
 From the repository root, run:
 
 ```sh
-./gradlew :example-struct-def:runOneOfExample
+./gradlew :example-oneof:run
 ```
 
 This registers the `payment` StructDef, both TaskDefs, and the `oneof-payment`
@@ -25,13 +25,13 @@ WfSpec, then starts the workers. Leave it running.
 In another terminal, submit a payment using the field annotations:
 
 ```sh
-./gradlew :example-struct-def:runOneOfExample --args='fields'
+./gradlew :example-oneof:run --args='fields'
 ```
 
 Or submit the same payment using the helper type:
 
 ```sh
-./gradlew :example-struct-def:runOneOfExample --args='helper'
+./gradlew :example-oneof:run --args='helper'
 ```
 
 Each command prints the WfRun ID returned by the server. Both tasks should return
@@ -43,7 +43,7 @@ lhctl list nodeRun <wf_run_id>
 lhctl get taskRun <wf_run_id> <task_run_global_id>
 ```
 
-See [OneOfStructExample.java](src/main/java/io/littlehorse/examples/OneOfStructExample.java)
+See [OneOfExample.java](src/main/java/io/littlehorse/examples/OneOfExample.java)
 for registration and submission, and
 [OneOfPaymentWorker.java](src/main/java/io/littlehorse/examples/OneOfPaymentWorker.java)
 for the two task methods.

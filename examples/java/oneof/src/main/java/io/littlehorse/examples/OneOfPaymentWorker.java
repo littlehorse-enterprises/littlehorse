@@ -1,7 +1,7 @@
 package io.littlehorse.examples;
 
-import io.littlehorse.examples.OneOfStructExample.FlatPayment;
-import io.littlehorse.examples.OneOfStructExample.NestedPayment;
+import io.littlehorse.examples.OneOfExample.FlatPayment;
+import io.littlehorse.examples.OneOfExample.NestedPayment;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 
 public class OneOfPaymentWorker {

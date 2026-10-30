@@ -32,9 +32,3 @@ dependencies {
 application {
     mainClass = 'io.littlehorse.examples.StructDefExample'
 }
-
-// Register the oneof workflow and start workers, or submit a run with --args.
-tasks.register('runOneOfExample', JavaExec) {
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = 'io.littlehorse.examples.OneOfStructExample'
-}

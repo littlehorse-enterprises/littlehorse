@@ -10,9 +10,13 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructOneOf;
 import io.littlehorse.sdk.worker.LHTaskWorker;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Properties;
 
-public class OneOfStructExample {
+public class OneOfExample {
     private static final String WF_SPEC_NAME = "oneof-payment";
 
     @LHStructDef("payment")
@@ -38,12 +42,23 @@ public class OneOfStructExample {
     }
 
     public static void main(String[] args) throws Exception {
-        LHConfig config = new LHConfig(StructDefExample.getConfigProps());
+        LHConfig config = new LHConfig(getConfigProps());
         if (args.length == 0) {
             runWorkers(config);
         } else {
             runWorkflow(config, args[0]);
         }
+    }
+
+    public static Properties getConfigProps() throws IOException {
+        Properties props = new Properties();
+        Path configPath = Path.of(System.getProperty("user.home"), ".config/littlehorse.config");
+        if (Files.exists(configPath)) {
+            try (var input = Files.newInputStream(configPath)) {
+                props.load(input);
+            }
+        }
+        return props;
     }
 
     public static void runWorkers(LHConfig config) {
