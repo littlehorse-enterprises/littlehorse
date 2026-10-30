@@ -227,15 +227,15 @@ Both APIs will generate nested choice Structs in [`type_definition.proto`](../sc
 ```protobuf
 message InlineStructDef {
   map<string, StructFieldDef> fields = 1;
-  StructOneOfConstraints oneof_constraints = 2;
+  StructOneOf oneof_config = 2;
 }
 
-message StructOneOfConstraints {
+message StructOneOf {
   bool selection_required = 1;
 }
 ```
 
-- **Defining a oneof:** An absent `oneof_constraints` means a normal Struct; a present message means a oneof. Within that message, `selection_required = false` allows zero or one populated field, while `true` requires exactly one.
+- **Defining a oneof:** An absent `oneof_config` means a normal Struct; a present message means a oneof. Within that message, `selection_required = false` allows zero or one populated field, while `true` requires exactly one.
 - **Usage:** Oneofs live in inline helper schemas. A named StructDef can contain them, but cannot itself be a oneof.
 - **Passing values:** Both APIs use the same nested Struct value, so either model can read values written by the other. The schema supplies the selection rule; values do not repeat it. No new `VariableValue` case is needed.
 
@@ -254,7 +254,7 @@ Our feature selects a named field, like protobuf's `oneof`. JSON Schema's `oneOf
 
 ## Backwards Compatibility
 
-- **Existing StructDefs:** Definitions without `oneof_constraints` behave as today. Servers and clients using oneofs need updated support; older servers will not enforce or preserve the constraints.
+- **Existing StructDefs:** Definitions without `oneof_config` behave as today. Servers and clients using oneofs need updated support; older servers will not enforce or preserve the constraints.
 - **Schema updates:** We will keep the existing compatibility types. Under `FULLY_COMPATIBLE_SCHEMA_UPDATES`, adding, removing, renaming, or changing the type of an alternative, changing selection requirements, or moving fields into a oneof is incompatible and requires a new StructDef name.
 - **Future evolution:** Adding options and moving fields into oneofs under the same StructDef name will be addressed in a separate proposal, including any new compatibility modes or field migrations.
 - **Switching SDK APIs:** Moving between declaration styles preserves values and paths when the generated schemas and field names are identical.
