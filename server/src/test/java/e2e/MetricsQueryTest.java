@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ListWfMetricsRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -13,7 +14,6 @@ import io.littlehorse.sdk.common.proto.MetricsList;
 import io.littlehorse.sdk.common.proto.SearchWfMetricWindowRequest;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -123,16 +123,22 @@ public class MetricsQueryTest {
 
     @LHWorkflow("metrics-error-workflow")
     public Workflow buildErrorWorkflow() {
-        return new WorkflowImpl("metrics-error-workflow", thread -> {
-            thread.execute("metrics-failing-task");
-        });
+        return Workflow.newWorkflow(
+                "metrics-error-workflow",
+                thread -> {
+                    thread.execute("metrics-failing-task");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("metrics-test-workflow")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("metrics-test-workflow", thread -> {
-            thread.execute("metrics-simple-task");
-        });
+        return Workflow.newWorkflow(
+                "metrics-test-workflow",
+                thread -> {
+                    thread.execute("metrics-simple-task");
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("metrics-simple-task")

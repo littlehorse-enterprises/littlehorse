@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -30,12 +31,15 @@ public class ExternalEventTypingTest {
 
     @LHWorkflow("typed-external-event")
     public Workflow getBasicExternalEventWorkflow() {
-        return Workflow.newWorkflow("typed-external-event", thread -> {
-            WfRunVariable evtOutput = thread.declareInt("evt-output");
-            ExternalEventNodeOutput payload =
-                    thread.waitForEvent("typed-as-int").registeredAs(Integer.class);
-            evtOutput.assign(payload);
-        });
+        return Workflow.newWorkflow(
+                "typed-external-event",
+                thread -> {
+                    WfRunVariable evtOutput = thread.declareInt("evt-output");
+                    ExternalEventNodeOutput payload =
+                            thread.waitForEvent("typed-as-int").registeredAs(Integer.class);
+                    evtOutput.assign(payload);
+                },
+                new LHConfig());
     }
 
     @Test

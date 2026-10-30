@@ -2,6 +2,7 @@ package e2e;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -49,9 +50,12 @@ public class RunChildWfTest {
     void cannotReferToNonexistingWfSpec() {
         String parent = randomString();
         String child = randomString();
-        Workflow invalid = Workflow.newWorkflow(parent, wf -> {
-            wf.runWf(child, Map.of());
-        });
+        Workflow invalid = Workflow.newWorkflow(
+                parent,
+                wf -> {
+                    wf.runWf(child, Map.of());
+                },
+                new LHConfig());
 
         Assertions.assertThatThrownBy(() -> {
                     invalid.registerWfSpec(client);
@@ -70,13 +74,19 @@ public class RunChildWfTest {
     void validateInputstToChildWfSpec() {
         String parent = randomString();
         String child = randomString();
-        Workflow childWf = Workflow.newWorkflow(child, wf -> {
-            wf.declareStr("required-input").required();
-        });
+        Workflow childWf = Workflow.newWorkflow(
+                child,
+                wf -> {
+                    wf.declareStr("required-input").required();
+                },
+                new LHConfig());
 
-        Workflow invalidParent = Workflow.newWorkflow(parent, wf -> {
-            wf.runWf(child, Map.of());
-        });
+        Workflow invalidParent = Workflow.newWorkflow(
+                parent,
+                wf -> {
+                    wf.runWf(child, Map.of());
+                },
+                new LHConfig());
 
         childWf.registerWfSpec(client);
 
@@ -99,29 +109,41 @@ public class RunChildWfTest {
         String parent = "parent-" + randomString();
 
         // Child Version 0.0
-        Workflow.newWorkflow(child, wf -> {
-                    wf.declareStr("user-id").required();
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            wf.declareStr("user-id").required();
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         // Parent should refer to Child Version 0.X
-        Workflow.newWorkflow(parent, wf -> {
-                    wf.runWf(child, Map.of("user-id", "obi-wan"));
-                })
+        Workflow.newWorkflow(
+                        parent,
+                        wf -> {
+                            wf.runWf(child, Map.of("user-id", "obi-wan"));
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         // Child Version 0.1
-        Workflow.newWorkflow(child, wf -> {
-                    wf.declareStr("user-id").required();
-                    wf.declareStr("some-hidden-var");
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            wf.declareStr("user-id").required();
+                            wf.declareStr("some-hidden-var");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         // Child Version 1.0
-        Workflow.newWorkflow(child, wf -> {
-                    wf.declareStr("new-required-variable").required();
-                    wf.declareBool("not-used");
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            wf.declareStr("new-required-variable").required();
+                            wf.declareBool("not-used");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         WfSpecId lastChildWfSpecId = WfSpecId.newBuilder()
@@ -154,14 +176,20 @@ public class RunChildWfTest {
         String child = "child-fail-" + randomString();
         String parent = "parent-fail-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {
-                    wf.fail("some-exn", "a business message");
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            wf.fail("some-exn", "a business message");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
-        Workflow.newWorkflow(parent, wf -> {
-                    wf.waitForChildWf(wf.runWf(child, Map.of()));
-                })
+        Workflow.newWorkflow(
+                        parent,
+                        wf -> {
+                            wf.waitForChildWf(wf.runWf(child, Map.of()));
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
@@ -187,15 +215,21 @@ public class RunChildWfTest {
         String child = "child-return-" + randomString();
         String parent = "parent-return-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {
-                    wf.complete("hello");
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            wf.complete("hello");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
-        Workflow.newWorkflow(parent, wf -> {
-                    WfRunVariable resultFromChild = wf.declareStr("result-from-child");
-                    resultFromChild.assign(wf.waitForChildWf(wf.runWf(child, Map.of())));
-                })
+        Workflow.newWorkflow(
+                        parent,
+                        wf -> {
+                            WfRunVariable resultFromChild = wf.declareStr("result-from-child");
+                            resultFromChild.assign(wf.waitForChildWf(wf.runWf(child, Map.of())));
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
@@ -220,10 +254,13 @@ public class RunChildWfTest {
         String parent = "parent-id-" + randomString();
         String childId = "specified-child-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
-        Workflow.newWorkflow(parent, wf -> {
-                    wf.runWf(child, Map.of()).withChildId(childId);
-                })
+        Workflow.newWorkflow(child, wf -> {}, new LHConfig()).registerWfSpec(client);
+        Workflow.newWorkflow(
+                        parent,
+                        wf -> {
+                            wf.runWf(child, Map.of()).withChildId(childId);
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
@@ -247,11 +284,14 @@ public class RunChildWfTest {
         String parent = "parent-duplicate-id-" + randomString();
         String childId = "duplicate-child-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
-        Workflow parentWf = Workflow.newWorkflow(parent, wf -> {
-            wf.runWf(child, Map.of()).withChildId(childId);
-            wf.runWf(child, Map.of()).withChildId(childId);
-        });
+        Workflow.newWorkflow(child, wf -> {}, new LHConfig()).registerWfSpec(client);
+        Workflow parentWf = Workflow.newWorkflow(
+                parent,
+                wf -> {
+                    wf.runWf(child, Map.of()).withChildId(childId);
+                    wf.runWf(child, Map.of()).withChildId(childId);
+                },
+                new LHConfig());
         parentWf.registerWfSpec(client);
         Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
             client.getWfSpec(WfSpecId.newBuilder().setName(parent).build());
@@ -271,10 +311,13 @@ public class RunChildWfTest {
         String child = "child-invalid-id-" + randomString();
         String parent = "parent-invalid-id-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {}).registerWfSpec(client);
-        Workflow parentWf = Workflow.newWorkflow(parent, wf -> {
-            wf.runWf(child, Map.of()).withChildId("invalid_child_id");
-        });
+        Workflow.newWorkflow(child, wf -> {}, new LHConfig()).registerWfSpec(client);
+        Workflow parentWf = Workflow.newWorkflow(
+                parent,
+                wf -> {
+                    wf.runWf(child, Map.of()).withChildId("invalid_child_id");
+                },
+                new LHConfig());
         parentWf.registerWfSpec(client);
 
         verifier.prepareRun(parentWf)
@@ -294,9 +337,12 @@ public class RunChildWfTest {
         final String invalidChildSuffix = UUID.randomUUID().toString();
         final String childWfName = "child-" + childSuffix;
         final String invalidChildWfName = "child-" + invalidChildSuffix;
-        Workflow emptyWorkflow = Workflow.newWorkflow(childWfName, wf -> {
-            // Empty workflow
-        });
+        Workflow emptyWorkflow = Workflow.newWorkflow(
+                childWfName,
+                wf -> {
+                    // Empty workflow
+                },
+                new LHConfig());
 
         emptyWorkflow.registerWfSpec(client);
 
@@ -331,15 +377,22 @@ public class RunChildWfTest {
         String child = "child-rescue-" + randomString();
         String parent = "parent-rescue-" + randomString();
 
-        Workflow.newWorkflow(child, wf -> {
-                    WfRunVariable timesToFail = wf.declareInt("times-to-fail").required();
-                    wf.execute("fail-child-x-times", timesToFail);
-                })
+        Workflow.newWorkflow(
+                        child,
+                        wf -> {
+                            WfRunVariable timesToFail =
+                                    wf.declareInt("times-to-fail").required();
+                            wf.execute("fail-child-x-times", timesToFail);
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
-        Workflow.newWorkflow(parent, wf -> {
-                    wf.waitForChildWf(wf.runWf(child, Map.of("times-to-fail", 1)));
-                })
+        Workflow.newWorkflow(
+                        parent,
+                        wf -> {
+                            wf.waitForChildWf(wf.runWf(child, Map.of("times-to-fail", 1)));
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
 
         Awaitility.await().ignoreExceptions().atMost(Duration.ofSeconds(1)).until(() -> {
@@ -389,11 +442,14 @@ public class RunChildWfTest {
 
     @LHWorkflow("test-dynamic-child-workflow")
     public Workflow dynamicChildWorkflow() {
-        return Workflow.newWorkflow("test-dynamic-child-workflow", wf -> {
-            WfRunVariable suffix = wf.declareStr("wf-name-suffix").required();
-            SpawnedChildWf spawnedChildWf = wf.runWf(wf.format("child-{0}", suffix), Map.of());
-            wf.waitForChildWf(spawnedChildWf);
-        });
+        return Workflow.newWorkflow(
+                "test-dynamic-child-workflow",
+                wf -> {
+                    WfRunVariable suffix = wf.declareStr("wf-name-suffix").required();
+                    SpawnedChildWf spawnedChildWf = wf.runWf(wf.format("child-{0}", suffix), Map.of());
+                    wf.waitForChildWf(spawnedChildWf);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("fail-child-x-times")

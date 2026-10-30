@@ -1,12 +1,12 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -51,12 +51,15 @@ public class DynamicTaskTest {
 
     @LHWorkflow("dynamic-task")
     public Workflow getBasic() {
-        return new WorkflowImpl("dynamic-task", wf -> {
-            WfRunVariable clusterName =
-                    wf.addVariable("cluster-name", VariableType.STR).required();
-            wf.execute(clusterName);
-            wf.execute(wf.format("dynamic-create-cluster-{0}", clusterName));
-        });
+        return Workflow.newWorkflow(
+                "dynamic-task",
+                wf -> {
+                    WfRunVariable clusterName =
+                            wf.addVariable("cluster-name", VariableType.STR).required();
+                    wf.execute(clusterName);
+                    wf.execute(wf.format("dynamic-create-cluster-{0}", clusterName));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("dynamic-create-cluster-summerlin")

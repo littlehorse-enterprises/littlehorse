@@ -1,6 +1,7 @@
 package e2e;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.ThreadRetentionPolicy;
@@ -35,29 +36,32 @@ public class RetentionTest {
 
     @LHWorkflow("child-thread-retention-test")
     public Workflow buildRetentionWorkflow() {
-        return Workflow.newWorkflow("retention-test", wf -> {
-            wf.spawnThread(
-                    child -> {
-                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                                // To avoid sleeping in test framework, delete immediately
-                                .setSecondsAfterThreadTermination(0)
-                                .build());
-                        child.waitForEvent(RETENTION_CHILD_EVENT);
-                    },
-                    "child",
-                    null);
+        return Workflow.newWorkflow(
+                "retention-test",
+                wf -> {
+                    wf.spawnThread(
+                            child -> {
+                                child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                        // To avoid sleeping in test framework, delete immediately
+                                        .setSecondsAfterThreadTermination(0)
+                                        .build());
+                                child.waitForEvent(RETENTION_CHILD_EVENT);
+                            },
+                            "child",
+                            null);
 
-            // Wait twice so we have control and can inspect the WfRun twice.
-            wf.waitForEvent(RETENTION_PARENT_EVENT);
+                    // Wait twice so we have control and can inspect the WfRun twice.
+                    wf.waitForEvent(RETENTION_PARENT_EVENT);
 
-            // Ensure that the threadRunNumber for this thread is 2, not 1
-            wf.spawnThread(child -> {}, "second-child", null);
-        });
+                    // Ensure that the threadRunNumber for this thread is 2, not 1
+                    wf.spawnThread(child -> {}, "second-child", null);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("wf-run-retention-test")
     public Workflow buildWfRunRetentionWorkflow() {
-        Workflow out = Workflow.newWorkflow("wf-run-retention-test", wf -> {});
+        Workflow out = Workflow.newWorkflow("wf-run-retention-test", wf -> {}, new LHConfig());
         out.withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
                 .setSecondsAfterWfTermination(1)
                 .build());

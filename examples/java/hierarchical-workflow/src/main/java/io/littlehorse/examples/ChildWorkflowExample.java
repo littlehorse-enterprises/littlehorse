@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,34 +12,43 @@ import java.util.Properties;
 
 public class ChildWorkflowExample {
 
-    public static Workflow getGrandChild() {
-        WorkflowImpl out = new WorkflowImpl("grand-child", wf -> {
-            wf.waitForEvent("some-event").registeredAs(String.class);
-        });
+    public static Workflow getGrandChild(LHConfig config) {
+        Workflow out = Workflow.newWorkflow(
+                "grand-child",
+                wf -> {
+                    wf.waitForEvent("some-event").registeredAs(String.class);
+                },
+                config);
         out.setParent("child");
 
         return out;
     }
 
-    public static Workflow getChild() {
-        WorkflowImpl out = new WorkflowImpl("child", wf -> {
-            WfRunVariable theName = wf.declareStr("name").asInherited();
+    public static Workflow getChild(LHConfig config) {
+        Workflow out = Workflow.newWorkflow(
+                "child",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("name").asInherited();
 
-            wf.execute("greet", theName);
+                    wf.execute("greet", theName);
 
-            theName.assign("yoda");
-        });
+                    theName.assign("yoda");
+                },
+                config);
         out.setParent("parent");
 
         return out;
     }
 
-    public static Workflow getParent() {
-        WorkflowImpl out = new WorkflowImpl("parent", wf -> {
-            WfRunVariable theName = wf.declareStr("name").asPublic();
+    public static Workflow getParent(LHConfig config) {
+        Workflow out = Workflow.newWorkflow(
+                "parent",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("name").asPublic();
 
-            wf.execute("greet", theName);
-        });
+                    wf.execute("greet", theName);
+                },
+                config);
         return out;
     }
 
@@ -73,9 +81,9 @@ public class ChildWorkflowExample {
         worker.registerTaskDef();
 
         // Register a workflow
-        getParent().registerWfSpec(config.getBlockingStub());
-        getChild().registerWfSpec(config.getBlockingStub());
-        getGrandChild().registerWfSpec(config.getBlockingStub());
+        getParent(config).registerWfSpec(config.getBlockingStub());
+        getChild(config).registerWfSpec(config.getBlockingStub());
+        getGrandChild(config).registerWfSpec(config.getBlockingStub());
 
         // Run the worker
         worker.start();

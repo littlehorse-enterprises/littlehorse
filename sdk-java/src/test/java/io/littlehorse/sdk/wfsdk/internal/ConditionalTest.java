@@ -3,6 +3,7 @@ package io.littlehorse.sdk.wfsdk.internal;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.EntrypointNode;
@@ -18,6 +19,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,14 +31,17 @@ public class ConditionalTest {
 
         @Test
         public void shouldCreateIfElseConditionWithoutNodes() {
-            WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-                WfRunVariable myVar =
-                        thread.addVariable("my-var", VariableType.STR).searchable();
-                thread.doIfElse(
-                        thread.condition(myVar, Comparator.GREATER_THAN, 10),
-                        ifBody -> thread.mutate(myVar, VariableMutationType.ASSIGN, "if-body"),
-                        elseBody -> thread.mutate(myVar, VariableMutationType.ASSIGN, "else-body"));
-            });
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable myVar =
+                                thread.addVariable("my-var", VariableType.STR).searchable();
+                        thread.doIfElse(
+                                thread.condition(myVar, Comparator.GREATER_THAN, 10),
+                                ifBody -> thread.mutate(myVar, VariableMutationType.ASSIGN, "if-body"),
+                                elseBody -> thread.mutate(myVar, VariableMutationType.ASSIGN, "else-body"));
+                    },
+                    new LHConfig());
 
             ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
             Node firstNOPNode = thread.getNodesOrThrow("1-nop-NOP");
@@ -77,11 +82,14 @@ public class ConditionalTest {
 
         @Test
         public void testDoIfStatementWithoutElseBody() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                    body.execute("task-a");
-                });
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                            body.execute("task-a");
+                        });
+                    },
+                    new LHConfig());
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
@@ -129,14 +137,17 @@ public class ConditionalTest {
 
         @Test
         public void testDoElseIfStatement() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                            body.execute("task-a");
-                        })
-                        .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
-                            body.execute("task-b");
-                        });
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    body.execute("task-a");
+                                })
+                                .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
+                                    body.execute("task-b");
+                                });
+                    },
+                    new LHConfig());
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
@@ -206,18 +217,21 @@ public class ConditionalTest {
 
         @Test
         public void testDoElseIfStatementWithBodyAndVariableMutations() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                WfRunVariable myInt = wf.declareInt("my-int");
-                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                            myInt.assign(10);
-                            body.execute("task-a");
-                        })
-                        .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
-                            body.execute("task-b");
-                            myInt.assign(20);
-                        });
-                myInt.assign(30);
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        WfRunVariable myInt = wf.declareInt("my-int");
+                        wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    myInt.assign(10);
+                                    body.execute("task-a");
+                                })
+                                .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
+                                    body.execute("task-b");
+                                    myInt.assign(20);
+                                });
+                        myInt.assign(30);
+                    },
+                    new LHConfig());
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
@@ -264,18 +278,21 @@ public class ConditionalTest {
 
         @Test
         public void testMultipleDoElseIfStatements() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                WfRunVariable myInt = wf.declareInt("my-int");
-                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                            body.execute("task-a");
-                        })
-                        .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
-                            body.execute("task-b");
-                        })
-                        .doElseIf(wf.condition(myInt, Comparator.LESS_THAN, 100), body -> {
-                            body.execute("task-c");
-                        });
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        WfRunVariable myInt = wf.declareInt("my-int");
+                        wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    body.execute("task-a");
+                                })
+                                .doElseIf(wf.condition(10, Comparator.EQUALS, 40), body -> {
+                                    body.execute("task-b");
+                                })
+                                .doElseIf(wf.condition(myInt, Comparator.LESS_THAN, 100), body -> {
+                                    body.execute("task-c");
+                                });
+                    },
+                    new LHConfig());
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
@@ -322,33 +339,40 @@ public class ConditionalTest {
 
         @Test
         public void testDoElseStatementThrowsExceptionWhenCalledTwice() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                WfRunVariable myInt = wf.declareInt("my-int");
-                WorkflowIfStatement myIfStatement = wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                    myInt.assign(10);
-                    body.execute("task-a");
-                });
-                myIfStatement.doElse(body -> {});
-                myIfStatement.doElse(body -> {});
-                myInt.assign(30);
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        WfRunVariable myInt = wf.declareInt("my-int");
+                        WorkflowIfStatement myIfStatement =
+                                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    myInt.assign(10);
+                                    body.execute("task-a");
+                                });
+                        myIfStatement.doElse(body -> {});
+                        myIfStatement.doElse(body -> {});
+                        myInt.assign(30);
+                    },
+                    new LHConfig());
 
             assertThatThrownBy(() -> wfSpec.compileWorkflow()).isInstanceOf(IllegalStateException.class);
         }
 
         @Test
         public void testDoElseIfWithNodeAndMutationAfterIfStatement() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                WfRunVariable myInt = wf.declareInt("my-int");
-                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                            body.execute("task-a");
-                        })
-                        .doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
-                            body.execute("task-b");
-                        });
-                myInt.assign(40);
-                wf.execute("task-c");
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        WfRunVariable myInt = wf.declareInt("my-int");
+                        wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    body.execute("task-a");
+                                })
+                                .doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
+                                    body.execute("task-b");
+                                });
+                        myInt.assign(40);
+                        wf.execute("task-c");
+                    },
+                    new LHConfig());
 
             ThreadSpec entrypointThread = wfSpec.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
 
@@ -387,15 +411,19 @@ public class ConditionalTest {
          */
         @Test
         public void testIfStatementWithExecuteMethodCallBetweenElseIfConditions() {
-            WorkflowImpl wfSpec = new WorkflowImpl("my-workflow", wf -> {
-                WorkflowIfStatement myIfStatement = wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
-                    body.execute("task-a");
-                });
-                wf.execute("task-c");
-                myIfStatement.doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
-                    body.execute("task-b");
-                });
-            });
+            Workflow wfSpec = Workflow.newWorkflow(
+                    "my-workflow",
+                    wf -> {
+                        WorkflowIfStatement myIfStatement =
+                                wf.doIf(wf.condition(5, Comparator.GREATER_THAN, 4), body -> {
+                                    body.execute("task-a");
+                                });
+                        wf.execute("task-c");
+                        myIfStatement.doElseIf(wf.condition(10, Comparator.LESS_THAN_EQ, 200), body -> {
+                            body.execute("task-b");
+                        });
+                    },
+                    new LHConfig());
 
             VariableAssignment taskAExpectedCondition = VariableAssignment.newBuilder()
                     .setExpression(VariableAssignment.Expression.newBuilder()

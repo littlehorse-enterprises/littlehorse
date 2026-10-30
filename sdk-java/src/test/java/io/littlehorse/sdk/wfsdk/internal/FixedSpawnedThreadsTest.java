@@ -3,10 +3,12 @@ package io.littlehorse.sdk.wfsdk.internal;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.WaitForThreadsNode;
 import io.littlehorse.sdk.common.proto.WaitForThreadsStrategy;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ public class FixedSpawnedThreadsTest {
 
     @BeforeEach
     void setup() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
+        WorkflowImpl workflow = (WorkflowImpl) Workflow.newWorkflow("my-workflow", threadFunction, new LHConfig());
         workflowThread = new WorkflowThreadImpl("my-thread", workflow, threadFunction);
 
         when(spawnedThread1.getThreadNumberVariable())

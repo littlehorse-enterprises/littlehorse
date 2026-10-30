@@ -21,11 +21,14 @@ public class TypeAdapterExample {
     private static final Logger log = LoggerFactory.getLogger(TypeAdapterExample.class);
 
     public static Workflow getWorkflow(LHConfig config) {
-        return Workflow.newWorkflow("example-type-adapter", wf -> {
-            WfRunVariable uuidVar = wf.declareStr("uuid").searchable();
-            uuidVar.assign(wf.execute("get-uuid"));
-            wf.execute("echo-uuid", uuidVar);
-        }, config);
+        return Workflow.newWorkflow(
+                "example-type-adapter",
+                wf -> {
+                    WfRunVariable uuidVar = wf.declareStr("uuid").searchable();
+                    uuidVar.assign(wf.execute("get-uuid"));
+                    wf.execute("echo-uuid", uuidVar);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {

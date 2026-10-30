@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -70,25 +71,29 @@ public class InterruptLifecycleTest {
 
     @LHWorkflow("interrupt-lifecycle-test")
     public Workflow getInterruptLifecycleTestWf() {
-        return Workflow.newWorkflow("interrupt-lifecycle-test", wf -> {
-            WfRunVariable theKey = wf.addVariable("key", VariableType.STR).required();
-            wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
-                        handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER).registeredAs(null);
-                    })
-                    .withEventType(null);
-            ;
+        return Workflow.newWorkflow(
+                "interrupt-lifecycle-test",
+                wf -> {
+                    WfRunVariable theKey =
+                            wf.addVariable("key", VariableType.STR).required();
+                    wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
+                                handler.waitForEvent(COMPLETE_INTERRUPT_HANDLER).registeredAs(null);
+                            })
+                            .withEventType(null);
+                    ;
 
-            wf.waitForEvent(PARENT_EVENT).registeredAs(null);
-            wf.execute("dummy-task", theKey);
+                    wf.waitForEvent(PARENT_EVENT).registeredAs(null);
+                    wf.execute("dummy-task", theKey);
 
-            // Spawn and wait for child
-            wf.waitForThreads(SpawnedThreads.of(wf.spawnThread(
-                    child -> {
-                        child.waitForEvent(CHILD_EVENT).registeredAs(null);
-                    },
-                    "child",
-                    Map.of())));
-        });
+                    // Spawn and wait for child
+                    wf.waitForThreads(SpawnedThreads.of(wf.spawnThread(
+                            child -> {
+                                child.waitForEvent(CHILD_EVENT).registeredAs(null);
+                            },
+                            "child",
+                            Map.of())));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("dummy-task")

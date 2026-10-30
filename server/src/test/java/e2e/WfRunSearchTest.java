@@ -5,6 +5,7 @@ import static io.littlehorse.sdk.common.proto.LHStatus.RUNNING;
 
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
@@ -19,7 +20,6 @@ import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.common.proto.WfSpecIdList;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -375,33 +375,45 @@ public class WfRunSearchTest {
 
     @LHWorkflow("complex-workflow")
     public Workflow getEqualsWorkflowImpl() {
-        return new WorkflowImpl("complex-workflow", thread -> {
-            thread.waitForEvent("external-event");
-            thread.execute("my-task-2");
-        });
+        return Workflow.newWorkflow(
+                "complex-workflow",
+                thread -> {
+                    thread.waitForEvent("external-event");
+                    thread.execute("my-task-2");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("searchable-variable-wf")
     public Workflow getSearchableVariableWf() {
-        return Workflow.newWorkflow("searchable-variable-wf", wf -> {
-            wf.addVariable("my-var", VariableType.STR).searchable();
-        });
+        return Workflow.newWorkflow(
+                "searchable-variable-wf",
+                wf -> {
+                    wf.addVariable("my-var", VariableType.STR).searchable();
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("child-workflow")
     public Workflow getChildWorkflow() {
-        var workflow = Workflow.newWorkflow("child-workflow", wf -> {
-            wf.addVariable("my-var", VariableType.STR).searchable();
-        });
+        var workflow = Workflow.newWorkflow(
+                "child-workflow",
+                wf -> {
+                    wf.addVariable("my-var", VariableType.STR).searchable();
+                },
+                new LHConfig());
         workflow.setParent("searchable-variable-wf");
         return workflow;
     }
 
     @LHWorkflow("grand-child-workflow")
     public Workflow getGrandChildWorkflow() {
-        var workflow = Workflow.newWorkflow("grand-child-workflow", wf -> {
-            wf.addVariable("my-var", VariableType.STR).searchable();
-        });
+        var workflow = Workflow.newWorkflow(
+                "grand-child-workflow",
+                wf -> {
+                    wf.addVariable("my-var", VariableType.STR).searchable();
+                },
+                new LHConfig());
         workflow.setParent("child-workflow");
         return workflow;
     }

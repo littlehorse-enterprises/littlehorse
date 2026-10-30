@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.google.protobuf.Timestamp;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -50,15 +51,19 @@ public class WfRunDeletionTest {
 
     @LHWorkflow("delete-wfrun")
     public Workflow getBasicExternalEventWorkflow() {
-        return Workflow.newWorkflow("delete-wfrun", wf -> {
-            WfRunVariable tasksToExecute = wf.declareInt("tasks-to-execute").withDefault(1);
-            wf.waitForEvent(COMPLETE_WFRUN_EVT);
-            wf.doWhile(tasksToExecute.isGreaterThan(0), loop -> {
-                // Lots of tasks so that we need to do phased deletion.
-                loop.execute("pedro-task-test");
-                tasksToExecute.assign(tasksToExecute.subtract(1));
-            });
-        });
+        return Workflow.newWorkflow(
+                "delete-wfrun",
+                wf -> {
+                    WfRunVariable tasksToExecute =
+                            wf.declareInt("tasks-to-execute").withDefault(1);
+                    wf.waitForEvent(COMPLETE_WFRUN_EVT);
+                    wf.doWhile(tasksToExecute.isGreaterThan(0), loop -> {
+                        // Lots of tasks so that we need to do phased deletion.
+                        loop.execute("pedro-task-test");
+                        tasksToExecute.assign(tasksToExecute.subtract(1));
+                    });
+                },
+                new LHConfig());
     }
 
     @Test

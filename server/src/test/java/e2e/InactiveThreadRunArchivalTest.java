@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.InactiveThreadRun;
 import io.littlehorse.sdk.common.proto.InactiveThreadRunId;
@@ -111,30 +112,33 @@ public class InactiveThreadRunArchivalTest {
 
     @LHWorkflow("inactive-thread-run-archival-workflow")
     public Workflow buildInactiveThreadRunArchivalWorkflow() {
-        return Workflow.newWorkflow("inactive-thread-run-archival-workflow", wf -> {
-            SpawnedThread child1 = wf.spawnThread(
-                    child -> {
-                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                                .setSecondsAfterThreadTermination(0)
-                                .build());
-                        WfRunVariable done = child.addVariable("done-1", VariableType.BOOL);
-                        child.mutate(done, VariableMutationType.ASSIGN, true);
-                    },
-                    "child-1",
-                    null);
-            SpawnedThread child2 = wf.spawnThread(
-                    child -> {
-                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                                .setSecondsAfterThreadTermination(0)
-                                .build());
-                        WfRunVariable done = child.addVariable("done-2", VariableType.BOOL);
-                        child.mutate(done, VariableMutationType.ASSIGN, true);
-                    },
-                    "child-2",
-                    null);
+        return Workflow.newWorkflow(
+                "inactive-thread-run-archival-workflow",
+                wf -> {
+                    SpawnedThread child1 = wf.spawnThread(
+                            child -> {
+                                child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                        .setSecondsAfterThreadTermination(0)
+                                        .build());
+                                WfRunVariable done = child.addVariable("done-1", VariableType.BOOL);
+                                child.mutate(done, VariableMutationType.ASSIGN, true);
+                            },
+                            "child-1",
+                            null);
+                    SpawnedThread child2 = wf.spawnThread(
+                            child -> {
+                                child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                        .setSecondsAfterThreadTermination(0)
+                                        .build());
+                                WfRunVariable done = child.addVariable("done-2", VariableType.BOOL);
+                                child.mutate(done, VariableMutationType.ASSIGN, true);
+                            },
+                            "child-2",
+                            null);
 
-            wf.waitForThreads(SpawnedThreads.of(child1, child2));
-            wf.waitForEvent(FINISH_WORKFLOW_EVENT);
-        });
+                    wf.waitForThreads(SpawnedThreads.of(child1, child2));
+                    wf.waitForEvent(FINISH_WORKFLOW_EVENT);
+                },
+                new LHConfig());
     }
 }

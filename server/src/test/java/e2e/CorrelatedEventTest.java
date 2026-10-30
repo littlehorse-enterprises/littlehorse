@@ -4,6 +4,7 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CorrelatedEvent;
 import io.littlehorse.sdk.common.proto.CorrelatedEventConfig;
 import io.littlehorse.sdk.common.proto.CorrelatedEventId;
@@ -56,65 +57,77 @@ public class CorrelatedEventTest {
 
     @LHWorkflow("correlated-event-with-deletion")
     public Workflow getWfWithDeletion() {
-        return Workflow.newWorkflow("correlated-event-with-deletion", wf -> {
-            WfRunVariable key = wf.declareStr("key").required().masked();
-            WfRunVariable eventResult = wf.declareInt("event-result");
-            ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-deletion")
-                    .registeredAs(Integer.class)
-                    .withCorrelationId(key)
-                    .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
-                            .setDeleteAfterFirstCorrelation(true)
-                            .build());
-            eventResult.assign(output);
-        });
+        return Workflow.newWorkflow(
+                "correlated-event-with-deletion",
+                wf -> {
+                    WfRunVariable key = wf.declareStr("key").required().masked();
+                    WfRunVariable eventResult = wf.declareInt("event-result");
+                    ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-deletion")
+                            .registeredAs(Integer.class)
+                            .withCorrelationId(key)
+                            .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
+                                    .setDeleteAfterFirstCorrelation(true)
+                                    .build());
+                    eventResult.assign(output);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("correlated-event-no-deletion")
     public Workflow getWfWithoutDeletion() {
-        return Workflow.newWorkflow("correlated-event-no-deletion", wf -> {
-            WfRunVariable key = wf.declareStr("key").required();
-            WfRunVariable eventResult = wf.declareInt("event-result");
-            ExternalEventNodeOutput output = wf.waitForEvent("correlated-no-deletion")
-                    .registeredAs(Integer.class)
-                    .withCorrelationId(key)
-                    .timeout(2)
-                    .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
-                            .setDeleteAfterFirstCorrelation(false)
-                            .build());
-            eventResult.assign(output);
-        });
+        return Workflow.newWorkflow(
+                "correlated-event-no-deletion",
+                wf -> {
+                    WfRunVariable key = wf.declareStr("key").required();
+                    WfRunVariable eventResult = wf.declareInt("event-result");
+                    ExternalEventNodeOutput output = wf.waitForEvent("correlated-no-deletion")
+                            .registeredAs(Integer.class)
+                            .withCorrelationId(key)
+                            .timeout(2)
+                            .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
+                                    .setDeleteAfterFirstCorrelation(false)
+                                    .build());
+                    eventResult.assign(output);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("correlated-event-with-ttl")
     public Workflow getWfWithTTL() {
-        return Workflow.newWorkflow("correlated-event-with-ttl", wf -> {
-            WfRunVariable key = wf.declareStr("key").required();
-            WfRunVariable eventResult = wf.declareInt("event-result");
-            ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-ttl")
-                    .registeredAs(Integer.class)
-                    .withCorrelationId(key)
-                    .timeout(1)
-                    .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
-                            .setDeleteAfterFirstCorrelation(false)
-                            .setTtlSeconds(1)
-                            .build());
-            eventResult.assign(output);
-        });
+        return Workflow.newWorkflow(
+                "correlated-event-with-ttl",
+                wf -> {
+                    WfRunVariable key = wf.declareStr("key").required();
+                    WfRunVariable eventResult = wf.declareInt("event-result");
+                    ExternalEventNodeOutput output = wf.waitForEvent("correlated-with-ttl")
+                            .registeredAs(Integer.class)
+                            .withCorrelationId(key)
+                            .timeout(1)
+                            .withCorrelatedEventConfig(CorrelatedEventConfig.newBuilder()
+                                    .setDeleteAfterFirstCorrelation(false)
+                                    .setTtlSeconds(1)
+                                    .build());
+                    eventResult.assign(output);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("multi-thread-correlation")
     public Workflow getThreadWf() {
-        return Workflow.newWorkflow("multi-thread-correlation", wf -> {
-            WfRunVariable documents = wf.declareJsonArr("documents").required();
+        return Workflow.newWorkflow(
+                "multi-thread-correlation",
+                wf -> {
+                    WfRunVariable documents = wf.declareJsonArr("documents").required();
 
-            var threads = wf.spawnThreadForEach(documents, "wait-for-sign", child -> {
-                WfRunVariable documentId = child.declareStr(WorkflowThread.HANDLER_INPUT_VAR);
-                child.waitForEvent("correlated-document-signed")
-                        .registeredAs(null)
-                        .withCorrelationId(documentId);
-            });
-            wf.waitForThreads(threads);
-        });
+                    var threads = wf.spawnThreadForEach(documents, "wait-for-sign", child -> {
+                        WfRunVariable documentId = child.declareStr(WorkflowThread.HANDLER_INPUT_VAR);
+                        child.waitForEvent("correlated-document-signed")
+                                .registeredAs(null)
+                                .withCorrelationId(documentId);
+                    });
+                    wf.waitForThreads(threads);
+                },
+                new LHConfig());
     }
 
     @Test
