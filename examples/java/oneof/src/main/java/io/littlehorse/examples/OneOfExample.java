@@ -3,18 +3,21 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.RunWfRequest;
+import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
-import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OneOfExample {
+    private static final Logger log = LoggerFactory.getLogger(OneOfExample.class);
     private static final String WF_SPEC_NAME = "oneof-payment";
 
     public static Workflow getWorkflow() {
@@ -26,7 +29,10 @@ public class OneOfExample {
         });
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
+        if (args.length > 1) {
+            throw new IllegalArgumentException("Usage: OneOfExample [fields|helper]");
+        }
         LHConfig config = new LHConfig(getConfigProps());
         if (args.length == 0) {
             runWorkers(config);
@@ -48,9 +54,6 @@ public class OneOfExample {
 
     public static void runWorkers(LHConfig config) {
         var client = config.getBlockingStub();
-        // Both Java models describe the same named StructDef, so register it once.
-        client.putStructDef(new LHStructDefType(FlatPayment.class).toPutStructDefRequest());
-
         OneOfPaymentWorker executable = new OneOfPaymentWorker();
         List<LHTaskWorker> workers = List.of(
                 new LHTaskWorker(executable, "describe-payment-fields", config),
@@ -58,10 +61,14 @@ public class OneOfExample {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(LHTaskWorker::close)));
 
         for (LHTaskWorker worker : workers) {
+            worker.registerStructDefs(StructDefCompatibilityType.NO_SCHEMA_UPDATES);
             worker.registerTaskDef();
         }
         getWorkflow().registerWfSpec(client);
-        workers.forEach(LHTaskWorker::start);
+        for (LHTaskWorker worker : workers) {
+            log.info("Starting {}", worker.getTaskDefName());
+            worker.start();
+        }
     }
 
     public static void runWorkflow(LHConfig config, String style) {
