@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.InlineStructDef.class, io.littlehorse.sdk.common.proto.InlineStructDef.Builder.class);
   }
 
+  private int bitField0_;
   public static final int FIELDS_FIELD_NUMBER = 1;
   private static final class FieldsDefaultEntryHolder {
     static final com.google.protobuf.MapEntry<
@@ -154,6 +155,47 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
     return map.get(key);
   }
 
+  public static final int ONEOF_CONSTRAINTS_FIELD_NUMBER = 2;
+  private io.littlehorse.sdk.common.proto.StructOneOfConstraints oneofConstraints_;
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   * @return Whether the oneofConstraints field is set.
+   */
+  @java.lang.Override
+  public boolean hasOneofConstraints() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   * @return The oneofConstraints.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructOneOfConstraints getOneofConstraints() {
+    return oneofConstraints_ == null ? io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance() : oneofConstraints_;
+  }
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder getOneofConstraintsOrBuilder() {
+    return oneofConstraints_ == null ? io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance() : oneofConstraints_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -174,6 +216,9 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
         internalGetFields(),
         FieldsDefaultEntryHolder.defaultEntry,
         1);
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(2, getOneofConstraints());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -193,6 +238,10 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, fields__);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getOneofConstraints());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -210,6 +259,11 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
 
     if (!internalGetFields().equals(
         other.internalGetFields())) return false;
+    if (hasOneofConstraints() != other.hasOneofConstraints()) return false;
+    if (hasOneofConstraints()) {
+      if (!getOneofConstraints()
+          .equals(other.getOneofConstraints())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -224,6 +278,10 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
     if (!internalGetFields().getMap().isEmpty()) {
       hash = (37 * hash) + FIELDS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetFields().hashCode();
+    }
+    if (hasOneofConstraints()) {
+      hash = (37 * hash) + ONEOF_CONSTRAINTS_FIELD_NUMBER;
+      hash = (53 * hash) + getOneofConstraints().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -370,19 +428,30 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
 
     // Construct using io.littlehorse.sdk.common.proto.InlineStructDef.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage
+              .alwaysUseFieldBuilders) {
+        internalGetOneofConstraintsFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
       internalGetMutableFields().clear();
+      oneofConstraints_ = null;
+      if (oneofConstraintsBuilder_ != null) {
+        oneofConstraintsBuilder_.dispose();
+        oneofConstraintsBuilder_ = null;
+      }
       return this;
     }
 
@@ -419,6 +488,14 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
       if (((from_bitField0_ & 0x00000001) != 0)) {
         result.fields_ = internalGetFields().build(FieldsDefaultEntryHolder.defaultEntry);
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.oneofConstraints_ = oneofConstraintsBuilder_ == null
+            ? oneofConstraints_
+            : oneofConstraintsBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     @java.lang.Override
@@ -436,6 +513,9 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
       internalGetMutableFields().mergeFrom(
           other.internalGetFields());
       bitField0_ |= 0x00000001;
+      if (other.hasOneofConstraints()) {
+        mergeOneofConstraints(other.getOneofConstraints());
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -471,6 +551,13 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  internalGetOneofConstraintsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -673,6 +760,172 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.StructFieldDef.Builder) entry;
+    }
+
+    private io.littlehorse.sdk.common.proto.StructOneOfConstraints oneofConstraints_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructOneOfConstraints, io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder, io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder> oneofConstraintsBuilder_;
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     * @return Whether the oneofConstraints field is set.
+     */
+    public boolean hasOneofConstraints() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     * @return The oneofConstraints.
+     */
+    public io.littlehorse.sdk.common.proto.StructOneOfConstraints getOneofConstraints() {
+      if (oneofConstraintsBuilder_ == null) {
+        return oneofConstraints_ == null ? io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance() : oneofConstraints_;
+      } else {
+        return oneofConstraintsBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public Builder setOneofConstraints(io.littlehorse.sdk.common.proto.StructOneOfConstraints value) {
+      if (oneofConstraintsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        oneofConstraints_ = value;
+      } else {
+        oneofConstraintsBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public Builder setOneofConstraints(
+        io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder builderForValue) {
+      if (oneofConstraintsBuilder_ == null) {
+        oneofConstraints_ = builderForValue.build();
+      } else {
+        oneofConstraintsBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public Builder mergeOneofConstraints(io.littlehorse.sdk.common.proto.StructOneOfConstraints value) {
+      if (oneofConstraintsBuilder_ == null) {
+        if (((bitField0_ & 0x00000002) != 0) &&
+          oneofConstraints_ != null &&
+          oneofConstraints_ != io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance()) {
+          getOneofConstraintsBuilder().mergeFrom(value);
+        } else {
+          oneofConstraints_ = value;
+        }
+      } else {
+        oneofConstraintsBuilder_.mergeFrom(value);
+      }
+      if (oneofConstraints_ != null) {
+        bitField0_ |= 0x00000002;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public Builder clearOneofConstraints() {
+      bitField0_ = (bitField0_ & ~0x00000002);
+      oneofConstraints_ = null;
+      if (oneofConstraintsBuilder_ != null) {
+        oneofConstraintsBuilder_.dispose();
+        oneofConstraintsBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder getOneofConstraintsBuilder() {
+      bitField0_ |= 0x00000002;
+      onChanged();
+      return internalGetOneofConstraintsFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder getOneofConstraintsOrBuilder() {
+      if (oneofConstraintsBuilder_ != null) {
+        return oneofConstraintsBuilder_.getMessageOrBuilder();
+      } else {
+        return oneofConstraints_ == null ?
+            io.littlehorse.sdk.common.proto.StructOneOfConstraints.getDefaultInstance() : oneofConstraints_;
+      }
+    }
+    /**
+     * <pre>
+     * When present, all fields in this Struct are mutually exclusive alternatives.
+     * The absence of this message denotes an ordinary Struct.
+     * </pre>
+     *
+     * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.StructOneOfConstraints, io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder, io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder>
+        internalGetOneofConstraintsFieldBuilder() {
+      if (oneofConstraintsBuilder_ == null) {
+        oneofConstraintsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.StructOneOfConstraints, io.littlehorse.sdk.common.proto.StructOneOfConstraints.Builder, io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder>(
+                getOneofConstraints(),
+                getParentForChildren(),
+                isClean());
+        oneofConstraints_ = null;
+      }
+      return oneofConstraintsBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.InlineStructDef)

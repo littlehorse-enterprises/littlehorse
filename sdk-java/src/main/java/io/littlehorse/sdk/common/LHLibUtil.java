@@ -51,8 +51,10 @@ import io.littlehorse.sdk.common.util.JsonResult;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructLayout;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructOneOf;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
@@ -655,6 +657,9 @@ public class LHLibUtil {
         }
 
         try {
+            struct = struct.toBuilder()
+                    .setStruct(structLayout(lhClassType).fromWire(struct.getStruct()))
+                    .build();
             if (clazz.isRecord()) {
                 return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
             }
@@ -681,9 +686,10 @@ public class LHLibUtil {
             }
 
             return structObject;
+        } catch (IllegalArgumentException e) {
+            throw new LHSerdeException(e, e.getMessage());
         } catch (InstantiationException
                 | IllegalAccessException
-                | IllegalArgumentException
                 | InvocationTargetException
                 | NoSuchMethodException
                 | IntrospectionException
@@ -741,6 +747,12 @@ public class LHLibUtil {
 
         java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
         return cons.newInstance(canonicalArgValues);
+    }
+
+    private static LHStructLayout structLayout(LHClassType classType) {
+        return classType instanceof LHStructDefType
+                ? ((LHStructDefType) classType).getStructLayout()
+                : ((LHInlineStructDefType) classType).getStructLayout();
     }
 
     // Ignored record components still need an argument for the canonical constructor.
@@ -1067,7 +1079,8 @@ public class LHLibUtil {
             out.setBytes(ByteString.copyFrom((byte[]) o));
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
-        } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
+        } else if (o.getClass().isAnnotationPresent(LHStructDef.class)
+                || o.getClass().isAnnotationPresent(LHStructOneOf.class)) {
             out.setStruct(serializeToStruct(o, typeAdapterRegistry, placeholderValues));
         } else if (o instanceof Instant) {
             out.setUtcTimestamp(fromInstant((Instant) o));
@@ -1185,9 +1198,12 @@ public class LHLibUtil {
 
                 inlineStruct.putFields(property.getFieldName(), structField);
             }
+            inlineStruct = structLayout(lhClassType).toWire(inlineStruct.build()).toBuilder();
+        } catch (IllegalArgumentException e) {
+            throw new LHSerdeException(e, e.getMessage());
         } catch (Exception e) {
             throw new LHSerdeException(
-                    e, "Failed serializing object to Struct: " + o.getClass().getName());
+                    e, "Failed serializing object to Struct: " + o.getClass().getName() + ": " + e.getMessage());
         }
 
         outputStruct.setStruct(inlineStruct);

@@ -92,7 +92,8 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required, except for unselected fields
+   * of a Struct with oneof_constraints. Alternatives cannot have defaults.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -105,7 +106,8 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required, except for unselected fields
+   * of a Struct with oneof_constraints. Alternatives cannot have defaults.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -118,7 +120,8 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required, except for unselected fields
+   * of a Struct with oneof_constraints. Alternatives cannot have defaults.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -776,7 +779,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -788,7 +792,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -804,7 +809,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -825,7 +831,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -844,7 +851,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -870,7 +878,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -888,7 +897,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -901,7 +911,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -917,7 +928,8 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required, except for unselected fields
+     * of a Struct with oneof_constraints. Alternatives cannot have defaults.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>

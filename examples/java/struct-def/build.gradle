@@ -32,3 +32,9 @@ dependencies {
 application {
     mainClass = 'io.littlehorse.examples.StructDefExample'
 }
+
+// Client-only comparison; no server or task worker is started.
+tasks.register('runOneOfExample', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'io.littlehorse.examples.OneOfStructExample'
+}

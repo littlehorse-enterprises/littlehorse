@@ -63,6 +63,16 @@ message InlineMapDef {
 message InlineStructDef {
   // The fields in this schema.
   map<string, StructFieldDef> fields = 1;
+
+  // When present, all fields in this Struct are mutually exclusive alternatives.
+  // The absence of this message denotes an ordinary Struct.
+  StructOneOfConstraints oneof_constraints = 2;
+}
+
+// Constraints for a Struct representing a choice between its fields.
+message StructOneOfConstraints {
+  // If true, exactly one field must be present. Otherwise zero or one is allowed.
+  bool selection_required = 1;
 }
 
 // The definition of a field in an InlineStructDef.
@@ -71,7 +81,8 @@ message StructFieldDef {
   TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
+  // provided, then the field is treated as required, except for unselected fields
+  // of a Struct with oneof_constraints. Alternatives cannot have defaults.
   optional VariableValue default_value = 2;
 
   // If true, then the field is treated as nullable, and its value may be set to null.

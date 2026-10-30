@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
+import io.littlehorse.sdk.worker.LHStructOneOf;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -47,6 +48,9 @@ public class LHStructProperty {
     @Getter
     private final String description;
 
+    @Getter
+    private final LHStructOneOf oneOf;
+
     private final LHClassType parentStructDef;
 
     public LHStructProperty(PropertyDescriptor pd, LHClassType parentStructDef) {
@@ -60,9 +64,10 @@ public class LHStructProperty {
         this.ignored = findIsIgnored();
         this.isNullable = findIsNullable();
         this.description = findDescription();
+        this.oneOf = getAnnotation(LHStructOneOf.class);
     }
 
-    public LHStructProperty(RecordComponent recordComponent, LHStructDefType parentStructDef) {
+    public LHStructProperty(RecordComponent recordComponent, LHClassType parentStructDef) {
         this.pd = null;
         this.recordComponent = Objects.requireNonNull(recordComponent);
         this.parentStructDef = parentStructDef;
@@ -73,6 +78,7 @@ public class LHStructProperty {
         this.ignored = findIsIgnored();
         this.isNullable = findIsNullable();
         this.description = findDescription();
+        this.oneOf = getAnnotation(LHStructOneOf.class);
     }
 
     public VariableValue getValueFrom(Object o) throws LHSerdeException {
@@ -120,7 +126,9 @@ public class LHStructProperty {
             return LHLibUtil.objToVarVal(val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
-                    e, "Failed getting value of property " + this.fieldName + "from object of type: " + o.getClass());
+                    e,
+                    "Failed getting value of property " + this.fieldName + " from object of type: " + o.getClass()
+                            + ": " + e.getMessage());
         }
     }
 
@@ -190,7 +198,7 @@ public class LHStructProperty {
         StructFieldDef.Builder fieldDef =
                 StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
 
-        Optional<VariableValue> defaultValue = this.getDefaultValue();
+        Optional<VariableValue> defaultValue = this.getDefaultValue(typeAdapterRegistry);
         if (defaultValue.isPresent()) {
             fieldDef.setDefaultValue(defaultValue.get());
         }
@@ -424,6 +432,10 @@ public class LHStructProperty {
         }
 
         return this.pd.getPropertyType();
+    }
+
+    public boolean isPrimitiveType() {
+        return getPropertyTypeClass().isPrimitive();
     }
 
     @Override

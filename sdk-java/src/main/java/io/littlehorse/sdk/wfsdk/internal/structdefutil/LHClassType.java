@@ -5,6 +5,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.StructDefCircularDependencyException;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.worker.LHStructDef;
+import io.littlehorse.sdk.worker.LHStructOneOf;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Map;
@@ -82,10 +83,11 @@ public abstract class LHClassType {
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType, typeAdapterRegistry, placeholderValues);
         }
-        if (context == ResolutionContext.VALUE
-                || classType == Object.class
-                || classType.isInterface()
-                || classType.isEnum()) {
+        if (!classType.isAnnotationPresent(LHStructOneOf.class)
+                && (context == ResolutionContext.VALUE
+                        || classType == Object.class
+                        || classType.isInterface()
+                        || classType.isEnum())) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
         }
 

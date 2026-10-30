@@ -63,4 +63,34 @@ io.littlehorse.sdk.common.proto.StructFieldDef defaultValue);
    */
   io.littlehorse.sdk.common.proto.StructFieldDef getFieldsOrThrow(
       java.lang.String key);
+
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   * @return Whether the oneofConstraints field is set.
+   */
+  boolean hasOneofConstraints();
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   * @return The oneofConstraints.
+   */
+  io.littlehorse.sdk.common.proto.StructOneOfConstraints getOneofConstraints();
+  /**
+   * <pre>
+   * When present, all fields in this Struct are mutually exclusive alternatives.
+   * The absence of this message denotes an ordinary Struct.
+   * </pre>
+   *
+   * <code>.littlehorse.StructOneOfConstraints oneof_constraints = 2;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructOneOfConstraintsOrBuilder getOneofConstraintsOrBuilder();
 }

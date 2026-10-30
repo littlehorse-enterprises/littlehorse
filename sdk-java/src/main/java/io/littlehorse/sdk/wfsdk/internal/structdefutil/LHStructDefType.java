@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  */
 public class LHStructDefType extends LHClassType {
     private List<LHStructDefType> dependencyClasses;
-    private InlineStructDef inlineStructDef;
+    private final LHStructLayout structLayout;
 
     private List<LHStructProperty> structProperties;
 
@@ -79,7 +79,11 @@ public class LHStructDefType extends LHClassType {
             validateRecordCanonicalConstructor();
         }
 
-        this.inlineStructDef = this.buildInlineStructDef();
+        try {
+            this.structLayout = new LHStructLayout(this, getStructProperties(), typeAdapterRegistry);
+        } catch (IntrospectionException e) {
+            throw new IllegalStateException("Cannot build StructDef for " + clazz.getName(), e);
+        }
     }
 
     public LHTypeAdapterRegistry getTypeAdapterRegistry() {
@@ -310,21 +314,11 @@ public class LHStructDefType extends LHClassType {
      * @return an InlineStructDef representing the class stored in this LHClassType
      */
     public InlineStructDef getInlineStructDef() {
-        return this.inlineStructDef;
+        return this.structLayout.getDefinition();
     }
 
-    private InlineStructDef buildInlineStructDef() {
-        InlineStructDef.Builder inlineStructDef = InlineStructDef.newBuilder();
-
-        try {
-            for (LHStructProperty property : this.getStructProperties()) {
-                inlineStructDef.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
-            }
-        } catch (IntrospectionException e) {
-            throw new IllegalStateException("Cannot build InlineStructDef for type: " + this.clazz.getName(), e);
-        }
-
-        return inlineStructDef.build();
+    public LHStructLayout getStructLayout() {
+        return structLayout;
     }
 
     /**
