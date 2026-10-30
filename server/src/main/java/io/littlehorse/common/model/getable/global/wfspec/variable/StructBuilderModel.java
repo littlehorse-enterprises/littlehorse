@@ -105,8 +105,20 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
                 : "StructDef " + expectedType.getStructDefId();
         Set<String> missingRequired = new HashSet<>();
 
+        var oneof = expectedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF
+                ? expectedType.getInlineStructDef().getOneofConfig()
+                : null;
+        if (oneof != null
+                && (builder.getFields().size() > 1
+                        || (oneof.isSelectionRequired() && builder.getFields().isEmpty()))) {
+            throw new InvalidExpressionException("Oneof builder must select "
+                    + (oneof.isSelectionRequired() ? "exactly one" : "at most one") + " alternative");
+        }
+
         for (Map.Entry<String, StructFieldDefModel> entry : fieldDefs.entrySet()) {
-            if (entry.getValue().isRequired() && !builder.getFields().containsKey(entry.getKey())) {
+            if (oneof == null
+                    && entry.getValue().isRequired()
+                    && !builder.getFields().containsKey(entry.getKey())) {
                 missingRequired.add(entry.getKey());
             }
         }

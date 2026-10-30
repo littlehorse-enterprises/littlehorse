@@ -4,8 +4,9 @@ import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class InlineStructDefUtil {
         InlineStructDef leftProto = withoutFieldDescriptions(left.toProto().build());
         InlineStructDef rightProto = withoutFieldDescriptions(right.toProto().build());
 
-        return Arrays.equals(leftProto.toByteArray(), rightProto.toByteArray());
+        return leftProto.equals(rightProto);
     }
 
     /**
@@ -47,7 +48,14 @@ public class InlineStructDefUtil {
         for (Map.Entry<String, StructFieldDefModel> entry : leftFields.entrySet()) {
             String leftDesc = entry.getValue().getDescription();
             String rightDesc = rightFields.get(entry.getKey()).getDescription();
-            if (!Objects.equals(leftDesc, rightDesc)) {
+            if (!Objects.equals(leftDesc, rightDesc)
+                    || !nestedDescriptionsEqual(
+                            entry.getValue().getFieldType().toProto().build(),
+                            rightFields
+                                    .get(entry.getKey())
+                                    .getFieldType()
+                                    .toProto()
+                                    .build())) {
                 return false;
             }
         }
@@ -55,11 +63,35 @@ public class InlineStructDefUtil {
         return true;
     }
 
+    private static boolean nestedDescriptionsEqual(TypeDefinition left, TypeDefinition right) {
+        if (left.getDefinedTypeCase() != right.getDefinedTypeCase()) return false;
+        switch (left.getDefinedTypeCase()) {
+            case INLINE_STRUCT_DEF:
+                return fieldDescriptionsEqual(
+                        InlineStructDefModel.fromProto(left.getInlineStructDef(), null),
+                        InlineStructDefModel.fromProto(right.getInlineStructDef(), null));
+            case INLINE_ARRAY_DEF:
+                return nestedDescriptionsEqual(
+                        left.getInlineArrayDef().getArrayType(),
+                        right.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                return nestedDescriptionsEqual(
+                        left.getInlineMapDef().getValueType(),
+                        right.getInlineMapDef().getValueType());
+            default:
+                return true;
+        }
+    }
+
     private static InlineStructDef withoutFieldDescriptions(InlineStructDef proto) {
         InlineStructDef.Builder b = proto.toBuilder();
         proto.getFieldsMap()
                 .forEach((name, fieldDef) -> b.putFields(
-                        name, fieldDef.toBuilder().clearDescription().build()));
+                        name,
+                        fieldDef.toBuilder()
+                                .clearDescription()
+                                .setFieldType(withoutFieldDescriptions(fieldDef.getFieldType()))
+                                .build()));
         return b.build();
     }
 
@@ -71,15 +103,80 @@ public class InlineStructDefUtil {
             StructDefCompatibilityType compatibilityType,
             InlineStructDefModel newStructDef,
             InlineStructDefModel oldStructDef) {
+        Set<String> incompatible = new HashSet<>();
         switch (compatibilityType) {
             case FULLY_COMPATIBLE_SCHEMA_UPDATES:
-                return getFullCompatibleBreakingChanges(newStructDef, oldStructDef);
+                incompatible.addAll(getFullCompatibleBreakingChanges(newStructDef, oldStructDef));
+                break;
             case NO_SCHEMA_UPDATES:
-                return getNoSchemaUpdatesBreakingChanges(newStructDef, oldStructDef);
-            case UNRECOGNIZED:
+                incompatible.addAll(getNoSchemaUpdatesBreakingChanges(newStructDef, oldStructDef));
+                break;
             default:
                 return Set.of();
         }
+        // Optional parent fields must not hide changes to a nested choice.
+        Map<String, InlineStructDef> newChoices = new HashMap<>();
+        Map<String, InlineStructDef> oldChoices = new HashMap<>();
+        collectChoices(
+                TypeDefinition.newBuilder()
+                        .setInlineStructDef(newStructDef.toProto())
+                        .build(),
+                "",
+                newChoices);
+        collectChoices(
+                TypeDefinition.newBuilder()
+                        .setInlineStructDef(oldStructDef.toProto())
+                        .build(),
+                "",
+                oldChoices);
+        Set<String> paths = new HashSet<>(newChoices.keySet());
+        paths.addAll(oldChoices.keySet());
+        for (String path : paths) {
+            if (!Objects.equals(newChoices.get(path), oldChoices.get(path))) incompatible.add(path);
+        }
+        return incompatible;
+    }
+
+    private static void collectChoices(TypeDefinition type, String path, Map<String, InlineStructDef> choices) {
+        switch (type.getDefinedTypeCase()) {
+            case INLINE_STRUCT_DEF:
+                InlineStructDef struct = type.getInlineStructDef();
+                if (struct.hasOneofConfig()) choices.put(path, withoutFieldDescriptions(struct));
+                struct.getFieldsMap()
+                        .forEach((name, field) -> collectChoices(
+                                field.getFieldType(), path.isEmpty() ? name : path + "." + name, choices));
+                break;
+            case INLINE_ARRAY_DEF:
+                collectChoices(type.getInlineArrayDef().getArrayType(), path + "[]", choices);
+                break;
+            case INLINE_MAP_DEF:
+                collectChoices(type.getInlineMapDef().getValueType(), path + "{}", choices);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private static TypeDefinition withoutFieldDescriptions(TypeDefinition type) {
+        TypeDefinition.Builder out = type.toBuilder();
+        switch (type.getDefinedTypeCase()) {
+            case INLINE_STRUCT_DEF:
+                out.setInlineStructDef(withoutFieldDescriptions(type.getInlineStructDef()));
+                break;
+            case INLINE_ARRAY_DEF:
+                out.setInlineArrayDef(type.getInlineArrayDef().toBuilder()
+                        .setArrayType(withoutFieldDescriptions(
+                                type.getInlineArrayDef().getArrayType())));
+                break;
+            case INLINE_MAP_DEF:
+                out.setInlineMapDef(type.getInlineMapDef().toBuilder()
+                        .setValueType(
+                                withoutFieldDescriptions(type.getInlineMapDef().getValueType())));
+                break;
+            default:
+                break;
+        }
+        return out.build();
     }
 
     /**
@@ -149,7 +246,9 @@ public class InlineStructDefUtil {
                 StructFieldDefModel newField = newFields.get(oldFieldName);
 
                 // If the TypeDefinition changes...
-                if (!oldField.getFieldType().equals(newField.getFieldType())) {
+                if (!withoutFieldDescriptions(oldField.getFieldType().toProto().build())
+                        .equals(withoutFieldDescriptions(
+                                newField.getFieldType().toProto().build()))) {
                     incompatibleFields.add(oldFieldName);
                 }
             }

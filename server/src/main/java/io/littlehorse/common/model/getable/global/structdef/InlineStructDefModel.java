@@ -26,10 +26,17 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     @Getter
     private Map<String, StructFieldDefModel> fields = new HashMap<>();
 
+    @Getter
+    private StructOneOfModel oneofConfig;
+
     public InlineStructDefModel() {}
 
     public InlineStructDefModel(InlineStructDefModel other) {
         if (other != null) {
+            if (other.oneofConfig != null) {
+                oneofConfig =
+                        LHSerializable.fromProto(other.oneofConfig.toProto().build(), StructOneOfModel.class, null);
+            }
             other.fields.forEach((key, fieldDef) -> this.fields.put(
                     key, LHSerializable.fromProto(fieldDef.toProto().build(), StructFieldDefModel.class, null)));
         }
@@ -38,6 +45,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     @Override
     public InlineStructDef.Builder toProto() {
         InlineStructDef.Builder out = InlineStructDef.newBuilder();
+        if (oneofConfig != null) out.setOneofConfig(oneofConfig.toProto());
 
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             out.putFields(field.getKey(), field.getValue().toProto().build());
@@ -49,6 +57,9 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     @Override
     public void initFrom(Message p, ExecutionContext context) throws LHSerdeException {
         InlineStructDef proto = (InlineStructDef) p;
+        oneofConfig = proto.hasOneofConfig()
+                ? LHSerializable.fromProto(proto.getOneofConfig(), StructOneOfModel.class, context)
+                : null;
 
         for (Entry<String, StructFieldDef> structFieldDef : proto.getFieldsMap().entrySet()) {
             fields.put(
@@ -63,6 +74,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
     }
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        if (oneofConfig != null) oneofConfig.validateDefinition(fields);
         for (Entry<String, StructFieldDefModel> field : fields.entrySet()) {
             try {
                 validateStructDefFieldName(field.getKey());
@@ -119,11 +131,13 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
      */
     public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
+        if (oneofConfig != null) oneofConfig.validateSelection(inlineStruct, fields);
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
 
             if (!inlineStruct.getFields().containsKey(fieldName)) {
+                if (oneofConfig != null) continue;
                 if (fieldDef.isRequired()) {
                     throw new StructValidationException("Missing required field %s".formatted(fieldName));
                 }
@@ -161,6 +175,13 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
         return fields.entrySet().stream()
                 .filter(entry -> entry.getValue().isRequired())
                 .collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+    }
+
+    public void validateNamedStructDef(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        if (oneofConfig != null) {
+            throw new StructDefValidationException("A named StructDef cannot itself be a oneof; use an inline field");
+        }
+        validate(metadataManager);
     }
 
     public static InlineStructDefModel fromProto(InlineStructDef p, ExecutionContext context) {
