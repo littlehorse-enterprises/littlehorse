@@ -76,6 +76,22 @@ lhctl get nodeRun <wfRunId> 0 1
 
 You should see in `$.result.userTask.userTaskRunId` the same ID that resulted from all of the searches above.
 
+#### Save Progress Before Completing the User Task
+
+You can save the requested item before deciding on a justification. Use `lhctl`
+built from this checkout and create a JSON file containing only the field to save:
+
+```bash
+cat > /tmp/it-request-progress.json <<'EOF'
+{
+  "requestedItem": "the rank of master"
+}
+EOF
+
+lhctl save userTaskRun --wfRunId <wfRunId> --userTaskGuid <userTaskGuid> \
+  --resultFile /tmp/it-request-progress.json
+```
+
 #### Execute the User Task Run
 
 Now that we have the `userTaskGuid`, we can use `lhctl` to execute the User Task Run. But first, let's inspect the `userTaskRun`:
@@ -88,13 +104,15 @@ Note that its status is `CLAIMED` and it's assigned to `anakin`.
 
 _Note that in production, there would be a web frontend that users log in to in order to execute the User Task Runs. The LittleHorse server tracks the state of these User Tasks (including whom they are assigned to) but does not present them on a web front-end. This is because each user would likely need a highly-customized presentation of the tasks, such as on their mobile-app, internal tooling, customer-facing web app, etc. If you wish for a custom web front-end, please contact LittleHorse Professional Services (`sales@littlehorse.io`)._
 
-Let's execute the task:
+Let's execute the task. If you saved progress above, submit the complete form,
+including the previously saved `requestedItem` and the new `justification`.
+The interactive command prompts for all fields; it does not prefill saved values.
 
 ```
 lhctl execute userTaskRun <wfRunId> <userTaskGuid>
 ```
 
-Follow the prompts, entering your user-id (be sure to enter `anakin`), the item `description`, and the `justification`. For example:
+These tasks use Struct-backed forms, so use `lhctl` built from this checkout. Follow the prompts, entering your user-id (be sure to enter `anakin`) and a value for each field. Fields are prompted in alphabetical order, with their descriptions. For example:
 
 ```
 ->lhctl execute userTaskRun 89962fbd15e748358f2df1c130b34403 4579d4bd166d4156bda49042b10ad7bb
@@ -102,16 +120,18 @@ Follow the prompts, entering your user-id (be sure to enter `anakin`), the item 
 Executing UserTaskRun  89962fbd15e748358f2df1c130b34403   4579d4bd166d4156bda49042b10ad7bb
 Enter the userId of the person completing the task: anakin
 
-Field:  Your Request
-The item you are requesting.
-Please enter the response for this field (STR): the rank of master
+Field: justification
+The justification for requesting the item.
+justification (STR): it's not fair to be on this council and not be a Master!
 
-Field:  Request Justification
-Why you need this request.
-Please enter the response for this field (STR): it's not fair to be on this council and not be a Master!
-Saving userTaskRun progress!
+Field: requestedItem
+The item being requested.
+requestedItem (STR): the rank of master
+Completing userTaskRun!
 {}
 ```
+
+Nested Structs are prompted field by field. Arrays and maps prompt for an entry count, then each entry. Nullable fields allow an explicit `null` choice; fields with defaults allow a `default` choice. You can still supply a JSON object through `--resultFile <path>` instead of answering field prompts.
 
 Now let's get the `userTaskRun` again:
 
@@ -227,4 +247,4 @@ Let's execute the `UserTaskRun`.
 
 ```
 
-Now depending on whether you typed `true` or `false` (if you know Star Wars, you know that the correct answer is `false`), you should see some output in the logs of the process `./gradlew example-user-tasks:run`.
+Enter `mace` as the user-id, then answer `false` to the `isApproved (BOOL)` prompt (or `true` to approve). You should see the corresponding email output in the logs of the process `./gradlew example-user-tasks:run`.
