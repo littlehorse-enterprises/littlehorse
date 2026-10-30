@@ -9,6 +9,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.Struct;
+import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
@@ -20,6 +21,8 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskMethodHandle;
 import java.util.Map;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 import org.junit.jupiter.api.Test;
 
 class LHStructOneOfTest {
@@ -228,6 +231,13 @@ class LHStructOneOfTest {
 
     @LHStructDef("optional-parent")
     public record OptionalParent(@LHStructField(isNullable = true) Method method) {}
+
+    @LHStructDef("default-choice-parent")
+    @Getter
+    @Setter
+    public static class DefaultChoiceParent {
+        private Method method = new Method("default-token", null);
+    }
 
     @LHStructDef("choice-collections")
     public record ChoiceCollections(Method[] methods, Map<String, Method> byKey) {}
@@ -456,8 +466,20 @@ class LHStructOneOfTest {
                 .build();
         assertThatThrownBy(() -> LHLibUtil.varValToObj(value(missing), Payment.class))
                 .hasMessageContaining("nested inline Struct");
-        assertThatThrownBy(() -> LHLibUtil.varValToObj(value(malformed), Payment.class))
-                .hasMessageContaining("nested inline Struct");
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(value(missing), NestedPayment.class))
+                .hasMessageContaining("Required oneof field method");
+        Struct namedHelper = child(wire, "method").toBuilder()
+                .setStructDefId(StructDefId.newBuilder().setName("unexpected"))
+                .build();
+        Struct noFieldsMessage = Struct.getDefaultInstance();
+        for (Class<?> target : new Class<?>[] {Payment.class, NestedPayment.class}) {
+            for (Struct invalid : new Struct[] {
+                malformed, withChild(wire, "method", namedHelper), withChild(wire, "method", noFieldsMessage)
+            }) {
+                assertThatThrownBy(() -> LHLibUtil.varValToObj(value(invalid), target))
+                        .hasMessageContaining("nested inline Struct");
+            }
+        }
         assertThatThrownBy(() -> LHLibUtil.varValToObj(value(legacy), Payment.class))
                 .hasMessageContaining("must be nested under method");
     }
@@ -472,6 +494,23 @@ class LHStructOneOfTest {
                 .isEqualTo(input);
         assertThatThrownBy(() -> LHLibUtil.serializeToStruct(new OptionalParent(new Method(null, null))))
                 .hasMessageContaining("requires exactly one field");
+    }
+
+    @Test
+    void missingHelperUsesParentDefaultButExplicitNullDoesNot() {
+        Struct missing =
+                Struct.newBuilder().setStruct(InlineStruct.getDefaultInstance()).build();
+        DefaultChoiceParent decoded =
+                (DefaultChoiceParent) LHLibUtil.varValToObj(value(missing), DefaultChoiceParent.class);
+        assertThat(decoded.getMethod()).isEqualTo(new Method("default-token", null));
+
+        Struct explicitNull = missing.toBuilder()
+                .setStruct(InlineStruct.newBuilder().putFields("method", field(VariableValue.getDefaultInstance())))
+                .build();
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(value(explicitNull), DefaultChoiceParent.class))
+                .hasMessageContaining("Required oneof field method");
+        assertThat(LHLibUtil.varValToObj(value(explicitNull), OptionalParent.class))
+                .isEqualTo(new OptionalParent(null));
     }
 
     @Test

@@ -8,11 +8,12 @@ import java.lang.annotation.Target;
 /**
  * Declares mutually exclusive alternatives in a Struct.
  * On a class or record, all included properties are alternatives and {@code group}
- * must be omitted. The type becomes an inline Struct, including when used as a
+ * must be omitted: the property holding the helper supplies the group name.
+ * The type becomes an inline Struct, including when used as a
  * task parameter or return type. Type-level use cannot be combined with
  * {@link LHStructDef}; named StructDefs can contain oneof groups instead.
  * On a field, accessor, or record component, {@code group} is required and names
- * the nested Struct into which the SDK projects the participating properties.
+ * the nested Struct that holds the selected field.
  *
  * <p>
  * Members must use reference types without defaults or nullable annotations.
@@ -25,9 +26,19 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHStructOneOf {
-    /** Serialized container name; required on properties and omitted on types. */
+    /**
+     * The group name in the serialized Struct. Required on fields and accessors;
+     * omit it on a helper type, whose containing property supplies the name.
+     *
+     * @return the group name
+     */
     String group() default "";
 
-    /** Whether exactly one member must be selected; false allows zero or one. */
+    /**
+     * Whether exactly one alternative must be selected. Defaults to false, allowing
+     * zero or one. This does not control whether the containing field is nullable.
+     *
+     * @return whether a selection is required
+     */
     boolean required() default false;
 }

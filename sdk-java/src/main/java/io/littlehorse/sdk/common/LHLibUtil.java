@@ -55,7 +55,6 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructLayout;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructOneOf;
-import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
@@ -657,21 +656,17 @@ public class LHLibUtil {
         }
 
         try {
-            struct = struct.toBuilder()
-                    .setStruct(structLayout(lhClassType).fromWire(struct.getStruct()))
-                    .build();
+            LHStructLayout layout = getStructLayout(lhClassType);
+            InlineStruct fields = layout.fromWire(struct.getStruct());
             if (clazz.isRecord()) {
-                return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
+                return deserializeStructToRecord(
+                        fields, clazz, layout.getProperties(), typeAdapterRegistry, placeholderValues);
             }
 
             Object structObject = lhClassType.createInstance();
-            List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
-                    ? ((LHStructDefType) lhClassType).getStructProperties()
-                    : ((LHInlineStructDefType) lhClassType).getStructProperties();
-
-            for (LHStructProperty property : structProperties) {
+            for (LHStructProperty property : layout.getProperties()) {
                 String fieldName = property.getFieldName();
-                if (!struct.getStruct().containsFields(fieldName)) {
+                if (!fields.containsFields(fieldName)) {
                     throw new LHSerdeException(
                             null,
                             String.format(
@@ -679,8 +674,7 @@ public class LHLibUtil {
                                     fieldName, clazz.getName()));
                 }
 
-                VariableValue fieldValue =
-                        struct.getStruct().getFieldsMap().get(fieldName).getValue();
+                VariableValue fieldValue = fields.getFieldsMap().get(fieldName).getValue();
 
                 property.setValueTo(structObject, fieldValue, typeAdapterRegistry, placeholderValues);
             }
@@ -692,23 +686,19 @@ public class LHLibUtil {
                 | IllegalAccessException
                 | InvocationTargetException
                 | NoSuchMethodException
-                | IntrospectionException
                 | SecurityException e) {
             throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
     }
 
     private static Object deserializeStructToRecord(
-            Struct struct,
+            InlineStruct fields,
             Class<?> clazz,
-            LHClassType lhClassType,
+            List<LHStructProperty> structProperties,
             LHTypeAdapterRegistry typeAdapterRegistry,
             Map<String, String> placeholderValues)
-            throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
-                    InstantiationException, IllegalAccessException {
-        List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
-                ? ((LHStructDefType) lhClassType).getStructProperties()
-                : ((LHInlineStructDefType) lhClassType).getStructProperties();
+            throws LHSerdeException, NoSuchMethodException, InvocationTargetException, InstantiationException,
+                    IllegalAccessException {
         Map<String, LHStructProperty> byPropertyName = new HashMap<>();
 
         for (LHStructProperty property : structProperties) {
@@ -730,8 +720,8 @@ public class LHLibUtil {
             }
 
             String fieldName = property.getFieldName();
-            if (!struct.getStruct().containsFields(fieldName)) {
-                Set<String> availableFields = struct.getStruct().getFieldsMap().keySet();
+            if (!fields.containsFields(fieldName)) {
+                Set<String> availableFields = fields.getFieldsMap().keySet();
                 throw new LHSerdeException(
                         null,
                         String.format(
@@ -740,8 +730,7 @@ public class LHLibUtil {
                                 fieldName, clazz.getName(), availableFields));
             }
 
-            VariableValue fieldValue =
-                    struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            VariableValue fieldValue = fields.getFieldsMap().get(fieldName).getValue();
             canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry, placeholderValues);
         }
 
@@ -749,7 +738,7 @@ public class LHLibUtil {
         return cons.newInstance(canonicalArgValues);
     }
 
-    private static LHStructLayout structLayout(LHClassType classType) {
+    private static LHStructLayout getStructLayout(LHClassType classType) {
         return classType instanceof LHStructDefType
                 ? ((LHStructDefType) classType).getStructLayout()
                 : ((LHInlineStructDefType) classType).getStructLayout();
@@ -1182,11 +1171,8 @@ public class LHLibUtil {
         InlineStruct.Builder inlineStruct = InlineStruct.newBuilder();
 
         try {
-            List<LHStructProperty> lhStructProperties = lhClassType instanceof LHStructDefType
-                    ? ((LHStructDefType) lhClassType).getStructProperties()
-                    : ((LHInlineStructDefType) lhClassType).getStructProperties();
-
-            for (LHStructProperty property : lhStructProperties) {
+            LHStructLayout layout = getStructLayout(lhClassType);
+            for (LHStructProperty property : layout.getProperties()) {
                 VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
 
                 if (fieldValue == null) {
@@ -1198,15 +1184,13 @@ public class LHLibUtil {
 
                 inlineStruct.putFields(property.getFieldName(), structField);
             }
-            inlineStruct = structLayout(lhClassType).toWire(inlineStruct.build()).toBuilder();
+            outputStruct.setStruct(layout.toWire(inlineStruct.build()));
         } catch (IllegalArgumentException e) {
             throw new LHSerdeException(e, e.getMessage());
         } catch (Exception e) {
             throw new LHSerdeException(
                     e, "Failed serializing object to Struct: " + o.getClass().getName() + ": " + e.getMessage());
         }
-
-        outputStruct.setStruct(inlineStruct);
 
         return outputStruct.build();
     }
