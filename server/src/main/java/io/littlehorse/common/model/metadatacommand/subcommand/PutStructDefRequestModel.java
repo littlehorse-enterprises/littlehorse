@@ -67,7 +67,7 @@ public class PutStructDefRequestModel extends MetadataSubCommand<PutStructDefReq
         }
 
         try {
-            structDef.validate(context.metadataManager());
+            structDef.validateNamedStructDef(context.metadataManager());
         } catch (StructDefValidationException e) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, String.format("StructDef validation failed: %s", e.getMessage()));

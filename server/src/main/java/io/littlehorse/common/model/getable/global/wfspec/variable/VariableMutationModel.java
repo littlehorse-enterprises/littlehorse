@@ -191,10 +191,15 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 VariableValueModel thingToPut = lhsAtPath.operate(operation, rhsVal, typeToCoerceTo);
 
                 currentLhs.updateViaLhPath(lhsLhPath, resolvedSelectors, thingToPut);
+                lhsRealType.validateCompatibility(
+                        currentLhs, thread.getExecutionContext().metadataManager());
                 txnCache.put(lhsName, currentLhs);
             } else {
                 TypeDefinitionModel typeToCoerceTo = lhsRealType;
-                txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
+                VariableValueModel updated = lhsVal.operate(operation, rhsVal, typeToCoerceTo);
+                lhsRealType.validateCompatibility(
+                        updated, thread.getExecutionContext().metadataManager());
+                txnCache.put(lhsName, updated);
             }
         } catch (LHVarSubError exn) {
             throw exn;

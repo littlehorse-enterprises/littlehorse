@@ -32,6 +32,7 @@ import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPl
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
@@ -1099,6 +1100,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         inlineStruct.setFields(fields);
+        try {
+            inlineStructDef.validateAgainstSuperset(inlineStruct, processorContext.metadataManager());
+        } catch (StructValidationException e) {
+            throw new LHVarSubError(e, "Invalid inline Struct builder: " + e.getMessage());
+        }
         return inlineStruct;
     }
 

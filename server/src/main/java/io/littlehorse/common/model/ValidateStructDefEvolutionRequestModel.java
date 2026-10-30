@@ -46,7 +46,7 @@ public class ValidateStructDefEvolutionRequestModel extends LHSerializable<Valid
 
     public ValidateStructDefEvolutionResponse validate(ReadOnlyMetadataManager metadataManager) {
         try {
-            structDef.validate(metadataManager);
+            structDef.validateNamedStructDef(metadataManager);
         } catch (StructDefValidationException e) {
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, String.format("StructDef evolution request invalid: %s", e.getMessage()));
