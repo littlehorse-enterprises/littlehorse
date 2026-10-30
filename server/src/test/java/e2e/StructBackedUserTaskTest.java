@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
@@ -39,6 +40,45 @@ public class StructBackedUserTaskTest {
 
     private LittleHorseBlockingStub client;
     private WorkflowVerifier workflowVerifier;
+
+    @Test
+    void shouldMaskSavedStructEventOutput() {
+                StructBackedTask task = registerStructBackedTaskWMasked();
+        workflowVerifier
+                .prepareRun(workflow(task.userTaskDefName()))
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId runId = getUserTaskRunId(wfRun.getId());
+                    client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(runId)
+                            .setUserId("obiwan")
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder()
+                                            .setStructDefId(task.structDef().getId())
+                                            .setStruct(InlineStruct.newBuilder()
+                                                    .putFields(
+                                                            "ssn",
+                                                            StructField.newBuilder()
+                                                                    .setValue(VariableValue.newBuilder()
+                                                                            .setStr("000-00-0000"))
+                                                                    .build()))))
+                            .build());
+                    var savedEvent = client.getUserTaskRun(runId).getEventsList().stream()
+                            .filter(event -> event.hasSaved())
+                            .findFirst()
+                            .orElseThrow()
+                            .getSaved();
+                    assertThat(savedEvent.getResultsMap()).isEmpty();
+                    assertThat(savedEvent.getOutput()
+                                    .getStruct()
+                                    .getStruct()
+                                    .getFieldsOrThrow("ssn")
+                                    .getValue()
+                                    .getStr())
+                            .isEqualTo(LHConstants.STRING_MASK);
+                })
+                .start();
+    }
 
     @Test
     void shouldCompleteWithStructOutput() {
@@ -324,6 +364,26 @@ public class StructBackedUserTaskTest {
         return new StructBackedTask(userTaskDefName, structDef);
     }
 
+    private StructBackedTask registerStructBackedTaskWMasked() {
+        String suffix = UUID.randomUUID().toString();
+        StructDef structDef = client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("ssn-form" + suffix)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "ssn",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(TypeDefinition.newBuilder()
+                                                .setPrimitiveType(VariableType.STR)
+                                                .setMasked(true))
+                                        .build()))
+                .build());
+        String userTaskDefName = "ssn-user-task" + suffix;
+        client.putUserTaskDef(PutUserTaskDefRequest.newBuilder()
+                .setName(userTaskDefName)
+                .setResultStructDefId(structDef.getId())
+                .build());
+        return new StructBackedTask(userTaskDefName, structDef);
+    }
     private Workflow workflow(String userTaskDefName) {
         return new WorkflowImpl(
                 "struct-user-task-wf-" + UUID.randomUUID(),

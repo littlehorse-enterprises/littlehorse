@@ -324,8 +324,11 @@ message UserTaskEvent {
     // The user_id of the user who saved the UserTaskRun.
     string user_id = 1;
 
-    // The results that were saved.
-    map<string, VariableValue> results = 2;
+    // Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
+    map<string, VariableValue> results = 2 [deprecated = true];
+
+    // The saved Struct output, preserving field metadata such as masking.
+    VariableValue output = 3;
   }
 
   // Message denoting that the UserTaskRun was assigned.
