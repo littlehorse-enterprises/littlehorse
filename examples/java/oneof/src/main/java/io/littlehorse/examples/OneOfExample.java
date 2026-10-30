@@ -7,8 +7,6 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
-import io.littlehorse.sdk.worker.LHStructDef;
-import io.littlehorse.sdk.worker.LHStructOneOf;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,19 +16,6 @@ import java.util.Properties;
 
 public class OneOfExample {
     private static final String WF_SPEC_NAME = "oneof-payment";
-
-    @LHStructDef("payment")
-    public record FlatPayment(
-            String orderId,
-            @LHStructOneOf(group = "method", required = true) String cardToken,
-            @LHStructOneOf(group = "method", required = true) String bankAccountId,
-            @LHStructOneOf(group = "method", required = true) String walletId) {}
-
-    @LHStructOneOf(required = true)
-    public record PaymentMethod(String cardToken, String bankAccountId, String walletId) {}
-
-    @LHStructDef("payment")
-    public record NestedPayment(String orderId, PaymentMethod method) {}
 
     public static Workflow getWorkflow() {
         return new WorkflowImpl(WF_SPEC_NAME, wf -> {

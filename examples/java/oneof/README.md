@@ -50,7 +50,8 @@ for the two task methods.
 
 ## Declare the payment
 
-Declare alternatives directly on record components (or POJO fields/accessors):
+In [FlatPayment.java](src/main/java/io/littlehorse/examples/FlatPayment.java),
+declare alternatives directly on record components (or POJO fields/accessors):
 
 ```java
 @LHStructDef("payment")
@@ -61,7 +62,8 @@ public record FlatPayment(
         @LHStructOneOf(group = "method", required = true) String walletId) {}
 ```
 
-Or define a helper type:
+Or use [NestedPayment.java](src/main/java/io/littlehorse/examples/NestedPayment.java)
+with a helper defined in [PaymentMethod.java](src/main/java/io/littlehorse/examples/PaymentMethod.java):
 
 ```java
 @LHStructOneOf(required = true)
