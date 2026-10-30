@@ -6,7 +6,7 @@
 package io.littlehorse.sdk.common.proto;
 
 @com.google.protobuf.Generated
-public interface UserTaskFieldOrBuilder extends
+@java.lang.Deprecated public interface UserTaskFieldOrBuilder extends
     // @@protoc_insertion_point(interface_extends:littlehorse.UserTaskField)
     com.google.protobuf.MessageOrBuilder {
 
