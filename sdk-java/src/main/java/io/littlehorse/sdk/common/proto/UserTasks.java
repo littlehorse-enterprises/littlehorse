@@ -219,7 +219,7 @@ public final class UserTasks extends com.google.protobuf.GeneratedFile {
       "ference\022+\n\013node_run_id\030\001 \001(\0132\026.littlehor" +
       "se.NodeRunId\022\036\n\026user_task_event_number\030\002" +
       " \001(\005\022\024\n\007user_id\030\003 \001(\tH\000\210\001\001\022\027\n\nuser_group" +
-      "\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\"\254" +
+      "\030\004 \001(\tH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\"\334" +
       "\t\n\rUserTaskEvent\022(\n\004time\030\001 \001(\0132\032.google." +
       "protobuf.Timestamp\022C\n\rtask_executed\030\002 \001(" +
       "\0132*.littlehorse.UserTaskEvent.UTETaskExe" +
@@ -236,24 +236,26 @@ public final class UserTasks extends com.google.protobuf.GeneratedFile {
       "ed\030\t \001(\0132\'.littlehorse.UserTaskEvent.UTE" +
       "CompletedH\000\032\037\n\014UTECancelled\022\017\n\007message\030\001" +
       " \001(\t\032;\n\017UTETaskExecuted\022(\n\010task_run\030\001 \001(" +
-      "\0132\026.littlehorse.TaskRunId\032\252\001\n\010UTESaved\022\017" +
-      "\n\007user_id\030\001 \001(\t\022A\n\007results\030\002 \003(\01320.littl" +
+      "\0132\026.littlehorse.TaskRunId\032\332\001\n\010UTESaved\022\017" +
+      "\n\007user_id\030\001 \001(\t\022E\n\007results\030\002 \003(\01320.littl" +
       "ehorse.UserTaskEvent.UTESaved.ResultsEnt" +
-      "ry\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value" +
-      "\030\002 \001(\0132\032.littlehorse.VariableValue:\0028\001\032\301" +
-      "\001\n\013UTEAssigned\022\030\n\013old_user_id\030\001 \001(\tH\000\210\001\001" +
-      "\022\033\n\016old_user_group\030\002 \001(\tH\001\210\001\001\022\030\n\013new_use" +
-      "r_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user_group\030\004 \001(\tH" +
-      "\003\210\001\001B\016\n\014_old_user_idB\021\n\017_old_user_groupB" +
-      "\016\n\014_new_user_idB\021\n\017_new_user_group\032I\n\014UT" +
-      "ECommented\022\027\n\017user_comment_id\030\001 \001(\005\022\017\n\007u" +
-      "ser_id\030\002 \001(\t\022\017\n\007comment\030\003 \001(\t\032=\n\021UTEComm" +
-      "entDeleted\022\027\n\017user_comment_id\030\001 \001(\005\022\017\n\007u" +
-      "ser_id\030\002 \001(\t\032\016\n\014UTECompletedB\007\n\005event*J\n" +
-      "\021UserTaskRunStatus\022\016\n\nUNASSIGNED\020\000\022\014\n\010AS" +
-      "SIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELLED\020\004BM\n\037io." +
-      "littlehorse.sdk.common.protoP\001Z\t.;lhprot" +
-      "o\252\002\034LittleHorse.Sdk.Common.Protob\006proto3"
+      "ryB\002\030\001\022*\n\006output\030\003 \001(\0132\032.littlehorse.Var" +
+      "iableValue\032J\n\014ResultsEntry\022\013\n\003key\030\001 \001(\t\022" +
+      ")\n\005value\030\002 \001(\0132\032.littlehorse.VariableVal" +
+      "ue:\0028\001\032\301\001\n\013UTEAssigned\022\030\n\013old_user_id\030\001 " +
+      "\001(\tH\000\210\001\001\022\033\n\016old_user_group\030\002 \001(\tH\001\210\001\001\022\030\n" +
+      "\013new_user_id\030\003 \001(\tH\002\210\001\001\022\033\n\016new_user_grou" +
+      "p\030\004 \001(\tH\003\210\001\001B\016\n\014_old_user_idB\021\n\017_old_use" +
+      "r_groupB\016\n\014_new_user_idB\021\n\017_new_user_gro" +
+      "up\032I\n\014UTECommented\022\027\n\017user_comment_id\030\001 " +
+      "\001(\005\022\017\n\007user_id\030\002 \001(\t\022\017\n\007comment\030\003 \001(\t\032=\n" +
+      "\021UTECommentDeleted\022\027\n\017user_comment_id\030\001 " +
+      "\001(\005\022\017\n\007user_id\030\002 \001(\t\032\016\n\014UTECompletedB\007\n\005" +
+      "event*J\n\021UserTaskRunStatus\022\016\n\nUNASSIGNED" +
+      "\020\000\022\014\n\010ASSIGNED\020\001\022\010\n\004DONE\020\003\022\r\n\tCANCELLED\020" +
+      "\004BM\n\037io.littlehorse.sdk.common.protoP\001Z\t" +
+      ".;lhproto\252\002\034LittleHorse.Sdk.Common.Proto" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -370,7 +372,7 @@ public final class UserTasks extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_UserTaskEvent_UTESaved_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor,
-        new java.lang.String[] { "UserId", "Results", });
+        new java.lang.String[] { "UserId", "Results", "Output", });
     internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_descriptor =
       internal_static_littlehorse_UserTaskEvent_UTESaved_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_UserTaskEvent_UTESaved_ResultsEntry_fieldAccessorTable = new

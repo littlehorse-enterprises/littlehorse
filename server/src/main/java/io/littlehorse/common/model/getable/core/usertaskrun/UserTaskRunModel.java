@@ -399,11 +399,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                     partialProgress.getStruct().getInlineStruct().getFields(), userTaskDef);
             output = partialProgress;
             results.clear();
-            UTESavedModel saved = new UTESavedModel(
-                    req.getUserId(),
-                    partialProgress.getStruct().getInlineStruct().getFields().entrySet().stream()
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey, entry -> entry.getValue().getValue())));
+                UTESavedModel saved = new UTESavedModel(req.getUserId(), partialProgress);
             this.events.add(new UserTaskEventModel(saved, ctx.currentCommand().getTime()));
             return;
         }
