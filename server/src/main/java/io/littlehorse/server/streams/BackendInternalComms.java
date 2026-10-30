@@ -26,6 +26,7 @@ import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
+import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.proto.BookmarkPb;
@@ -89,7 +90,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.BiPredicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -1027,22 +1027,25 @@ public class BackendInternalComms implements Closeable {
         }
         endKey += "~";
 
-        BiPredicate<Tag, List<ScanFilterModel>> passesFilter = (tag, scanFilterModels) -> {
-            if (tag.objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
-                throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
-            }
-
-            WfRunIdModel wfRunId =
-                    (WfRunIdModel) ObjectIdModel.fromString(tag.getDescribedObjectId(), WfRunIdModel.class);
-            return filters.stream().allMatch(filter -> filter.matches(wfRunId, executionContext()));
-        };
-
         try (LHKeyValueIterator<Tag> iter = createTagIterator(startKey, endKey, objectType, storeName, partition)) {
             boolean brokenBecauseOutOfData = true;
             while (iter.hasNext()) {
                 LHIterKeyValue<Tag> next = iter.next();
                 Tag tag = next.getValue();
-                if (!passesFilter.test(tag, filters)) {
+                ObjectIdModel<?, ?, ?> resultId;
+                if (objectType == GetableClassEnum.WF_RUN && tag.objectType == GetableClassEnum.VARIABLE) {
+                    VariableIdModel variableId = (VariableIdModel)
+                            ObjectIdModel.fromString(tag.getDescribedObjectId(), VariableIdModel.class);
+                    if (variableId.getThreadRunNumber() != 0) continue;
+                    resultId = variableId.getWfRunId();
+                } else {
+                    resultId =
+                            ObjectIdModel.fromString(tag.getDescribedObjectId(), AbstractGetable.getIdCls(objectType));
+                }
+                if (objectType != GetableClassEnum.WF_RUN && !filters.isEmpty()) {
+                    throw new LHApiException(Status.INTERNAL, "Not possible to have filters on non-wfrun scan");
+                }
+                if (!filters.stream().allMatch(filter -> filter.matches((WfRunIdModel) resultId, executionContext()))) {
                     continue;
                 }
                 if (--limit < 0) {
@@ -1058,11 +1061,7 @@ public class BackendInternalComms implements Closeable {
 
                 // Turn the ID String into the ObjectId structure, then serialize it
                 // to proto
-                Class<? extends ObjectIdModel<?, ?, ?>> idCls = AbstractGetable.getIdCls(objectType);
-                idsOut.add(ObjectIdModel.fromString(next.getValue().describedObjectId, idCls)
-                        .toProto()
-                        .build()
-                        .toByteString());
+                idsOut.add(resultId.toProto().build().toByteString());
             }
 
             if (brokenBecauseOutOfData) {
