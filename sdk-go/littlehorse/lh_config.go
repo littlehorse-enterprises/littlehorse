@@ -213,7 +213,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 			ClientSecret:        p.GetString(OAUTH_CLIENT_SECRET_KEY, ""),
 			AuthServer:          p.GetString(OAUTH_SERVER_URL, ""),
 			TokenEndpointUrl:    p.GetString(OAUTH_ACCESS_TOKEN_URL, ""),
-			CallbackPort:        int32FromProp(p, NUM_WORKER_THREADS_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
+			CallbackPort:        int32FromProp(p, OAUTH_CALLBACK_PORT_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
 			CredentialsLocation: p.GetString(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
 			CaCert:              p.GetString(OAUTH_CA_CERT_KEY, ""),
 		},
