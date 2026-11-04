@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import os
 import ssl
 import tempfile
 import unittest
@@ -197,12 +198,13 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
         session_class_mock.return_value.mount.assert_not_called()
 
     def test_fails_with_invalid_ca_cert(self):
-        with tempfile.NamedTemporaryFile("w", suffix=".crt") as ca_cert:
-            ca_cert.write("not a certificate")
-            ca_cert.flush()
+        with tempfile.TemporaryDirectory() as directory:
+            ca_cert = os.path.join(directory, "ca.crt")
+            with open(ca_cert, "w") as file:
+                file.write("not a certificate")
             with self.assertRaises(ssl.SSLError):
                 OAuthCredentialsProvider(
-                    "my-client", "my-password", "https://my-endpoint/", ca_cert.name
+                    "my-client", "my-password", "https://my-endpoint/", ca_cert
                 )
 
 
