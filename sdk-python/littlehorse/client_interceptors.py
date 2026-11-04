@@ -8,8 +8,8 @@ import grpc
 from google.rpc.error_details_pb2 import RetryInfo
 from google.rpc.status_pb2 import Status
 from grpc.aio import ClientCallDetails
-from requests import certs
 from requests.adapters import HTTPAdapter
+from requests.utils import DEFAULT_CA_BUNDLE_PATH
 
 from littlehorse.exceptions import OAuthException
 
@@ -48,7 +48,7 @@ class _SSLContextAdapter(HTTPAdapter):
 
 def _trusting_ca_adapter(ca_cert: str) -> HTTPAdapter:
     """Trusts the CAs in ca_cert in addition to the ones requests trusts by default."""
-    context = ssl.create_default_context(cafile=certs.where())
+    context = ssl.create_default_context(cafile=DEFAULT_CA_BUNDLE_PATH)
     context.load_verify_locations(cafile=ca_cert)
     return _SSLContextAdapter(context)
 

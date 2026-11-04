@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import ANY, call, patch, MagicMock, AsyncMock
 import grpc
-from requests import certs
+from requests.utils import DEFAULT_CA_BUNDLE_PATH
 from littlehorse.exceptions import OAuthException
 from littlehorse.client_interceptors import (
     AccessToken,
@@ -176,7 +176,7 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
         }
 
         grpc_auth = OAuthCredentialsProvider(
-            "my-client", "my-password", "https://my-endpoint/", certs.where()
+            "my-client", "my-password", "https://my-endpoint/", DEFAULT_CA_BUNDLE_PATH
         )
         grpc_auth.access_token()
 
