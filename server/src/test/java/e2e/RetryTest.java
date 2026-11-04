@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExponentialBackoffRetryPolicy;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
@@ -28,19 +29,22 @@ public class RetryTest {
 
     @LHWorkflow("retry-test")
     public Workflow getRetryTestWf() {
-        return Workflow.newWorkflow("retry-test", wf -> {
-            WfRunVariable timesToFailSimple = wf.addVariable("times-to-fail-simple", 1);
-            WfRunVariable timesToFailBackoff = wf.addVariable("times-to-fail-backoff", 1);
+        return Workflow.newWorkflow(
+                "retry-test",
+                wf -> {
+                    WfRunVariable timesToFailSimple = wf.addVariable("times-to-fail-simple", 1);
+                    WfRunVariable timesToFailBackoff = wf.addVariable("times-to-fail-backoff", 1);
 
-            wf.execute("retry-task", timesToFailSimple).withRetries(2);
-            wf.execute("retry-task", timesToFailBackoff)
-                    .withRetries(2)
-                    .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
-                            .setBaseIntervalMs(1000)
-                            .setMultiplier(2)
-                            .setMaxDelayMs(2000)
-                            .build());
-        });
+                    wf.execute("retry-task", timesToFailSimple).withRetries(2);
+                    wf.execute("retry-task", timesToFailBackoff)
+                            .withRetries(2)
+                            .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
+                                    .setBaseIntervalMs(1000)
+                                    .setMultiplier(2)
+                                    .setMaxDelayMs(2000)
+                                    .build());
+                },
+                new LHConfig());
     }
 
     @Test

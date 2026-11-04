@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.WfRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
@@ -26,14 +25,17 @@ public class InlineStructDefExample {
 
     private static final Logger log = LoggerFactory.getLogger(InlineStructDefExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-inline-struct-def", wf -> {
-            WfRunVariable order = wf.declareStruct("order", Order.class).required();
-            WfRunVariable normalizedOrder = wf.declareStruct("normalized-order", Order.class);
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-inline-struct-def",
+                wf -> {
+                    WfRunVariable order = wf.declareStruct("order", Order.class).required();
+                    WfRunVariable normalizedOrder = wf.declareStruct("normalized-order", Order.class);
 
-            normalizedOrder.assign(wf.execute("normalize-order", order));
-            wf.execute("format-shipping-label", normalizedOrder);
-        });
+                    normalizedOrder.assign(wf.execute("normalize-order", order));
+                    wf.execute("format-shipping-label", normalizedOrder);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -109,7 +111,7 @@ public class InlineStructDefExample {
 
     public static void runWorkers() throws IOException {
         LHConfig config = new LHConfig(getConfigProps());
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         // The `order` StructDef embeds the `delivery-address` schema as an InlineStructDef,

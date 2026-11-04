@@ -4,12 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import e2e.Struct.UserCredentials;
 import io.littlehorse.common.LHConstants;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -59,12 +59,15 @@ public class StructMaskedFieldsTest {
 
     @LHWorkflow("struct-masked-fields-wf")
     public Workflow structMaskedFieldsWf() {
-        return new WorkflowImpl("struct-masked-fields-wf", wf -> {
-            WfRunVariable credsVar =
-                    wf.declareStruct("credentials", UserCredentials.class).required();
+        return Workflow.newWorkflow(
+                "struct-masked-fields-wf",
+                wf -> {
+                    WfRunVariable credsVar = wf.declareStruct("credentials", UserCredentials.class)
+                            .required();
 
-            wf.execute("process-credentials", credsVar.get("username"));
-        });
+                    wf.execute("process-credentials", credsVar.get("username"));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("process-credentials")

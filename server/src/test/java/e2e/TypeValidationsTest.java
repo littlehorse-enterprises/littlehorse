@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -26,11 +27,14 @@ public class TypeValidationsTest {
 
     @Test
     void cannotPassStrExtEvtOutputIntoTaskNeedingInt() {
-        Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work", wf -> {
-            NodeOutput result =
-                    wf.waitForEvent("validations-some-event-return-str").registeredAs(String.class);
-            wf.execute("validations-accept-int", result);
-        });
+        Workflow badWorkflow = Workflow.newWorkflow(
+                "shouldnt-work",
+                wf -> {
+                    NodeOutput result =
+                            wf.waitForEvent("validations-some-event-return-str").registeredAs(String.class);
+                    wf.execute("validations-accept-int", result);
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> {
                     badWorkflow.registerWfSpec(client);
@@ -44,20 +48,26 @@ public class TypeValidationsTest {
 
     @Test
     void cannotPassDoubleOutputIntoTaskNeedingString() {
-        Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work-double-str", wf -> {
-            NodeOutput result = wf.execute("validations-return-double", "input");
-            wf.execute("validations-accept-string", result);
-        });
+        Workflow badWorkflow = Workflow.newWorkflow(
+                "shouldnt-work-double-str",
+                wf -> {
+                    NodeOutput result = wf.execute("validations-return-double", "input");
+                    wf.execute("validations-accept-string", result);
+                },
+                new LHConfig());
         // This assignment is now allowed (DOUBLE to STR is accepted), so we expect no exception
         badWorkflow.registerWfSpec(client);
     }
 
     @Test
     void cannotPassStringOutputIntoTaskNeedingDouble() {
-        Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work-str-double", wf -> {
-            NodeOutput result = wf.execute("validations-return-string");
-            wf.execute("validations-accept-double", result);
-        });
+        Workflow badWorkflow = Workflow.newWorkflow(
+                "shouldnt-work-str-double",
+                wf -> {
+                    NodeOutput result = wf.execute("validations-return-string");
+                    wf.execute("validations-accept-double", result);
+                },
+                new LHConfig());
         assertThatThrownBy(() -> {
                     badWorkflow.registerWfSpec(client);
                 })
@@ -70,20 +80,26 @@ public class TypeValidationsTest {
 
     @Test
     void canPassIntOutputIntoTaskNeedingInt() {
-        Workflow goodWorkflow = Workflow.newWorkflow("should-work-int-int", wf -> {
-            NodeOutput result = wf.execute("validations-return-int", "input");
-            wf.execute("validations-accept-int", result);
-        });
+        Workflow goodWorkflow = Workflow.newWorkflow(
+                "should-work-int-int",
+                wf -> {
+                    NodeOutput result = wf.execute("validations-return-int", "input");
+                    wf.execute("validations-accept-int", result);
+                },
+                new LHConfig());
         // Should not throw
         goodWorkflow.registerWfSpec(client);
     }
 
     @Test
     void cannotMultiplyAStr() {
-        Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work-multiply-str", wf -> {
-            WfRunVariable myStr = wf.declareStr("foo");
-            wf.execute("validations-return-int", myStr.multiply(5));
-        });
+        Workflow badWorkflow = Workflow.newWorkflow(
+                "shouldnt-work-multiply-str",
+                wf -> {
+                    WfRunVariable myStr = wf.declareStr("foo");
+                    wf.execute("validations-return-int", myStr.multiply(5));
+                },
+                new LHConfig());
         assertThatThrownBy(() -> {
                     badWorkflow.registerWfSpec(client);
                 })
@@ -96,11 +112,14 @@ public class TypeValidationsTest {
 
     @Test
     void cannotAssignAStrToInt() {
-        Workflow badWorkflow = Workflow.newWorkflow("shouldnt-work-multiply-str", wf -> {
-            WfRunVariable myStr = wf.declareStr("foo");
-            WfRunVariable myInt = wf.declareInt("my-int");
-            myInt.assign(myStr);
-        });
+        Workflow badWorkflow = Workflow.newWorkflow(
+                "shouldnt-work-multiply-str",
+                wf -> {
+                    WfRunVariable myStr = wf.declareStr("foo");
+                    WfRunVariable myInt = wf.declareInt("my-int");
+                    myInt.assign(myStr);
+                },
+                new LHConfig());
         assertThatThrownBy(() -> {
                     badWorkflow.registerWfSpec(client);
                 })
@@ -118,10 +137,13 @@ public class TypeValidationsTest {
         // Currently, it is not possible to refer to a node in a different threadSpec; however, we want to
         // enable that capability in the future. Therefore I'm constructing a WfSpec that refers to a nonexistent
         // node so that the end-to-end test continues to pass after that new feature is allowed.
-        Workflow wfGenerator = Workflow.newWorkflow("test-invalid-node-output-reference", wf -> {
-            NodeOutput firstNode = wf.execute("validations-return-int", "asdf");
-            wf.execute("validations-accept-int", firstNode);
-        });
+        Workflow wfGenerator = Workflow.newWorkflow(
+                "test-invalid-node-output-reference",
+                wf -> {
+                    NodeOutput firstNode = wf.execute("validations-return-int", "asdf");
+                    wf.execute("validations-accept-int", firstNode);
+                },
+                new LHConfig());
 
         PutWfSpecRequest.Builder reqBuilder = wfGenerator.compileWorkflow().toBuilder();
 

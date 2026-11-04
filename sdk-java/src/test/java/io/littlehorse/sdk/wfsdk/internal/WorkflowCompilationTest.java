@@ -2,9 +2,11 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
+import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.util.Map;
 import java.util.Set;
@@ -69,18 +71,22 @@ public class WorkflowCompilationTest {
 
     @Test
     void shouldExposeJavaTypesReferencedAcrossWorkflowCompilation() {
-        WorkflowImpl workflow = new WorkflowImpl("referenced-types", thread -> {
-            thread.declareStruct("root", ReferencedRoot.class);
-            thread.declareArray("nested-array", NestedReferencedType.class);
-            thread.declareMap("nested-map", String.class, NestedReferencedType.class);
-            thread.spawnThread(
-                    child -> child.declareInlineStruct("child", ChildReferencedType.class), "child", Map.of());
-            thread.registerInterruptHandler(
-                            "interrupt", handler -> handler.declareInlineStruct("handler", ChildReferencedType.class))
-                    .withEventType(EventReferencedType.class);
-            thread.waitForEvent("external-event").registeredAs(RegisteredExternalEventType.class);
-            thread.throwEvent("workflow-event", "payload").registeredAs(RegisteredWorkflowEventType.class);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "referenced-types",
+                thread -> {
+                    thread.declareStruct("root", ReferencedRoot.class);
+                    thread.declareArray("nested-array", NestedReferencedType.class);
+                    thread.declareMap("nested-map", String.class, NestedReferencedType.class);
+                    thread.spawnThread(
+                            child -> child.declareInlineStruct("child", ChildReferencedType.class), "child", Map.of());
+                    thread.registerInterruptHandler(
+                                    "interrupt",
+                                    handler -> handler.declareInlineStruct("handler", ChildReferencedType.class))
+                            .withEventType(EventReferencedType.class);
+                    thread.waitForEvent("external-event").registeredAs(RegisteredExternalEventType.class);
+                    thread.throwEvent("workflow-event", "payload").registeredAs(RegisteredWorkflowEventType.class);
+                },
+                new LHConfig());
 
         Set<Class<?>> referencedTypes = workflow.getReferencedJavaTypes();
 
@@ -102,26 +108,29 @@ public class WorkflowCompilationTest {
     @Test
     // @DisabledUntil(date = "2023-07-22")
     public void shouldThrowMisconfigurationExceptionWhenMultiplesThreadsWithSameName() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
-            thread.sleepUntil(var);
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
+                    thread.sleepUntil(var);
 
-            thread.spawnThread(
-                    thread1 -> {
-                        WfRunVariable var2 = thread1.addVariable("my-var2", VariableType.INT);
-                        thread1.sleepUntil(var2);
-                    },
-                    "my-thread",
-                    Map.of());
+                    thread.spawnThread(
+                            thread1 -> {
+                                WfRunVariable var2 = thread1.addVariable("my-var2", VariableType.INT);
+                                thread1.sleepUntil(var2);
+                            },
+                            "my-thread",
+                            Map.of());
 
-            thread.spawnThread(
-                    thread1 -> {
-                        WfRunVariable var3 = thread1.addVariable("my-var3", VariableType.INT);
-                        thread1.sleepUntil(var3);
-                    },
-                    "my-thread",
-                    Map.of());
-        });
+                    thread.spawnThread(
+                            thread1 -> {
+                                WfRunVariable var3 = thread1.addVariable("my-var3", VariableType.INT);
+                                thread1.sleepUntil(var3);
+                            },
+                            "my-thread",
+                            Map.of());
+                },
+                new LHConfig());
         Throwable throwable = Assertions.catchThrowable(() -> wf.compileWorkflow());
         Assertions.assertThat(throwable).isNotNull();
         Assertions.assertThat(throwable)
@@ -131,21 +140,24 @@ public class WorkflowCompilationTest {
 
     @Test
     void shouldCompileAWorkflowWhenAParentVarIsAssignedFromChildNestedThreads() {
-        WorkflowImpl wf = new WorkflowImpl("TestWorkflow", grandParentWfThread -> {
-            WfRunVariable grandParentVar = grandParentWfThread.declareStr("grand-parent-var");
-            grandParentWfThread.spawnThread(
-                    son -> {
-                        grandParentVar.assign("son-value");
-                        son.spawnThread(
-                                grandchild -> {
-                                    grandParentVar.assign("grandchild-value");
-                                },
-                                "grandchild-thread",
-                                null);
-                    },
-                    "son-thread",
-                    null);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "TestWorkflow",
+                grandParentWfThread -> {
+                    WfRunVariable grandParentVar = grandParentWfThread.declareStr("grand-parent-var");
+                    grandParentWfThread.spawnThread(
+                            son -> {
+                                grandParentVar.assign("son-value");
+                                son.spawnThread(
+                                        grandchild -> {
+                                            grandParentVar.assign("grandchild-value");
+                                        },
+                                        "grandchild-thread",
+                                        null);
+                            },
+                            "son-thread",
+                            null);
+                },
+                new LHConfig());
 
         PutWfSpecRequest actualWfSpecRequest = wf.compileWorkflow();
         ThreadSpec entrypointThread = actualWfSpecRequest.getThreadSpecsOrThrow("entrypoint");

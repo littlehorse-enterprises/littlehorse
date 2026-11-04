@@ -5,7 +5,6 @@ import io.javalin.http.ContentType;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import io.micrometer.core.instrument.binder.grpc.MetricCollectingClientInterceptor;
 import io.micrometer.prometheusmetrics.PrometheusConfig;
@@ -38,11 +37,14 @@ public class GrpcInterceptorExample {
     private static final int METRICS_PORT = 8080;
     private static final String METRICS_PATH = "/metrics";
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-grpc-interceptor", wf -> {
-            WfRunVariable theName = wf.declareStr("input-name").searchable();
-            wf.execute("greet", theName);
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-grpc-interceptor",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("input-name").searchable();
+                    wf.execute("greet", theName);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -83,7 +85,7 @@ public class GrpcInterceptorExample {
         log.info("Serving Prometheus metrics at http://localhost:{}{}", METRICS_PORT, METRICS_PATH);
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
         // New worker
         LHTaskWorker worker = getTaskWorker(config);
 
