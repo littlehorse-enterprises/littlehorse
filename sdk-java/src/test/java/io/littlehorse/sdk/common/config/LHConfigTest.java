@@ -7,10 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import net.datafaker.Faker;
 import org.assertj.core.util.Files;
@@ -87,6 +95,39 @@ public class LHConfigTest {
         String result2 = config.getTaskWorkerId();
 
         assertThat(result1).isEqualTo(result2);
+    }
+
+    @Test
+    void getOnlyOneRandomIdUnderConcurrentAccess() throws Exception {
+        int callers = 16;
+        ExecutorService executor = Executors.newFixedThreadPool(callers);
+        try {
+            for (int attempt = 0; attempt < 100; attempt++) {
+                LHConfig config = new LHConfig(Map.of());
+                CountDownLatch ready = new CountDownLatch(callers);
+                CountDownLatch start = new CountDownLatch(1);
+                List<Future<String>> results = new ArrayList<>();
+                for (int i = 0; i < callers; i++) {
+                    results.add(executor.submit(() -> {
+                        ready.countDown();
+                        start.await();
+                        return config.getTaskWorkerId();
+                    }));
+                }
+                try {
+                    assertThat(ready.await(5, TimeUnit.SECONDS)).isTrue();
+                } finally {
+                    start.countDown();
+                }
+                Set<String> workerIds = new HashSet<>();
+                for (Future<String> result : results) {
+                    workerIds.add(result.get(5, TimeUnit.SECONDS));
+                }
+                assertThat(workerIds).containsExactly(config.getTaskWorkerId());
+            }
+        } finally {
+            executor.shutdownNow();
+        }
     }
 
     @Test

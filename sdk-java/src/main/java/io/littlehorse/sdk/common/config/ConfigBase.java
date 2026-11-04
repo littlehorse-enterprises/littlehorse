@@ -54,7 +54,8 @@ public abstract class ConfigBase {
 
     protected abstract String[] getEnvKeyPrefixes();
 
-    protected String getOrSetDefault(String key, String defaultVal) {
+    // Generated defaults, such as worker IDs, must be shared by concurrent callers.
+    protected synchronized String getOrSetDefault(String key, String defaultVal) {
         if (!props.containsKey(key)) {
             if (defaultVal != null) {
                 log.info("Config: {} unset, defaulting to: {}", key, defaultVal);
