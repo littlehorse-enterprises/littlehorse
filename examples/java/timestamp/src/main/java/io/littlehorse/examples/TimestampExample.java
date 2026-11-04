@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,15 +30,19 @@ public class TimestampExample {
 
     private static final Logger log = LoggerFactory.getLogger(TimestampExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-timestamp", wf -> {
-            WfRunVariable publishDate =
-                    wf.declareTimestamp("publish-date").withDefault(Instant.parse("1997-06-26T12:12:12Z"));
-            WfRunVariable bookName = wf.declareStr("book-name").withDefault("Harry Potter and the Philosopher's Stone");
-            NodeOutput publishBook = wf.execute("publish-book", bookName, publishDate);
-            NodeOutput currentDate = wf.execute("get-current-date");
-            wf.execute("print-book-details", publishBook, currentDate);
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-timestamp",
+                wf -> {
+                    WfRunVariable publishDate =
+                            wf.declareTimestamp("publish-date").withDefault(Instant.parse("1997-06-26T12:12:12Z"));
+                    WfRunVariable bookName =
+                            wf.declareStr("book-name").withDefault("Harry Potter and the Philosopher's Stone");
+                    NodeOutput publishBook = wf.execute("publish-book", bookName, publishDate);
+                    NodeOutput currentDate = wf.execute("get-current-date");
+                    wf.execute("print-book-details", publishBook, currentDate);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -71,7 +74,7 @@ public class TimestampExample {
         LHConfig config = new LHConfig(props);
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         List<LHTaskWorker> workers = getTaskWorkers(config);
 

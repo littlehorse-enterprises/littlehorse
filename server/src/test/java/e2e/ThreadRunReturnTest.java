@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -31,25 +32,31 @@ public class ThreadRunReturnTest {
 
     @LHWorkflow("threadrun-output")
     public Workflow getThreadRunOutputWorkflow() {
-        return Workflow.newWorkflow("threadrun-output", wf -> {
-            WfRunVariable theName = wf.declareStr("name").required();
-            wf.complete(theName);
-        });
+        return Workflow.newWorkflow(
+                "threadrun-output",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("name").required();
+                    wf.complete(theName);
+                },
+                new LHConfig());
     }
 
     @Test
     void dontAllowReturningDifferentTypes() {
-        Workflow invalidWf = Workflow.newWorkflow("asdf", wf -> {
-            WfRunVariable mySwitch = wf.declareBool("switch");
-            WfRunVariable myInt = wf.declareInt("my-int");
-            WfRunVariable myDouble = wf.declareDouble("my-double");
+        Workflow invalidWf = Workflow.newWorkflow(
+                "asdf",
+                wf -> {
+                    WfRunVariable mySwitch = wf.declareBool("switch");
+                    WfRunVariable myInt = wf.declareInt("my-int");
+                    WfRunVariable myDouble = wf.declareDouble("my-double");
 
-            wf.doIf(mySwitch.isEqualTo(true), handler -> {
-                handler.complete(myInt);
-            });
+                    wf.doIf(mySwitch.isEqualTo(true), handler -> {
+                        handler.complete(myInt);
+                    });
 
-            wf.complete(myDouble);
-        });
+                    wf.complete(myDouble);
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> {
                     invalidWf.registerWfSpec(client);
@@ -63,14 +70,17 @@ public class ThreadRunReturnTest {
 
     @Test
     void dontAllowReturningNullAndSomethingInSameThread() {
-        Workflow invalidWf = Workflow.newWorkflow("asdf", wf -> {
-            WfRunVariable mySwitch = wf.declareBool("switch");
-            wf.doIf(mySwitch.isEqualTo(true), handler -> {
-                handler.complete();
-            });
+        Workflow invalidWf = Workflow.newWorkflow(
+                "asdf",
+                wf -> {
+                    WfRunVariable mySwitch = wf.declareBool("switch");
+                    wf.doIf(mySwitch.isEqualTo(true), handler -> {
+                        handler.complete();
+                    });
 
-            wf.complete("asdf");
-        });
+                    wf.complete("asdf");
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> {
                     invalidWf.registerWfSpec(client);
@@ -98,9 +108,12 @@ public class ThreadRunReturnTest {
         // random so as to not have competing test runs conflict
         String wfSpecName = UUID.randomUUID().toString();
 
-        Workflow first = Workflow.newWorkflow(wfSpecName, wf -> {
-            wf.declareStr("unused");
-        });
+        Workflow first = Workflow.newWorkflow(
+                wfSpecName,
+                wf -> {
+                    wf.declareStr("unused");
+                },
+                new LHConfig());
         first.registerWfSpec(client);
 
         Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
@@ -108,9 +121,12 @@ public class ThreadRunReturnTest {
             return true;
         });
 
-        Workflow.newWorkflow(wfSpecName, wf -> {
-                    wf.declareInt("unused");
-                })
+        Workflow.newWorkflow(
+                        wfSpecName,
+                        wf -> {
+                            wf.declareInt("unused");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
         Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
             client.getWfSpec(
@@ -118,10 +134,13 @@ public class ThreadRunReturnTest {
             return true;
         });
 
-        Workflow.newWorkflow(wfSpecName, wf -> {
-                    wf.declareInt("unused");
-                    wf.complete("some-output");
-                })
+        Workflow.newWorkflow(
+                        wfSpecName,
+                        wf -> {
+                            wf.declareInt("unused");
+                            wf.complete("some-output");
+                        },
+                        new LHConfig())
                 .registerWfSpec(client);
         Awaitility.await().atMost(Duration.ofSeconds(1)).ignoreExceptions().until(() -> {
             client.getWfSpec(WfSpecId.newBuilder()

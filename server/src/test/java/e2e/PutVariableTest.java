@@ -7,6 +7,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutVariableRequest;
@@ -34,10 +35,13 @@ public class PutVariableTest {
 
     @LHWorkflow("put-variable-sleep")
     public Workflow buildSleepWorkflow() {
-        return Workflow.newWorkflow("put-variable-sleep", thread -> {
-            var duration = thread.declareInt("duration").withDefault(3600);
-            thread.sleepSeconds(duration);
-        });
+        return Workflow.newWorkflow(
+                "put-variable-sleep",
+                thread -> {
+                    var duration = thread.declareInt("duration").withDefault(3600);
+                    thread.sleepSeconds(duration);
+                },
+                new LHConfig());
     }
 
     @Test
@@ -78,13 +82,16 @@ public class PutVariableTest {
 
     @LHWorkflow("put-variable")
     public Workflow buildWorkflow() {
-        return Workflow.newWorkflow("put-variable", thread -> {
-            var value = thread.declareStr("value").withDefault("original");
-            var observed = thread.declareStr("observed");
-            thread.declareStr("secret").withDefault("sensitive").masked();
-            thread.waitForEvent("put-variable-continue").registeredAs(String.class);
-            observed.assign(value);
-        });
+        return Workflow.newWorkflow(
+                "put-variable",
+                thread -> {
+                    var value = thread.declareStr("value").withDefault("original");
+                    var observed = thread.declareStr("observed");
+                    thread.declareStr("secret").withDefault("sensitive").masked();
+                    thread.waitForEvent("put-variable-continue").registeredAs(String.class);
+                    observed.assign(value);
+                },
+                new LHConfig());
     }
 
     @Test

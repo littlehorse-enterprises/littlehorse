@@ -3,6 +3,7 @@ package io.littlehorse.common.util;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
@@ -68,50 +69,60 @@ public class WfSpecUtilTest {
     }
 
     private static WfSpec complexImageProcessingSpec() {
-        PutWfSpecRequest request = Workflow.newWorkflow("repro-image-processing", wf -> {
-                    WfRunVariable input = wf.declareJsonObj("input").required().asPublic();
+        PutWfSpecRequest request = Workflow.newWorkflow(
+                        "repro-image-processing",
+                        wf -> {
+                            WfRunVariable input =
+                                    wf.declareJsonObj("input").required().asPublic();
 
-                    WfRunVariable tenantId =
-                            wf.declareStr("tenant-id").asPublic().searchable();
-                    tenantId.assign(input.jsonPath("$.tenant_id"));
+                            WfRunVariable tenantId =
+                                    wf.declareStr("tenant-id").asPublic().searchable();
+                            tenantId.assign(input.jsonPath("$.tenant_id"));
 
-                    WfRunVariable creatorId =
-                            wf.declareStr("creator-id").asPublic().searchable();
-                    creatorId.assign(input.jsonPath("$.creator_id"));
+                            WfRunVariable creatorId =
+                                    wf.declareStr("creator-id").asPublic().searchable();
+                            creatorId.assign(input.jsonPath("$.creator_id"));
 
-                    WfRunVariable recordId =
-                            wf.declareStr("record-id").asPublic().searchable();
-                    recordId.assign(input.jsonPath("$.record_id"));
+                            WfRunVariable recordId =
+                                    wf.declareStr("record-id").asPublic().searchable();
+                            recordId.assign(input.jsonPath("$.record_id"));
 
-                    WfRunVariable storageUri = wf.declareStr("storage-uri");
-                    storageUri.assign(input.jsonPath("$.storage_uri"));
+                            WfRunVariable storageUri = wf.declareStr("storage-uri");
+                            storageUri.assign(input.jsonPath("$.storage_uri"));
 
-                    input.jsonPath("$.quality_score").assign(null);
-                    input.jsonPath("$.quality_metrics").assign(null);
+                            input.jsonPath("$.quality_score").assign(null);
+                            input.jsonPath("$.quality_metrics").assign(null);
 
-                    wf.execute("repro-update-embeddings", storageUri, "Image", tenantId, creatorId, recordId);
+                            wf.execute("repro-update-embeddings", storageUri, "Image", tenantId, creatorId, recordId);
 
-                    input.jsonPath("$.status").assign("embeddings_processed");
-                    wf.execute("repro-update-record", tenantId, creatorId, recordId, input);
+                            input.jsonPath("$.status").assign("embeddings_processed");
+                            wf.execute("repro-update-record", tenantId, creatorId, recordId, input);
 
-                    NodeOutput faceResult =
-                            wf.execute("repro-detect-faces", storageUri, recordId, "Image", tenantId, creatorId);
+                            NodeOutput faceResult = wf.execute(
+                                    "repro-detect-faces", storageUri, recordId, "Image", tenantId, creatorId);
 
-                    WfRunVariable faceCount = wf.declareInt("face-count");
-                    faceCount.assign(faceResult.jsonPath("$.face_count"));
+                            WfRunVariable faceCount = wf.declareInt("face-count");
+                            faceCount.assign(faceResult.jsonPath("$.face_count"));
 
-                    WfRunVariable bestFaceQuality = wf.declareDouble("best-face-quality");
-                    bestFaceQuality.assign(faceResult.jsonPath("$.best_face_quality_score"));
+                            WfRunVariable bestFaceQuality = wf.declareDouble("best-face-quality");
+                            bestFaceQuality.assign(faceResult.jsonPath("$.best_face_quality_score"));
 
-                    NodeOutput qualityResult = wf.execute(
-                            "repro-grade-image", storageUri, tenantId, creatorId, recordId, faceCount, bestFaceQuality);
+                            NodeOutput qualityResult = wf.execute(
+                                    "repro-grade-image",
+                                    storageUri,
+                                    tenantId,
+                                    creatorId,
+                                    recordId,
+                                    faceCount,
+                                    bestFaceQuality);
 
-                    input.jsonPath("$.quality_score").assign(qualityResult.jsonPath("$.quality_score"));
-                    input.jsonPath("$.quality_metrics").assign(qualityResult.jsonPath("$.quality_metrics"));
+                            input.jsonPath("$.quality_score").assign(qualityResult.jsonPath("$.quality_score"));
+                            input.jsonPath("$.quality_metrics").assign(qualityResult.jsonPath("$.quality_metrics"));
 
-                    input.jsonPath("$.status").assign("processed");
-                    wf.execute("repro-update-record", tenantId, creatorId, recordId, input);
-                })
+                            input.jsonPath("$.status").assign("processed");
+                            wf.execute("repro-update-record", tenantId, creatorId, recordId, input);
+                        },
+                        new LHConfig())
                 .compileWorkflow();
 
         WfSpec.Builder spec = WfSpec.newBuilder()
