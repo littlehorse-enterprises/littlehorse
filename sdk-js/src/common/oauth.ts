@@ -1,3 +1,7 @@
+import { X509Certificate } from 'crypto'
+import type { OutgoingHttpHeaders } from 'http'
+import { request } from 'https'
+import { rootCertificates } from 'tls'
 import { LHError } from './errors'
 
 /**
@@ -19,6 +23,8 @@ export interface OAuthOptions {
    * mid-flight on a slow call. Defaults to 30s.
    */
   refreshSkewMs?: number
+  /** PEM CA certificates trusted for the token endpoint, besides Node's bundled CAs. */
+  caCert?: string
   /** Injectable for tests; defaults to global fetch. */
   fetchImpl?: typeof fetch
 }
@@ -34,6 +40,38 @@ export class OAuthError extends LHError {}
 
 const DEFAULT_REFRESH_SKEW_MS = 30_000
 
+/**
+ * A fetch that also trusts `caCert`. Global fetch can't take a custom CA
+ * without the undici package, so this goes through https.request.
+ */
+export function fetchTrustingCa(caCert: string): typeof fetch {
+  try {
+    new X509Certificate(caCert)
+  } catch (err) {
+    throw new OAuthError(`Invalid OAuth CA certificate: ${(err as Error).message}`)
+  }
+  const ca = [...rootCertificates, caCert]
+
+  return ((input: string | URL, init?: RequestInit) =>
+    new Promise<Response>((resolve, reject) => {
+      const req = request(
+        input,
+        { method: init?.method ?? 'GET', headers: init?.headers as OutgoingHttpHeaders, ca },
+        res => {
+          const chunks: Buffer[] = []
+          res.on('data', (chunk: Buffer) => chunks.push(chunk))
+          res.on('end', () => resolve(new Response(Buffer.concat(chunks), { status: res.statusCode })))
+          res.on('error', reject)
+        }
+      )
+      req.on('error', reject)
+      if (typeof init?.body === 'string') {
+        req.write(init.body)
+      }
+      req.end()
+    })) as typeof fetch
+}
+
 export class OAuthCredentialsProvider {
   private cached?: TokenStatus
   /** In-flight fetch, so concurrent callers share one request. */
@@ -45,7 +83,8 @@ export class OAuthCredentialsProvider {
 
   constructor(private readonly options: OAuthOptions) {
     this.refreshSkewMs = options.refreshSkewMs ?? DEFAULT_REFRESH_SKEW_MS
-    this.fetchImpl = options.fetchImpl ?? globalThis.fetch
+    this.fetchImpl =
+      options.fetchImpl ?? (options.caCert !== undefined ? fetchTrustingCa(options.caCert) : globalThis.fetch)
     if (typeof this.fetchImpl !== 'function') {
       throw new OAuthError('No fetch implementation available for OAuth; pass fetchImpl explicitly')
     }

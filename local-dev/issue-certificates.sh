@@ -44,6 +44,8 @@ openssl x509 -req -sha256 -days 3650 \
     -out "$SERVER_PATH/server.crt" \
     -set_serial 0 \
     -extfile <(printf "subjectAltName=DNS:localhost") > /dev/null 2>&1
+# Keycloak reads the key from a Docker volume as a different user
+chmod 644 "$SERVER_PATH/server.key"
 ########################################################
 # Client Certs
 ########################################################

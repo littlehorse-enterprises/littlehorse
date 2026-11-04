@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
+import ssl
+import tempfile
 import unittest
 from unittest.mock import ANY, call, patch, MagicMock, AsyncMock
 import grpc
+from requests import certs
 from littlehorse.exceptions import OAuthException
 from littlehorse.client_interceptors import (
     AccessToken,
@@ -164,6 +167,43 @@ class TestOAuthCredentialsProvider(unittest.TestCase):
             ]
         )
         self.assertIsNot(token1, token2)
+
+    @patch("littlehorse.client_interceptors.OAuth2Session")
+    def test_mounts_adapter_when_ca_cert_is_set(self, session_class_mock):
+        expiries = datetime.now() + timedelta(days=1)
+        session_class_mock.return_value.fetch_token.return_value = {
+            "expires_at": expiries.timestamp()
+        }
+
+        grpc_auth = OAuthCredentialsProvider(
+            "my-client", "my-password", "https://my-endpoint/", certs.where()
+        )
+        grpc_auth.access_token()
+
+        session_class_mock.return_value.mount.assert_called_once_with("https://", ANY)
+
+    @patch("littlehorse.client_interceptors.OAuth2Session")
+    def test_does_not_mount_adapter_without_ca_cert(self, session_class_mock):
+        expiries = datetime.now() + timedelta(days=1)
+        session_class_mock.return_value.fetch_token.return_value = {
+            "expires_at": expiries.timestamp()
+        }
+
+        grpc_auth = OAuthCredentialsProvider(
+            "my-client", "my-password", "https://my-endpoint/"
+        )
+        grpc_auth.access_token()
+
+        session_class_mock.return_value.mount.assert_not_called()
+
+    def test_fails_with_invalid_ca_cert(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".crt") as ca_cert:
+            ca_cert.write("not a certificate")
+            ca_cert.flush()
+            with self.assertRaises(ssl.SSLError):
+                OAuthCredentialsProvider(
+                    "my-client", "my-password", "https://my-endpoint/", ca_cert.name
+                )
 
 
 class TestMetadataInterceptor(unittest.TestCase):

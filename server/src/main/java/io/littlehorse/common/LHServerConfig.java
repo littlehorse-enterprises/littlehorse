@@ -175,6 +175,7 @@ public class LHServerConfig extends ConfigBase {
     public static final String OAUTH_INTROSPECT_URL = "LHS_OAUTH_INTROSPECT_URL";
     public static final String OAUTH_CLIENT_ID_FILE = "LHS_OAUTH_CLIENT_ID_FILE";
     public static final String OAUTH_CLIENT_SECRET_FILE = "LHS_OAUTH_CLIENT_SECRET_FILE";
+    public static final String OAUTH_CA_CERT = "LHS_OAUTH_CA_CERT";
     private List<ServerListenerConfig> listenerConfigs;
     private List<AdvertisedListenerConfig> advertisedListenerConfigs;
     private Map<String, ListenerProtocol> listenersProtocolMap;
@@ -586,6 +587,7 @@ public class LHServerConfig extends ConfigBase {
                 .introspectionEndpointURI(parsedUrl)
                 .clientId(clientId)
                 .clientSecret(clientSecret)
+                .caCert(getFile(OAUTH_CA_CERT))
                 .build();
     }
 
