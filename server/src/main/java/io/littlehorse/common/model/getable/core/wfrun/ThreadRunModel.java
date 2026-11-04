@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.nodeoutput.NodeOutputModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.InlineStructModel;
+import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.StructModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -24,7 +25,15 @@ import io.littlehorse.common.model.getable.core.wfrun.haltreason.InterruptedMode
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ParentHaltedModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingFailureHandlerHaltReasonModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.PendingInterruptHaltReasonModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.NodeMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.ThreadMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
+import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.FailureHandlerDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.InterruptDefModel;
@@ -32,6 +41,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.InlineStructFieldValueModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.MapBuilderModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
@@ -42,6 +52,7 @@ import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.proto.StoreableType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
@@ -118,7 +129,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         threadSpecName = proto.getThreadSpecName();
         currentNodePosition = proto.getCurrentNodePosition();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, executionContext);
+        wfSpecId = proto.hasWfSpecId()
+                ? LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context)
+                : null;
         if (proto.hasEndTime()) {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
@@ -163,8 +176,8 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 .setThreadSpecName(threadSpecName)
                 .setCurrentNodePosition(currentNodePosition)
                 .setStartTime(LHUtil.fromDate(startTime))
-                .setType(type)
-                .setWfSpecId(wfSpecId.toProto());
+                .setType(type);
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
 
         if (errorMessage != null) {
             out.setErrorMessage(errorMessage);
@@ -215,7 +228,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     public ThreadSpecModel getThreadSpec() {
         if (threadSpecModel == null) {
-            threadSpecModel = wfRun.getWfSpec().threadSpecs.get(threadSpecName);
+            WfSpecModel spec = wfSpecId == null
+                    ? wfRun.getWfSpec()
+                    : executionContext.service().getWfSpec(wfSpecId);
+            threadSpecModel = spec.threadSpecs.get(threadSpecName);
         }
         return threadSpecModel;
     }
@@ -371,6 +387,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
     private void initializeInterrupt(ExternalEventModel trigger, InterruptDefModel idef) {
         trigger.setClaimed(true);
+
         // First, stop all child threads.
         ThreadHaltReasonModel haltReason = new ThreadHaltReasonModel();
         haltReason.type = ReasonCase.PENDING_INTERRUPT;
@@ -449,6 +466,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     public void halt(ThreadHaltReasonModel reason) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
+
+        if (wfRun.getThreadRunQueue().contains(number)) {
+            haltReasons.add(reason);
+            setStatus(LHStatus.HALTED);
+            return;
+        }
 
         // if we got this far, then we know that we are still running. Add the
         // halt reason.
@@ -529,7 +552,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
      * @param eventTime is the time of the Command that causes the ThreadRun to advance.
      * @return true if a new node is activated or sub-thread is started.
      */
-    public boolean advance(Date eventTime) {
+    public boolean advance(Date eventTime, WorkflowMigrationPlanIdModel wfMigrationPlanId) {
         if (isTerminated()) return false;
 
         if (status == LHStatus.HALTED) {
@@ -549,6 +572,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
             boolean canAdvance = currentNR.checkIfProcessingCompleted(processorContext);
 
+            boolean migrated = false;
+
+            if (wfMigrationPlanId != null && currentNR.getNode().isLongRunning()) {
+                migrated = maybeMigrate(wfMigrationPlanId, currentNR.getNodeName(), true);
+            }
+            if (migrated) return true;
+
             if (!canAdvance) {
                 // then we're still waiting on the NodeRun, nothing happened.
                 return false;
@@ -563,6 +593,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 wfRun.handleThreadStatus(number, eventTime, status);
             } else {
                 NodeModel nextNode = currentNR.evaluateOutgoingEdgesAndMaybeMutateVariables(processorContext);
+                // Before we activate next node
+                // check if we are migrating
+                if (wfMigrationPlanId != null) {
+                    migrated = maybeMigrate(wfMigrationPlanId, nextNode.getName(), false);
+                }
+                if (migrated) {
+                    return true;
+                }
                 activateNode(nextNode);
             }
         } catch (NodeFailureException exn) {
@@ -636,13 +674,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         Optional<FailureHandlerDefModel> handlerOption = node.getHandlerFor(failure);
         if (handlerOption.isEmpty()) {
             for (int childId : childThreadIds) {
-                ThreadRunModel child = wfRun.getThreadRun(childId);
                 ThreadHaltReasonModel hr = new ThreadHaltReasonModel();
                 hr.type = ReasonCase.PARENT_HALTED;
                 hr.parentHalted = new ParentHaltedModel();
                 hr.parentHalted.parentThreadId = number;
+                ThreadRunModel child = wfRun.getThreadRun(childId);
                 child.halt(hr);
-                if (child.getCurrentNodeRun().isInProgress()) {
+                if (!wfRun.getThreadRunQueue().contains(childId)
+                        && child.getCurrentNodeRun().isInProgress()) {
                     child.getCurrentNodeRun().maybeHalt(processorContext);
                 }
             }
@@ -672,7 +711,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
-            processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+            if (wfSpecId != null) {
+                processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+            }
             return true;
         }
         return false;
@@ -889,13 +930,16 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 break;
             case EXPRESSION:
                 ExpressionModel expression = assn.getExpression();
-                val = expression.evaluate(this, varAssn -> assignVariable(varAssn, txnCache));
+                val = expression.evaluate(varAssn -> assignVariable(varAssn, txnCache));
                 break;
             case SIZE_OF:
                 val = assignVariable(assn.getSizeOf().getOperand(), txnCache).sizeOf();
                 break;
             case STRUCT_BUILDER:
                 val = buildStructValue(assn, txnCache);
+                break;
+            case MAP_BUILDER:
+                val = buildMapValue(assn, txnCache);
                 break;
             case SOURCE_NOT_SET:
                 // This should have been caught by the WfSpecModel#validate()
@@ -907,7 +951,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 val = val.jsonPath(assn.getJsonPath());
                 break;
             case LH_PATH:
-                val = val.get(assn.getLhPath());
+                val = val.get(assn.getLhPath(), assn.getLhPath().resolveDynamicSelectors(this, txnCache));
                 break;
             case PATH_NOT_SET:
         }
@@ -923,6 +967,42 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         struct.setInlineStruct(buildInlineStructValue(
                 assn.getStructBuilder().getValue(), assn.getStructBuilder().getStructDefId(), txnCache));
         return new VariableValueModel(struct);
+    }
+
+    private VariableValueModel buildMapValue(VariableAssignmentModel assn, Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        MapBuilderModel builder = assn.getMapBuilder();
+        List<MapModel.MapEntryModel> entries = new ArrayList<>();
+
+        for (MapBuilderModel.MapBuilderEntryModel entry : builder.getEntries()) {
+            VariableValueModel key = assignVariable(entry.getKey(), txnCache);
+            VariableValueModel value = assignVariable(entry.getValue(), txnCache);
+            // last-wins on duplicate keys: find existing entry with same key, replace; else append
+            boolean found = false;
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getKey().equals(key)) {
+                    entries.set(i, new MapModel.MapEntryModel(key, value));
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                entries.add(new MapModel.MapEntryModel(key, value));
+            }
+        }
+
+        MapModel out = new MapModel();
+        out.getEntries().addAll(entries);
+        if (builder.getMapType() != null) {
+            out.setMapType(builder.getMapType());
+        } else if (!entries.isEmpty()) {
+            // Native Maps must always carry a concrete type; derive it from the entries so no
+            // untyped Map is ever created at runtime.
+            MapModel.MapEntryModel first = entries.get(0);
+            out.setMapType(new InlineMapDefModel(
+                    first.getKey().getTypeDefinition(), first.getValue().getTypeDefinition()));
+        }
+        return new VariableValueModel(out);
     }
 
     private InlineStructModel buildInlineStructValue(
@@ -945,15 +1025,68 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
                 structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
             } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
-                io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel nestedType =
-                        fieldDefs.get(fieldName).getFieldType();
-                if (nestedType.getStructDefId() == null) {
+                TypeDefinitionModel nestedType = fieldDefs.get(fieldName).getFieldType();
+                StructModel nestedStruct = new StructModel();
+                if (nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                } else if (nestedType.getStructDefId() != null
+                        && !nestedType.getStructDefId().getName().isEmpty()) {
+                    nestedStruct.setStructDefId(nestedType.getStructDefId());
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                } else {
                     throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
                 }
+                structField.setValue(new VariableValueModel(nestedStruct));
+            } else {
+                throw new LHVarSubError(null, "Field '" + fieldName + "' is missing a value");
+            }
+
+            if (fieldDefs.containsKey(fieldName)) {
+                structField.setMasked(fieldDefs.get(fieldName).getFieldType().isMasked());
+            }
+            fields.put(fieldName, structField);
+        }
+
+        inlineStruct.setFields(fields);
+        return inlineStruct;
+    }
+
+    private InlineStructModel buildInlineStructValue(
+            InlineStructBuilderModel builder,
+            InlineStructDefModel inlineStructDef,
+            Map<String, VariableValueModel> txnCache)
+            throws LHVarSubError {
+        InlineStructModel inlineStruct = new InlineStructModel();
+        Map<String, StructFieldModel> fields = new HashMap<>();
+        Map<String, StructFieldDefModel> fieldDefs = inlineStructDef.getFields();
+
+        for (Map.Entry<String, InlineStructFieldValueModel> entry :
+                builder.getFields().entrySet()) {
+            String fieldName = entry.getKey();
+            InlineStructFieldValueModel fieldValue = entry.getValue();
+            StructFieldModel structField = new StructFieldModel();
+
+            if (fieldValue.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
+                structField.setValue(assignVariable(fieldValue.getSimpleValue(), txnCache));
+            } else if (fieldValue.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
+                TypeDefinitionModel nestedType = fieldDefs.containsKey(fieldName)
+                        ? fieldDefs.get(fieldName).getFieldType()
+                        : null;
                 StructModel nestedStruct = new StructModel();
-                nestedStruct.setStructDefId(nestedType.getStructDefId());
-                nestedStruct.setInlineStruct(
-                        buildInlineStructValue(fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                if (nestedType != null && nestedType.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getInlineStructDef(), txnCache));
+                } else if (nestedType != null
+                        && nestedType.getStructDefId() != null
+                        && !nestedType.getStructDefId().getName().isEmpty()) {
+                    nestedStruct.setStructDefId(nestedType.getStructDefId());
+                    nestedStruct.setInlineStruct(buildInlineStructValue(
+                            fieldValue.getSubStructure(), nestedType.getStructDefId(), txnCache));
+                } else {
+                    throw new LHVarSubError(null, "Field '" + fieldName + "' is not a struct field");
+                }
                 structField.setValue(new VariableValueModel(nestedStruct));
             } else {
                 throw new LHVarSubError(null, "Field '" + fieldName + "' is missing a value");
@@ -1034,6 +1167,164 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         throw new LHVarSubError(null, "Specified node " + nodeName + " does not have any previous runs.");
     }
 
+    public boolean maybeMigrate(
+            WorkflowMigrationPlanIdModel workflowMigrationPlanId, String nodeName, boolean isActive) {
+
+        WorkflowMigrationPlanModel plan = executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (plan == null) {
+            return false;
+        }
+
+        ThreadMigrationPlanModel threadMigration = plan.getThreadMigrations().get(threadSpecName);
+        if (threadMigration == null) {
+            return false;
+        }
+
+        NodeMigrationPlanModel nodeMigration =
+                threadMigration.getNodeMigrations().get(nodeName);
+        if (nodeMigration == null) {
+            return false;
+        }
+
+        if (!dependentThreadsMigrated(plan, threadMigration)) {
+            return false;
+        }
+
+        try {
+            migrateThread(plan, threadMigration, nodeMigration, isActive);
+            return true;
+        } catch (NodeFailureException exn) {
+            respondToNodeFailure(exn);
+            return true;
+        }
+    }
+
+    private boolean dependentThreadsMigrated(
+            WorkflowMigrationPlanModel plan, ThreadMigrationPlanModel threadMigration) {
+        if (threadMigration.getThreadSpecDependencies().isEmpty()) {
+            return true;
+        }
+
+        WfSpecIdModel newWfSpecId =
+                new WfSpecIdModel(plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
+
+        for (String depNewThreadName : threadMigration.getThreadSpecDependencies()) {
+            // Dependency is satisfied when at least one thread has already migrated to
+            // depNewThreadName under the new WfSpec.
+            boolean satisfied = false;
+            ThreadRunIterator it = wfRun.getThreadRunIterator();
+            while (it.hasNext()) {
+                ThreadRunModel tr = it.next();
+                if (tr.getThreadSpecName().equals(depNewThreadName)
+                        && tr.getWfSpecId().equals(newWfSpecId)) {
+                    satisfied = true;
+                    break;
+                }
+            }
+            if (!satisfied) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isMigrating(WorkflowMigrationPlanIdModel wfMigrationPlanId) {
+        if (wfMigrationPlanId == null) return false;
+        WorkflowMigrationPlanModel wfMigrationPlan =
+                executionContext.metadataManager().get(wfMigrationPlanId);
+        if (wfMigrationPlan == null) return false;
+        if (!wfMigrationPlan.getOldWfSpecId().equals(getWfSpecId())) return false;
+
+        return wfMigrationPlan.getThreadMigrations().containsKey(threadSpecName);
+    }
+
+    private void migrateThread(
+            WorkflowMigrationPlanModel plan,
+            ThreadMigrationPlanModel threadMigration,
+            NodeMigrationPlanModel nodeMigration,
+            boolean isActive)
+            throws NodeFailureException {
+        WfSpecModel curSpec = executionContext.metadataManager().get(this.getWfSpecId());
+        String oldThreadName = threadSpecName;
+
+        if (isActive) {
+            NodeRunModel oldNR = getCurrentNodeRun();
+            oldNR.maybeHalt(processorContext);
+            putNodeRun(oldNR);
+        }
+
+        threadSpecName = threadMigration.getNewThreadName();
+        threadSpecModel = null; // invalidate cached ThreadSpec
+
+        wfSpecId = new WfSpecIdModel(plan.getOldWfSpecId().getName(), plan.getMajorVersion(), plan.getRevision());
+
+        if (oldThreadName.equals(curSpec.getEntrypointThreadName())) {
+            wfRun.getOldWfSpecVersions().add(wfRun.getWfSpecId());
+            wfRun.setWfSpec(null);
+            wfRun.setWfSpecId(wfSpecId);
+        }
+        createVarsForMigratedThread();
+
+        applyMigrationVariables();
+
+        WfSpecModel newWfSpec = executionContext.service().getWfSpec(wfSpecId);
+        NodeModel newNode = newWfSpec.threadSpecs.get(threadSpecName).nodes.get(nodeMigration.getNewNodeName());
+
+        activateNode(newNode);
+    }
+
+    private void createVarsForMigratedThread() {
+        ThreadSpecModel threadSpec = getThreadSpec();
+        for (ThreadVarDefModel threadVarDef : threadSpec.getVariableDefs()) {
+            if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
+                continue;
+            }
+
+            VariableDefModel varDef = threadVarDef.getVarDef();
+            String varName = varDef.getName();
+
+            VariableModel existing =
+                    processorContext.getableManager().get(new VariableIdModel(wfRun.getId(), this.number, varName));
+
+            if (existing != null) {
+                continue;
+            }
+
+            VariableValueModel value = varDef.getDefaultValue();
+            if (value == null) {
+                value = new VariableValueModel();
+            }
+
+            VariableModel variable = new VariableModel(
+                    varName, value, wfRun.getId(), this.number, threadSpec.getWfSpec(), varDef.isMaskedValue());
+            processorContext.getableManager().put(variable);
+        }
+    }
+
+    private void applyMigrationVariables() throws NodeFailureException {
+        Map<String, MigrationVarsModel> migrationVarsByThread = wfRun.getMigrationVarsByThread();
+        if (migrationVarsByThread == null) {
+            return;
+        }
+
+        MigrationVarsModel migrationVars = migrationVarsByThread.get(threadSpecName);
+        if (migrationVars == null) {
+            return;
+        }
+
+        for (Map.Entry<String, VariableAssignmentModel> entry :
+                migrationVars.getVarAssignmentByVarName().entrySet()) {
+            try {
+                VariableValueModel migrationVariableValue = assignVariable(entry.getValue());
+                mutateVariable(entry.getKey(), migrationVariableValue);
+            } catch (LHVarSubError exn) {
+                throw new NodeFailureException(new FailureModel(
+                        "Failed applying migration variable '%s': %s".formatted(entry.getKey(), exn.getMessage()),
+                        LHErrorType.VAR_SUB_ERROR.toString()));
+            }
+        }
+    }
+
     /**
      * Traverse the current and parent ThreadRun to run the variable modification on
      * the appropriate
@@ -1089,11 +1380,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         // Last thing to check is whether the variable is inherited.
-        ThreadVarDefModel threadVarDef = processorContext
-                .service()
-                .getWfSpec(getWfSpecId())
-                .getAllVariables()
-                .get(varName);
+        WfSpecModel spec = wfSpecId == null
+                ? wfRun.getWfSpec()
+                : executionContext.service().getWfSpec(wfSpecId);
+        ThreadVarDefModel threadVarDef = spec.getAllVariables().get(varName);
         if (threadVarDef.getAccessLevel() == WfRunVariableAccessLevel.INHERITED_VAR) {
             // If we validate the WfSpec properly, it should be impossible for parentWfRunId to be null.
             WfRunIdModel parentWfRunId = getWfRun().getId().getParentWfRunId();

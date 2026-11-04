@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTESaved } from 'littlehorse-client/proto'
 import { Results } from '../../Components/Results'
 
-export const SavedEvent = ({ event, time }: { event: UserTaskEvent_UTESaved; time?: string }) => {
+export const SavedEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTESaved
+  time?: import('@/app/utils').DateLike
+}) => {
   const resultsArray = Object.entries(event?.results || {})
 
   return (

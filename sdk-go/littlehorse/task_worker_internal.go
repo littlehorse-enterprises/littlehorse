@@ -19,6 +19,7 @@ import (
 
 const TOTAL_RETRIES = 5
 const HEARTBEAT_INTERVAL = time.Minute
+const INITIAL_REGISTRATION_RETRY_INTERVAL = time.Second
 
 func (tw *LHTaskWorker) registerTaskDef() error {
 	ptd := &lhproto.PutTaskDefRequest{
@@ -241,6 +242,7 @@ func (m *serverConnectionManager) start() error {
 	}
 
 	// This is the rebalance/heartbeat thread
+	registered := false
 	for m.running {
 		reply, err := (*m.tw.grpcStub).RegisterTaskWorker(
 			context.Background(),
@@ -251,9 +253,14 @@ func (m *serverConnectionManager) start() error {
 		)
 		if err != nil {
 			m.notifyCallFailure()
-			time.Sleep(time.Duration(time.Second * 8))
+			if registered {
+				time.Sleep(8 * time.Second)
+			} else {
+				time.Sleep(INITIAL_REGISTRATION_RETRY_INTERVAL)
+			}
 			continue
 		}
+		registered = true
 		m.notifyCallSuccess(reply)
 		for _, host := range reply.YourHosts {
 			if !m.isAlreadyRunning(host) {

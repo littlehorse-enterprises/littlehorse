@@ -1,12 +1,24 @@
 package io.littlehorse.server.streams.util;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 public class LHCache<K, V> {
 
-    private final ConcurrentHashMap<K, Optional<V>> cache = new ConcurrentHashMap<>();
+    private final Map<K, Optional<V>> cache;
+
+    public LHCache() {
+        cache = new ConcurrentHashMap<>();
+    }
+
+    /** Creates an access-ordered cache that holds at most {@code maxEntries}. */
+    protected LHCache(int maxEntries) {
+        cache = Collections.synchronizedMap(new BoundedLruMap<>(maxEntries));
+    }
 
     protected final V get(K key) {
         Optional<V> result = cache.get(key);
@@ -36,5 +48,23 @@ public class LHCache<K, V> {
 
     public int size() {
         return cache.size();
+    }
+
+    private static class BoundedLruMap<K, V> extends LinkedHashMap<K, V> {
+
+        private static final int INITIAL_CAPACITY = 16;
+        private static final float LOAD_FACTOR = 0.75f;
+
+        private final int maxEntries;
+
+        private BoundedLruMap(int maxEntries) {
+            super(INITIAL_CAPACITY, LOAD_FACTOR, true);
+            this.maxEntries = maxEntries;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+            return size() > maxEntries;
+        }
     }
 }

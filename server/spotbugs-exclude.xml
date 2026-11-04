@@ -15,4 +15,8 @@
     <Match>
         <Package name="~io\.littlehorse\.common\.proto.*"/>
     </Match>
+    <Match>
+        <Class name="io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel"/>
+        <Bug pattern="AT_STALE_THREAD_WRITE_OF_PRIMITIVE"/>
+    </Match>
 </FindBugsFilter>

@@ -283,21 +283,6 @@ public interface CommandOrBuilder extends
   io.littlehorse.sdk.common.proto.CancelUserTaskRunRequestOrBuilder getCancelUserTaskOrBuilder();
 
   /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return Whether the bulkJob field is set.
-   */
-  boolean hasBulkJob();
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   * @return The bulkJob.
-   */
-  io.littlehorse.common.proto.BulkUpdateJob getBulkJob();
-  /**
-   * <code>.littlehorse.BulkUpdateJob bulk_job = 20;</code>
-   */
-  io.littlehorse.common.proto.BulkUpdateJobOrBuilder getBulkJobOrBuilder();
-
-  /**
    * <code>.littlehorse.TaskAttemptRetryReady task_attempt_retry_ready = 21;</code>
    * @return Whether the taskAttemptRetryReady field is set.
    */
@@ -551,6 +536,51 @@ public interface CommandOrBuilder extends
    * <code>.littlehorse.UpdateCountedTag update_counted_tag = 37;</code>
    */
   io.littlehorse.common.proto.UpdateCountedTagOrBuilder getUpdateCountedTagOrBuilder();
+
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return Whether the applyWorkflowMigrationPlan field is set.
+   */
+  boolean hasApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   * @return The applyWorkflowMigrationPlan.
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequest getApplyWorkflowMigrationPlan();
+  /**
+   * <code>.littlehorse.ApplyWorkflowMigrationPlanRequest apply_workflow_migration_plan = 38;</code>
+   */
+  io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
+
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return Whether the putVariable field is set.
+   */
+  boolean hasPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return The putVariable.
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder();
+
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return Whether the runInlineWf field is set.
+   */
+  boolean hasRunInlineWf();
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return The runInlineWf.
+   */
+  io.littlehorse.sdk.common.proto.RunInlineWfRequest getRunInlineWf();
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder getRunInlineWfOrBuilder();
 
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

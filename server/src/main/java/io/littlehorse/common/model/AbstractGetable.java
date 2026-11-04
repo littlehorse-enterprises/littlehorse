@@ -14,22 +14,29 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.InlineWfSpecModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.ActiveBulkJobIdModel;
+import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -49,6 +56,7 @@ import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecMetricsIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.getable.repartitioned.taskmetrics.TaskDefMetricsModel;
 import io.littlehorse.common.model.getable.repartitioned.workflowmetrics.WfSpecMetricsModel;
 import io.littlehorse.common.proto.GetableClassEnum;
@@ -79,6 +87,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
     public static GetableClassEnum getTypeEnum(Class<? extends AbstractGetable<?>> cls) {
         if (cls.equals(WfRunModel.class)) {
             return GetableClassEnum.WF_RUN;
+        } else if (cls.equals(InlineWfSpecModel.class)) {
+            return GetableClassEnum.INLINE_WF_SPEC;
         } else if (cls.equals(NodeRunModel.class)) {
             return GetableClassEnum.NODE_RUN;
         } else if (cls.equals(WfSpecModel.class)) {
@@ -125,6 +135,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.METRIC_WINDOW;
         } else if (cls.equals(InactiveThreadRunModel.class)) {
             return GetableClassEnum.INACTIVE_THREAD_RUN;
+        } else if (cls.equals(WorkflowMigrationPlanModel.class)) {
+            return GetableClassEnum.WORKFLOW_MIGRATION_PLAN;
+        } else if (cls.equals(BulkJobModel.class)) {
+            return GetableClassEnum.BULK_JOB;
+        } else if (cls.equals(ActiveBulkJobModel.class)) {
+            return GetableClassEnum.ACTIVE_BULK_JOB;
         } else {
             throw new IllegalArgumentException("Uh oh, unrecognized: " + cls.getName());
         }
@@ -132,6 +148,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
 
     public static Class<? extends AbstractGetable<?>> getCls(GetableClassEnum type) {
         switch (type) {
+            case INLINE_WF_SPEC:
+                return InlineWfSpecModel.class;
             case WF_RUN:
                 return WfRunModel.class;
             case NODE_RUN:
@@ -180,6 +198,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricWindowModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunModel.class;
+            case WORKFLOW_MIGRATION_PLAN:
+                return WorkflowMigrationPlanModel.class;
+            case BULK_JOB:
+                return BulkJobModel.class;
+            case ACTIVE_BULK_JOB:
+                return ActiveBulkJobModel.class;
             case UNRECOGNIZED:
                 // default:
         }
@@ -188,6 +212,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
 
     public static Class<? extends ObjectIdModel<?, ?, ?>> getIdCls(GetableClassEnum type) {
         switch (type) {
+            case INLINE_WF_SPEC:
+                return InlineWfSpecIdModel.class;
             case WF_RUN:
                 return WfRunIdModel.class;
             case NODE_RUN:
@@ -236,6 +262,12 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return MetricWindowIdModel.class;
             case INACTIVE_THREAD_RUN:
                 return InactiveThreadRunIdModel.class;
+            case WORKFLOW_MIGRATION_PLAN:
+                return WorkflowMigrationPlanIdModel.class;
+            case BULK_JOB:
+                return BulkJobIdModel.class;
+            case ACTIVE_BULK_JOB:
+                return ActiveBulkJobIdModel.class;
             case UNRECOGNIZED:
         }
         throw new IllegalArgumentException("Unrecognized/unimplemented GetableClassEnum");

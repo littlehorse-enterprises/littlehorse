@@ -18,7 +18,7 @@ public interface WfRunVariable extends LHExpression {
     WfRunVariable jsonPath(String path);
 
     /**
-     * Valid only for output of JSON_OBJ or Struct types. Returns a new WfRunVariable handle
+     * Valid only for output of JSON_OBJ, Struct, or Map types. Returns a new WfRunVariable handle
      * which points to the sub-element referred to by the field.
      *
      * Note: You can call this method consecutively to get values from nested objects.
@@ -38,6 +38,18 @@ public interface WfRunVariable extends LHExpression {
      * @return a WfRunVariable.
      */
     WfRunVariable get(int index);
+
+    /**
+     * Returns a new WfRunVariable handle which resolves the selector from the supplied workflow
+     * variable at runtime.
+     *
+     * <p>Dynamic selectors are supported for Map keys, Array indexes, and JSON object properties
+     * or array indexes.
+     *
+     * @param selector the workflow variable whose value identifies the nested element
+     * @return a WfRunVariable
+     */
+    WfRunVariable get(WfRunVariable selector);
 
     /**
      * Marks the variable as "Required", meaning that the ThreadSpec cannot be
@@ -139,6 +151,16 @@ public interface WfRunVariable extends LHExpression {
      * @param rhs is the value to set this WfRunVariable to.
      */
     void assign(Serializable rhs);
+
+    /**
+     * Inserts or overwrites one entry in this Map variable.
+     *
+     * <p>The key and value may be literals, variables, task outputs, or expressions.
+     *
+     * @param key the Map key
+     * @param value the value to store for the key
+     */
+    void put(Serializable key, Serializable value);
 
     // cast methods are provided by LHExpression
 }

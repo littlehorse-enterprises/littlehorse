@@ -51,6 +51,9 @@ import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.errors.DefaultProductionExceptionHandler;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.rocksdb.Cache;
+import org.rocksdb.CompactionPriority;
+import org.rocksdb.CompactionStyle;
+import org.rocksdb.CompressionType;
 import org.rocksdb.LRUCache;
 import org.rocksdb.RateLimiter;
 import org.rocksdb.RateLimiterMode;
@@ -81,17 +84,45 @@ public class LHServerConfig extends ConfigBase {
     public static final String CORE_MEMTABLE_SIZE_BYTES_KEY = "LHS_CORE_MEMTABLE_SIZE_BYTES";
     public static final String CORE_STATESTORE_CACHE_BYTES_KEY = "LHS_CORE_STATESTORE_CACHE_BYTES";
     public static final String TIMER_STATESTORE_CACHE_BYTES_KEY = "LHS_TIMER_STATESTORE_CACHE_BYTES";
-    public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
-    public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
-    public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
-    public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
-    public static final String ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY = "LHS_ROCKSDB_RATE_LIMIT_INCLUDE_READS";
     public static final String SESSION_TIMEOUT_KEY = "LHS_STREAMS_SESSION_TIMEOUT";
     public static final String KAFKA_STATE_DIR_KEY = "LHS_STATE_DIR";
     public static final String NUM_WARMUP_REPLICAS_KEY = "LHS_STREAMS_NUM_WARMUP_REPLICAS";
     public static final String PRODUCER_MAX_REQUEST_SIZE = "LHS_PRODUCER_MAX_REQUEST_SIZE";
     public static final String NUM_STANDBY_REPLICAS_KEY = "LHS_STREAMS_NUM_STANDBY_REPLICAS";
+
+    // RocksDB Configurations
+    public static final String ROCKSDB_MEMTABLE_SIZE_BYTES_KEY = "LHS_ROCKSDB_MEMTABLE_SIZE_BYTES";
+    public static final String ROCKSDB_TOTAL_BLOCK_CACHE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_BLOCK_CACHE_BYTES";
+    public static final String ROCKSDB_TOTAL_MEMTABLE_BYTES_KEY = "LHS_ROCKSDB_TOTAL_MEMTABLE_BYTES";
+    public static final String ROCKSDB_MAX_WRITE_BUFFER_NUMBER_KEY = "LHS_ROCKSDB_MAX_WRITE_BUFFER_NUMBER";
+    public static final String ROCKSDB_MAX_SUBCOMPACTIONS_KEY = "LHS_ROCKSDB_MAX_SUBCOMPACTIONS";
+    public static final String ROCKSDB_USE_DIRECT_IO_KEY = "LHS_ROCKSDB_USE_DIRECT_IO";
+    public static final String ROCKSDB_OPTIMIZE_FILTERS_FOR_HITS_KEY = "LHS_ROCKSDB_OPTIMIZE_FILTERS_FOR_HITS";
+    public static final String ROCKSDB_RATE_LIMIT_BYTES_KEY = "LHS_ROCKSDB_RATE_LIMIT_BYTES";
+    public static final String ROCKSDB_RATE_LIMIT_INCLUDE_READS_KEY = "LHS_ROCKSDB_RATE_LIMIT_INCLUDE_READS";
     public static final String ROCKSDB_COMPACTION_THREADS_KEY = "LHS_ROCKSDB_COMPACTION_THREADS";
+    public static final String ROCKSDB_FLUSH_THREADS_KEY = "LHS_ROCKSDB_FLUSH_THREADS";
+    public static final String ROCKSDB_BACKGROUND_JOBS_KEY = "LHS_ROCKSDB_BACKGROUND_JOBS";
+    public static final String ROCKSDB_COMPACTION_STYLE_KEY = "LHS_ROCKSDB_COMPACTION_STYLE";
+    public static final String ROCKSDB_LEVEL0_FILE_NUM_COMPACTION_TRIGGER_KEY =
+            "LHS_ROCKSDB_LEVEL0_FILE_NUM_COMPACTION_TRIGGER";
+    public static final String ROCKSDB_LEVEL0_SLOWDOWN_WRITES_TRIGGER_KEY =
+            "LHS_ROCKSDB_LEVEL0_SLOWDOWN_WRITES_TRIGGER";
+    public static final String ROCKSDB_LEVEL0_STOP_WRITES_TRIGGER_KEY = "LHS_ROCKSDB_LEVEL0_STOP_WRITES_TRIGGER";
+    public static final String ROCKSDB_COMPRESSION_TYPE_KEY = "LHS_ROCKSDB_COMPRESSION_TYPE";
+    public static final String ROCKSDB_SOFT_PENDING_COMPACTION_BYTES_LIMIT_KEY =
+            "LHS_ROCKSDB_SOFT_PENDING_COMPACTION_BYTES_LIMIT";
+    public static final String ROCKSDB_DELAYED_WRITE_RATE_BYTES_KEY = "LHS_ROCKSDB_DELAYED_WRITE_RATE_BYTES";
+    public static final String ROCKSDB_TARGET_FILE_SIZE_BYTES_KEY = "LHS_ROCKSDB_TARGET_FILE_SIZE_BYTES";
+    public static final String ROCKSDB_COMPACTION_PRIORITY_KEY = "LHS_ROCKSDB_COMPACTION_PRIORITY";
+    public static final String ROCKSDB_DYNAMIC_LEVEL_BYTES_KEY = "LHS_ROCKSDB_DYNAMIC_LEVEL_BYTES";
+    public static final String ROCKSDB_TARGET_BASE_LEVEL_SIZE_BYTES_KEY = "LHS_ROCKSDB_TARGET_BASE_LEVEL_SIZE_BYTES";
+    public static final String ROCKSDB_LEVEL_SIZE_MULTIPLIER_KEY = "LHS_ROCKSDB_LEVEL_SIZE_MULTIPLIER";
+    public static final String ROCKSDB_MIN_MERGE_WIDTH_KEY = "LHS_ROCKSDB_MIN_MERGE_WIDTH";
+    public static final String ROCKSDB_UNIVERSAL_COMPACTION_COMPRESSION_SIZE_PERCENT_KEY =
+            "LHS_ROCKSDB_UNIVERSAL_COMPACTION_COMPRESSION_SIZE_PERCENT";
+
+    // Miscellaneous Kafka Streams Configs
     public static final String LHS_METRICS_LEVEL_KEY = "LHS_METRICS_LEVEL";
     public static final String LINGER_MS_KEY = "LHS_KAFKA_LINGER_MS";
     public static final String STATE_CLEANUP_DELAY_MS_KEY = "LHS_STREAMS_STATE_CLEANUP_DELAY_MS";
@@ -153,13 +184,15 @@ public class LHServerConfig extends ConfigBase {
 
     // useful for testing and might be useful for certain incidents
     public static final String X_MAX_DELETES_PER_COMMAND_KEY = "LHS_X_MAX_DELETES_PER_COMMAND";
+    //
+    public static final String X_MAX_BULK_JOB_COMMANDS_PER_TICK = "LHS_X_MAX_BULK_JOB_COMMANDS_PER_TICK";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
 
-    // Maximum number of thread runs per workflow run.
-    public static final String X_MAX_THREAD_RUNS_PER_WF_RUN = "LHS_X_MAX_THREAD_RUNS_PER_WF_RUN";
+    // Number of active thread runs allowed per workflow run.
+    public static final String X_ACTIVE_THREAD_RUNS_PER_WF_RUN = "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN";
     // Instance configs
     private String lhsMetricsLevel;
 
@@ -208,7 +241,8 @@ public class LHServerConfig extends ConfigBase {
                 "LHS_X_ROCKSDB_LOG_LEVEL",
                 "LHS_X_ROCKSDB_USE_LEVEL_COMPACTION",
                 "LHS_STREAMS_TRANSACTION_TIMEOUT_MS",
-                "LHS_TIMER_MEMTABLE_SIZE_BYTES");
+                "LHS_TIMER_MEMTABLE_SIZE_BYTES",
+                CORE_MEMTABLE_SIZE_BYTES_KEY);
     }
 
     @Override
@@ -513,8 +547,8 @@ public class LHServerConfig extends ConfigBase {
         return Integer.parseInt(getOrSetDefault(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2011"));
     }
 
-    public int getMaxThreadRunsPerWfRun() {
-        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_MAX_THREAD_RUNS_PER_WF_RUN, "65"));
+    public int getActiveThreadRunsPerWfRun() {
+        return Integer.parseInt(getOrSetDefault(LHServerConfig.X_ACTIVE_THREAD_RUNS_PER_WF_RUN, "65"));
     }
 
     public OAuthConfig getOAuthConfig() {
@@ -771,17 +805,142 @@ public class LHServerConfig extends ConfigBase {
         return Boolean.valueOf(outputTopicsValue);
     }
 
-    public int getRocksDBCompactionThreads() {
-        return Integer.valueOf(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, "1"));
+    public Optional<Integer> getRocksDBCompactionThreads() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_COMPACTION_THREADS_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBFlushThreads() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_FLUSH_THREADS_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBBackgroundJobs() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_BACKGROUND_JOBS_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<CompactionStyle> getRocksDBCompactionStyle() {
+        Optional<CompactionStyle> style = getOptionalRocksDBEnum(ROCKSDB_COMPACTION_STYLE_KEY, CompactionStyle.class);
+        if (style.isPresent() && style.get() != CompactionStyle.LEVEL && style.get() != CompactionStyle.UNIVERSAL) {
+            throw new LHMisconfigurationException(ROCKSDB_COMPACTION_STYLE_KEY + " must be LEVEL or UNIVERSAL");
+        }
+        return style;
+    }
+
+    public Optional<Integer> getRocksDBLevel0FileNumCompactionTrigger() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_LEVEL0_FILE_NUM_COMPACTION_TRIGGER_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBLevel0SlowdownWritesTrigger() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_LEVEL0_SLOWDOWN_WRITES_TRIGGER_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBLevel0StopWritesTrigger() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_LEVEL0_STOP_WRITES_TRIGGER_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    // Compression and priority values use the RocksDB Java enum names.
+    public Optional<CompressionType> getRocksDBCompressionType() {
+        return getOptionalRocksDBEnum(ROCKSDB_COMPRESSION_TYPE_KEY, CompressionType.class);
+    }
+
+    public Optional<Long> getRocksDBSoftPendingCompactionBytesLimit() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_SOFT_PENDING_COMPACTION_BYTES_LIMIT_KEY, null))
+                .map(Long::valueOf);
+    }
+
+    public Optional<Long> getRocksDBDelayedWriteRateBytes() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_DELAYED_WRITE_RATE_BYTES_KEY, null))
+                .map(Long::valueOf);
+    }
+
+    public Optional<Long> getRocksDBTargetFileSizeBytes() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_TARGET_FILE_SIZE_BYTES_KEY, null))
+                .map(Long::valueOf);
+    }
+
+    public Optional<CompactionPriority> getRocksDBCompactionPriority() {
+        return getOptionalRocksDBEnum(ROCKSDB_COMPACTION_PRIORITY_KEY, CompactionPriority.class);
+    }
+
+    public Optional<Boolean> getRocksDBDynamicLevelBytes() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_DYNAMIC_LEVEL_BYTES_KEY, null))
+                .map(value -> {
+                    if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+                        throw new LHMisconfigurationException(
+                                ROCKSDB_DYNAMIC_LEVEL_BYTES_KEY + " must be true or false");
+                    }
+                    return Boolean.valueOf(value);
+                });
+    }
+
+    public Optional<Long> getRocksDBTargetBaseLevelSizeBytes() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_TARGET_BASE_LEVEL_SIZE_BYTES_KEY, null))
+                .map(Long::valueOf);
+    }
+
+    public Optional<Double> getRocksDBLevelSizeMultiplier() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_LEVEL_SIZE_MULTIPLIER_KEY, null))
+                .map(Double::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBMinMergeWidth() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_MIN_MERGE_WIDTH_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBUniversalCompactionCompressionSizePercent() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_UNIVERSAL_COMPACTION_COMPRESSION_SIZE_PERCENT_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBMaxWriteBufferNumber() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_MAX_WRITE_BUFFER_NUMBER_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    public Optional<Integer> getRocksDBMaxSubcompactions() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_MAX_SUBCOMPACTIONS_KEY, null))
+                .map(Integer::valueOf);
+    }
+
+    private <T extends Enum<T>> Optional<T> getOptionalRocksDBEnum(String key, Class<T> enumType) {
+        return Optional.ofNullable(getOrSetDefault(key, null)).map(value -> {
+            try {
+                return Enum.valueOf(enumType, value);
+            } catch (IllegalArgumentException ex) {
+                throw new LHMisconfigurationException(
+                        key + " must be one of " + Arrays.toString(enumType.getEnumConstants()));
+            }
+        });
     }
 
     public long getCoreMemtableSize() {
+        String memtableSize = getOrSetDefault(ROCKSDB_MEMTABLE_SIZE_BYTES_KEY, null);
+        if (memtableSize != null) {
+            return Long.valueOf(memtableSize);
+        }
         // 64MB default
         return Long.valueOf(getOrSetDefault(CORE_MEMTABLE_SIZE_BYTES_KEY, String.valueOf(1024L * 1024L * 64)));
     }
 
     public boolean useDirectIOForRocksDB() {
         return Boolean.valueOf(getOrSetDefault(ROCKSDB_USE_DIRECT_IO_KEY, "false"));
+    }
+
+    public Optional<Boolean> getRocksDBOptimizeFiltersForHits() {
+        return Optional.ofNullable(getOrSetDefault(ROCKSDB_OPTIMIZE_FILTERS_FOR_HITS_KEY, null))
+                .map(value -> {
+                    if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false")) {
+                        throw new LHMisconfigurationException(
+                                ROCKSDB_OPTIMIZE_FILTERS_FOR_HITS_KEY + " must be true or false");
+                    }
+                    return Boolean.valueOf(value);
+                });
     }
 
     public Properties getKafkaProducerConfig(String component) {
@@ -1016,7 +1175,11 @@ public class LHServerConfig extends ConfigBase {
 
         // We want a request to be able to fail and be handled (if non-fatal) before a transaction times out.
         // Therefore, request timeout should be less than transaction timeout / session timeout.
-        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.75));
+        //
+        // During rolling bounces of the Kafka brokers, sometimes a shutting-down broker fails to abort the
+        // request, and the server hangs out waiting until the request timeout. Using 0.3 as the buffer
+        // allows this to safely happen three times before causing a transaction timeout.
+        props.put("request.timeout.ms", (int) (getStreamsSessionTimeout() * 0.3));
         props.put("producer.acks", "all");
         props.put("replication.factor", (int) getReplicationFactor());
         props.put("num.standby.replicas", Integer.valueOf(getOrSetDefault(NUM_STANDBY_REPLICAS_KEY, "0")));
@@ -1111,6 +1274,10 @@ public class LHServerConfig extends ConfigBase {
 
     public boolean isTimerStreamsEnabled() {
         return Boolean.valueOf(getOrSetDefault(X_ENABLE_TIMER_STREAMS_KEY, "false"));
+    }
+
+    public long getMaxBulkJobCommandsPerTick() {
+        return Long.parseLong(getOrSetDefault(X_MAX_BULK_JOB_COMMANDS_PER_TICK, "10"));
     }
 
     public long getMetricWindowRetentionMs() {

@@ -1,7 +1,8 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { ExternalEventNodeRun as ExternalEventNodeRunProto } from 'littlehorse-client/proto'
+import { ExternalEventNodeRun as ExternalEventNodeRunProto, Timestamp } from 'littlehorse-client/proto'
 import useSWR from 'swr'
+import { utcToLocalDateTime } from '@/app/utils'
 import { ExternalEventNodeRun } from '../ExternalEventNodeRun'
 
 jest.mock('swr', () => {
@@ -36,12 +37,13 @@ describe('ExternalEventNodeRun component', () => {
   })
 
   it('renders basic fields including eventTime and correlationKey when provided', () => {
+    const eventTime = Timestamp.fromDate(new Date('2023-01-01T00:00:00Z'))
     const externalEventTest: ExternalEventNodeRunProto = {
       externalEventDefId: undefined,
       externalEventId: undefined,
       timedOut: false,
       maskCorrelationKey: false,
-      eventTime: '2023-01-01T00:00:00Z',
+      eventTime,
       correlationKey: 'abc123',
     }
     mockUseSWR.mockReturnValue({
@@ -51,7 +53,7 @@ describe('ExternalEventNodeRun component', () => {
 
     expect(screen.getByText(/External event/i)).toBeInTheDocument()
     expect(screen.getByText(/eventTime:/i)).toBeInTheDocument()
-    expect(screen.getByText(/2023-01-01T00:00:00Z/)).toBeInTheDocument()
+    expect(screen.getByText(utcToLocalDateTime(eventTime))).toBeInTheDocument()
     expect(screen.getByText(/abc123/)).toBeInTheDocument()
   })
 

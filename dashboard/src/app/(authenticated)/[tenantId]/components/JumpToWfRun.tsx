@@ -11,8 +11,7 @@ import { useRouter } from 'next/navigation'
 import { ChangeEvent, FC, FormEvent, useState } from 'react'
 import { toast } from 'sonner'
 
-const WORKFLOW_ICON_CLASS =
-  'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400'
+const WORKFLOW_ICON_CLASS = 'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400'
 
 type Props = {
   variant?: 'global' | 'inline'
@@ -87,7 +86,7 @@ export const JumpToWfRun: FC<Props> = ({ variant = 'global' }) => {
           onChange={handleChange}
           placeholder="Open WfRun by ID or URL"
           aria-label="Open WfRun by ID or URL"
-          className="h-10 w-full rounded-md border border-white/15 bg-white/5 py-2 pl-10 pr-11 text-sm text-white placeholder:text-gray-500 transition-colors focus:border-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
+          className="h-10 w-full rounded-md border border-white/15 bg-white/5 py-2 pl-10 pr-11 text-sm text-white transition-colors placeholder:text-gray-500 focus:border-white/30 focus:outline-none focus:ring-1 focus:ring-white/20"
         />
         <Tooltip>
           <TooltipTrigger asChild>

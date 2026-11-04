@@ -1,0 +1,531 @@
+{
+  "name": "rw-c29cq-36",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v3_int",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "int": "2"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-rw-scale-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "3-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "LESS_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "nop": {}
+        },
+        "2-rw-scale-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v3_int",
+                  "rhsAssignment": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "v3_int"
+                      },
+                      "mutationType": "SUBTRACT",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "1"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-scale"
+            },
+            "variables": [
+              {
+                "variableName": "v4_double"
+              }
+            ]
+          }
+        },
+        "3-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "4-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-riro"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "nop": {}
+        },
+        "4-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-rw-not-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v1_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "18"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "7-rw-json-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "5-rw-not-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-not"
+            },
+            "retries": 1,
+            "variables": [
+              {
+                "variableName": "v5_bool"
+              }
+            ]
+          }
+        },
+        "6-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-rw-flaky-TASK",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-azdm"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "nop": {}
+        },
+        "7-rw-json-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v1_int",
+                  "rhsAssignment": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "v1_int"
+                      },
+                      "mutationType": "SUBTRACT",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "1"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-json"
+            },
+            "timeoutSeconds": 15,
+            "variables": [
+              {
+                "literalValue": {
+                  "jsonObj": "{\"k\":\"lit-zww2\",\"n\":3}"
+                }
+              }
+            ]
+          }
+        },
+        "8-rw-flaky-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "9-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-flaky"
+            },
+            "retries": 2
+          }
+        },
+        "9-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "10-rw-echo-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "30"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "12-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_int"
+                  },
+                  "comparator": "LESS_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "32"
+                    }
+                  }
+                }
+              },
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "set-n0bn"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "sinkNodeName": "12-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "10-rw-echo-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "11-rw-add-TASK"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-echo"
+            },
+            "retries": 1,
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "lit-fmdg"
+                }
+              }
+            ]
+          }
+        },
+        "11-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "12-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "variables": [
+              {
+                "variableName": "v3_int"
+              },
+              {
+                "literalValue": {
+                  "int": "4"
+                }
+              }
+            ]
+          }
+        },
+        "12-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "13-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "13-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "14-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v0_str"
+                  },
+                  "comparator": "NOT_EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "never-g24x"
+                    }
+                  }
+                }
+              },
+              "variableMutations": [
+                {
+                  "lhsName": "v1_int",
+                  "rhsAssignment": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "v1_int"
+                      },
+                      "mutationType": "MULTIPLY",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "2"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "fallback-lvl5"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "sinkNodeName": "15-rw-echo-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v0_str"
+                  },
+                  "comparator": "NOT_EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "never-zrm4"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "14-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "14-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "16-rw-planned-EXIT"
+            }
+          ],
+          "nop": {}
+        },
+        "15-rw-echo-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "14-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "15-rw-echo-TASK"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-echo"
+            },
+            "variables": [
+              {
+                "literalValue": {
+                  "str": "lit-t3r7"
+                }
+              }
+            ]
+          }
+        },
+        "16-rw-planned-EXIT": {
+          "exit": {
+            "failureDef": {
+              "failureName": "rw-planned",
+              "message": "planned failure, expected by the runner"
+            }
+          }
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "required": true,
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_timestamp",
+            "typeDef": {
+              "primitiveType": "TIMESTAMP"
+            }
+          },
+          "required": true
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_double",
+            "defaultValue": {
+              "double": 8.5
+            },
+            "typeDef": {
+              "primitiveType": "DOUBLE"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v5_bool",
+            "defaultValue": {
+              "bool": true
+            },
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}

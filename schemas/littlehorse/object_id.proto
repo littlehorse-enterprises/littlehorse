@@ -224,6 +224,12 @@ message ScheduledWfRunId {
   string id = 1;
 }
 
+// ID for a BulkJob.
+message BulkJobId {
+  // The unique identifier of the BulkJob.
+  string id = 1;
+}
+
 // ID for an InactiveThreadRun.
 message InactiveThreadRunId {
   // The WfRunId of the InactiveThreadRun.
@@ -231,6 +237,12 @@ message InactiveThreadRunId {
 
   // The ThreadRun number of the InactiveThreadRun.
   int32 thread_run_number = 2;
+}
+
+// Identifies a quota and its optional principal scope.
+message QuotaId {
+  TenantId tenant = 1;
+  optional PrincipalId principal = 2;
 }
 
 // Identifies a metrics window for a workflow/task/user-task object.
@@ -241,6 +253,7 @@ message MetricWindowId {
     WfSpecId  wf_spec_id  = 1;
     TaskDefId task_def_id = 2;
     UserTaskDefId user_task_def_id = 3;
+    QuotaId quota_id = 4;
   }
 
   // Tenant for this window (optional).
@@ -252,4 +265,9 @@ message MetricWindowId {
   // Metric type (workflow, task, or user task)
   optional MetricWindowType metric_type = 8;
 
+}
+
+
+message WorkflowMigrationPlanId {
+  string name = 1;
 }

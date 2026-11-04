@@ -85,6 +85,7 @@ public class TestCoreProcessorContext extends CoreProcessorContext {
             Headers recordMetadata,
             MockProcessorContext<String, CommandProcessorOutput> processorContext) {
         LHServerConfig lhConfig = Mockito.mock();
+        Mockito.when(lhConfig.getProducerMaxRequestSize()).thenReturn(Integer.MAX_VALUE);
         TaskQueueManager globalTaskQueueManager = Mockito.mock();
         MetadataCache metadataCache = new MetadataCache();
         LHServer server = Mockito.mock();

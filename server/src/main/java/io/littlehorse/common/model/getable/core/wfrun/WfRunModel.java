@@ -20,23 +20,29 @@ import io.littlehorse.common.model.corecommand.subcommand.ResumeWfRunRequestMode
 import io.littlehorse.common.model.corecommand.subcommand.SleepNodeMaturedModel;
 import io.littlehorse.common.model.corecommand.subcommand.StopWfRunRequestModel;
 import io.littlehorse.common.model.getable.core.externalevent.ExternalEventModel;
+import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
 import io.littlehorse.common.model.getable.core.noderun.NodeRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureBeingHandledModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.PendingFailureHandlerModel;
 import io.littlehorse.common.model.getable.core.wfrun.haltreason.ManualHaltModel;
+import io.littlehorse.common.model.getable.global.migrations.MigrationVarsModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.WorkflowRetentionPolicyModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.OutputTopicConfigModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.MigrationVars;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.OutputTopicConfig.OutputTopicRecordingLevel;
 import io.littlehorse.sdk.common.proto.PendingFailureHandler;
@@ -54,11 +60,13 @@ import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
+import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -79,6 +87,8 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     private WfRunIdModel id;
     private WfSpecIdModel wfSpecId;
+    private InlineWfSpecModel inlineWfSpec;
+    private boolean inline;
     private List<WfSpecIdModel> oldWfSpecVersions = new ArrayList<>();
 
     // TODO: Iterate over all threadruns, archived included
@@ -99,6 +109,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     public List<PendingFailureHandlerModel> pendingFailures = new ArrayList<>();
     private ParentTriggerReferenceModel parentTrigger;
     private ExecutionContext executionContext;
+    private WorkflowMigrationPlanIdModel workflowMigrationPlanId;
+    private Map<String, MigrationVarsModel> migrationVarsByThread = new HashMap<>();
+    private LinkedList<Integer> threadRunQueue = new LinkedList<>();
 
     // Not in proto
     private int numAdvancesInThisCommand = 0;
@@ -109,6 +122,37 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         this.executionContext = processorContext;
     }
 
+    public void setWfSpecId(WfSpecIdModel wfSpecId) {
+        if (!Objects.equals(this.wfSpecId, wfSpecId)) this.wfSpec = null;
+        this.wfSpecId = wfSpecId;
+        if (wfSpecId != null) {
+            this.inlineWfSpec = null;
+            this.inline = false;
+        }
+    }
+
+    public void setInlineWfSpec(InlineWfSpecModel inlineWfSpec) {
+        this.inlineWfSpec = inlineWfSpec;
+        if (inlineWfSpec != null) {
+            this.wfSpecId = null;
+            this.inline = false;
+            this.wfSpec = null;
+        }
+    }
+
+    public void setInline(boolean inline) {
+        this.inline = inline;
+        this.wfSpec = null;
+        if (inline) {
+            this.wfSpecId = null;
+            this.inlineWfSpec = null;
+        }
+    }
+
+    public boolean isInline() {
+        return inline || inlineWfSpec != null;
+    }
+
     public Date getCreatedAt() {
         return startTime;
     }
@@ -116,51 +160,57 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     // K -> V
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
-        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>(List.of(
-                new GetableIndex<>(
-                        List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)), Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL)),
-                new GetableIndex<>(
-                        List.of(
-                                Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
-                                Pair.of("status", GetableIndex.ValueType.SINGLE)),
-                        Optional.of(TagStorageType.LOCAL))));
+        List<GetableIndex<? extends AbstractGetable<?>>> indexes = new ArrayList<>();
+        if (wfSpecId != null) {
+            indexes.addAll(List.of(
+                    new GetableIndex<>(
+                            List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                    new GetableIndex<>(
+                            List.of(
+                                    Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                                    Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                    new GetableIndex<>(
+                            List.of(Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                    new GetableIndex<>(
+                            List.of(Pair.of("majorVersion", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                    new GetableIndex<>(
+                            List.of(
+                                    Pair.of("majorVersion", GetableIndex.ValueType.SINGLE),
+                                    Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL)),
+                    new GetableIndex<>(
+                            List.of(
+                                    Pair.of("wfSpecId", GetableIndex.ValueType.SINGLE),
+                                    Pair.of("status", GetableIndex.ValueType.SINGLE)),
+                            Optional.of(TagStorageType.LOCAL))));
+        }
 
         if (id != null && id.getParentWfRunId() != null) {
             indexes.add(new GetableIndex<>(
                     List.of(Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL)));
-            indexes.add(new GetableIndex<>(
-                    List.of(
-                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
-                    Optional.of(TagStorageType.LOCAL)));
+            if (wfSpecId != null)
+                indexes.add(new GetableIndex<>(
+                        List.of(
+                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
             indexes.add(new GetableIndex<>(
                     List.of(
                             Pair.of("status", GetableIndex.ValueType.SINGLE),
                             Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
                     Optional.of(TagStorageType.LOCAL)));
-            indexes.add(new GetableIndex<>(
-                    List.of(
-                            Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
-                            Pair.of("status", GetableIndex.ValueType.SINGLE),
-                            Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
-                    Optional.of(TagStorageType.LOCAL)));
+            if (wfSpecId != null)
+                indexes.add(new GetableIndex<>(
+                        List.of(
+                                Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE),
+                                Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                Pair.of("parentWfRunId", GetableIndex.ValueType.SINGLE)),
+                        Optional.of(TagStorageType.LOCAL)));
         }
 
         return indexes;
@@ -196,7 +246,22 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     public WfSpecModel getWfSpec() {
         if (wfSpec == null) {
-            wfSpec = executionContext.service().getWfSpec(wfSpecId);
+            if (inline) {
+                ReadOnlyGetableManager manager = executionContext.support(CoreProcessorContext.class)
+                        ? executionContext
+                                .castOnSupport(CoreProcessorContext.class)
+                                .getableManager()
+                        : executionContext
+                                .castOnSupport(RequestExecutionContext.class)
+                                .getableManager();
+                InlineWfSpecModel definition = manager.get(new InlineWfSpecIdModel(id));
+                if (definition == null) throw new IllegalStateException("Missing inline definition for WfRun " + id);
+                wfSpec = definition.asWfSpecModel();
+            } else {
+                wfSpec = inlineWfSpec == null
+                        ? executionContext.service().getWfSpec(wfSpecId)
+                        : inlineWfSpec.asWfSpecModel();
+            }
         }
         return wfSpec;
     }
@@ -240,8 +305,21 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
     @Override
     public void initFrom(Message p, ExecutionContext context) {
         WfRun proto = (WfRun) p;
+        wfSpec = null;
+        wfSpecId = null;
+        inlineWfSpec = null;
+        inline = false;
         id = LHSerializable.fromProto(proto.getId(), WfRunIdModel.class, context);
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
+        switch (proto.getWfSpecSourceCase()) {
+            case WF_SPEC_ID -> wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
+            case IS_INLINE -> {
+                if (!proto.getIsInline()) {
+                    throw new IllegalArgumentException("Inline workflow source flag must be true");
+                }
+                inline = true;
+            }
+            case WFSPECSOURCE_NOT_SET -> throw new IllegalArgumentException("WfRun has no workflow definition source");
+        }
         status = proto.getStatus();
         startTime = LHUtil.fromProtoTs(proto.getStartTime());
 
@@ -266,6 +344,19 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         }
         if (proto.hasParentTrigger()) {
             parentTrigger = ParentTriggerReferenceModel.fromProto(proto.getParentTrigger(), context);
+        }
+        if (proto.hasWorkflowMigrationPlanId()) {
+            workflowMigrationPlanId = LHSerializable.fromProto(
+                    proto.getWorkflowMigrationPlanId(), WorkflowMigrationPlanIdModel.class, context);
+        }
+        migrationVarsByThread = new HashMap<>();
+        for (Map.Entry<String, MigrationVars> entry :
+                proto.getMigrationVariablesMap().entrySet()) {
+            migrationVarsByThread.put(
+                    entry.getKey(), LHSerializable.fromProto(entry.getValue(), MigrationVarsModel.class, context));
+        }
+        for (Integer threadRunNumber : proto.getThreadRunQueueList()) {
+            threadRunQueue.add(threadRunNumber);
         }
         this.executionContext = context;
         this.greatestThreadRunNumber = proto.getGreatestThreadrunNumber();
@@ -300,11 +391,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     @Override
     public WfRun.Builder toProto() {
-        WfRun.Builder out = WfRun.newBuilder()
-                .setId(id.toProto())
-                .setWfSpecId(wfSpecId.toProto())
-                .setStatus(status)
-                .setStartTime(LHUtil.fromDate(startTime));
+        WfRun.Builder out =
+                WfRun.newBuilder().setId(id.toProto()).setStatus(status).setStartTime(LHUtil.fromDate(startTime));
+
+        if (wfSpecId != null && !isInline()) {
+            out.setWfSpecId(wfSpecId.toProto());
+        } else if (inline && wfSpecId == null && inlineWfSpec == null) {
+            out.setIsInline(true);
+        } else {
+            throw new IllegalStateException("WfRun must have exactly one workflow definition source");
+        }
 
         out.setGreatestThreadrunNumber(greatestThreadRunNumber);
 
@@ -329,6 +425,15 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (parentTrigger != null) {
             out.setParentTrigger(parentTrigger.toProto());
         }
+        if (workflowMigrationPlanId != null) {
+            out.setWorkflowMigrationPlanId(workflowMigrationPlanId.toProto().build());
+        }
+        for (Map.Entry<String, MigrationVarsModel> entry : migrationVarsByThread.entrySet()) {
+            out.putMigrationVariables(entry.getKey(), entry.getValue().toProto().build());
+        }
+        for (Integer threadRunNumber : threadRunQueue) {
+            out.addThreadRunQueue(threadRunNumber);
+        }
 
         return out;
     }
@@ -346,12 +451,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             Date start,
             Integer parentThreadId,
             Map<String, VariableValueModel> variables,
-            ThreadType type) {
+            ThreadType type)
+            throws NodeFailureException {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
         ThreadSpecModel tspec = getWfSpec().getThreadSpecs().get(threadName);
         if (tspec == null) {
             throw new RuntimeException("Invalid thread name, should be impossible");
         }
+
+        int activeThreadRuns = executionContext.serverConfig().getActiveThreadRunsPerWfRun();
+        boolean addThreadRunToQueue = (parentThreadId != null) && (threadRunsUseMeCarefully.size() >= activeThreadRuns);
 
         ThreadRunModel newThread = new ThreadRunModel(processorContext);
         newThread.parentThreadId = parentThreadId;
@@ -374,14 +483,29 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
         newThread.wfRun = this;
         newThread.type = type;
+        if (addThreadRunToQueue) {
+            newThread.setStatus(LHStatus.STARTING);
+            newThread.setStartTime(start);
+            QueuedThreadRunInfoModel queuedThreadInfo = new QueuedThreadRunInfoModel(variables);
+            InactiveThreadRunModel inactiveThreadRun = new InactiveThreadRunModel(newThread, queuedThreadInfo);
+            threadRunQueue.add(newThread.number);
+            processorContext.getableManager().put(inactiveThreadRun);
+            return newThread;
+        }
         threadRunsUseMeCarefully.add(newThread);
 
         newThread.createVariablesAndStart(variables);
         return newThread;
     }
 
+    public ThreadRunModel startQueuedThreadRun(ThreadRunModel queuedThreadRun, Map<String, VariableValueModel> vars) {
+        threadRunsUseMeCarefully.add(queuedThreadRun);
+        queuedThreadRun.createVariablesAndStart(vars);
+        return queuedThreadRun;
+    }
+
     public String getWfSpecName() {
-        return wfSpecId.getName();
+        return wfSpecId == null ? null : wfSpecId.getName();
     }
 
     public LHStatus getStatus() {
@@ -431,8 +555,13 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             } else {
                 vars = new HashMap<>();
             }
-            ThreadRunModel interruptor =
-                    startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            ThreadRunModel interruptor;
+            try {
+                interruptor = startThread(pi.handlerSpecName, time, pi.interruptedThreadId, vars, ThreadType.INTERRUPT);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(toInterrupt, exn.getFailure(), time, processorContext);
+                continue;
+            }
             interruptor.setInterruptTriggerId(pi.externalEventId);
 
             if (interruptor.status == LHStatus.ERROR) {
@@ -472,8 +601,14 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 vars.put(LHConstants.EXT_EVT_HANDLER_VAR, failure.content);
             }
 
-            ThreadRunModel fh =
-                    startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            ThreadRunModel fh;
+            try {
+                fh = startThread(pfh.handlerSpecName, time, pfh.failedThreadRun, vars, ThreadType.FAILURE_HANDLER);
+            } catch (NodeFailureException exn) {
+                putFailureOnThreadRun(
+                        failedThr, exn.getFailure(), time, executionContext.castOnSupport(CoreProcessorContext.class));
+                continue;
+            }
 
             failedThr.getCurrentNodeRun().getFailureHandlerIds().add(fh.number);
 
@@ -533,13 +668,16 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
             }
 
             if (this.threadRunsUseMeCarefully.size()
-                    > this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()) {
+                    > this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()) {
                 putFailureOnThreadRun(
                         getThreadRun(0),
                         new FailureModel(
                                 String.format(
-                                        "You exceeded the maximum number of ThreadRuns per WfRun: %s",
-                                        this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()),
+                                        "WfRun would have %d ThreadRuns, exceeding the maximum number of ThreadRuns "
+                                                + "per WfRun: %d. Reduce the number of spawned ThreadRuns or increase "
+                                                + "LHS_X_ACTIVE_THREAD_RUNS_PER_WF_RUN.",
+                                        this.threadRunsUseMeCarefully.size(),
+                                        this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()),
                                 LHErrorType.INTERNAL_ERROR.toString()),
                         time,
                         null);
@@ -547,22 +685,125 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 break;
             }
 
-            statusChanged = startXnHandlersAndInterrupts(time);
+            statusChanged = maybeDequeThreadRun();
+            statusChanged = startXnHandlersAndInterrupts(time) || statusChanged;
             // for (int i = threadRunsUseMeCarefully.size() - 1; i >= 0; i--) {
             for (int i = 0; i < threadRunsUseMeCarefully.size(); i++) {
                 ThreadRunModel thread = threadRunsUseMeCarefully.get(i);
-                statusChanged = thread.advance(time) || statusChanged;
+                if (workflowMigrationPlanId != null && thread.isMigrating(workflowMigrationPlanId)) {
+                    statusChanged = thread.advance(time, workflowMigrationPlanId) || statusChanged;
+                } else {
+                    statusChanged = thread.advance(time, null) || statusChanged;
+                }
+            }
+
+            if (workflowMigrationPlanId != null) {
+                maybeDoneMigration();
             }
         }
 
         archiveCompletedThreadRuns(false);
     }
 
+    // Migration is complete once no live ThreadRun is still operating on the old WfSpec. We cannot
+    // key off the plan's threadMigrations: a threadSpec that has no migration plan can still spawn a
+    // child thread whose threadSpec does, so the plan must stay active as long as any live thread is
+    // on the old spec. Clearing earlier would strand such threads (and any children they spawn) on
+    // the old spec forever.
+    private void maybeDoneMigration() {
+        if (workflowMigrationPlanId == null) {
+            return;
+        }
+
+        WorkflowMigrationPlanModel workflowMigrationPlan =
+                executionContext.metadataManager().get(workflowMigrationPlanId);
+        if (workflowMigrationPlan == null) {
+            return;
+        }
+
+        WfSpecIdModel oldWfSpecId = workflowMigrationPlan.getOldWfSpecId();
+
+        ThreadRunIterator iterator = getThreadRunIterator();
+        while (iterator.hasNext()) {
+            ThreadRunModel threadRun = iterator.next();
+
+            // Terminated threads will never advance again, so they can never migrate.
+            if (threadRun.isTerminated()) {
+                continue;
+            }
+
+            // A live thread still on the old spec can still reach a migration node, so the
+            // migration is not complete yet.
+            if (oldWfSpecId.equals(threadRun.getWfSpecId())) {
+                return;
+            }
+        }
+
+        workflowMigrationPlanId = null;
+        migrationVarsByThread.clear();
+    }
+
+    private boolean maybeDequeThreadRun() {
+        if (isTerminated() || threadRunQueue.isEmpty()) return false;
+
+        boolean threadRunActivated = false;
+        int activeThreadRunsPerWfRun = this.executionContext.serverConfig().getActiveThreadRunsPerWfRun();
+        int numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
+        GetableManager getableManager =
+                this.executionContext.castOnSupport(CoreProcessorContext.class).getableManager();
+        if (numberOfThreadRunsInMem >= activeThreadRunsPerWfRun) return false;
+
+        List<Integer> deferred = new ArrayList<>();
+        while (activeThreadRunsPerWfRun > numberOfThreadRunsInMem && !threadRunQueue.isEmpty()) {
+            int threadRunNumber = threadRunQueue.removeFirst();
+            InactiveThreadRunIdModel inactiveThreadRunId = new InactiveThreadRunIdModel(this.id, threadRunNumber);
+            InactiveThreadRunModel inactiveThreadRun = getableManager.get(inactiveThreadRunId);
+            if (inactiveThreadRun == null || inactiveThreadRun.getQueued() == null) {
+                throw new LHApiException(
+                        Status.INTERNAL,
+                        "Queued ThreadRun " + threadRunNumber + " is missing its InactiveThreadRun/queued info");
+            }
+            ThreadRunModel queuedThreadRun = inactiveThreadRun.getThreadRun();
+            queuedThreadRun.setWfRun(this);
+            resolveQueuedThreadRunHaltReasons(queuedThreadRun);
+            if (!queuedThreadRun.getHaltReasons().isEmpty()) {
+                deferred.add(threadRunNumber);
+                continue;
+            }
+
+            startQueuedThreadRun(queuedThreadRun, inactiveThreadRun.getQueued().getInputVars());
+            threadRunActivated = true;
+            getableManager.delete(inactiveThreadRunId);
+
+            numberOfThreadRunsInMem = threadRunsUseMeCarefully.size();
+        }
+        threadRunQueue.addAll(0, deferred);
+        return threadRunActivated;
+    }
+
+    private boolean resolveQueuedThreadRunHaltReasons(ThreadRunModel threadRun) {
+        boolean reasonRemoved = threadRun.getHaltReasons().removeIf(reason -> switch (reason.getType()) {
+            case PARENT_HALTED, INTERRUPTED, HANDLING_FAILURE -> reason.isResolved();
+            default -> false;
+        });
+        if (reasonRemoved && threadRun.getHaltReasons().isEmpty()) {
+            threadRun.setStatus(LHStatus.STARTING);
+        }
+        return reasonRemoved;
+    }
+
     private boolean shouldForceArchiveCompletedThreadRuns() {
-        int threshold = (this.executionContext.serverConfig().getMaxThreadRunsPerWfRun()
+        int threshold = (this.executionContext.serverConfig().getActiveThreadRunsPerWfRun()
                         * NEAR_MAX_THREAD_RUNS_THRESHOLD_PERCENT)
                 / 100;
         return this.threadRunsUseMeCarefully.size() >= threshold;
+    }
+
+    /**
+     * Returns the number of active ThreadRuns held by this WfRun.
+     */
+    public int getActiveThreadRunCount() {
+        return this.threadRunsUseMeCarefully.size();
     }
 
     private void archiveCompletedThreadRuns(boolean forceArchiveCompletedThreads) {
@@ -703,7 +944,6 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
         if (req.threadRunNumber > getGreatestThreadRunNumber() || req.threadRunNumber < 0) {
             throw new LHApiException(Status.INVALID_ARGUMENT, "Tried to resume a non-existent thread id.");
         }
-
         ThreadRunModel thread = getThreadRun(req.threadRunNumber);
 
         for (int i = thread.haltReasons.size() - 1; i >= 0; i--) {
@@ -712,17 +952,22 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 thread.haltReasons.remove(i);
             }
         }
+        if (threadRunQueue.contains(req.threadRunNumber)) {
+            if (thread.haltReasons.isEmpty()) {
+                thread.setStatus(LHStatus.STARTING);
+            }
+        }
         this.advance(new Date());
     }
 
     public void processSleepNodeMatured(SleepNodeMaturedModel req, Date time) throws LHValidationException {
         int threadRunNumber = req.getNodeRunId().getThreadRunNumber();
         int nodeRunPosition = req.getNodeRunId().getPosition();
-        if (threadRunNumber >= threadRunsUseMeCarefully.size() || threadRunNumber < 0) {
+        ThreadRunModel thread = getThreadRun(threadRunNumber);
+
+        if (thread == null) {
             throw new LHValidationException(null, "Reference to nonexistent thread.");
         }
-
-        ThreadRunModel thread = getThreadRun(threadRunNumber);
 
         if (nodeRunPosition > thread.currentNodePosition) {
             throw new LHValidationException(null, "Reference to nonexistent nodeRun");
@@ -748,17 +993,19 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
 
     public void transitionTo(LHStatus status) {
         CoreProcessorContext processorContext = executionContext.castOnSupport(CoreProcessorContext.class);
-        GetableUpdates.GetableStatusUpdate statusChanged;
-        if (Objects.equals(status, LHStatus.COMPLETED)) {
-            statusChanged = GetableUpdates.create(
-                    wfSpecId, processorContext.authorization().tenantId(), this.status, status);
-        } else {
-            statusChanged = GetableUpdates.createEndEvent(
-                    wfSpecId, processorContext.authorization().tenantId(), this.status, status, startTime);
-        }
         LHStatus previousStatus = this.status;
         this.status = status;
-        processorContext.getableUpdates().dispatch(statusChanged);
+        if (wfSpecId != null) {
+            GetableUpdates.GetableStatusUpdate statusChanged;
+            if (Objects.equals(status, LHStatus.COMPLETED)) {
+                statusChanged = GetableUpdates.create(
+                        wfSpecId, processorContext.authorization().tenantId(), previousStatus, status);
+            } else {
+                statusChanged = GetableUpdates.createEndEvent(
+                        wfSpecId, processorContext.authorization().tenantId(), previousStatus, status, startTime);
+            }
+            processorContext.getableUpdates().dispatch(statusChanged);
+        }
 
         WorkflowRetentionPolicyModel retentionPolicy = getWfSpec().getRetentionPolicy();
         if (retentionPolicy != null && isTerminated()) {
@@ -778,7 +1025,9 @@ public class WfRunModel extends CoreGetable<WfRun> implements CoreOutputTopicGet
                 processorContext.getTaskManager().scheduleTimer(timer);
             }
         }
-        processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+        if (wfSpecId != null) {
+            processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
+        }
     }
 
     private boolean isTerminated() {

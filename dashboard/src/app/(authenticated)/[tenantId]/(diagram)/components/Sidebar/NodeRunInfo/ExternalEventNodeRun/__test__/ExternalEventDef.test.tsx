@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
-import { ExternalEventDef as ExternalEventDefProto } from 'littlehorse-client/proto'
+import { ExternalEventDef as ExternalEventDefProto, Timestamp } from 'littlehorse-client/proto'
 import { ExternalEventDef } from '../ExternalEventDef'
 
 describe('ExternalEventDef component', () => {
@@ -8,8 +8,8 @@ describe('ExternalEventDef component', () => {
     id: {
       name: 'name-event',
     },
-    createdAt: '2025-11-28T14:11:24.584Z',
-    retentionPolicy: { extEvtGcPolicy: { $case: 'secondsAfterPut', value: 12 } },
+    createdAt: Timestamp.fromDate(new Date('2025-11-28T14:11:24.584Z')),
+    retentionPolicy: { extEvtGcPolicy: { oneofKind: 'secondsAfterPut', secondsAfterPut: '12' } },
   }
 
   it('renders ExternalEventDef component with correct data', () => {

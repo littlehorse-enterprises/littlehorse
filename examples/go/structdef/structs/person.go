@@ -7,7 +7,7 @@ import (
 )
 
 const PersonStructDefName string = "person"
-const PersonStructDefDescription string = "Person represents a person with a name and home address."
+const PersonStructDefDescription string = "A person with a name and home address."
 
 // Person represents a person with a name and home address.
 type Person struct {

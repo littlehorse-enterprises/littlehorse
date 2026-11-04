@@ -1,7 +1,6 @@
 import { NodeRun } from 'littlehorse-client/proto'
 import { ComponentType } from 'react'
 import { NodeProps as NodeFlow } from 'reactflow'
-import { NodeRunCase } from '../Modals/NodeRun/AccordionContent'
 import { Cycle } from './Cycle'
 import { Entrypoint } from './Entrypoint'
 import { Exit } from './Exit'
@@ -18,6 +17,7 @@ import { UserTask } from './UserTask/UserTask'
 import { WaitForChildWf } from './WaitForChildWf/WaitForChildWf'
 import { WaitForCondition } from './WaitForCondition'
 import { WaitForThreads } from './WaitForThreads'
+import { withLoopHandle } from './LoopHandle'
 
 const nodeTypes: Record<NodeType | 'cycle', ComponentType<any>> = {
   entrypoint: Entrypoint,
@@ -37,7 +37,14 @@ const nodeTypes: Record<NodeType | 'cycle', ComponentType<any>> = {
   cycle: Cycle,
 }
 
-export type NodeProps<C extends NonNullable<NodeRun['nodeType']>['$case'] = 'entrypoint', T = unknown> = NodeFlow<
-  T & { fade?: boolean; nodeRunsList: [NodeRunCase<C>] }
->
-export default nodeTypes
+type NodeRunCase<C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined>> = Omit<NodeRun, 'nodeType'> & {
+  nodeType: Extract<NodeRun['nodeType'], { oneofKind: C }>
+}
+
+export type NodeProps<
+  C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined> = 'entrypoint',
+  T = unknown,
+> = NodeFlow<T & { fade?: boolean; nodeRunsList: [NodeRunCase<C>] }>
+export default Object.fromEntries(
+  Object.entries(nodeTypes).map(([type, component]) => [type, type === 'nop' ? component : withLoopHandle(component)])
+)

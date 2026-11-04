@@ -52,11 +52,10 @@ public class Program
     {
         void Entrypoint(WorkflowThread wf)
         {
-            // Declare a typed LH Array variable (elements are Long).
             WfRunVariable arrVar = wf.DeclareArray("my-array", typeof(long));
 
             NodeOutput produced = wf.Execute("produce-array");
-            arrVar.Assign(produced);
+            arrVar.Assign(arrVar.Extend(produced));
 
             wf.Execute("consume-array", arrVar);
         }

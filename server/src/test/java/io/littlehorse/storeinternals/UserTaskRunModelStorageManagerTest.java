@@ -1,6 +1,7 @@
 package io.littlehorse.storeinternals;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
@@ -79,9 +80,7 @@ public class UserTaskRunModelStorageManagerTest {
     }
 
     private void initializeDependencies() {
-        // Commented out due to "UnnecessaryStubbingException";
-
-        // when(mockCoreDao.context()).thenReturn(testContext);
+        when(lhConfig.getProducerMaxRequestSize()).thenReturn(Integer.MAX_VALUE);
         localStoreWrapper = TenantScopedStore.newInstance(store, new TenantIdModel(tenantId), executionContext);
         getableManager =
                 new GetableManager(localStoreWrapper, mockProcessorContext, lhConfig, mock(), executionContext, null);

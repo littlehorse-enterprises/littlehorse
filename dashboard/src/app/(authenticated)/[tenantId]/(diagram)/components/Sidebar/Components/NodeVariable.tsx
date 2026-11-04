@@ -1,5 +1,6 @@
+import { copyToClipboard } from '@/app/utils/copyToClipboard'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
-import { utcToLocalDateTime } from '@/app/utils'
+import { DateLike, utcToLocalDateTime } from '@/app/utils'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Check, Copy } from 'lucide-react'
 import { useState } from 'react'
@@ -12,19 +13,17 @@ export const NodeVariable = ({
   className = '',
 }: {
   label: string
-  text?: string
+  text?: DateLike
   type?: string
   link?: string
   className?: string
 }) => {
-  if (type === 'date') {
-    text = utcToLocalDateTime(text)
-  }
+  const displayText = type === 'date' ? utcToLocalDateTime(text) : typeof text === 'string' ? text : String(text ?? '')
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(text)
+      await copyToClipboard(displayText)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000) // Reset after 2 seconds
     } catch (err) {
@@ -37,10 +36,10 @@ export const NodeVariable = ({
       <div className="flex items-center justify-between">
         {type === 'link' ? (
           <LinkWithTenant href={link} className="truncate text-base font-medium text-blue-500">
-            {text}
+            {displayText}
           </LinkWithTenant>
         ) : (
-          <p className="truncate text-base font-medium">{text}</p>
+          <p className="truncate text-base font-medium">{displayText}</p>
         )}
         <TooltipProvider delayDuration={0}>
           <Tooltip>
@@ -57,7 +56,7 @@ export const NodeVariable = ({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{text}</p>
+              <p>{displayText}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

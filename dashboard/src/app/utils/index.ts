@@ -1,3 +1,4 @@
+export * from './copyToClipboard'
 export * from './dateTime'
 export * from './timestamp'
 export * from './uniqueInOrder'

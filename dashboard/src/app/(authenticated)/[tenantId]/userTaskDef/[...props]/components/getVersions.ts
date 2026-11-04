@@ -12,11 +12,11 @@ export const getVersions = async (props: Props): Promise<VersionList> => {
   const client = await lhClient({ tenantId })
 
   const allVersions: string[] = []
-  let bookmark: Buffer | undefined
+  let bookmark: Uint8Array | undefined
 
   do {
     const specs = await client.searchUserTaskDef({
-      userTaskDefCriteria: { $case: 'name', value: name },
+      userTaskDefCriteria: { oneofKind: 'name', name },
       bookmark,
       limit: SEARCH_DEFAULT_LIMIT,
     })

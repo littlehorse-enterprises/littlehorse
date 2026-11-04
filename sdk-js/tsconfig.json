@@ -2,14 +2,15 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
+    "rootDir": "src",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "preserveConstEnums": true,
-    "isolatedModules": false, // turn this off unless needed
+    "isolatedModules": true, // required by single-file transpilers
     "skipLibCheck": true, // optional but can prevent unnecessary type errors
     "esModuleInterop": true
   },
   "include": ["src/**/*"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["**/*.test.ts", "src/integration"]
 }

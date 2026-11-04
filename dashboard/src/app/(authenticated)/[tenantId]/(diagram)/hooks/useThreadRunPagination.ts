@@ -52,7 +52,7 @@ export const useThreadRunPagination = ({ wfRun, page, tenantId }: UseThreadRunPa
         })
       })
       .finally(() => setIsLoading(false))
-  }, [wfRun?.id, wfRun?.threadRuns, threadRunNumbersNeeded.join(','), tenantId])
+  }, [wfRun?.id, wfRun?.threadRuns, threadRunNumbersNeeded, tenantId])
 
   const threadRuns = useMemo(() => {
     if (!wfRun) return []

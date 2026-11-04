@@ -2,7 +2,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { ThrowEventNodeRun } from '../ThrowEventNodeRun'
-import { ThrowEventNodeRun as ThrowEventNodeRunProto, WorkflowEvent } from 'littlehorse-client/proto'
+import { ThrowEventNodeRun as ThrowEventNodeRunProto, Timestamp, WorkflowEvent } from 'littlehorse-client/proto'
 
 import useSWR, { MutatorOptions } from 'swr'
 import { ContextProps, useWhoAmI } from '@/contexts/WhoAmIContext'
@@ -54,11 +54,11 @@ describe('ThrowEventNodeRun', () => {
       },
       content: {
         value: {
-          $case: 'str',
-          value: 'hello there!',
+          oneofKind: 'str',
+          str: 'hello there!',
         },
       },
-      createdAt: '2025-12-01T15:28:54.850Z',
+      createdAt: Timestamp.fromDate(new Date('2025-12-01T15:28:54.850Z')),
       nodeRunId: {
         wfRunId: {
           id: '3d444eb1635741a9a293f3446139ae20',

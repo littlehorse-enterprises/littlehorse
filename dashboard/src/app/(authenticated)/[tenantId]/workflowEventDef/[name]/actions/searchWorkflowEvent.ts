@@ -3,13 +3,14 @@ import { lhClient } from '@/app/lhClient'
 import { WithTenant } from '@/types'
 import {
   NodeRun,
+  NodeRunId,
   SearchWorkflowEventRequest,
   WorkflowEvent,
   WorkflowEventId,
   WorkflowEventIdList,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   workflowEvent: WorkflowEvent
   nodeRun: NodeRun | null
 }
@@ -45,7 +46,7 @@ export const searchWorkflowEvent = async ({
 
       let nodeRun = null
       try {
-        nodeRun = await client.getNodeRun(workflowEvent.id!)
+        nodeRun = await client.getNodeRun(workflowEvent.id! as unknown as NodeRunId)
       } catch {
         // nodeRun is null if the node run is not found
       }
@@ -59,9 +60,12 @@ export const searchWorkflowEvent = async ({
 
   const workflowEventWithDetails: runDetails[] = await Promise.all(hydrateWithWorkflowEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...workflowEventIdListRest } = workflowEventIdList
   return {
-    ...workflowEventIdList,
-    bookmarkAsString: workflowEventIdList.bookmark?.toString('base64'),
+    ...workflowEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: workflowEventWithDetails,
   }
 }

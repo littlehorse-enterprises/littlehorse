@@ -32,21 +32,26 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.InlineWfSpecModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.QuotaModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
+import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.objectId.BulkJobIdModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -62,7 +67,10 @@ import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.WorkflowEventIdModel;
+import io.littlehorse.common.model.getable.objectId.WorkflowMigrationPlanIdModel;
 import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
@@ -71,7 +79,6 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteTaskDefReque
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.MigrateWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutQuotaRequestModel;
@@ -81,6 +88,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.PutTenantRequestMo
 import io.littlehorse.common.model.metadatacommand.subcommand.PutUserTaskDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutWorkflowMigrationPlanRequestModel;
 import io.littlehorse.common.proto.InternalCountResponse;
 import io.littlehorse.common.proto.InternalScanResponse;
 import io.littlehorse.common.util.LHUtil;
@@ -98,12 +106,14 @@ import io.littlehorse.server.streams.lhinternalscan.count.CountRequest;
 import io.littlehorse.server.streams.lhinternalscan.count.CountTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListExternalEventsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListNodeRunsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListQuotaUsageMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListTaskRunsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListUserTaskRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListVariablesRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWfMetricsRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.ListWorkflowEventsRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchBulkJobRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
@@ -123,6 +133,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRe
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfSpecRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowEventRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWorkflowMigrationPlanRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListExternalEventsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListMetricsReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListNodeRunReply;
@@ -130,6 +141,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListTask
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListUserTaskRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListVariablesReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.ListWorkflowEventsReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchBulkJobReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
@@ -149,6 +161,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWf
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfSpecReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowEventReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWorkflowMigrationPlanReply;
 import io.littlehorse.server.streams.taskqueue.ClusterHealthRequestObserver;
 import io.littlehorse.server.streams.taskqueue.PollTaskRequestObserver;
 import io.littlehorse.server.streams.taskqueue.TaskQueueManager;
@@ -162,6 +175,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -169,6 +183,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.errors.RecordTooLargeException;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.errors.InvalidStateStoreException;
 
@@ -432,6 +447,42 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void createBulkJob(CreateBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        CreateBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, CreateBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, BulkJob.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getBulkJob(GetBulkJobRequest req, StreamObserver<BulkJob> ctx) {
+        BulkJobIdModel idModel = LHSerializable.fromProto(req.getId(), BulkJobIdModel.class, requestContext());
+        BulkJobModel bulkJob = requestContext().metadataManager().get(idModel);
+        if (bulkJob == null) {
+            ctx.onError(new StatusRuntimeException(
+                    Status.NOT_FOUND.withDescription("Couldn't find BulkJob %s".formatted(idModel.toString()))));
+            return;
+        }
+        ctx.onNext(bulkJob.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchBulkJob(SearchBulkJobRequest req, StreamObserver<BulkJobIdList> ctx) {
+        handleScan(SearchBulkJobRequestModel.fromProto(req, requestContext()), ctx, SearchBulkJobReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void deleteBulkJob(DeleteBulkJobRequest req, StreamObserver<Empty> ctx) {
+        DeleteBulkJobRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteBulkJobRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_STRUCT, actions = ACLAction.READ)
     public void validateStructDefEvolution(
             ValidateStructDefEvolutionRequest req, StreamObserver<ValidateStructDefEvolutionResponse> ctx) {
@@ -566,11 +617,50 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getWorkflowMigrationPlan(WorkflowMigrationPlanId req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        WorkflowMigrationPlanIdModel id =
+                LHSerializable.fromProto(req, WorkflowMigrationPlanIdModel.class, requestContext());
+        WorkflowMigrationPlanModel plan = requestContext()
+                .metadataManager()
+                .getOrThrow(
+                        id,
+                        () -> new LHApiException(Status.NOT_FOUND, "Couldn't find specified WorkflowMigrationPlan"));
+        ctx.onNext(plan.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
-    public void migrateWfSpec(MigrateWfSpecRequest req, StreamObserver<WfSpec> ctx) {
-        MigrateWfSpecRequestModel reqModel =
-                LHSerializable.fromProto(req, MigrateWfSpecRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, WfSpec.class);
+    public void putWorkflowMigrationPlan(
+            PutWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlan> ctx) {
+        PutWorkflowMigrationPlanRequestModel reqModel =
+                LHSerializable.fromProto(req, PutWorkflowMigrationPlanRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, WorkflowMigrationPlan.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void applyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest req, StreamObserver<WfRun> ctx) {
+        ApplyWorkflowMigrationRequestModel reqModel =
+                LHSerializable.fromProto(req, ApplyWorkflowMigrationRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, WfRun.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.WRITE_METADATA)
+    public void deleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest req, StreamObserver<Empty> ctx) {
+        throw new LHApiException(Status.UNIMPLEMENTED, "DeleteWorkflowMigrationPlan is not yet implemented");
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWorkflowMigrationPlan(
+            SearchWorkflowMigrationPlanRequest req, StreamObserver<WorkflowMigrationPlanIdList> ctx) {
+        handleScan(
+                SearchWorkflowMigrationPlanRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWorkflowMigrationPlanReply.class);
     }
 
     @Override
@@ -612,6 +702,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
         RunWfRequestModel reqModel = LHSerializable.fromProto(req, RunWfRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, WfRun.class);
+    }
+
+    @Override
+    @Authorize(
+            resources = ACLResource.ACL_WORKFLOW,
+            actions = {ACLAction.RUN, ACLAction.WRITE_METADATA})
+    public void runInlineWf(RunInlineWfRequest req, StreamObserver<WfRun> ctx) {
+        RunInlineWfRequestModel model = LHSerializable.fromProto(req, RunInlineWfRequestModel.class, requestContext());
+        processCommand(new CommandModel(model), ctx, WfRun.class);
     }
 
     @Override
@@ -667,7 +766,28 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ReportTaskRunModel reqModel = LHSerializable.fromProto(req, ReportTaskRunModel.class, requestContext);
         TenantIdModel tenantId = requestContext.authorization().tenantId();
         PrincipalIdModel principalId = requestContext.authorization().principalId();
-        commandSender.reportTaskAndDontWaitForResponse(reqModel, ctx, principalId, tenantId);
+        CompletableFuture<Message> futureResponse =
+                commandSender.reportTaskAndDontWaitForResponse(reqModel, principalId, tenantId, requestContext);
+        try {
+            String commandId = LHUtil.generateGuid();
+            waitForProcessing(futureResponse, Optional.of(commandId));
+            ctx.onNext(Empty.getDefaultInstance());
+            ctx.onCompleted();
+        } catch (LHApiException e) {
+            if (e.getStatus().getCode().equals(Status.RESOURCE_EXHAUSTED.getCode())) {
+                CompletableFuture<Message> failedTaskReport = commandSender.reportTaskAndDontWaitForResponse(
+                        reqModel.toErrorReport(e), principalId, tenantId, requestContext);
+                try {
+                    waitForProcessing(failedTaskReport, Optional.empty());
+                } catch (Throwable t) {
+                    ctx.onError(t);
+                }
+            } else {
+                ctx.onError(new LHApiException(Status.INTERNAL, "Failed to send ReportTaskRun command"));
+            }
+        } catch (Throwable e) {
+            ctx.onError(new LHApiException(Status.INTERNAL, "Failed to send ReportTaskRun command"));
+        }
     }
 
     @Override
@@ -694,6 +814,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         InactiveThreadRunModel checkpoint = internalComms.getObject(id, InactiveThreadRunModel.class, requestContext());
         observer.onNext(checkpoint.toProto().build());
         observer.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getInlineWfSpec(WfRunId req, StreamObserver<InlineWfSpec> ctx) {
+        if (req.getId().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "An owning WfRun ID is required");
+        }
+        InlineWfSpecIdModel id = LHSerializable.fromProto(req, InlineWfSpecIdModel.class, requestContext());
+        InlineWfSpecModel spec = internalComms.getObject(id, InlineWfSpecModel.class, requestContext());
+        ctx.onNext(spec.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override
@@ -953,6 +1085,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
 
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
+        handleScan(
+                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
+                ctx,
+                SearchWfMetricWindowReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void listVariables(ListVariablesRequest req, StreamObserver<VariableList> ctx) {
         ListVariablesRequestModel lv = LHSerializable.fromProto(req, ListVariablesRequestModel.class, requestContext());
         handleScan(lv, ctx, ListVariablesReply.class);
@@ -975,10 +1116,28 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    @Authorize(resources = ACLResource.ACL_TASK, actions = ACLAction.READ)
     public void listTaskMetrics(ListTaskMetricsRequest req, StreamObserver<MetricsList> ctx) {
         ListTaskMetricsRequestModel reqModel =
                 LHSerializable.fromProto(req, ListTaskMetricsRequestModel.class, requestContext());
+        handleScan(reqModel, ctx, ListMetricsReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_QUOTA, actions = ACLAction.READ)
+    public void listQuotaUsageMetrics(ListQuotaUsageMetricsRequest req, StreamObserver<MetricsList> ctx) {
+        RequestExecutionContext requestContext = requestContext();
+        if (!req.hasQuotaId()
+                || !req.getQuotaId().hasTenant()
+                || !req.getQuotaId()
+                        .getTenant()
+                        .getId()
+                        .equals(requestContext.authorization().tenantId().toString())) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
+        ListQuotaUsageMetricsRequestModel reqModel =
+                LHSerializable.fromProto(req, ListQuotaUsageMetricsRequestModel.class, requestContext);
         handleScan(reqModel, ctx, ListMetricsReply.class);
     }
 
@@ -993,19 +1152,22 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
     public void getMetricWindow(MetricWindowId req, StreamObserver<MetricWindow> ctx) {
+        if (req.getIdCase() == MetricWindowId.IdCase.QUOTA_ID
+                && (!req.getQuotaId().hasTenant()
+                        || !req.getQuotaId()
+                                .getTenant()
+                                .getId()
+                                .equals(requestContext()
+                                        .authorization()
+                                        .tenantId()
+                                        .toString()))) {
+            ctx.onError(new LHApiException(Status.INVALID_ARGUMENT, "Quota usage must belong to the request tenant"));
+            return;
+        }
         MetricWindowIdModel id = LHSerializable.fromProto(req, MetricWindowIdModel.class, requestContext());
         MetricWindowModel metricWindow = internalComms.getObject(id, MetricWindowModel.class, requestContext());
         ctx.onNext(metricWindow.toProto().build());
         ctx.onCompleted();
-    }
-
-    @Override
-    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
-    public void searchWfMetricWindow(SearchWfMetricWindowRequest req, StreamObserver<MetricWindowIdList> ctx) {
-        handleScan(
-                SearchWfMetricWindowRequestModel.fromProto(req, requestContext()),
-                ctx,
-                SearchWfMetricWindowReply.class);
     }
 
     @Override
@@ -1029,6 +1191,14 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         ResumeWfRunRequestModel reqModel =
                 LHSerializable.fromProto(req, ResumeWfRunRequestModel.class, requestContext());
         processCommand(new CommandModel(reqModel), ctx, Empty.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
+    public void putVariable(PutVariableRequest req, StreamObserver<VariableValue> ctx) {
+        PutVariableRequestModel reqModel =
+                LHSerializable.fromProto(req, PutVariableRequestModel.class, requestContext());
+        processCommand(new CommandModel(reqModel), ctx, VariableValue.class);
     }
 
     @Override
@@ -1251,26 +1421,39 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
                 requestContext.authorization().tenantId(),
                 requestContext);
         try {
-            Message response =
-                    futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+            Message response = waitForProcessing(futureResponse, command.getCommandId());
             responseObserver.onNext((RC) response);
             responseObserver.onCompleted();
-        } catch (InterruptedException e) {
-            responseObserver.onError(new StatusRuntimeException(
-                    Status.UNAVAILABLE.withDescription("This Server instance shutting down")));
-        } catch (TimeoutException e) {
-            responseObserver.onError(new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
-                    "Could not process command in time id: %s".formatted(command.getCommandId()))));
         } catch (Throwable e) {
-            Throwable cause = e.getCause() == null ? e : e.getCause();
-            if (cause instanceof StatusRuntimeException) {
-                responseObserver.onError(cause);
-            } else {
-                responseObserver.onError(new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error")));
-                log.error("Failed processing command", e);
-            }
+            responseObserver.onError(e);
         } finally {
             command.getCommandId().ifPresent(asyncWaiters::removeCommand);
+        }
+    }
+
+    private <T> T waitForProcessing(Future<T> futureResponse, Optional<String> commandId) {
+        try {
+            return futureResponse.get(LHConstants.MAX_INCOMING_REQUEST_IDLE_TIME.getSeconds(), TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new StatusRuntimeException(Status.UNAVAILABLE.withDescription("This Server instance shutting down"));
+        } catch (TimeoutException e) {
+            throw new StatusRuntimeException(Status.DEADLINE_EXCEEDED.withDescription(
+                    "Could not process command in time id: %s".formatted(commandId.orElse(""))));
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof LHApiException apiException) {
+                throw apiException;
+            } else if (e.getCause() instanceof RecordTooLargeException) {
+                throw new LHApiException(Status.RESOURCE_EXHAUSTED.withDescription("Record too large"));
+            } else {
+                throw new RuntimeException(e);
+            }
+        } catch (Throwable e) {
+            Throwable cause = e.getCause() == null ? e : e.getCause();
+            if (cause instanceof StatusRuntimeException sre) {
+                throw sre;
+            } else {
+                throw new StatusRuntimeException(Status.INTERNAL.withDescription("Internal error"));
+            }
         }
     }
 

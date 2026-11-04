@@ -1,0 +1,16 @@
+{
+  "arms": [
+    "jsonObj",
+    "jsonArr",
+    "double",
+    "bool",
+    "str",
+    "int",
+    "bytes",
+    "wfRunId",
+    "utcTimestamp",
+    "struct",
+    "array",
+    "map"
+  ]
+}

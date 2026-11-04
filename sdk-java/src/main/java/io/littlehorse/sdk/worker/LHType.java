@@ -44,4 +44,19 @@ public @interface LHType {
      * @return whether or not this Array should be a LittleHorse native Array or a JSON_ARR.
      */
     boolean isLHArray() default false;
+
+    /**
+     * Indicates whether or not Map types marked with this annotation should be serialized as a LittleHorse native Map.
+     * The Map parameter must declare generic type parameters (e.g. {@code Map<String, Integer>}).
+     *
+     * @return whether or not this Map should be a LittleHorse native Map or a JSON_OBJ.
+     */
+    boolean isLHMap() default false;
+
+    /**
+     * Indicates whether an unannotated POJO should be represented as an inline Struct.
+     *
+     * @return whether the annotated POJO should use an inline Struct schema
+     */
+    boolean isInlineStruct() default false;
 }

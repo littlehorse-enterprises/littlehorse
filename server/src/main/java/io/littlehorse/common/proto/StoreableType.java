@@ -75,6 +75,10 @@ public enum StoreableType
    * <code>PARTITION_COUNTED_TAG = 16;</code>
    */
   PARTITION_COUNTED_TAG(16),
+  /**
+   * <code>BULK_JOB_SHARD_CURSOR = 17;</code>
+   */
+  BULK_JOB_SHARD_CURSOR(17),
   UNRECOGNIZED(-1),
   ;
 
@@ -151,6 +155,10 @@ public enum StoreableType
    * <code>PARTITION_COUNTED_TAG = 16;</code>
    */
   public static final int PARTITION_COUNTED_TAG_VALUE = 16;
+  /**
+   * <code>BULK_JOB_SHARD_CURSOR = 17;</code>
+   */
+  public static final int BULK_JOB_SHARD_CURSOR_VALUE = 17;
 
 
   public final int getNumber() {
@@ -193,6 +201,7 @@ public enum StoreableType
       case 14: return METRICS_HINT;
       case 15: return COUNTED_TAG;
       case 16: return PARTITION_COUNTED_TAG;
+      case 17: return BULK_JOB_SHARD_CURSOR;
       default: return null;
     }
   }

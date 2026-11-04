@@ -7,14 +7,14 @@ import { WfRunResponse } from '@/app/actions/getWfRun'
 import { TIME_RANGES, TimeRange } from '@/app/constants'
 import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
-import { formatDate, getStatus, getVariableValue, wfRunIdToPath } from '@/app/utils'
+import { DateLike, formatDate, getStatus, getVariableValue, toDate, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
-import { getTypedVariableValue, getVariableDefType } from '@/app/utils/variables'
+import { getVariableFilterValue } from '@/app/utils/variables'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
-import { LHStatus, Variable, VariableMatch, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, Timestamp, Variable, VariableMatch, WfSpec } from 'littlehorse-client/proto'
 import { ArrowDown, ArrowUp, ArrowUpDown, RefreshCwIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useMemo, useState } from 'react'
@@ -22,6 +22,7 @@ import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite'
 import { PaginatedWfRunResponseList, searchWfRun } from '../actions/searchWfRun'
 import { VariableFilter } from './types'
 import { VariableValuePillRow } from './VariableValuePillRow'
+import { WfRunDuration } from './WfRunDuration'
 import { WfRunsHeader } from './WfRunsHeader'
 import { WF_RUN_STATUS } from '../../../components/Sidebar/Components/StatusColor'
 
@@ -34,30 +35,22 @@ const defaultSort = (): SortState => ({ key: 'startTime', dir: 'desc' })
 
 const buildVariableFilters = (filter: VariableFilter | null): VariableMatch[] => {
   if (!filter?.value?.trim()) return []
-  return [
-    {
-      varName: filter.varDef.name,
-      value: getTypedVariableValue(getVariableDefType(filter.varDef), filter.value.trim()),
-    },
-  ]
+  try {
+    return [{ varName: filter.varDef.name, value: getVariableFilterValue(filter.varDef, filter.value.trim()) }]
+  } catch {
+    // Invalid input for the selected variable type (e.g. a map/array filter whose text
+    // isn't valid JSON). This runs inside a render-time useMemo, so a throw escapes to the
+    // error boundary and white-screens the page — skip the filter instead. The dialog
+    // validates and surfaces the error before a bad filter can reach here.
+    return []
+  }
 }
 
-// Local helper kept distinct from utils/dateTime#formatDuration which takes ms.
-const formatRangeDuration = (start?: string, end?: string) => {
-  if (!start) return EMPTY
-  const s = Date.parse(start)
-  if (Number.isNaN(s)) return EMPTY
-  const e = end ? Date.parse(end) : Date.now()
-  if (Number.isNaN(e)) return EMPTY
-  const sec = Math.max(0, Math.floor((e - s) / 1000))
-  if (sec < 60) return `${sec}s`
-  const m = Math.floor(sec / 60)
-  const rs = sec % 60
-  if (m < 60) return `${m}m ${rs}s`
-  const h = Math.floor(m / 60)
-  const rm = m % 60
-  return `${h}h ${rm}m`
-}
+const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
+
+const RUNNING_POLL_MS = 15_000
+const pollWhileRunning = (pages: PaginatedWfRunResponseList[]) =>
+  pages.some(p => p.results.some(r => r.wfRun.status === LHStatus.RUNNING)) ? RUNNING_POLL_MS : 0
 
 const entrypointVariablesText = (variables: Variable[]) =>
   variables.map(v => `${v.id!.name}: ${getVariableValue(v.value!)}`).join(' · ')
@@ -66,11 +59,7 @@ const compareRows = (a: WfRunResponse, b: WfRunResponse, sort: SortState) => {
   const wa = a.wfRun
   const wb = b.wfRun
   const m = sort.dir === 'asc' ? 1 : -1
-  const parseT = (t?: string) => {
-    if (!t) return 0
-    const n = Date.parse(t)
-    return Number.isNaN(n) ? 0 : n
-  }
+  const parseT = (t?: DateLike) => toDate(t)?.getTime() ?? 0
   switch (sort.key) {
     case 'startTime': {
       return (parseT(wa.startTime) - parseT(wb.startTime)) * m
@@ -78,9 +67,9 @@ const compareRows = (a: WfRunResponse, b: WfRunResponse, sort: SortState) => {
     case 'endTime': {
       // Running runs (no endTime) are pinned last regardless of direction.
       const sentinel = sort.dir === 'desc' ? 0 : Number.MAX_SAFE_INTEGER
-      const aEnd = wa.endTime ? Date.parse(wa.endTime) : sentinel
-      const bEnd = wb.endTime ? Date.parse(wb.endTime) : sentinel
-      return ((Number.isNaN(aEnd) ? 0 : aEnd) - (Number.isNaN(bEnd) ? 0 : bEnd)) * m
+      const aEnd = wa.endTime ? parseT(wa.endTime) : sentinel
+      const bEnd = wb.endTime ? parseT(wb.endTime) : sentinel
+      return (aEnd - bEnd) * m
     }
     case 'id': {
       return (wa.id?.id ?? '').localeCompare(wb.id?.id ?? '') * m
@@ -137,13 +126,15 @@ type WfRunsKey = [
 export const WfRuns: FC<WfSpec> = spec => {
   const searchParams = useSearchParams()
   const { tenantId } = useWhoAmI()
-  const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
+  // Use ?? (not ||) so STARTING (numeric enum value 0) is not coerced to 'ALL'.
+  const status = (searchParams.get('status') ? (getStatus(searchParams.get('status')) ?? 'ALL') : 'ALL') as
     | LHStatus
     | 'ALL'
   const [limit, setLimit] = usePersistedSearchLimit('global')
   const [window, setWindow] = useState<TimeRange>(TIME_RANGES[0])
   const [sort, setSort] = useState<SortState>(defaultSort)
   const [variableFilter, setVariableFilter] = useState<VariableFilter | null>(null)
+  const [pollMs, setPollMs] = useState(0)
 
   const startTime = useMemo(() => computeStartTimeWindow(window), [window])
 
@@ -189,20 +180,26 @@ export const WfRuns: FC<WfSpec> = spec => {
     [status, tenantId, limit, startTime, wfSpecName, wfSpecMajorVersion, wfSpecRevision, filterKey]
   )
 
-  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(getKey, async (key: WfRunsKey) => {
-    const [, wfStatus, tId, lim, stWin, bookmarkAsString, name, major, revision] = key
-    return await searchWfRun({
-      wfSpecName: name,
-      wfSpecMajorVersion: major,
-      wfSpecRevision: revision,
-      variableFilters,
-      limit: lim,
-      status: wfStatus === 'ALL' ? undefined : wfStatus,
-      tenantId: tId,
-      bookmarkAsString,
-      ...stWin,
-    })
-  })
+  const { data, error, size, setSize } = useSWRInfinite<PaginatedWfRunResponseList>(
+    getKey,
+    async (key: WfRunsKey) => {
+      const [, wfStatus, tId, lim, stWin, bookmarkAsString, name, major, revision] = key
+      return await searchWfRun({
+        wfSpecName: name,
+        wfSpecMajorVersion: major,
+        wfSpecRevision: revision,
+        variableFilters,
+        limit: lim,
+        status: wfStatus === 'ALL' ? undefined : wfStatus,
+        tenantId: tId,
+        bookmarkAsString,
+        earliestStart: toTimestamp(stWin?.earliestStart),
+        latestStart: toTimestamp(stWin?.latestStart),
+      })
+    },
+    // SWR reads a function refreshInterval only on mount, so keep it in state.
+    { refreshInterval: pollMs, onSuccess: pages => setPollMs(pollWhileRunning(pages)) }
+  )
 
   const rows = useMemo(() => (data ? data.flatMap(p => p.results) : []), [data])
   const sortedRows = useMemo(() => [...rows].sort((a, b) => compareRows(a, b, sort)), [rows, sort])
@@ -286,17 +283,17 @@ export const WfRuns: FC<WfSpec> = spec => {
                               WF_RUN_STATUS[w.status].textColor
                             )}
                           >
-                            {w.status}
+                            {LHStatus[w.status]}
                           </span>
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {w.startTime ? formatDate(new Date(w.startTime)) : EMPTY}
+                          {w.startTime ? formatDate(toDate(w.startTime)) : EMPTY}
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {w.endTime ? formatDate(new Date(w.endTime)) : EMPTY}
+                          {w.endTime ? formatDate(toDate(w.endTime)) : EMPTY}
                         </TableCell>
                         <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {formatRangeDuration(w.startTime, w.endTime)}
+                          <WfRunDuration startTime={w.startTime} endTime={w.endTime} status={w.status} />
                         </TableCell>
                         <TableCell>
                           {w.id.parentWfRunId?.id ? (

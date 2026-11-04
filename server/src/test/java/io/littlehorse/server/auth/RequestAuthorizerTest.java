@@ -23,8 +23,11 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.acl.ServerACLModel;
+import io.littlehorse.common.model.getable.global.acl.ServerACLsModel;
 import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
+import io.littlehorse.sdk.common.proto.ACLAction;
+import io.littlehorse.sdk.common.proto.ACLResource;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.server.TestCoreStoreProvider;
 import io.littlehorse.server.TestMetadataManager;
@@ -190,7 +193,7 @@ public class RequestAuthorizerTest {
             when(mockMethod.getBareMethodName()).thenReturn("PutTaskDef");
             when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("limited-principal");
             startCall();
-            Mockito.verify(mockCall).close(any(), eq(mockMetadata));
+            expectPermissionDeniedOn(ACLResource.ACL_TASK, ACLAction.WRITE_METADATA);
         }
 
         @Test
@@ -200,12 +203,7 @@ public class RequestAuthorizerTest {
             when(mockMethod.getBareMethodName()).thenReturn("PutTenant");
             when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("tenant-admin-principal");
             startCall();
-            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
-            assertThat(statusCaptor
-                    .getValue()
-                    .equals(Status.PERMISSION_DENIED.withDescription(
-                            "Missing permissions [WRITE_METADATA] over resources [ACL_TENANT]")));
+            expectPermissionDeniedOn(ACLResource.ACL_TENANT, ACLAction.WRITE_METADATA);
         }
 
         @Test
@@ -215,12 +213,32 @@ public class RequestAuthorizerTest {
             when(mockMethod.getBareMethodName()).thenReturn("PutPrincipal");
             when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("tenant-admin-principal");
             startCall();
-            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
-            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
-            assertThat(statusCaptor
-                    .getValue()
-                    .equals(Status.PERMISSION_DENIED.withDescription(
-                            "Missing permissions [WRITE_METADATA] over resources [ACL_PRINCIPAL]")));
+            expectPermissionDeniedOn(ACLResource.ACL_PRINCIPAL, ACLAction.WRITE_METADATA);
+        }
+
+        @Test
+        public void shouldNotCombineActionsAndResourcesAcrossSeparateAcls() {
+            MethodDescriptor<Object, Object> mockMethod = mock();
+            PrincipalModel principal = new PrincipalModel();
+            principal.setId(new PrincipalIdModel("cross-acl-principal"));
+
+            ServerACLModel readOnWorkflow =
+                    new ServerACLModel(List.of(ACLResource.ACL_WORKFLOW), List.of(ACLAction.READ));
+            ServerACLModel writeOnTask =
+                    new ServerACLModel(List.of(ACLResource.ACL_TASK), List.of(ACLAction.WRITE_METADATA));
+            ServerACLsModel acls = new ServerACLsModel(List.of(readOnWorkflow, writeOnTask));
+            principal.setPerTenantAcls(Map.of("my-tenant", acls));
+            metadataManager.put(principal);
+
+            when(mockCall.getMethodDescriptor()).thenReturn(mockMethod);
+            // Method requiring WRITE_METADATA on WORKFLOW must be DENIED even if the principal has
+            // WRITE_METADATA on TASK and READ on WORKFLOW in separate ACLs
+            when(mockMethod.getBareMethodName()).thenReturn("PutWfSpec");
+            when(mockMetadata.get(LHServerInterceptor.CLIENT_ID)).thenReturn("cross-acl-principal");
+            when(mockMetadata.get(LHServerInterceptor.TENANT_ID)).thenReturn("my-tenant");
+
+            startCall();
+            expectPermissionDeniedOn(ACLResource.ACL_WORKFLOW, ACLAction.WRITE_METADATA);
         }
 
         @Test
@@ -232,6 +250,17 @@ public class RequestAuthorizerTest {
             when(mockMetadata.get(LHServerInterceptor.TENANT_ID)).thenReturn("my-tenant");
             startCall();
             assertThat(resolvedAuthContext).isNotNull();
+        }
+
+        private void expectPermissionDeniedOn(ACLResource resource, ACLAction action) {
+            Status expectedStatus = Status.PERMISSION_DENIED.withDescription(
+                    "Missing permissions [%s] over resources [%s]".formatted(action.name(), resource.name()));
+            ArgumentCaptor<Status> statusCaptor = ArgumentCaptor.forClass(Status.class);
+            Mockito.verify(mockCall).close(statusCaptor.capture(), eq(mockMetadata));
+            Status actualStatus = statusCaptor.getValue();
+            assertThat(actualStatus.getCode()).isEqualTo(expectedStatus.getCode());
+            assertThat(actualStatus.getDescription()).isEqualTo(expectedStatus.getDescription());
+            assertThat(actualStatus.getCause()).isEqualTo(expectedStatus.getCause());
         }
 
         private PrincipalModel buildLimitedPrincipal() {

@@ -12,8 +12,13 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.RecordComponent;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.Getter;
@@ -22,6 +27,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LHStructProperty {
     private final PropertyDescriptor pd;
+    private final RecordComponent recordComponent;
+
+    @Getter
+    private final String propertyName;
 
     @Getter
     private final String fieldName;
@@ -35,16 +44,35 @@ public class LHStructProperty {
     @Getter
     private final boolean isNullable;
 
-    private final LHStructDefType parentStructDef;
+    @Getter
+    private final String description;
 
-    public LHStructProperty(PropertyDescriptor pd, LHStructDefType parentStructDef) {
+    private final LHClassType parentStructDef;
+
+    public LHStructProperty(PropertyDescriptor pd, LHClassType parentStructDef) {
         this.pd = Objects.requireNonNull(pd);
+        this.recordComponent = null;
         this.parentStructDef = parentStructDef;
+        this.propertyName = pd.getName();
 
         this.fieldName = findFieldName();
         this.masked = findIsMasked();
         this.ignored = findIsIgnored();
         this.isNullable = findIsNullable();
+        this.description = findDescription();
+    }
+
+    public LHStructProperty(RecordComponent recordComponent, LHStructDefType parentStructDef) {
+        this.pd = null;
+        this.recordComponent = Objects.requireNonNull(recordComponent);
+        this.parentStructDef = parentStructDef;
+        this.propertyName = recordComponent.getName();
+
+        this.fieldName = findFieldName();
+        this.masked = findIsMasked();
+        this.ignored = findIsIgnored();
+        this.isNullable = findIsNullable();
+        this.description = findDescription();
     }
 
     public VariableValue getValueFrom(Object o) throws LHSerdeException {
@@ -52,20 +80,44 @@ public class LHStructProperty {
     }
 
     public VariableValue getValueFrom(Object o, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
-        if (pd.getReadMethod() == null) {
+        return getValueFrom(o, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public VariableValue getValueFrom(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        Method readMethod = getReadMethod();
+        if (readMethod == null) {
             throw new IllegalStateException(
                     "No read method for property " + this.fieldName + " found on object of type: " + o.getClass());
         }
 
         try {
-            Object val = pd.getReadMethod().invoke(o);
+            Object val = readMethod.invoke(o);
             if (val == null) return null;
 
             if (isNativeArray() && val.getClass().isArray()) {
-                return LHLibUtil.objToVarValAsNativeArray(val, pd.getPropertyType(), typeAdapterRegistry);
+                return LHLibUtil.objToVarValAsNativeArray(
+                        val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
             }
 
-            return LHLibUtil.objToVarVal(val, pd.getPropertyType(), typeAdapterRegistry);
+            if (isNativeMap() && val instanceof Map) {
+                LHMapType mapType = resolveMapType(typeAdapterRegistry);
+                return LHLibUtil.objToVarValAsNativeMap(
+                        val,
+                        mapType.getTypeDefinition().getInlineMapDef(),
+                        typeAdapterRegistry,
+                        mapType.getKeyClass(),
+                        mapType.getValueClass(),
+                        placeholderValues);
+            }
+
+            LHClassType propertyType = getPropertyType(typeAdapterRegistry);
+            if (propertyType instanceof LHInlineStructDefType) {
+                return LHLibUtil.objToVarValAsStruct(
+                        val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
+            }
+            return LHLibUtil.objToVarVal(val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e, "Failed getting value of property " + this.fieldName + "from object of type: " + o.getClass());
@@ -78,19 +130,50 @@ public class LHStructProperty {
 
     public void setValueTo(Object o, VariableValue v, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
-        if (pd.getWriteMethod() == null) {
+        setValueTo(o, v, typeAdapterRegistry, java.util.Map.of());
+    }
+
+    public void setValueTo(
+            Object o,
+            VariableValue v,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            java.util.Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        Method writeMethod = getWriteMethod();
+        if (writeMethod == null) {
             throw new IllegalStateException(String.format(
                     "No write method for property [%s] found on object of type [%s]", this.fieldName, o.getClass()));
         }
 
         try {
-            pd.getWriteMethod().invoke(o, LHLibUtil.varValToObj(v, pd.getPropertyType(), typeAdapterRegistry));
+            writeMethod.invoke(o, deserializeValue(v, typeAdapterRegistry, placeholderValues));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(
                     e,
                     String.format(
                             "Failed setting value of property [%s] from object of type", this.fieldName, o.getClass()));
         }
+    }
+
+    /** Deserializes this property without StructDef placeholder values. */
+    public Object deserializeValue(VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry) {
+        return deserializeValue(value, typeAdapterRegistry, Map.of());
+    }
+
+    /**
+     * Deserializes this property for setters and record constructor arguments.
+     *
+     * <p>Map conversion belongs here because the accessor retains generic key and value types that are erased from
+     * {@code Map.class}. Placeholder values are passed through to nested structs.
+     */
+    public Object deserializeValue(
+            VariableValue value, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        if (isNativeMap() && value.getValueCase() == VariableValue.ValueCase.MAP) {
+            LHMapType mapType = resolveMapType(typeAdapterRegistry);
+            return LHLibUtil.varValToNativeMap(
+                    value, mapType.getKeyClass(), mapType.getValueClass(), typeAdapterRegistry, placeholderValues);
+        }
+        return LHLibUtil.varValToObj(value, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
     }
 
     /**
@@ -110,6 +193,10 @@ public class LHStructProperty {
         Optional<VariableValue> defaultValue = this.getDefaultValue();
         if (defaultValue.isPresent()) {
             fieldDef.setDefaultValue(defaultValue.get());
+        }
+
+        if (description != null && !description.isBlank()) {
+            fieldDef.setDescription(description);
         }
 
         return fieldDef.build();
@@ -163,25 +250,72 @@ public class LHStructProperty {
     }
 
     public LHClassType getPropertyType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Map<String, String> placeholderValues = parentStructDef.getPlaceholderValues();
+
         if (isNativeArray()) {
-            return new LHArrayType(pd.getPropertyType(), typeAdapterRegistry);
+            return new LHArrayType(
+                    getPropertyTypeClass(),
+                    typeAdapterRegistry,
+                    placeholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
         }
 
-        return LHClassType.fromJavaClass(pd.getPropertyType(), typeAdapterRegistry);
+        if (isNativeMap()) {
+            return resolveMapType(typeAdapterRegistry);
+        }
+
+        return LHClassType.resolve(
+                getPropertyTypeClass(),
+                typeAdapterRegistry,
+                placeholderValues,
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
     }
 
     private boolean isNativeArray() {
-        return pd.getPropertyType().isArray() && !byte[].class.equals(pd.getPropertyType());
+        return getPropertyTypeClass().isArray() && !byte[].class.equals(getPropertyTypeClass());
+    }
+
+    private boolean isNativeMap() {
+        return Map.class.isAssignableFrom(getPropertyTypeClass());
+    }
+
+    private LHMapType resolveMapType(LHTypeAdapterRegistry typeAdapterRegistry) {
+        Type genericType = null;
+        Method readMethod = getReadMethod();
+        if (readMethod != null) {
+            genericType = readMethod.getGenericReturnType();
+        }
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArgs = paramType.getActualTypeArguments();
+            if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
+                return new LHMapType(
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        parentStructDef.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Map property '" + fieldName + "' must declare generic type parameters (e.g. Map<String, Integer>). "
+                        + "Raw or wildcard Map types are not supported.");
     }
 
     /// The following methods are used to find annotations on the property, whether they are on the getter, setter, or
     // field itself.
     private <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
-        if ((hasReadMethod() && pd.getReadMethod().isAnnotationPresent(annotationClass))) {
-            return pd.getReadMethod().getAnnotation(annotationClass);
+        if (this.recordComponent != null && this.recordComponent.isAnnotationPresent(annotationClass)) {
+            return this.recordComponent.getAnnotation(annotationClass);
         }
-        if ((hasWriteMethod() && pd.getWriteMethod().isAnnotationPresent(annotationClass))) {
-            return pd.getWriteMethod().getAnnotation(annotationClass);
+
+        if ((hasReadMethod() && getReadMethod().isAnnotationPresent(annotationClass))) {
+            return getReadMethod().getAnnotation(annotationClass);
+        }
+        if ((hasWriteMethod() && getWriteMethod().isAnnotationPresent(annotationClass))) {
+            return getWriteMethod().getAnnotation(annotationClass);
         }
 
         return getAnnotationFromField(annotationClass);
@@ -201,11 +335,10 @@ public class LHStructProperty {
 
     private List<String> getCandidateFieldNames() {
         List<String> fieldNames = new ArrayList<>();
-        fieldNames.add(pd.getName());
+        fieldNames.add(propertyName);
 
-        if (pd.getPropertyType() == boolean.class || pd.getPropertyType() == Boolean.class) {
-            fieldNames.add("is" + Character.toUpperCase(pd.getName().charAt(0))
-                    + pd.getName().substring(1));
+        if (getPropertyTypeClass() == boolean.class || getPropertyTypeClass() == Boolean.class) {
+            fieldNames.add("is" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1));
         }
 
         return fieldNames;
@@ -240,7 +373,7 @@ public class LHStructProperty {
     private String findFieldName() {
         LHStructField lhStructField = getAnnotation(LHStructField.class);
 
-        if (lhStructField == null || lhStructField.name().isBlank()) return pd.getName();
+        if (lhStructField == null || lhStructField.name().isBlank()) return propertyName;
 
         return lhStructField.name();
     }
@@ -253,12 +386,44 @@ public class LHStructProperty {
         return lhStructField.isNullable();
     }
 
+    private String findDescription() {
+        LHStructField lhStructField = getAnnotation(LHStructField.class);
+
+        if (lhStructField == null) return "";
+
+        return lhStructField.description();
+    }
+
     private boolean hasReadMethod() {
-        return pd.getReadMethod() != null;
+        return getReadMethod() != null;
     }
 
     private boolean hasWriteMethod() {
-        return pd.getWriteMethod() != null;
+        return getWriteMethod() != null;
+    }
+
+    private Method getReadMethod() {
+        if (this.recordComponent != null) {
+            return this.recordComponent.getAccessor();
+        }
+
+        return this.pd.getReadMethod();
+    }
+
+    private Method getWriteMethod() {
+        if (this.recordComponent != null) {
+            return null;
+        }
+
+        return this.pd.getWriteMethod();
+    }
+
+    private Class<?> getPropertyTypeClass() {
+        if (this.recordComponent != null) {
+            return this.recordComponent.getType();
+        }
+
+        return this.pd.getPropertyType();
     }
 
     @Override

@@ -26,6 +26,7 @@ public class StructDefModel extends MetadataGetable<StructDef> {
     @Setter
     private StructDefIdModel id;
 
+    @Getter
     @Setter
     private String description;
 

@@ -87,14 +87,13 @@ Release candidates (RC) are pre-release versions intended for final validation b
 2. **Pre-release checks**
    - Ensure the `X.Y` branch is green (CI passes).
    - Confirm no open blockers for the target milestone.
-3. **Version bump** — On the release branch, update the version in [`gradle.properties`](#version-file) to `X.Y.Z-RC<N>`.
-4. **Tag & push**
+3. **Tag & push** — Use the RC version in the tag; the release workflow derives the artifact version from the tag and updates `gradle.properties` during publishing.
    ```bash
    git tag vX.Y.Z-RC<N>
    git push origin vX.Y.Z-RC<N>
    ```
-5. **Publish artifacts** (see [Publishing Details](#publishing-details)).
-6. **Validation** — Stakeholders test the RC. If issues are found:
+4. **Publish artifacts** (see [Publishing Details](#publishing-details)).
+5. **Validation** — Stakeholders test the RC. If issues are found:
    - Fix them on `master` first.
    - Cherry-pick the fixes onto the `X.Y` branch using the [`cherry-pick` (TODO)](../.github/workflows/cherry-pick.yml) workflow.
    - Cut `RC<N+1>` from the release branch.
@@ -192,6 +191,7 @@ The scripts handle tasks such as:
 - **Validation** — Pre-release checks: version consistency, branch constraints, clean Git tree, and snapshot format verification.
 - **Version extraction** — Determining the current version from `gradle.properties` or Git tags.
 - **Cherry-pick** — Safely cherry-picking a commit from `master` onto a release branch for patch releases.
+- **Release notes** — Resolving the hand-written release notes file for a version (see [Release Notes](#release-notes)).
 
 ### Running Locally
 
@@ -201,6 +201,26 @@ cd release-manager/scripts
 python3 validate.py        --type minor --version 1.2.0
 python3 extract_version.py
 python3 cherry_pick.py     abc123def 1.0
+python3 release_notes.py   --version 1.2.0
+```
+
+## Release Notes
+
+Release notes are hand-written (not generated from the Git history) and live in the [`release_notes/`](../release_notes) directory at the repo root. The GitHub Release body is taken verbatim from the matching file.
+
+| Release | File |
+|---|---|
+| `v1.2.0` | `release_notes/1.2.0.md`, falling back to `release_notes/1.2.md` |
+| `v1.2.0-RC1` | Same as `v1.2.0` (pre-release qualifiers are stripped) |
+| `v1.1.2` | `release_notes/1.1.2.md` |
+
+If no matching file exists, the [`release`](../.github/workflows/release.yml) workflow fails in its first job (`prepare`), before any artifact is published — so **write the release notes before tagging**.
+
+Resolve the file for a version locally with:
+
+```bash
+python3 release-manager/scripts/release_notes.py --version 1.2.0            # prints the path
+python3 release-manager/scripts/release_notes.py --version 1.2.0 --output CHANGELOG.md
 ```
 
 ### Running from GitHub Actions
@@ -222,4 +242,3 @@ python3 cherry_pick.py     abc123def 1.0
 
 - Python ≥ 3.10
 - Git
-

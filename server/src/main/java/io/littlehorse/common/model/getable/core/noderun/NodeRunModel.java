@@ -109,7 +109,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
             endTime = LHUtil.fromProtoTs(proto.getEndTime());
         }
 
-        wfSpecId = LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context);
+        wfSpecId = proto.hasWfSpecId()
+                ? LHSerializable.fromProto(proto.getWfSpecId(), WfSpecIdModel.class, context)
+                : null;
         threadSpecName = proto.getThreadSpecName();
         nodeName = proto.getNodeName();
         status = proto.getStatus();
@@ -185,6 +187,18 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
         GetableIndex<? extends AbstractGetable<?>> allNodeRunsIndex =
                 new GetableIndex<>(List.of(Pair.of("all", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
+        if (wfSpecId == null) {
+            if (externalEventRun != null && externalEventRun.getExternalEventDefId() != null) {
+                return List.of(
+                        allNodeRunsIndex,
+                        new GetableIndex<>(
+                                List.of(
+                                        Pair.of("status", GetableIndex.ValueType.SINGLE),
+                                        Pair.of("extEvtDefName", GetableIndex.ValueType.SINGLE)),
+                                TagStorageType.LOCAL));
+            }
+            return List.of(allNodeRunsIndex);
+        }
         GetableIndex<? extends AbstractGetable<?>> specNameIndex = new GetableIndex<>(
                 List.of(Pair.of("wfSpecName", GetableIndex.ValueType.SINGLE)), TagStorageType.COUNTED);
         GetableIndex<? extends AbstractGetable<?>> specNameAndMajorVersionIndex = new GetableIndex<>(
@@ -252,9 +266,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
                 .setId(id.toProto())
                 .setStatus(status)
                 .setArrivalTime(LHUtil.fromDate(arrivalTime))
-                .setWfSpecId(wfSpecId.toProto())
                 .setThreadSpecName(threadSpecName)
                 .setNodeName(nodeName);
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
 
         if (endTime != null) out.setEndTime(LHUtil.fromDate(endTime));
 
@@ -622,7 +636,9 @@ public class NodeRunModel extends CoreGetable<NodeRun> {
      */
     public WfSpecModel getWfSpec() {
         CoreProcessorContext ctx = executionContext.castOnSupport(CoreProcessorContext.class);
-        return ctx.service().getWfSpec(wfSpecId);
+        return wfSpecId == null
+                ? ctx.getableManager().get(id.getWfRunId()).getWfSpec()
+                : ctx.service().getWfSpec(wfSpecId);
     }
 
     /**

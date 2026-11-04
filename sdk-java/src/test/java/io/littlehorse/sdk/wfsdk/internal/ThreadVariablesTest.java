@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -20,7 +20,7 @@ public class ThreadVariablesTest {
         });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
         Assertions.assertThat(throwable)
-                .isInstanceOf(LHMisconfigurationException.class)
+                .isInstanceOf(LHWfSpecBuilderException.class)
                 .hasMessage("Non-Json my-var variable contains jsonIndex");
     }
 
@@ -33,7 +33,7 @@ public class ThreadVariablesTest {
         });
         Throwable throwable = Assertions.catchThrowable(wf::compileWorkflow);
         Assertions.assertThat(throwable)
-                .isInstanceOf(LHMisconfigurationException.class)
+                .isInstanceOf(LHWfSpecBuilderException.class)
                 .hasMessage("Invalid JsonPath: somePath");
     }
 

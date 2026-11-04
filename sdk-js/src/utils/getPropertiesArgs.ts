@@ -5,6 +5,7 @@ export type ConfigArgs = {
   apiPort: string
   protocol: string
   grpcResourceExhaustedRetry: string
+  grpcMaxReceiveMessageLength: string
   tenantId: string
   caCert: string
   clientCert: string
@@ -20,6 +21,7 @@ const argsMapping: Mapping = {
   apiPort: 'LHC_API_PORT',
   protocol: 'LHC_API_PROTOCOL',
   grpcResourceExhaustedRetry: 'LHC_GRPC_RESOURCE_EXHAUSTED_RETRY',
+  grpcMaxReceiveMessageLength: 'LHC_GRPC_MAX_RECEIVE_MESSAGE_LENGTH',
   tenantId: 'LHC_TENANT_ID',
   caCert: 'LHC_CA_CERT',
   clientCert: 'LHC_CLIENT_CERT',
@@ -35,7 +37,10 @@ const argsMapping: Mapping = {
 const getPropertiesArgs = (args: Partial<ConfigArgs>): Partial<Config> => {
   const keys = Object.keys(args) as Array<keyof ConfigArgs>
   return keys.reduce<Partial<Config>>((config, key) => {
-    config[argsMapping[key]] = args[key]
+    const value = args[key]
+    if (value !== undefined) {
+      config[argsMapping[key]] = value
+    }
     return config
   }, {})
 }

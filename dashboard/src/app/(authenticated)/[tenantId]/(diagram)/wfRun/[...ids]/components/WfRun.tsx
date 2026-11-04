@@ -21,7 +21,7 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   const { data } = useSWR(swrKey, async () => await getWfRun({ wfRunId: wfRunId!, tenantId }), {
     fallbackData: wfRunData,
   })
-  const { wfSpec, wfRun, variables } = data ?? wfRunData
+  const { wfSpec, wfRun, variables, variablesTooLarge } = data ?? wfRunData
 
   const initialThread = useMemo<ThreadType>(() => {
     const tr = wfRun.threadRuns.find(t => t.number === wfRun.greatestThreadrunNumber)
@@ -45,10 +45,10 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
   }, [wfSpec, selectedThread.name])
 
   const wfSpecUrl = useMemo(() => {
-    const { name, majorVersion, revision } = wfRun.wfSpecId ?? {}
-    if (name == null || majorVersion == null || revision == null) return ''
+    if (wfRun.wfSpecSource.oneofKind !== 'wfSpecId') return undefined
+    const { name, majorVersion, revision } = wfRun.wfSpecSource.wfSpecId
     return routes.wfSpec.detailWithRevision(name, majorVersion, revision)
-  }, [wfRun.wfSpecId])
+  }, [wfRun.wfSpecSource])
 
   if (!wfRunId) {
     return null
@@ -56,15 +56,26 @@ export const WfRun: FC<WfRunResponse> = wfRunData => {
 
   return (
     <div className="mb-16">
-      <Navigation href={wfSpecUrl} title="Go back to WfSpec" />
+      {wfSpecUrl && <Navigation href={wfSpecUrl} title="Go back to WfSpec" />}
 
       <Details {...wfRun} selectedThread={selectedThread} />
 
-      <Diagram spec={wfSpec} wfRun={wfRun} onThreadChange={onThreadChange} />
+      <Diagram
+        spec={wfSpec}
+        definitionId={wfSpecUrl ?? `inline/${wfRunIdToPath(wfRunId)}`}
+        wfRun={wfRun}
+        onThreadChange={onThreadChange}
+      />
 
       {wfRun.id && (
         <>
-          <Variables variableDefs={variableDefs} variables={variables} thread={selectedThread} wfRunId={wfRun.id} />
+          <Variables
+            variableDefs={variableDefs}
+            variables={variables}
+            variablesTooLarge={variablesTooLarge}
+            thread={selectedThread}
+            wfRunId={wfRun.id}
+          />
           <Separator className="mb-4 mt-4" />
           <ChildWorkflows parentWfRunId={wfRun.id} spec={wfSpec} />
         </>

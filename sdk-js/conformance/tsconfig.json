@@ -1,0 +1,16 @@
+{
+  // The testee compiles separately from the SDK (whose rootDir is src/):
+  // it imports the BUILT artifact from ../../dist, so typechecking here also
+  // exercises the SDK's published type definitions the way users do.
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "build",
+    "rootDir": "src",
+    "types": ["node"],
+    "sourceMap": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"]
+}

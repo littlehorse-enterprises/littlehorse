@@ -1,26 +1,19 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
-import java.util.Date;
-import lombok.Getter;
-import lombok.Setter;
+import io.littlehorse.sdk.worker.LHStructField;
 
-@Getter
-@Setter
-@LHStructDef("parking-ticket-report")
-public class ParkingTicketReport {
-    private String vehicleMake;
-    private String vehicleModel;
-    private String licensePlateNumber;
-
-    public ParkingTicketReport() {}
-
-    public ParkingTicketReport(String vehicleMake, String vehicleModel, String licensePlateNumber, Date createdAt) {
-        this.vehicleMake = vehicleMake;
-        this.vehicleModel = vehicleModel;
-        this.licensePlateNumber = licensePlateNumber;
-    }
-
+@LHStructDef(
+        value = "parking-ticket-report",
+        description =
+                "A parking ticket report capturing vehicle details and license plate at the time of the violation.")
+public record ParkingTicketReport(
+        @LHStructField(description = "The vehicle's manufacturer or brand name, ex: Suzuki") String vehicleMake,
+        @LHStructField(description = "The specific model and iteration of the vehicle, ex: Swift") String vehicleModel,
+        @LHStructField(
+                        description =
+                                "The license plate number for the vehicle at the time of writing the report, ex: C90-ELE")
+                String licensePlateNumber) {
     @Override
     public String toString() {
         return String.format("%s %s, Plate Number: %s", vehicleMake, vehicleModel, licensePlateNumber);

@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
@@ -25,6 +26,18 @@ import org.junit.jupiter.api.Test;
 public class LHTaskParameterTest {
 
     static class UnannotatedArrayElement {}
+
+    static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
 
     public class ParameterTestTasks {
         @LHTaskMethod("test-primitive")
@@ -44,6 +57,9 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("test-inline-struct-param")
         public void inlineStructTask(@LHType(name = "param1", structDefName = "customer") InlineStruct param1) {}
+
+        @LHTaskMethod("inline-pojo-param")
+        public void inlinePojoParam(@LHType(name = "param1", isInlineStruct = true) InlineAddress param1) {}
 
         @LHTaskMethod("inline-struct-placeholder-task")
         public void inlineStructPlaceholderTask(
@@ -65,6 +81,12 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("invalid-native-arr-adapter-json")
         public void invalidNativeArrayAdapterJson(@LHType(name = "param1", isLHArray = true) UUID[] param1) {}
+
+        @LHTaskMethod("test-native-map")
+        public void nativeMapParamTask(@LHType(name = "param1", isLHMap = true) Map<String, Long> param1) {}
+
+        @LHTaskMethod("non-map-lh-map-invalid-task")
+        public void nonMapLhMapInvalidTask(@LHType(isLHMap = true) String customer) {}
     }
 
     @Test
@@ -186,6 +208,23 @@ public class LHTaskParameterTest {
     }
 
     @Test
+    void shouldInferInlineStructSchemaForAnnotatedPojoParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "inline-pojo-param");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        TypeDefinition typeDef = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of())
+                .getVariableDef()
+                .getTypeDef();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(typeDef.getInlineStructDef()
+                        .getFieldsOrThrow("street")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
     void shouldResolvePlaceholdersForInlineStructTypes() {
         Map<String, String> placeholderValues = Map.of("inputStruct", "customer-request");
 
@@ -239,15 +278,17 @@ public class LHTaskParameterTest {
     }
 
     @Test
-    void shouldFailWhenNativeArrayElementResolvesToJsonObj() {
+    void shouldResolveNativeArrayPojoElementAsInlineStruct() {
         Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "invalid-native-arr-pojo");
         Parameter parameter = taskMethod.getParameters()[0];
 
-        assertThatThrownBy(() -> {
-                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
-                })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        TypeDefinition elementType = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of())
+                .getVariableDef()
+                .getTypeDef()
+                .getInlineArrayDef()
+                .getArrayType();
+
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
     }
 
     @Test
@@ -279,5 +320,40 @@ public class LHTaskParameterTest {
                 })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_ARR");
+    }
+
+    @Test
+    public void shouldHandleNativeMapTaskParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "test-native-map");
+        Parameter parameter = taskMethod.getParameters()[0];
+        LHTaskParameter taskParameter = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+
+        VariableDef actualVariableDef = taskParameter.getVariableDef();
+        VariableDef expectedVariableDef = VariableDef.newBuilder()
+                .setName("param1")
+                .setTypeDef(TypeDefinition.newBuilder()
+                        .setInlineMapDef(InlineMapDef.newBuilder()
+                                .setKeyType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .setValueType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.INT)
+                                        .build()))
+                        .build())
+                .build();
+
+        assertThat(actualVariableDef).isEqualTo(expectedVariableDef);
+    }
+
+    @Test
+    void shouldFailWhenIsLHMapUsedOnNonMapParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "non-map-lh-map-invalid-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> {
+                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map parameters");
     }
 }

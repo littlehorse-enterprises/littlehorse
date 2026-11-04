@@ -47,26 +47,26 @@ public final class ScheduledWfRunOuterClass extends com.google.protobuf.Generate
     java.lang.String[] descriptorData = {
       "\n\026scheduled_wf_run.proto\022\013littlehorse\032\037g" +
       "oogle/protobuf/timestamp.proto\032\017object_i" +
-      "d.proto\032\016variable.proto\"\206\003\n\016ScheduledWfR" +
-      "un\022)\n\002id\030\001 \001(\0132\035.littlehorse.ScheduledWf" +
-      "RunId\022)\n\nwf_spec_id\030\002 \001(\0132\025.littlehorse." +
-      "WfSpecId\022=\n\tvariables\030\003 \003(\0132*.littlehors" +
-      "e.ScheduledWfRun.VariablesEntry\0223\n\020paren" +
-      "t_wf_run_id\030\004 \001(\0132\024.littlehorse.WfRunIdH" +
-      "\000\210\001\001\022\027\n\017cron_expression\030\005 \001(\t\022.\n\ncreated" +
-      "_at\030\006 \001(\0132\032.google.protobuf.Timestamp\032L\n" +
-      "\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005value\030\002 " +
-      "\001(\0132\032.littlehorse.VariableValue:\0028\001B\023\n\021_" +
-      "parent_wf_run_idBM\n\037io.littlehorse.sdk.c" +
-      "ommon.protoP\001Z\t.;lhproto\252\002\034LittleHorse.S" +
-      "dk.Common.Protob\006proto3"
+      "d.proto\032\025type_definition.proto\"\206\003\n\016Sched" +
+      "uledWfRun\022)\n\002id\030\001 \001(\0132\035.littlehorse.Sche" +
+      "duledWfRunId\022)\n\nwf_spec_id\030\002 \001(\0132\025.littl" +
+      "ehorse.WfSpecId\022=\n\tvariables\030\003 \003(\0132*.lit" +
+      "tlehorse.ScheduledWfRun.VariablesEntry\0223" +
+      "\n\020parent_wf_run_id\030\004 \001(\0132\024.littlehorse.W" +
+      "fRunIdH\000\210\001\001\022\027\n\017cron_expression\030\005 \001(\t\022.\n\n" +
+      "created_at\030\006 \001(\0132\032.google.protobuf.Times" +
+      "tamp\032L\n\016VariablesEntry\022\013\n\003key\030\001 \001(\t\022)\n\005v" +
+      "alue\030\002 \001(\0132\032.littlehorse.VariableValue:\002" +
+      "8\001B\023\n\021_parent_wf_run_idBM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.TimestampProto.getDescriptor(),
           io.littlehorse.sdk.common.proto.ObjectId.getDescriptor(),
-          io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
+          io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor(),
         });
     internal_static_littlehorse_ScheduledWfRun_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -83,7 +83,7 @@ public final class ScheduledWfRunOuterClass extends com.google.protobuf.Generate
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.ObjectId.getDescriptor();
-    io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
+    io.littlehorse.sdk.common.proto.TypeDefinitionOuterClass.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

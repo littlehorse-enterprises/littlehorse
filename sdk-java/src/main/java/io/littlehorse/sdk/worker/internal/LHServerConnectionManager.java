@@ -7,6 +7,7 @@ import io.littlehorse.sdk.worker.LHTaskWorkerHealth;
 import io.littlehorse.sdk.worker.internal.util.VariableMapping;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 public class LHServerConnectionManager {
 
@@ -23,7 +24,8 @@ public class LHServerConnectionManager {
             Method taskMethod,
             List<VariableMapping> mappings,
             Object executable,
-            LHConfig config) {
+            LHConfig config,
+            Map<String, String> placeholderValues) {
         this.rebalanceThread = new RebalanceThread(
                 bootstrapStub,
                 taskWorkerId,
@@ -40,7 +42,11 @@ public class LHServerConnectionManager {
                         executable,
                         taskMethod,
                         new ScheduledTaskExecutor(
-                                bootstrapStub, config.getBlockingStub(), config.getTypeAdapterRegistry(), taskDef)));
+                                bootstrapStub,
+                                config.getBlockingStub(),
+                                config.getTypeAdapterRegistry(),
+                                taskDef,
+                                placeholderValues)));
         this.livenessController = livenessController;
         this.taskDef = taskDef;
     }

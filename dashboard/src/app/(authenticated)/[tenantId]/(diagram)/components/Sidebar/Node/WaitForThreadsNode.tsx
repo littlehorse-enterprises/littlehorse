@@ -9,11 +9,11 @@ export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node
 
   return (
     <div className="flex max-w-full flex-1 flex-col gap-2">
-      {threadsToWaitFor.$case === 'threads' && (
+      {threadsToWaitFor.oneofKind === 'threads' && (
         <>
           <small className="node-title">Threads</small>
           <div className="mb-2 flex items-center">
-            {threadsToWaitFor.value.threads.map((thread, key) => (
+            {threadsToWaitFor.threads.threads.map((thread, key) => (
               <div key={JSON.stringify(thread)} className="flex">
                 <span className="flex-1 truncate bg-gray-200 px-2 font-mono">{key}</span>
                 <VariableAssignment variableAssigment={thread.threadRunNumber!} />
@@ -22,11 +22,11 @@ export const WaitForThreadsNode: FC<{ node: WaitForThreadsNodeProto }> = ({ node
           </div>
         </>
       )}
-      {threadsToWaitFor.$case === 'threadList' && (
+      {threadsToWaitFor.oneofKind === 'threadList' && (
         <>
           <small className="node-title">Threads List</small>
           <div className="mb-2 flex items-center">
-            <VariableAssignment variableAssigment={threadsToWaitFor.value} />
+            <VariableAssignment variableAssigment={threadsToWaitFor.threadList} />
           </div>
         </>
       )}

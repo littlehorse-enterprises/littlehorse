@@ -4,11 +4,13 @@ import { ClientError, Status } from 'nice-grpc-common'
 import { UserTaskDef } from './components/UserTaskDef'
 import { getUserTaskDef } from './getUserTaskDef'
 
-type Props = { params: { props: string[]; tenantId: string } }
+type Props = { params: Promise<{ props: string[]; tenantId: string }> }
 
-export default async function Page({ params: { props, tenantId } }: Props) {
+export default async function Page({ params }: Props) {
+  const { props, tenantId } = await params
   const name = props[0]
   const version = props[1]
+
   try {
     const spec = await getUserTaskDef({ name, version, tenantId })
     return <UserTaskDef spec={spec} />
@@ -18,7 +20,8 @@ export default async function Page({ params: { props, tenantId } }: Props) {
   }
 }
 
-export async function generateMetadata({ params: { props } }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { props } = await params
   const name = props[0]
 
   return {

@@ -1,7 +1,7 @@
 import { formatDateReadable } from '@/app/utils'
 import React from 'react'
 
-export const DoneEvent = ({ time }: { time?: string }) => {
+export const DoneEvent = ({ time }: { time?: import('@/app/utils').DateLike }) => {
   return (
     <>
       {time && (

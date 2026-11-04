@@ -11,15 +11,19 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteTaskDefRequest;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutTaskDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfSpecId;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskSignature;
@@ -189,6 +193,55 @@ public class TaskDefLifecycleTest {
         assertThatThrownBy(() -> client.putTaskDef(req))
                 .isInstanceOf(StatusRuntimeException.class)
                 .hasMessageContaining("Refers to non-existent StructDef non-existent-struct-def");
+    }
+
+    @Test
+    void shouldRejectTaskDefInputWithInvalidInlineStructFieldName() {
+        TypeDefinition invalidInlineType = TypeDefinition.newBuilder()
+                .setInlineStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "street_name",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                        .build()))
+                .build();
+        PutTaskDefRequest req = PutTaskDefRequest.newBuilder()
+                .setName("task-with-invalid-inline-input-" + UUID.randomUUID())
+                .addInputVars(VariableDef.newBuilder().setName("address").setTypeDef(invalidInlineType))
+                .build();
+
+        assertThatThrownBy(() -> client.putTaskDef(req))
+                .isInstanceOfSatisfying(
+                        StatusRuntimeException.class,
+                        exn -> assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT))
+                .hasMessageContaining("street_name")
+                .hasMessageContaining("cannot include underscores");
+    }
+
+    @Test
+    void shouldRejectTaskDefReturnTypeWithIncompatibleInlineStructDefault() {
+        TypeDefinition invalidInlineType = TypeDefinition.newBuilder()
+                .setInlineStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "verified",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(
+                                                TypeDefinition.newBuilder().setPrimitiveType(VariableType.BOOL))
+                                        .setDefaultValue(
+                                                VariableValue.newBuilder().setInt(123))
+                                        .build()))
+                .build();
+        PutTaskDefRequest req = PutTaskDefRequest.newBuilder()
+                .setName("task-with-invalid-inline-return-" + UUID.randomUUID())
+                .setReturnType(ReturnType.newBuilder().setReturnType(invalidInlineType))
+                .build();
+
+        assertThatThrownBy(() -> client.putTaskDef(req))
+                .isInstanceOfSatisfying(
+                        StatusRuntimeException.class,
+                        exn -> assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT))
+                .hasMessageContaining("StructFieldDef validation failed");
     }
 }
 

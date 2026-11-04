@@ -117,9 +117,8 @@ public class StartMultipleThreadsRunModel extends SubNodeRun<StartMultipleThread
                 childThreadIds.add(child.getNumber());
             }
         } catch (LHVarSubError | LHSerdeException | LHValidationException e) {
-            FailureModel failure = new FailureModel();
-            failure.message = "Failed constructing input variables for thread: " + e.getMessage();
-            failure.failureName = LHConstants.VAR_SUB_ERROR;
+            FailureModel failure = new FailureModel(
+                    "Failed constructing input variables for thread: " + e.getMessage(), LHConstants.VAR_SUB_ERROR);
             throw new NodeFailureException(failure);
         }
     }

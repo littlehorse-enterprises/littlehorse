@@ -1,7 +1,6 @@
 package io.littlehorse.server.streams.topology.core.processors;
 
 import static com.google.protobuf.util.Timestamps.fromMillis;
-import static com.google.protobuf.util.Timestamps.toMillis;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHServerConfig;
@@ -24,14 +23,29 @@ import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 
 /**
  * Responsible for draining closed metric windows and counted tags from the in-memory
- * accumulators and forwarding them as repartition commands. Also handles the store-based
- * catch-up scan after startup.
+ * accumulators and forwarding them as repartition commands.
+ *
+ * <p>The historical metric-window replay that used to live here now runs off-thread in
+ * {@link PartitionMetricsCatchUpJob}, and the BulkJob shard scan in {@code BulkJobScanJob}. What
+ * remains is deliberately NOT a background job, and will not become one:
+ *
+ * <ul>
+ *   <li>It reads {@link PartitionLocalBuffer}s, which are write-through caches over the core store.
+ *       The drain removes an entry from the buffer and deletes it from the store as two steps, and
+ *       command processing reads the buffer then falls back to the store. Those only compose
+ *       correctly because both run on the Streams thread — see the buffer's javadoc.</li>
+ *   <li>There is nothing expensive to offload. Everything here is bounded by one flush interval:
+ *       counted tags are fully drained on every tick, and metric windows are bounded by the number
+ *       of active specs in the last minute. Neither can grow into the kind of unbounded RocksDB scan
+ *       that motivated moving the other two.</li>
+ * </ul>
  */
 @Slf4j
 class PartitionDrainScheduler {
@@ -41,41 +55,53 @@ class PartitionDrainScheduler {
     private final LHServerConfig config;
     private final ProcessorContext<String, CommandProcessorOutput> ctx;
 
-    private MetricsCollectionSource collectionSource;
-    private final long serverStartWindowTime;
+    /**
+     * Whether {@link PartitionMetricsCatchUpJob} has finished replaying history. Until it has, the
+     * job owns the metrics hint and we must not overwrite it, or we would claim that history has
+     * been processed when it has not.
+     */
+    private final BooleanSupplier metricsCatchUpComplete;
+
+    /**
+     * The counted-tag replay is deliberately NOT a background job. Unlike metric windows, live
+     * processing writes to the very same keys the replay scans, so doing it against a stale IQ
+     * snapshot would delete counts that the Streams thread had incremented in the meantime.
+     */
+    private boolean countedTagsCaughtUp;
 
     PartitionDrainScheduler(
             PartitionLocalBuffer<PartitionMetricWindowModel> metricWindows,
             PartitionLocalBuffer<PartitionCountedTagModel> countedTags,
             LHServerConfig config,
-            ProcessorContext<String, CommandProcessorOutput> ctx) {
+            ProcessorContext<String, CommandProcessorOutput> ctx,
+            BooleanSupplier metricsCatchUpComplete) {
         this.metricWindows = metricWindows;
         this.countedTags = countedTags;
         this.config = config;
         this.ctx = ctx;
-        this.collectionSource = MetricsCollectionSource.STORE;
-        this.serverStartWindowTime = LHUtil.getCurrentWindowDate().getTime() - 1;
+        this.metricsCatchUpComplete = metricsCatchUpComplete;
     }
 
     /**
-     * Called by the punctuator. Decides whether to catch up from RocksDB or drain memory,
-     * then persists the hint.
+     * Called by the unified punctuator.
      */
     void punctuate(ClusterScopedStore store) {
-        long lastWindowTime = LHUtil.getCurrentWindowDate().getTime() - (2 * 60 * 1000L);
-        if (collectionSource == MetricsCollectionSource.STORE) {
-            lastWindowTime = catchUpFromStore(store);
-        } else {
-            flushFromMemory(store);
+        if (!countedTagsCaughtUp) {
+            catchUpCountedTags(store);
+            countedTagsCaughtUp = true;
         }
-        store.put(new MetricsHintModel(fromMillis(lastWindowTime)));
+        flushFromMemory(store);
+        if (metricsCatchUpComplete.getAsBoolean()) {
+            long lastWindowTime = LHUtil.getCurrentWindowDate().getTime() - (2 * 60 * 1000L);
+            store.put(new MetricsHintModel(fromMillis(lastWindowTime)));
+        }
     }
 
     /**
      * Resets the flusher state (e.g., on partition close).
      */
     void reset() {
-        this.collectionSource = MetricsCollectionSource.STORE;
+        this.countedTagsCaughtUp = false;
     }
 
     private void flushFromMemory(ClusterScopedStore store) {
@@ -105,44 +131,6 @@ class PartitionDrainScheduler {
             forwardCountedTag(tag);
             store.delete(tag);
         }
-    }
-
-    private long catchUpFromStore(ClusterScopedStore store) {
-        collectionSource = MetricsCollectionSource.MEMORY;
-
-        // Catch up counted tags first (forward and delete all persisted deltas)
-        catchUpCountedTags(store);
-
-        // Then catch up metric windows (resumable with hint)
-        MetricsHintModel hint = store.get(MetricsHintModel.METRICS_HINT_KEY, MetricsHintModel.class);
-        if (hint == null || hint.getLastProcessedTimestamp() == null) {
-            return this.serverStartWindowTime;
-        }
-
-        long lastSeenWindowTime = toMillis(hint.getLastProcessedTimestamp());
-        String startPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + lastSeenWindowTime;
-        String endPrefix = LHConstants.PARTITION_METRICS_KEY + "/" + serverStartWindowTime;
-        long startTime = System.currentTimeMillis();
-
-        try (LHKeyValueIterator<PartitionMetricWindowModel> iter =
-                store.range(startPrefix, endPrefix, PartitionMetricWindowModel.class)) {
-            while (iter.hasNext()) {
-                PartitionMetricWindowModel windowMetrics = iter.next().getValue();
-                if (windowMetrics != null) {
-                    lastSeenWindowTime = forwardMetricWindow(store, windowMetrics);
-                    if (System.currentTimeMillis() - startTime > LHConstants.MAX_MS_PER_PARTITION_METRICS_PUNCTUATION) {
-                        collectionSource = MetricsCollectionSource.STORE;
-                        log.warn(
-                                "Hint will be used for next punctuation from: {} to: {} elapsedTime: {} ms",
-                                new Date(lastSeenWindowTime),
-                                new Date(serverStartWindowTime),
-                                System.currentTimeMillis() - startTime);
-                        return lastSeenWindowTime;
-                    }
-                }
-            }
-        }
-        return lastSeenWindowTime;
     }
 
     private void catchUpCountedTags(ClusterScopedStore store) {

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import io.littlehorse.common.model.PartitionMetricWindowModel;
 import io.littlehorse.common.model.getable.core.metrics.CountAndTimingModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
+import io.littlehorse.common.model.getable.objectId.QuotaIdModel;
 import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import io.littlehorse.common.model.getable.objectId.WfSpecIdModel;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -110,6 +111,21 @@ public class PartitionMetricWindowModelTest {
         assertThat(model.getMetrics()).hasSize(1);
         assertThat(model.getMetrics()).containsKey("started");
         assertThat(model.getMetrics().get("started").getCount()).isEqualTo(1);
+    }
+
+    @Test
+    public void shouldTrackQuotaUsage() {
+        QuotaIdModel quotaId = new QuotaIdModel(tenantId);
+        PartitionMetricWindowModel model =
+                new PartitionMetricWindowModel(new MetricWindowIdModel(tenantId, quotaId, windowStart));
+
+        model.incrementQuotaUsage(false, 0);
+        model.incrementQuotaUsage(true, 500);
+
+        assertThat(model.getMetrics().get("requests_observed").getCount()).isEqualTo(2);
+        assertThat(model.getMetrics().get("requests_throttled").getCount()).isEqualTo(1);
+        assertThat(model.getMetrics().get("requests_throttled").getTotalLatencyMs())
+                .isEqualTo(500);
     }
 
     @Test

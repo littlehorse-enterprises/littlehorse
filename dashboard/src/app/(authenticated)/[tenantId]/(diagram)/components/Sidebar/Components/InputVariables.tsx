@@ -17,7 +17,7 @@ const InputVariableRow = ({ variable }: { variable: VarNameAndVal }) => {
     if (!variable.value) return
     setModal({ type: 'output', data: { message: tryFormatAsJson(rawValue), label: variable.varName ?? 'Input' } })
     setShowModal(true)
-  }, [variable, setModal, setShowModal])
+  }, [variable, rawValue, setModal, setShowModal])
 
   return (
     <div

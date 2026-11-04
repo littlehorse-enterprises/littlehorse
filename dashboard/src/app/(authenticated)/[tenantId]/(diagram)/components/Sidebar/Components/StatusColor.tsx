@@ -1,15 +1,16 @@
-import { LHStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, MetadataStatus, TaskStatus, WfSpec } from 'littlehorse-client/proto'
 import {
-  BugIcon,
+  ArchiveIcon,
   CheckIcon,
   CirclePauseIcon,
   CirclePlayIcon,
   CircleSlashIcon,
   CircleXIcon,
   EllipsisIcon,
+  LoaderCircleIcon,
   TriangleAlertIcon,
 } from 'lucide-react'
-export type Pin = {
+type Pin = {
   color: string
   Icon: React.ForwardRefExoticComponent<
     React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & {
@@ -18,11 +19,31 @@ export type Pin = {
     } & React.RefAttributes<SVGSVGElement>
   >
 }
-export const WF_SPEC_STATUS_COLOR: { [key in WfSpec['status']]: string } = {
-  ARCHIVED: 'bg-gray-200',
-  ACTIVE: 'bg-blue-200',
-  TERMINATING: 'bg-yellow-200',
-  UNRECOGNIZED: 'bg-red-200',
+type WfSpecStatusProp = Record<
+  WfSpec['status'],
+  { backgroundColor: string; textColor: string; animate?: boolean } & Pin
+>
+
+export const WF_SPEC_STATUS: WfSpecStatusProp = {
+  [MetadataStatus.ACTIVE]: {
+    color: 'blue',
+    textColor: 'text-blue-800',
+    backgroundColor: 'bg-blue-200',
+    Icon: CirclePlayIcon,
+    animate: true,
+  },
+  [MetadataStatus.ARCHIVED]: {
+    color: 'gray',
+    textColor: 'text-gray-700',
+    backgroundColor: 'bg-gray-200',
+    Icon: ArchiveIcon,
+  },
+  [MetadataStatus.TERMINATING]: {
+    color: 'yellow',
+    textColor: 'text-yellow-800',
+    backgroundColor: 'bg-yellow-200',
+    Icon: LoaderCircleIcon,
+  },
 }
 type WFRunStatusProp = Record<LHStatus, { backgroundColor: string; textColor: string } & Pin>
 type TaskStatusProp = Record<TaskStatus, { backgroundColor: string; textColor: string } & Pin>
@@ -68,12 +89,6 @@ export const WF_RUN_STATUS: WFRunStatusProp = {
     textColor: 'text-red-600',
     backgroundColor: 'bg-red-200',
     Icon: TriangleAlertIcon,
-  },
-  [LHStatus.UNRECOGNIZED]: {
-    color: 'gray',
-    textColor: 'text-gray-600',
-    backgroundColor: 'bg-gray-200',
-    Icon: BugIcon,
   },
 }
 export const TASK_STATUS: TaskStatusProp = {
@@ -130,11 +145,5 @@ export const TASK_STATUS: TaskStatusProp = {
     textColor: 'text-blue-600',
     backgroundColor: 'bg-blue-200',
     Icon: CirclePlayIcon,
-  },
-  [TaskStatus.UNRECOGNIZED]: {
-    color: 'teal',
-    textColor: 'text-teal-600',
-    backgroundColor: 'bg-teal-200',
-    Icon: EllipsisIcon,
   },
 }

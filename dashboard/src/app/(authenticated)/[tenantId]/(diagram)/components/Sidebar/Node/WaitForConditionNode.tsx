@@ -6,8 +6,8 @@ import { VariableAssignment } from '../Components/VariableAssignment'
 
 export const WaitForCondition: FC<{ node: WaitForConditionNode }> = ({ node }) => {
   const { nodeCondition } = node
-  if (nodeCondition?.$case !== 'legacyCondition') return null
-  const { left, right, comparator } = nodeCondition.value
+  if (nodeCondition?.oneofKind !== 'legacyCondition') return null
+  const { left, right, comparator } = nodeCondition.legacyCondition
   return (
     <div className="flex max-w-full flex-1 flex-col">
       <div className="mb-2 flex flex-col gap-2">

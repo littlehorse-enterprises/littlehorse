@@ -119,7 +119,7 @@ public class VarSubErrorTest {
         verifier.prepareRun(varTypeValidationsWf, Arg.of("input-int", 123), Arg.of("input-json", jsonStuff))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyTaskRun(0, 1, taskRun -> {
-                    assertThat(taskRun.getStatus()).isEqualTo(TaskStatus.TASK_FAILED);
+                    assertThat(taskRun.getStatus()).isEqualTo(TaskStatus.TASK_INPUT_VAR_SUB_ERROR);
 
                     assertThat(taskRun.getInputVariables(0).getValue().getValueCase())
                             .isEqualTo(ValueCase.VALUE_NOT_SET);

@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { ExternalEvent } from '../ExternalEvent'
-import { ExternalEvent as ExternalEventProto } from 'littlehorse-client/proto'
+import { ExternalEvent as ExternalEventProto, Timestamp } from 'littlehorse-client/proto'
 
 describe('ExternalEvent component', () => {
   const externalEventTest: ExternalEventProto = {
@@ -12,11 +12,11 @@ describe('ExternalEvent component', () => {
         id: '51b58511bbce416d8805c5a6b6c173ad',
       },
     },
-    createdAt: new Date().toISOString(),
+    createdAt: Timestamp.fromDate(new Date()),
     content: {
       value: {
-        $case: 'str',
-        value: 'Obi-Wan',
+        oneofKind: 'str',
+        str: 'Obi-Wan',
       },
     },
     claimed: false,

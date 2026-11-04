@@ -14,12 +14,24 @@ public final class PlaceholderUtil {
         final Matcher matcher = PLACEHOLDER_PATTERN.matcher(template);
 
         while (matcher.find()) {
-            final String placeholderKey = matcher.group(1);
-            final String replacement = values.get(placeholderKey);
+            final String placeholderToken = matcher.group(1);
+            final String placeholderKey;
+            final String defaultValue;
+
+            final int separatorIndex = placeholderToken.indexOf(':');
+            if (separatorIndex >= 0) {
+                placeholderKey = placeholderToken.substring(0, separatorIndex);
+                defaultValue = placeholderToken.substring(separatorIndex + 1);
+            } else {
+                placeholderKey = placeholderToken;
+                defaultValue = null;
+            }
+
+            final String replacement = values.containsKey(placeholderKey) ? values.get(placeholderKey) : defaultValue;
 
             if (replacement == null) {
-                throw new IllegalArgumentException(
-                        "No value has been provided for the placeholder with key: " + placeholderKey);
+                throw new IllegalArgumentException("No value has been provided for the placeholder with key: "
+                        + placeholderKey + ". No default value supplied for the placeholder either.");
             }
 
             matcher.appendReplacement(resultingText, Matcher.quoteReplacement(replacement));

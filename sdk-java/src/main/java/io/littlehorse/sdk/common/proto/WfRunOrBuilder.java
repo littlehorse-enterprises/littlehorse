@@ -39,7 +39,7 @@ public interface WfRunOrBuilder extends
 
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -48,7 +48,7 @@ public interface WfRunOrBuilder extends
   boolean hasWfSpecId();
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -57,12 +57,31 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return Whether the isInline field is set.
+   */
+  boolean hasIsInline();
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return The isInline.
+   */
+  boolean getIsInline();
 
   /**
    * <pre>
@@ -386,4 +405,109 @@ public interface WfRunOrBuilder extends
    * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
    */
   io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReferenceOrBuilder getParentTriggerOrBuilder();
+
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return Whether the workflowMigrationPlanId field is set.
+   */
+  boolean hasWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   * @return The workflowMigrationPlanId.
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId getWorkflowMigrationPlanId();
+  /**
+   * <pre>
+   * reference to WorkflowMigrationPlanId
+   * </pre>
+   *
+   * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.WorkflowMigrationPlanIdOrBuilder getWorkflowMigrationPlanIdOrBuilder();
+
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  int getMigrationVariablesCount();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  boolean containsMigrationVariables(
+      java.lang.String key);
+  /**
+   * Use {@link #getMigrationVariablesMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariables();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
+  getMigrationVariablesMap();
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.MigrationVars defaultValue);
+  /**
+   * <pre>
+   * Map to determine how to reassign varaible values during Migration
+   * newThreadName -&gt; MigrationVar
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.MigrationVars&gt; migration_variables = 13;</code>
+   */
+  io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
+      java.lang.String key);
+
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  java.util.List<java.lang.Integer> getThreadRunQueueList();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return The count of threadRunQueue.
+   */
+  int getThreadRunQueueCount();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  int getThreadRunQueue(int index);
+
+  io.littlehorse.sdk.common.proto.WfRun.WfSpecSourceCase getWfSpecSourceCase();
 }

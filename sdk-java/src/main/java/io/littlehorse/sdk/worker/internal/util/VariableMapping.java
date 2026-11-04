@@ -10,7 +10,10 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class VariableMapping {
@@ -19,18 +22,42 @@ public class VariableMapping {
     private final String variableName;
     private final Class<?> parameterJavaType;
     private final boolean expectsNativeLHArray;
+    private final boolean expectsNativeLHMap;
+    private final Class<?> nativeMapKeyJavaType;
+    private final Class<?> nativeMapValueJavaType;
+    private final Map<String, String> placeholderValues;
 
     public VariableMapping(
             VariableDef variableDef, LHTaskParameter lhTaskParameter, LHTypeAdapterRegistry typeAdapterRegistry)
             throws TaskSchemaMismatchError {
+        this(variableDef, lhTaskParameter, typeAdapterRegistry, Map.of());
+    }
+
+    public VariableMapping(
+            VariableDef variableDef,
+            LHTaskParameter lhTaskParameter,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws TaskSchemaMismatchError {
         Objects.requireNonNull(variableDef, "VariableDef cannot be null");
         Objects.requireNonNull(lhTaskParameter, "LHTaskParameter cannot be null");
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
         this.variableName = variableDef.getName();
         this.parameterJavaType = lhTaskParameter.getParameterType();
         this.expectsNativeLHArray =
                 lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
                         == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
+        this.expectsNativeLHMap = lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
+                == TypeDefinition.DefinedTypeCase.INLINE_MAP_DEF;
+        if (expectsNativeLHMap) {
+            LHMapType mapType = (LHMapType) lhTaskParameter.getVariableClassType();
+            this.nativeMapKeyJavaType = mapType.getKeyClass();
+            this.nativeMapValueJavaType = mapType.getValueClass();
+        } else {
+            this.nativeMapKeyJavaType = null;
+            this.nativeMapValueJavaType = null;
+        }
 
         try {
             validateParamAgainstVariableDef(variableDef, lhTaskParameter);
@@ -79,10 +106,19 @@ public class VariableMapping {
                         .getStructDefId()
                         .getName()
                         .equals(expectedType.getStructDefId().getName());
+            case INLINE_STRUCT_DEF:
+                return providedType.getInlineStructDef().equals(expectedType.getInlineStructDef());
             case INLINE_ARRAY_DEF:
                 return areTypesCompatible(
                         providedType.getInlineArrayDef().getArrayType(),
                         expectedType.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                return areTypesCompatible(
+                                providedType.getInlineMapDef().getKeyType(),
+                                expectedType.getInlineMapDef().getKeyType())
+                        && areTypesCompatible(
+                                providedType.getInlineMapDef().getValueType(),
+                                expectedType.getInlineMapDef().getValueType());
             case DEFINEDTYPE_NOT_SET:
             default:
                 return false;
@@ -119,6 +155,15 @@ public class VariableMapping {
                 return "Array<"
                         + formatTypeDefinition(
                                 typeDefinition.getInlineArrayDef().getArrayType()) + ">";
+            case INLINE_MAP_DEF:
+                return "Map<"
+                        + formatTypeDefinition(typeDefinition.getInlineMapDef().getKeyType())
+                        + ", "
+                        + formatTypeDefinition(typeDefinition.getInlineMapDef().getValueType())
+                        + ">";
+            case INLINE_STRUCT_DEF:
+                return "InlineStruct<"
+                        + typeDefinition.getInlineStructDef().getFieldsMap().keySet() + ">";
             default:
                 return "UNSPECIFIED";
         }
@@ -147,7 +192,19 @@ public class VariableMapping {
             if (expectsNativeLHArray && val.getValueCase() == VariableValue.ValueCase.ARRAY) {
                 return assignNativeArray(val);
             }
-            return LHLibUtil.varValToObj(val, this.parameterJavaType, this.typeAdapterRegistry);
+            if (expectsNativeLHMap && val.getValueCase() == VariableValue.ValueCase.MAP) {
+                return assignNativeMap(val);
+            }
+            Object result = LHLibUtil.varValToObj(
+                    val, this.parameterJavaType, this.typeAdapterRegistry, this.placeholderValues);
+            if (result == null && parameterJavaType.isPrimitive()) {
+                throw new InputVarSubstitutionException(
+                        String.format(
+                                "Task variable <%s> resolved to null but method parameter type <%s> is primitive and cannot accept null. Use boxed type (e.g. Long instead of long) or ensure value is always present.",
+                                taskDefParamName, parameterJavaType.getName()),
+                        null);
+            }
+            return result;
         } catch (LHSerdeException e) {
             throw new InputVarSubstitutionException(
                     "Failed serializing Java object for variable: " + taskDefParamName, e);
@@ -169,5 +226,24 @@ public class VariableMapping {
         }
 
         return outputArray;
+    }
+
+    private Object assignNativeMap(VariableValue val) throws LHSerdeException {
+        if (!Map.class.isAssignableFrom(parameterJavaType)) {
+            throw new LHSerdeException("Native LittleHorse maps can only be assigned to java.util.Map parameters.");
+        }
+
+        io.littlehorse.sdk.common.proto.Map protoMap = val.getMap();
+        Map<Object, Object> result = new HashMap<>();
+
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : protoMap.getEntriesList()) {
+            Object key =
+                    LHLibUtil.varValToObj(entry.getKey(), nativeMapKeyJavaType, typeAdapterRegistry, placeholderValues);
+            Object value = LHLibUtil.varValToObj(
+                    entry.getValue(), nativeMapValueJavaType, typeAdapterRegistry, placeholderValues);
+            result.put(key, value);
+        }
+
+        return result;
     }
 }

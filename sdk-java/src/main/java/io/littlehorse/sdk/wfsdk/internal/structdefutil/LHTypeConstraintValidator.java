@@ -1,5 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal.structdefutil;
 
+import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 
@@ -28,6 +29,23 @@ final class LHTypeConstraintValidator {
             case INLINE_ARRAY_DEF:
                 return findForbiddenJsonPrimitive(
                         typeDefinition.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                VariableType keyForbidden = findForbiddenJsonPrimitive(
+                        typeDefinition.getInlineMapDef().getKeyType());
+                if (keyForbidden != null) {
+                    return keyForbidden;
+                }
+                return findForbiddenJsonPrimitive(
+                        typeDefinition.getInlineMapDef().getValueType());
+            case INLINE_STRUCT_DEF:
+                for (StructFieldDef fieldDef :
+                        typeDefinition.getInlineStructDef().getFieldsMap().values()) {
+                    VariableType fieldForbidden = findForbiddenJsonPrimitive(fieldDef.getFieldType());
+                    if (fieldForbidden != null) {
+                        return fieldForbidden;
+                    }
+                }
+                return null;
             default:
                 return null;
         }

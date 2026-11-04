@@ -20,104 +20,117 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	LittleHorse_PutTaskDef_FullMethodName                 = "/littlehorse.LittleHorse/PutTaskDef"
-	LittleHorse_GetTaskDef_FullMethodName                 = "/littlehorse.LittleHorse/GetTaskDef"
-	LittleHorse_GetTaskWorkerGroup_FullMethodName         = "/littlehorse.LittleHorse/GetTaskWorkerGroup"
-	LittleHorse_PutExternalEventDef_FullMethodName        = "/littlehorse.LittleHorse/PutExternalEventDef"
-	LittleHorse_GetExternalEventDef_FullMethodName        = "/littlehorse.LittleHorse/GetExternalEventDef"
-	LittleHorse_PutWorkflowEventDef_FullMethodName        = "/littlehorse.LittleHorse/PutWorkflowEventDef"
-	LittleHorse_PutWfSpec_FullMethodName                  = "/littlehorse.LittleHorse/PutWfSpec"
-	LittleHorse_GetWfSpec_FullMethodName                  = "/littlehorse.LittleHorse/GetWfSpec"
-	LittleHorse_GetLatestWfSpec_FullMethodName            = "/littlehorse.LittleHorse/GetLatestWfSpec"
-	LittleHorse_MigrateWfSpec_FullMethodName              = "/littlehorse.LittleHorse/MigrateWfSpec"
-	LittleHorse_PutStructDef_FullMethodName               = "/littlehorse.LittleHorse/PutStructDef"
-	LittleHorse_GetStructDef_FullMethodName               = "/littlehorse.LittleHorse/GetStructDef"
-	LittleHorse_ValidateStructDefEvolution_FullMethodName = "/littlehorse.LittleHorse/ValidateStructDefEvolution"
-	LittleHorse_PutUserTaskDef_FullMethodName             = "/littlehorse.LittleHorse/PutUserTaskDef"
-	LittleHorse_GetUserTaskDef_FullMethodName             = "/littlehorse.LittleHorse/GetUserTaskDef"
-	LittleHorse_GetLatestUserTaskDef_FullMethodName       = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
-	LittleHorse_RunWf_FullMethodName                      = "/littlehorse.LittleHorse/RunWf"
-	LittleHorse_ScheduleWf_FullMethodName                 = "/littlehorse.LittleHorse/ScheduleWf"
-	LittleHorse_SearchScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/SearchScheduledWfRun"
-	LittleHorse_GetScheduledWfRun_FullMethodName          = "/littlehorse.LittleHorse/GetScheduledWfRun"
-	LittleHorse_GetWfRun_FullMethodName                   = "/littlehorse.LittleHorse/GetWfRun"
-	LittleHorse_GetUserTaskRun_FullMethodName             = "/littlehorse.LittleHorse/GetUserTaskRun"
-	LittleHorse_AssignUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/AssignUserTaskRun"
-	LittleHorse_CompleteUserTaskRun_FullMethodName        = "/littlehorse.LittleHorse/CompleteUserTaskRun"
-	LittleHorse_CancelUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/CancelUserTaskRun"
-	LittleHorse_SaveUserTaskRunProgress_FullMethodName    = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
-	LittleHorse_ListUserTaskRuns_FullMethodName           = "/littlehorse.LittleHorse/ListUserTaskRuns"
-	LittleHorse_PutUserTaskRunComment_FullMethodName      = "/littlehorse.LittleHorse/PutUserTaskRunComment"
-	LittleHorse_EditUserTaskRunComment_FullMethodName     = "/littlehorse.LittleHorse/EditUserTaskRunComment"
-	LittleHorse_DeleteUserTaskRunComment_FullMethodName   = "/littlehorse.LittleHorse/DeleteUserTaskRunComment"
-	LittleHorse_GetNodeRun_FullMethodName                 = "/littlehorse.LittleHorse/GetNodeRun"
-	LittleHorse_ListNodeRuns_FullMethodName               = "/littlehorse.LittleHorse/ListNodeRuns"
-	LittleHorse_GetTaskRun_FullMethodName                 = "/littlehorse.LittleHorse/GetTaskRun"
-	LittleHorse_ListTaskRuns_FullMethodName               = "/littlehorse.LittleHorse/ListTaskRuns"
-	LittleHorse_GetVariable_FullMethodName                = "/littlehorse.LittleHorse/GetVariable"
-	LittleHorse_ListVariables_FullMethodName              = "/littlehorse.LittleHorse/ListVariables"
-	LittleHorse_PutExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/PutExternalEvent"
-	LittleHorse_PutCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/PutCorrelatedEvent"
-	LittleHorse_GetExternalEvent_FullMethodName           = "/littlehorse.LittleHorse/GetExternalEvent"
-	LittleHorse_GetCorrelatedEvent_FullMethodName         = "/littlehorse.LittleHorse/GetCorrelatedEvent"
-	LittleHorse_AwaitWorkflowEvent_FullMethodName         = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
-	LittleHorse_GetWorkflowEventDef_FullMethodName        = "/littlehorse.LittleHorse/GetWorkflowEventDef"
-	LittleHorse_GetWorkflowEvent_FullMethodName           = "/littlehorse.LittleHorse/GetWorkflowEvent"
-	LittleHorse_ListExternalEvents_FullMethodName         = "/littlehorse.LittleHorse/ListExternalEvents"
-	LittleHorse_ListWorkflowEvents_FullMethodName         = "/littlehorse.LittleHorse/ListWorkflowEvents"
-	LittleHorse_SearchWfRun_FullMethodName                = "/littlehorse.LittleHorse/SearchWfRun"
-	LittleHorse_SearchCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
-	LittleHorse_SearchNodeRun_FullMethodName              = "/littlehorse.LittleHorse/SearchNodeRun"
-	LittleHorse_SearchTaskRun_FullMethodName              = "/littlehorse.LittleHorse/SearchTaskRun"
-	LittleHorse_SearchUserTaskRun_FullMethodName          = "/littlehorse.LittleHorse/SearchUserTaskRun"
-	LittleHorse_SearchVariable_FullMethodName             = "/littlehorse.LittleHorse/SearchVariable"
-	LittleHorse_SearchExternalEvent_FullMethodName        = "/littlehorse.LittleHorse/SearchExternalEvent"
-	LittleHorse_SearchWorkflowEvent_FullMethodName        = "/littlehorse.LittleHorse/SearchWorkflowEvent"
-	LittleHorse_SearchTaskDef_FullMethodName              = "/littlehorse.LittleHorse/SearchTaskDef"
-	LittleHorse_SearchUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/SearchUserTaskDef"
-	LittleHorse_SearchWfSpec_FullMethodName               = "/littlehorse.LittleHorse/SearchWfSpec"
-	LittleHorse_SearchExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/SearchExternalEventDef"
-	LittleHorse_SearchWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/SearchWorkflowEventDef"
-	LittleHorse_SearchTenant_FullMethodName               = "/littlehorse.LittleHorse/SearchTenant"
-	LittleHorse_SearchPrincipal_FullMethodName            = "/littlehorse.LittleHorse/SearchPrincipal"
-	LittleHorse_SearchQuota_FullMethodName                = "/littlehorse.LittleHorse/SearchQuota"
-	LittleHorse_SearchStructDef_FullMethodName            = "/littlehorse.LittleHorse/SearchStructDef"
-	LittleHorse_GetInactiveThreadRun_FullMethodName       = "/littlehorse.LittleHorse/GetInactiveThreadRun"
-	LittleHorse_RegisterTaskWorker_FullMethodName         = "/littlehorse.LittleHorse/RegisterTaskWorker"
-	LittleHorse_PollTask_FullMethodName                   = "/littlehorse.LittleHorse/PollTask"
-	LittleHorse_ReportTask_FullMethodName                 = "/littlehorse.LittleHorse/ReportTask"
-	LittleHorse_PutCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/PutCheckpoint"
-	LittleHorse_GetCheckpoint_FullMethodName              = "/littlehorse.LittleHorse/GetCheckpoint"
-	LittleHorse_StopWfRun_FullMethodName                  = "/littlehorse.LittleHorse/StopWfRun"
-	LittleHorse_ResumeWfRun_FullMethodName                = "/littlehorse.LittleHorse/ResumeWfRun"
-	LittleHorse_RescueThreadRun_FullMethodName            = "/littlehorse.LittleHorse/RescueThreadRun"
-	LittleHorse_DeleteWfRun_FullMethodName                = "/littlehorse.LittleHorse/DeleteWfRun"
-	LittleHorse_DeleteTaskDef_FullMethodName              = "/littlehorse.LittleHorse/DeleteTaskDef"
-	LittleHorse_DeleteStructDef_FullMethodName            = "/littlehorse.LittleHorse/DeleteStructDef"
-	LittleHorse_DeleteWfSpec_FullMethodName               = "/littlehorse.LittleHorse/DeleteWfSpec"
-	LittleHorse_DeleteUserTaskDef_FullMethodName          = "/littlehorse.LittleHorse/DeleteUserTaskDef"
-	LittleHorse_DeleteExternalEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteExternalEventDef"
-	LittleHorse_DeleteCorrelatedEvent_FullMethodName      = "/littlehorse.LittleHorse/DeleteCorrelatedEvent"
-	LittleHorse_DeleteWorkflowEventDef_FullMethodName     = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
-	LittleHorse_DeletePrincipal_FullMethodName            = "/littlehorse.LittleHorse/DeletePrincipal"
-	LittleHorse_DeleteQuota_FullMethodName                = "/littlehorse.LittleHorse/DeleteQuota"
-	LittleHorse_DeleteScheduledWfRun_FullMethodName       = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
-	LittleHorse_GetTaskDefMetricsWindow_FullMethodName    = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
-	LittleHorse_GetWfSpecMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
-	LittleHorse_ListTaskMetrics_FullMethodName            = "/littlehorse.LittleHorse/ListTaskMetrics"
-	LittleHorse_ListWfMetrics_FullMethodName              = "/littlehorse.LittleHorse/ListWfMetrics"
-	LittleHorse_GetMetricWindow_FullMethodName            = "/littlehorse.LittleHorse/GetMetricWindow"
-	LittleHorse_SearchWfMetricWindow_FullMethodName       = "/littlehorse.LittleHorse/SearchWfMetricWindow"
-	LittleHorse_PutTenant_FullMethodName                  = "/littlehorse.LittleHorse/PutTenant"
-	LittleHorse_GetTenant_FullMethodName                  = "/littlehorse.LittleHorse/GetTenant"
-	LittleHorse_PutQuota_FullMethodName                   = "/littlehorse.LittleHorse/PutQuota"
-	LittleHorse_GetQuota_FullMethodName                   = "/littlehorse.LittleHorse/GetQuota"
-	LittleHorse_PutPrincipal_FullMethodName               = "/littlehorse.LittleHorse/PutPrincipal"
-	LittleHorse_GetPrincipal_FullMethodName               = "/littlehorse.LittleHorse/GetPrincipal"
-	LittleHorse_Whoami_FullMethodName                     = "/littlehorse.LittleHorse/Whoami"
-	LittleHorse_GetServerVersion_FullMethodName           = "/littlehorse.LittleHorse/GetServerVersion"
-	LittleHorse_CountNodeRun_FullMethodName               = "/littlehorse.LittleHorse/CountNodeRun"
-	LittleHorse_CountTaskRun_FullMethodName               = "/littlehorse.LittleHorse/CountTaskRun"
+	LittleHorse_PutTaskDef_FullMethodName                  = "/littlehorse.LittleHorse/PutTaskDef"
+	LittleHorse_GetTaskDef_FullMethodName                  = "/littlehorse.LittleHorse/GetTaskDef"
+	LittleHorse_GetTaskWorkerGroup_FullMethodName          = "/littlehorse.LittleHorse/GetTaskWorkerGroup"
+	LittleHorse_PutExternalEventDef_FullMethodName         = "/littlehorse.LittleHorse/PutExternalEventDef"
+	LittleHorse_GetExternalEventDef_FullMethodName         = "/littlehorse.LittleHorse/GetExternalEventDef"
+	LittleHorse_PutWorkflowEventDef_FullMethodName         = "/littlehorse.LittleHorse/PutWorkflowEventDef"
+	LittleHorse_PutWfSpec_FullMethodName                   = "/littlehorse.LittleHorse/PutWfSpec"
+	LittleHorse_GetWfSpec_FullMethodName                   = "/littlehorse.LittleHorse/GetWfSpec"
+	LittleHorse_GetLatestWfSpec_FullMethodName             = "/littlehorse.LittleHorse/GetLatestWfSpec"
+	LittleHorse_MigrateWfSpec_FullMethodName               = "/littlehorse.LittleHorse/MigrateWfSpec"
+	LittleHorse_PutStructDef_FullMethodName                = "/littlehorse.LittleHorse/PutStructDef"
+	LittleHorse_GetStructDef_FullMethodName                = "/littlehorse.LittleHorse/GetStructDef"
+	LittleHorse_ValidateStructDefEvolution_FullMethodName  = "/littlehorse.LittleHorse/ValidateStructDefEvolution"
+	LittleHorse_PutUserTaskDef_FullMethodName              = "/littlehorse.LittleHorse/PutUserTaskDef"
+	LittleHorse_GetUserTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetUserTaskDef"
+	LittleHorse_GetLatestUserTaskDef_FullMethodName        = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
+	LittleHorse_RunWf_FullMethodName                       = "/littlehorse.LittleHorse/RunWf"
+	LittleHorse_RunInlineWf_FullMethodName                 = "/littlehorse.LittleHorse/RunInlineWf"
+	LittleHorse_GetInlineWfSpec_FullMethodName             = "/littlehorse.LittleHorse/GetInlineWfSpec"
+	LittleHorse_ScheduleWf_FullMethodName                  = "/littlehorse.LittleHorse/ScheduleWf"
+	LittleHorse_SearchScheduledWfRun_FullMethodName        = "/littlehorse.LittleHorse/SearchScheduledWfRun"
+	LittleHorse_GetScheduledWfRun_FullMethodName           = "/littlehorse.LittleHorse/GetScheduledWfRun"
+	LittleHorse_GetWfRun_FullMethodName                    = "/littlehorse.LittleHorse/GetWfRun"
+	LittleHorse_GetUserTaskRun_FullMethodName              = "/littlehorse.LittleHorse/GetUserTaskRun"
+	LittleHorse_AssignUserTaskRun_FullMethodName           = "/littlehorse.LittleHorse/AssignUserTaskRun"
+	LittleHorse_CompleteUserTaskRun_FullMethodName         = "/littlehorse.LittleHorse/CompleteUserTaskRun"
+	LittleHorse_CancelUserTaskRun_FullMethodName           = "/littlehorse.LittleHorse/CancelUserTaskRun"
+	LittleHorse_SaveUserTaskRunProgress_FullMethodName     = "/littlehorse.LittleHorse/SaveUserTaskRunProgress"
+	LittleHorse_ListUserTaskRuns_FullMethodName            = "/littlehorse.LittleHorse/ListUserTaskRuns"
+	LittleHorse_PutUserTaskRunComment_FullMethodName       = "/littlehorse.LittleHorse/PutUserTaskRunComment"
+	LittleHorse_EditUserTaskRunComment_FullMethodName      = "/littlehorse.LittleHorse/EditUserTaskRunComment"
+	LittleHorse_DeleteUserTaskRunComment_FullMethodName    = "/littlehorse.LittleHorse/DeleteUserTaskRunComment"
+	LittleHorse_GetNodeRun_FullMethodName                  = "/littlehorse.LittleHorse/GetNodeRun"
+	LittleHorse_ListNodeRuns_FullMethodName                = "/littlehorse.LittleHorse/ListNodeRuns"
+	LittleHorse_GetTaskRun_FullMethodName                  = "/littlehorse.LittleHorse/GetTaskRun"
+	LittleHorse_ListTaskRuns_FullMethodName                = "/littlehorse.LittleHorse/ListTaskRuns"
+	LittleHorse_GetVariable_FullMethodName                 = "/littlehorse.LittleHorse/GetVariable"
+	LittleHorse_PutVariable_FullMethodName                 = "/littlehorse.LittleHorse/PutVariable"
+	LittleHorse_ListVariables_FullMethodName               = "/littlehorse.LittleHorse/ListVariables"
+	LittleHorse_PutExternalEvent_FullMethodName            = "/littlehorse.LittleHorse/PutExternalEvent"
+	LittleHorse_PutCorrelatedEvent_FullMethodName          = "/littlehorse.LittleHorse/PutCorrelatedEvent"
+	LittleHorse_GetExternalEvent_FullMethodName            = "/littlehorse.LittleHorse/GetExternalEvent"
+	LittleHorse_GetCorrelatedEvent_FullMethodName          = "/littlehorse.LittleHorse/GetCorrelatedEvent"
+	LittleHorse_AwaitWorkflowEvent_FullMethodName          = "/littlehorse.LittleHorse/AwaitWorkflowEvent"
+	LittleHorse_GetWorkflowEventDef_FullMethodName         = "/littlehorse.LittleHorse/GetWorkflowEventDef"
+	LittleHorse_GetWorkflowEvent_FullMethodName            = "/littlehorse.LittleHorse/GetWorkflowEvent"
+	LittleHorse_ListExternalEvents_FullMethodName          = "/littlehorse.LittleHorse/ListExternalEvents"
+	LittleHorse_ListWorkflowEvents_FullMethodName          = "/littlehorse.LittleHorse/ListWorkflowEvents"
+	LittleHorse_SearchWfRun_FullMethodName                 = "/littlehorse.LittleHorse/SearchWfRun"
+	LittleHorse_PutWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/PutWorkflowMigrationPlan"
+	LittleHorse_GetWorkflowMigrationPlan_FullMethodName    = "/littlehorse.LittleHorse/GetWorkflowMigrationPlan"
+	LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/DeleteWorkflowMigrationPlan"
+	LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName  = "/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan"
+	LittleHorse_SearchWorkflowMigrationPlan_FullMethodName = "/littlehorse.LittleHorse/SearchWorkflowMigrationPlan"
+	LittleHorse_SearchCorrelatedEvent_FullMethodName       = "/littlehorse.LittleHorse/SearchCorrelatedEvent"
+	LittleHorse_SearchNodeRun_FullMethodName               = "/littlehorse.LittleHorse/SearchNodeRun"
+	LittleHorse_SearchTaskRun_FullMethodName               = "/littlehorse.LittleHorse/SearchTaskRun"
+	LittleHorse_SearchUserTaskRun_FullMethodName           = "/littlehorse.LittleHorse/SearchUserTaskRun"
+	LittleHorse_SearchVariable_FullMethodName              = "/littlehorse.LittleHorse/SearchVariable"
+	LittleHorse_SearchExternalEvent_FullMethodName         = "/littlehorse.LittleHorse/SearchExternalEvent"
+	LittleHorse_SearchWorkflowEvent_FullMethodName         = "/littlehorse.LittleHorse/SearchWorkflowEvent"
+	LittleHorse_SearchTaskDef_FullMethodName               = "/littlehorse.LittleHorse/SearchTaskDef"
+	LittleHorse_SearchUserTaskDef_FullMethodName           = "/littlehorse.LittleHorse/SearchUserTaskDef"
+	LittleHorse_SearchWfSpec_FullMethodName                = "/littlehorse.LittleHorse/SearchWfSpec"
+	LittleHorse_SearchExternalEventDef_FullMethodName      = "/littlehorse.LittleHorse/SearchExternalEventDef"
+	LittleHorse_SearchWorkflowEventDef_FullMethodName      = "/littlehorse.LittleHorse/SearchWorkflowEventDef"
+	LittleHorse_SearchTenant_FullMethodName                = "/littlehorse.LittleHorse/SearchTenant"
+	LittleHorse_SearchPrincipal_FullMethodName             = "/littlehorse.LittleHorse/SearchPrincipal"
+	LittleHorse_SearchQuota_FullMethodName                 = "/littlehorse.LittleHorse/SearchQuota"
+	LittleHorse_SearchStructDef_FullMethodName             = "/littlehorse.LittleHorse/SearchStructDef"
+	LittleHorse_GetInactiveThreadRun_FullMethodName        = "/littlehorse.LittleHorse/GetInactiveThreadRun"
+	LittleHorse_RegisterTaskWorker_FullMethodName          = "/littlehorse.LittleHorse/RegisterTaskWorker"
+	LittleHorse_PollTask_FullMethodName                    = "/littlehorse.LittleHorse/PollTask"
+	LittleHorse_ReportTask_FullMethodName                  = "/littlehorse.LittleHorse/ReportTask"
+	LittleHorse_PutCheckpoint_FullMethodName               = "/littlehorse.LittleHorse/PutCheckpoint"
+	LittleHorse_GetCheckpoint_FullMethodName               = "/littlehorse.LittleHorse/GetCheckpoint"
+	LittleHorse_StopWfRun_FullMethodName                   = "/littlehorse.LittleHorse/StopWfRun"
+	LittleHorse_ResumeWfRun_FullMethodName                 = "/littlehorse.LittleHorse/ResumeWfRun"
+	LittleHorse_RescueThreadRun_FullMethodName             = "/littlehorse.LittleHorse/RescueThreadRun"
+	LittleHorse_DeleteWfRun_FullMethodName                 = "/littlehorse.LittleHorse/DeleteWfRun"
+	LittleHorse_DeleteTaskDef_FullMethodName               = "/littlehorse.LittleHorse/DeleteTaskDef"
+	LittleHorse_DeleteStructDef_FullMethodName             = "/littlehorse.LittleHorse/DeleteStructDef"
+	LittleHorse_DeleteWfSpec_FullMethodName                = "/littlehorse.LittleHorse/DeleteWfSpec"
+	LittleHorse_DeleteUserTaskDef_FullMethodName           = "/littlehorse.LittleHorse/DeleteUserTaskDef"
+	LittleHorse_DeleteExternalEventDef_FullMethodName      = "/littlehorse.LittleHorse/DeleteExternalEventDef"
+	LittleHorse_DeleteCorrelatedEvent_FullMethodName       = "/littlehorse.LittleHorse/DeleteCorrelatedEvent"
+	LittleHorse_DeleteWorkflowEventDef_FullMethodName      = "/littlehorse.LittleHorse/DeleteWorkflowEventDef"
+	LittleHorse_DeletePrincipal_FullMethodName             = "/littlehorse.LittleHorse/DeletePrincipal"
+	LittleHorse_DeleteQuota_FullMethodName                 = "/littlehorse.LittleHorse/DeleteQuota"
+	LittleHorse_DeleteScheduledWfRun_FullMethodName        = "/littlehorse.LittleHorse/DeleteScheduledWfRun"
+	LittleHorse_CreateBulkJob_FullMethodName               = "/littlehorse.LittleHorse/CreateBulkJob"
+	LittleHorse_GetBulkJob_FullMethodName                  = "/littlehorse.LittleHorse/GetBulkJob"
+	LittleHorse_SearchBulkJob_FullMethodName               = "/littlehorse.LittleHorse/SearchBulkJob"
+	LittleHorse_DeleteBulkJob_FullMethodName               = "/littlehorse.LittleHorse/DeleteBulkJob"
+	LittleHorse_GetTaskDefMetricsWindow_FullMethodName     = "/littlehorse.LittleHorse/GetTaskDefMetricsWindow"
+	LittleHorse_GetWfSpecMetricsWindow_FullMethodName      = "/littlehorse.LittleHorse/GetWfSpecMetricsWindow"
+	LittleHorse_ListTaskMetrics_FullMethodName             = "/littlehorse.LittleHorse/ListTaskMetrics"
+	LittleHorse_ListQuotaUsageMetrics_FullMethodName       = "/littlehorse.LittleHorse/ListQuotaUsageMetrics"
+	LittleHorse_ListWfMetrics_FullMethodName               = "/littlehorse.LittleHorse/ListWfMetrics"
+	LittleHorse_GetMetricWindow_FullMethodName             = "/littlehorse.LittleHorse/GetMetricWindow"
+	LittleHorse_SearchWfMetricWindow_FullMethodName        = "/littlehorse.LittleHorse/SearchWfMetricWindow"
+	LittleHorse_PutTenant_FullMethodName                   = "/littlehorse.LittleHorse/PutTenant"
+	LittleHorse_GetTenant_FullMethodName                   = "/littlehorse.LittleHorse/GetTenant"
+	LittleHorse_PutQuota_FullMethodName                    = "/littlehorse.LittleHorse/PutQuota"
+	LittleHorse_GetQuota_FullMethodName                    = "/littlehorse.LittleHorse/GetQuota"
+	LittleHorse_PutPrincipal_FullMethodName                = "/littlehorse.LittleHorse/PutPrincipal"
+	LittleHorse_GetPrincipal_FullMethodName                = "/littlehorse.LittleHorse/GetPrincipal"
+	LittleHorse_Whoami_FullMethodName                      = "/littlehorse.LittleHorse/Whoami"
+	LittleHorse_GetServerVersion_FullMethodName            = "/littlehorse.LittleHorse/GetServerVersion"
+	LittleHorse_CountNodeRun_FullMethodName                = "/littlehorse.LittleHorse/CountNodeRun"
+	LittleHorse_CountTaskRun_FullMethodName                = "/littlehorse.LittleHorse/CountTaskRun"
 )
 
 // LittleHorseClient is the client API for LittleHorse service.
@@ -176,6 +189,10 @@ type LittleHorseClient interface {
 	GetLatestUserTaskDef(ctx context.Context, in *GetLatestUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(ctx context.Context, in *RunWfRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// Starts a durable run from an unregistered workflow definition.
+	RunInlineWf(ctx context.Context, in *RunInlineWfRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
+	GetInlineWfSpec(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*InlineWfSpec, error)
 	// Schedule repeated WfRun based on a cron expression
 	ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error)
 	// Search for existing schedules
@@ -229,6 +246,9 @@ type LittleHorseClient interface {
 	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
 	// column for a specific row in a SQL table.
 	GetVariable(ctx context.Context, in *VariableId, opts ...grpc.CallOption) (*Variable, error)
+	// Replaces the value of an existing Variable and attempts to advance its workflow.
+	// Returns the previous value, respecting the variable's masking configuration.
+	PutVariable(ctx context.Context, in *PutVariableRequest, opts ...grpc.CallOption) (*VariableValue, error)
 	// List all Variables from a WfRun.
 	ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error)
 	// Post an ExternalEvent.
@@ -256,6 +276,17 @@ type LittleHorseClient interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error)
+	// EXPERIMENTAL: Register a workflow migration plan with lh server
+	PutWorkflowMigrationPlan(ctx context.Context, in *PutWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
+	// EXPERIMENTAL: Get a workflow migration plan by ID
+	GetWorkflowMigrationPlan(ctx context.Context, in *WorkflowMigrationPlanId, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error)
+	// EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+	DeleteWorkflowMigrationPlan(ctx context.Context, in *DeleteWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+	// destination WfSpec.
+	ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(ctx context.Context, in *SearchCorrelatedEventRequest, opts ...grpc.CallOption) (*CorrelatedEventIdList, error)
@@ -358,12 +389,22 @@ type LittleHorseClient interface {
 	DeleteQuota(ctx context.Context, in *DeleteQuotaRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(ctx context.Context, in *DeleteScheduledWfRunRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+	CreateBulkJob(ctx context.Context, in *CreateBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
+	// EXPERIMENTAL: Gets the status of a BulkJob.
+	GetBulkJob(ctx context.Context, in *GetBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error)
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+	SearchBulkJob(ctx context.Context, in *SearchBulkJobRequest, opts ...grpc.CallOption) (*BulkJobIdList, error)
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	DeleteBulkJob(ctx context.Context, in *DeleteBulkJobRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(ctx context.Context, in *WfSpecMetricsQueryRequest, opts ...grpc.CallOption) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(ctx context.Context, in *ListWfMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -556,6 +597,24 @@ func (c *littleHorseClient) RunWf(ctx context.Context, in *RunWfRequest, opts ..
 	return out, nil
 }
 
+func (c *littleHorseClient) RunInlineWf(ctx context.Context, in *RunInlineWfRequest, opts ...grpc.CallOption) (*WfRun, error) {
+	out := new(WfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_RunInlineWf_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetInlineWfSpec(ctx context.Context, in *WfRunId, opts ...grpc.CallOption) (*InlineWfSpec, error) {
+	out := new(InlineWfSpec)
+	err := c.cc.Invoke(ctx, LittleHorse_GetInlineWfSpec_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) ScheduleWf(ctx context.Context, in *ScheduleWfRequest, opts ...grpc.CallOption) (*ScheduledWfRun, error) {
 	out := new(ScheduledWfRun)
 	err := c.cc.Invoke(ctx, LittleHorse_ScheduleWf_FullMethodName, in, out, opts...)
@@ -718,6 +777,15 @@ func (c *littleHorseClient) GetVariable(ctx context.Context, in *VariableId, opt
 	return out, nil
 }
 
+func (c *littleHorseClient) PutVariable(ctx context.Context, in *PutVariableRequest, opts ...grpc.CallOption) (*VariableValue, error) {
+	out := new(VariableValue)
+	err := c.cc.Invoke(ctx, LittleHorse_PutVariable_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) ListVariables(ctx context.Context, in *ListVariablesRequest, opts ...grpc.CallOption) (*VariableList, error) {
 	out := new(VariableList)
 	err := c.cc.Invoke(ctx, LittleHorse_ListVariables_FullMethodName, in, out, opts...)
@@ -811,6 +879,51 @@ func (c *littleHorseClient) ListWorkflowEvents(ctx context.Context, in *ListWork
 func (c *littleHorseClient) SearchWfRun(ctx context.Context, in *SearchWfRunRequest, opts ...grpc.CallOption) (*WfRunIdList, error) {
 	out := new(WfRunIdList)
 	err := c.cc.Invoke(ctx, LittleHorse_SearchWfRun_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutWorkflowMigrationPlan(ctx context.Context, in *PutWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error) {
+	out := new(WorkflowMigrationPlan)
+	err := c.cc.Invoke(ctx, LittleHorse_PutWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetWorkflowMigrationPlan(ctx context.Context, in *WorkflowMigrationPlanId, opts ...grpc.CallOption) (*WorkflowMigrationPlan, error) {
+	out := new(WorkflowMigrationPlan)
+	err := c.cc.Invoke(ctx, LittleHorse_GetWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteWorkflowMigrationPlan(ctx context.Context, in *DeleteWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) ApplyWorkflowMigrationPlan(ctx context.Context, in *ApplyWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WfRun, error) {
+	out := new(WfRun)
+	err := c.cc.Invoke(ctx, LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchWorkflowMigrationPlan(ctx context.Context, in *SearchWorkflowMigrationPlanRequest, opts ...grpc.CallOption) (*WorkflowMigrationPlanIdList, error) {
+	out := new(WorkflowMigrationPlanIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchWorkflowMigrationPlan_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1163,6 +1276,42 @@ func (c *littleHorseClient) DeleteScheduledWfRun(ctx context.Context, in *Delete
 	return out, nil
 }
 
+func (c *littleHorseClient) CreateBulkJob(ctx context.Context, in *CreateBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error) {
+	out := new(BulkJob)
+	err := c.cc.Invoke(ctx, LittleHorse_CreateBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetBulkJob(ctx context.Context, in *GetBulkJobRequest, opts ...grpc.CallOption) (*BulkJob, error) {
+	out := new(BulkJob)
+	err := c.cc.Invoke(ctx, LittleHorse_GetBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) SearchBulkJob(ctx context.Context, in *SearchBulkJobRequest, opts ...grpc.CallOption) (*BulkJobIdList, error) {
+	out := new(BulkJobIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) DeleteBulkJob(ctx context.Context, in *DeleteBulkJobRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, LittleHorse_DeleteBulkJob_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetTaskDefMetricsWindow(ctx context.Context, in *TaskDefMetricsQueryRequest, opts ...grpc.CallOption) (*TaskDefMetrics, error) {
 	out := new(TaskDefMetrics)
 	err := c.cc.Invoke(ctx, LittleHorse_GetTaskDefMetricsWindow_FullMethodName, in, out, opts...)
@@ -1184,6 +1333,15 @@ func (c *littleHorseClient) GetWfSpecMetricsWindow(ctx context.Context, in *WfSp
 func (c *littleHorseClient) ListTaskMetrics(ctx context.Context, in *ListTaskMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
 	out := new(MetricsList)
 	err := c.cc.Invoke(ctx, LittleHorse_ListTaskMetrics_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) ListQuotaUsageMetrics(ctx context.Context, in *ListQuotaUsageMetricsRequest, opts ...grpc.CallOption) (*MetricsList, error) {
+	out := new(MetricsList)
+	err := c.cc.Invoke(ctx, LittleHorse_ListQuotaUsageMetrics_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1363,6 +1521,10 @@ type LittleHorseServer interface {
 	GetLatestUserTaskDef(context.Context, *GetLatestUserTaskDefRequest) (*UserTaskDef, error)
 	// Runs a WfSpec to create a WfRun.
 	RunWf(context.Context, *RunWfRequest) (*WfRun, error)
+	// Starts a durable run from an unregistered workflow definition.
+	RunInlineWf(context.Context, *RunInlineWfRequest) (*WfRun, error)
+	// Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
+	GetInlineWfSpec(context.Context, *WfRunId) (*InlineWfSpec, error)
 	// Schedule repeated WfRun based on a cron expression
 	ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error)
 	// Search for existing schedules
@@ -1416,6 +1578,9 @@ type LittleHorseServer interface {
 	// RPC is useful for retrieving information. It is equivalent to looking up the value of a
 	// column for a specific row in a SQL table.
 	GetVariable(context.Context, *VariableId) (*Variable, error)
+	// Replaces the value of an existing Variable and attempts to advance its workflow.
+	// Returns the previous value, respecting the variable's masking configuration.
+	PutVariable(context.Context, *PutVariableRequest) (*VariableValue, error)
 	// List all Variables from a WfRun.
 	ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error)
 	// Post an ExternalEvent.
@@ -1443,6 +1608,17 @@ type LittleHorseServer interface {
 	// Search for WfRun's. This RPC is highly useful for applications that store data
 	// in LittleHorse and need to find a specific WfRun based on certain indexed fields.
 	SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error)
+	// EXPERIMENTAL: Register a workflow migration plan with lh server
+	PutWorkflowMigrationPlan(context.Context, *PutWorkflowMigrationPlanRequest) (*WorkflowMigrationPlan, error)
+	// EXPERIMENTAL: Get a workflow migration plan by ID
+	GetWorkflowMigrationPlan(context.Context, *WorkflowMigrationPlanId) (*WorkflowMigrationPlan, error)
+	// EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+	DeleteWorkflowMigrationPlan(context.Context, *DeleteWorkflowMigrationPlanRequest) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+	// destination WfSpec.
+	ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error)
+	// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+	SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error)
 	// Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
 	// events that may be orphaned.
 	SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error)
@@ -1545,12 +1721,22 @@ type LittleHorseServer interface {
 	DeleteQuota(context.Context, *DeleteQuotaRequest) (*emptypb.Empty, error)
 	// Deletes a scheduled run and prevents any further associated WfRun from being executed.
 	DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error)
+	// EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+	CreateBulkJob(context.Context, *CreateBulkJobRequest) (*BulkJob, error)
+	// EXPERIMENTAL: Gets the status of a BulkJob.
+	GetBulkJob(context.Context, *GetBulkJobRequest) (*BulkJob, error)
+	// EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+	SearchBulkJob(context.Context, *SearchBulkJobRequest) (*BulkJobIdList, error)
+	// EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+	DeleteBulkJob(context.Context, *DeleteBulkJobRequest) (*emptypb.Empty, error)
 	// Returns TaskDef Metrics for a specific TaskDef and a specific time window.
 	GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error)
 	// Returns WfSpec Metrics for a specific WfSpec and a specific time window.
 	GetWfSpecMetricsWindow(context.Context, *WfSpecMetricsQueryRequest) (*WfSpecMetrics, error)
 	// Lists available metric windows for a given TaskDefId and time range.
 	ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error)
+	// Lists quota usage metric windows for a quota and time range.
+	ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error)
 	// Lists available metric windows for a given WfSpecId and time range.
 	ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error)
 	// Gets a MetricWindow by its ID.
@@ -1638,6 +1824,12 @@ func (UnimplementedLittleHorseServer) GetLatestUserTaskDef(context.Context, *Get
 func (UnimplementedLittleHorseServer) RunWf(context.Context, *RunWfRequest) (*WfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunWf not implemented")
 }
+func (UnimplementedLittleHorseServer) RunInlineWf(context.Context, *RunInlineWfRequest) (*WfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RunInlineWf not implemented")
+}
+func (UnimplementedLittleHorseServer) GetInlineWfSpec(context.Context, *WfRunId) (*InlineWfSpec, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetInlineWfSpec not implemented")
+}
 func (UnimplementedLittleHorseServer) ScheduleWf(context.Context, *ScheduleWfRequest) (*ScheduledWfRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ScheduleWf not implemented")
 }
@@ -1692,6 +1884,9 @@ func (UnimplementedLittleHorseServer) ListTaskRuns(context.Context, *ListTaskRun
 func (UnimplementedLittleHorseServer) GetVariable(context.Context, *VariableId) (*Variable, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVariable not implemented")
 }
+func (UnimplementedLittleHorseServer) PutVariable(context.Context, *PutVariableRequest) (*VariableValue, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutVariable not implemented")
+}
 func (UnimplementedLittleHorseServer) ListVariables(context.Context, *ListVariablesRequest) (*VariableList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListVariables not implemented")
 }
@@ -1724,6 +1919,21 @@ func (UnimplementedLittleHorseServer) ListWorkflowEvents(context.Context, *ListW
 }
 func (UnimplementedLittleHorseServer) SearchWfRun(context.Context, *SearchWfRunRequest) (*WfRunIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchWfRun not implemented")
+}
+func (UnimplementedLittleHorseServer) PutWorkflowMigrationPlan(context.Context, *PutWorkflowMigrationPlanRequest) (*WorkflowMigrationPlan, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) GetWorkflowMigrationPlan(context.Context, *WorkflowMigrationPlanId) (*WorkflowMigrationPlan, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteWorkflowMigrationPlan(context.Context, *DeleteWorkflowMigrationPlanRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) ApplyWorkflowMigrationPlan(context.Context, *ApplyWorkflowMigrationPlanRequest) (*WfRun, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ApplyWorkflowMigrationPlan not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchWorkflowMigrationPlan(context.Context, *SearchWorkflowMigrationPlanRequest) (*WorkflowMigrationPlanIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchWorkflowMigrationPlan not implemented")
 }
 func (UnimplementedLittleHorseServer) SearchCorrelatedEvent(context.Context, *SearchCorrelatedEventRequest) (*CorrelatedEventIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchCorrelatedEvent not implemented")
@@ -1833,6 +2043,18 @@ func (UnimplementedLittleHorseServer) DeleteQuota(context.Context, *DeleteQuotaR
 func (UnimplementedLittleHorseServer) DeleteScheduledWfRun(context.Context, *DeleteScheduledWfRunRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteScheduledWfRun not implemented")
 }
+func (UnimplementedLittleHorseServer) CreateBulkJob(context.Context, *CreateBulkJobRequest) (*BulkJob, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) GetBulkJob(context.Context, *GetBulkJobRequest) (*BulkJob, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchBulkJob(context.Context, *SearchBulkJobRequest) (*BulkJobIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchBulkJob not implemented")
+}
+func (UnimplementedLittleHorseServer) DeleteBulkJob(context.Context, *DeleteBulkJobRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBulkJob not implemented")
+}
 func (UnimplementedLittleHorseServer) GetTaskDefMetricsWindow(context.Context, *TaskDefMetricsQueryRequest) (*TaskDefMetrics, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTaskDefMetricsWindow not implemented")
 }
@@ -1841,6 +2063,9 @@ func (UnimplementedLittleHorseServer) GetWfSpecMetricsWindow(context.Context, *W
 }
 func (UnimplementedLittleHorseServer) ListTaskMetrics(context.Context, *ListTaskMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListTaskMetrics not implemented")
+}
+func (UnimplementedLittleHorseServer) ListQuotaUsageMetrics(context.Context, *ListQuotaUsageMetricsRequest) (*MetricsList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListQuotaUsageMetrics not implemented")
 }
 func (UnimplementedLittleHorseServer) ListWfMetrics(context.Context, *ListWfMetricsRequest) (*MetricsList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWfMetrics not implemented")
@@ -2200,6 +2425,42 @@ func _LittleHorse_RunWf_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_RunInlineWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RunInlineWfRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).RunInlineWf(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_RunInlineWf_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).RunInlineWf(ctx, req.(*RunInlineWfRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetInlineWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WfRunId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetInlineWfSpec(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetInlineWfSpec_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetInlineWfSpec(ctx, req.(*WfRunId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_ScheduleWf_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ScheduleWfRequest)
 	if err := dec(in); err != nil {
@@ -2524,6 +2785,24 @@ func _LittleHorse_GetVariable_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_PutVariable_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutVariableRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutVariable(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutVariable_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutVariable(ctx, req.(*PutVariableRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_ListVariables_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListVariablesRequest)
 	if err := dec(in); err != nil {
@@ -2718,6 +2997,96 @@ func _LittleHorse_SearchWfRun_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).SearchWfRun(ctx, req.(*SearchWfRunRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutWorkflowMigrationPlan(ctx, req.(*PutWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WorkflowMigrationPlanId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetWorkflowMigrationPlan(ctx, req.(*WorkflowMigrationPlanId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteWorkflowMigrationPlan(ctx, req.(*DeleteWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_ApplyWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ApplyWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ApplyWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ApplyWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ApplyWorkflowMigrationPlan(ctx, req.(*ApplyWorkflowMigrationPlanRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchWorkflowMigrationPlan_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchWorkflowMigrationPlanRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchWorkflowMigrationPlan_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchWorkflowMigrationPlan(ctx, req.(*SearchWorkflowMigrationPlanRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3378,6 +3747,78 @@ func _LittleHorse_DeleteScheduledWfRun_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_CreateBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).CreateBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_CreateBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).CreateBulkJob(ctx, req.(*CreateBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetBulkJob(ctx, req.(*GetBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_SearchBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchBulkJob(ctx, req.(*SearchBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_DeleteBulkJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBulkJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).DeleteBulkJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_DeleteBulkJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).DeleteBulkJob(ctx, req.(*DeleteBulkJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetTaskDefMetricsWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TaskDefMetricsQueryRequest)
 	if err := dec(in); err != nil {
@@ -3428,6 +3869,24 @@ func _LittleHorse_ListTaskMetrics_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).ListTaskMetrics(ctx, req.(*ListTaskMetricsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_ListQuotaUsageMetrics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListQuotaUsageMetricsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_ListQuotaUsageMetrics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).ListQuotaUsageMetrics(ctx, req.(*ListQuotaUsageMetricsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3742,6 +4201,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_RunWf_Handler,
 		},
 		{
+			MethodName: "RunInlineWf",
+			Handler:    _LittleHorse_RunInlineWf_Handler,
+		},
+		{
+			MethodName: "GetInlineWfSpec",
+			Handler:    _LittleHorse_GetInlineWfSpec_Handler,
+		},
+		{
 			MethodName: "ScheduleWf",
 			Handler:    _LittleHorse_ScheduleWf_Handler,
 		},
@@ -3814,6 +4281,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_GetVariable_Handler,
 		},
 		{
+			MethodName: "PutVariable",
+			Handler:    _LittleHorse_PutVariable_Handler,
+		},
+		{
 			MethodName: "ListVariables",
 			Handler:    _LittleHorse_ListVariables_Handler,
 		},
@@ -3856,6 +4327,26 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchWfRun",
 			Handler:    _LittleHorse_SearchWfRun_Handler,
+		},
+		{
+			MethodName: "PutWorkflowMigrationPlan",
+			Handler:    _LittleHorse_PutWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "GetWorkflowMigrationPlan",
+			Handler:    _LittleHorse_GetWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "DeleteWorkflowMigrationPlan",
+			Handler:    _LittleHorse_DeleteWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "ApplyWorkflowMigrationPlan",
+			Handler:    _LittleHorse_ApplyWorkflowMigrationPlan_Handler,
+		},
+		{
+			MethodName: "SearchWorkflowMigrationPlan",
+			Handler:    _LittleHorse_SearchWorkflowMigrationPlan_Handler,
 		},
 		{
 			MethodName: "SearchCorrelatedEvent",
@@ -3998,6 +4489,22 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_DeleteScheduledWfRun_Handler,
 		},
 		{
+			MethodName: "CreateBulkJob",
+			Handler:    _LittleHorse_CreateBulkJob_Handler,
+		},
+		{
+			MethodName: "GetBulkJob",
+			Handler:    _LittleHorse_GetBulkJob_Handler,
+		},
+		{
+			MethodName: "SearchBulkJob",
+			Handler:    _LittleHorse_SearchBulkJob_Handler,
+		},
+		{
+			MethodName: "DeleteBulkJob",
+			Handler:    _LittleHorse_DeleteBulkJob_Handler,
+		},
+		{
 			MethodName: "GetTaskDefMetricsWindow",
 			Handler:    _LittleHorse_GetTaskDefMetricsWindow_Handler,
 		},
@@ -4008,6 +4515,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListTaskMetrics",
 			Handler:    _LittleHorse_ListTaskMetrics_Handler,
+		},
+		{
+			MethodName: "ListQuotaUsageMetrics",
+			Handler:    _LittleHorse_ListQuotaUsageMetrics_Handler,
 		},
 		{
 			MethodName: "ListWfMetrics",

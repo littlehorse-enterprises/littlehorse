@@ -1,18 +1,27 @@
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { Attempts } from '../Attempts'
-import { TaskAttempt, TaskStatus, VariableValue } from 'littlehorse-client/proto'
+import { TaskAttempt, TaskStatus, Timestamp, VariableValue } from 'littlehorse-client/proto'
+import { utcToLocalDateTime } from '@/app/utils'
 
 jest.mock('../NodeStatus', () => ({
-  NodeStatus: ({ status, type }: any) => (
-    <div>
-      NodeStatus:{status}:{type}
-    </div>
-  ),
+  NodeStatus: ({ status, type }: any) => {
+    const { TaskStatus, LHStatus } = require('littlehorse-client/proto')
+    const name = type === 'task' ? TaskStatus[status] : LHStatus[status]
+    return (
+      <div>
+        NodeStatus:{name}:{type}
+      </div>
+    )
+  },
 }))
 
 jest.mock('../NodeVariable', () => ({
-  NodeVariable: ({ label, text }: any) => <div>{`${label} ${text}`}</div>,
+  NodeVariable: ({ label, text, type }: any) => {
+    const { utcToLocalDateTime } = require('@/app/utils')
+    const display = type === 'date' ? utcToLocalDateTime(text) : text
+    return <div>{`${label} ${display}`}</div>
+  },
 }))
 
 jest.mock('../OutputModal', () => ({
@@ -47,39 +56,42 @@ describe('Attempts component', () => {
   })
 
   it('renders attempt details, status and output', () => {
+    const scheduleTime = Timestamp.fromDate(new Date('2021-01-01T00:00:00Z'))
+    const startTime = Timestamp.fromDate(new Date('2021-01-01T00:01:00Z'))
+    const endTime = Timestamp.fromDate(new Date('2021-01-01T00:02:00Z'))
     const attempts: TaskAttempt[] = [
-      {
-        status: 'TASK_RUNNING' as TaskStatus,
-        scheduleTime: '2021-01-01T00:00:00Z',
-        startTime: '2021-01-01T00:01:00Z',
-        endTime: '2021-01-01T00:02:00Z',
+      TaskAttempt.create({
+        status: TaskStatus.TASK_RUNNING,
+        scheduleTime,
+        startTime,
+        endTime,
         taskWorkerId: 'worker-1',
         taskWorkerVersion: 'v1',
         logOutput: {
           value: {
-            $case: 'str',
-            value: '',
+            oneofKind: 'str',
+            str: '',
           },
         },
         result: {
-          $case: 'output',
-          value: {
+          oneofKind: 'output',
+          output: {
             value: {
-              $case: 'str',
-              value: "Hi what's your name?",
+              oneofKind: 'str',
+              str: "Hi what's your name?",
             },
           },
         },
         maskedValue: false,
-      },
+      }),
     ]
     const setAttemptIndex = jest.fn()
     render(<Attempts attempts={attempts} attemptIndex={0} setAttemptIndex={setAttemptIndex} />)
 
     expect(screen.getByText('Attempts')).toBeInTheDocument()
-    expect(screen.getByText('scheduleTime: 2021-01-01T00:00:00Z')).toBeInTheDocument()
-    expect(screen.getByText('startTime: 2021-01-01T00:01:00Z')).toBeInTheDocument()
-    expect(screen.getByText('endTime: 2021-01-01T00:02:00Z')).toBeInTheDocument()
+    expect(screen.getByText(`scheduleTime: ${utcToLocalDateTime(scheduleTime)}`)).toBeInTheDocument()
+    expect(screen.getByText(`startTime: ${utcToLocalDateTime(startTime)}`)).toBeInTheDocument()
+    expect(screen.getByText(`endTime: ${utcToLocalDateTime(endTime)}`)).toBeInTheDocument()
     expect(screen.getByText('taskWorkerId: worker-1')).toBeInTheDocument()
     expect(screen.getByText('taskWorkerVersion: v1')).toBeInTheDocument()
     expect(screen.getByText('logOutput: OUT')).toBeInTheDocument()
@@ -89,18 +101,18 @@ describe('Attempts component', () => {
 
   it('calls setAttemptIndex when a dropdown item is clicked', () => {
     const attempts: TaskAttempt[] = [
-      {
-        status: 'TASK_RUNNING' as TaskStatus,
-        scheduleTime: 't1',
+      TaskAttempt.create({
+        status: TaskStatus.TASK_RUNNING,
+        scheduleTime: Timestamp.create(),
         taskWorkerId: '',
         maskedValue: false,
-      },
-      {
-        status: 'TASK_RUNNING' as TaskStatus,
-        scheduleTime: 't2',
+      }),
+      TaskAttempt.create({
+        status: TaskStatus.TASK_RUNNING,
+        scheduleTime: Timestamp.create(),
         taskWorkerId: '',
         maskedValue: false,
-      },
+      }),
     ]
     const setAttemptIndex = jest.fn()
     render(<Attempts attempts={attempts} attemptIndex={0} setAttemptIndex={setAttemptIndex} />)

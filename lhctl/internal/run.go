@@ -2,6 +2,7 @@ package internal
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
@@ -97,6 +98,22 @@ odd total number of args. See 'lhctl run --help' for details.`)
 			runReq.Variables = make(map[string]*lhproto.VariableValue)
 			varDefs := littlehorse.GetInputVarDefs(wfSpec)
 
+			// Cache StructDefs so that inputs referencing the same Struct type
+			// (e.g. an Array<Struct>) only trigger a single fetch.
+			structDefCache := make(map[string]*lhproto.StructDef)
+			structDefResolver := func(id *lhproto.StructDefId) (*lhproto.StructDef, error) {
+				cacheKey := id.GetName() + ":" + strconv.Itoa(int(id.GetVersion()))
+				if cached, ok := structDefCache[cacheKey]; ok {
+					return cached, nil
+				}
+				structDef, err := getGlobalClient(cmd).GetStructDef(requestContext(cmd), id)
+				if err != nil {
+					return nil, err
+				}
+				structDefCache[cacheKey] = structDef
+				return structDef, nil
+			}
+
 			for i := 1; i+1 < len(args); i += 2 {
 				varName := args[i]
 				varValStr := args[i+1]
@@ -106,15 +123,17 @@ odd total number of args. See 'lhctl run --help' for details.`)
 					log.Fatal("Variable name '" + varName + "' not found in WfSpec.")
 				}
 
-				vType := varDef.Type
-				if vType == nil {
-					primitiveType := varDef.TypeDef.GetPrimitiveType()
-					vType = &primitiveType
+				if varDef.TypeDef != nil {
+					runReq.Variables[varName], err = littlehorse.TypeDefToVarValWithResolver(
+						varValStr, varDef.TypeDef, structDefResolver,
+					)
+				} else if varDef.Type != nil {
+					runReq.Variables[varName], err = littlehorse.StrToVarVal(
+						varValStr, *varDef.Type,
+					)
+				} else {
+					log.Fatal("Variable '" + varName + "' has no type information in WfSpec.")
 				}
-
-				runReq.Variables[varName], err = littlehorse.StrToVarVal(
-					varValStr, *vType,
-				)
 
 				if err != nil {
 					log.Fatal("Failed converting variable: " + err.Error())

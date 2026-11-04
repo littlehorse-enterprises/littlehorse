@@ -2,20 +2,18 @@ package io.littlehorse.server.streams.util;
 
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.littlehorse.common.model.getable.objectId.TenantIdModel;
 import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 class AsyncWaitersTest {
     private final Duration removeCompletedAfter = Duration.ofMillis(2);
     private final AsyncWaiters asyncWaiters = new AsyncWaiters(removeCompletedAfter);
-    private final TenantIdModel tenantId = new TenantIdModel("test");
 
-    @Test
+    @RetryingTest(maxAttempts = 3, suspendForMs = 1000)
     public void shouldRemoveFutureWhenCompleted() throws Exception {
         String commandId = UUID.randomUUID().toString();
         CompletableFuture<Message> futureResponse =

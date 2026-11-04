@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -24,6 +25,18 @@ import org.junit.jupiter.api.Test;
 public class LHTaskReturnTypeTest {
 
     static class UnannotatedArrayElement {}
+
+    static class InlineAddress {
+        private String street;
+
+        public String getStreet() {
+            return street;
+        }
+
+        public void setStreet(String street) {
+            this.street = street;
+        }
+    }
 
     public class ReturnTypeTestTasks {
         @LHTaskMethod("test-void")
@@ -62,6 +75,12 @@ public class LHTaskReturnTypeTest {
             return null;
         }
 
+        @LHTaskMethod("inline-pojo-return")
+        @LHType(isInlineStruct = true)
+        public InlineAddress inlinePojoReturn() {
+            return null;
+        }
+
         @LHTaskMethod("inline-struct-placeholder-task")
         @LHType(structDefName = "${outputStruct}")
         public InlineStruct inlineStructPlaceholderTask() {
@@ -95,6 +114,18 @@ public class LHTaskReturnTypeTest {
         @LHType(isLHArray = true)
         public UUID[] invalidNativeArrayAdapterJsonObjReturnType() {
             return null;
+        }
+
+        @LHTaskMethod("test-native-map")
+        @LHType(isLHMap = true)
+        public Map<String, Long> testNativeMapReturnType() {
+            return Map.of("a", 1L);
+        }
+
+        @LHTaskMethod("non-map-lh-map-invalid-task")
+        @LHType(isLHMap = true)
+        public String nonMapLhMapInvalidTask() {
+            return "hello world";
         }
     }
 
@@ -218,6 +249,22 @@ public class LHTaskReturnTypeTest {
     }
 
     @Test
+    void shouldInferInlineStructSchemaForAnnotatedPojoReturn() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "inline-pojo-return");
+
+        TypeDefinition typeDef = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of())
+                .getReturnType()
+                .getReturnType();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
+        assertThat(typeDef.getInlineStructDef()
+                        .getFieldsOrThrow("street")
+                        .getFieldType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.STR);
+    }
+
+    @Test
     void shouldResolvePlaceholdersForInlineStructTypes() {
         Map<String, String> placeholderValues = Map.of("outputStruct", "customer");
 
@@ -267,14 +314,16 @@ public class LHTaskReturnTypeTest {
     }
 
     @Test
-    void shouldFailWhenNativeArrayReturnElementResolvesToJsonObj() {
+    void shouldResolveNativeArrayPojoReturnElementAsInlineStruct() {
         Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "invalid-native-arr-pojo");
 
-        assertThatThrownBy(() -> {
-                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
-                })
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+        TypeDefinition elementType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of())
+                .getReturnType()
+                .getReturnType()
+                .getInlineArrayDef()
+                .getArrayType();
+
+        assertThat(elementType.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_STRUCT_DEF);
     }
 
     @Test
@@ -305,5 +354,38 @@ public class LHTaskReturnTypeTest {
                 })
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
+    }
+
+    @Test
+    public void shouldHandleNativeMapTaskReturnType() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-native-map");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setInlineMapDef(InlineMapDef.newBuilder()
+                                .setKeyType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.STR)
+                                        .build())
+                                .setValueType(TypeDefinition.newBuilder()
+                                        .setPrimitiveType(VariableType.INT)
+                                        .build()))
+                        .build())
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    void shouldFailWhenIsLHMapUsedOnNonMapReturnType() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "non-map-lh-map-invalid-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map return types");
     }
 }

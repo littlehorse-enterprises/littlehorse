@@ -14,7 +14,7 @@ export const VariableValuePillRow = ({
   value: VariableValue
   valueBreakWords?: boolean
 }) => {
-  const variableType = value.value?.$case
+  const variableType = value.value?.oneofKind
   const text = getVariableValue(value)
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-1">

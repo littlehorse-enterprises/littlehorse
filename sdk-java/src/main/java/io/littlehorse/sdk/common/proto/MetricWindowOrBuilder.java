@@ -67,5 +67,20 @@ public interface MetricWindowOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.TaskMetricsOrBuilder getTaskOrBuilder();
 
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   * @return Whether the quotaUsage field is set.
+   */
+  boolean hasQuotaUsage();
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   * @return The quotaUsage.
+   */
+  io.littlehorse.sdk.common.proto.QuotaUsageMetrics getQuotaUsage();
+  /**
+   * <code>.littlehorse.QuotaUsageMetrics quota_usage = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.QuotaUsageMetricsOrBuilder getQuotaUsageOrBuilder();
+
   io.littlehorse.sdk.common.proto.MetricWindow.MetricCase getMetricCase();
 }

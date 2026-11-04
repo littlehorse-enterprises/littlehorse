@@ -9,7 +9,7 @@ import { useModal } from '../../hooks/useModal'
 
 export const VariableAssignmentModal: FC<Modal<VariableAssignment>> = ({ data }) => {
   const { showModal, setShowModal } = useModal()
-  if (!data.source) return null
+  if (data.source?.oneofKind === undefined) return null
   const variable = getVariable(data)
 
   return (
@@ -22,7 +22,7 @@ export const VariableAssignmentModal: FC<Modal<VariableAssignment>> = ({ data })
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Source</small>
-            {data.source.$case}
+            {data.source.oneofKind}
           </div>
           <div className="flex flex-col gap-2">
             <small className="text-[0.75em] text-slate-400">Value</small>

@@ -30,6 +30,14 @@ export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
     return getCheckpoints({ tenantId, taskRunId, totalCheckpoints: nodeTask.totalCheckpoints })
   })
 
+  const taskRunSource = nodeTask?.source?.taskRunSource
+  const sourceNodeRunId =
+    taskRunSource?.oneofKind === 'taskNode'
+      ? taskRunSource.taskNode.nodeRunId
+      : taskRunSource?.oneofKind === 'userTaskTrigger'
+        ? taskRunSource.userTaskTrigger.nodeRunId
+        : undefined
+
   return (
     <div className="ml-1 flex max-w-full flex-1 flex-col">
       {nodeTask?.status && <NodeStatus status={nodeTask.status} type="task" />}
@@ -37,12 +45,9 @@ export const TaskNodeRun: FC<{ node: TaskNodeRunProto }> = ({ node }) => {
 
       <NodeVariable label="taskGuid:" text={node.taskRunId?.taskGuid} />
       <NodeVariable label="TaskDefId:" text={nodeTask?.taskDefId?.name} />
-      <NodeVariable label="position:" text={`${nodeTask?.source?.taskRunSource?.value.nodeRunId?.position}`} />
-      <NodeVariable
-        label="threadRunNumber:"
-        text={`${nodeTask?.source?.taskRunSource?.value.nodeRunId?.threadRunNumber}`}
-      />
-      <NodeVariable label="wfRunId:" text={`${nodeTask?.source?.taskRunSource?.value.nodeRunId?.wfRunId?.id}`} />
+      <NodeVariable label="position:" text={`${sourceNodeRunId?.position}`} />
+      <NodeVariable label="threadRunNumber:" text={`${sourceNodeRunId?.threadRunNumber}`} />
+      <NodeVariable label="wfRunId:" text={`${sourceNodeRunId?.wfRunId?.id}`} />
       <NodeVariable label="scheduledAt:" text={nodeTask?.scheduledAt} type="date" />
       <NodeVariable label="timeoutSeconds:" text={`${nodeTask?.timeoutSeconds}`} />
       <NodeVariable label="totalCheckpoints:" text={`${nodeTask?.totalCheckpoints}`} />

@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTECancelled } from 'littlehorse-client/proto'
 import React from 'react'
 
-export const CancelledEvent = ({ event, time }: { event: UserTaskEvent_UTECancelled; time?: string }) => {
+export const CancelledEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTECancelled
+  time?: import('@/app/utils').DateLike
+}) => {
   return (
     <>
       {time && (

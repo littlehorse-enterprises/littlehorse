@@ -1,6 +1,5 @@
 package io.littlehorse.server.streams.lhinternalscan;
 
-import com.google.protobuf.Message;
 import io.littlehorse.common.proto.InternalScanPb;
 import io.littlehorse.common.util.LHUtil;
 import java.util.Date;
@@ -20,7 +19,7 @@ public class TagScanBoundaryStrategy implements SearchScanBoundaryStrategy {
     }
 
     @Override
-    public Message buildScanProto() {
+    public InternalScanPb.TagScanPb buildScanProto() {
         InternalScanPb.TagScanPb.Builder prefixScanBuilder = InternalScanPb.TagScanPb.newBuilder();
         prefixScanBuilder.setKeyPrefix(keyPrefix);
         Consumer<Date> setLatestStartToBuilder = date -> {

@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTEAssigned } from 'littlehorse-client/proto'
 import { MoveRight } from 'lucide-react'
 
-export const AssignEvent = ({ event, time }: { event: UserTaskEvent_UTEAssigned; time?: string }) => {
+export const AssignEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTEAssigned
+  time?: import('@/app/utils').DateLike
+}) => {
   const textValidation = (text: string | undefined) => {
     if (text) return text
     return <p>No assigned</p>

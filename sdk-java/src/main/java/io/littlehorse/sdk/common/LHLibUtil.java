@@ -35,6 +35,7 @@ import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.proto.Array;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
+import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.StructDefId;
@@ -48,11 +49,13 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.JsonResult;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -63,6 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class LHLibUtil {
 
@@ -372,6 +376,15 @@ public class LHLibUtil {
 
     public static Object varValToObj(VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return varValToObj(val, targetClazz, typeAdapterRegistry, Map.of());
+    }
+
+    public static Object varValToObj(
+            VariableValue val,
+            Class<?> targetClazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
 
         if (maybeAdapter.isPresent()) {
@@ -416,9 +429,11 @@ public class LHLibUtil {
                 return val.getWfRunId();
             case STRUCT:
                 Struct struct = val.getStruct();
-                return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry);
+                return deserializeStructToObject(struct, targetClazz, typeAdapterRegistry, placeholderValues);
             case ARRAY:
-                return deserializeNativeArrayToObject(val, targetClazz, typeAdapterRegistry);
+                return deserializeNativeArrayToObject(val, targetClazz, typeAdapterRegistry, placeholderValues);
+            case MAP:
+                return deserializeNativeMapToObject(val, targetClazz, typeAdapterRegistry);
             case UTC_TIMESTAMP:
                 Timestamp timestamp = val.getUtcTimestamp();
                 if (Timestamp.class.isAssignableFrom(targetClazz)) {
@@ -448,7 +463,10 @@ public class LHLibUtil {
     }
 
     private static Object deserializeNativeArrayToObject(
-            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            VariableValue val,
+            Class<?> targetClazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
             throws LHSerdeException {
         if (!targetClazz.isArray()) {
             throw new LHSerdeException(
@@ -460,11 +478,74 @@ public class LHLibUtil {
         Object outputArray = java.lang.reflect.Array.newInstance(componentType, size);
 
         for (int i = 0; i < size; i++) {
-            Object item = varValToObj(val.getArray().getItems(i), componentType, typeAdapterRegistry);
+            Object item =
+                    varValToObj(val.getArray().getItems(i), componentType, typeAdapterRegistry, placeholderValues);
             java.lang.reflect.Array.set(outputArray, i, item);
         }
 
         return outputArray;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Object deserializeNativeMapToObject(
+            VariableValue val, Class<?> targetClazz, LHTypeAdapterRegistry typeAdapterRegistry)
+            throws LHSerdeException {
+        if (!Map.class.isAssignableFrom(targetClazz)) {
+            throw new LHSerdeException(
+                    "Failed deserializing native LittleHorse MAP: target class is not a java.util.Map type.");
+        }
+
+        io.littlehorse.sdk.common.proto.Map protoMap = val.getMap();
+        Map<Object, Object> result = new HashMap<>();
+
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : protoMap.getEntriesList()) {
+            Object key = varValToRawObj(entry.getKey());
+            Object value = varValToRawObj(entry.getValue());
+            result.put(key, value);
+        }
+
+        return result;
+    }
+
+    public static Map<Object, Object> varValToNativeMap(
+            VariableValue val,
+            Class<?> keyClass,
+            Class<?> valueClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        if (val.getValueCase() != ValueCase.MAP) {
+            throw new LHSerdeException("Failed deserializing native LittleHorse MAP: expected MAP value.");
+        }
+
+        Map<Object, Object> result = new HashMap<>();
+        for (io.littlehorse.sdk.common.proto.Map.Entry entry : val.getMap().getEntriesList()) {
+            Object key = varValToObj(entry.getKey(), keyClass, typeAdapterRegistry, placeholderValues);
+            Object value = varValToObj(entry.getValue(), valueClass, typeAdapterRegistry, placeholderValues);
+            result.put(key, value);
+        }
+        return result;
+    }
+
+    private static Object varValToRawObj(VariableValue val) throws LHSerdeException {
+        switch (val.getValueCase()) {
+            case INT:
+                return val.getInt();
+            case DOUBLE:
+                return val.getDouble();
+            case STR:
+                return val.getStr();
+            case BOOL:
+                return val.getBool();
+            case BYTES:
+                return val.getBytes().toByteArray();
+            case WF_RUN_ID:
+                return val.getWfRunId();
+            case VALUE_NOT_SET:
+                return null;
+            default:
+                return varValToObj(val, Object.class, LHTypeAdapterRegistry.empty());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -558,19 +639,30 @@ public class LHLibUtil {
     }
 
     private static Object deserializeStructToObject(
-            Struct struct, Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
-        LHClassType lhClassType = LHClassType.fromJavaClass(clazz, typeAdapterRegistry);
+            Struct struct,
+            Class<?> clazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        LHClassType lhClassType = struct.hasStructDefId()
+                ? LHClassType.resolve(
+                        clazz, typeAdapterRegistry, placeholderValues, LHClassType.ResolutionContext.VALUE)
+                : LHClassType.resolve(
+                        clazz, typeAdapterRegistry, placeholderValues, LHClassType.ResolutionContext.STRUCT_MEMBER);
 
-        if (!(lhClassType instanceof LHStructDefType)) {
+        if (!(lhClassType instanceof LHStructDefType) && !(lhClassType instanceof LHInlineStructDefType)) {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
         }
 
-        LHStructDefType structDefType = (LHStructDefType) lhClassType;
-
         try {
-            Object structObject = structDefType.createInstance();
+            if (clazz.isRecord()) {
+                return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
+            }
 
-            List<LHStructProperty> structProperties = structDefType.getStructProperties();
+            Object structObject = lhClassType.createInstance();
+            List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
+                    ? ((LHStructDefType) lhClassType).getStructProperties()
+                    : ((LHInlineStructDefType) lhClassType).getStructProperties();
 
             for (LHStructProperty property : structProperties) {
                 String fieldName = property.getFieldName();
@@ -585,7 +677,7 @@ public class LHLibUtil {
                 VariableValue fieldValue =
                         struct.getStruct().getFieldsMap().get(fieldName).getValue();
 
-                property.setValueTo(structObject, fieldValue, typeAdapterRegistry);
+                property.setValueTo(structObject, fieldValue, typeAdapterRegistry, placeholderValues);
             }
 
             return structObject;
@@ -598,6 +690,73 @@ public class LHLibUtil {
                 | SecurityException e) {
             throw new LHSerdeException(e, "Failed deserializing Struct into Object");
         }
+    }
+
+    private static Object deserializeStructToRecord(
+            Struct struct,
+            Class<?> clazz,
+            LHClassType lhClassType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException, IntrospectionException, NoSuchMethodException, InvocationTargetException,
+                    InstantiationException, IllegalAccessException {
+        List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
+                ? ((LHStructDefType) lhClassType).getStructProperties()
+                : ((LHInlineStructDefType) lhClassType).getStructProperties();
+        Map<String, LHStructProperty> byPropertyName = new HashMap<>();
+
+        for (LHStructProperty property : structProperties) {
+            byPropertyName.put(property.getPropertyName(), property);
+        }
+
+        RecordComponent[] recordComponents = clazz.getRecordComponents();
+        Class<?>[] canonicalArgTypes = new Class<?>[recordComponents.length];
+        Object[] canonicalArgValues = new Object[recordComponents.length];
+
+        for (int i = 0; i < recordComponents.length; i++) {
+            RecordComponent recordComponent = recordComponents[i];
+            LHStructProperty property = byPropertyName.get(recordComponent.getName());
+            canonicalArgTypes[i] = recordComponent.getType();
+
+            if (property == null) {
+                canonicalArgValues[i] = defaultValueForType(recordComponent.getType());
+                continue;
+            }
+
+            String fieldName = property.getFieldName();
+            if (!struct.getStruct().containsFields(fieldName)) {
+                Set<String> availableFields = struct.getStruct().getFieldsMap().keySet();
+                throw new LHSerdeException(
+                        null,
+                        String.format(
+                                "Failed deserializing VariableValue into Struct: expected field [%s] on class [%s] not found in Struct. "
+                                        + "Available fields in Struct: %s",
+                                fieldName, clazz.getName(), availableFields));
+            }
+
+            VariableValue fieldValue =
+                    struct.getStruct().getFieldsMap().get(fieldName).getValue();
+            canonicalArgValues[i] = property.deserializeValue(fieldValue, typeAdapterRegistry, placeholderValues);
+        }
+
+        java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
+        return cons.newInstance(canonicalArgValues);
+    }
+
+    // Ignored record components still need an argument for the canonical constructor.
+    private static Object defaultValueForType(Class<?> type) {
+        if (!type.isPrimitive()) return null;
+
+        if (type == boolean.class) return false;
+        if (type == byte.class) return (byte) 0;
+        if (type == char.class) return (char) 0;
+        if (type == short.class) return (short) 0;
+        if (type == int.class) return 0;
+        if (type == long.class) return 0L;
+        if (type == float.class) return 0.0f;
+        if (type == double.class) return 0.0d;
+
+        return null;
     }
 
     public static VariableValue objToVarVal(Object o) throws LHSerdeException {
@@ -620,6 +779,15 @@ public class LHLibUtil {
 
     public static VariableValue objToVarVal(Object o, Class<?> declaredClass, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return objToVarVal(o, declaredClass, typeAdapterRegistry, Map.of());
+    }
+
+    public static VariableValue objToVarVal(
+            Object o,
+            Class<?> declaredClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (o == null) {
             return VariableValue.newBuilder().build();
         }
@@ -638,7 +806,28 @@ public class LHLibUtil {
             return objToVarValViaAdapter(o, maybeAdapter.get());
         }
 
-        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry);
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry, placeholderValues);
+    }
+
+    public static VariableValue objToVarValAsStruct(
+            Object o,
+            Class<?> declaredClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        LHClassType declaredType = LHClassType.resolve(
+                declaredClass, typeAdapterRegistry, placeholderValues, LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (!(declaredType instanceof LHStructDefType) && !(declaredType instanceof LHInlineStructDefType)) {
+            throw new LHSerdeException("Class does not resolve to a Struct type: " + declaredClass.getName());
+        }
+
+        return VariableValue.newBuilder()
+                .setStruct(serializeToStruct(o, declaredType, typeAdapterRegistry, placeholderValues))
+                .build();
     }
 
     /**
@@ -649,6 +838,15 @@ public class LHLibUtil {
      */
     public static VariableValue objToVarValAsNativeArray(
             Object o, Class<?> declaredArrayClass, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        return objToVarValAsNativeArray(o, declaredArrayClass, typeAdapterRegistry, Map.of());
+    }
+
+    public static VariableValue objToVarValAsNativeArray(
+            Object o,
+            Class<?> declaredArrayClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (o == null) {
             return VariableValue.newBuilder().build();
         }
@@ -669,10 +867,98 @@ public class LHLibUtil {
 
         for (int i = 0; i < length; i++) {
             Object item = java.lang.reflect.Array.get(o, i);
-            out.addItems(objToVarVal(item, componentType, typeAdapterRegistry));
+            out.addItems(objToVarValInStructContext(item, componentType, typeAdapterRegistry, placeholderValues));
         }
 
         return VariableValue.newBuilder().setArray(out).build();
+    }
+
+    /**
+     * Serializes a Java Map into a native LittleHorse MAP VariableValue.
+     *
+     * <p>Each entry's key and value are serialized independently. Use this method when you know
+     * the target is a native LH Map variable (as opposed to a JSON_OBJ). The declared
+     * {@code mapType} is stamped onto the resulting Map so it always carries a concrete key/value
+     * type; native Maps may never be untyped.
+     */
+    public static VariableValue objToVarValAsNativeMap(
+            Object o, InlineMapDef mapType, LHTypeAdapterRegistry typeAdapterRegistry) throws LHSerdeException {
+        return objToVarValAsNativeMap(o, mapType, typeAdapterRegistry, null, null, Map.of());
+    }
+
+    public static VariableValue objToVarValAsNativeMap(
+            Object o,
+            InlineMapDef mapType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Class<?> keyClass,
+            Class<?> valueClass,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        if (o == null) {
+            return VariableValue.newBuilder().build();
+        }
+
+        if (!(o instanceof Map)) {
+            throw new LHSerdeException(
+                    "Native map serialization requires the given object to be a java.util.Map, but got: "
+                            + o.getClass().getName());
+        }
+
+        return VariableValue.newBuilder()
+                .setMap(serializeToNativeMap(
+                        (Map<?, ?>) o, mapType, typeAdapterRegistry, keyClass, valueClass, placeholderValues))
+                .build();
+    }
+
+    private static io.littlehorse.sdk.common.proto.Map serializeToNativeMap(
+            Map<?, ?> map,
+            InlineMapDef mapType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Class<?> keyClass,
+            Class<?> valueClass,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        io.littlehorse.sdk.common.proto.Map.Builder out = io.littlehorse.sdk.common.proto.Map.newBuilder();
+        if (mapType != null) {
+            out.setMapType(mapType);
+        }
+
+        for (Map.Entry<?, ?> entry : map.entrySet()) {
+            VariableValue key = keyClass == null
+                    ? objToVarVal(entry.getKey(), typeAdapterRegistry)
+                    : objToVarValInStructContext(entry.getKey(), keyClass, typeAdapterRegistry, placeholderValues);
+            VariableValue value = valueClass == null
+                    ? objToVarVal(entry.getValue(), typeAdapterRegistry)
+                    : objToVarValInStructContext(entry.getValue(), valueClass, typeAdapterRegistry, placeholderValues);
+            out.addEntries(io.littlehorse.sdk.common.proto.Map.Entry.newBuilder()
+                    .setKey(key)
+                    .setValue(value));
+        }
+
+        return out.build();
+    }
+
+    private static VariableValue objToVarValInStructContext(
+            Object value,
+            Class<?> declaredClass,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues)
+            throws LHSerdeException {
+        if (value == null) {
+            return VariableValue.newBuilder().build();
+        }
+        if (declaredClass.isArray() && !byte[].class.equals(declaredClass)) {
+            return objToVarValAsNativeArray(value, declaredClass, typeAdapterRegistry, placeholderValues);
+        }
+
+        LHClassType declaredType = LHClassType.resolve(
+                declaredClass, typeAdapterRegistry, placeholderValues, LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (declaredType instanceof LHStructDefType || declaredType instanceof LHInlineStructDefType) {
+            return VariableValue.newBuilder()
+                    .setStruct(serializeToStruct(value, declaredType, typeAdapterRegistry, placeholderValues))
+                    .build();
+        }
+        return objToVarVal(value, declaredClass, typeAdapterRegistry, placeholderValues);
     }
 
     @SuppressWarnings("unchecked")
@@ -750,6 +1036,12 @@ public class LHLibUtil {
 
     private static VariableValue objToVarValWithoutTypeAdapter(Object o, LHTypeAdapterRegistry typeAdapterRegistry)
             throws LHSerdeException {
+        return objToVarValWithoutTypeAdapter(o, typeAdapterRegistry, Map.of());
+    }
+
+    private static VariableValue objToVarValWithoutTypeAdapter(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues)
+            throws LHSerdeException {
         if (o instanceof VariableValue) return (VariableValue) o;
         if (o instanceof InlineStruct) {
             throw new LHSerdeException(
@@ -776,7 +1068,7 @@ public class LHLibUtil {
         } else if (o instanceof WfRunId) {
             out.setWfRunId((WfRunId) o);
         } else if (o.getClass().isAnnotationPresent(LHStructDef.class)) {
-            out.setStruct(serializeToStruct(o, typeAdapterRegistry));
+            out.setStruct(serializeToStruct(o, typeAdapterRegistry, placeholderValues));
         } else if (o instanceof Instant) {
             out.setUtcTimestamp(fromInstant((Instant) o));
         } else if (o instanceof Timestamp) {
@@ -850,24 +1142,39 @@ public class LHLibUtil {
     }
 
     public static Struct serializeToStruct(Object o, LHTypeAdapterRegistry typeAdapterRegistry) {
-        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry);
+        return serializeToStruct(o, typeAdapterRegistry, Map.of());
+    }
 
-        if (!(lhClassType instanceof LHStructDefType))
+    public static Struct serializeToStruct(
+            Object o, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        LHClassType lhClassType = LHClassType.fromJavaClass(o.getClass(), typeAdapterRegistry, placeholderValues);
+
+        return serializeToStruct(o, lhClassType, typeAdapterRegistry, placeholderValues);
+    }
+
+    private static Struct serializeToStruct(
+            Object o,
+            LHClassType lhClassType,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues) {
+        if (!(lhClassType instanceof LHStructDefType) && !(lhClassType instanceof LHInlineStructDefType)) {
             throw new IllegalStateException("Cannot serialize given object to Struct");
-
-        LHStructDefType structDefType = (LHStructDefType) lhClassType;
+        }
 
         Struct.Builder outputStruct = Struct.newBuilder();
-
-        outputStruct.setStructDefId(structDefType.getStructDefId());
+        if (lhClassType instanceof LHStructDefType) {
+            outputStruct.setStructDefId(((LHStructDefType) lhClassType).getStructDefId());
+        }
 
         InlineStruct.Builder inlineStruct = InlineStruct.newBuilder();
 
         try {
-            List<LHStructProperty> lhStructProperties = structDefType.getStructProperties();
+            List<LHStructProperty> lhStructProperties = lhClassType instanceof LHStructDefType
+                    ? ((LHStructDefType) lhClassType).getStructProperties()
+                    : ((LHInlineStructDefType) lhClassType).getStructProperties();
 
             for (LHStructProperty property : lhStructProperties) {
-                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry);
+                VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
 
                 if (fieldValue == null) {
                     fieldValue = VariableValue.newBuilder().build();

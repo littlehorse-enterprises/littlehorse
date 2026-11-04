@@ -32,8 +32,11 @@ include(
         'grpc-interceptor',
         'hundred-tasks',
         'interrupt-handler',
+        'inline-struct-def',
         'inline-struct-placeholder',
+        'inline-workflow',
         'json',
+        'maps',
         'mutation',
         'output-topic',
         'parallel-approval',
@@ -56,3 +59,6 @@ include(
 }
 
 project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")
+
+include 'sdk-java-conformance'
+project(":sdk-java-conformance").projectDir = new File(rootProject.projectDir, "sdk-java/conformance")

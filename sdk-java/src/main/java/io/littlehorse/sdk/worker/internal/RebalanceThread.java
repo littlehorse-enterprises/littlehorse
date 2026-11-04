@@ -11,10 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 final class RebalanceThread extends Thread {
+    private static final long INITIAL_REGISTRATION_RETRY_MS = 1_000L;
+
     private final LittleHorseGrpc.LittleHorseStub bootstrapStub;
     private final String taskWorkerId;
     private final TaskDef taskDef;
@@ -25,6 +29,8 @@ final class RebalanceThread extends Thread {
     private final LHLivenessController livenessController;
     private final long heartbeatIntervalMs;
     private final PollThreadFactory pollThreadFactory;
+    private final Semaphore initialRegistrationFailed = new Semaphore(0);
+    private volatile boolean registered;
 
     public RebalanceThread(
             LittleHorseGrpc.LittleHorseStub bootstrapStub,
@@ -71,9 +77,12 @@ final class RebalanceThread extends Thread {
 
     private void waitForInterval() {
         try {
-            Thread.sleep(heartbeatIntervalMs);
-        } catch (Exception ignored) {
-            // Ignored
+            // The callback may fail after this thread has already started waiting.
+            if (initialRegistrationFailed.tryAcquire(heartbeatIntervalMs, TimeUnit.MILLISECONDS)) {
+                Thread.sleep(Math.min(INITIAL_REGISTRATION_RETRY_MS, heartbeatIntervalMs));
+            }
+        } catch (InterruptedException ignored) {
+            // The connection manager interrupts this thread when shutting down.
         }
     }
 
@@ -81,6 +90,7 @@ final class RebalanceThread extends Thread {
 
         @Override
         public void onNext(RegisterTaskWorkerResponse response) {
+            registered = true;
             livenessController.notifySuccessCall(response);
             List<LHHostInfo> availableHosts = response.getYourHostsList();
             maybeCleanupDanglingNonRunningThreads(availableHosts);
@@ -175,6 +185,9 @@ final class RebalanceThread extends Thread {
         @Override
         public void onError(Throwable t) {
             livenessController.notifyWorkerFailure();
+            if (!registered) {
+                initialRegistrationFailed.release();
+            }
         }
 
         @Override

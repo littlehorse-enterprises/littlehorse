@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/pagination'
 import { UserTaskEvent } from 'littlehorse-client/proto'
 import { SEARCH_DEFAULT_LIMIT } from '@/app/constants'
-import { hasEventCase } from '@/app/utils'
+import { hasEventCase, toDate } from '@/app/utils'
 
 type AuditTableProps = {
   events: UserTaskEvent[]
@@ -39,9 +39,9 @@ export function AuditTable({ events }: AuditTableProps) {
         </TableHeader>
         <TableBody>
           {paginatedEvents.map(event => (
-            <TableRow key={`${event.time}`}>
-              <TableCell>{new Date(event.time ?? 'N/A').toLocaleString()}</TableCell>
-              <TableCell> {event.event?.value.userId}</TableCell>
+            <TableRow key={`${toDate(event.time)?.getTime()}`}>
+              <TableCell>{toDate(event.time)?.toLocaleString() ?? 'N/A'}</TableCell>
+              <TableCell> {event.event?.saved.userId}</TableCell>
             </TableRow>
           ))}
         </TableBody>

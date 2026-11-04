@@ -15,21 +15,21 @@ export const Events = ({ events }: { events: UserTaskEvent[] }) => {
 
   const renderEvent = (userTask: UserTaskEvent) => {
     const { event, time } = userTask
-    switch (event?.$case) {
+    switch (event?.oneofKind) {
       case 'taskExecuted':
-        return <TaskExecutedEvent event={event.value} time={time} />
+        return <TaskExecutedEvent event={event.taskExecuted} time={time} />
       case 'assigned':
-        return <AssignEvent event={event.value} time={time} />
+        return <AssignEvent event={event.assigned} time={time} />
       case 'cancelled':
-        return <CancelledEvent event={event.value} time={time} />
+        return <CancelledEvent event={event.cancelled} time={time} />
       case 'saved':
-        return <SavedEvent event={event.value} time={time} />
+        return <SavedEvent event={event.saved} time={time} />
       case 'commentAdded':
-        return <CommentAddedEvent event={event.value} time={time} />
+        return <CommentAddedEvent event={event.commentAdded} time={time} />
       case 'commentEdited':
-        return <CommentEditedEvent event={event.value} time={time} />
+        return <CommentEditedEvent event={event.commentEdited} time={time} />
       case 'commentDeleted':
-        return <CommentDeletedEvent event={event.value} time={time} />
+        return <CommentDeletedEvent event={event.commentDeleted} time={time} />
       case 'completed':
         return <DoneEvent time={time} />
       default:
@@ -45,7 +45,7 @@ export const Events = ({ events }: { events: UserTaskEvent[] }) => {
         {sortedEvents.map((event, index) => (
           <TimeLineEvent
             key={index}
-            dotColor={event.event?.$case === 'completed' ? 'bg-green-500' : 'bg-blue-500'}
+            dotColor={event.event?.oneofKind === 'completed' ? 'bg-green-500' : 'bg-blue-500'}
             isLast={index === sortedEvents.length - 1}
           >
             <div className="w-full" key={index}>

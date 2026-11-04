@@ -2,7 +2,13 @@ import { formatDateReadable } from '@/app/utils'
 import { UserTaskEvent_UTETaskExecuted } from 'littlehorse-client/proto'
 import React from 'react'
 
-export const TaskExecutedEvent = ({ event, time }: { event: UserTaskEvent_UTETaskExecuted; time?: string }) => {
+export const TaskExecutedEvent = ({
+  event,
+  time,
+}: {
+  event: UserTaskEvent_UTETaskExecuted
+  time?: import('@/app/utils').DateLike
+}) => {
   return (
     <>
       {time && (

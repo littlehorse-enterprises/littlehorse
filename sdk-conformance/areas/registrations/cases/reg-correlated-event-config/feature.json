@@ -1,0 +1,22 @@
+{
+  "externalEventDefs": [
+{
+  "name": "payment-received",
+  "contentType": {
+    "returnType": {
+      "primitiveType": "STR",
+      "masked": false
+    }
+  },
+  "correlatedEventConfig": {
+    "ttlSeconds": "3600",
+    "deleteAfterFirstCorrelation": true
+  }
+}
+  ],
+  "workflowEventDefs": [  ],
+  "requiredTaskDefNames": [],
+  "requiredExternalEventDefNames": ["payment-received"],
+  "requiredChildWfSpecNames": [],
+  "requiredWorkflowEventDefNames": []
+}

@@ -1,7 +1,8 @@
 import { ThreadVarDef, VariableType, WfRunVariableAccessLevel } from 'littlehorse-client/proto'
 import { FC } from 'react'
+import { ContainerTypeDef, ContainerVariableField } from './ContainerVariableField'
 import FormField from './FormField'
-import FormLabel from './FormLabel'
+import VariableFieldHeader from './VariableFieldHeader'
 import { StructDefGroup } from './StructDefGroup'
 import { TimestampVariableField } from './TimestampVariableField'
 import { VariableTypeToFieldComponent } from './VariableTypeToFieldComponent'
@@ -10,7 +11,7 @@ interface VariableFormFieldProps {
   variable: ThreadVarDef
 }
 
-export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
+const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
   const varDef = variable.varDef
   if (!varDef) return null
 
@@ -22,8 +23,8 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
 
   if (variable.accessLevel === WfRunVariableAccessLevel.INHERITED_VAR) {
     return (
-      <FormLabel
-        label={name}
+      <VariableFieldHeader
+        name={name}
         accessLevel={variable.accessLevel}
         required={variable.required}
         masked={varDef.typeDef?.masked}
@@ -31,7 +32,7 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     )
   }
 
-  if (definedType.$case === 'primitiveType' && definedType.value === VariableType.TIMESTAMP) {
+  if (definedType.oneofKind === 'primitiveType' && definedType.primitiveType === VariableType.TIMESTAMP) {
     return (
       <TimestampVariableField
         label={name}
@@ -43,8 +44,8 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
     )
   }
 
-  if (definedType.$case === 'primitiveType') {
-    const { type, component } = VariableTypeToFieldComponent[definedType.value]
+  if (definedType.oneofKind === 'primitiveType') {
+    const { type, inputMode, validate, component } = VariableTypeToFieldComponent[definedType.primitiveType]
 
     return (
       <FormField
@@ -52,20 +53,50 @@ export const VariableFormField: FC<VariableFormFieldProps> = ({ variable }) => {
         as={component}
         id={name}
         type={type}
+        inputMode={inputMode}
+        validate={validate}
         protoRequired={variable.required}
+        formRequired={variable.required}
         accessLevel={variable.accessLevel}
-        variableType={definedType.value}
+        typeDef={definedType}
         masked={varDef.typeDef?.masked}
       />
     )
   }
 
-  if (definedType.$case === 'structDefId') {
+  if (definedType.oneofKind === 'structDefId') {
     return (
       <StructDefGroup
-        structDefId={definedType.value}
+        structDefId={definedType.structDefId}
         name={name}
         required={variable.required}
+        accessLevel={variable.accessLevel}
+        masked={varDef.typeDef?.masked}
+        defaultValue={varDef.defaultValue}
+      />
+    )
+  }
+
+  if (definedType.oneofKind === 'inlineStructDef') {
+    return (
+      <StructDefGroup
+        inlineStructDef={definedType.inlineStructDef}
+        name={name}
+        required={variable.required}
+        accessLevel={variable.accessLevel}
+        masked={varDef.typeDef?.masked}
+        defaultValue={varDef.defaultValue}
+      />
+    )
+  }
+
+  if (definedType.oneofKind === 'inlineArrayDef' || definedType.oneofKind === 'inlineMapDef') {
+    return (
+      <ContainerVariableField
+        name={name}
+        typeDef={varDef.typeDef as ContainerTypeDef}
+        required={variable.required}
+        accessLevel={variable.accessLevel}
         masked={varDef.typeDef?.masked}
         defaultValue={varDef.defaultValue}
       />

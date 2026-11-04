@@ -87,6 +87,15 @@ public class LHTaskWorkerTest {
     }
 
     @Test
+    public void shouldUseDefaultValueWhenPlaceholderKeyMissing() {
+        String taskDefName = "${defaultTaskName:default-task}";
+
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), taskDefName, new LHConfig(), Map.of());
+
+        assertThat(task.getTaskDefName()).isEqualTo("default-task");
+    }
+
+    @Test
     public void shouldFailWithClearMessageWhenTaskDefIsNotRegistered() {
         LHConfig config = mock(LHConfig.class);
         LittleHorseBlockingStub grpcClient = mock(LittleHorseBlockingStub.class);
@@ -191,6 +200,34 @@ public class LHTaskWorkerTest {
         assertThat(request.getReturnType().getReturnType().getPrimitiveType()).isEqualTo(VariableType.STR);
         verify(grpcClient).putTaskDef(any(PutTaskDefRequest.class));
     }
+
+    @Test
+    public void shouldResolveTaskMethodWithDefaultPlaceholderValue() {
+        LHConfig config = mock(LHConfig.class);
+        when(config.getTypeAdapterRegistry()).thenReturn(LHTypeAdapterRegistry.empty());
+        LittleHorseBlockingStub grpcClient = mock(LittleHorseBlockingStub.class);
+        AtomicReference<PutTaskDefRequest> capturedRequest = new AtomicReference<>();
+
+        when(config.getBlockingStub()).thenReturn(grpcClient);
+        doAnswer(invocation -> {
+                    PutTaskDefRequest request = invocation.getArgument(0);
+                    capturedRequest.set(request);
+                    return TaskDef.newBuilder()
+                            .setId(TaskDefId.newBuilder()
+                                    .setName(request.getName())
+                                    .build())
+                            .build();
+                })
+                .when(grpcClient)
+                .putTaskDef(any(PutTaskDefRequest.class));
+
+        LHTaskWorker task = new LHTaskWorker(new TaskWorker(), "default-task", config, Map.of());
+        task.registerTaskDef();
+
+        PutTaskDefRequest request = capturedRequest.get();
+        assertThat(request.getName()).isEqualTo("default-task");
+        verify(grpcClient).putTaskDef(any(PutTaskDefRequest.class));
+    }
 }
 
 class TaskWorker {
@@ -222,6 +259,11 @@ class TaskWorker {
     @LHTaskMethod("${CLUSTER_NAME}")
     public String onlyWithPlaceHolder(String name) {
         return "task only with placeholder " + name;
+    }
+
+    @LHTaskMethod("${defaultTaskName:default-task}")
+    public String withDefaultPlaceholderInTaskName(String name) {
+        return "task with default placeholder " + name;
     }
 
     @LHTaskMethod("${taskName}")

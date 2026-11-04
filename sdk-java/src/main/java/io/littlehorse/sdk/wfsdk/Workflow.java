@@ -27,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +52,8 @@ public abstract class Workflow {
 
     protected LHTypeAdapterRegistry lhTypeAdapterRegistry;
 
+    protected Map<String, String> placeholderValues;
+
     /**
      * Internal constructor used by WorkflowImpl.
      *
@@ -58,12 +61,35 @@ public abstract class Workflow {
      * @param entrypointThreadFunc is the entrypoint thread function.
      */
     protected Workflow(String name, ThreadFunc entrypointThreadFunc) {
+        this(name, entrypointThreadFunc, Map.of());
+    }
+
+    /**
+     * Internal constructor used by WorkflowImpl that accepts a placeholder map.
+     *
+     * @param name name of `WfSpec`.
+     * @param entrypointThreadFunc is the entrypoint thread function.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders in StructDef names
+     *                          referenced by this workflow (e.g. via {@code declareStruct}).
+     */
+    protected Workflow(String name, ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
         this.threadFuncs = new LinkedList<>();
         this.entrypointThread = entrypointThreadFunc;
         this.name = name;
         this.spec = PutWfSpecRequest.newBuilder().setName(name);
         this.workflowEventsToRegister = new HashSet<>();
         this.lhTypeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
+    }
+
+    /**
+     * Returns the placeholder values used to resolve {@code ${...}} placeholders in StructDef names
+     * referenced by this workflow.
+     *
+     * @return the placeholder values (never null)
+     */
+    public Map<String, String> getPlaceholderValues() {
+        return placeholderValues;
     }
 
     /**
@@ -170,6 +196,46 @@ public abstract class Workflow {
     }
 
     /**
+     * Creates a workflow that can be run without registering a WfSpec.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(ThreadFunc entrypointThreadFunc) {
+        return new InlineWorkflow(entrypointThreadFunc);
+    }
+
+    /**
+     * Creates an inline workflow with placeholder values for referenced StructDef names.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(
+            ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
+        return new InlineWorkflow(entrypointThreadFunc, placeholderValues);
+    }
+
+    /**
+     * Creates a new Workflow with the provided name, entrypoint thread function, and placeholder values.
+     *
+     * <p>The {@code placeholderValues} are used to resolve {@code ${...}} placeholders in the names of
+     * {@code @LHStructDef}-annotated classes referenced by this workflow (for example, via
+     * {@code declareStruct(name, MyStruct.class)}), identically to how {@code LHTaskWorker} placeholders
+     * are resolved.
+     *
+     * @param name is the name of the `WfSpec`.
+     * @param entrypointThreadFunc is the ThreadFunc for the entrypoint ThreadSpec.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders in referenced StructDef names.
+     * @return a Workflow.
+     */
+    public static Workflow newWorkflow(
+            String name, ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
+        return new WorkflowImpl(name, entrypointThreadFunc, placeholderValues);
+    }
+
+    /**
      * Defines the type of update to perform when saving the WfSpec:
      * AllowedUpdateType.ALL (Default): Creates a new WfSpec with a different version (either major or revision).
      * AllowedUpdateType.MINOR_REVISION_ONLY: Creates a new WfSpec with a different revision if the change is a major version it fails.
@@ -198,6 +264,19 @@ public abstract class Workflow {
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
     public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
+
+    /**
+     * Returns the Java classes referenced while compiling this workflow.
+     *
+     * <p>This includes classes used by variable declarations, event registrations, child threads,
+     * handlers, and recursively discovered JavaBean properties.
+     *
+     * <p>Only classes encountered during SDK type resolution are collected. Default values and
+     * other runtime objects are not inspected to discover additional classes.
+     *
+     * @return an immutable set of referenced Java classes
+     */
+    public abstract Set<Class<?>> getReferencedJavaTypes();
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.

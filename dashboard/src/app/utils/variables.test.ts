@@ -1,4 +1,6 @@
 import {
+  LHPath,
+  Timestamp,
   TypeDefinition,
   VariableAssignment,
   VariableDef,
@@ -10,21 +12,29 @@ import {
   formatTypeDefinition,
   getPrimitiveFormDefaultValue,
   getTypedVariableValue,
+  getTypedVariableValueFromTypeDef,
   getVariable,
   getVariableCaseFromTypeDef,
   getVariableDefType,
+  getVariableFilterValue,
   getVariableValue,
+  isStructFieldRequired,
+  lhPathToString,
+  variableMutationLhsToString,
+  type VariableDisplayContext,
 } from './variables'
+import { normalizeUtcTimestampString } from './timestamp'
 
 describe('getVariable', () => {
   it('should return from literalValue str', () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'literalValue',
-        value: {
+        oneofKind: 'literalValue',
+        literalValue: {
           value: {
-            $case: 'str',
-            value: 'string',
+            oneofKind: 'str',
+            str: 'string',
           },
         },
       },
@@ -34,12 +44,13 @@ describe('getVariable', () => {
 
   it('should return from literalValue bool', () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'literalValue',
-        value: {
+        oneofKind: 'literalValue',
+        literalValue: {
           value: {
-            $case: 'bool',
-            value: true,
+            oneofKind: 'bool',
+            bool: true,
           },
         },
       },
@@ -49,9 +60,10 @@ describe('getVariable', () => {
 
   it('should return variableName', () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'variableName',
-        value: 'variable',
+        oneofKind: 'variableName',
+        variableName: 'variable',
       },
     }
     expect(getVariable(variable)).toEqual('{variable}')
@@ -60,12 +72,12 @@ describe('getVariable', () => {
   it('should return variableName with jsonPath', () => {
     const variable: VariableAssignment = {
       path: {
-        $case: 'jsonPath',
-        value: '$.path',
+        oneofKind: 'jsonPath',
+        jsonPath: '$.path',
       },
       source: {
-        $case: 'variableName',
-        value: 'variable',
+        oneofKind: 'variableName',
+        variableName: 'variable',
       },
     }
     expect(getVariable(variable)).toEqual('{variable.path}')
@@ -73,39 +85,43 @@ describe('getVariable', () => {
 
   it('should return from formatString', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'formatString',
-        value: {
+        oneofKind: 'formatString',
+        formatString: {
           format: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'str',
-                  value: '{0} => {1}',
+                  oneofKind: 'str',
+                  str: '{0} => {1}',
                 },
               },
             },
           },
           args: [
             {
+              path: { oneofKind: undefined },
               source: {
-                $case: 'literalValue',
-                value: {
+                oneofKind: 'literalValue',
+                literalValue: {
                   value: {
-                    $case: 'str',
-                    value: 'first',
+                    oneofKind: 'str',
+                    str: 'first',
                   },
                 },
               },
             },
             {
+              path: { oneofKind: undefined },
               source: {
-                $case: 'literalValue',
-                value: {
+                oneofKind: 'literalValue',
+                literalValue: {
                   value: {
-                    $case: 'str',
-                    value: 'second',
+                    oneofKind: 'str',
+                    str: 'second',
                   },
                 },
               },
@@ -119,43 +135,48 @@ describe('getVariable', () => {
 
   it('should return from stacked formatString', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'formatString',
-        value: {
+        oneofKind: 'formatString',
+        formatString: {
           format: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'formatString',
-              value: {
+              oneofKind: 'formatString',
+              formatString: {
                 format: {
+                  path: { oneofKind: undefined },
                   source: {
-                    $case: 'literalValue',
-                    value: {
+                    oneofKind: 'literalValue',
+                    literalValue: {
                       value: {
-                        $case: 'str',
-                        value: '{0} => {1}',
+                        oneofKind: 'str',
+                        str: '{0} => {1}',
                       },
                     },
                   },
                 },
                 args: [
                   {
+                    path: { oneofKind: undefined },
                     source: {
-                      $case: 'literalValue',
-                      value: {
+                      oneofKind: 'literalValue',
+                      literalValue: {
                         value: {
-                          $case: 'str',
-                          value: '{1}',
+                          oneofKind: 'str',
+                          str: '{1}',
                         },
                       },
                     },
                   },
                   {
+                    path: { oneofKind: undefined },
                     source: {
-                      $case: 'literalValue',
-                      value: {
+                      oneofKind: 'literalValue',
+                      literalValue: {
                         value: {
-                          $case: 'str',
-                          value: '{0}',
+                          oneofKind: 'str',
+                          str: '{0}',
                         },
                       },
                     },
@@ -166,20 +187,22 @@ describe('getVariable', () => {
           },
           args: [
             {
+              path: { oneofKind: undefined },
               source: {
-                $case: 'literalValue',
-                value: {
+                oneofKind: 'literalValue',
+                literalValue: {
                   value: {
-                    $case: 'str',
-                    value: 'arg1',
+                    oneofKind: 'str',
+                    str: 'arg1',
                   },
                 },
               },
             },
             {
+              path: { oneofKind: undefined },
               source: {
-                $case: 'variableName',
-                value: 'arg1',
+                oneofKind: 'variableName',
+                variableName: 'arg1',
               },
             },
           ],
@@ -191,32 +214,35 @@ describe('getVariable', () => {
 
   it('should handle variable expressions', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'expression',
-        value: {
+        oneofKind: 'expression',
+        expression: {
           lhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'int',
-                  value: 42,
+                  oneofKind: 'int',
+                  int: '42',
                 },
               },
             },
           },
           rhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'int',
-                  value: 58,
+                  oneofKind: 'int',
+                  int: '58',
                 },
               },
             },
           },
-          operation: { $case: 'mutationType', value: VariableMutationType.MULTIPLY },
+          operation: { oneofKind: 'mutationType', mutationType: VariableMutationType.MULTIPLY },
         },
       },
     }
@@ -226,32 +252,35 @@ describe('getVariable', () => {
 
   it('should extend variable expressions', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'expression',
-        value: {
+        oneofKind: 'expression',
+        expression: {
           lhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'jsonArr',
-                  value: '[1, 2, 3]',
+                  oneofKind: 'jsonArr',
+                  jsonArr: '[1, 2, 3]',
                 },
               },
             },
           },
           rhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'int',
-                  value: 58,
+                  oneofKind: 'int',
+                  int: '58',
                 },
               },
             },
           },
-          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
+          operation: { oneofKind: 'mutationType', mutationType: VariableMutationType.EXTEND },
         },
       },
     }
@@ -261,32 +290,35 @@ describe('getVariable', () => {
 
   it('should extend strings expressions', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'expression',
-        value: {
+        oneofKind: 'expression',
+        expression: {
           lhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'str',
-                  value: 'hello',
+                  oneofKind: 'str',
+                  str: 'hello',
                 },
               },
             },
           },
           rhs: {
+            path: { oneofKind: undefined },
             source: {
-              $case: 'literalValue',
-              value: {
+              oneofKind: 'literalValue',
+              literalValue: {
                 value: {
-                  $case: 'str',
-                  value: '-world',
+                  oneofKind: 'str',
+                  str: '-world',
                 },
               },
             },
           },
-          operation: { $case: 'mutationType', value: VariableMutationType.EXTEND },
+          operation: { oneofKind: 'mutationType', mutationType: VariableMutationType.EXTEND },
         },
       },
     }
@@ -296,19 +328,112 @@ describe('getVariable', () => {
 
   it('should return null from literalValue empty', async () => {
     const variable: VariableAssignment = {
+      path: { oneofKind: undefined },
       source: {
-        $case: 'literalValue',
-        value: {},
+        oneofKind: 'literalValue',
+        literalValue: {
+          value: { oneofKind: undefined },
+        },
       },
     }
     expect(getVariable(variable)).toEqual('NULL')
   })
 })
 
+describe('lhPathToString', () => {
+  it('should create string from index selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'index', index: 0 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[0]')
+  })
+
+  it('should create string from key selector', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car')
+  })
+
+  it('should create string from dynamic selector', () => {
+    const lhPath: LHPath = {
+      path: [
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: { oneofKind: 'variableName', variableName: 'key' },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$[{key}]')
+  })
+
+  it('should create string from nested static and dynamic selectors', () => {
+    const lhPath: LHPath = {
+      path: [
+        { selectorType: { oneofKind: 'key', key: 'anotherMap' } },
+        {
+          selectorType: {
+            oneofKind: 'dynamic',
+            dynamic: {
+              source: {
+                oneofKind: 'literalValue',
+                literalValue: { value: { oneofKind: 'str', str: 'key' } },
+              },
+              path: { oneofKind: undefined },
+            },
+          },
+        },
+      ],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.anotherMap["key"]')
+  })
+
+  it('should create string from selector list', () => {
+    const lhPath: LHPath = {
+      path: [{ selectorType: { oneofKind: 'key', key: 'car' } }, { selectorType: { oneofKind: 'index', index: 10 } }],
+    }
+    expect(lhPathToString(lhPath)).toEqual('$.car[10]')
+  })
+})
+
+describe('variableMutationLhsToString', () => {
+  it('formats a root variable target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory' })).toEqual('inventory')
+  })
+
+  it('formats a legacy JSONPath target', () => {
+    expect(variableMutationLhsToString({ lhsName: 'inventory', lhsJsonPath: '$.apples' })).toEqual('inventory.apples')
+  })
+
+  it('formats a typed LHPath target', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'apples' } }] },
+      })
+    ).toEqual('inventory.apples')
+  })
+
+  it('prefers a typed LHPath over a legacy JSONPath', () => {
+    expect(
+      variableMutationLhsToString({
+        lhsName: 'inventory',
+        lhsJsonPath: '$.legacy',
+        lhsLhPath: { path: [{ selectorType: { oneofKind: 'key', key: 'typed' } }] },
+      })
+    ).toEqual('inventory.typed')
+  })
+})
+
 describe('getTypedContent', () => {
   it('should return str', async () => {
     const content = getTypedVariableValue('str', 'test')
-    expect(content).toEqual({ value: { $case: 'str', value: 'test' } })
+    expect(content).toEqual({ value: { oneofKind: 'str', str: 'test' } })
   })
 })
 
@@ -316,20 +441,23 @@ describe('getTypedVariableValue', () => {
   it('should return wfRunId variable value', async () => {
     const variableValue = getTypedVariableValue('wfRunId', '12345')
     expect(variableValue).toStrictEqual({
-      value: { $case: 'wfRunId', value: { id: '12345', parentWfRunId: undefined } },
+      value: { oneofKind: 'wfRunId', wfRunId: { id: '12345' } },
     })
   })
 
   it('should return wfRunId variable value with parent', async () => {
     const variableValue = getTypedVariableValue('wfRunId', 'parent_child')
     expect(variableValue).toStrictEqual({
-      value: { $case: 'wfRunId', value: { id: 'child', parentWfRunId: { id: 'parent', parentWfRunId: undefined } } },
+      value: {
+        oneofKind: 'wfRunId',
+        wfRunId: { id: 'child', parentWfRunId: { id: 'parent' } },
+      },
     })
   })
 
   it('should return jsonObj variable value', async () => {
     const variableValue = getTypedVariableValue('jsonObj', '{"key": "value"}')
-    expect(variableValue).toStrictEqual({ value: { $case: 'jsonObj', value: '{"key":"value"}' } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'jsonObj', jsonObj: '{"key":"value"}' } })
   })
 
   it('should return parse error for invalid json', async () => {
@@ -338,38 +466,41 @@ describe('getTypedVariableValue', () => {
 
   it('should return jsonArr variable value', async () => {
     const variableValue = getTypedVariableValue('jsonArr', '["item1", "item2"]')
-    expect(variableValue).toStrictEqual({ value: { $case: 'jsonArr', value: '["item1","item2"]' } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'jsonArr', jsonArr: '["item1","item2"]' } })
   })
 
   it('should return double variable value', async () => {
     const variableValue = getTypedVariableValue('double', '3.14')
-    expect(variableValue).toStrictEqual({ value: { $case: 'double', value: 3.14 } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'double', double: 3.14 } })
   })
 
   it('should return bool variable value', async () => {
     const variableValue = getTypedVariableValue('bool', 'true')
-    expect(variableValue).toStrictEqual({ value: { $case: 'bool', value: true } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'bool', bool: true } })
   })
 
   it('should return int variable value', async () => {
     const variableValue = getTypedVariableValue('int', '42')
-    expect(variableValue).toStrictEqual({ value: { $case: 'int', value: 42 } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'int', int: '42' } })
   })
 
   it('should return bytes variable value', async () => {
     const variableValue = getTypedVariableValue('bytes', Buffer.from('Hello').toString())
-    expect(variableValue).toStrictEqual({ value: { $case: 'bytes', value: Buffer.from('Hello') } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'bytes', bytes: new Uint8Array(Buffer.from('Hello')) } })
   })
 
   it('should return str variable value', async () => {
     const variableValue = getTypedVariableValue('str', 'Hello World')
-    expect(variableValue).toStrictEqual({ value: { $case: 'str', value: 'Hello World' } })
+    expect(variableValue).toStrictEqual({ value: { oneofKind: 'str', str: 'Hello World' } })
   })
 
   it('should return utcTimestamp as RFC3339 string', async () => {
     const variableValue = getTypedVariableValue('utcTimestamp', '2024-06-15T14:30:45.123456789Z')
     expect(variableValue).toStrictEqual({
-      value: { $case: 'utcTimestamp', value: '2024-06-15T14:30:45.123456789Z' },
+      value: {
+        oneofKind: 'utcTimestamp',
+        utcTimestamp: Timestamp.fromDate(new Date(normalizeUtcTimestampString('2024-06-15T14:30:45.123456789Z'))),
+      },
     })
   })
 })
@@ -381,31 +512,33 @@ describe('getPrimitiveFormDefaultValue', () => {
   })
 
   it('returns the str value for STR defaults', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: 'hello' } })).toEqual('hello')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'str', str: 'hello' } })).toEqual('hello')
   })
 
   it('preserves empty string defaults', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'str', value: '' } })).toEqual('')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'str', str: '' } })).toEqual('')
   })
 
   it('returns numeric values for INT/DOUBLE defaults', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'int', value: '42' as any } })).toEqual('42')
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'double', value: 1.5 } })).toEqual(1.5)
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'int', int: '42' } })).toEqual('42')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'double', double: 1.5 } })).toEqual(1.5)
   })
 
   it('serializes BOOL defaults as form-friendly strings', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: true } })).toEqual('true')
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bool', value: false } })).toEqual('false')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'bool', bool: true } })).toEqual('true')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'bool', bool: false } })).toEqual('false')
   })
 
   it('returns the JSON string for JSON_OBJ/JSON_ARR defaults', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonObj', value: '{"a":1}' } })).toEqual('{"a":1}')
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'jsonArr', value: '[1,2]' } })).toEqual('[1,2]')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'jsonObj', jsonObj: '{"a":1}' } })).toEqual('{"a":1}')
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'jsonArr', jsonArr: '[1,2]' } })).toEqual('[1,2]')
   })
 
   it('returns undefined for non-primitive cases', () => {
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'bytes', value: Buffer.from('') } as any })).toBeUndefined()
-    expect(getPrimitiveFormDefaultValue({ value: { $case: 'struct', value: {} as any } })).toBeUndefined()
+    expect(
+      getPrimitiveFormDefaultValue({ value: { oneofKind: 'bytes', bytes: new Uint8Array(Buffer.from('')) } })
+    ).toBeUndefined()
+    expect(getPrimitiveFormDefaultValue({ value: { oneofKind: 'struct', struct: {} as any } })).toBeUndefined()
   })
 })
 
@@ -425,8 +558,8 @@ describe('getVariableDefType', () => {
       name: 'testVariable',
       typeDef: {
         definedType: {
-          $case: 'primitiveType',
-          value: VariableType.STR,
+          oneofKind: 'primitiveType',
+          primitiveType: VariableType.STR,
         },
         masked: false,
       },
@@ -441,8 +574,8 @@ describe('getVariableCaseFromTypeDef', () => {
   it('should return primitive type case', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'primitiveType',
-        value: VariableType.STR,
+        oneofKind: 'primitiveType',
+        primitiveType: VariableType.STR,
       },
       masked: false,
     }
@@ -453,11 +586,20 @@ describe('getVariableCaseFromTypeDef', () => {
   it('should return struct for structDefId', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'structDefId',
-        value: {
+        oneofKind: 'structDefId',
+        structDefId: {
           // minimal stub; fields are not used by the function
         } as any,
       },
+      masked: false,
+    }
+
+    expect(getVariableCaseFromTypeDef(typeDef)).toEqual('struct')
+  })
+
+  it('should return struct for inlineStructDef', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
       masked: false,
     }
 
@@ -474,8 +616,8 @@ describe('formatTypeDefinition', () => {
   it('should format primitive type', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'primitiveType',
-        value: VariableType.INT,
+        oneofKind: 'primitiveType',
+        primitiveType: VariableType.INT,
       },
       masked: false,
     }
@@ -486,16 +628,16 @@ describe('formatTypeDefinition', () => {
   it('should format nested arrays recursively', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'inlineArrayDef',
-        value: {
+        oneofKind: 'inlineArrayDef',
+        inlineArrayDef: {
           arrayType: {
             definedType: {
-              $case: 'inlineArrayDef',
-              value: {
+              oneofKind: 'inlineArrayDef',
+              inlineArrayDef: {
                 arrayType: {
                   definedType: {
-                    $case: 'primitiveType',
-                    value: VariableType.INT,
+                    oneofKind: 'primitiveType',
+                    primitiveType: VariableType.INT,
                   },
                   masked: false,
                 },
@@ -511,11 +653,73 @@ describe('formatTypeDefinition', () => {
     expect(formatTypeDefinition(typeDef)).toEqual('Array<Array<Integer>>')
   })
 
+  it('should format map type with key and value types', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.INT,
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Integer>')
+  })
+
+  it('should format nested map value types recursively', () => {
+    const typeDef: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: {
+            definedType: {
+              oneofKind: 'primitiveType',
+              primitiveType: VariableType.STR,
+            },
+            masked: false,
+          },
+          valueType: {
+            definedType: {
+              oneofKind: 'inlineArrayDef',
+              inlineArrayDef: {
+                arrayType: {
+                  definedType: {
+                    oneofKind: 'primitiveType',
+                    primitiveType: VariableType.INT,
+                  },
+                  masked: false,
+                },
+              },
+            },
+            masked: false,
+          },
+        },
+      },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('Map<String,Array<Integer>>')
+  })
+
   it('should format struct type', () => {
     const typeDef: TypeDefinition = {
       definedType: {
-        $case: 'structDefId',
-        value: {
+        oneofKind: 'structDefId',
+        structDefId: {
           name: 'customer',
           version: 1,
         },
@@ -525,6 +729,15 @@ describe('formatTypeDefinition', () => {
 
     expect(formatTypeDefinition(typeDef)).toEqual('Struct<customer,1>')
   })
+
+  it('should format inline struct type', () => {
+    const typeDef: TypeDefinition = {
+      definedType: { oneofKind: 'inlineStructDef', inlineStructDef: { fields: {} } },
+      masked: false,
+    }
+
+    expect(formatTypeDefinition(typeDef)).toEqual('InlineStruct')
+  })
 })
 
 describe('getVariableValue', () => {
@@ -533,12 +746,194 @@ describe('getVariableValue', () => {
   })
 
   it('should render native array ints as JSON numbers', () => {
-    const variableValue = VariableValue.fromJSON({
-      array: {
-        items: [{ int: 1 }, { int: 2 }, { int: 3 }],
+    const variableValue = VariableValue.create({
+      value: {
+        oneofKind: 'array',
+        array: {
+          items: [
+            { value: { oneofKind: 'int', int: '1' } },
+            { value: { oneofKind: 'int', int: '2' } },
+            { value: { oneofKind: 'int', int: '3' } },
+          ],
+        },
       },
     })
 
     expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
+  })
+
+  it('should render native map as JSON object keyed by entry keys', () => {
+    const variableValue = VariableValue.fromJson({
+      map: {
+        entries: [
+          { key: { str: 'one' }, value: { int: 1 } },
+          { key: { str: 'two' }, value: { int: 2 } },
+        ],
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual('{"one":1,"two":2}')
+  })
+})
+
+describe('getTypedVariableValueFromTypeDef', () => {
+  const mapStrInt: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineMapDef',
+      inlineMapDef: {
+        keyType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR }, masked: false },
+        valueType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.INT }, masked: false },
+      },
+    },
+    masked: false,
+  }
+
+  const arrayInt: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineArrayDef',
+      inlineArrayDef: {
+        arrayType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.INT }, masked: false },
+      },
+    },
+    masked: false,
+  }
+
+  const inlineAddress: TypeDefinition = {
+    definedType: {
+      oneofKind: 'inlineStructDef',
+      inlineStructDef: {
+        fields: {
+          street: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: false,
+          },
+          unit: {
+            fieldType: {
+              definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+              masked: false,
+            },
+            isNullable: true,
+          },
+        },
+      },
+    },
+    masked: false,
+  }
+
+  it('converts friendly Map JSON into a proto Map that round-trips back to the same display', () => {
+    const vv = getTypedVariableValueFromTypeDef(mapStrInt, '{"apples":3,"bananas":5}')
+    expect(vv.value.oneofKind).toEqual('map')
+    // entries carry the declared key/value types, not raw JSON
+    expect(vv.value).toEqual({
+      oneofKind: 'map',
+      map: {
+        entries: [
+          { key: { value: { oneofKind: 'str', str: 'apples' } }, value: { value: { oneofKind: 'int', int: '3' } } },
+          { key: { value: { oneofKind: 'str', str: 'bananas' } }, value: { value: { oneofKind: 'int', int: '5' } } },
+        ],
+      },
+    })
+    expect(getVariableValue(vv)).toEqual('{"apples":3,"bananas":5}')
+  })
+
+  it('converts friendly Array JSON into a proto Array that round-trips', () => {
+    const vv = getTypedVariableValueFromTypeDef(arrayInt, '[1,2,3]')
+    expect(vv.value.oneofKind).toEqual('array')
+    expect(getVariableValue(vv)).toEqual('[1,2,3]')
+  })
+
+  it('handles nested Map<String,Array<Integer>> recursively', () => {
+    const nested: TypeDefinition = {
+      definedType: {
+        oneofKind: 'inlineMapDef',
+        inlineMapDef: {
+          keyType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR }, masked: false },
+          valueType: arrayInt,
+        },
+      },
+      masked: false,
+    }
+    const vv = getTypedVariableValueFromTypeDef(nested, '{"a":[1,2],"b":[3]}')
+    expect(getVariableValue(vv)).toEqual('{"a":[1,2],"b":[3]}')
+  })
+
+  it('converts inline structs nested in arrays without a StructDefId', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    const vv = getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","unit":null}]')
+    const address = vv.value.oneofKind === 'array' ? vv.value.array.items[0] : undefined
+
+    expect(address?.value.oneofKind).toBe('struct')
+    if (address?.value.oneofKind !== 'struct') throw new Error('Expected Struct value')
+    expect(address.value.struct.structDefId).toBeUndefined()
+    expect(address.value.struct.struct?.fields.street.value?.value).toEqual({ oneofKind: 'str', str: 'Main' })
+    expect(address.value.struct.struct?.fields.unit.value?.value.oneofKind).toBeUndefined()
+  })
+
+  it('rejects invalid inline struct objects nested in arrays', () => {
+    const addresses: TypeDefinition = {
+      definedType: { oneofKind: 'inlineArrayDef', inlineArrayDef: { arrayType: inlineAddress } },
+      masked: false,
+    }
+
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"unit":"2A"}]')).toThrow(
+      'Missing required InlineStruct field: street'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '[{"street":"Main","extra":true}]')).toThrow(
+      'Unknown InlineStruct field: extra'
+    )
+    expect(() => getTypedVariableValueFromTypeDef(addresses, '["Main"]')).toThrow(
+      'Expected a JSON object for InlineStruct'
+    )
+  })
+
+  it('throws on malformed JSON so callers can surface a validation error instead of crashing', () => {
+    expect(() => getTypedVariableValueFromTypeDef(mapStrInt, 'not json')).toThrow()
+  })
+
+  it('getVariableFilterValue builds a filter value from a map-typed VariableDef', () => {
+    const varDef: VariableDef = { name: 'settings', typeDef: mapStrInt } as VariableDef
+    const vv = getVariableFilterValue(varDef, '{"x":1}')
+    expect(getVariableValue(vv)).toEqual('{"x":1}')
+  })
+})
+
+describe('isStructFieldRequired', () => {
+  it('treats nullable and defaulted fields as optional', () => {
+    expect(isStructFieldRequired({ isNullable: false })).toBe(true)
+    expect(isStructFieldRequired({ isNullable: true })).toBe(false)
+    expect(isStructFieldRequired({ isNullable: false, defaultValue: VariableValue.create() })).toBe(false)
+  })
+})
+
+describe('getVariable with node output context', () => {
+  const variable: VariableAssignment = {
+    source: { oneofKind: 'nodeOutput', nodeOutput: { nodeName: '1-greet-TASK' } },
+    path: { oneofKind: undefined },
+  } as VariableAssignment
+
+  it('returns the node name without runtime context', () => {
+    expect(getVariable(variable)).toEqual('1-greet-TASK')
+  })
+
+  it('returns the resolved task output when runtime context is provided', () => {
+    const context: VariableDisplayContext = {
+      nodeOutputValues: { '1-greet-TASK': { value: { oneofKind: 'str', str: 'hello there, Obi-Wan' } } },
+    }
+    expect(getVariable(variable, 0, context)).toEqual('hello there, Obi-Wan')
+  })
+
+  it('applies a jsonPath to a resolved JSON output', () => {
+    const withPath = { ...variable, path: { oneofKind: 'jsonPath', jsonPath: '$.bar' } } as VariableAssignment
+    const context: VariableDisplayContext = {
+      nodeOutputValues: { '1-greet-TASK': { value: { oneofKind: 'jsonObj', jsonObj: '{"bar": 15}' } } },
+    }
+    expect(getVariable(withPath, 0, context)).toEqual('15')
   })
 })

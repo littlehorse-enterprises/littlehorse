@@ -1386,14 +1386,11 @@ func (t *WorkflowThread) doWhile(cond LHExpression, whileBody ThreadFunc) {
 		t.throwError(tracerr.Wrap(condErr))
 	}
 
-	// Now add the sideways path from T directly to B
+	// Now add the unconditioned sideways path from T directly to B
 	topOfTreeNode.OutgoingEdges = append(
 		topOfTreeNode.OutgoingEdges,
 		&lhproto.Edge{
 			SinkNodeName: *bottomOfTreeNodeName,
-			EdgeCondition: &lhproto.Edge_Condition{
-				Condition: condAssn,
-			},
 		},
 	)
 
@@ -1643,7 +1640,6 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 			runNodeProto.Inputs[k] = assn
 		}
 	}
-
 	nodeName, node := t.createBlankNode(humanName, "RUN_CHILD_WF")
 	node.Node = &lhproto.Node_RunChildWf{
 		RunChildWf: runNodeProto,
@@ -1652,6 +1648,7 @@ func (t *WorkflowThread) runWfImpl(wfSpecName interface{}, inputs map[string]int
 	return &SpawnedChildWf{
 		sourceNodeName: nodeName,
 		thread:         t,
+		runNode:        runNodeProto,
 	}
 }
 

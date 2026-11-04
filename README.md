@@ -144,19 +144,11 @@ DOTNET_ROLL_FORWARD=Major dotnet run
 
 #### JavaScript
 
-First, install dependencies and start the task workers (this registers the required `TaskDef`s):
+Install dependencies and start the app. It registers the `TaskDef`s, `ExternalEventDef`, and `WfSpec`, then starts the task workers:
 
 ```sh
 cd examples/js/quickstart
 npm install && npm start
-```
-
-Then in another terminal, register the `ExternalEventDef` and `WfSpec` (note that our JS SDK does not yet support creation of `WfSpec`s, so we use `lhctl` here):
-
-```sh
-cd examples/js/quickstart
-lhctl deploy externalEventDef identity-verified-external-event-def.json
-lhctl deploy wfSpec quickstart-wfspec.json
 ```
 
 ### Run a `WfRun` (Workflow Run)

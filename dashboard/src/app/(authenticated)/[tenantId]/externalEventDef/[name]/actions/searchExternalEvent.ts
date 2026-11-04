@@ -10,18 +10,19 @@ import {
   ExternalEventId,
   ExternalEventIdList,
   NodeRun,
+  NodeRunId,
   PutCorrelatedEventRequest,
   SearchCorrelatedEventRequest,
   SearchExternalEventRequest,
   VariableValue,
 } from 'littlehorse-client/proto'
 
-export interface runDetails {
+interface runDetails {
   externalEvent: ExternalEvent
   nodeRun: NodeRun | null
 }
 
-export interface correlatedEventDetails {
+interface correlatedEventDetails {
   correlatedEvent: CorrelatedEvent
 }
 
@@ -63,7 +64,7 @@ export const searchExternalEvent = async ({
 
       let nodeRun = null
       try {
-        nodeRun = await client.getNodeRun(externalEvent.id!)
+        nodeRun = await client.getNodeRun(externalEvent.id! as unknown as NodeRunId)
       } catch {
         // nodeRun is null if the node run is not found
       }
@@ -77,9 +78,12 @@ export const searchExternalEvent = async ({
 
   const externalEventWithDetails: runDetails[] = await Promise.all(hydrateWithExternalEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...externalEventIdListRest } = externalEventIdList
   return {
-    ...externalEventIdList,
-    bookmarkAsString: externalEventIdList.bookmark?.toString('base64'),
+    ...externalEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: externalEventWithDetails,
   }
 }
@@ -105,9 +109,12 @@ export const searchCorrelatedEvent = async ({
 
   const correlatedEventWithDetails: correlatedEventDetails[] = await Promise.all(hydrateWithCorrelatedEventDetails())
 
+  // Strip the raw Uint8Array bookmark: server actions can only return plain
+  // objects to client components, so only its base64 form crosses the boundary.
+  const { bookmark, ...correlatedEventIdListRest } = correlatedEventIdList
   return {
-    ...correlatedEventIdList,
-    bookmarkAsString: correlatedEventIdList.bookmark?.toString('base64'),
+    ...correlatedEventIdListRest,
+    bookmarkAsString: bookmark ? Buffer.from(bookmark).toString('base64') : undefined,
     resultsWithDetails: correlatedEventWithDetails,
   }
 }

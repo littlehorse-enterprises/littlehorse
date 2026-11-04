@@ -21,6 +21,8 @@ import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
 import "metrics.proto";
+import "workflow_migration.proto";
+import "bulk_job.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
@@ -101,6 +103,12 @@ service LittleHorse {
   // Runs a WfSpec to create a WfRun.
   rpc RunWf(RunWfRequest) returns (WfRun) {}
 
+  // Starts a durable run from an unregistered workflow definition.
+  rpc RunInlineWf(RunInlineWfRequest) returns (WfRun) {}
+
+  // Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
+  rpc GetInlineWfSpec(WfRunId) returns (InlineWfSpec) {}
+
   // Schedule repeated WfRun based on a cron expression
   rpc ScheduleWf(ScheduleWfRequest) returns (ScheduledWfRun) {}
 
@@ -172,6 +180,10 @@ service LittleHorse {
   // column for a specific row in a SQL table.
   rpc GetVariable(VariableId) returns (Variable) {}
 
+  // Replaces the value of an existing Variable and attempts to advance its workflow.
+  // Returns the previous value, respecting the variable's masking configuration.
+  rpc PutVariable(PutVariableRequest) returns (VariableValue) {}
+
   // List all Variables from a WfRun.
   rpc ListVariables(ListVariablesRequest) returns (VariableList) {}
 
@@ -210,6 +222,22 @@ service LittleHorse {
   // in LittleHorse and need to find a specific WfRun based on certain indexed fields.
   rpc SearchWfRun(SearchWfRunRequest) returns (WfRunIdList) {}
 
+  // EXPERIMENTAL: Register a workflow migration plan with lh server
+  rpc PutWorkflowMigrationPlan(PutWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlan) {}
+
+  // EXPERIMENTAL: Get a workflow migration plan by ID
+  rpc GetWorkflowMigrationPlan(WorkflowMigrationPlanId) returns (WorkflowMigrationPlan) {}
+
+  // EXPERIMENTAL: Deletes Workflow Migration Plan Metadata object from the server
+  rpc DeleteWorkflowMigrationPlan(DeleteWorkflowMigrationPlanRequest) returns (google.protobuf.Empty) {}
+
+  // EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
+  // destination WfSpec.
+  rpc ApplyWorkflowMigrationPlan(ApplyWorkflowMigrationPlanRequest) returns (WfRun) {}
+
+  // EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+  rpc SearchWorkflowMigrationPlan(SearchWorkflowMigrationPlanRequest) returns (WorkflowMigrationPlanIdList) {}
+  
   // Search for CorrelatedEvents. This RPC is useful for day 2 operations and viewing
   // events that may be orphaned.
   rpc SearchCorrelatedEvent(SearchCorrelatedEventRequest) returns (CorrelatedEventIdList) {}
@@ -338,6 +366,15 @@ service LittleHorse {
   // Deletes a scheduled run and prevents any further associated WfRun from being executed.
   rpc DeleteScheduledWfRun(DeleteScheduledWfRunRequest) returns (google.protobuf.Empty) {}
 
+  // EXPERIMENTAL: Creates a BulkJob for performing large-scale background operations.
+  rpc CreateBulkJob(CreateBulkJobRequest) returns (BulkJob) {}
+  // EXPERIMENTAL: Gets the status of a BulkJob.
+  rpc GetBulkJob(GetBulkJobRequest) returns (BulkJob) {}
+  // EXPERIMENTAL: Searches for BulkJob's, optionally filtering by status.
+  rpc SearchBulkJob(SearchBulkJobRequest) returns (BulkJobIdList) {}
+  // EXPERIMENTAL: Deletes a BulkJob that has finished (BULK_JOB_COMPLETED or BULK_JOB_FAILED).
+  rpc DeleteBulkJob(DeleteBulkJobRequest) returns (google.protobuf.Empty) {}
+
   // Returns TaskDef Metrics for a specific TaskDef and a specific time window.
   rpc GetTaskDefMetricsWindow(TaskDefMetricsQueryRequest) returns (TaskDefMetrics) {}
   // Returns WfSpec Metrics for a specific WfSpec and a specific time window.
@@ -345,6 +382,8 @@ service LittleHorse {
   
   // Lists available metric windows for a given TaskDefId and time range.
   rpc ListTaskMetrics(ListTaskMetricsRequest) returns (MetricsList) {}
+  // Lists quota usage metric windows for a quota and time range.
+  rpc ListQuotaUsageMetrics(ListQuotaUsageMetricsRequest) returns (MetricsList) {}
   // Lists available metric windows for a given WfSpecId and time range.
   rpc ListWfMetrics(ListWfMetricsRequest) returns (MetricsList) {}
   // Gets a MetricWindow by its ID.
@@ -652,10 +691,17 @@ message DeleteWorkflowEventDefRequest {
 }
 
 // Create a Workflow Run.
+message RunInlineWfRequest {
+  // Supply only thread_specs, entrypoint_thread_name, and retention_policy.
+  InlineWfSpec wf_spec = 1;
+  map<string, VariableValue> variables = 2;
+  // Reusing an existing run ID returns ALREADY_EXISTS, as with RunWf.
+  optional string id = 3;
+}
+
 message RunWfRequest {
   // The name of the WfSpec to run.
   string wf_spec_name = 1;
-
   // Optionally specify the major version of the WfSpec to run. This guarantees that
   // the "signature" of the WfSpec (i.e. the required input variables, and searchable
   // variables) will not change for this app.
@@ -703,6 +749,38 @@ message ScheduleWfRequest {
 
   // UNIX expression used to specify the schedule for executing WfRuns
   string cron_expression = 7;
+}
+
+// EXPERIMENTAL: Request to register a WorkflowMigrationPlan.
+message PutWorkflowMigrationPlanRequest {
+
+  string name = 1;
+
+  WfSpecId old_wfSpec = 2;
+
+  int32 major_version = 3;
+
+  int32 revision = 4;
+
+  map<string, ThreadMigrationPlanRequest> thread_migrations = 5;
+
+}
+
+// EXPERIMENTAL: Request to delete a WorkflowMigrationPlan.
+message DeleteWorkflowMigrationPlanRequest{
+  WorkflowMigrationPlanId id = 1;
+}
+
+
+// EXPERIMENTAL: Request to apply a WorkflowMigrationPlan to a live WfRun.
+message ApplyWorkflowMigrationPlanRequest {
+
+  WorkflowMigrationPlanId id = 1;
+
+  WfRunId wfRun_id = 2;
+
+  map<string, MigrationVars> migration_vars_by_thread= 3;
+
 }
 
 // Used by a SearchWfRunRequest to filter WfRun's and only return those whose Variable's
@@ -1088,6 +1166,35 @@ message SearchExternalEventDefRequest {
 message ExternalEventDefIdList {
   // The resulting object id's.
   repeated ExternalEventDefId results = 1;
+
+  // The bookmark can be used for cursor-based pagination. If it is null, the server
+  // has returned all results. If it is set, you can pass it into your next request
+  // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// EXPERIMENTAL: Search for WorkflowMigrationPlan's.
+message SearchWorkflowMigrationPlanRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally specify search criteria. If no criteria are specified, all
+  // WorkflowMigrationPlan's are returned.
+  oneof workflow_migration_plan_criteria {
+    // Return WorkflowMigrationPlan's whose source WfSpec has this name.
+    string wf_spec_name = 3;
+
+    // Return WorkflowMigrationPlan's whose name starts with this prefix.
+    string prefix = 4;
+  }
+}
+
+// EXPERIMENTAL: List of WorkflowMigrationPlan Id's.
+message WorkflowMigrationPlanIdList {
+  // The resulting object id's.
+  repeated WorkflowMigrationPlanId results = 1;
 
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request
@@ -1519,6 +1626,14 @@ message ReportTaskRun {
   // The checkpoint_number is used primarily as an epoch to allow resetting timeouts after
   // each checkpoint.
   int32 total_checkpoints = 9;
+}
+
+// Replaces an existing variable's value without type validation, then attempts to advance its workflow.
+message PutVariableRequest {
+  // Exact ID of the existing variable to modify.
+  VariableId id = 1;
+  // Replacement value. An empty VariableValue represents null.
+  VariableValue value = 2;
 }
 
 // Message to HALT a WfRun.

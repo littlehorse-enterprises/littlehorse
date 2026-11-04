@@ -7,9 +7,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { routes } from '@/app/routes'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { signOut } from 'next-auth/react'
 import { FC } from 'react'
+import LinkWithTenant from './LinkWithTenant'
 
 export const Principal: FC = () => {
   const { user } = useWhoAmI()
@@ -24,6 +26,9 @@ export const Principal: FC = () => {
       <DropdownMenuContent className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild className="block w-full px-4 py-2 text-left text-sm">
+          <LinkWithTenant href={routes.quotas.usage()}>Quotas</LinkWithTenant>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => signOut()} className="block w-full px-4 py-2 text-left text-sm">
           Sign out
         </DropdownMenuItem>

@@ -5,8 +5,11 @@ import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Optional;
 import lombok.Getter;
@@ -23,6 +26,9 @@ public class LHTaskParameter {
     @Getter
     private final VariableDef variableDef;
 
+    @Getter
+    private final LHClassType variableClassType;
+
     public LHTaskParameter(
             Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         this.parameter = parameter;
@@ -38,20 +44,37 @@ public class LHTaskParameter {
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateLHArrayUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
-
-        LHClassType variableClassType;
+        metadata.validateLHMapUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateInlineStructUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         if (metadata.isLHArray()) {
-            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry);
+            this.variableClassType = new LHArrayType(
+                    parameter.getType(),
+                    typeAdapterRegistry,
+                    resolvedPlaceholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
+        } else if (metadata.isLHMap()) {
+            this.variableClassType = resolveMapType(parameter, typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            variableClassType = new LHStructDefId(structDefName.get());
+            this.variableClassType = new LHStructDefId(structDefName.get());
+        } else if (metadata.isInlineStruct()) {
+            this.variableClassType = LHClassType.resolve(
+                    parameter.getType(),
+                    typeAdapterRegistry,
+                    resolvedPlaceholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
         } else {
-            variableClassType = LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry);
+            this.variableClassType =
+                    LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry, resolvedPlaceholderValues);
         }
+        metadata.validateInlineStructType(
+                variableClassType, LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         this.variableDef = VariableDef.newBuilder()
                 .setName(variableName)
-                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
+                .setTypeDef(this.variableClassType.getTypeDefinition().toBuilder()
                         .setMasked(metadata.isMasked())
                         .build())
                 .build();
@@ -69,5 +92,27 @@ public class LHTaskParameter {
 
     public Class<?> getParameterType() {
         return parameter.getType();
+    }
+
+    private static LHMapType resolveMapType(
+            Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        Type genericType = parameter.getParameterizedType();
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArgs = paramType.getActualTypeArguments();
+            if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
+                return new LHMapType(
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        placeholderValues,
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
+            }
+        }
+
+        throw new IllegalArgumentException("Map parameter '" + parameter.getName()
+                + "' annotated with @LHType(isLHMap = true) must declare generic type parameters "
+                + "(e.g. Map<String, Integer>). Raw or wildcard Map types are not supported.");
     }
 }

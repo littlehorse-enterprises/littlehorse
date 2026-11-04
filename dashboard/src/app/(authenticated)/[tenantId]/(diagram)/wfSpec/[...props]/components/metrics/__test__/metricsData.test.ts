@@ -1,4 +1,4 @@
-import { CountAndTiming, MetricWindow, WfMetrics } from 'littlehorse-client/proto'
+import { CountAndTiming, MetricWindow, Timestamp, WfMetrics } from 'littlehorse-client/proto'
 import {
   mergeManyTimings,
   mergeWfMetricsGroup,
@@ -14,7 +14,7 @@ import {
 } from '../metricsData'
 
 function ct(count: number, min: number, max: number, total: number): CountAndTiming {
-  return { count, minLatencyMs: min, maxLatencyMs: max, totalLatencyMs: total }
+  return { count, minLatencyMs: String(min), maxLatencyMs: String(max), totalLatencyMs: String(total) }
 }
 
 function wfMetrics(overrides: Partial<WfMetrics> = {}): WfMetrics {
@@ -33,8 +33,12 @@ function wfMetrics(overrides: Partial<WfMetrics> = {}): WfMetrics {
 
 function makeWindow(windowStartISO: string, wf: WfMetrics): MetricWindow {
   return {
-    id: { windowStart: windowStartISO, id: undefined, tenantId: undefined },
-    metric: { $case: 'workflow' as const, value: wf },
+    id: {
+      windowStart: Timestamp.fromDate(new Date(windowStartISO)),
+      id: { oneofKind: undefined },
+      tenantId: undefined,
+    },
+    metric: { oneofKind: 'workflow', workflow: wf },
   }
 }
 
@@ -156,6 +160,28 @@ describe('enumerateBucketStarts', () => {
       new Date(2026, 3, 7).getTime(),
     ])
   })
+
+  it('starts at the bucket containing an unaligned range start', () => {
+    const fiveMin = 5 * 60 * 1000
+    const start = new Date('2026-04-07T10:03:30Z').getTime()
+    const end = new Date('2026-04-07T10:14:59Z').getTime()
+    expect(enumerateBucketStarts(start, end, fiveMin)).toEqual([
+      new Date('2026-04-07T10:00:00Z').getTime(),
+      new Date('2026-04-07T10:05:00Z').getTime(),
+      new Date('2026-04-07T10:10:00Z').getTime(),
+    ])
+  })
+
+  it('starts day buckets at the local midnight before an unaligned range start', () => {
+    const dayMs = 86_400_000
+    const start = new Date(2026, 3, 5, 15, 0).getTime()
+    const end = new Date(2026, 3, 7, 15, 0).getTime()
+    expect(enumerateBucketStarts(start, end, dayMs)).toEqual([
+      new Date(2026, 3, 5).getTime(),
+      new Date(2026, 3, 6).getTime(),
+      new Date(2026, 3, 7).getTime(),
+    ])
+  })
 })
 
 // ─── aggregateByBucket ────────────────────────────────────────────
@@ -203,8 +229,12 @@ describe('parseWorkflowWindows', () => {
   it('filters out non-workflow windows', () => {
     const wfWindow = makeWindow('2026-04-07T10:00:00Z', wfMetrics({ started: ct(1, 0, 0, 0) }))
     const taskWindow: MetricWindow = {
-      id: { windowStart: '2026-04-07T10:00:00Z', id: undefined, tenantId: undefined },
-      metric: undefined,
+      id: {
+        windowStart: Timestamp.fromDate(new Date('2026-04-07T10:00:00Z')),
+        id: { oneofKind: undefined },
+        tenantId: undefined,
+      },
+      metric: { oneofKind: undefined },
     }
     const result = parseWorkflowWindows([wfWindow, taskWindow])
     expect(result).toHaveLength(1)

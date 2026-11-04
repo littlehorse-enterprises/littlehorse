@@ -14,6 +14,7 @@ import io.littlehorse.sdk.common.proto.FailureDef;
 import io.littlehorse.sdk.common.proto.FailureHandlerDef;
 import io.littlehorse.sdk.common.proto.InterruptDef;
 import io.littlehorse.sdk.common.proto.LHErrorType;
+import io.littlehorse.sdk.common.proto.LHPath;
 import io.littlehorse.sdk.common.proto.Node;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
@@ -57,8 +58,11 @@ import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
+import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -332,6 +336,11 @@ final class WorkflowThreadImpl implements WorkflowThread {
     }
 
     @Override
+    public LHMapBuilderImpl buildMap() {
+        return new LHMapBuilderImpl(this);
+    }
+
+    @Override
     public TaskNodeOutputImpl execute(String taskName, Serializable... args) {
         checkIfIsActive();
         parent.addTaskDefName(taskName);
@@ -399,6 +408,12 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         String nodeName = addNode("wait", NodeCase.WAIT_FOR_CHILD_WF, node.build());
         return new NodeOutputImpl(nodeName, this);
+    }
+
+    void setChildWfId(String sourceNodeName, Serializable childId) {
+        RunChildWfNode.Builder node = spec.getNodesOrThrow(sourceNodeName).getRunChildWf().toBuilder();
+        node.setChildId(assignVariable(childId));
+        spec.putNodes(sourceNodeName, Node.newBuilder().setRunChildWf(node).build());
     }
 
     private TaskNode createTaskNode(TaskNode.Builder taskNode, Serializable... args) {
@@ -536,6 +551,14 @@ final class WorkflowThreadImpl implements WorkflowThread {
         return wfRunVariable;
     }
 
+    private WfRunVariableImpl addMapVariable(String name, LHMapType clazz) {
+        checkIfIsActive();
+
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, clazz, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
     @Override
     public WfRunVariable declareBool(String name) {
         return addVariable(name, VariableType.BOOL);
@@ -578,23 +601,71 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
     @Override
     public WfRunVariable declareStruct(String name, Class<?> clazz) {
-        return addStructVariable(name, new LHStructDefType(clazz, parent.getTypeAdapterRegistry()));
+        LHClassType classType = LHClassType.resolve(
+                clazz,
+                parent.getTypeAdapterRegistry(),
+                parent.getPlaceholderValues(),
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (!(classType instanceof LHStructDefType)) {
+            throw new IllegalArgumentException(
+                    "Cannot create LHStructDefType, missing `@LHStructDef` annotation on provided class: " + clazz);
+        }
+        return addStructVariable(name, (LHStructDefType) classType);
+    }
+
+    @Override
+    public WfRunVariable declareInlineStruct(String name, Class<?> clazz) {
+        LHClassType classType = LHClassType.resolve(
+                clazz,
+                parent.getTypeAdapterRegistry(),
+                parent.getPlaceholderValues(),
+                LHClassType.ResolutionContext.STRUCT_MEMBER);
+        if (classType.getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF) {
+            throw new IllegalArgumentException(
+                    "Inline Struct variables require an unannotated POJO class: " + clazz.getName());
+        }
+        checkIfIsActive();
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, classType, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
     }
 
     @Override
     public WfRunVariable declareStruct(String name, String structDefName) {
-        return addStructVariable(name, new LHStructDefId(structDefName));
+        return addStructVariable(name, new LHStructDefId(resolveStructDefName(structDefName)));
     }
 
     @Override
     public WfRunVariable declareStruct(String name, String structDefName, int structDefVersion) {
-        return addStructVariable(name, new LHStructDefId(structDefName, structDefVersion));
+        return addStructVariable(name, new LHStructDefId(resolveStructDefName(structDefName), structDefVersion));
+    }
+
+    private String resolveStructDefName(String structDefName) {
+        return PlaceholderUtil.replacePlaceholders(structDefName, parent.getPlaceholderValues());
     }
 
     @Override
     public WfRunVariable declareArray(String name, Class<?> elementType) {
         Class<?> arrayType = java.lang.reflect.Array.newInstance(elementType, 0).getClass();
-        return addArrayVariable(name, new LHArrayType(arrayType, parent.getTypeAdapterRegistry()));
+        return addArrayVariable(
+                name,
+                new LHArrayType(
+                        arrayType,
+                        parent.getTypeAdapterRegistry(),
+                        parent.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER));
+    }
+
+    @Override
+    public WfRunVariable declareMap(String name, Class<?> keyType, Class<?> valueType) {
+        return addMapVariable(
+                name,
+                new LHMapType(
+                        keyType,
+                        valueType,
+                        parent.getTypeAdapterRegistry(),
+                        parent.getPlaceholderValues(),
+                        LHClassType.ResolutionContext.STRUCT_MEMBER));
     }
 
     @Override
@@ -930,6 +1001,8 @@ final class WorkflowThreadImpl implements WorkflowThread {
 
         if (lhs.getJsonPath() != null) {
             mutation.setLhsJsonPath(lhs.getJsonPath());
+        } else if (!lhs.getLhPath().isEmpty()) {
+            mutation.setLhsLhPath(LHPath.newBuilder().addAllPath(lhs.getLhPath()));
         }
 
         mutation.setRhsAssignment(assignVariable(rhs));

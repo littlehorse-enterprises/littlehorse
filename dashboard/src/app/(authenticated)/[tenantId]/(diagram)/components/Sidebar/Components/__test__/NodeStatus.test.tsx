@@ -8,20 +8,37 @@ jest.mock('../StatusColor', () => {
   const MockIcon = (props: any) => React.createElement('svg', { 'data-testid': 'icon', className: props.className })
   const MockIcon2 = (props: any) => React.createElement('svg', { 'data-testid': 'icon-2', className: props.className })
 
+  const { LHStatus, TaskStatus } = jest.requireActual('littlehorse-client/proto')
+
   return {
     WF_RUN_STATUS: {
-      RUNNING: { color: 'blue', Icon: MockIcon, textColor: 'text-blue-700', backgroundColor: 'bg-blue-200' },
-      COMPLETED: { color: 'green', Icon: MockIcon, textColor: 'text-green-700', backgroundColor: 'bg-green-200' },
+      [LHStatus.RUNNING]: { color: 'blue', Icon: MockIcon, textColor: 'text-blue-700', backgroundColor: 'bg-blue-200' },
+      [LHStatus.COMPLETED]: {
+        color: 'green',
+        Icon: MockIcon,
+        textColor: 'text-green-700',
+        backgroundColor: 'bg-green-200',
+      },
     },
     TASK_STATUS: {
-      FAILED: { color: 'red', Icon: MockIcon2, textColor: 'text-red-700', backgroundColor: 'bg-red-200' },
-      SUCCESS: { color: 'teal', Icon: MockIcon2, textColor: 'text-teal-700', backgroundColor: 'bg-teal-200' },
+      [TaskStatus.TASK_FAILED]: {
+        color: 'red',
+        Icon: MockIcon2,
+        textColor: 'text-red-700',
+        backgroundColor: 'bg-red-200',
+      },
+      [TaskStatus.TASK_SUCCESS]: {
+        color: 'teal',
+        Icon: MockIcon2,
+        textColor: 'text-teal-700',
+        backgroundColor: 'bg-teal-200',
+      },
     },
   }
 })
 
 test('renders workflow status (default type) with correct classes and icon', () => {
-  const { container } = render(<NodeStatus status={'RUNNING' as LHStatus} />)
+  const { container } = render(<NodeStatus status={LHStatus.RUNNING} />)
 
   const statusText = screen.getByText('Running')
   expect(statusText).toBeInTheDocument()
@@ -35,9 +52,9 @@ test('renders workflow status (default type) with correct classes and icon', () 
 })
 
 test('renders task status when type="task" with correct classes and icon', () => {
-  const { container } = render(<NodeStatus status={'FAILED' as TaskStatus} type="task" />)
+  const { container } = render(<NodeStatus status={TaskStatus.TASK_FAILED} type="task" />)
 
-  const statusText = screen.getByText('Failed')
+  const statusText = screen.getByText('Task Failed')
   expect(statusText).toBeInTheDocument()
   expect(statusText).toHaveClass('text-red-700')
 

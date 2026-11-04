@@ -1,94 +1,39 @@
-import { ClientError } from 'nice-grpc'
-import Long from 'long'
-import _m0 from 'protobufjs/minimal'
+import { BinaryReader, WireType } from '@protobuf-ts/runtime'
+import { RpcError } from '@protobuf-ts/runtime-rpc'
+import type { RpcMetadata } from '@protobuf-ts/runtime-rpc'
 
-const RESOURCE_EXHAUSTED_CODE = 8
 const STATUS_DETAILS_KEY = 'grpc-status-details-bin'
-
-type MetadataLike = {
-  get(key: string): readonly (string | Uint8Array)[]
-}
-
-interface GoogleRpcStatus {
-  details: AnyMessage[]
-}
+const DEFAULT_RETRY_DELAY_MS = 500
 
 interface AnyMessage {
   typeUrl: string
   value: Uint8Array
 }
 
-interface RetryInfoMessage {
-  retryDelay?: DurationMessage
+/**
+ * Returns true when the given error is a gRPC RESOURCE_EXHAUSTED error.
+ */
+export function isResourceExhausted(error: unknown): boolean {
+  return error instanceof RpcError && error.code === 'RESOURCE_EXHAUSTED'
 }
 
-interface DurationMessage {
-  seconds: number
-  nanos: number
-}
-
-export function extractRetryDelayMsFromMetadata(metadata?: MetadataLike): number | undefined {
-  const statusDetails = getStatusDetails(metadata)
-  if (!statusDetails) {
+/**
+ * Computes how long to wait before retrying a RESOURCE_EXHAUSTED error. Honors
+ * the server-provided `google.rpc.RetryInfo` when present. Errors without any
+ * server-sent status details are generated locally by grpc-js (e.g. a response
+ * over `grpc.max_receive_message_length`) and are never retried.
+ */
+export function getRetryDelayMs(error: unknown): number | undefined {
+  if (!isResourceExhausted(error)) {
     return undefined
   }
 
-  const status = decodeGoogleRpcStatus(statusDetails)
-  for (const detail of status.details) {
-    if (!detail.typeUrl.endsWith('/google.rpc.RetryInfo')) {
-      continue
-    }
-
-    const retryInfo = decodeRetryInfo(detail.value)
-    if (!retryInfo.retryDelay) {
-      return undefined
-    }
-
-    const delayMs = retryInfo.retryDelay.seconds * 1_000 + retryInfo.retryDelay.nanos / 1_000_000
-    return delayMs > 0 ? delayMs : undefined
-  }
-
-  return undefined
-}
-
-export function createResourceExhaustedRetryMiddleware() {
-  return async function* (call: any, options: any) {
-    if (call.method.requestStream || call.method.responseStream) {
-      return yield* call.next(call.request, options)
-    }
-
-    while (true) {
-      let trailingMetadata: MetadataLike | undefined
-      const nextOptions = {
-        ...options,
-        onTrailers(trailers: MetadataLike) {
-          trailingMetadata = trailers
-          options.onTrailers?.(trailers)
-        },
-      }
-
-      try {
-        return yield* call.next(call.request, nextOptions)
-      } catch (error) {
-        const delayMs = getRetryDelayMs(error, trailingMetadata)
-        if (delayMs === undefined) {
-          throw error
-        }
-
-        await sleep(delayMs)
-      }
-    }
-  }
-}
-
-const DEFAULT_RETRY_DELAY_MS = 500
-
-function getRetryDelayMs(error: unknown, trailingMetadata?: MetadataLike): number | undefined {
-  if (!(error instanceof ClientError) || error.code !== RESOURCE_EXHAUSTED_CODE) {
+  const meta = (error as RpcError).meta
+  if (getStatusDetails(meta) === undefined) {
     return undefined
   }
 
-  const fromMetadata = extractRetryDelayMsFromMetadata(trailingMetadata)
+  const fromMetadata = extractRetryDelayMsFromMetadata(meta)
   if (fromMetadata !== undefined) {
     return fromMetadata
   }
@@ -96,43 +41,59 @@ function getRetryDelayMs(error: unknown, trailingMetadata?: MetadataLike): numbe
   return DEFAULT_RETRY_DELAY_MS
 }
 
-function getStatusDetails(metadata?: MetadataLike): Uint8Array | undefined {
-  const values = metadata?.get(STATUS_DETAILS_KEY)
-  if (!values || values.length === 0) {
+export function extractRetryDelayMsFromMetadata(metadata?: RpcMetadata): number | undefined {
+  const statusDetails = getStatusDetails(metadata)
+  if (!statusDetails) {
     return undefined
   }
 
-  const value = values[0]
-  if (typeof value === 'string') {
-    return Buffer.from(value, 'base64')
+  const details = decodeGoogleRpcStatusDetails(statusDetails)
+  for (const detail of details) {
+    if (!detail.typeUrl.endsWith('/google.rpc.RetryInfo')) {
+      continue
+    }
+
+    const delayMs = decodeRetryInfoDelayMs(detail.value)
+    return delayMs !== undefined && delayMs > 0 ? delayMs : undefined
   }
 
-  return value
+  return undefined
 }
 
-function decodeGoogleRpcStatus(input: Uint8Array): GoogleRpcStatus {
-  const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-  const message: GoogleRpcStatus = { details: [] }
+function getStatusDetails(metadata?: RpcMetadata): Uint8Array | undefined {
+  const value = metadata?.[STATUS_DETAILS_KEY]
+  if (!value) {
+    return undefined
+  }
+
+  const raw = Array.isArray(value) ? value[0] : value
+  if (!raw) {
+    return undefined
+  }
+
+  return Buffer.from(raw, 'base64')
+}
+
+function decodeGoogleRpcStatusDetails(input: Uint8Array): AnyMessage[] {
+  const reader = new BinaryReader(input)
+  const details: AnyMessage[] = []
   while (reader.pos < reader.len) {
-    const tag = reader.uint32()
-    switch (tag >>> 3) {
-      case 3:
-        message.details.push(decodeAny(reader, reader.uint32()))
-        break
-      default:
-        reader.skipType(tag & 7)
-        break
+    const [fieldNo, wireType] = reader.tag()
+    if (fieldNo === 3) {
+      details.push(decodeAny(reader.bytes()))
+    } else {
+      reader.skip(wireType)
     }
   }
-  return message
+  return details
 }
 
-function decodeAny(reader: _m0.Reader, length: number): AnyMessage {
-  const end = reader.pos + length
+function decodeAny(input: Uint8Array): AnyMessage {
+  const reader = new BinaryReader(input)
   const message: AnyMessage = { typeUrl: '', value: new Uint8Array(0) }
-  while (reader.pos < end) {
-    const tag = reader.uint32()
-    switch (tag >>> 3) {
+  while (reader.pos < reader.len) {
+    const [fieldNo, wireType] = reader.tag()
+    switch (fieldNo) {
       case 1:
         message.typeUrl = reader.string()
         break
@@ -140,63 +101,39 @@ function decodeAny(reader: _m0.Reader, length: number): AnyMessage {
         message.value = reader.bytes()
         break
       default:
-        reader.skipType(tag & 7)
+        reader.skip(wireType)
         break
     }
   }
   return message
 }
 
-function decodeRetryInfo(input: Uint8Array): RetryInfoMessage {
-  const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-  const message: RetryInfoMessage = {}
+function decodeRetryInfoDelayMs(input: Uint8Array): number | undefined {
+  const reader = new BinaryReader(input)
   while (reader.pos < reader.len) {
-    const tag = reader.uint32()
-    switch (tag >>> 3) {
-      case 1:
-        message.retryDelay = decodeDuration(reader, reader.uint32())
-        break
-      default:
-        reader.skipType(tag & 7)
-        break
+    const [fieldNo, wireType] = reader.tag()
+    if (fieldNo === 1 && wireType === WireType.LengthDelimited) {
+      // google.protobuf.Duration retry_delay = 1;
+      const durationReader = new BinaryReader(reader.bytes())
+      let seconds = 0
+      let nanos = 0
+      while (durationReader.pos < durationReader.len) {
+        const [durFieldNo, durWireType] = durationReader.tag()
+        switch (durFieldNo) {
+          case 1:
+            seconds = durationReader.int64().toNumber()
+            break
+          case 2:
+            nanos = durationReader.int32()
+            break
+          default:
+            durationReader.skip(durWireType)
+            break
+        }
+      }
+      return seconds * 1_000 + nanos / 1_000_000
     }
+    reader.skip(wireType)
   }
-  return message
-}
-
-function decodeDuration(reader: _m0.Reader, length: number): DurationMessage {
-  const end = reader.pos + length
-  const message: DurationMessage = { seconds: 0, nanos: 0 }
-  while (reader.pos < end) {
-    const tag = reader.uint32()
-    switch (tag >>> 3) {
-      case 1:
-        message.seconds = longToNumber(reader.int64() as Long | number)
-        break
-      case 2:
-        message.nanos = reader.int32()
-        break
-      default:
-        reader.skipType(tag & 7)
-        break
-    }
-  }
-  return message
-}
-
-function longToNumber(long: Long | number): number {
-  if (typeof long === 'number') {
-    return long
-  }
-  if (long.gt(Number.MAX_SAFE_INTEGER)) {
-    throw new Error('Value exceeds Number.MAX_SAFE_INTEGER')
-  }
-  if (long.lt(Number.MIN_SAFE_INTEGER)) {
-    throw new Error('Value is less than Number.MIN_SAFE_INTEGER')
-  }
-  return long.toNumber()
-}
-
-function sleep(delayMs: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, delayMs))
+  return undefined
 }

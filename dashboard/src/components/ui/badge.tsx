@@ -16,10 +16,9 @@ export const SearchableBadge = () => <Badge className="bg-blue-300">Searchable</
 export const MaskedBadge = () => <Badge className="bg-violet-300">Masked</Badge>
 
 const accessLevelLabels: Record<WfRunVariableAccessLevel, string> = {
-  PUBLIC_VAR: 'Public',
-  INHERITED_VAR: 'Inherited',
-  PRIVATE_VAR: 'Private',
-  UNRECOGNIZED: '',
+  [WfRunVariableAccessLevel.PUBLIC_VAR]: 'Public',
+  [WfRunVariableAccessLevel.INHERITED_VAR]: 'Inherited',
+  [WfRunVariableAccessLevel.PRIVATE_VAR]: 'Private',
 }
 
 export const AccessLevelBadge: FC<{ accessLevel: WfRunVariableAccessLevel }> = ({ accessLevel }) => (

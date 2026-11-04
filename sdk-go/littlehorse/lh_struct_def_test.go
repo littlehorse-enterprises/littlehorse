@@ -934,3 +934,21 @@ func TestMixedTagsSerializationRoundTrip(t *testing.T) {
 	assert.Equal(t, "json_value", restored.JSONOnly)
 	assert.Equal(t, "no_tag_value", restored.NoTags)
 }
+
+// StructWithDescribedField tests the lhdesc tag for field descriptions.
+type StructWithDescribedField struct {
+	Email string `json:"email" lhdesc:"The user's primary contact email"`
+	Name  string `json:"name"`
+}
+
+func (StructWithDescribedField) LHStructDef() littlehorse.LHStructDefInfo {
+	return littlehorse.LHStructDefInfo{Name: "described-field-struct"}
+}
+
+func TestGoStructToInlineStructDef_FieldDescriptionFromLHDescTag(t *testing.T) {
+	def, err := littlehorse.GoStructToInlineStructDef(StructWithDescribedField{})
+	assert.Nil(t, err)
+
+	assert.Equal(t, "The user's primary contact email", def.Fields["email"].GetDescription())
+	assert.Empty(t, def.Fields["name"].GetDescription())
+}

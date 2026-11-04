@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
+import java.util.Map;
 
 /**
  * Represents a native LittleHorse array type.
@@ -12,8 +13,23 @@ public final class LHArrayType extends LHClassType {
 
     private final LHClassType componentType;
 
+    /** Creates an array whose elements use Struct-member resolution. */
     public LHArrayType(Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry) {
-        super(clazz, typeAdapterRegistry);
+        this(clazz, typeAdapterRegistry, Map.of(), ResolutionContext.STRUCT_MEMBER);
+    }
+
+    /** Creates an array whose elements use Struct-member resolution. */
+    public LHArrayType(
+            Class<?> clazz, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
+        this(clazz, typeAdapterRegistry, placeholderValues, ResolutionContext.STRUCT_MEMBER);
+    }
+
+    public LHArrayType(
+            Class<?> clazz,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            Map<String, String> placeholderValues,
+            ResolutionContext componentResolutionContext) {
+        super(clazz, typeAdapterRegistry, placeholderValues);
 
         if (!clazz.isArray()) {
             throw new IllegalArgumentException(
@@ -28,9 +44,11 @@ public final class LHArrayType extends LHClassType {
         Class<?> componentClass = clazz.getComponentType();
 
         if (componentClass.isArray()) {
-            this.componentType = new LHArrayType(componentClass, typeAdapterRegistry);
+            this.componentType = new LHArrayType(
+                    componentClass, typeAdapterRegistry, this.placeholderValues, componentResolutionContext);
         } else {
-            this.componentType = LHClassType.fromJavaClass(componentClass, typeAdapterRegistry);
+            this.componentType = LHClassType.resolve(
+                    componentClass, typeAdapterRegistry, this.placeholderValues, componentResolutionContext);
         }
 
         try {
@@ -47,6 +65,10 @@ public final class LHArrayType extends LHClassType {
     @Override
     public DefinedTypeCase getDefinedTypeCase() {
         return DefinedTypeCase.INLINE_ARRAY_DEF;
+    }
+
+    LHClassType getResolvedComponentType() {
+        return componentType;
     }
 
     @Override

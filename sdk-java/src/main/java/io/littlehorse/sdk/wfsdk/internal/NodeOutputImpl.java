@@ -1,6 +1,6 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
-import io.littlehorse.sdk.common.exception.LHMisconfigurationException;
+import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ class NodeOutputImpl implements NodeOutput {
 
     public NodeOutputImpl get(String index) {
         if (jsonPath != null) {
-            throw new LHMisconfigurationException("Cannot use jsonPath() and get() on same var!");
+            throw new LHWfSpecBuilderException("Cannot use jsonPath() and get() on same var!");
         }
         NodeOutputImpl out = new NodeOutputImpl(nodeName, parent);
         out.getLhPath().add(Selector.newBuilder().setKey(index).build());

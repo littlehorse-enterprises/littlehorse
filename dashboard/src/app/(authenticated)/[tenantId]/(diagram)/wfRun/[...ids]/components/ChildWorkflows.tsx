@@ -5,12 +5,13 @@ import { SelectionLink } from '@/app/(authenticated)/[tenantId]/components/Selec
 import { TIME_RANGES, TimeRange } from '@/app/constants'
 import { usePersistedSearchLimit } from '@/app/hooks/usePersistedSearchLimit'
 import { routes } from '@/app/routes'
-import { getStatus, wfRunIdToPath } from '@/app/utils'
+import { getStatus, toDate, wfRunIdToPath } from '@/app/utils'
 import { computeStartTimeWindow, StartTimeWindow } from '@/app/utils/dateTime'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { cn } from '@/lib/utils'
-import { LHStatus, WfRunId, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, Timestamp, WfRunId } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 import { RefreshCwIcon } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { FC, useMemo, useState } from 'react'
@@ -21,7 +22,9 @@ import { WfRunsHeader } from '../../../wfSpec/[...props]/components/WfRunsHeader
 
 type ChildWfRunsKey = ['childWfRuns', LHStatus | 'ALL', string, number, StartTimeWindow, string | undefined, WfRunId]
 
-export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ parentWfRunId, spec }) => {
+const toTimestamp = (value?: string): Timestamp | undefined => (value ? Timestamp.fromDate(new Date(value)) : undefined)
+
+export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WorkflowDefinition }> = ({ parentWfRunId, spec }) => {
   const { tenantId } = useWhoAmI()
   const searchParams = useSearchParams()
   const status = (searchParams.get('status') ? getStatus(searchParams.get('status')) || 'ALL' : 'ALL') as
@@ -59,7 +62,8 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
         limit,
         bookmarkAsString,
         variableFilters: [],
-        ...startTime,
+        earliestStart: toTimestamp(startTime?.earliestStart),
+        latestStart: toTimestamp(startTime?.latestStart),
       })
     }
   )
@@ -88,13 +92,13 @@ export const ChildWorkflows: FC<{ parentWfRunId: WfRunId; spec: WfSpec }> = ({ p
                       <SelectionLink key={wfRun.wfRun.id.id} href={routes.wfRun.detail(wfRunIdToPath(wfRun.wfRun.id))}>
                         <p>{wfRun.wfRun.id.id}</p>
                         <span className={cn('ml-2 rounded px-2', WF_RUN_STATUS[wfRun.wfRun.status].backgroundColor)}>
-                          {`${wfRun.wfRun.status ?? ''}`}
+                          {LHStatus[wfRun.wfRun.status]}
                         </span>
                         <span className="ml-2 rounded bg-gray-200 px-2">
                           Started:{' '}
                           {(() => {
                             const startTime = wfRun.wfRun.startTime
-                            return startTime ? new Date(startTime).toLocaleString() : ''
+                            return startTime ? (toDate(startTime)?.toLocaleString() ?? '') : ''
                           })()}
                         </span>
                       </SelectionLink>

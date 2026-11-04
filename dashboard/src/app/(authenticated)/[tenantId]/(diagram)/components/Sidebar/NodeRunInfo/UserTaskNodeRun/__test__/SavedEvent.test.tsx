@@ -31,14 +31,14 @@ describe('SavedEvent', () => {
       results: {
         requestedItem: {
           value: {
-            $case: 'str',
-            value: 'testing',
+            oneofKind: 'str',
+            str: 'testing',
           },
         },
         justification: {
           value: {
-            $case: 'str',
-            value: 'as',
+            oneofKind: 'str',
+            str: 'as',
           },
         },
       },

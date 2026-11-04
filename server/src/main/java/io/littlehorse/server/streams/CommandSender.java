@@ -6,7 +6,6 @@ import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.AbstractCommand;
@@ -33,7 +32,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
@@ -138,28 +136,20 @@ public class CommandSender {
                 .handleAsync(completeTaskClaim, networkThreadpool);
     }
 
-    public CompletableFuture<RecordMetadata> reportTaskAndDontWaitForResponse(
+    public CompletableFuture<Message> reportTaskAndDontWaitForResponse(
             ReportTaskRunModel reportTaskRun,
-            StreamObserver<Empty> client,
             PrincipalIdModel principalId,
-            TenantIdModel tenantId) {
+            TenantIdModel tenantId,
+            RequestExecutionContext context) {
         CommandModel commandToSend = new CommandModel(reportTaskRun);
-        BiFunction<RecordMetadata, Throwable, RecordMetadata> completeReportTask = (recordMetadata, exception) -> {
-            if (exception != null) {
-                client.onError(new LHApiException(Status.UNAVAILABLE, "Failed recording task claim to Kafka"));
-            } else {
-                client.onNext(Empty.getDefaultInstance());
-                client.onCompleted();
-            }
-            return recordMetadata;
-        };
+        commandToSend.setCommandId(LHUtil.generateGuid());
         return taskClaimProducer
                 .send(
                         commandToSend.getPartitionKey(),
                         commandToSend,
                         commandToSend.getTopic(serverConfig),
                         HeadersUtil.metadataHeadersFor(tenantId, principalId).toArray())
-                .handleAsync(completeReportTask, networkThreadpool);
+                .thenCompose(recordMetadata -> waitForCommand(commandToSend, null, context));
     }
 
     private CompletableFuture<Message> waitForCommand(
@@ -190,12 +180,23 @@ public class CommandSender {
             futureResponse.addListener(
                     () -> {
                         try {
-                            WaitForCommandResponse response = futureResponse.get();
-                            out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                            if (responseCls != null) {
+                                WaitForCommandResponse response = futureResponse.get();
+                                out.complete(buildRespFromBytes(response.getResult(), responseCls));
+                            } else {
+                                futureResponse.get();
+                                out.complete(Empty.getDefaultInstance());
+                            }
                         } catch (ExecutionException e) {
-                            out.completeExceptionally(e.getCause());
+                            // Most likely a StatusRuntimeException from the remote server
+                            if (e.getCause() instanceof StatusRuntimeException sre) {
+                                Status status = sre.getStatus();
+                                out.completeExceptionally(new LHApiException(status));
+                            } else {
+                                out.completeExceptionally(e.getCause());
+                            }
                         } catch (InterruptedException e) {
-                            log.error("Unexpected interrupted exception", e);
+                            // Interrupted exception is not expected here.
                             out.completeExceptionally(new StatusRuntimeException(Status.INTERNAL));
                         }
                     },

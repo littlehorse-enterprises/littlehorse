@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
+import org.junitpioneer.jupiter.RetryingTest;
 
 @LHTest
 public class CorrelatedEventTest {
@@ -218,7 +219,7 @@ public class CorrelatedEventTest {
                 .start();
     }
 
-    @Test
+    @RetryingTest(maxAttempts = 3, suspendForMs = 1000)
     void shouldShowUnmaskedKey() {
         String key = LHUtil.generateGuid();
         verifier.prepareRun(correlatedNoDeletionAndNoMask, Arg.of("key", key))

@@ -4,7 +4,6 @@ package littlehorse;
 
 // import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
-import "variable.proto";
 import "object_id.proto";
 import "type_definition.proto";
 
@@ -96,6 +95,8 @@ message VariableAssignment {
     // Assign the size of the resolved operand value.
     // Valid for STR, ARRAY, and JSON_ARR values.
     SizeOf size_of = 10;
+    // Builds a native Map using data available in the ThreadRun.
+    MapBuilder map_builder = 11;
   }
 
   // If specified, the resolved value will be cast to this type before being used.
@@ -129,6 +130,30 @@ message InlineStructFieldValue {
     // Builds a nested sub-structure of a Struct.
     InlineStructBuilder sub_structure = 2;
   }
+}
+
+// Builds a native Map using data available in the context of this ThreadRun.
+// This is the Map analog of StructBuilder, and permits dynamic (runtime-resolved)
+// keys and values, which a literal `Map` cannot express.
+message MapBuilder {
+  // A single dynamically-resolved key/value entry.
+  message Entry {
+    // Resolves to the key. Must resolve to a primitive type.
+    VariableAssignment key = 1;
+
+    // Resolves to the value.
+    VariableAssignment value = 2;
+  }
+
+  // The entries of the resulting Map. If two entries resolve to the same key
+  // at runtime, the last entry wins.
+  repeated Entry entries = 1;
+
+  // Authoritative key/value types for the resulting Map, mirroring `Map.map_type`.
+  // If absent, the types are derived from the resolved entries at validation time; a
+  // MapBuilder that cannot resolve to a concrete key/value type (e.g. an empty builder with
+  // no declared type) is rejected. The resulting Map always carries a concrete type.
+  optional InlineMapDef map_type = 2;
 }
 
 // Enumerates the available operations to mutate a variable in a WfRun.
@@ -186,6 +211,10 @@ message VariableMutation {
   // For JSON_ARR and JSON_OBJ variables, this allows you to optionally mutate
   // a specific sub-field of the variable.
   optional string lhs_json_path = 2;
+
+  // A typed path resolving to a nested value to mutate. Supports Struct,
+  // Array, JSON, and Map values.
+  optional LHPath lhs_lh_path = 7;
 
   // Defines the operation that we are executing.
   VariableMutationType operation = 3;
@@ -361,25 +390,6 @@ message TaskNode {
   repeated VariableAssignment variables = 4;
 }
 
-// A map of InlineStructDef's field names to their StructFieldDef's.
-message InlineStructDef {
-  // The fields in this schema.
-  map<string, StructFieldDef> fields = 1;
-}
-
-// The definition of a field in an InlineStructDef.
-message StructFieldDef {
-  // The type of the field.
-  TypeDefinition field_type = 1;
-  
-  // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
-  optional VariableValue default_value = 2;
-
-  // If true, then the field is treated as nullable, and its value may be set to null.
-  bool is_nullable = 3;
-}
-
 // A path of repeated Selectors resolving to a nested field in an object.
 message LHPath {
   message Selector {
@@ -389,6 +399,9 @@ message LHPath {
 
       // The index of the item you want to access from a JSON_ARR or Array
       int32 index = 2;
+
+      // A selector value resolved from the current ThreadRun context.
+      VariableAssignment dynamic = 3;
     }
   }
 

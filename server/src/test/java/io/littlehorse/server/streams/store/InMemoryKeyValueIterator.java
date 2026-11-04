@@ -1,41 +1,54 @@
 package io.littlehorse.server.streams.store;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.state.KeyValueIterator;
 
 /**
  * A simple in-memory {@link KeyValueIterator} backed by a list of entries. Intended for tests
- * that need a real {@link LHKeyValueIterator} instead of a mock.
+ * that need a real {@link KeyValueIterator} instead of a mock. It supports {@link #peekNextKey()}
+ * and tracks whether {@link #close()} has been called.
  */
 public class InMemoryKeyValueIterator implements KeyValueIterator<String, Bytes> {
 
-    private final Iterator<KeyValue<String, Bytes>> delegate;
+    private final List<KeyValue<String, Bytes>> entries;
+    private int index = 0;
+    private boolean closed = false;
 
     public InMemoryKeyValueIterator(List<KeyValue<String, Bytes>> entries) {
-        this.delegate = new ArrayList<>(entries).iterator();
+        this.entries = new ArrayList<>(entries);
     }
 
     @Override
     public boolean hasNext() {
-        return delegate.hasNext();
+        return index < entries.size();
     }
 
     @Override
     public KeyValue<String, Bytes> next() {
-        return delegate.next();
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return entries.get(index++);
     }
 
     @Override
     public String peekNextKey() {
-        throw new UnsupportedOperationException("peekNextKey is not supported");
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return entries.get(index).key;
     }
 
     @Override
     public void close() {
-        // no-op
+        closed = true;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

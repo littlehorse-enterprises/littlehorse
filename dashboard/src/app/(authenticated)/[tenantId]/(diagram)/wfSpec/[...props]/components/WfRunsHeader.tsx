@@ -10,14 +10,16 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { LHStatus, VariableDef, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, VariableDef } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 import { ClockIcon, XIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
+import { getVariableFilterValue } from '@/app/utils/variables'
 import { VariableFilter } from './types'
 
-const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
+const searchableVarDefs = (spec: WorkflowDefinition): VariableDef[] => {
   return Object.keys(spec.threadSpecs).flatMap(thread =>
     spec.threadSpecs[thread].variableDefs
       .filter(d => d.searchable)
@@ -27,7 +29,7 @@ const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
 }
 
 type Props = {
-  spec: WfSpec
+  spec: WorkflowDefinition
   currentStatus: LHStatus | 'ALL'
   currentWindow: TimeRange
   setWindow: (window: TimeRange) => void
@@ -51,6 +53,7 @@ export const WfRunsHeader: FC<Props> = ({
   const [open, setOpen] = useState(false)
   const [selectedName, setSelectedName] = useState(() => variableFilter?.varDef.name ?? variables[0]?.name ?? '')
   const [valueDraft, setValueDraft] = useState(variableFilter?.value ?? '')
+  const [valueError, setValueError] = useState<string | null>(null)
 
   // Keep the dialog draft synced with the source-of-truth filter so external clears reset it.
   useEffect(() => {
@@ -60,6 +63,7 @@ export const WfRunsHeader: FC<Props> = ({
     } else {
       setValueDraft('')
     }
+    setValueError(null)
   }, [variableFilter])
 
   const selectedDef = useMemo(
@@ -69,6 +73,15 @@ export const WfRunsHeader: FC<Props> = ({
 
   const applyFilter = () => {
     if (!hasVariableFilter || !selectedDef || !valueDraft.trim()) return
+    try {
+      // Parse now so an invalid value (e.g. a Map filter that isn't valid JSON) is surfaced
+      // here instead of throwing during render and white-screening the page.
+      getVariableFilterValue(selectedDef, valueDraft.trim())
+    } catch (e) {
+      setValueError(e instanceof Error ? e.message : 'Invalid value for this variable type')
+      return
+    }
+    setValueError(null)
     onVariableFilterChange({ varDef: selectedDef, value: valueDraft.trim() })
     setOpen(false)
   }
@@ -107,7 +120,9 @@ export const WfRunsHeader: FC<Props> = ({
             replace
             scroll={false}
             className={`flex items-center border-y-2 border-l-2 p-2 text-xs first-of-type:rounded-l-lg first-of-type:border-l-2 last-of-type:rounded-r-lg last-of-type:border-r-2 ${
-              status === currentStatus ? 'border-blue-500 bg-blue-500 text-white' : ' text-gray-500'
+              (status === 'ALL' ? 'ALL' : LHStatus[status as keyof typeof LHStatus]) === currentStatus
+                ? 'border-blue-500 bg-blue-500 text-white'
+                : ' text-gray-500'
             }`}
           >
             {status}
@@ -155,11 +170,15 @@ export const WfRunsHeader: FC<Props> = ({
                 <Input
                   placeholder="Variable value…"
                   value={valueDraft}
-                  onChange={e => setValueDraft(e.target.value)}
+                  onChange={e => {
+                    setValueDraft(e.target.value)
+                    if (valueError) setValueError(null)
+                  }}
                   onKeyDown={e => {
                     if (e.key === 'Enter') applyFilter()
                   }}
                 />
+                {valueError && <p className="text-xs text-destructive">{valueError}</p>}
                 <div className="flex flex-wrap gap-2">
                   <Button type="button" onClick={applyFilter} disabled={!selectedDef || !valueDraft.trim()}>
                     Apply

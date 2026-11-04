@@ -19,7 +19,7 @@ export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }
     return getWorkflowEvent({ tenantId, ...throwEventId })
   })
   const variable = nodeThrowEvent?.content
-  const variableType = variable?.value?.$case
+  const variableType = variable?.value?.oneofKind
   return (
     <div className="ml-1">
       <NodeVariable label="Node Type" text="Throw event"></NodeVariable>
@@ -33,7 +33,7 @@ export const ThrowEventNodeRun: FC<{ node: ThrowEventNodeRunProto }> = ({ node }
         <>
           <div className=" mb-1 ml-1 text-sm font-bold">content:</div>
           <div className="ml-1 flex w-full items-center gap-1">
-            {variable.value?.$case && <IdentifierBadge name={variable.value.$case} />}
+            {variable.value?.oneofKind && <IdentifierBadge name={variable.value.oneofKind} />}
 
             {variableType && <TypeBadge>{VARIABLE_TYPES[variableType]}</TypeBadge>}
             <p> = </p>

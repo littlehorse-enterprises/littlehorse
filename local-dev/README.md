@@ -61,14 +61,14 @@ This repository requires the following system dependencies:
     - [server](server): Java 25
 - `gradle`, preferably version 8 or later.
 - `docker` and `docker-compose-plugin`.
-- `go`, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
+- `go` 1.25 or newer, `protoc`, `protoc-gen-go`, `protoc-gen-go-grpc` and `protoc-gen-grpc-java`.
     - [Protocol Buffer Compiler](https://grpc.io/docs/protoc-installation/)
     - [Java gRPC compiler plugin](https://github.com/grpc/grpc-java/blob/master/compiler/README.md)
     - This needs to be put somewhere in your `PATH`.
 - `pre-commit` (this is a dev dependency)
 - `python` and [poetry](https://python-poetry.org/).
     - [sdk-python](sdk-python): >= 3.9
-- `nvm` and `node` >= 20
+- `nvm` and Node 24 LTS (run `nvm install && nvm use` from the repository root).
 
 ### Setup Pre-commit
 
@@ -142,12 +142,12 @@ Result:
 
 ### Running the Dashboard
 
-To run the dashboard, you can do the following (it requires `npm` to be installed).
+To run the dashboard, use Node 24 and pnpm 10.19.0 as described in the [dashboard requirements](../dashboard/README.md#requirements).
 
 ```
 cd dashboard
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 The dashboard will be accessible on `localhost:3000` by default. This assumes that you have the LH Server accessible and running on `localhost:2023` with no authentication. That can be done as described above.

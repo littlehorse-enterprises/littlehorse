@@ -20,10 +20,10 @@ export const Details: FC<DetailsProps> = ({ spec: { id, retentionPolicy, typeInf
           <TypeDisplay definedType={typeInformation.returnType?.definedType} />
         )}
       </div>
-      {retentionPolicy && retentionPolicy.extEvtGcPolicy && (
+      {retentionPolicy?.extEvtGcPolicy?.oneofKind === 'secondsAfterPut' && (
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <span className="font-semibold text-gray-700">Retention Policy:</span>
-          <span className="font-mono text-gray-400">{retentionPolicy.extEvtGcPolicy.value} seconds</span>
+          <span className="font-mono text-gray-400">{retentionPolicy.extEvtGcPolicy.secondsAfterPut} seconds</span>
         </div>
       )}
     </div>

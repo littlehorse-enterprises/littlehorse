@@ -2,7 +2,8 @@ import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import { WaitForThreadsNodeRun } from '../WaitForThreadNodeRun'
-import { LHStatus, WaitForThreadsRun, WaitForThreadsRun_WaitingThreadStatus } from 'littlehorse-client/proto'
+import { LHStatus, Timestamp, WaitForThreadsRun, WaitForThreadsRun_WaitingThreadStatus } from 'littlehorse-client/proto'
+import { utcToLocalDateTime } from '@/app/utils'
 
 jest.mock('@/components/ui/accordion', () => {
   const AccordionContext = React.createContext<{ open: boolean; toggle: () => void } | null>(null)
@@ -40,16 +41,20 @@ jest.mock('@/components/ui/accordion', () => {
 
 jest.mock('../../Components/NodeStatus', () => {
   return {
-    NodeStatus: ({ status }: { status: string }) => <div data-testid="node-status">status:{status}</div>,
+    NodeStatus: ({ status }: { status: number }) => {
+      const { LHStatus } = require('littlehorse-client/proto')
+      return <div data-testid="node-status">status:{LHStatus[status]}</div>
+    },
   }
 })
 
 jest.mock('../../Components/NodeVariable', () => {
+  const { utcToLocalDateTime } = jest.requireActual('@/app/utils')
   return {
-    NodeVariable: ({ label, text }: { label: string; text: string }) => (
+    NodeVariable: ({ label, text, type }: { label: string; text: unknown; type?: string }) => (
       <div data-testid="node-variable">
         {label}
-        {String(text)}
+        {type === 'date' ? utcToLocalDateTime(text) : String(text)}
       </div>
     ),
   }
@@ -60,16 +65,16 @@ describe('WaitForThreadsNodeRun', () => {
     threads: [
       {
         threadRunNumber: 12,
-        threadStatus: 'RUNNING' as LHStatus,
-        threadEndTime: '2023-01-01T00:00:00Z',
-        waitingStatus: 'THREAD_IN_PROGRESS' as WaitForThreadsRun_WaitingThreadStatus,
+        threadStatus: LHStatus.RUNNING,
+        threadEndTime: Timestamp.fromDate(new Date('2023-01-01T00:00:00Z')),
+        waitingStatus: WaitForThreadsRun_WaitingThreadStatus.THREAD_IN_PROGRESS,
         failureHandlerThreadRunId: 123,
       },
       {
         threadRunNumber: 13,
-        threadStatus: 'ERROR' as LHStatus,
+        threadStatus: LHStatus.ERROR,
         threadEndTime: undefined,
-        waitingStatus: 'THREAD_COMPLETED_OR_FAILURE_HANDLED' as WaitForThreadsRun_WaitingThreadStatus,
+        waitingStatus: WaitForThreadsRun_WaitingThreadStatus.THREAD_COMPLETED_OR_FAILURE_HANDLED,
         failureHandlerThreadRunId: undefined,
       },
     ],
@@ -100,7 +105,7 @@ describe('WaitForThreadsNodeRun', () => {
     expect(screen.getAllByTestId('node-variable').map(el => el.textContent)).toEqual(
       expect.arrayContaining([
         'Node Type:Thread',
-        'threadEndTime:2023-01-01T00:00:00Z',
+        `threadEndTime:${utcToLocalDateTime(node.threads[0].threadEndTime)}`,
         'waitingStatus:THREAD_IN_PROGRESS',
         'failureHandlerThreadRunId:123',
       ])

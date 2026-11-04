@@ -1,13 +1,14 @@
 import { Node as NodeProto, ThreadSpec } from 'littlehorse-client/proto'
-import { Node, NodeProps } from 'reactflow'
+import { Node } from 'reactflow'
 
 export const extractNodes = (spec: ThreadSpec): Node<NodeProto, NodeType>[] => {
   return Object.entries(spec.nodes).map(([id, node]) => {
     const nodeType = node.node!
+    const payload = nodeType.oneofKind ? (nodeType as Record<string, unknown>)[nodeType.oneofKind] : undefined
     return {
       id,
-      type: nodeType.$case,
-      data: { ...node, ...nodeType.value },
+      type: nodeType.oneofKind,
+      data: { ...node, ...(payload as Record<string, unknown> | undefined) },
       position: { x: 0, y: 0 },
     }
   })
@@ -76,33 +77,34 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
 
     const cycleNodeId = `cycle-${sourceId}-${targetId}`
     type ExtendedNode = Omit<NodeProto, 'node'> & {
-      node: NodeProto['node'] | { $case: 'cycle'; value: {} }
+      node: NodeProto['node'] | { oneofKind: 'cycle'; cycle: {} }
     }
     const cycleNode: ExtendedNode = {
       outgoingEdges: [
         {
           sinkNodeName: targetId,
           variableMutations: [],
+          edgeCondition: { oneofKind: undefined },
         },
       ],
       failureHandlers: [],
-      node: { $case: 'cycle', value: {} },
+      node: { oneofKind: 'cycle', cycle: {} },
     }
     // Add the cycle node to the graph
     threadSpec.nodes[cycleNodeId] = cycleNode as unknown as NodeProto
 
-    // Remove back edge from target to source (if it exists)
-    if (threadSpec.nodes[targetId]) {
-      threadSpec.nodes[targetId].outgoingEdges = threadSpec.nodes[targetId].outgoingEdges.filter(
-        edge => edge.sinkNodeName !== sourceId
-      )
-    }
+    // NOTE: only the back edge itself may be rewritten. An earlier version
+    // also removed every target->source edge here, which deleted a while
+    // loop's FORWARD edges whenever its body was empty (root->end skip and
+    // body edges both connect the same two nops) — leaving the loop-end nop
+    // floating with no incoming edge and the loop root with no outgoing.
 
     // Replace the direct cycle edge with an edge to the cycle node
     if (!sourceNode.outgoingEdges.some(e => e.sinkNodeName === cycleNodeId)) {
       sourceNode.outgoingEdges.push({
         sinkNodeName: cycleNodeId,
         variableMutations: [],
+        edgeCondition: { oneofKind: undefined },
       })
     }
 
@@ -111,10 +113,14 @@ export const getCycleNodes = (threadSpec: ThreadSpec) => {
   })
   return threadSpec
 }
-export type NodeRunTypeList = Exclude<
-  NodeType,
-  'ENTRYPOINT' | 'NOP' | 'EXIT' | 'UNKNOWN_NODE_TYPE' | 'START_MULTIPLE_THREADS'
->
 
-export type NodeType = NonNullable<NodeProto['node']>['$case']
-export type NodeData<T = any> = NodeProps<NodeProto & T>
+export const getNodeAfterEntrypoint = (threadSpec: ThreadSpec): string | undefined => {
+  for (const node of Object.values(threadSpec.nodes)) {
+    if (node.node?.oneofKind === 'entrypoint') {
+      return node.outgoingEdges[0]?.sinkNodeName
+    }
+  }
+  return undefined
+}
+
+export type NodeType = Exclude<NonNullable<NodeProto['node']>['oneofKind'], undefined>
