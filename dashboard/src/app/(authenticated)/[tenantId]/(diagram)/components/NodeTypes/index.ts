@@ -17,6 +17,7 @@ import { UserTask } from './UserTask/UserTask'
 import { WaitForChildWf } from './WaitForChildWf/WaitForChildWf'
 import { WaitForCondition } from './WaitForCondition'
 import { WaitForThreads } from './WaitForThreads'
+import { withLoopHandle } from './LoopHandle'
 
 const nodeTypes: Record<NodeType | 'cycle', ComponentType<any>> = {
   entrypoint: Entrypoint,
@@ -44,4 +45,6 @@ export type NodeProps<
   C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined> = 'entrypoint',
   T = unknown,
 > = NodeFlow<T & { fade?: boolean; nodeRunsList: [NodeRunCase<C>] }>
-export default nodeTypes
+export default Object.fromEntries(
+  Object.entries(nodeTypes).map(([type, component]) => [type, type === 'nop' ? component : withLoopHandle(component)])
+)

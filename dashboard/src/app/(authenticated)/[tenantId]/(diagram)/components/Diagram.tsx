@@ -16,7 +16,8 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
-import { LHStatus, WfRun, WfSpec } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
+import { LHStatus, WfRun } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -31,6 +32,7 @@ import ReactFlow, {
 import 'reactflow/dist/base.css'
 import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
+import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { getNodeRunsList, LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
@@ -40,13 +42,14 @@ import { ThreadPanel } from './ThreadPanel'
 
 type Props = {
   wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
-  spec: WfSpec
+  spec: WorkflowDefinition
+  definitionId: string
   onThreadChange?: (thread: ThreadType) => void
   headerActions?: ReactNode
 }
 const threadFromUrl = (
   wfRun: Props['wfRun'],
-  spec: WfSpec,
+  spec: WorkflowDefinition,
   threadRunNumber: number | null,
   threadName: string | null
 ): ThreadType => {
@@ -65,7 +68,7 @@ const threadFromUrl = (
   }
 }
 
-export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions }) => {
+export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, headerActions }) => {
   const { tenantId } = useWhoAmI()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -96,10 +99,9 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
   const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
   const [nodes, setNodes, onNodesChange] = useNodesState(extractNodes(threadSpec))
 
-  const threadNodeRuns = useMemo(() => {
-    if (!wfRun) return
-    return wfRun.threadRuns.find(tr => tr.number === thread.number)?.nodeRuns
-  }, [thread.number, wfRun])
+  const threadRun = useMemo(() => wfRun?.threadRuns.find(tr => tr.number === thread.number), [thread.number, wfRun])
+  const threadNodeRuns = threadRun?.nodeRuns
+  const nodeOutputValues = threadRun?.nodeOutputValues
 
   const lastAppliedThread = useRef<string | null>(null)
 
@@ -123,16 +125,17 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     [wfRun, threadSpec, thread.name, setNodes]
   )
 
-  const resetKey = `${spec.id ? `${spec.id.name}/${spec.id.majorVersion}/${spec.id.revision}` : ''}|${
-    wfRun?.id ? JSON.stringify(wfRun.id) : ''
-  }|${thread.name}`
+  const resetKey = `${definitionId}|${wfRun?.id ? JSON.stringify(wfRun.id) : ''}|${thread.name}`
   const appliedResetKey = useRef<string | null>(null)
 
   useLayoutEffect(() => {
     if (appliedResetKey.current === resetKey) return
     appliedResetKey.current = resetKey
     lastAppliedThread.current = null
-    const extractedNodes = extractNodes(threadSpec)
+    const extractedNodes = extractNodes(threadSpec).map(node => ({
+      ...node,
+      data: { ...node.data, layoutKey: resetKey },
+    }))
     const extractedEdges = extractEdges(threadSpec)
 
     if (!wfRun) {
@@ -164,6 +167,24 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
     setNodes(current => current.map(withNodeRuns))
     setNode(current => (current ? withNodeRuns(current) : current))
   }, [threadNodeRuns, wfRun, setNodes])
+
+  useEffect(() => {
+    if (!wfRun) return
+    setEdges(current =>
+      current.map(edge =>
+        edge.data
+          ? {
+              ...edge,
+              data: {
+                ...edge.data,
+                nodeOutputValues,
+                fade: edge.data.isConditionalBranchEdge ? !isBranchEdgeReached(edge.target, threadNodeRuns) : undefined,
+              },
+            }
+          : edge
+      )
+    )
+  }, [threadNodeRuns, nodeOutputValues, wfRun, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)
@@ -262,7 +283,7 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             nodesDraggable={false}
             elementsSelectable
             onlyRenderVisibleElements={true}
-            minZoom={0.3}
+            minZoom={0.01}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             snapToGrid={true}
@@ -272,9 +293,11 @@ export const Diagram: FC<Props> = ({ spec, wfRun, onThreadChange, headerActions 
             <Controls />
           </ReactFlow>
           <LayoutManager
+            layoutKey={resetKey}
             nodeRuns={threadNodeRuns}
             viewportKey={viewportKey}
             setNodes={setNodes}
+            setEdges={setEdges}
             onLayoutComplete={applyDefaultSelection}
           />
         </div>

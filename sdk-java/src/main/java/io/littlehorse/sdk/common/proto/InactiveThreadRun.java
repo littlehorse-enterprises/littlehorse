@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+ * Represents an inactive ThreadRun, either archived or queued 
  * </pre>
  *
  * Protobuf type {@code littlehorse.InactiveThreadRun}
@@ -48,6 +48,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int inactiveReasonCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object inactiveReason_;
+  public enum InactiveReasonCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    ARCHIVED(2),
+    QUEUED(3),
+    INACTIVEREASON_NOT_SET(0);
+    private final int value;
+    private InactiveReasonCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static InactiveReasonCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static InactiveReasonCase forNumber(int value) {
+      switch (value) {
+        case 2: return ARCHIVED;
+        case 3: return QUEUED;
+        case 0: return INACTIVEREASON_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public InactiveReasonCase
+  getInactiveReasonCase() {
+    return InactiveReasonCase.forNumber(
+        inactiveReasonCase_);
+  }
+
   public static final int THREAD_RUN_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.ThreadRun threadRun_;
   /**
@@ -74,6 +116,94 @@ private static final long serialVersionUID = 0L;
     return threadRun_ == null ? io.littlehorse.sdk.common.proto.ThreadRun.getDefaultInstance() : threadRun_;
   }
 
+  public static final int ARCHIVED_FIELD_NUMBER = 2;
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return Whether the archived field is set.
+   */
+  @java.lang.Override
+  public boolean hasArchived() {
+    return inactiveReasonCase_ == 2;
+  }
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   * @return The archived.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived() {
+    if (inactiveReasonCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_;
+    }
+    return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder() {
+    if (inactiveReasonCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_;
+    }
+    return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+  }
+
+  public static final int QUEUED_FIELD_NUMBER = 3;
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return Whether the queued field is set.
+   */
+  @java.lang.Override
+  public boolean hasQueued() {
+    return inactiveReasonCase_ == 3;
+  }
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   * @return The queued.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued() {
+    if (inactiveReasonCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_;
+    }
+    return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+  }
+  /**
+   * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder() {
+    if (inactiveReasonCase_ == 3) {
+       return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_;
+    }
+    return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+  }
+
+  public static final int ID_FIELD_NUMBER = 4;
+  private io.littlehorse.sdk.common.proto.InactiveThreadRunId id_;
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   * @return Whether the id field is set.
+   */
+  @java.lang.Override
+  public boolean hasId() {
+    return ((bitField0_ & 0x00000002) != 0);
+  }
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   * @return The id.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InactiveThreadRunId getId() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance() : id_;
+  }
+  /**
+   * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder getIdOrBuilder() {
+    return id_ == null ? io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance() : id_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -91,6 +221,15 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getThreadRun());
     }
+    if (inactiveReasonCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_);
+    }
+    if (inactiveReasonCase_ == 3) {
+      output.writeMessage(3, (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      output.writeMessage(4, getId());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -103,6 +242,18 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getThreadRun());
+    }
+    if (inactiveReasonCase_ == 2) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_);
+    }
+    if (inactiveReasonCase_ == 3) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_);
+    }
+    if (((bitField0_ & 0x00000002) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(4, getId());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -124,6 +275,24 @@ private static final long serialVersionUID = 0L;
       if (!getThreadRun()
           .equals(other.getThreadRun())) return false;
     }
+    if (hasId() != other.hasId()) return false;
+    if (hasId()) {
+      if (!getId()
+          .equals(other.getId())) return false;
+    }
+    if (!getInactiveReasonCase().equals(other.getInactiveReasonCase())) return false;
+    switch (inactiveReasonCase_) {
+      case 2:
+        if (!getArchived()
+            .equals(other.getArchived())) return false;
+        break;
+      case 3:
+        if (!getQueued()
+            .equals(other.getQueued())) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -138,6 +307,22 @@ private static final long serialVersionUID = 0L;
     if (hasThreadRun()) {
       hash = (37 * hash) + THREAD_RUN_FIELD_NUMBER;
       hash = (53 * hash) + getThreadRun().hashCode();
+    }
+    if (hasId()) {
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId().hashCode();
+    }
+    switch (inactiveReasonCase_) {
+      case 2:
+        hash = (37 * hash) + ARCHIVED_FIELD_NUMBER;
+        hash = (53 * hash) + getArchived().hashCode();
+        break;
+      case 3:
+        hash = (37 * hash) + QUEUED_FIELD_NUMBER;
+        hash = (53 * hash) + getQueued().hashCode();
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -238,7 +423,7 @@ private static final long serialVersionUID = 0L;
   }
   /**
    * <pre>
-   * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms. 
+   * Represents an inactive ThreadRun, either archived or queued 
    * </pre>
    *
    * Protobuf type {@code littlehorse.InactiveThreadRun}
@@ -274,6 +459,7 @@ private static final long serialVersionUID = 0L;
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         internalGetThreadRunFieldBuilder();
+        internalGetIdFieldBuilder();
       }
     }
     @java.lang.Override
@@ -285,6 +471,19 @@ private static final long serialVersionUID = 0L;
         threadRunBuilder_.dispose();
         threadRunBuilder_ = null;
       }
+      if (archivedBuilder_ != null) {
+        archivedBuilder_.clear();
+      }
+      if (queuedBuilder_ != null) {
+        queuedBuilder_.clear();
+      }
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
+      inactiveReasonCase_ = 0;
+      inactiveReason_ = null;
       return this;
     }
 
@@ -312,6 +511,7 @@ private static final long serialVersionUID = 0L;
     public io.littlehorse.sdk.common.proto.InactiveThreadRun buildPartial() {
       io.littlehorse.sdk.common.proto.InactiveThreadRun result = new io.littlehorse.sdk.common.proto.InactiveThreadRun(this);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
@@ -325,7 +525,26 @@ private static final long serialVersionUID = 0L;
             : threadRunBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.id_ = idBuilder_ == null
+            ? id_
+            : idBuilder_.build();
+        to_bitField0_ |= 0x00000002;
+      }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.InactiveThreadRun result) {
+      result.inactiveReasonCase_ = inactiveReasonCase_;
+      result.inactiveReason_ = this.inactiveReason_;
+      if (inactiveReasonCase_ == 2 &&
+          archivedBuilder_ != null) {
+        result.inactiveReason_ = archivedBuilder_.build();
+      }
+      if (inactiveReasonCase_ == 3 &&
+          queuedBuilder_ != null) {
+        result.inactiveReason_ = queuedBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -342,6 +561,22 @@ private static final long serialVersionUID = 0L;
       if (other == io.littlehorse.sdk.common.proto.InactiveThreadRun.getDefaultInstance()) return this;
       if (other.hasThreadRun()) {
         mergeThreadRun(other.getThreadRun());
+      }
+      if (other.hasId()) {
+        mergeId(other.getId());
+      }
+      switch (other.getInactiveReasonCase()) {
+        case ARCHIVED: {
+          mergeArchived(other.getArchived());
+          break;
+        }
+        case QUEUED: {
+          mergeQueued(other.getQueued());
+          break;
+        }
+        case INACTIVEREASON_NOT_SET: {
+          break;
+        }
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -376,6 +611,27 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000001;
               break;
             } // case 10
+            case 18: {
+              input.readMessage(
+                  internalGetArchivedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              inactiveReasonCase_ = 2;
+              break;
+            } // case 18
+            case 26: {
+              input.readMessage(
+                  internalGetQueuedFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              inactiveReasonCase_ = 3;
+              break;
+            } // case 26
+            case 34: {
+              input.readMessage(
+                  internalGetIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -391,6 +647,21 @@ private static final long serialVersionUID = 0L;
       } // finally
       return this;
     }
+    private int inactiveReasonCase_ = 0;
+    private java.lang.Object inactiveReason_;
+    public InactiveReasonCase
+        getInactiveReasonCase() {
+      return InactiveReasonCase.forNumber(
+          inactiveReasonCase_);
+    }
+
+    public Builder clearInactiveReason() {
+      inactiveReasonCase_ = 0;
+      inactiveReason_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.ThreadRun threadRun_;
@@ -512,6 +783,411 @@ private static final long serialVersionUID = 0L;
         threadRun_ = null;
       }
       return threadRunBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder> archivedBuilder_;
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     * @return Whether the archived field is set.
+     */
+    @java.lang.Override
+    public boolean hasArchived() {
+      return inactiveReasonCase_ == 2;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     * @return The archived.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo getArchived() {
+      if (archivedBuilder_ == null) {
+        if (inactiveReasonCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_;
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      } else {
+        if (inactiveReasonCase_ == 2) {
+          return archivedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder setArchived(io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo value) {
+      if (archivedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        inactiveReason_ = value;
+        onChanged();
+      } else {
+        archivedBuilder_.setMessage(value);
+      }
+      inactiveReasonCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder setArchived(
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder builderForValue) {
+      if (archivedBuilder_ == null) {
+        inactiveReason_ = builderForValue.build();
+        onChanged();
+      } else {
+        archivedBuilder_.setMessage(builderForValue.build());
+      }
+      inactiveReasonCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder mergeArchived(io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo value) {
+      if (archivedBuilder_ == null) {
+        if (inactiveReasonCase_ == 2 &&
+            inactiveReason_ != io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance()) {
+          inactiveReason_ = io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.newBuilder((io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          inactiveReason_ = value;
+        }
+        onChanged();
+      } else {
+        if (inactiveReasonCase_ == 2) {
+          archivedBuilder_.mergeFrom(value);
+        } else {
+          archivedBuilder_.setMessage(value);
+        }
+      }
+      inactiveReasonCase_ = 2;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public Builder clearArchived() {
+      if (archivedBuilder_ == null) {
+        if (inactiveReasonCase_ == 2) {
+          inactiveReasonCase_ = 0;
+          inactiveReason_ = null;
+          onChanged();
+        }
+      } else {
+        if (inactiveReasonCase_ == 2) {
+          inactiveReasonCase_ = 0;
+          inactiveReason_ = null;
+        }
+        archivedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder getArchivedBuilder() {
+      return internalGetArchivedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder getArchivedOrBuilder() {
+      if ((inactiveReasonCase_ == 2) && (archivedBuilder_ != null)) {
+        return archivedBuilder_.getMessageOrBuilder();
+      } else {
+        if (inactiveReasonCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_;
+        }
+        return io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.ArchivedThreadRunInfo archived = 2;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder> 
+        internalGetArchivedFieldBuilder() {
+      if (archivedBuilder_ == null) {
+        if (!(inactiveReasonCase_ == 2)) {
+          inactiveReason_ = io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.getDefaultInstance();
+        }
+        archivedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.ArchivedThreadRunInfoOrBuilder>(
+                (io.littlehorse.sdk.common.proto.ArchivedThreadRunInfo) inactiveReason_,
+                getParentForChildren(),
+                isClean());
+        inactiveReason_ = null;
+      }
+      inactiveReasonCase_ = 2;
+      onChanged();
+      return archivedBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder> queuedBuilder_;
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     * @return Whether the queued field is set.
+     */
+    @java.lang.Override
+    public boolean hasQueued() {
+      return inactiveReasonCase_ == 3;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     * @return The queued.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo getQueued() {
+      if (queuedBuilder_ == null) {
+        if (inactiveReasonCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_;
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      } else {
+        if (inactiveReasonCase_ == 3) {
+          return queuedBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder setQueued(io.littlehorse.sdk.common.proto.QueuedThreadRunInfo value) {
+      if (queuedBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        inactiveReason_ = value;
+        onChanged();
+      } else {
+        queuedBuilder_.setMessage(value);
+      }
+      inactiveReasonCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder setQueued(
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder builderForValue) {
+      if (queuedBuilder_ == null) {
+        inactiveReason_ = builderForValue.build();
+        onChanged();
+      } else {
+        queuedBuilder_.setMessage(builderForValue.build());
+      }
+      inactiveReasonCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder mergeQueued(io.littlehorse.sdk.common.proto.QueuedThreadRunInfo value) {
+      if (queuedBuilder_ == null) {
+        if (inactiveReasonCase_ == 3 &&
+            inactiveReason_ != io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance()) {
+          inactiveReason_ = io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.newBuilder((io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          inactiveReason_ = value;
+        }
+        onChanged();
+      } else {
+        if (inactiveReasonCase_ == 3) {
+          queuedBuilder_.mergeFrom(value);
+        } else {
+          queuedBuilder_.setMessage(value);
+        }
+      }
+      inactiveReasonCase_ = 3;
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public Builder clearQueued() {
+      if (queuedBuilder_ == null) {
+        if (inactiveReasonCase_ == 3) {
+          inactiveReasonCase_ = 0;
+          inactiveReason_ = null;
+          onChanged();
+        }
+      } else {
+        if (inactiveReasonCase_ == 3) {
+          inactiveReasonCase_ = 0;
+          inactiveReason_ = null;
+        }
+        queuedBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder getQueuedBuilder() {
+      return internalGetQueuedFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder getQueuedOrBuilder() {
+      if ((inactiveReasonCase_ == 3) && (queuedBuilder_ != null)) {
+        return queuedBuilder_.getMessageOrBuilder();
+      } else {
+        if (inactiveReasonCase_ == 3) {
+          return (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_;
+        }
+        return io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+      }
+    }
+    /**
+     * <code>.littlehorse.QueuedThreadRunInfo queued = 3;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder> 
+        internalGetQueuedFieldBuilder() {
+      if (queuedBuilder_ == null) {
+        if (!(inactiveReasonCase_ == 3)) {
+          inactiveReason_ = io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.getDefaultInstance();
+        }
+        queuedBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.QueuedThreadRunInfo, io.littlehorse.sdk.common.proto.QueuedThreadRunInfo.Builder, io.littlehorse.sdk.common.proto.QueuedThreadRunInfoOrBuilder>(
+                (io.littlehorse.sdk.common.proto.QueuedThreadRunInfo) inactiveReason_,
+                getParentForChildren(),
+                isClean());
+        inactiveReason_ = null;
+      }
+      inactiveReasonCase_ = 3;
+      onChanged();
+      return queuedBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.InactiveThreadRunId id_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder, io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder> idBuilder_;
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     * @return Whether the id field is set.
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     * @return The id.
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunId getId() {
+      if (idBuilder_ == null) {
+        return id_ == null ? io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance() : id_;
+      } else {
+        return idBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public Builder setId(io.littlehorse.sdk.common.proto.InactiveThreadRunId value) {
+      if (idBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        id_ = value;
+      } else {
+        idBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public Builder setId(
+        io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder builderForValue) {
+      if (idBuilder_ == null) {
+        id_ = builderForValue.build();
+      } else {
+        idBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public Builder mergeId(io.littlehorse.sdk.common.proto.InactiveThreadRunId value) {
+      if (idBuilder_ == null) {
+        if (((bitField0_ & 0x00000008) != 0) &&
+          id_ != null &&
+          id_ != io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance()) {
+          getIdBuilder().mergeFrom(value);
+        } else {
+          id_ = value;
+        }
+      } else {
+        idBuilder_.mergeFrom(value);
+      }
+      if (id_ != null) {
+        bitField0_ |= 0x00000008;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public Builder clearId() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      id_ = null;
+      if (idBuilder_ != null) {
+        idBuilder_.dispose();
+        idBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder getIdBuilder() {
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return internalGetIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    public io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder getIdOrBuilder() {
+      if (idBuilder_ != null) {
+        return idBuilder_.getMessageOrBuilder();
+      } else {
+        return id_ == null ?
+            io.littlehorse.sdk.common.proto.InactiveThreadRunId.getDefaultInstance() : id_;
+      }
+    }
+    /**
+     * <code>.littlehorse.InactiveThreadRunId id = 4;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder, io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder> 
+        internalGetIdFieldBuilder() {
+      if (idBuilder_ == null) {
+        idBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.InactiveThreadRunId, io.littlehorse.sdk.common.proto.InactiveThreadRunId.Builder, io.littlehorse.sdk.common.proto.InactiveThreadRunIdOrBuilder>(
+                getId(),
+                getParentForChildren(),
+                isClean());
+        id_ = null;
+      }
+      return idBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.InactiveThreadRun)

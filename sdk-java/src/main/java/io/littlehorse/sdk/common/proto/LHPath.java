@@ -100,6 +100,33 @@ private static final long serialVersionUID = 0L;
      */
     int getIndex();
 
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     * @return Whether the dynamic field is set.
+     */
+    boolean hasDynamic();
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     * @return The dynamic.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignment getDynamic();
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicOrBuilder();
+
     io.littlehorse.sdk.common.proto.LHPath.Selector.SelectorTypeCase getSelectorTypeCase();
   }
   /**
@@ -147,6 +174,7 @@ private static final long serialVersionUID = 0L;
             com.google.protobuf.AbstractMessage.InternalOneOfEnum {
       KEY(1),
       INDEX(2),
+      DYNAMIC(3),
       SELECTORTYPE_NOT_SET(0);
       private final int value;
       private SelectorTypeCase(int value) {
@@ -166,6 +194,7 @@ private static final long serialVersionUID = 0L;
         switch (value) {
           case 1: return KEY;
           case 2: return INDEX;
+          case 3: return DYNAMIC;
           case 0: return SELECTORTYPE_NOT_SET;
           default: return null;
         }
@@ -274,6 +303,49 @@ private static final long serialVersionUID = 0L;
       return 0;
     }
 
+    public static final int DYNAMIC_FIELD_NUMBER = 3;
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     * @return Whether the dynamic field is set.
+     */
+    @java.lang.Override
+    public boolean hasDynamic() {
+      return selectorTypeCase_ == 3;
+    }
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     * @return The dynamic.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getDynamic() {
+      if (selectorTypeCase_ == 3) {
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_;
+      }
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+    }
+    /**
+     * <pre>
+     * A selector value resolved from the current ThreadRun context.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicOrBuilder() {
+      if (selectorTypeCase_ == 3) {
+         return (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_;
+      }
+      return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -295,6 +367,9 @@ private static final long serialVersionUID = 0L;
         output.writeInt32(
             2, (int)((java.lang.Integer) selectorType_));
       }
+      if (selectorTypeCase_ == 3) {
+        output.writeMessage(3, (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -311,6 +386,10 @@ private static final long serialVersionUID = 0L;
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(
               2, (int)((java.lang.Integer) selectorType_));
+      }
+      if (selectorTypeCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
@@ -337,6 +416,10 @@ private static final long serialVersionUID = 0L;
           if (getIndex()
               != other.getIndex()) return false;
           break;
+        case 3:
+          if (!getDynamic()
+              .equals(other.getDynamic())) return false;
+          break;
         case 0:
         default:
       }
@@ -359,6 +442,10 @@ private static final long serialVersionUID = 0L;
         case 2:
           hash = (37 * hash) + INDEX_FIELD_NUMBER;
           hash = (53 * hash) + getIndex();
+          break;
+        case 3:
+          hash = (37 * hash) + DYNAMIC_FIELD_NUMBER;
+          hash = (53 * hash) + getDynamic().hashCode();
           break;
         case 0:
         default:
@@ -494,6 +581,9 @@ private static final long serialVersionUID = 0L;
       public Builder clear() {
         super.clear();
         bitField0_ = 0;
+        if (dynamicBuilder_ != null) {
+          dynamicBuilder_.clear();
+        }
         selectorTypeCase_ = 0;
         selectorType_ = null;
         return this;
@@ -535,6 +625,10 @@ private static final long serialVersionUID = 0L;
       private void buildPartialOneofs(io.littlehorse.sdk.common.proto.LHPath.Selector result) {
         result.selectorTypeCase_ = selectorTypeCase_;
         result.selectorType_ = this.selectorType_;
+        if (selectorTypeCase_ == 3 &&
+            dynamicBuilder_ != null) {
+          result.selectorType_ = dynamicBuilder_.build();
+        }
       }
 
       @java.lang.Override
@@ -558,6 +652,10 @@ private static final long serialVersionUID = 0L;
           }
           case INDEX: {
             setIndex(other.getIndex());
+            break;
+          }
+          case DYNAMIC: {
+            mergeDynamic(other.getDynamic());
             break;
           }
           case SELECTORTYPE_NOT_SET: {
@@ -601,6 +699,13 @@ private static final long serialVersionUID = 0L;
                 selectorTypeCase_ = 2;
                 break;
               } // case 16
+              case 26: {
+                input.readMessage(
+                    internalGetDynamicFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                selectorTypeCase_ = 3;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -806,6 +911,184 @@ private static final long serialVersionUID = 0L;
           onChanged();
         }
         return this;
+      }
+
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> dynamicBuilder_;
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       * @return Whether the dynamic field is set.
+       */
+      @java.lang.Override
+      public boolean hasDynamic() {
+        return selectorTypeCase_ == 3;
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       * @return The dynamic.
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment getDynamic() {
+        if (dynamicBuilder_ == null) {
+          if (selectorTypeCase_ == 3) {
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_;
+          }
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        } else {
+          if (selectorTypeCase_ == 3) {
+            return dynamicBuilder_.getMessage();
+          }
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      public Builder setDynamic(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (dynamicBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          selectorType_ = value;
+          onChanged();
+        } else {
+          dynamicBuilder_.setMessage(value);
+        }
+        selectorTypeCase_ = 3;
+        return this;
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      public Builder setDynamic(
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+        if (dynamicBuilder_ == null) {
+          selectorType_ = builderForValue.build();
+          onChanged();
+        } else {
+          dynamicBuilder_.setMessage(builderForValue.build());
+        }
+        selectorTypeCase_ = 3;
+        return this;
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      public Builder mergeDynamic(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (dynamicBuilder_ == null) {
+          if (selectorTypeCase_ == 3 &&
+              selectorType_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            selectorType_ = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            selectorType_ = value;
+          }
+          onChanged();
+        } else {
+          if (selectorTypeCase_ == 3) {
+            dynamicBuilder_.mergeFrom(value);
+          } else {
+            dynamicBuilder_.setMessage(value);
+          }
+        }
+        selectorTypeCase_ = 3;
+        return this;
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      public Builder clearDynamic() {
+        if (dynamicBuilder_ == null) {
+          if (selectorTypeCase_ == 3) {
+            selectorTypeCase_ = 0;
+            selectorType_ = null;
+            onChanged();
+          }
+        } else {
+          if (selectorTypeCase_ == 3) {
+            selectorTypeCase_ = 0;
+            selectorType_ = null;
+          }
+          dynamicBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getDynamicBuilder() {
+        return internalGetDynamicFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getDynamicOrBuilder() {
+        if ((selectorTypeCase_ == 3) && (dynamicBuilder_ != null)) {
+          return dynamicBuilder_.getMessageOrBuilder();
+        } else {
+          if (selectorTypeCase_ == 3) {
+            return (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_;
+          }
+          return io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+        }
+      }
+      /**
+       * <pre>
+       * A selector value resolved from the current ThreadRun context.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment dynamic = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+          internalGetDynamicFieldBuilder() {
+        if (dynamicBuilder_ == null) {
+          if (!(selectorTypeCase_ == 3)) {
+            selectorType_ = io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance();
+          }
+          dynamicBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  (io.littlehorse.sdk.common.proto.VariableAssignment) selectorType_,
+                  getParentForChildren(),
+                  isClean());
+          selectorType_ = null;
+        }
+        selectorTypeCase_ = 3;
+        onChanged();
+        return dynamicBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:littlehorse.LHPath.Selector)

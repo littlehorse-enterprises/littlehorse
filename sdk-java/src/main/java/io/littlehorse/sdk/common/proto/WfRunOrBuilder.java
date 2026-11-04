@@ -39,7 +39,7 @@ public interface WfRunOrBuilder extends
 
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -48,7 +48,7 @@ public interface WfRunOrBuilder extends
   boolean hasWfSpecId();
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -57,12 +57,31 @@ public interface WfRunOrBuilder extends
   io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId();
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder();
+
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return Whether the isInline field is set.
+   */
+  boolean hasIsInline();
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return The isInline.
+   */
+  boolean getIsInline();
 
   /**
    * <pre>
@@ -472,4 +491,23 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue);
    */
   io.littlehorse.sdk.common.proto.MigrationVars getMigrationVariablesOrThrow(
       java.lang.String key);
+
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  java.util.List<java.lang.Integer> getThreadRunQueueList();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return The count of threadRunQueue.
+   */
+  int getThreadRunQueueCount();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  int getThreadRunQueue(int index);
+
+  io.littlehorse.sdk.common.proto.WfRun.WfSpecSourceCase getWfSpecSourceCase();
 }

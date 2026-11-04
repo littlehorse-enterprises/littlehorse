@@ -231,6 +231,23 @@ class DeleteWorkflowEventDefRequest(_message.Message):
     id: _object_id_pb2.WorkflowEventDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
 
+class RunInlineWfRequest(_message.Message):
+    __slots__ = ("wf_spec", "variables", "id")
+    class VariablesEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _wf_run_pb2.InlineWfSpec
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
+    id: str
+    def __init__(self, wf_spec: _Optional[_Union[_wf_run_pb2.InlineWfSpec, _Mapping]] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
+
 class RunWfRequest(_message.Message):
     __slots__ = ("wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id")
     class VariablesEntry(_message.Message):
@@ -599,6 +616,26 @@ class ExternalEventDefIdList(_message.Message):
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.ExternalEventDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
+class SearchWorkflowMigrationPlanRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "wf_spec_name", "prefix")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    WF_SPEC_NAME_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    wf_spec_name: str
+    prefix: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., wf_spec_name: _Optional[str] = ..., prefix: _Optional[str] = ...) -> None: ...
+
+class WorkflowMigrationPlanIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WorkflowMigrationPlanId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
 class SearchWorkflowEventDefRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "prefix")
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
@@ -673,9 +710,9 @@ class QuotaIdList(_message.Message):
     __slots__ = ("results", "bookmark")
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     BOOKMARK_FIELD_NUMBER: _ClassVar[int]
-    results: _containers.RepeatedCompositeFieldContainer[_acls_pb2.QuotaId]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.QuotaId]
     bookmark: bytes
-    def __init__(self, results: _Optional[_Iterable[_Union[_acls_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.QuotaId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class SearchExternalEventRequest(_message.Message):
     __slots__ = ("bookmark", "limit", "earliest_start", "latest_start", "external_event_def_id", "is_claimed")
@@ -912,6 +949,14 @@ class ReportTaskRun(_message.Message):
     exception: _task_run_pb2.LHTaskException
     total_checkpoints: int
     def __init__(self, task_run_id: _Optional[_Union[_object_id_pb2.TaskRunId, _Mapping]] = ..., time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., status: _Optional[_Union[_common_enums_pb2.TaskStatus, str]] = ..., log_output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., attempt_number: _Optional[int] = ..., output: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., error: _Optional[_Union[_task_run_pb2.LHTaskError, _Mapping]] = ..., exception: _Optional[_Union[_task_run_pb2.LHTaskException, _Mapping]] = ..., total_checkpoints: _Optional[int] = ...) -> None: ...
+
+class PutVariableRequest(_message.Message):
+    __slots__ = ("id", "value")
+    ID_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.VariableId
+    value: _type_definition_pb2.VariableValue
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.VariableId, _Mapping]] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
 
 class StopWfRunRequest(_message.Message):
     __slots__ = ("wf_run_id", "thread_run_number")

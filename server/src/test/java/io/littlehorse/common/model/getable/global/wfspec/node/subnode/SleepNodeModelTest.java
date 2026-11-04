@@ -26,19 +26,15 @@ class SleepNodeModelTest {
 
     @Test
     public void shouldCalculateMaturationTimeBasedOnRawSeconds() throws LHVarSubError {
-        LocalDateTime expectedMaturationTime = LocalDateTime.now().plusDays(10);
-        //        Timestamp sleepUntilTimestamp =
-        // Timestamp.newBuilder().setSeconds(expectedMaturationTime.toEpochSecond(defaultZoneOffset)).build();
+        Date arrivalTime = Date.from(Instant.parse("2026-01-01T00:00:00Z"));
+        Date expectedMaturationTime = Date.from(arrivalTime.toInstant().plus(Duration.ofDays(10)));
         when(threadRun.assignVariable(assignment))
                 .thenReturn(new VariableValueModel(Duration.ofDays(10).toSeconds()));
         SleepNodeModel sleepNode = new SleepNodeModel();
         sleepNode.type = SleepNode.SleepLengthCase.RAW_SECONDS;
         sleepNode.rawSeconds = assignment;
-        Date maturationTime = sleepNode.getMaturationTime(threadRun);
-        assertThat(maturationTime)
-                .isCloseTo(
-                        expectedMaturationTime.toInstant(defaultZoneOffset),
-                        Duration.ofSeconds(2).toMillis());
+        Date maturationTime = sleepNode.getMaturationTime(threadRun, arrivalTime);
+        assertThat(maturationTime).isEqualTo(expectedMaturationTime);
     }
 
     @Test
@@ -49,7 +45,7 @@ class SleepNodeModelTest {
         SleepNodeModel sleepNode = new SleepNodeModel();
         sleepNode.type = SleepNode.SleepLengthCase.ISO_DATE;
         sleepNode.isoDate = assignment;
-        Date maturationTime = sleepNode.getMaturationTime(threadRun);
+        Date maturationTime = sleepNode.getMaturationTime(threadRun, new Date());
         assertThat(maturationTime).isEqualToIgnoringHours(expectedMaturationTime);
     }
 
@@ -60,7 +56,8 @@ class SleepNodeModelTest {
         sleepNode.type = SleepNode.SleepLengthCase.ISO_DATE;
         sleepNode.isoDate = assignment;
 
-        assertThatThrownBy(() -> sleepNode.getMaturationTime(threadRun)).isInstanceOf(LHVarSubError.class);
+        assertThatThrownBy(() -> sleepNode.getMaturationTime(threadRun, new Date()))
+                .isInstanceOf(LHVarSubError.class);
     }
 
     @Test
@@ -73,7 +70,7 @@ class SleepNodeModelTest {
         SleepNodeModel sleepNode = new SleepNodeModel();
         sleepNode.type = SleepNode.SleepLengthCase.TIMESTAMP;
         sleepNode.timestamp = assignment;
-        Date maturationTime = sleepNode.getMaturationTime(threadRun);
+        Date maturationTime = sleepNode.getMaturationTime(threadRun, new Date());
         assertThat(maturationTime).isEqualToIgnoringMillis(expectedMaturationTime.toInstant(defaultZoneOffset));
     }
 }

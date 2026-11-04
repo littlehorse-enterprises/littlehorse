@@ -3,13 +3,16 @@
 // tslint:disable
 import type { BinaryWriteOptions } from "@protobuf-ts/runtime";
 import type { IBinaryWriter } from "@protobuf-ts/runtime";
-import { WireType } from "@protobuf-ts/runtime";
 import type { BinaryReadOptions } from "@protobuf-ts/runtime";
 import type { IBinaryReader } from "@protobuf-ts/runtime";
 import { UnknownFieldHandler } from "@protobuf-ts/runtime";
+import { WireType } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { WorkflowRetentionPolicy } from "./wf_spec";
+import { ThreadSpec } from "./wf_spec";
+import { InactiveThreadRunId } from "./object_id";
 import { VariableValue } from "./type_definition";
 import { ExternalEventId } from "./object_id";
 import { NodeRunId } from "./object_id";
@@ -20,7 +23,7 @@ import { LHStatus } from "./common_enums";
 import { WfSpecId } from "./object_id";
 import { WfRunId } from "./object_id";
 /**
- * A WfRun is a running instance of a WfSpec.
+ * A WfRun is a running instance of a registered or inline workflow definition.
  *
  * @generated from protobuf message littlehorse.WfRun
  */
@@ -32,11 +35,27 @@ export interface WfRun {
      */
     id?: WfRunId;
     /**
-     * The ID of the WfSpec that this WfRun belongs to.
-     *
-     * @generated from protobuf field: littlehorse.WfSpecId wf_spec_id = 2
+     * @generated from protobuf oneof: wf_spec_source
      */
-    wfSpecId?: WfSpecId;
+    wfSpecSource: {
+        oneofKind: "wfSpecId";
+        /**
+         * The ID of the registered WfSpec that this WfRun belongs to.
+         *
+         * @generated from protobuf field: littlehorse.WfSpecId wf_spec_id = 2
+         */
+        wfSpecId: WfSpecId;
+    } | {
+        oneofKind: "isInline";
+        /**
+         * Must be true when selected. Fetch the inline definition using this WfRun's id.
+         *
+         * @generated from protobuf field: bool is_inline = 16
+         */
+        isInline: boolean;
+    } | {
+        oneofKind: undefined;
+    };
     /**
      * When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
      * old WfSpecId to this list for historical auditing and debugging purposes.
@@ -119,6 +138,10 @@ export interface WfRun {
     migrationVariables: {
         [key: string]: MigrationVars;
     };
+    /**
+     * @generated from protobuf field: repeated int32 thread_run_queue = 14
+     */
+    threadRunQueue: number[];
 }
 /**
  * Information about a parent `WfRun` which triggers a child.
@@ -261,7 +284,7 @@ export interface ThreadRun {
     output?: VariableValue;
 }
 /**
- * Represents an inactive ThreadRun which has been cleaned up by retention and archival mechanisms.
+ * Represents an inactive ThreadRun, either archived or queued
  *
  * @generated from protobuf message littlehorse.InactiveThreadRun
  */
@@ -270,6 +293,44 @@ export interface InactiveThreadRun {
      * @generated from protobuf field: littlehorse.ThreadRun thread_run = 1
      */
     threadRun?: ThreadRun;
+    /**
+     * @generated from protobuf oneof: inactive_reason
+     */
+    inactiveReason: {
+        oneofKind: "archived";
+        /**
+         * @generated from protobuf field: littlehorse.ArchivedThreadRunInfo archived = 2
+         */
+        archived: ArchivedThreadRunInfo;
+    } | {
+        oneofKind: "queued";
+        /**
+         * @generated from protobuf field: littlehorse.QueuedThreadRunInfo queued = 3
+         */
+        queued: QueuedThreadRunInfo;
+    } | {
+        oneofKind: undefined;
+    };
+    /**
+     * @generated from protobuf field: littlehorse.InactiveThreadRunId id = 4
+     */
+    id?: InactiveThreadRunId;
+}
+/**
+ * @generated from protobuf message littlehorse.ArchivedThreadRunInfo
+ */
+export interface ArchivedThreadRunInfo {
+}
+/**
+ * @generated from protobuf message littlehorse.QueuedThreadRunInfo
+ */
+export interface QueuedThreadRunInfo {
+    /**
+     * @generated from protobuf field: map<string, littlehorse.VariableValue> input_vars = 1
+     */
+    inputVars: {
+        [key: string]: VariableValue;
+    };
 }
 /**
  * Points to the Failure that is currently being handled in the ThreadRun.
@@ -515,6 +576,40 @@ export interface ThreadHaltReason {
     };
 }
 /**
+ * Immutable, server-normalized snapshot stored in the owning WfRun's partition.
+ * Created by RunInlineWf and deleted with its WfRun; not independently writable.
+ *
+ * @generated from protobuf message littlehorse.InlineWfSpec
+ */
+export interface InlineWfSpec {
+    /**
+     * Output only; must be absent in RunInlineWf requests.
+     *
+     * @generated from protobuf field: littlehorse.WfRunId id = 1
+     */
+    id?: WfRunId;
+    /**
+     * Output only; must be absent in RunInlineWf requests.
+     *
+     * @generated from protobuf field: google.protobuf.Timestamp created_at = 2
+     */
+    createdAt?: Timestamp;
+    /**
+     * @generated from protobuf field: map<string, littlehorse.ThreadSpec> thread_specs = 3
+     */
+    threadSpecs: {
+        [key: string]: ThreadSpec;
+    };
+    /**
+     * @generated from protobuf field: string entrypoint_thread_name = 4
+     */
+    entrypointThreadName: string;
+    /**
+     * @generated from protobuf field: optional littlehorse.WorkflowRetentionPolicy retention_policy = 5
+     */
+    retentionPolicy?: WorkflowRetentionPolicy;
+}
+/**
  * The type of a ThreadRUn.
  *
  * @generated from protobuf enum littlehorse.ThreadType
@@ -551,7 +646,8 @@ class WfRun$Type extends MessageType<WfRun> {
     constructor() {
         super("littlehorse.WfRun", [
             { no: 1, name: "id", kind: "message", T: () => WfRunId },
-            { no: 2, name: "wf_spec_id", kind: "message", T: () => WfSpecId },
+            { no: 2, name: "wf_spec_id", kind: "message", oneof: "wfSpecSource", T: () => WfSpecId },
+            { no: 16, name: "is_inline", kind: "scalar", oneof: "wfSpecSource", T: 8 /*ScalarType.BOOL*/ },
             { no: 3, name: "old_wf_spec_versions", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => WfSpecId },
             { no: 4, name: "status", kind: "enum", T: () => ["littlehorse.LHStatus", LHStatus] },
             { no: 5, name: "greatest_threadrun_number", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
@@ -562,11 +658,13 @@ class WfRun$Type extends MessageType<WfRun> {
             { no: 10, name: "pending_failures", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => PendingFailureHandler },
             { no: 11, name: "parent_trigger", kind: "message", T: () => WfRun_ParentTriggerReference },
             { no: 12, name: "workflow_migration_plan_id", kind: "message", T: () => WorkflowMigrationPlanId },
-            { no: 13, name: "migration_variables", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => MigrationVars } }
+            { no: 13, name: "migration_variables", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => MigrationVars } },
+            { no: 14, name: "thread_run_queue", kind: "scalar", repeat: 1 /*RepeatType.PACKED*/, T: 5 /*ScalarType.INT32*/ }
         ]);
     }
     create(value?: PartialMessage<WfRun>): WfRun {
         const message = globalThis.Object.create((this.messagePrototype!));
+        message.wfSpecSource = { oneofKind: undefined };
         message.oldWfSpecVersions = [];
         message.status = 0;
         message.greatestThreadrunNumber = 0;
@@ -574,6 +672,7 @@ class WfRun$Type extends MessageType<WfRun> {
         message.pendingInterrupts = [];
         message.pendingFailures = [];
         message.migrationVariables = {};
+        message.threadRunQueue = [];
         if (value !== undefined)
             reflectionMergePartial<WfRun>(this, message, value);
         return message;
@@ -587,7 +686,16 @@ class WfRun$Type extends MessageType<WfRun> {
                     message.id = WfRunId.internalBinaryRead(reader, reader.uint32(), options, message.id);
                     break;
                 case /* littlehorse.WfSpecId wf_spec_id */ 2:
-                    message.wfSpecId = WfSpecId.internalBinaryRead(reader, reader.uint32(), options, message.wfSpecId);
+                    message.wfSpecSource = {
+                        oneofKind: "wfSpecId",
+                        wfSpecId: WfSpecId.internalBinaryRead(reader, reader.uint32(), options, (message.wfSpecSource as any).wfSpecId)
+                    };
+                    break;
+                case /* bool is_inline */ 16:
+                    message.wfSpecSource = {
+                        oneofKind: "isInline",
+                        isInline: reader.bool()
+                    };
                     break;
                 case /* repeated littlehorse.WfSpecId old_wf_spec_versions */ 3:
                     message.oldWfSpecVersions.push(WfSpecId.internalBinaryRead(reader, reader.uint32(), options));
@@ -622,6 +730,13 @@ class WfRun$Type extends MessageType<WfRun> {
                 case /* map<string, littlehorse.MigrationVars> migration_variables */ 13:
                     this.binaryReadMap13(message.migrationVariables, reader, options);
                     break;
+                case /* repeated int32 thread_run_queue */ 14:
+                    if (wireType === WireType.LengthDelimited)
+                        for (let e = reader.int32() + reader.pos; reader.pos < e;)
+                            message.threadRunQueue.push(reader.int32());
+                    else
+                        message.threadRunQueue.push(reader.int32());
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -654,8 +769,8 @@ class WfRun$Type extends MessageType<WfRun> {
         if (message.id)
             WfRunId.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
         /* littlehorse.WfSpecId wf_spec_id = 2; */
-        if (message.wfSpecId)
-            WfSpecId.internalBinaryWrite(message.wfSpecId, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        if (message.wfSpecSource.oneofKind === "wfSpecId")
+            WfSpecId.internalBinaryWrite(message.wfSpecSource.wfSpecId, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
         /* repeated littlehorse.WfSpecId old_wf_spec_versions = 3; */
         for (let i = 0; i < message.oldWfSpecVersions.length; i++)
             WfSpecId.internalBinaryWrite(message.oldWfSpecVersions[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
@@ -693,6 +808,16 @@ class WfRun$Type extends MessageType<WfRun> {
             MigrationVars.internalBinaryWrite(message.migrationVariables[k], writer, options);
             writer.join().join();
         }
+        /* repeated int32 thread_run_queue = 14; */
+        if (message.threadRunQueue.length) {
+            writer.tag(14, WireType.LengthDelimited).fork();
+            for (let i = 0; i < message.threadRunQueue.length; i++)
+                writer.int32(message.threadRunQueue[i]);
+            writer.join();
+        }
+        /* bool is_inline = 16; */
+        if (message.wfSpecSource.oneofKind === "isInline")
+            writer.tag(16, WireType.Varint).bool(message.wfSpecSource.isInline);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -935,11 +1060,15 @@ export const ThreadRun = new ThreadRun$Type();
 class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
     constructor() {
         super("littlehorse.InactiveThreadRun", [
-            { no: 1, name: "thread_run", kind: "message", T: () => ThreadRun }
+            { no: 1, name: "thread_run", kind: "message", T: () => ThreadRun },
+            { no: 2, name: "archived", kind: "message", oneof: "inactiveReason", T: () => ArchivedThreadRunInfo },
+            { no: 3, name: "queued", kind: "message", oneof: "inactiveReason", T: () => QueuedThreadRunInfo },
+            { no: 4, name: "id", kind: "message", T: () => InactiveThreadRunId }
         ]);
     }
     create(value?: PartialMessage<InactiveThreadRun>): InactiveThreadRun {
         const message = globalThis.Object.create((this.messagePrototype!));
+        message.inactiveReason = { oneofKind: undefined };
         if (value !== undefined)
             reflectionMergePartial<InactiveThreadRun>(this, message, value);
         return message;
@@ -951,6 +1080,21 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
             switch (fieldNo) {
                 case /* littlehorse.ThreadRun thread_run */ 1:
                     message.threadRun = ThreadRun.internalBinaryRead(reader, reader.uint32(), options, message.threadRun);
+                    break;
+                case /* littlehorse.ArchivedThreadRunInfo archived */ 2:
+                    message.inactiveReason = {
+                        oneofKind: "archived",
+                        archived: ArchivedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveReason as any).archived)
+                    };
+                    break;
+                case /* littlehorse.QueuedThreadRunInfo queued */ 3:
+                    message.inactiveReason = {
+                        oneofKind: "queued",
+                        queued: QueuedThreadRunInfo.internalBinaryRead(reader, reader.uint32(), options, (message.inactiveReason as any).queued)
+                    };
+                    break;
+                case /* littlehorse.InactiveThreadRunId id */ 4:
+                    message.id = InactiveThreadRunId.internalBinaryRead(reader, reader.uint32(), options, message.id);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -967,6 +1111,15 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
         /* littlehorse.ThreadRun thread_run = 1; */
         if (message.threadRun)
             ThreadRun.internalBinaryWrite(message.threadRun, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.ArchivedThreadRunInfo archived = 2; */
+        if (message.inactiveReason.oneofKind === "archived")
+            ArchivedThreadRunInfo.internalBinaryWrite(message.inactiveReason.archived, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.QueuedThreadRunInfo queued = 3; */
+        if (message.inactiveReason.oneofKind === "queued")
+            QueuedThreadRunInfo.internalBinaryWrite(message.inactiveReason.queued, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InactiveThreadRunId id = 4; */
+        if (message.id)
+            InactiveThreadRunId.internalBinaryWrite(message.id, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -977,6 +1130,111 @@ class InactiveThreadRun$Type extends MessageType<InactiveThreadRun> {
  * @generated MessageType for protobuf message littlehorse.InactiveThreadRun
  */
 export const InactiveThreadRun = new InactiveThreadRun$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ArchivedThreadRunInfo$Type extends MessageType<ArchivedThreadRunInfo> {
+    constructor() {
+        super("littlehorse.ArchivedThreadRunInfo", []);
+    }
+    create(value?: PartialMessage<ArchivedThreadRunInfo>): ArchivedThreadRunInfo {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<ArchivedThreadRunInfo>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ArchivedThreadRunInfo): ArchivedThreadRunInfo {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ArchivedThreadRunInfo, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.ArchivedThreadRunInfo
+ */
+export const ArchivedThreadRunInfo = new ArchivedThreadRunInfo$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class QueuedThreadRunInfo$Type extends MessageType<QueuedThreadRunInfo> {
+    constructor() {
+        super("littlehorse.QueuedThreadRunInfo", [
+            { no: 1, name: "input_vars", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableValue } }
+        ]);
+    }
+    create(value?: PartialMessage<QueuedThreadRunInfo>): QueuedThreadRunInfo {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.inputVars = {};
+        if (value !== undefined)
+            reflectionMergePartial<QueuedThreadRunInfo>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: QueuedThreadRunInfo): QueuedThreadRunInfo {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* map<string, littlehorse.VariableValue> input_vars */ 1:
+                    this.binaryReadMap1(message.inputVars, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap1(map: QueuedThreadRunInfo["inputVars"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof QueuedThreadRunInfo["inputVars"] | undefined, val: QueuedThreadRunInfo["inputVars"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = VariableValue.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.QueuedThreadRunInfo.input_vars");
+            }
+        }
+        map[key ?? ""] = val ?? VariableValue.create();
+    }
+    internalBinaryWrite(message: QueuedThreadRunInfo, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* map<string, littlehorse.VariableValue> input_vars = 1; */
+        for (let k of globalThis.Object.keys(message.inputVars)) {
+            writer.tag(1, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            VariableValue.internalBinaryWrite(message.inputVars[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.QueuedThreadRunInfo
+ */
+export const QueuedThreadRunInfo = new QueuedThreadRunInfo$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class FailureBeingHandled$Type extends MessageType<FailureBeingHandled> {
     constructor() {
@@ -1603,3 +1861,99 @@ class ThreadHaltReason$Type extends MessageType<ThreadHaltReason> {
  * @generated MessageType for protobuf message littlehorse.ThreadHaltReason
  */
 export const ThreadHaltReason = new ThreadHaltReason$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class InlineWfSpec$Type extends MessageType<InlineWfSpec> {
+    constructor() {
+        super("littlehorse.InlineWfSpec", [
+            { no: 1, name: "id", kind: "message", T: () => WfRunId },
+            { no: 2, name: "created_at", kind: "message", T: () => Timestamp },
+            { no: 3, name: "thread_specs", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => ThreadSpec } },
+            { no: 4, name: "entrypoint_thread_name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "retention_policy", kind: "message", T: () => WorkflowRetentionPolicy }
+        ]);
+    }
+    create(value?: PartialMessage<InlineWfSpec>): InlineWfSpec {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.threadSpecs = {};
+        message.entrypointThreadName = "";
+        if (value !== undefined)
+            reflectionMergePartial<InlineWfSpec>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InlineWfSpec): InlineWfSpec {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.WfRunId id */ 1:
+                    message.id = WfRunId.internalBinaryRead(reader, reader.uint32(), options, message.id);
+                    break;
+                case /* google.protobuf.Timestamp created_at */ 2:
+                    message.createdAt = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.createdAt);
+                    break;
+                case /* map<string, littlehorse.ThreadSpec> thread_specs */ 3:
+                    this.binaryReadMap3(message.threadSpecs, reader, options);
+                    break;
+                case /* string entrypoint_thread_name */ 4:
+                    message.entrypointThreadName = reader.string();
+                    break;
+                case /* optional littlehorse.WorkflowRetentionPolicy retention_policy */ 5:
+                    message.retentionPolicy = WorkflowRetentionPolicy.internalBinaryRead(reader, reader.uint32(), options, message.retentionPolicy);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap3(map: InlineWfSpec["threadSpecs"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof InlineWfSpec["threadSpecs"] | undefined, val: InlineWfSpec["threadSpecs"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = ThreadSpec.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.InlineWfSpec.thread_specs");
+            }
+        }
+        map[key ?? ""] = val ?? ThreadSpec.create();
+    }
+    internalBinaryWrite(message: InlineWfSpec, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.WfRunId id = 1; */
+        if (message.id)
+            WfRunId.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* google.protobuf.Timestamp created_at = 2; */
+        if (message.createdAt)
+            Timestamp.internalBinaryWrite(message.createdAt, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.ThreadSpec> thread_specs = 3; */
+        for (let k of globalThis.Object.keys(message.threadSpecs)) {
+            writer.tag(3, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            ThreadSpec.internalBinaryWrite(message.threadSpecs[k], writer, options);
+            writer.join().join();
+        }
+        /* string entrypoint_thread_name = 4; */
+        if (message.entrypointThreadName !== "")
+            writer.tag(4, WireType.LengthDelimited).string(message.entrypointThreadName);
+        /* optional littlehorse.WorkflowRetentionPolicy retention_policy = 5; */
+        if (message.retentionPolicy)
+            WorkflowRetentionPolicy.internalBinaryWrite(message.retentionPolicy, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.InlineWfSpec
+ */
+export const InlineWfSpec = new InlineWfSpec$Type();

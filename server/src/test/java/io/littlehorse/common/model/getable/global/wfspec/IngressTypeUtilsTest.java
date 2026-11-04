@@ -11,6 +11,7 @@ import io.littlehorse.common.model.getable.core.variable.MapModel.MapEntryModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.sdk.common.proto.Array;
@@ -162,5 +163,51 @@ public class IngressTypeUtilsTest {
         VariableValueModel numsField =
                 value.getStruct().getInlineStruct().getFields().get("nums").getValue();
         assertThat(numsField.getArray().getElementType().getPrimitiveType()).isEqualTo(VariableType.INT);
+    }
+
+    @Test
+    void shouldPinElementTypeOnArrayFieldInsideInlineStruct() throws TypeValidationException {
+        TypeDefinitionModel expected = new TypeDefinitionModel(InlineStructDefModel.fromProto(
+                InlineStructDef.newBuilder()
+                        .putFields(
+                                "nums",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(TypeDefinition.newBuilder()
+                                                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                                                        .setArrayType(TypeDefinition.newBuilder()
+                                                                .setPrimitiveType(VariableType.INT))))
+                                        .build())
+                        .build(),
+                null));
+        VariableValue valueProto = VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder()
+                        .setStruct(InlineStruct.newBuilder()
+                                .putFields(
+                                        "nums",
+                                        StructField.newBuilder()
+                                                .setValue(VariableValue.newBuilder()
+                                                        .setArray(Array.newBuilder()
+                                                                .addItems(VariableValue.newBuilder()
+                                                                        .setInt(1)
+                                                                        .build())
+                                                                .build())
+                                                        .build())
+                                                .build())
+                                .build())
+                        .build())
+                .build();
+        VariableValueModel value = VariableValueModel.fromProto(valueProto, null);
+
+        IngressTypeUtils.applyExpectedTypeAndValidate(Optional.of(expected), value, metadataManager);
+
+        assertThat(value.getStruct()
+                        .getInlineStruct()
+                        .getFields()
+                        .get("nums")
+                        .getValue()
+                        .getArray()
+                        .getElementType()
+                        .getPrimitiveType())
+                .isEqualTo(VariableType.INT);
     }
 }

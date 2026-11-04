@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation for defining metadata on fields and accessors of a StructDef field.
  */
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHStructField {
     /**
@@ -34,4 +34,11 @@ public @interface LHStructField {
      * @return whether or not this field is nullable.
      */
     boolean isNullable() default false;
+
+    /**
+     * OPTIONAL: Human-readable description of this field's purpose.
+     *
+     * @return the description of the field.
+     */
+    String description() default "";
 }

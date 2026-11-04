@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.RunChildWfNode.class, io.littlehorse.sdk.common.proto.RunChildWfNode.Builder.class);
   }
 
+  private int bitField0_;
   private int wfSpecCase_ = 0;
   @SuppressWarnings("serial")
   private java.lang.Object wfSpec_;
@@ -321,6 +322,44 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     return map.get(key);
   }
 
+  public static final int CHILD_ID_FIELD_NUMBER = 5;
+  private io.littlehorse.sdk.common.proto.VariableAssignment childId_;
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   * @return Whether the childId field is set.
+   */
+  @java.lang.Override
+  public boolean hasChildId() {
+    return ((bitField0_ & 0x00000001) != 0);
+  }
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   * @return The childId.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getChildId() {
+    return childId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : childId_;
+  }
+  /**
+   * <pre>
+   * Optional assignment resolving to the ID for the child WfRun.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getChildIdOrBuilder() {
+    return childId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : childId_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -349,6 +388,9 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
         3);
     if (wfSpecCase_ == 4) {
       output.writeMessage(4, (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_);
+    }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      output.writeMessage(5, getChildId());
     }
     getUnknownFields().writeTo(output);
   }
@@ -380,6 +422,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(4, (io.littlehorse.sdk.common.proto.VariableAssignment) wfSpec_);
     }
+    if (((bitField0_ & 0x00000001) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(5, getChildId());
+    }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
@@ -399,6 +445,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
         != other.getMajorVersion()) return false;
     if (!internalGetInputs().equals(
         other.internalGetInputs())) return false;
+    if (hasChildId() != other.hasChildId()) return false;
+    if (hasChildId()) {
+      if (!getChildId()
+          .equals(other.getChildId())) return false;
+    }
     if (!getWfSpecCase().equals(other.getWfSpecCase())) return false;
     switch (wfSpecCase_) {
       case 1:
@@ -428,6 +479,10 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
     if (!internalGetInputs().getMap().isEmpty()) {
       hash = (37 * hash) + INPUTS_FIELD_NUMBER;
       hash = (53 * hash) + internalGetInputs().hashCode();
+    }
+    if (hasChildId()) {
+      hash = (37 * hash) + CHILD_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getChildId().hashCode();
     }
     switch (wfSpecCase_) {
       case 1:
@@ -586,13 +641,19 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
 
     // Construct using io.littlehorse.sdk.common.proto.RunChildWfNode.newBuilder()
     private Builder() {
-
+      maybeForceBuilderInitialization();
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       super(parent);
-
+      maybeForceBuilderInitialization();
+    }
+    private void maybeForceBuilderInitialization() {
+      if (com.google.protobuf.GeneratedMessage
+              .alwaysUseFieldBuilders) {
+        internalGetChildIdFieldBuilder();
+      }
     }
     @java.lang.Override
     public Builder clear() {
@@ -603,6 +664,11 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       }
       majorVersion_ = 0;
       internalGetMutableInputs().clear();
+      childId_ = null;
+      if (childIdBuilder_ != null) {
+        childIdBuilder_.dispose();
+        childIdBuilder_ = null;
+      }
       wfSpecCase_ = 0;
       wfSpec_ = null;
       return this;
@@ -645,6 +711,14 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       if (((from_bitField0_ & 0x00000008) != 0)) {
         result.inputs_ = internalGetInputs().build(InputsDefaultEntryHolder.defaultEntry);
       }
+      int to_bitField0_ = 0;
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.childId_ = childIdBuilder_ == null
+            ? childId_
+            : childIdBuilder_.build();
+        to_bitField0_ |= 0x00000001;
+      }
+      result.bitField0_ |= to_bitField0_;
     }
 
     private void buildPartialOneofs(io.littlehorse.sdk.common.proto.RunChildWfNode result) {
@@ -674,6 +748,9 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
       internalGetMutableInputs().mergeFrom(
           other.internalGetInputs());
       bitField0_ |= 0x00000008;
+      if (other.hasChildId()) {
+        mergeChildId(other.getChildId());
+      }
       switch (other.getWfSpecCase()) {
         case WF_SPEC_NAME: {
           wfSpecCase_ = 1;
@@ -742,6 +819,13 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
               wfSpecCase_ = 4;
               break;
             } // case 34
+            case 42: {
+              input.readMessage(
+                  internalGetChildIdFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1307,6 +1391,163 @@ io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.VariableAssignment.Builder) entry;
+    }
+
+    private io.littlehorse.sdk.common.proto.VariableAssignment childId_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> childIdBuilder_;
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     * @return Whether the childId field is set.
+     */
+    public boolean hasChildId() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     * @return The childId.
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment getChildId() {
+      if (childIdBuilder_ == null) {
+        return childId_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : childId_;
+      } else {
+        return childIdBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public Builder setChildId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (childIdBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        childId_ = value;
+      } else {
+        childIdBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public Builder setChildId(
+        io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+      if (childIdBuilder_ == null) {
+        childId_ = builderForValue.build();
+      } else {
+        childIdBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public Builder mergeChildId(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (childIdBuilder_ == null) {
+        if (((bitField0_ & 0x00000010) != 0) &&
+          childId_ != null &&
+          childId_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+          getChildIdBuilder().mergeFrom(value);
+        } else {
+          childId_ = value;
+        }
+      } else {
+        childIdBuilder_.mergeFrom(value);
+      }
+      if (childId_ != null) {
+        bitField0_ |= 0x00000010;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public Builder clearChildId() {
+      bitField0_ = (bitField0_ & ~0x00000010);
+      childId_ = null;
+      if (childIdBuilder_ != null) {
+        childIdBuilder_.dispose();
+        childIdBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getChildIdBuilder() {
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return internalGetChildIdFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getChildIdOrBuilder() {
+      if (childIdBuilder_ != null) {
+        return childIdBuilder_.getMessageOrBuilder();
+      } else {
+        return childId_ == null ?
+            io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : childId_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional assignment resolving to the ID for the child WfRun.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment child_id = 5;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+        internalGetChildIdFieldBuilder() {
+      if (childIdBuilder_ == null) {
+        childIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                getChildId(),
+                getParentForChildren(),
+                isClean());
+        childId_ = null;
+      }
+      return childIdBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.RunChildWfNode)

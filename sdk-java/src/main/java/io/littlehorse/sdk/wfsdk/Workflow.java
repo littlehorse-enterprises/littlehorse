@@ -196,6 +196,28 @@ public abstract class Workflow {
     }
 
     /**
+     * Creates a workflow that can be run without registering a WfSpec.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(ThreadFunc entrypointThreadFunc) {
+        return new InlineWorkflow(entrypointThreadFunc);
+    }
+
+    /**
+     * Creates an inline workflow with placeholder values for referenced StructDef names.
+     *
+     * @param entrypointThreadFunc the entrypoint thread function.
+     * @param placeholderValues values used to resolve {@code ${...}} placeholders.
+     * @return an inline workflow builder.
+     */
+    public static InlineWorkflow inlineWorkflow(
+            ThreadFunc entrypointThreadFunc, Map<String, String> placeholderValues) {
+        return new InlineWorkflow(entrypointThreadFunc, placeholderValues);
+    }
+
+    /**
      * Creates a new Workflow with the provided name, entrypoint thread function, and placeholder values.
      *
      * <p>The {@code placeholderValues} are used to resolve {@code ${...}} placeholders in the names of
@@ -242,6 +264,19 @@ public abstract class Workflow {
      * @return a `PutWfSpecRequest` that can be used for the gRPC putWfSpec() call.
      */
     public abstract PutWfSpecRequest compileWorkflow(LHConfig config);
+
+    /**
+     * Returns the Java classes referenced while compiling this workflow.
+     *
+     * <p>This includes classes used by variable declarations, event registrations, child threads,
+     * handlers, and recursively discovered JavaBean properties.
+     *
+     * <p>Only classes encountered during SDK type resolution are collected. Default values and
+     * other runtime objects are not inspected to discover additional classes.
+     *
+     * @return an immutable set of referenced Java classes
+     */
+    public abstract Set<Class<?>> getReferencedJavaTypes();
 
     /**
      * Returns the names of all `TaskDef`s used by this workflow.

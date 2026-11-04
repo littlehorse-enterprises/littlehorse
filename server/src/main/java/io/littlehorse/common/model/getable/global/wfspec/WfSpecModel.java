@@ -3,7 +3,6 @@ package io.littlehorse.common.model.getable.global.wfspec;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
-import io.littlehorse.common.exceptions.UnknownStructDefException;
 import io.littlehorse.common.exceptions.validation.InvalidThreadSpecException;
 import io.littlehorse.common.exceptions.validation.InvalidWfSpecException;
 import io.littlehorse.common.model.AbstractGetable;
@@ -12,7 +11,9 @@ import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.RunWfRequestModel;
 import io.littlehorse.common.model.getable.ObjectIdModel;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
+import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableDefModel;
@@ -27,7 +28,6 @@ import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.ThreadSpec;
 import io.littlehorse.sdk.common.proto.ThreadType;
 import io.littlehorse.sdk.common.proto.ThreadVarDef;
-import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -37,7 +37,6 @@ import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -72,13 +71,13 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     // Internal, not related to Proto.
     private Map<String, String> varToThreadSpec = new HashMap<>();
     private boolean initializedVarToThreadSpec = false;
-    private MetadataProcessorContext executionContext;
+    private ExecutionContext executionContext;
 
     public WfSpecModel() {
         // default constructor used by LHDeserializers
     }
 
-    public WfSpecModel(MetadataProcessorContext executionContext) {
+    public WfSpecModel(ExecutionContext executionContext) {
         this.executionContext = executionContext;
     }
 
@@ -233,7 +232,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
         return Pair.of(tspecName, out);
     }
 
-    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, MetadataProcessorContext ctx)
+    public void validateAndMaybeBumpVersion(Optional<WfSpecModel> oldVersion, ExecutionContext ctx)
             throws InvalidWfSpecException {
         if (threadSpecs.get(entrypointThreadName) == null) {
             throw new InvalidWfSpecException("unknown entrypoint thread: " + entrypointThreadName);
@@ -320,7 +319,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
      * 2. Validating variable types for mutations, assignments, and task input.
      * 3. Incorporation of JsonSchema or Protobuf Schema for further validation.
      */
-    private void validateVariablesHelper(MetadataProcessorContext ctx) throws InvalidWfSpecException {
+    private void validateVariablesHelper(ExecutionContext ctx) throws InvalidWfSpecException {
         varToThreadSpec = new HashMap<>();
         boolean hasParentWorkflow = parentWfSpec != null;
         WfSpecModel parentWfSpec = null;
@@ -354,22 +353,10 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
                                         .formatted(varName, tspec.getName(), varToThreadSpec.get(varName)));
                     }
                 }
-                if (vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
-                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
-                        || vd.getTypeDef().getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
-                    try {
-                        vd.getTypeDef().validateStructDefExistsAndPinVersion(ctx.metadataManager());
-                    } catch (UnknownStructDefException e) {
-                        throw new InvalidWfSpecException(
-                                "Var name %s defined in thread %s refers to non-existent StructDef: %s"
-                                        .formatted(varName, tspec.getName(), e.getMessage()));
-                    }
-                }
-                // Validate that Map key types are primitive
                 try {
-                    vd.getTypeDef().validateMapKeyTypes();
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidWfSpecException("Var name %s defined in thread %s has invalid Map key type: %s"
+                    vd.getTypeDef().validateAndPin(ctx.metadataManager());
+                } catch (StructDefValidationException e) {
+                    throw new InvalidWfSpecException("Var name %s defined in thread %s has invalid type: %s"
                             .formatted(varName, tspec.getName(), e.getMessage()));
                 }
                 varToThreadSpec.put(varName, tspec.getName());
@@ -426,10 +413,12 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
 
             if (currentVarDef != null) {
                 // We check that the current one is compatible with the old.
+                // Struct vars may evolve to a newer (superset) StructDef version.
                 // TODO: validate jsonpath stuff.
-                if (!oldDef.getVarDef()
+                if (!currentVarDef
+                        .getVarDef()
                         .getTypeDef()
-                        .equals(currentVarDef.getVarDef().getTypeDef())) {
+                        .isFrozenCompatibleWith(oldDef.getVarDef().getTypeDef())) {
                     throw new InvalidWfSpecException(
                             "Variable %s must be of type %s not %s as it was formerly declared a PUBLIC_VAR"
                                     .formatted(
@@ -453,20 +442,31 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
     }
 
     public WfRunModel startNewRun(RunWfRequestModel evt, CoreProcessorContext processorContext) {
+        return startNewRun(
+                new WfRunIdModel(evt.getId(), evt.getParentWfRunId()), false, evt.getVariables(), processorContext);
+    }
+
+    public WfRunModel startNewRun(
+            WfRunIdModel runId,
+            boolean inline,
+            Map<String, VariableValueModel> variables,
+            CoreProcessorContext processorContext) {
         CommandModel currentCommand = processorContext.currentCommand();
         GetableManager getableManager = processorContext.getableManager();
         WfRunModel out = new WfRunModel(processorContext);
-        out.setId(new WfRunIdModel(evt.getId()));
-        if (evt.getParentWfRunId() != null) out.getId().setParentWfRunId(evt.getParentWfRunId());
+        out.setId(runId);
 
+        if (inline) {
+            out.setInline(true);
+        } else {
+            out.setWfSpecId(getObjectId());
+        }
         out.setWfSpec(this);
-        out.setWfSpecId(getObjectId());
         out.startTime = currentCommand.getTime();
         out.transitionTo(LHStatus.RUNNING);
 
         try {
-            out.startThread(
-                    entrypointThreadName, currentCommand.getTime(), null, evt.getVariables(), ThreadType.ENTRYPOINT);
+            out.startThread(entrypointThreadName, currentCommand.getTime(), null, variables, ThreadType.ENTRYPOINT);
         } catch (NodeFailureException exn) {
             throw new IllegalStateException("Entrypoint ThreadRun should never exceed the max ThreadRun limit.", exn);
         }
@@ -479,7 +479,7 @@ public class WfSpecModel extends MetadataGetable<WfSpec> {
      * checking of variables, though. That is a future feature we will add in 1.0
      * or 1.1
      */
-    private WfSpecModel getParentWfSpec(MetadataProcessorContext ctx) {
+    private WfSpecModel getParentWfSpec(ExecutionContext ctx) {
         WfSpecModel parent =
                 ctx.service().getWfSpec(parentWfSpec.getWfSpecName(), parentWfSpec.getWfSpecMajorVersion(), 0);
         return parent;

@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { LHStatus, VariableDef, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, VariableDef } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 import { ClockIcon, XIcon } from 'lucide-react'
 import LinkWithTenant from '@/app/(authenticated)/[tenantId]/components/LinkWithTenant'
 import { FC, useEffect, useMemo, useState } from 'react'
@@ -18,7 +19,7 @@ import { usePathname } from 'next/navigation'
 import { getVariableFilterValue } from '@/app/utils/variables'
 import { VariableFilter } from './types'
 
-const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
+const searchableVarDefs = (spec: WorkflowDefinition): VariableDef[] => {
   return Object.keys(spec.threadSpecs).flatMap(thread =>
     spec.threadSpecs[thread].variableDefs
       .filter(d => d.searchable)
@@ -28,7 +29,7 @@ const searchableVarDefs = (spec: WfSpec): VariableDef[] => {
 }
 
 type Props = {
-  spec: WfSpec
+  spec: WorkflowDefinition
   currentStatus: LHStatus | 'ALL'
   currentWindow: TimeRange
   setWindow: (window: TimeRange) => void

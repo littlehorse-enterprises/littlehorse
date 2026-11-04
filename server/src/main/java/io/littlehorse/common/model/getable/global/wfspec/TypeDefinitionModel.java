@@ -9,8 +9,11 @@ import io.littlehorse.common.model.getable.core.variable.MapModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineArrayDefModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineMapDefModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructDefValidationException;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.variable.LHPathModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ArrayReturnTypeStrategy;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.BoolReturnTypeStrategy;
@@ -57,6 +60,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     private StructDefIdModel structDefId;
     private InlineArrayDefModel inlineArrayDef;
     private InlineMapDefModel inlineMapDef;
+    private InlineStructDefModel inlineStructDef;
 
     public TypeDefinitionModel() {
         this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -98,6 +102,12 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         this.masked = false;
     }
 
+    public TypeDefinitionModel(InlineStructDefModel inlineStructDef) {
+        this.definedTypeCase = DefinedTypeCase.INLINE_STRUCT_DEF;
+        this.inlineStructDef = Objects.requireNonNull(inlineStructDef);
+        this.masked = false;
+    }
+
     public TypeDefinitionModel(TypeDefinitionModel other) {
         if (other == null) {
             this.definedTypeCase = DefinedTypeCase.DEFINEDTYPE_NOT_SET;
@@ -121,6 +131,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case INLINE_MAP_DEF:
                 this.inlineMapDef = other.inlineMapDef == null ? null : new InlineMapDefModel(other.inlineMapDef);
+                break;
+            case INLINE_STRUCT_DEF:
+                this.inlineStructDef =
+                        other.inlineStructDef == null ? null : new InlineStructDefModel(other.inlineStructDef);
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -151,6 +165,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             case INLINE_MAP_DEF:
                 out.setInlineMapDef(inlineMapDef.toProto());
                 break;
+            case INLINE_STRUCT_DEF:
+                out.setInlineStructDef(inlineStructDef.toProto());
+                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -178,6 +195,9 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case INLINE_MAP_DEF:
                 this.inlineMapDef = InlineMapDefModel.fromProto(p.getInlineMapDef(), ctx);
+                break;
+            case INLINE_STRUCT_DEF:
+                this.inlineStructDef = InlineStructDefModel.fromProto(p.getInlineStructDef(), ctx);
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:
@@ -217,10 +237,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 }
                 break;
             case STRUCT_DEF_ID:
-                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
-            case INLINE_ARRAY_DEF:
-                return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
             case INLINE_MAP_DEF:
+            case INLINE_STRUCT_DEF:
+                return List.of(LHComparisonRule.IDENTITY);
+            case INLINE_ARRAY_DEF:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES);
             case DEFINEDTYPE_NOT_SET:
                 return List.of(LHComparisonRule.IDENTITY, LHComparisonRule.INCLUDES, LHComparisonRule.MAGNITUDE);
@@ -264,6 +284,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 return new ArrayReturnTypeStrategy(this.inlineArrayDef);
             case INLINE_MAP_DEF:
                 return new MapReturnTypeStrategy(this.inlineMapDef);
+            case INLINE_STRUCT_DEF:
+                return new StructReturnTypeStrategy(this.inlineStructDef);
             default:
         }
         throw new IllegalStateException();
@@ -298,7 +320,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
      * @param metadataManager the metadata manager to look up the StructDef.
      * @throws UnknownStructDefException if the referenced StructDef does not exist.
      */
-    public void validateStructDefExistsAndPinVersion(ReadOnlyMetadataManager metadataManager)
+    private void validateStructDefReferencesAndPinVersions(ReadOnlyMetadataManager metadataManager)
             throws UnknownStructDefException {
         if (definedTypeCase == DefinedTypeCase.STRUCT_DEF_ID) {
             WfService wfService = new WfService(metadataManager);
@@ -315,16 +337,25 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             return;
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF) {
             if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
-                inlineArrayDef.getArrayType().validateStructDefExistsAndPinVersion(metadataManager);
+                inlineArrayDef.getArrayType().validateStructDefReferencesAndPinVersions(metadataManager);
             }
             return;
         } else if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
             if (inlineMapDef != null) {
                 if (inlineMapDef.getKeyType() != null) {
-                    inlineMapDef.getKeyType().validateStructDefExistsAndPinVersion(metadataManager);
+                    inlineMapDef.getKeyType().validateStructDefReferencesAndPinVersions(metadataManager);
                 }
                 if (inlineMapDef.getValueType() != null) {
-                    inlineMapDef.getValueType().validateStructDefExistsAndPinVersion(metadataManager);
+                    inlineMapDef.getValueType().validateStructDefReferencesAndPinVersions(metadataManager);
+                }
+            }
+            return;
+        } else if (definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF) {
+            if (inlineStructDef != null) {
+                for (StructFieldDefModel fieldDef : inlineStructDef.getFields().values()) {
+                    if (fieldDef.getFieldType() != null) {
+                        fieldDef.getFieldType().validateStructDefReferencesAndPinVersions(metadataManager);
+                    }
                 }
             }
             return;
@@ -333,29 +364,107 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
         }
     }
 
+    /** Validates this type and recursively validates any embedded type definitions. */
+    public void validateAndPin(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        try {
+            validateStructDefReferencesAndPinVersions(metadataManager);
+            validateMapKeyTypes();
+        } catch (UnknownStructDefException | IllegalArgumentException e) {
+            throw new StructDefValidationException(e, e.getMessage());
+        }
+
+        switch (definedTypeCase) {
+            case INLINE_ARRAY_DEF:
+                if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
+                    inlineArrayDef.getArrayType().validateEmbeddedStructDefinitions(metadataManager);
+                }
+                break;
+            case INLINE_MAP_DEF:
+                if (inlineMapDef != null) {
+                    if (inlineMapDef.getKeyType() != null) {
+                        inlineMapDef.getKeyType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                    if (inlineMapDef.getValueType() != null) {
+                        inlineMapDef.getValueType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                }
+                break;
+            case INLINE_STRUCT_DEF:
+                inlineStructDef.validate(metadataManager);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void validateEmbeddedStructDefinitions(ReadOnlyMetadataManager metadataManager)
+            throws StructDefValidationException {
+        switch (definedTypeCase) {
+            case INLINE_ARRAY_DEF:
+                if (inlineArrayDef != null && inlineArrayDef.getArrayType() != null) {
+                    inlineArrayDef.getArrayType().validateEmbeddedStructDefinitions(metadataManager);
+                }
+                break;
+            case INLINE_MAP_DEF:
+                if (inlineMapDef != null) {
+                    if (inlineMapDef.getKeyType() != null) {
+                        inlineMapDef.getKeyType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                    if (inlineMapDef.getValueType() != null) {
+                        inlineMapDef.getValueType().validateEmbeddedStructDefinitions(metadataManager);
+                    }
+                }
+                break;
+            case INLINE_STRUCT_DEF:
+                inlineStructDef.validate(metadataManager);
+                break;
+            default:
+                break;
+        }
+    }
+
     /**
-     * Validates that any InlineMapDef in this TypeDefinition has a primitive key type.
-     * Map keys must be primitive VariableTypes (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID).
-     * Non-primitive key types (STRUCT, ARRAY, MAP, JSON_OBJ, JSON_ARR, BYTES) are rejected.
+     * Validates that any InlineMapDef in this TypeDefinition is fully typed: its key type must be a
+     * concrete primitive VariableType (INT, STR, BOOL, DOUBLE, TIMESTAMP, WF_RUN_ID) and its value
+     * type must be concrete. Native Maps are a first-class LittleHorse type and may never carry
+     * JSON (JSON_OBJ / JSON_ARR) or wildcard/unset key or value types at any nesting depth.
      *
-     * @throws IllegalArgumentException if a map key type is not primitive.
+     * @throws IllegalArgumentException if a map key/value type is missing, wildcard, non-primitive
+     *     (for keys), or JSON.
      */
     public void validateMapKeyTypes() {
-        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && inlineMapDef != null) {
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF) {
+            if (inlineMapDef == null) {
+                throw new IllegalArgumentException("Native Map is missing its key/value type definition");
+            }
             TypeDefinitionModel keyType = inlineMapDef.getKeyType();
-            if (keyType != null && !keyType.isNull() && !keyType.isPrimitive()) {
+            TypeDefinitionModel valueType = inlineMapDef.getValueType();
+
+            if (keyType == null || keyType.isNull()) {
+                throw new IllegalArgumentException("Native Map key type must be defined");
+            }
+            if (!keyType.isPrimitive()) {
                 throw new IllegalArgumentException(
                         "Map key type must be a primitive VariableType, but got: " + keyType);
             }
-            if (keyType != null) {
-                keyType.validateMapKeyTypes();
+
+            if (valueType == null || valueType.isNull()) {
+                throw new IllegalArgumentException("Native Map value type must be defined");
             }
-            if (inlineMapDef.getValueType() != null) {
-                inlineMapDef.getValueType().validateMapKeyTypes();
+            if (valueType.isJson()) {
+                throw new IllegalArgumentException(
+                        "Native Maps cannot contain JSON values; JSON is not an LH native type. Got: " + valueType);
             }
+            valueType.validateMapKeyTypes();
         } else if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && inlineArrayDef != null) {
             if (inlineArrayDef.getArrayType() != null) {
                 inlineArrayDef.getArrayType().validateMapKeyTypes();
+            }
+        } else if (definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF && inlineStructDef != null) {
+            for (StructFieldDefModel fieldDef : inlineStructDef.getFields().values()) {
+                if (fieldDef.getFieldType() != null) {
+                    fieldDef.getFieldType().validateMapKeyTypes();
+                }
             }
         }
     }
@@ -393,6 +502,15 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             return inlineMapDef.getValueType() != null
                     ? inlineMapDef.getValueType().findForbiddenJsonPrimitiveForStructDef()
                     : null;
+        }
+
+        if (definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF && inlineStructDef != null) {
+            for (StructFieldDefModel fieldDef : inlineStructDef.getFields().values()) {
+                if (fieldDef.getFieldType() != null) {
+                    VariableType forbidden = fieldDef.getFieldType().findForbiddenJsonPrimitiveForStructDef();
+                    if (forbidden != null) return forbidden;
+                }
+            }
         }
 
         return null;
@@ -440,7 +558,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = fieldDefs.get(selector.getKey()).getFieldType();
                     break;
                 case INLINE_ARRAY_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX) {
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
                         throw new InvalidExpressionException(String.format(
                                 "Expected numeric index selector for Array type, got key selector '%s'",
                                 selector.getKey()));
@@ -448,11 +567,27 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     currentTypeDef = currentTypeDef.getInlineArrayDef().getArrayType();
                     break;
                 case INLINE_MAP_DEF:
-                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
-                        throw new InvalidExpressionException(String.format(
-                                "Expected key selector for Map type, got index selector '%d'", selector.getIndex()));
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.INDEX
+                            && selector.getSelectorTypeCase() != Selector.SelectorTypeCase.DYNAMIC) {
+                        throw new InvalidExpressionException(
+                                "Expected key selector for Map type, got an unset selector");
                     }
                     currentTypeDef = currentTypeDef.getInlineMapDef().getValueType();
+                    break;
+                case INLINE_STRUCT_DEF:
+                    if (selector.getSelectorTypeCase() != Selector.SelectorTypeCase.KEY) {
+                        throw new InvalidExpressionException("Expected key selector for inline Struct type");
+                    }
+
+                    StructFieldDefModel inlineFieldDef =
+                            currentTypeDef.getInlineStructDef().getFields().get(selector.getKey());
+                    if (inlineFieldDef == null) {
+                        throw new InvalidExpressionException(String.format(
+                                "could not find field '%s' on type %s", selector.getKey(), currentTypeDef));
+                    }
+
+                    currentTypeDef = inlineFieldDef.getFieldType();
                     break;
                 case DEFINEDTYPE_NOT_SET:
                     break;
@@ -463,10 +598,6 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
     }
 
     /**
-     * Returns true if the VariableValueModel matches this type.
-     * @throws StructValidationException
-     */
-    /**
      * Validate that the given VariableValueModel is compatible with this type.
      * Throws a domain-level TypeValidationException on failure.
      */
@@ -474,9 +605,34 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
             throws TypeValidationException {
         if (value.getValueType() == ValueCase.VALUE_NOT_SET) return;
 
+        if (definedTypeCase == DefinedTypeCase.INLINE_STRUCT_DEF) {
+            if (value.getValueType() != ValueCase.STRUCT) {
+                throw new TypeValidationException(String.format(
+                        "Value of type %s is not compatible with expected type %s", value.getTypeDefinition(), this));
+            }
+
+            try {
+                value.getStruct().validateAgainstInlineStructDef(inlineStructDef, readOnlyMetadataManager);
+            } catch (StructValidationException e) {
+                throw new TypeValidationException(e, "Inline Struct validation failed: " + e.getMessage());
+            }
+            return;
+        }
+
+        if (definedTypeCase == DefinedTypeCase.INLINE_ARRAY_DEF && value.getValueType() != ValueCase.ARRAY) {
+            throw new TypeValidationException(String.format(
+                    "Value of type %s is not compatible with expected type %s", value.getTypeDefinition(), this));
+        }
+        if (definedTypeCase == DefinedTypeCase.INLINE_MAP_DEF && value.getValueType() != ValueCase.MAP) {
+            throw new TypeValidationException(String.format(
+                    "Value of type %s is not compatible with expected type %s", value.getTypeDefinition(), this));
+        }
+
         TypeDefinitionModel other = value.getTypeDefinition();
 
-        if (!isCompatibleWith(other)) {
+        if (definedTypeCase != DefinedTypeCase.INLINE_ARRAY_DEF
+                && definedTypeCase != DefinedTypeCase.INLINE_MAP_DEF
+                && !isCompatibleWith(other)) {
             throw new TypeValidationException(
                     String.format("Value of type %s is not compatible with expected type %s", other, this));
         }
@@ -490,12 +646,7 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                         this.getInlineArrayDef().getArrayType();
 
                 for (VariableValueModel item : value.getArray().getItems()) {
-                    TypeDefinitionModel itemType = item.getTypeDefinition();
-                    if (!expectedElementType.isCompatibleWith(itemType)) {
-                        throw new TypeValidationException(String.format(
-                                "Array element type %s incompatible with expected element type %s",
-                                itemType, expectedElementType));
-                    }
+                    expectedElementType.validateCompatibility(item, readOnlyMetadataManager);
                 }
                 break;
             case MAP:
@@ -504,26 +655,60 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
 
                 for (MapModel.MapEntryModel entry : value.getMap().getEntries()) {
                     if (expectedKeyType != null && !expectedKeyType.isNull()) {
-                        TypeDefinitionModel entryKeyType = entry.getKey().getTypeDefinition();
-                        if (!expectedKeyType.isCompatibleWith(entryKeyType)) {
-                            throw new TypeValidationException(String.format(
-                                    "Map key type %s incompatible with expected key type %s",
-                                    entryKeyType, expectedKeyType));
-                        }
+                        expectedKeyType.validateCompatibility(entry.getKey(), readOnlyMetadataManager);
                     }
                     if (expectedValueType != null && !expectedValueType.isNull()) {
-                        TypeDefinitionModel entryValueType = entry.getValue().getTypeDefinition();
-                        if (!expectedValueType.isCompatibleWith(entryValueType)) {
-                            throw new TypeValidationException(String.format(
-                                    "Map value type %s incompatible with expected value type %s",
-                                    entryValueType, expectedValueType));
-                        }
+                        expectedValueType.validateCompatibility(entry.getValue(), readOnlyMetadataManager);
                     }
                 }
                 break;
             case VALUE_NOT_SET:
                 return;
             default:
+        }
+    }
+
+    /**
+     * Returns true if this type may replace {@code formerlyFrozen} as the declared type of a
+     * frozen (PUBLIC_VAR / required entrypoint) variable across WfSpec revisions.
+     *
+     * <p>Unlike {@link #equals(Object)}, a StructDef-typed variable may advance to a newer
+     * StructDef version, since StructDef versions evolve superset-compatibly. The fundamental
+     * shape (primitive kind, struct name, array/map structure, masking) must stay identical.
+     */
+    public boolean isFrozenCompatibleWith(TypeDefinitionModel formerlyFrozen) {
+        if (this.masked != formerlyFrozen.masked) {
+            return false;
+        }
+        if (this.definedTypeCase != formerlyFrozen.definedTypeCase) {
+            return false;
+        }
+        switch (this.definedTypeCase) {
+            case PRIMITIVE_TYPE:
+                return this.primitiveType == formerlyFrozen.primitiveType;
+            case STRUCT_DEF_ID:
+                // Same struct; allow moving forward to a newer (superset) StructDef version.
+                return this.structDefId.getName().equals(formerlyFrozen.structDefId.getName())
+                        && this.structDefId.getVersion() >= formerlyFrozen.structDefId.getVersion();
+            case INLINE_ARRAY_DEF:
+                return this.inlineArrayDef
+                        .getArrayType()
+                        .isFrozenCompatibleWith(
+                                formerlyFrozen.getInlineArrayDef().getArrayType());
+            case INLINE_MAP_DEF:
+                return this.inlineMapDef
+                                .getKeyType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getKeyType())
+                        && this.inlineMapDef
+                                .getValueType()
+                                .isFrozenCompatibleWith(
+                                        formerlyFrozen.getInlineMapDef().getValueType());
+            case INLINE_STRUCT_DEF:
+                return this.inlineStructDef.equals(formerlyFrozen.inlineStructDef);
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                return this.equals(formerlyFrozen);
         }
     }
 
@@ -570,6 +755,8 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                     return true;
                 }
                 return this.getInlineMapDef().equals(other.getInlineMapDef());
+            case INLINE_STRUCT_DEF:
+                return this.getInlineStructDef().equals(other.getInlineStructDef());
             case DEFINEDTYPE_NOT_SET:
             default:
                 break;
@@ -594,6 +781,10 @@ public class TypeDefinitionModel extends LHSerializable<TypeDefinition> {
                 break;
             case INLINE_MAP_DEF:
                 result = String.format("Map<%s, %s>", inlineMapDef.getKeyType(), inlineMapDef.getValueType());
+                break;
+            case INLINE_STRUCT_DEF:
+                result = String.format(
+                        "InlineStruct<%s>", inlineStructDef.getFields().keySet());
                 break;
             case DEFINEDTYPE_NOT_SET:
             default:

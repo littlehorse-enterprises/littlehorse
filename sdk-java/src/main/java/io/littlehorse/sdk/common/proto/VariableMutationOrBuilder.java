@@ -64,6 +64,36 @@ public interface VariableMutationOrBuilder extends
 
   /**
    * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   * @return Whether the lhsLhPath field is set.
+   */
+  boolean hasLhsLhPath();
+  /**
+   * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   * @return The lhsLhPath.
+   */
+  io.littlehorse.sdk.common.proto.LHPath getLhsLhPath();
+  /**
+   * <pre>
+   * A typed path resolving to a nested value to mutate. Supports Struct,
+   * Array, JSON, and Map values.
+   * </pre>
+   *
+   * <code>optional .littlehorse.LHPath lhs_lh_path = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.LHPathOrBuilder getLhsLhPathOrBuilder();
+
+  /**
+   * <pre>
    * Defines the operation that we are executing.
    * </pre>
    *

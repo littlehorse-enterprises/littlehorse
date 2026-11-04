@@ -21,9 +21,9 @@ import io.littlehorse.sdk.common.proto.BulkJob;
 import io.littlehorse.sdk.common.proto.BulkJobStatus;
 import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.PunctuationExecutionContext;
 import io.littlehorse.server.streams.util.HeadersUtil;
 import java.util.ArrayList;
 import java.util.Date;
@@ -99,20 +99,24 @@ public class BulkJobModel extends MetadataGetable<BulkJob> {
         return out;
     }
 
+    /**
+     * Advances this job's shard scan as far as the given budget allows, forwarding one delete
+     * command per matching WfRun and returning the updated cursor.
+     *
+     * <p>Takes its collaborators explicitly rather than an execution context, because it runs on the
+     * per-partition background worker where only read-only stores are available.
+     */
     public BulkJobShardCursorModel tryToComplete(
             Consumer<Record> commandOutput,
-            PunctuationExecutionContext context,
+            LHServerConfig config,
+            TenantIdModel tenantId,
+            ReadOnlyTenantScopedStore coreStore,
             BulkJobShardCursorModel shardCursor,
             BooleanSupplier outOfBudget,
             AtomicLong remainingCommandBudget) {
         return bulkDeleteWfRun.process(
-                c -> forwardDeleteCommand(
-                        c,
-                        commandOutput,
-                        context.serverConfig(),
-                        remainingCommandBudget,
-                        context.authorization().tenantId()),
-                context.coreStore(),
+                c -> forwardDeleteCommand(c, commandOutput, config, remainingCommandBudget, tenantId),
+                coreStore,
                 shardCursor,
                 outOfBudget);
     }

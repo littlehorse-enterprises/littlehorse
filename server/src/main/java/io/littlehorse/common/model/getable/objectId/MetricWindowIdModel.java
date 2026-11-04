@@ -24,6 +24,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
     private WfSpecIdModel wfSpecId;
     private TaskDefIdModel taskDefId;
     private UserTaskDefIdModel userTaskDefId;
+    private QuotaIdModel quotaId;
 
     private Date windowStart;
     private MetricWindowType metricType;
@@ -45,6 +46,13 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         this.metricType = MetricWindowType.TASK_METRIC;
     }
 
+    public MetricWindowIdModel(TenantIdModel tenantId, QuotaIdModel quotaId, Date windowStart) {
+        this.tenantId = tenantId;
+        this.quotaId = quotaId;
+        this.windowStart = windowStart;
+        this.metricType = MetricWindowType.QUOTA_USAGE_METRIC;
+    }
+
     @Override
     public Class<MetricWindowId> getProtoBaseClass() {
         return MetricWindowId.class;
@@ -59,6 +67,8 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             parritionKey += "/" + taskDefId;
         } else if (userTaskDefId != null) {
             parritionKey += "/" + userTaskDefId;
+        } else if (quotaId != null) {
+            parritionKey += "/" + quotaId;
         }
         return Optional.of(parritionKey);
     }
@@ -71,6 +81,7 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
         this.wfSpecId = null;
         this.taskDefId = null;
         this.userTaskDefId = null;
+        this.quotaId = null;
     }
 
     public String getPartitionMetricStoreKey() {
@@ -81,6 +92,8 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             idPart = taskDefId.toString();
         } else if (userTaskDefId != null) {
             idPart = userTaskDefId.toString();
+        } else if (quotaId != null) {
+            idPart = quotaId.toString();
         }
         return String.format(
                 "%s/%s/%s/%s/%s",
@@ -107,6 +120,10 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             case USER_TASK_DEF_ID:
                 this.userTaskDefId = LHSerializable.fromProto(p.getUserTaskDefId(), UserTaskDefIdModel.class, context);
                 this.metricType = MetricWindowType.USER_TASK_METRIC;
+                break;
+            case QUOTA_ID:
+                this.quotaId = LHSerializable.fromProto(p.getQuotaId(), QuotaIdModel.class, context);
+                this.metricType = MetricWindowType.QUOTA_USAGE_METRIC;
                 break;
             case ID_NOT_SET:
                 if (p.hasMetricType()) {
@@ -137,6 +154,8 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             out.setTaskDefId(taskDefId.toProto());
         } else if (userTaskDefId != null) {
             out.setUserTaskDefId(userTaskDefId.toProto());
+        } else if (quotaId != null) {
+            out.setQuotaId(quotaId.toProto());
         }
         if (tenantId != null) {
             out.setTenantId(tenantId.toProto());
@@ -156,6 +175,8 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
             idPart = taskDefId.toString();
         } else if (userTaskDefId != null) {
             idPart = userTaskDefId.toString();
+        } else if (quotaId != null) {
+            idPart = quotaId.toString();
         }
         String key = idPart != ""
                 ? LHUtil.getCompositeId(this.getMetricType().name(), idPart, LHUtil.toLhDbFormat(windowStart))
@@ -177,6 +198,10 @@ public class MetricWindowIdModel extends CoreObjectId<MetricWindowId, MetricWind
                 break;
             case USER_TASK_METRIC:
                 userTaskDefId = (UserTaskDefIdModel) ObjectIdModel.fromString(split[1], UserTaskDefIdModel.class);
+                break;
+            case QUOTA_USAGE_METRIC:
+                String quotaKey = split.length > 3 ? split[1] + "/" + split[2] : split[1];
+                quotaId = (QuotaIdModel) ObjectIdModel.fromString(quotaKey, QuotaIdModel.class);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown metric type: " + metricType);

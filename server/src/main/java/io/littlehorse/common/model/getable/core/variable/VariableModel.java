@@ -24,6 +24,7 @@ import io.littlehorse.server.streams.storeinternals.GetableIndex;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyGetableManager;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.storeinternals.index.IndexedField;
+import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.Date;
@@ -76,8 +77,18 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
     public WfSpecModel getWfSpec(ReadOnlyMetadataManager metadataManager) {
         if (wfSpec == null) {
-            wfSpec = metadataManager.get(
-                    new WfSpecIdModel(wfSpecId.getName(), wfSpecId.getMajorVersion(), wfSpecId.getRevision()));
+            if (wfSpecId == null) {
+                ReadOnlyGetableManager manager = executionContext.support(CoreProcessorContext.class)
+                        ? executionContext
+                                .castOnSupport(CoreProcessorContext.class)
+                                .getableManager()
+                        : executionContext
+                                .castOnSupport(RequestExecutionContext.class)
+                                .getableManager();
+                wfSpec = manager.get(id.getWfRunId()).getWfSpec();
+            } else {
+                wfSpec = metadataManager.get(wfSpecId);
+            }
         }
         return wfSpec;
     }
@@ -105,7 +116,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         }
         id = LHSerializable.fromProto(p.getId(), VariableIdModel.class, context);
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
-        wfSpecId = LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context);
+        wfSpecId = p.hasWfSpecId() ? LHSerializable.fromProto(p.getWfSpecId(), WfSpecIdModel.class, context) : null;
         this.executionContext = context;
     }
 
@@ -117,8 +128,8 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
                 .setId(id.toProto())
                 .setCreatedAt(LHUtil.fromDate(getCreatedAt()))
                 .setValue(value.toProto())
-                .setWfSpecId(wfSpecId.toProto())
                 .setMasked(masked);
+        if (wfSpecId != null) out.setWfSpecId(wfSpecId.toProto());
 
         return out;
     }
@@ -138,6 +149,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
 
     @Override
     public List<GetableIndex<? extends AbstractGetable<?>>> getIndexConfigurations() {
+        if (wfSpecId == null) return List.of();
         return List.of(
                 // with WfSPecId
                 new GetableIndex<>(
@@ -183,8 +195,7 @@ public class VariableModel extends CoreGetable<Variable> implements CoreOutputTo
         // Only PUBLIC_VAR variables should be pushed out.
         WfRunModel wfRun = getableManager.get(id.getWfRunId());
         String threadSpecName = wfRun.getThreadRun(id.getThreadRunNumber()).getThreadSpecName();
-        ThreadSpecModel threadSpec =
-                metadataManager.get(wfRun.getWfSpecId()).getThreadSpecs().get(threadSpecName);
+        ThreadSpecModel threadSpec = wfRun.getWfSpec().getThreadSpecs().get(threadSpecName);
         ThreadVarDefModel variableDef = threadSpec.getVarDef(id.getName());
 
         WfRunVariableAccessLevel accessLevel = variableDef.getAccessLevel();

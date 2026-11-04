@@ -6,11 +6,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import e2e.Struct.PinStructV0;
 import e2e.Struct.PinStructV1;
 import e2e.Struct.UnknownStructDef;
+import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.proto.AllowedUpdateType;
+import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
 import io.littlehorse.sdk.common.proto.StructDefId;
+import io.littlehorse.sdk.common.proto.StructFieldDef;
+import io.littlehorse.sdk.common.proto.ThreadSpec;
+import io.littlehorse.sdk.common.proto.ThreadVarDef;
+import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.common.proto.WfSpecId;
@@ -40,7 +46,38 @@ public class WfSpecLifecycleTest {
         assertThatThrownBy(() -> {
                     client.putWfSpec(originalWorkflow.compileWorkflow());
                 })
-                .hasMessageContaining("refers to non-existent StructDef");
+                .hasMessageContaining("Refers to non-existent StructDef");
+    }
+
+    @Test
+    void shouldRejectMissingStructDefInsideInlineStruct() {
+        TypeDefinition missingStructType = TypeDefinition.newBuilder()
+                .setStructDefId(StructDefId.newBuilder()
+                        .setName("missing-nested-struct-def")
+                        .setVersion(-1))
+                .build();
+        PutWfSpecRequest request =
+                getWfSpecWithInlineStructVariable("wfspec-missing-nested-struct", "details", missingStructType);
+
+        assertThatThrownBy(() -> client.putWfSpec(request))
+                .isInstanceOfSatisfying(
+                        StatusRuntimeException.class,
+                        exn -> assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT))
+                .hasMessageContaining("missing-nested-struct-def");
+    }
+
+    @Test
+    void shouldRejectForbiddenJsonInsideInlineStruct() {
+        TypeDefinition jsonType = TypeDefinition.newBuilder()
+                .setPrimitiveType(VariableType.JSON_OBJ)
+                .build();
+        PutWfSpecRequest request = getWfSpecWithInlineStructVariable("wfspec-invalid-inline-json", "payload", jsonType);
+
+        assertThatThrownBy(() -> client.putWfSpec(request))
+                .isInstanceOfSatisfying(
+                        StatusRuntimeException.class,
+                        exn -> assertThat(exn.getStatus().getCode()).isEqualTo(Code.INVALID_ARGUMENT))
+                .hasMessageContaining("Forbidden JSON type: JSON_OBJ");
     }
 
     @Nested
@@ -136,6 +173,31 @@ public class WfSpecLifecycleTest {
         }
 
         @Test
+        void shouldPinStructDefVersionInsideInlineStruct() {
+            String name = WF_SPEC_NAME + "-inline";
+            TypeDefinition structType = TypeDefinition.newBuilder()
+                    .setStructDefId(
+                            StructDefId.newBuilder().setName(STRUCT_DEF_NAME).setVersion(-1))
+                    .build();
+            client.putWfSpec(getWfSpecWithInlineStructVariable(name, "details", structType));
+
+            WfSpecId id = WfSpecId.newBuilder().setName(name).build();
+            waitForWfSpec(id);
+            StructDefId nestedStructDefId = client.getWfSpec(id)
+                    .getThreadSpecsOrThrow("entrypoint")
+                    .getVariableDefs(0)
+                    .getVarDef()
+                    .getTypeDef()
+                    .getInlineStructDef()
+                    .getFieldsOrThrow("details")
+                    .getFieldType()
+                    .getStructDefId();
+
+            assertThat(nestedStructDefId.getName()).isEqualTo(STRUCT_DEF_NAME);
+            assertThat(nestedStructDefId.getVersion()).isEqualTo(1);
+        }
+
+        @Test
         void shouldHonorExplicitStructDefVersionWhenPuttingWfSpec() {
             // Compile the workflow proto and explicitly pin the Struct version to 0
             String name = WF_SPEC_NAME + "-explicit";
@@ -194,6 +256,29 @@ public class WfSpecLifecycleTest {
                     client.getWfSpec(id);
                     return true;
                 });
+    }
+
+    private PutWfSpecRequest getWfSpecWithInlineStructVariable(
+            String wfSpecName, String fieldName, TypeDefinition fieldType) {
+        PutWfSpecRequest.Builder request = Workflow.newWorkflow(wfSpecName, wf -> {
+                    wf.addVariable("input", VariableType.STR).required();
+                })
+                .compileWorkflow()
+                .toBuilder();
+        String entrypointName = request.getEntrypointThreadName();
+        ThreadSpec.Builder entrypoint = request.getThreadSpecsOrThrow(entrypointName).toBuilder();
+        ThreadVarDef.Builder variable = entrypoint.getVariableDefs(0).toBuilder();
+        variable.getVarDefBuilder()
+                .setTypeDef(TypeDefinition.newBuilder()
+                        .setInlineStructDef(InlineStructDef.newBuilder()
+                                .putFields(
+                                        fieldName,
+                                        StructFieldDef.newBuilder()
+                                                .setFieldType(fieldType)
+                                                .build())));
+        entrypoint.setVariableDefs(0, variable.build());
+        request.putThreadSpecs(entrypointName, entrypoint.build());
+        return request.build();
     }
 
     @Nested

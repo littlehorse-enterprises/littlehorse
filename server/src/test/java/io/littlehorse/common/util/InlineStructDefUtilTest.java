@@ -11,7 +11,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InlineStructDefUtilTest {
 
@@ -20,7 +20,7 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel structDef1 = makeCarStructDef();
         InlineStructDefModel structDef2 = makeCarStructDef();
 
-        assertThat(InlineStructDefUtil.equals(structDef1, structDef2)).isTrue();
+        assertThat(InlineStructDefUtil.schemasEqual(structDef1, structDef2)).isTrue();
     }
 
     @Test
@@ -28,7 +28,40 @@ public class InlineStructDefUtilTest {
         InlineStructDefModel structDef1 = makeCarStructDef();
         InlineStructDefModel structDef2 = makeCarStructDef(makeStructField("horsepower", VariableType.INT));
 
-        assertThat(InlineStructDefUtil.equals(structDef1, structDef2)).isFalse();
+        assertThat(InlineStructDefUtil.schemasEqual(structDef1, structDef2)).isFalse();
+    }
+
+    @Test
+    public void testEqualityIsFieldOrderIndependent() {
+        InlineStructDef structDefA = InlineStructDef.newBuilder()
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .putFields(
+                        "year",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                                .build())
+                .build();
+
+        InlineStructDef structDefB = InlineStructDef.newBuilder()
+                .putFields(
+                        "year",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.INT))
+                                .build())
+                .putFields(
+                        "model",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                                .build())
+                .build();
+
+        InlineStructDefModel model1 = InlineStructDefModel.fromProto(structDefA, InlineStructDefModel.class, null);
+        InlineStructDefModel model2 = InlineStructDefModel.fromProto(structDefB, InlineStructDefModel.class, null);
+        assertThat(InlineStructDefUtil.equals(model1, model2)).isTrue();
     }
 
     @Test
@@ -118,6 +151,33 @@ public class InlineStructDefUtilTest {
                 .isEqualTo(1);
     }
 
+    @Test
+    public void testFieldDescriptionOnlyChangeDoesNotAffectSchemaEquality() {
+        InlineStructDefModel withoutDesc = makeCarStructDef();
+        InlineStructDefModel withDesc =
+                makeCarStructDef(makeStructFieldWithDescription("model", VariableType.STR, "The car model name"));
+
+        assertThat(InlineStructDefUtil.schemasEqual(withoutDesc, withDesc)).isTrue();
+    }
+
+    @Test
+    public void testFieldDescriptionsEqualWhenSame() {
+        InlineStructDefModel a = makeCarStructDef(makeStructFieldWithDescription("model", VariableType.STR, "desc"));
+        InlineStructDefModel b = makeCarStructDef(makeStructFieldWithDescription("model", VariableType.STR, "desc"));
+
+        assertThat(InlineStructDefUtil.fieldDescriptionsEqual(a, b)).isTrue();
+    }
+
+    @Test
+    public void testFieldDescriptionsNotEqualWhenDifferent() {
+        InlineStructDefModel withDesc =
+                makeCarStructDef(makeStructFieldWithDescription("model", VariableType.STR, "new desc"));
+        InlineStructDefModel withoutDesc = makeCarStructDef();
+
+        assertThat(InlineStructDefUtil.fieldDescriptionsEqual(withDesc, withoutDesc))
+                .isFalse();
+    }
+
     /**
      * A helper method for making StructFieldDefs that are optional
      *
@@ -164,6 +224,16 @@ public class InlineStructDefUtilTest {
                 StructFieldDef.newBuilder()
                         .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
                         .setIsNullable(isNullable)
+                        .build());
+    }
+
+    private static Entry<String, StructFieldDef> makeStructFieldWithDescription(
+            String name, VariableType type, String description) {
+        return Map.entry(
+                name,
+                StructFieldDef.newBuilder()
+                        .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(type))
+                        .setDescription(description)
                         .build());
     }
 

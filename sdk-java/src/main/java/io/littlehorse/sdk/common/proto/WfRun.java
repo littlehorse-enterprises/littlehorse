@@ -7,7 +7,7 @@ package io.littlehorse.sdk.common.proto;
 
 /**
  * <pre>
- * A WfRun is a running instance of a WfSpec.
+ * A WfRun is a running instance of a registered or inline workflow definition.
  * </pre>
  *
  * Protobuf type {@code littlehorse.WfRun}
@@ -37,6 +37,7 @@ private static final long serialVersionUID = 0L;
     threadRuns_ = java.util.Collections.emptyList();
     pendingInterrupts_ = java.util.Collections.emptyList();
     pendingFailures_ = java.util.Collections.emptyList();
+    threadRunQueue_ = emptyIntList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -978,6 +979,48 @@ private static final long serialVersionUID = 0L;
   }
 
   private int bitField0_;
+  private int wfSpecSourceCase_ = 0;
+  @SuppressWarnings("serial")
+  private java.lang.Object wfSpecSource_;
+  public enum WfSpecSourceCase
+      implements com.google.protobuf.Internal.EnumLite,
+          com.google.protobuf.AbstractMessage.InternalOneOfEnum {
+    WF_SPEC_ID(2),
+    IS_INLINE(16),
+    WFSPECSOURCE_NOT_SET(0);
+    private final int value;
+    private WfSpecSourceCase(int value) {
+      this.value = value;
+    }
+    /**
+     * @param value The number of the enum to look for.
+     * @return The enum associated with the given number.
+     * @deprecated Use {@link #forNumber(int)} instead.
+     */
+    @java.lang.Deprecated
+    public static WfSpecSourceCase valueOf(int value) {
+      return forNumber(value);
+    }
+
+    public static WfSpecSourceCase forNumber(int value) {
+      switch (value) {
+        case 2: return WF_SPEC_ID;
+        case 16: return IS_INLINE;
+        case 0: return WFSPECSOURCE_NOT_SET;
+        default: return null;
+      }
+    }
+    public int getNumber() {
+      return this.value;
+    }
+  };
+
+  public WfSpecSourceCase
+  getWfSpecSourceCase() {
+    return WfSpecSourceCase.forNumber(
+        wfSpecSourceCase_);
+  }
+
   public static final int ID_FIELD_NUMBER = 1;
   private io.littlehorse.sdk.common.proto.WfRunId id_;
   /**
@@ -1017,10 +1060,9 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int WF_SPEC_ID_FIELD_NUMBER = 2;
-  private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -1028,11 +1070,11 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasWfSpecId() {
-    return ((bitField0_ & 0x00000002) != 0);
+    return wfSpecSourceCase_ == 2;
   }
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -1040,18 +1082,53 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
-    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+    if (wfSpecSourceCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_;
+    }
+    return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
   }
   /**
    * <pre>
-   * The ID of the WfSpec that this WfRun belongs to.
+   * The ID of the registered WfSpec that this WfRun belongs to.
    * </pre>
    *
    * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
    */
   @java.lang.Override
   public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-    return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+    if (wfSpecSourceCase_ == 2) {
+       return (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_;
+    }
+    return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
+  }
+
+  public static final int IS_INLINE_FIELD_NUMBER = 16;
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return Whether the isInline field is set.
+   */
+  @java.lang.Override
+  public boolean hasIsInline() {
+    return wfSpecSourceCase_ == 16;
+  }
+  /**
+   * <pre>
+   * Must be true when selected. Fetch the inline definition using this WfRun's id.
+   * </pre>
+   *
+   * <code>bool is_inline = 16;</code>
+   * @return The isInline.
+   */
+  @java.lang.Override
+  public boolean getIsInline() {
+    if (wfSpecSourceCase_ == 16) {
+      return (java.lang.Boolean) wfSpecSource_;
+    }
+    return false;
   }
 
   public static final int OLD_WF_SPEC_VERSIONS_FIELD_NUMBER = 3;
@@ -1178,7 +1255,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasStartTime() {
-    return ((bitField0_ & 0x00000004) != 0);
+    return ((bitField0_ & 0x00000002) != 0);
   }
   /**
    * <pre>
@@ -1216,7 +1293,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasEndTime() {
-    return ((bitField0_ & 0x00000008) != 0);
+    return ((bitField0_ & 0x00000004) != 0);
   }
   /**
    * <pre>
@@ -1456,7 +1533,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasParentTrigger() {
-    return ((bitField0_ & 0x00000010) != 0);
+    return ((bitField0_ & 0x00000008) != 0);
   }
   /**
    * <pre>
@@ -1502,7 +1579,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public boolean hasWorkflowMigrationPlanId() {
-    return ((bitField0_ & 0x00000020) != 0);
+    return ((bitField0_ & 0x00000010) != 0);
   }
   /**
    * <pre>
@@ -1627,6 +1704,36 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     return map.get(key);
   }
 
+  public static final int THREAD_RUN_QUEUE_FIELD_NUMBER = 14;
+  @SuppressWarnings("serial")
+  private com.google.protobuf.Internal.IntList threadRunQueue_ =
+      emptyIntList();
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return A list containing the threadRunQueue.
+   */
+  @java.lang.Override
+  public java.util.List<java.lang.Integer>
+      getThreadRunQueueList() {
+    return threadRunQueue_;
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @return The count of threadRunQueue.
+   */
+  public int getThreadRunQueueCount() {
+    return threadRunQueue_.size();
+  }
+  /**
+   * <code>repeated int32 thread_run_queue = 14;</code>
+   * @param index The index of the element to return.
+   * @return The threadRunQueue at the given index.
+   */
+  public int getThreadRunQueue(int index) {
+    return threadRunQueue_.getInt(index);
+  }
+  private int threadRunQueueMemoizedSerializedSize = -1;
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1641,11 +1748,12 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
+    getSerializedSize();
     if (((bitField0_ & 0x00000001) != 0)) {
       output.writeMessage(1, getId());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
-      output.writeMessage(2, getWfSpecId());
+    if (wfSpecSourceCase_ == 2) {
+      output.writeMessage(2, (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_);
     }
     for (int i = 0; i < oldWfSpecVersions_.size(); i++) {
       output.writeMessage(3, oldWfSpecVersions_.get(i));
@@ -1656,10 +1764,10 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     if (greatestThreadrunNumber_ != 0) {
       output.writeInt32(5, greatestThreadrunNumber_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       output.writeMessage(6, getStartTime());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(7, getEndTime());
     }
     for (int i = 0; i < threadRuns_.size(); i++) {
@@ -1671,10 +1779,10 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     for (int i = 0; i < pendingFailures_.size(); i++) {
       output.writeMessage(10, pendingFailures_.get(i));
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       output.writeMessage(11, getParentTrigger());
     }
-    if (((bitField0_ & 0x00000020) != 0)) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       output.writeMessage(12, getWorkflowMigrationPlanId());
     }
     com.google.protobuf.GeneratedMessage
@@ -1683,6 +1791,17 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         internalGetMigrationVariables(),
         MigrationVariablesDefaultEntryHolder.defaultEntry,
         13);
+    if (getThreadRunQueueList().size() > 0) {
+      output.writeUInt32NoTag(114);
+      output.writeUInt32NoTag(threadRunQueueMemoizedSerializedSize);
+    }
+    for (int i = 0; i < threadRunQueue_.size(); i++) {
+      output.writeInt32NoTag(threadRunQueue_.getInt(i));
+    }
+    if (wfSpecSourceCase_ == 16) {
+      output.writeBool(
+          16, (boolean)((java.lang.Boolean) wfSpecSource_));
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -1696,9 +1815,9 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(1, getId());
     }
-    if (((bitField0_ & 0x00000002) != 0)) {
+    if (wfSpecSourceCase_ == 2) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(2, getWfSpecId());
+        .computeMessageSize(2, (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_);
     }
     for (int i = 0; i < oldWfSpecVersions_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
@@ -1712,11 +1831,11 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(5, greatestThreadrunNumber_);
     }
-    if (((bitField0_ & 0x00000004) != 0)) {
+    if (((bitField0_ & 0x00000002) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getStartTime());
     }
-    if (((bitField0_ & 0x00000008) != 0)) {
+    if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getEndTime());
     }
@@ -1732,11 +1851,11 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, pendingFailures_.get(i));
     }
-    if (((bitField0_ & 0x00000010) != 0)) {
+    if (((bitField0_ & 0x00000008) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, getParentTrigger());
     }
-    if (((bitField0_ & 0x00000020) != 0)) {
+    if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(12, getWorkflowMigrationPlanId());
     }
@@ -1749,6 +1868,25 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
           .build();
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(13, migrationVariables__);
+    }
+    {
+      int dataSize = 0;
+      for (int i = 0; i < threadRunQueue_.size(); i++) {
+        dataSize += com.google.protobuf.CodedOutputStream
+          .computeInt32SizeNoTag(threadRunQueue_.getInt(i));
+      }
+      size += dataSize;
+      if (!getThreadRunQueueList().isEmpty()) {
+        size += 1;
+        size += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(dataSize);
+      }
+      threadRunQueueMemoizedSerializedSize = dataSize;
+    }
+    if (wfSpecSourceCase_ == 16) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(
+            16, (boolean)((java.lang.Boolean) wfSpecSource_));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1769,11 +1907,6 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     if (hasId()) {
       if (!getId()
           .equals(other.getId())) return false;
-    }
-    if (hasWfSpecId() != other.hasWfSpecId()) return false;
-    if (hasWfSpecId()) {
-      if (!getWfSpecId()
-          .equals(other.getWfSpecId())) return false;
     }
     if (!getOldWfSpecVersionsList()
         .equals(other.getOldWfSpecVersionsList())) return false;
@@ -1808,6 +1941,21 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     }
     if (!internalGetMigrationVariables().equals(
         other.internalGetMigrationVariables())) return false;
+    if (!getThreadRunQueueList()
+        .equals(other.getThreadRunQueueList())) return false;
+    if (!getWfSpecSourceCase().equals(other.getWfSpecSourceCase())) return false;
+    switch (wfSpecSourceCase_) {
+      case 2:
+        if (!getWfSpecId()
+            .equals(other.getWfSpecId())) return false;
+        break;
+      case 16:
+        if (getIsInline()
+            != other.getIsInline()) return false;
+        break;
+      case 0:
+      default:
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -1822,10 +1970,6 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     if (hasId()) {
       hash = (37 * hash) + ID_FIELD_NUMBER;
       hash = (53 * hash) + getId().hashCode();
-    }
-    if (hasWfSpecId()) {
-      hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
-      hash = (53 * hash) + getWfSpecId().hashCode();
     }
     if (getOldWfSpecVersionsCount() > 0) {
       hash = (37 * hash) + OLD_WF_SPEC_VERSIONS_FIELD_NUMBER;
@@ -1866,6 +2010,23 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     if (!internalGetMigrationVariables().getMap().isEmpty()) {
       hash = (37 * hash) + MIGRATION_VARIABLES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetMigrationVariables().hashCode();
+    }
+    if (getThreadRunQueueCount() > 0) {
+      hash = (37 * hash) + THREAD_RUN_QUEUE_FIELD_NUMBER;
+      hash = (53 * hash) + getThreadRunQueueList().hashCode();
+    }
+    switch (wfSpecSourceCase_) {
+      case 2:
+        hash = (37 * hash) + WF_SPEC_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getWfSpecId().hashCode();
+        break;
+      case 16:
+        hash = (37 * hash) + IS_INLINE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+            getIsInline());
+        break;
+      case 0:
+      default:
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1966,7 +2127,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
   }
   /**
    * <pre>
-   * A WfRun is a running instance of a WfSpec.
+   * A WfRun is a running instance of a registered or inline workflow definition.
    * </pre>
    *
    * Protobuf type {@code littlehorse.WfRun}
@@ -2024,7 +2185,6 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       if (com.google.protobuf.GeneratedMessage
               .alwaysUseFieldBuilders) {
         internalGetIdFieldBuilder();
-        internalGetWfSpecIdFieldBuilder();
         internalGetOldWfSpecVersionsFieldBuilder();
         internalGetStartTimeFieldBuilder();
         internalGetEndTimeFieldBuilder();
@@ -2044,10 +2204,8 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         idBuilder_.dispose();
         idBuilder_ = null;
       }
-      wfSpecId_ = null;
       if (wfSpecIdBuilder_ != null) {
-        wfSpecIdBuilder_.dispose();
-        wfSpecIdBuilder_ = null;
+        wfSpecIdBuilder_.clear();
       }
       if (oldWfSpecVersionsBuilder_ == null) {
         oldWfSpecVersions_ = java.util.Collections.emptyList();
@@ -2055,7 +2213,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         oldWfSpecVersions_ = null;
         oldWfSpecVersionsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000004);
+      bitField0_ = (bitField0_ & ~0x00000008);
       status_ = 0;
       greatestThreadrunNumber_ = 0;
       startTime_ = null;
@@ -2074,21 +2232,21 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         threadRuns_ = null;
         threadRunsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000080);
+      bitField0_ = (bitField0_ & ~0x00000100);
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
       } else {
         pendingInterrupts_ = null;
         pendingInterruptsBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000100);
+      bitField0_ = (bitField0_ & ~0x00000200);
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
       } else {
         pendingFailures_ = null;
         pendingFailuresBuilder_.clear();
       }
-      bitField0_ = (bitField0_ & ~0x00000200);
+      bitField0_ = (bitField0_ & ~0x00000400);
       parentTrigger_ = null;
       if (parentTriggerBuilder_ != null) {
         parentTriggerBuilder_.dispose();
@@ -2100,6 +2258,9 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         workflowMigrationPlanIdBuilder_ = null;
       }
       internalGetMutableMigrationVariables().clear();
+      threadRunQueue_ = emptyIntList();
+      wfSpecSourceCase_ = 0;
+      wfSpecSource_ = null;
       return this;
     }
 
@@ -2128,42 +2289,43 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       io.littlehorse.sdk.common.proto.WfRun result = new io.littlehorse.sdk.common.proto.WfRun(this);
       buildPartialRepeatedFields(result);
       if (bitField0_ != 0) { buildPartial0(result); }
+      buildPartialOneofs(result);
       onBuilt();
       return result;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.WfRun result) {
       if (oldWfSpecVersionsBuilder_ == null) {
-        if (((bitField0_ & 0x00000004) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           oldWfSpecVersions_ = java.util.Collections.unmodifiableList(oldWfSpecVersions_);
-          bitField0_ = (bitField0_ & ~0x00000004);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.oldWfSpecVersions_ = oldWfSpecVersions_;
       } else {
         result.oldWfSpecVersions_ = oldWfSpecVersionsBuilder_.build();
       }
       if (threadRunsBuilder_ == null) {
-        if (((bitField0_ & 0x00000080) != 0)) {
+        if (((bitField0_ & 0x00000100) != 0)) {
           threadRuns_ = java.util.Collections.unmodifiableList(threadRuns_);
-          bitField0_ = (bitField0_ & ~0x00000080);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.threadRuns_ = threadRuns_;
       } else {
         result.threadRuns_ = threadRunsBuilder_.build();
       }
       if (pendingInterruptsBuilder_ == null) {
-        if (((bitField0_ & 0x00000100) != 0)) {
+        if (((bitField0_ & 0x00000200) != 0)) {
           pendingInterrupts_ = java.util.Collections.unmodifiableList(pendingInterrupts_);
-          bitField0_ = (bitField0_ & ~0x00000100);
+          bitField0_ = (bitField0_ & ~0x00000200);
         }
         result.pendingInterrupts_ = pendingInterrupts_;
       } else {
         result.pendingInterrupts_ = pendingInterruptsBuilder_.build();
       }
       if (pendingFailuresBuilder_ == null) {
-        if (((bitField0_ & 0x00000200) != 0)) {
+        if (((bitField0_ & 0x00000400) != 0)) {
           pendingFailures_ = java.util.Collections.unmodifiableList(pendingFailures_);
-          bitField0_ = (bitField0_ & ~0x00000200);
+          bitField0_ = (bitField0_ & ~0x00000400);
         }
         result.pendingFailures_ = pendingFailures_;
       } else {
@@ -2180,46 +2342,53 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             : idBuilder_.build();
         to_bitField0_ |= 0x00000001;
       }
-      if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.wfSpecId_ = wfSpecIdBuilder_ == null
-            ? wfSpecId_
-            : wfSpecIdBuilder_.build();
-        to_bitField0_ |= 0x00000002;
-      }
-      if (((from_bitField0_ & 0x00000008) != 0)) {
+      if (((from_bitField0_ & 0x00000010) != 0)) {
         result.status_ = status_;
       }
-      if (((from_bitField0_ & 0x00000010) != 0)) {
+      if (((from_bitField0_ & 0x00000020) != 0)) {
         result.greatestThreadrunNumber_ = greatestThreadrunNumber_;
       }
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.startTime_ = startTimeBuilder_ == null
             ? startTime_
             : startTimeBuilder_.build();
-        to_bitField0_ |= 0x00000004;
+        to_bitField0_ |= 0x00000002;
       }
-      if (((from_bitField0_ & 0x00000040) != 0)) {
+      if (((from_bitField0_ & 0x00000080) != 0)) {
         result.endTime_ = endTimeBuilder_ == null
             ? endTime_
             : endTimeBuilder_.build();
-        to_bitField0_ |= 0x00000008;
+        to_bitField0_ |= 0x00000004;
       }
-      if (((from_bitField0_ & 0x00000400) != 0)) {
+      if (((from_bitField0_ & 0x00000800) != 0)) {
         result.parentTrigger_ = parentTriggerBuilder_ == null
             ? parentTrigger_
             : parentTriggerBuilder_.build();
-        to_bitField0_ |= 0x00000010;
+        to_bitField0_ |= 0x00000008;
       }
-      if (((from_bitField0_ & 0x00000800) != 0)) {
+      if (((from_bitField0_ & 0x00001000) != 0)) {
         result.workflowMigrationPlanId_ = workflowMigrationPlanIdBuilder_ == null
             ? workflowMigrationPlanId_
             : workflowMigrationPlanIdBuilder_.build();
-        to_bitField0_ |= 0x00000020;
+        to_bitField0_ |= 0x00000010;
       }
-      if (((from_bitField0_ & 0x00001000) != 0)) {
+      if (((from_bitField0_ & 0x00002000) != 0)) {
         result.migrationVariables_ = internalGetMigrationVariables().build(MigrationVariablesDefaultEntryHolder.defaultEntry);
       }
+      if (((from_bitField0_ & 0x00004000) != 0)) {
+        threadRunQueue_.makeImmutable();
+        result.threadRunQueue_ = threadRunQueue_;
+      }
       result.bitField0_ |= to_bitField0_;
+    }
+
+    private void buildPartialOneofs(io.littlehorse.sdk.common.proto.WfRun result) {
+      result.wfSpecSourceCase_ = wfSpecSourceCase_;
+      result.wfSpecSource_ = this.wfSpecSource_;
+      if (wfSpecSourceCase_ == 2 &&
+          wfSpecIdBuilder_ != null) {
+        result.wfSpecSource_ = wfSpecIdBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -2237,14 +2406,11 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       if (other.hasId()) {
         mergeId(other.getId());
       }
-      if (other.hasWfSpecId()) {
-        mergeWfSpecId(other.getWfSpecId());
-      }
       if (oldWfSpecVersionsBuilder_ == null) {
         if (!other.oldWfSpecVersions_.isEmpty()) {
           if (oldWfSpecVersions_.isEmpty()) {
             oldWfSpecVersions_ = other.oldWfSpecVersions_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureOldWfSpecVersionsIsMutable();
             oldWfSpecVersions_.addAll(other.oldWfSpecVersions_);
@@ -2257,7 +2423,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             oldWfSpecVersionsBuilder_.dispose();
             oldWfSpecVersionsBuilder_ = null;
             oldWfSpecVersions_ = other.oldWfSpecVersions_;
-            bitField0_ = (bitField0_ & ~0x00000004);
+            bitField0_ = (bitField0_ & ~0x00000008);
             oldWfSpecVersionsBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  internalGetOldWfSpecVersionsFieldBuilder() : null;
@@ -2282,7 +2448,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         if (!other.threadRuns_.isEmpty()) {
           if (threadRuns_.isEmpty()) {
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensureThreadRunsIsMutable();
             threadRuns_.addAll(other.threadRuns_);
@@ -2295,7 +2461,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             threadRunsBuilder_.dispose();
             threadRunsBuilder_ = null;
             threadRuns_ = other.threadRuns_;
-            bitField0_ = (bitField0_ & ~0x00000080);
+            bitField0_ = (bitField0_ & ~0x00000100);
             threadRunsBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  internalGetThreadRunsFieldBuilder() : null;
@@ -2308,7 +2474,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         if (!other.pendingInterrupts_.isEmpty()) {
           if (pendingInterrupts_.isEmpty()) {
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000200);
           } else {
             ensurePendingInterruptsIsMutable();
             pendingInterrupts_.addAll(other.pendingInterrupts_);
@@ -2321,7 +2487,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             pendingInterruptsBuilder_.dispose();
             pendingInterruptsBuilder_ = null;
             pendingInterrupts_ = other.pendingInterrupts_;
-            bitField0_ = (bitField0_ & ~0x00000100);
+            bitField0_ = (bitField0_ & ~0x00000200);
             pendingInterruptsBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  internalGetPendingInterruptsFieldBuilder() : null;
@@ -2334,7 +2500,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         if (!other.pendingFailures_.isEmpty()) {
           if (pendingFailures_.isEmpty()) {
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000200);
+            bitField0_ = (bitField0_ & ~0x00000400);
           } else {
             ensurePendingFailuresIsMutable();
             pendingFailures_.addAll(other.pendingFailures_);
@@ -2347,7 +2513,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             pendingFailuresBuilder_.dispose();
             pendingFailuresBuilder_ = null;
             pendingFailures_ = other.pendingFailures_;
-            bitField0_ = (bitField0_ & ~0x00000200);
+            bitField0_ = (bitField0_ & ~0x00000400);
             pendingFailuresBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                  internalGetPendingFailuresFieldBuilder() : null;
@@ -2364,7 +2530,31 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       }
       internalGetMutableMigrationVariables().mergeFrom(
           other.internalGetMigrationVariables());
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00002000;
+      if (!other.threadRunQueue_.isEmpty()) {
+        if (threadRunQueue_.isEmpty()) {
+          threadRunQueue_ = other.threadRunQueue_;
+          threadRunQueue_.makeImmutable();
+          bitField0_ |= 0x00004000;
+        } else {
+          ensureThreadRunQueueIsMutable();
+          threadRunQueue_.addAll(other.threadRunQueue_);
+        }
+        onChanged();
+      }
+      switch (other.getWfSpecSourceCase()) {
+        case WF_SPEC_ID: {
+          mergeWfSpecId(other.getWfSpecId());
+          break;
+        }
+        case IS_INLINE: {
+          setIsInline(other.getIsInline());
+          break;
+        }
+        case WFSPECSOURCE_NOT_SET: {
+          break;
+        }
+      }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -2402,7 +2592,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
               input.readMessage(
                   internalGetWfSpecIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000002;
+              wfSpecSourceCase_ = 2;
               break;
             } // case 18
             case 26: {
@@ -2420,26 +2610,26 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
             } // case 26
             case 32: {
               status_ = input.readEnum();
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             } // case 32
             case 40: {
               greatestThreadrunNumber_ = input.readInt32();
-              bitField0_ |= 0x00000010;
+              bitField0_ |= 0x00000020;
               break;
             } // case 40
             case 50: {
               input.readMessage(
                   internalGetStartTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 50
             case 58: {
               input.readMessage(
                   internalGetEndTimeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000080;
               break;
             } // case 58
             case 66: {
@@ -2485,14 +2675,14 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
               input.readMessage(
                   internalGetParentTriggerFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000800;
               break;
             } // case 90
             case 98: {
               input.readMessage(
                   internalGetWorkflowMigrationPlanIdFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000800;
+              bitField0_ |= 0x00001000;
               break;
             } // case 98
             case 106: {
@@ -2501,9 +2691,30 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
                   MigrationVariablesDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
               internalGetMutableMigrationVariables().ensureBuilderMap().put(
                   migrationVariables__.getKey(), migrationVariables__.getValue());
-              bitField0_ |= 0x00001000;
+              bitField0_ |= 0x00002000;
               break;
             } // case 106
+            case 112: {
+              int v = input.readInt32();
+              ensureThreadRunQueueIsMutable();
+              threadRunQueue_.addInt(v);
+              break;
+            } // case 112
+            case 114: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              ensureThreadRunQueueIsMutable();
+              while (input.getBytesUntilLimit() > 0) {
+                threadRunQueue_.addInt(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            } // case 114
+            case 128: {
+              wfSpecSource_ = input.readBool();
+              wfSpecSourceCase_ = 16;
+              break;
+            } // case 128
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2519,6 +2730,21 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } // finally
       return this;
     }
+    private int wfSpecSourceCase_ = 0;
+    private java.lang.Object wfSpecSource_;
+    public WfSpecSourceCase
+        getWfSpecSourceCase() {
+      return WfSpecSourceCase.forNumber(
+          wfSpecSourceCase_);
+    }
+
+    public Builder clearWfSpecSource() {
+      wfSpecSourceCase_ = 0;
+      wfSpecSource_ = null;
+      onChanged();
+      return this;
+    }
+
     private int bitField0_;
 
     private io.littlehorse.sdk.common.proto.WfRunId id_;
@@ -2678,38 +2904,45 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       return idBuilder_;
     }
 
-    private io.littlehorse.sdk.common.proto.WfSpecId wfSpecId_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> wfSpecIdBuilder_;
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return Whether the wfSpecId field is set.
      */
+    @java.lang.Override
     public boolean hasWfSpecId() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return wfSpecSourceCase_ == 2;
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      * @return The wfSpecId.
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfSpecId getWfSpecId() {
       if (wfSpecIdBuilder_ == null) {
-        return wfSpecId_ == null ? io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+        if (wfSpecSourceCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_;
+        }
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       } else {
-        return wfSpecIdBuilder_.getMessage();
+        if (wfSpecSourceCase_ == 2) {
+          return wfSpecIdBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -2719,17 +2952,17 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         if (value == null) {
           throw new NullPointerException();
         }
-        wfSpecId_ = value;
+        wfSpecSource_ = value;
+        onChanged();
       } else {
         wfSpecIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      wfSpecSourceCase_ = 2;
       return this;
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -2737,86 +2970,95 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder setWfSpecId(
         io.littlehorse.sdk.common.proto.WfSpecId.Builder builderForValue) {
       if (wfSpecIdBuilder_ == null) {
-        wfSpecId_ = builderForValue.build();
+        wfSpecSource_ = builderForValue.build();
+        onChanged();
       } else {
         wfSpecIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000002;
-      onChanged();
+      wfSpecSourceCase_ = 2;
       return this;
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder mergeWfSpecId(io.littlehorse.sdk.common.proto.WfSpecId value) {
       if (wfSpecIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000002) != 0) &&
-          wfSpecId_ != null &&
-          wfSpecId_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
-          getWfSpecIdBuilder().mergeFrom(value);
+        if (wfSpecSourceCase_ == 2 &&
+            wfSpecSource_ != io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance()) {
+          wfSpecSource_ = io.littlehorse.sdk.common.proto.WfSpecId.newBuilder((io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_)
+              .mergeFrom(value).buildPartial();
         } else {
-          wfSpecId_ = value;
+          wfSpecSource_ = value;
         }
-      } else {
-        wfSpecIdBuilder_.mergeFrom(value);
-      }
-      if (wfSpecId_ != null) {
-        bitField0_ |= 0x00000002;
         onChanged();
+      } else {
+        if (wfSpecSourceCase_ == 2) {
+          wfSpecIdBuilder_.mergeFrom(value);
+        } else {
+          wfSpecIdBuilder_.setMessage(value);
+        }
       }
+      wfSpecSourceCase_ = 2;
       return this;
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public Builder clearWfSpecId() {
-      bitField0_ = (bitField0_ & ~0x00000002);
-      wfSpecId_ = null;
-      if (wfSpecIdBuilder_ != null) {
-        wfSpecIdBuilder_.dispose();
-        wfSpecIdBuilder_ = null;
+      if (wfSpecIdBuilder_ == null) {
+        if (wfSpecSourceCase_ == 2) {
+          wfSpecSourceCase_ = 0;
+          wfSpecSource_ = null;
+          onChanged();
+        }
+      } else {
+        if (wfSpecSourceCase_ == 2) {
+          wfSpecSourceCase_ = 0;
+          wfSpecSource_ = null;
+        }
+        wfSpecIdBuilder_.clear();
       }
-      onChanged();
       return this;
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
     public io.littlehorse.sdk.common.proto.WfSpecId.Builder getWfSpecIdBuilder() {
-      bitField0_ |= 0x00000002;
-      onChanged();
       return internalGetWfSpecIdFieldBuilder().getBuilder();
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
      */
+    @java.lang.Override
     public io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder getWfSpecIdOrBuilder() {
-      if (wfSpecIdBuilder_ != null) {
+      if ((wfSpecSourceCase_ == 2) && (wfSpecIdBuilder_ != null)) {
         return wfSpecIdBuilder_.getMessageOrBuilder();
       } else {
-        return wfSpecId_ == null ?
-            io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance() : wfSpecId_;
+        if (wfSpecSourceCase_ == 2) {
+          return (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_;
+        }
+        return io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
       }
     }
     /**
      * <pre>
-     * The ID of the WfSpec that this WfRun belongs to.
+     * The ID of the registered WfSpec that this WfRun belongs to.
      * </pre>
      *
      * <code>.littlehorse.WfSpecId wf_spec_id = 2;</code>
@@ -2825,22 +3067,85 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder> 
         internalGetWfSpecIdFieldBuilder() {
       if (wfSpecIdBuilder_ == null) {
+        if (!(wfSpecSourceCase_ == 2)) {
+          wfSpecSource_ = io.littlehorse.sdk.common.proto.WfSpecId.getDefaultInstance();
+        }
         wfSpecIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
             io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
-                getWfSpecId(),
+                (io.littlehorse.sdk.common.proto.WfSpecId) wfSpecSource_,
                 getParentForChildren(),
                 isClean());
-        wfSpecId_ = null;
+        wfSpecSource_ = null;
       }
+      wfSpecSourceCase_ = 2;
+      onChanged();
       return wfSpecIdBuilder_;
+    }
+
+    /**
+     * <pre>
+     * Must be true when selected. Fetch the inline definition using this WfRun's id.
+     * </pre>
+     *
+     * <code>bool is_inline = 16;</code>
+     * @return Whether the isInline field is set.
+     */
+    public boolean hasIsInline() {
+      return wfSpecSourceCase_ == 16;
+    }
+    /**
+     * <pre>
+     * Must be true when selected. Fetch the inline definition using this WfRun's id.
+     * </pre>
+     *
+     * <code>bool is_inline = 16;</code>
+     * @return The isInline.
+     */
+    public boolean getIsInline() {
+      if (wfSpecSourceCase_ == 16) {
+        return (java.lang.Boolean) wfSpecSource_;
+      }
+      return false;
+    }
+    /**
+     * <pre>
+     * Must be true when selected. Fetch the inline definition using this WfRun's id.
+     * </pre>
+     *
+     * <code>bool is_inline = 16;</code>
+     * @param value The isInline to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIsInline(boolean value) {
+
+      wfSpecSourceCase_ = 16;
+      wfSpecSource_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Must be true when selected. Fetch the inline definition using this WfRun's id.
+     * </pre>
+     *
+     * <code>bool is_inline = 16;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsInline() {
+      if (wfSpecSourceCase_ == 16) {
+        wfSpecSourceCase_ = 0;
+        wfSpecSource_ = null;
+        onChanged();
+      }
+      return this;
     }
 
     private java.util.List<io.littlehorse.sdk.common.proto.WfSpecId> oldWfSpecVersions_ =
       java.util.Collections.emptyList();
     private void ensureOldWfSpecVersionsIsMutable() {
-      if (!((bitField0_ & 0x00000004) != 0)) {
+      if (!((bitField0_ & 0x00000008) != 0)) {
         oldWfSpecVersions_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.WfSpecId>(oldWfSpecVersions_);
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000008;
        }
     }
 
@@ -3045,7 +3350,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder clearOldWfSpecVersions() {
       if (oldWfSpecVersionsBuilder_ == null) {
         oldWfSpecVersions_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
       } else {
         oldWfSpecVersionsBuilder_.clear();
@@ -3157,7 +3462,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         oldWfSpecVersionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             io.littlehorse.sdk.common.proto.WfSpecId, io.littlehorse.sdk.common.proto.WfSpecId.Builder, io.littlehorse.sdk.common.proto.WfSpecIdOrBuilder>(
                 oldWfSpecVersions_,
-                ((bitField0_ & 0x00000004) != 0),
+                ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
                 isClean());
         oldWfSpecVersions_ = null;
@@ -3188,7 +3493,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder setStatusValue(int value) {
       status_ = value;
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }
@@ -3216,7 +3521,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder setStatus(io.littlehorse.sdk.common.proto.LHStatus value) {
       if (value == null) { throw new NullPointerException(); }
-      bitField0_ |= 0x00000008;
+      bitField0_ |= 0x00000010;
       status_ = value.getNumber();
       onChanged();
       return this;
@@ -3230,7 +3535,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return This builder for chaining.
      */
     public Builder clearStatus() {
-      bitField0_ = (bitField0_ & ~0x00000008);
+      bitField0_ = (bitField0_ & ~0x00000010);
       status_ = 0;
       onChanged();
       return this;
@@ -3271,7 +3576,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder setGreatestThreadrunNumber(int value) {
 
       greatestThreadrunNumber_ = value;
-      bitField0_ |= 0x00000010;
+      bitField0_ |= 0x00000020;
       onChanged();
       return this;
     }
@@ -3289,7 +3594,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return This builder for chaining.
      */
     public Builder clearGreatestThreadrunNumber() {
-      bitField0_ = (bitField0_ & ~0x00000010);
+      bitField0_ = (bitField0_ & ~0x00000020);
       greatestThreadrunNumber_ = 0;
       onChanged();
       return this;
@@ -3307,7 +3612,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return Whether the startTime field is set.
      */
     public boolean hasStartTime() {
-      return ((bitField0_ & 0x00000020) != 0);
+      return ((bitField0_ & 0x00000040) != 0);
     }
     /**
      * <pre>
@@ -3340,7 +3645,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         startTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -3358,7 +3663,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         startTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -3371,7 +3676,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder mergeStartTime(com.google.protobuf.Timestamp value) {
       if (startTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000020) != 0) &&
+        if (((bitField0_ & 0x00000040) != 0) &&
           startTime_ != null &&
           startTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getStartTimeBuilder().mergeFrom(value);
@@ -3382,7 +3687,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         startTimeBuilder_.mergeFrom(value);
       }
       if (startTime_ != null) {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000040;
         onChanged();
       }
       return this;
@@ -3395,7 +3700,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public Builder clearStartTime() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       startTime_ = null;
       if (startTimeBuilder_ != null) {
         startTimeBuilder_.dispose();
@@ -3412,7 +3717,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>.google.protobuf.Timestamp start_time = 6;</code>
      */
     public com.google.protobuf.Timestamp.Builder getStartTimeBuilder() {
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return internalGetStartTimeFieldBuilder().getBuilder();
     }
@@ -3464,7 +3769,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return Whether the endTime field is set.
      */
     public boolean hasEndTime() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000080) != 0);
     }
     /**
      * <pre>
@@ -3497,7 +3802,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         endTimeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -3515,7 +3820,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         endTimeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return this;
     }
@@ -3528,7 +3833,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder mergeEndTime(com.google.protobuf.Timestamp value) {
       if (endTimeBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000080) != 0) &&
           endTime_ != null &&
           endTime_ != com.google.protobuf.Timestamp.getDefaultInstance()) {
           getEndTimeBuilder().mergeFrom(value);
@@ -3539,7 +3844,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         endTimeBuilder_.mergeFrom(value);
       }
       if (endTime_ != null) {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000080;
         onChanged();
       }
       return this;
@@ -3552,7 +3857,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public Builder clearEndTime() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000080);
       endTime_ = null;
       if (endTimeBuilder_ != null) {
         endTimeBuilder_.dispose();
@@ -3569,7 +3874,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>optional .google.protobuf.Timestamp end_time = 7;</code>
      */
     public com.google.protobuf.Timestamp.Builder getEndTimeBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000080;
       onChanged();
       return internalGetEndTimeFieldBuilder().getBuilder();
     }
@@ -3612,9 +3917,9 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     private java.util.List<io.littlehorse.sdk.common.proto.ThreadRun> threadRuns_ =
       java.util.Collections.emptyList();
     private void ensureThreadRunsIsMutable() {
-      if (!((bitField0_ & 0x00000080) != 0)) {
+      if (!((bitField0_ & 0x00000100) != 0)) {
         threadRuns_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.ThreadRun>(threadRuns_);
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000100;
        }
     }
 
@@ -3819,7 +4124,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder clearThreadRuns() {
       if (threadRunsBuilder_ == null) {
         threadRuns_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
       } else {
         threadRunsBuilder_.clear();
@@ -3931,7 +4236,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         threadRunsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             io.littlehorse.sdk.common.proto.ThreadRun, io.littlehorse.sdk.common.proto.ThreadRun.Builder, io.littlehorse.sdk.common.proto.ThreadRunOrBuilder>(
                 threadRuns_,
-                ((bitField0_ & 0x00000080) != 0),
+                ((bitField0_ & 0x00000100) != 0),
                 getParentForChildren(),
                 isClean());
         threadRuns_ = null;
@@ -3942,9 +4247,9 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     private java.util.List<io.littlehorse.sdk.common.proto.PendingInterrupt> pendingInterrupts_ =
       java.util.Collections.emptyList();
     private void ensurePendingInterruptsIsMutable() {
-      if (!((bitField0_ & 0x00000100) != 0)) {
+      if (!((bitField0_ & 0x00000200) != 0)) {
         pendingInterrupts_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingInterrupt>(pendingInterrupts_);
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00000200;
        }
     }
 
@@ -4149,7 +4454,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder clearPendingInterrupts() {
       if (pendingInterruptsBuilder_ == null) {
         pendingInterrupts_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00000200);
         onChanged();
       } else {
         pendingInterruptsBuilder_.clear();
@@ -4261,7 +4566,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         pendingInterruptsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             io.littlehorse.sdk.common.proto.PendingInterrupt, io.littlehorse.sdk.common.proto.PendingInterrupt.Builder, io.littlehorse.sdk.common.proto.PendingInterruptOrBuilder>(
                 pendingInterrupts_,
-                ((bitField0_ & 0x00000100) != 0),
+                ((bitField0_ & 0x00000200) != 0),
                 getParentForChildren(),
                 isClean());
         pendingInterrupts_ = null;
@@ -4272,9 +4577,9 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     private java.util.List<io.littlehorse.sdk.common.proto.PendingFailureHandler> pendingFailures_ =
       java.util.Collections.emptyList();
     private void ensurePendingFailuresIsMutable() {
-      if (!((bitField0_ & 0x00000200) != 0)) {
+      if (!((bitField0_ & 0x00000400) != 0)) {
         pendingFailures_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.PendingFailureHandler>(pendingFailures_);
-        bitField0_ |= 0x00000200;
+        bitField0_ |= 0x00000400;
        }
     }
 
@@ -4479,7 +4784,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     public Builder clearPendingFailures() {
       if (pendingFailuresBuilder_ == null) {
         pendingFailures_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000200);
+        bitField0_ = (bitField0_ & ~0x00000400);
         onChanged();
       } else {
         pendingFailuresBuilder_.clear();
@@ -4591,7 +4896,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         pendingFailuresBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             io.littlehorse.sdk.common.proto.PendingFailureHandler, io.littlehorse.sdk.common.proto.PendingFailureHandler.Builder, io.littlehorse.sdk.common.proto.PendingFailureHandlerOrBuilder>(
                 pendingFailures_,
-                ((bitField0_ & 0x00000200) != 0),
+                ((bitField0_ & 0x00000400) != 0),
                 getParentForChildren(),
                 isClean());
         pendingFailures_ = null;
@@ -4615,7 +4920,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return Whether the parentTrigger field is set.
      */
     public boolean hasParentTrigger() {
-      return ((bitField0_ & 0x00000400) != 0);
+      return ((bitField0_ & 0x00000800) != 0);
     }
     /**
      * <pre>
@@ -4656,7 +4961,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         parentTriggerBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
@@ -4678,7 +4983,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         parentTriggerBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
@@ -4695,7 +5000,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder mergeParentTrigger(io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference value) {
       if (parentTriggerBuilder_ == null) {
-        if (((bitField0_ & 0x00000400) != 0) &&
+        if (((bitField0_ & 0x00000800) != 0) &&
           parentTrigger_ != null &&
           parentTrigger_ != io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.getDefaultInstance()) {
           getParentTriggerBuilder().mergeFrom(value);
@@ -4706,7 +5011,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         parentTriggerBuilder_.mergeFrom(value);
       }
       if (parentTrigger_ != null) {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
       }
       return this;
@@ -4723,7 +5028,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
      */
     public Builder clearParentTrigger() {
-      bitField0_ = (bitField0_ & ~0x00000400);
+      bitField0_ = (bitField0_ & ~0x00000800);
       parentTrigger_ = null;
       if (parentTriggerBuilder_ != null) {
         parentTriggerBuilder_.dispose();
@@ -4744,7 +5049,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>optional .littlehorse.WfRun.ParentTriggerReference parent_trigger = 11;</code>
      */
     public io.littlehorse.sdk.common.proto.WfRun.ParentTriggerReference.Builder getParentTriggerBuilder() {
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return internalGetParentTriggerFieldBuilder().getBuilder();
     }
@@ -4804,7 +5109,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * @return Whether the workflowMigrationPlanId field is set.
      */
     public boolean hasWorkflowMigrationPlanId() {
-      return ((bitField0_ & 0x00000800) != 0);
+      return ((bitField0_ & 0x00001000) != 0);
     }
     /**
      * <pre>
@@ -4837,7 +5142,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         workflowMigrationPlanIdBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00001000;
       onChanged();
       return this;
     }
@@ -4855,7 +5160,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       } else {
         workflowMigrationPlanIdBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00001000;
       onChanged();
       return this;
     }
@@ -4868,7 +5173,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      */
     public Builder mergeWorkflowMigrationPlanId(io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId value) {
       if (workflowMigrationPlanIdBuilder_ == null) {
-        if (((bitField0_ & 0x00000800) != 0) &&
+        if (((bitField0_ & 0x00001000) != 0) &&
           workflowMigrationPlanId_ != null &&
           workflowMigrationPlanId_ != io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.getDefaultInstance()) {
           getWorkflowMigrationPlanIdBuilder().mergeFrom(value);
@@ -4879,7 +5184,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         workflowMigrationPlanIdBuilder_.mergeFrom(value);
       }
       if (workflowMigrationPlanId_ != null) {
-        bitField0_ |= 0x00000800;
+        bitField0_ |= 0x00001000;
         onChanged();
       }
       return this;
@@ -4892,7 +5197,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
      */
     public Builder clearWorkflowMigrationPlanId() {
-      bitField0_ = (bitField0_ & ~0x00000800);
+      bitField0_ = (bitField0_ & ~0x00001000);
       workflowMigrationPlanId_ = null;
       if (workflowMigrationPlanIdBuilder_ != null) {
         workflowMigrationPlanIdBuilder_.dispose();
@@ -4909,7 +5214,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
      * <code>.littlehorse.WorkflowMigrationPlanId workflow_migration_plan_id = 12;</code>
      */
     public io.littlehorse.sdk.common.proto.WorkflowMigrationPlanId.Builder getWorkflowMigrationPlanIdBuilder() {
-      bitField0_ |= 0x00000800;
+      bitField0_ |= 0x00001000;
       onChanged();
       return internalGetWorkflowMigrationPlanIdFieldBuilder().getBuilder();
     }
@@ -4977,7 +5282,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       if (migrationVariables_ == null) {
         migrationVariables_ = new com.google.protobuf.MapFieldBuilder<>(migrationVariablesConverter);
       }
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00002000;
       onChanged();
       return migrationVariables_;
     }
@@ -5055,7 +5360,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       return migrationVariablesConverter.build(map.get(key));
     }
     public Builder clearMigrationVariables() {
-      bitField0_ = (bitField0_ & ~0x00001000);
+      bitField0_ = (bitField0_ & ~0x00002000);
       internalGetMutableMigrationVariables().clear();
       return this;
     }
@@ -5080,7 +5385,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
     @java.lang.Deprecated
     public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.MigrationVars>
         getMutableMigrationVariables() {
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00002000;
       return internalGetMutableMigrationVariables().ensureMessageMap();
     }
     /**
@@ -5098,7 +5403,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       if (value == null) { throw new NullPointerException("map value"); }
       internalGetMutableMigrationVariables().ensureBuilderMap()
           .put(key, value);
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00002000;
       return this;
     }
     /**
@@ -5118,7 +5423,7 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
       }
       internalGetMutableMigrationVariables().ensureBuilderMap()
           .putAll(values);
-      bitField0_ |= 0x00001000;
+      bitField0_ |= 0x00002000;
       return this;
     }
     /**
@@ -5142,6 +5447,90 @@ io.littlehorse.sdk.common.proto.MigrationVars defaultValue) {
         builderMap.put(key, entry);
       }
       return (io.littlehorse.sdk.common.proto.MigrationVars.Builder) entry;
+    }
+
+    private com.google.protobuf.Internal.IntList threadRunQueue_ = emptyIntList();
+    private void ensureThreadRunQueueIsMutable() {
+      if (!threadRunQueue_.isModifiable()) {
+        threadRunQueue_ = makeMutableCopy(threadRunQueue_);
+      }
+      bitField0_ |= 0x00004000;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return A list containing the threadRunQueue.
+     */
+    public java.util.List<java.lang.Integer>
+        getThreadRunQueueList() {
+      threadRunQueue_.makeImmutable();
+      return threadRunQueue_;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return The count of threadRunQueue.
+     */
+    public int getThreadRunQueueCount() {
+      return threadRunQueue_.size();
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param index The index of the element to return.
+     * @return The threadRunQueue at the given index.
+     */
+    public int getThreadRunQueue(int index) {
+      return threadRunQueue_.getInt(index);
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param index The index to set the value at.
+     * @param value The threadRunQueue to set.
+     * @return This builder for chaining.
+     */
+    public Builder setThreadRunQueue(
+        int index, int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.setInt(index, value);
+      bitField0_ |= 0x00004000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param value The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addThreadRunQueue(int value) {
+
+      ensureThreadRunQueueIsMutable();
+      threadRunQueue_.addInt(value);
+      bitField0_ |= 0x00004000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @param values The threadRunQueue to add.
+     * @return This builder for chaining.
+     */
+    public Builder addAllThreadRunQueue(
+        java.lang.Iterable<? extends java.lang.Integer> values) {
+      ensureThreadRunQueueIsMutable();
+      com.google.protobuf.AbstractMessageLite.Builder.addAll(
+          values, threadRunQueue_);
+      bitField0_ |= 0x00004000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>repeated int32 thread_run_queue = 14;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearThreadRunQueue() {
+      threadRunQueue_ = emptyIntList();
+      bitField0_ = (bitField0_ & ~0x00004000);
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.WfRun)

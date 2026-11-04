@@ -119,6 +119,10 @@ public enum GetableClassEnum
    * <code>WORKFLOW_MIGRATION_PLAN = 26;</code>
    */
   WORKFLOW_MIGRATION_PLAN(26),
+  /**
+   * <code>INLINE_WF_SPEC = 27;</code>
+   */
+  INLINE_WF_SPEC(27),
   UNRECOGNIZED(-1),
   ;
 
@@ -239,6 +243,10 @@ public enum GetableClassEnum
    * <code>WORKFLOW_MIGRATION_PLAN = 26;</code>
    */
   public static final int WORKFLOW_MIGRATION_PLAN_VALUE = 26;
+  /**
+   * <code>INLINE_WF_SPEC = 27;</code>
+   */
+  public static final int INLINE_WF_SPEC_VALUE = 27;
 
 
   public final int getNumber() {
@@ -292,6 +300,7 @@ public enum GetableClassEnum
       case 24: return BULK_JOB;
       case 25: return ACTIVE_BULK_JOB;
       case 26: return WORKFLOW_MIGRATION_PLAN;
+      case 27: return INLINE_WF_SPEC;
       default: return null;
     }
   }

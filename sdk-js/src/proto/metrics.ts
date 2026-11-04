@@ -10,6 +10,7 @@ import { UnknownFieldHandler } from "@protobuf-ts/runtime";
 import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
+import { QuotaId } from "./object_id";
 import { TaskDefId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";
 import { WfSpecId } from "./object_id";
@@ -77,8 +78,33 @@ export interface MetricWindow {
          */
         task: TaskMetrics;
     } | {
+        oneofKind: "quotaUsage";
+        /**
+         * @generated from protobuf field: littlehorse.QuotaUsageMetrics quota_usage = 4
+         */
+        quotaUsage: QuotaUsageMetrics;
+    } | {
         oneofKind: undefined;
     };
+}
+/**
+ * Quota utilization aggregates for one quota during a time window.
+ *
+ * @generated from protobuf message littlehorse.QuotaUsageMetrics
+ */
+export interface QuotaUsageMetrics {
+    /**
+     * @generated from protobuf field: int32 requests_observed = 1
+     */
+    requestsObserved: number;
+    /**
+     * @generated from protobuf field: int32 requests_throttled = 2
+     */
+    requestsThrottled: number;
+    /**
+     * @generated from protobuf field: int64 total_throttle_time_ms = 3
+     */
+    totalThrottleTimeMs: string;
 }
 /**
  * Workflow-level aggregates for lifecycle transitions; fields are `CountAndTiming`.
@@ -215,6 +241,23 @@ export interface ListTaskMetricsRequest {
      * @generated from protobuf field: littlehorse.TaskDefId task_def = 1
      */
     taskDef?: TaskDefId;
+    /**
+     * @generated from protobuf field: optional google.protobuf.Timestamp window_start = 2
+     */
+    windowStart?: Timestamp;
+    /**
+     * @generated from protobuf field: optional google.protobuf.Timestamp window_end = 3
+     */
+    windowEnd?: Timestamp;
+}
+/**
+ * @generated from protobuf message littlehorse.ListQuotaUsageMetricsRequest
+ */
+export interface ListQuotaUsageMetricsRequest {
+    /**
+     * @generated from protobuf field: littlehorse.QuotaId quota_id = 1
+     */
+    quotaId?: QuotaId;
     /**
      * @generated from protobuf field: optional google.protobuf.Timestamp window_start = 2
      */
@@ -372,7 +415,8 @@ class MetricWindow$Type extends MessageType<MetricWindow> {
         super("littlehorse.MetricWindow", [
             { no: 1, name: "id", kind: "message", T: () => MetricWindowId },
             { no: 2, name: "workflow", kind: "message", oneof: "metric", T: () => WfMetrics },
-            { no: 3, name: "task", kind: "message", oneof: "metric", T: () => TaskMetrics }
+            { no: 3, name: "task", kind: "message", oneof: "metric", T: () => TaskMetrics },
+            { no: 4, name: "quota_usage", kind: "message", oneof: "metric", T: () => QuotaUsageMetrics }
         ]);
     }
     create(value?: PartialMessage<MetricWindow>): MetricWindow {
@@ -402,6 +446,12 @@ class MetricWindow$Type extends MessageType<MetricWindow> {
                         task: TaskMetrics.internalBinaryRead(reader, reader.uint32(), options, (message.metric as any).task)
                     };
                     break;
+                case /* littlehorse.QuotaUsageMetrics quota_usage */ 4:
+                    message.metric = {
+                        oneofKind: "quotaUsage",
+                        quotaUsage: QuotaUsageMetrics.internalBinaryRead(reader, reader.uint32(), options, (message.metric as any).quotaUsage)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -423,6 +473,9 @@ class MetricWindow$Type extends MessageType<MetricWindow> {
         /* littlehorse.TaskMetrics task = 3; */
         if (message.metric.oneofKind === "task")
             TaskMetrics.internalBinaryWrite(message.metric.task, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.QuotaUsageMetrics quota_usage = 4; */
+        if (message.metric.oneofKind === "quotaUsage")
+            QuotaUsageMetrics.internalBinaryWrite(message.metric.quotaUsage, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -433,6 +486,69 @@ class MetricWindow$Type extends MessageType<MetricWindow> {
  * @generated MessageType for protobuf message littlehorse.MetricWindow
  */
 export const MetricWindow = new MetricWindow$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class QuotaUsageMetrics$Type extends MessageType<QuotaUsageMetrics> {
+    constructor() {
+        super("littlehorse.QuotaUsageMetrics", [
+            { no: 1, name: "requests_observed", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 2, name: "requests_throttled", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "total_throttle_time_ms", kind: "scalar", T: 3 /*ScalarType.INT64*/ }
+        ]);
+    }
+    create(value?: PartialMessage<QuotaUsageMetrics>): QuotaUsageMetrics {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.requestsObserved = 0;
+        message.requestsThrottled = 0;
+        message.totalThrottleTimeMs = "0";
+        if (value !== undefined)
+            reflectionMergePartial<QuotaUsageMetrics>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: QuotaUsageMetrics): QuotaUsageMetrics {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* int32 requests_observed */ 1:
+                    message.requestsObserved = reader.int32();
+                    break;
+                case /* int32 requests_throttled */ 2:
+                    message.requestsThrottled = reader.int32();
+                    break;
+                case /* int64 total_throttle_time_ms */ 3:
+                    message.totalThrottleTimeMs = reader.int64().toString();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: QuotaUsageMetrics, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* int32 requests_observed = 1; */
+        if (message.requestsObserved !== 0)
+            writer.tag(1, WireType.Varint).int32(message.requestsObserved);
+        /* int32 requests_throttled = 2; */
+        if (message.requestsThrottled !== 0)
+            writer.tag(2, WireType.Varint).int32(message.requestsThrottled);
+        /* int64 total_throttle_time_ms = 3; */
+        if (message.totalThrottleTimeMs !== "0")
+            writer.tag(3, WireType.Varint).int64(message.totalThrottleTimeMs);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.QuotaUsageMetrics
+ */
+export const QuotaUsageMetrics = new QuotaUsageMetrics$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class WfMetrics$Type extends MessageType<WfMetrics> {
     constructor() {
@@ -743,6 +859,66 @@ class ListTaskMetricsRequest$Type extends MessageType<ListTaskMetricsRequest> {
  * @generated MessageType for protobuf message littlehorse.ListTaskMetricsRequest
  */
 export const ListTaskMetricsRequest = new ListTaskMetricsRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class ListQuotaUsageMetricsRequest$Type extends MessageType<ListQuotaUsageMetricsRequest> {
+    constructor() {
+        super("littlehorse.ListQuotaUsageMetricsRequest", [
+            { no: 1, name: "quota_id", kind: "message", T: () => QuotaId },
+            { no: 2, name: "window_start", kind: "message", T: () => Timestamp },
+            { no: 3, name: "window_end", kind: "message", T: () => Timestamp }
+        ]);
+    }
+    create(value?: PartialMessage<ListQuotaUsageMetricsRequest>): ListQuotaUsageMetricsRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<ListQuotaUsageMetricsRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: ListQuotaUsageMetricsRequest): ListQuotaUsageMetricsRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.QuotaId quota_id */ 1:
+                    message.quotaId = QuotaId.internalBinaryRead(reader, reader.uint32(), options, message.quotaId);
+                    break;
+                case /* optional google.protobuf.Timestamp window_start */ 2:
+                    message.windowStart = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.windowStart);
+                    break;
+                case /* optional google.protobuf.Timestamp window_end */ 3:
+                    message.windowEnd = Timestamp.internalBinaryRead(reader, reader.uint32(), options, message.windowEnd);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: ListQuotaUsageMetricsRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.QuotaId quota_id = 1; */
+        if (message.quotaId)
+            QuotaId.internalBinaryWrite(message.quotaId, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional google.protobuf.Timestamp window_start = 2; */
+        if (message.windowStart)
+            Timestamp.internalBinaryWrite(message.windowStart, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* optional google.protobuf.Timestamp window_end = 3; */
+        if (message.windowEnd)
+            Timestamp.internalBinaryWrite(message.windowEnd, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.ListQuotaUsageMetricsRequest
+ */
+export const ListQuotaUsageMetricsRequest = new ListQuotaUsageMetricsRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class MetricsList$Type extends MessageType<MetricsList> {
     constructor() {

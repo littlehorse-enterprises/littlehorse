@@ -52,4 +52,11 @@ public @interface LHType {
      * @return whether or not this Map should be a LittleHorse native Map or a JSON_OBJ.
      */
     boolean isLHMap() default false;
+
+    /**
+     * Indicates whether an unannotated POJO should be represented as an inline Struct.
+     *
+     * @return whether the annotated POJO should use an inline Struct schema
+     */
+    boolean isInlineStruct() default false;
 }

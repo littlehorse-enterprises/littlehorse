@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public String name;
     public TypeDefinition typeDef;
+    private final LHClassType declaredClassType;
     private VariableValue defaultValue;
     private boolean required;
     private boolean searchable;
@@ -43,9 +45,15 @@ class WfRunVariableImpl implements WfRunVariable {
     private final WorkflowThreadImpl parent;
 
     private WfRunVariableImpl(String name, WorkflowThreadImpl parent, TypeDefinition typeDef) {
+        this(name, parent, typeDef, null);
+    }
+
+    private WfRunVariableImpl(
+            String name, WorkflowThreadImpl parent, TypeDefinition typeDef, LHClassType declaredClassType) {
         this.name = Objects.requireNonNull(name, "Name cannot be null.");
         this.parent = Objects.requireNonNull(parent, "Parent thread cannot be null.");
         this.typeDef = Objects.requireNonNull(typeDef, "TypeDefinition cannot be null.");
+        this.declaredClassType = declaredClassType;
 
         // As per GH Issue #582, the default is now PRIVATE_VAR.
         this.accessLevel = WfRunVariableAccessLevel.PRIVATE_VAR;
@@ -87,7 +95,7 @@ class WfRunVariableImpl implements WfRunVariable {
 
     public static WfRunVariableImpl createVarFromLHClassType(
             String name, LHClassType clazz, WorkflowThreadImpl parent) {
-        return new WfRunVariableImpl(name, parent, clazz.getTypeDefinition());
+        return new WfRunVariableImpl(name, parent, clazz.getTypeDefinition(), clazz);
     }
 
     @Override
@@ -123,6 +131,10 @@ class WfRunVariableImpl implements WfRunVariable {
         }
         switch (typeDef.getDefinedTypeCase()) {
             case STRUCT_DEF_ID:
+            case INLINE_STRUCT_DEF:
+            case INLINE_MAP_DEF:
+                // Typed inline maps (e.g. declareMap("x", String.class, Long.class)) are allowed
+                // to be accessed by key with get(String).
                 break;
             case PRIMITIVE_TYPE:
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
@@ -134,10 +146,6 @@ class WfRunVariableImpl implements WfRunVariable {
             case INLINE_ARRAY_DEF:
                 throw new LHWfSpecBuilderException(
                         "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
-            case INLINE_MAP_DEF:
-                // Typed inline maps (e.g. declareMap("x", String.class, Long.class)) are allowed
-                // to be accessed by key with get(String).
-                break;
             case DEFINEDTYPE_NOT_SET:
             default:
                 throw new RuntimeException(String.format("Unrecognized WfRunVariable type: %s", typeDef));
@@ -154,6 +162,7 @@ class WfRunVariableImpl implements WfRunVariable {
         }
         switch (typeDef.getDefinedTypeCase()) {
             case STRUCT_DEF_ID:
+            case INLINE_STRUCT_DEF:
                 break;
             case PRIMITIVE_TYPE:
                 if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
@@ -179,6 +188,39 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
+    public WfRunVariableImpl get(WfRunVariable selector) {
+        if (jsonPath != null) {
+            throw new LHWfSpecBuilderException("Cannot use jsonPath() and get() on same var!");
+        }
+        switch (typeDef.getDefinedTypeCase()) {
+            case INLINE_ARRAY_DEF:
+            case INLINE_MAP_DEF:
+                break;
+            case PRIMITIVE_TYPE:
+                if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
+                        && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
+                    throw new LHWfSpecBuilderException(
+                            "get() calls with dynamic inputs are supported on variables typed as JSON primitives, Arrays, or Maps");
+                }
+                break;
+            case STRUCT_DEF_ID:
+            case INLINE_STRUCT_DEF:
+                throw new LHWfSpecBuilderException(
+                        "get() calls with dynamic inputs are not yet supported on Struct variables");
+            case DEFINEDTYPE_NOT_SET:
+            default:
+                throw new RuntimeException(String.format("Unrecognized WfRunVariable type: %s", typeDef));
+        }
+        WfRunVariableImpl out = this.clone();
+        out.getLhPath()
+                .add(Selector.newBuilder()
+                        .setDynamic(BuilderUtil.assignVariable(
+                                selector, parent.getParent().getTypeAdapterRegistry()))
+                        .build());
+        return out;
+    }
+
+    @Override
     public WfRunVariable searchable() {
         this.searchable = true;
         return this;
@@ -200,41 +242,65 @@ class WfRunVariableImpl implements WfRunVariable {
     public WfRunVariable withDefault(Object defaultVal) {
         setDefaultValue(defaultVal);
 
-        // Validate default value matches the declared variable type. Handle inline
-        // array defs (native LH Array) and inline map defs (native LH Map) specially.
-        if (typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF) {
-            if (defaultValue.getValueCase() != VariableValue.ValueCase.ARRAY) {
+        switch (typeDef.getDefinedTypeCase()) {
+            case INLINE_ARRAY_DEF:
+                validateDefaultValueCase(VariableValue.ValueCase.ARRAY);
+                break;
+            case INLINE_MAP_DEF:
+                validateDefaultValueCase(VariableValue.ValueCase.MAP);
+                break;
+            case STRUCT_DEF_ID:
+            case INLINE_STRUCT_DEF:
+                validateDefaultValueCase(VariableValue.ValueCase.STRUCT);
+                break;
+            case PRIMITIVE_TYPE:
+                if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(typeDef.getPrimitiveType())) {
+                    throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
+                }
+                break;
+            case DEFINEDTYPE_NOT_SET:
+            default:
                 throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
-            }
-        } else if (typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF) {
-            if (defaultValue.getValueCase() != VariableValue.ValueCase.MAP) {
-                throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
-            }
-        } else {
-            if (!LHLibUtil.fromValueCase(defaultValue.getValueCase()).equals(typeDef.getPrimitiveType())) {
-                throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
-            }
         }
 
         return this;
     }
 
+    private void validateDefaultValueCase(VariableValue.ValueCase expectedValueCase) {
+        if (defaultValue.getValueCase() != expectedValueCase) {
+            throw new IllegalArgumentException("Default value type does not match LH variable type " + typeDef);
+        }
+    }
+
     private void setDefaultValue(Object defaultVal) {
         try {
-            // If this variable is an inline-typed array and the provided default is a
-            // Java array, serialize it as a native LH Array instead of a JSON array.
             if (typeDef != null
                     && typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ARRAY_DEF
                     && defaultVal != null
                     && defaultVal.getClass().isArray()) {
                 this.defaultValue = LHLibUtil.objToVarValAsNativeArray(
-                        defaultVal, defaultVal.getClass(), parent.getParent().getTypeAdapterRegistry());
+                        defaultVal,
+                        defaultVal.getClass(),
+                        parent.getParent().getTypeAdapterRegistry(),
+                        parent.getParent().getPlaceholderValues());
             } else if (typeDef != null
                     && typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_MAP_DEF
                     && defaultVal != null
-                    && defaultVal instanceof java.util.Map) {
+                    && defaultVal instanceof java.util.Map
+                    && declaredClassType instanceof LHMapType) {
+                LHMapType mapType = (LHMapType) declaredClassType;
                 this.defaultValue = LHLibUtil.objToVarValAsNativeMap(
-                        defaultVal, parent.getParent().getTypeAdapterRegistry());
+                        defaultVal,
+                        typeDef.getInlineMapDef(),
+                        parent.getParent().getTypeAdapterRegistry(),
+                        mapType.getKeyClass(),
+                        mapType.getValueClass(),
+                        parent.getParent().getPlaceholderValues());
+            } else if (typeDef != null
+                    && (typeDef.getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID
+                            || typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF)
+                    && defaultVal != null) {
+                setStructDefaultValue(defaultVal);
             } else {
                 this.defaultValue =
                         LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());
@@ -242,6 +308,33 @@ class WfRunVariableImpl implements WfRunVariable {
         } catch (LHSerdeException e) {
             throw new IllegalArgumentException("Was unable to convert provided default value to LH Variable Type", e);
         }
+    }
+
+    private void setStructDefaultValue(Object defaultVal) throws LHSerdeException {
+        if (declaredClassType != null && declaredClassType.getClassType() != null) {
+            this.defaultValue = LHLibUtil.objToVarValAsStruct(
+                    defaultVal,
+                    declaredClassType.getClassType(),
+                    parent.getParent().getTypeAdapterRegistry(),
+                    parent.getParent().getPlaceholderValues());
+            return;
+        }
+
+        if (defaultVal instanceof io.littlehorse.sdk.common.proto.InlineStruct) {
+            io.littlehorse.sdk.common.proto.InlineStruct inlineStruct =
+                    (io.littlehorse.sdk.common.proto.InlineStruct) defaultVal;
+            if (typeDef.getDefinedTypeCase() == DefinedTypeCase.STRUCT_DEF_ID) {
+                this.defaultValue = LHLibUtil.inlineStructToVarVal(inlineStruct, typeDef.getStructDefId());
+            } else {
+                this.defaultValue = VariableValue.newBuilder()
+                        .setStruct(io.littlehorse.sdk.common.proto.Struct.newBuilder()
+                                .setStruct(inlineStruct))
+                        .build();
+            }
+            return;
+        }
+
+        throw new LHSerdeException("Struct defaults require the declared Java class or an InlineStruct value");
     }
 
     @Override
@@ -323,6 +416,28 @@ class WfRunVariableImpl implements WfRunVariable {
         activeThread.mutate(this, VariableMutationType.ASSIGN, rhs);
     }
 
+    @Override
+    public void put(Serializable key, Serializable value) {
+        if (typeDef.getDefinedTypeCase() != DefinedTypeCase.INLINE_MAP_DEF) {
+            throw new LHWfSpecBuilderException("put() is only supported on Map variables");
+        }
+
+        WfRunVariableImpl mapEntry = clone();
+        mapEntry.getLhPath()
+                .add(Selector.newBuilder()
+                        .setDynamic(BuilderUtil.assignVariable(
+                                key, parent.getParent().getTypeAdapterRegistry()))
+                        .build());
+
+        WorkflowThreadImpl activeThread = parent;
+        WorkflowThreadImpl lastThread = parent.getParent().getThreads().peek();
+        if (lastThread.isActive()) {
+            activeThread = lastThread;
+        }
+
+        activeThread.mutate(mapEntry, VariableMutationType.ASSIGN, value);
+    }
+
     public ThreadVarDef getSpec() {
         VariableDef.Builder varDef =
                 VariableDef.newBuilder().setTypeDef(typeDef).setName(this.getName());
@@ -356,8 +471,9 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     public WfRunVariableImpl clone() {
-        WfRunVariableImpl out = new WfRunVariableImpl(this.getName(), this.getParent(), this.getTypeDef());
-        out.setDefaultValue(this.getDefaultValue());
+        WfRunVariableImpl out =
+                new WfRunVariableImpl(this.getName(), this.getParent(), this.getTypeDef(), this.declaredClassType);
+        out.defaultValue = this.defaultValue;
         out.setRequired(this.isRequired());
         out.setSearchable(this.isSearchable());
         out.setJsonIndexes(new ArrayList<>(this.getJsonIndexes()));

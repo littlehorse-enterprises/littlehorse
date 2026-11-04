@@ -471,6 +471,21 @@ export interface InactiveThreadRunId {
     threadRunNumber: number;
 }
 /**
+ * Identifies a quota and its optional principal scope.
+ *
+ * @generated from protobuf message littlehorse.QuotaId
+ */
+export interface QuotaId {
+    /**
+     * @generated from protobuf field: littlehorse.TenantId tenant = 1
+     */
+    tenant?: TenantId;
+    /**
+     * @generated from protobuf field: optional littlehorse.PrincipalId principal = 2
+     */
+    principal?: PrincipalId;
+}
+/**
  * Identifies a metrics window for a workflow/task/user-task object.
  * `window_start` marks the window start; `tenant_id` is optional.
  *
@@ -500,6 +515,12 @@ export interface MetricWindowId {
          * @generated from protobuf field: littlehorse.UserTaskDefId user_task_def_id = 3
          */
         userTaskDefId: UserTaskDefId;
+    } | {
+        oneofKind: "quotaId";
+        /**
+         * @generated from protobuf field: littlehorse.QuotaId quota_id = 4
+         */
+        quotaId: QuotaId;
     } | {
         oneofKind: undefined;
     };
@@ -1772,12 +1793,66 @@ class InactiveThreadRunId$Type extends MessageType<InactiveThreadRunId> {
  */
 export const InactiveThreadRunId = new InactiveThreadRunId$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class QuotaId$Type extends MessageType<QuotaId> {
+    constructor() {
+        super("littlehorse.QuotaId", [
+            { no: 1, name: "tenant", kind: "message", T: () => TenantId },
+            { no: 2, name: "principal", kind: "message", T: () => PrincipalId }
+        ]);
+    }
+    create(value?: PartialMessage<QuotaId>): QuotaId {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<QuotaId>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: QuotaId): QuotaId {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.TenantId tenant */ 1:
+                    message.tenant = TenantId.internalBinaryRead(reader, reader.uint32(), options, message.tenant);
+                    break;
+                case /* optional littlehorse.PrincipalId principal */ 2:
+                    message.principal = PrincipalId.internalBinaryRead(reader, reader.uint32(), options, message.principal);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: QuotaId, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.TenantId tenant = 1; */
+        if (message.tenant)
+            TenantId.internalBinaryWrite(message.tenant, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.PrincipalId principal = 2; */
+        if (message.principal)
+            PrincipalId.internalBinaryWrite(message.principal, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.QuotaId
+ */
+export const QuotaId = new QuotaId$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class MetricWindowId$Type extends MessageType<MetricWindowId> {
     constructor() {
         super("littlehorse.MetricWindowId", [
             { no: 1, name: "wf_spec_id", kind: "message", oneof: "id", T: () => WfSpecId },
             { no: 2, name: "task_def_id", kind: "message", oneof: "id", T: () => TaskDefId },
             { no: 3, name: "user_task_def_id", kind: "message", oneof: "id", T: () => UserTaskDefId },
+            { no: 4, name: "quota_id", kind: "message", oneof: "id", T: () => QuotaId },
             { no: 6, name: "tenant_id", kind: "message", T: () => TenantId },
             { no: 7, name: "window_start", kind: "message", T: () => Timestamp },
             { no: 8, name: "metric_type", kind: "enum", opt: true, T: () => ["littlehorse.MetricWindowType", MetricWindowType] }
@@ -1813,6 +1888,12 @@ class MetricWindowId$Type extends MessageType<MetricWindowId> {
                         userTaskDefId: UserTaskDefId.internalBinaryRead(reader, reader.uint32(), options, (message.id as any).userTaskDefId)
                     };
                     break;
+                case /* littlehorse.QuotaId quota_id */ 4:
+                    message.id = {
+                        oneofKind: "quotaId",
+                        quotaId: QuotaId.internalBinaryRead(reader, reader.uint32(), options, (message.id as any).quotaId)
+                    };
+                    break;
                 case /* optional littlehorse.TenantId tenant_id */ 6:
                     message.tenantId = TenantId.internalBinaryRead(reader, reader.uint32(), options, message.tenantId);
                     break;
@@ -1843,6 +1924,9 @@ class MetricWindowId$Type extends MessageType<MetricWindowId> {
         /* littlehorse.UserTaskDefId user_task_def_id = 3; */
         if (message.id.oneofKind === "userTaskDefId")
             UserTaskDefId.internalBinaryWrite(message.id.userTaskDefId, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.QuotaId quota_id = 4; */
+        if (message.id.oneofKind === "quotaId")
+            QuotaId.internalBinaryWrite(message.id.quotaId, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
         /* optional littlehorse.TenantId tenant_id = 6; */
         if (message.tenantId)
             TenantId.internalBinaryWrite(message.tenantId, writer.tag(6, WireType.LengthDelimited).fork(), options).join();

@@ -1,0 +1,469 @@
+{
+  "name": "rw-c29cq-74",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-nop-NOP"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-rw-echo-TASK",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v0_str"
+                  },
+                  "comparator": "NOT_EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "str": "never-qsuv"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "4-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v1_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "8"
+                    }
+                  }
+                }
+              },
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "set-0l15"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "nop": {}
+        },
+        "2-rw-echo-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-rw-scale-TASK"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-echo"
+            },
+            "timeoutSeconds": 15,
+            "variables": [
+              {
+                "variableName": "v0_str"
+              }
+            ]
+          }
+        },
+        "3-rw-scale-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "4-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-scale"
+            },
+            "variables": [
+              {
+                "literalValue": {
+                  "double": 5.5
+                }
+              }
+            ]
+          }
+        },
+        "4-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-rw-flaky-TASK"
+            }
+          ],
+          "nop": {}
+        },
+        "5-rw-flaky-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-nop-NOP"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-flaky"
+            },
+            "retries": 2
+          }
+        },
+        "6-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "7-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v3_bool"
+                  },
+                  "comparator": "NOT_EQUALS",
+                  "rhs": {
+                    "literalValue": {
+                      "bool": true
+                    }
+                  }
+                }
+              },
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "set-uf89"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "sinkNodeName": "7-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v0_str",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "set-xflu"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "nop": {}
+        },
+        "7-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-wait-for-condition-WAIT_FOR_CONDITION",
+              "variableMutations": [
+                {
+                  "lhsName": "v4_int",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "int": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "nop": {}
+        },
+        "8-wait-for-condition-WAIT_FOR_CONDITION": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "9-child74x0_8r1x-START_THREAD"
+            }
+          ],
+          "waitForCondition": {
+            "condition": {
+              "expression": {
+                "lhs": {
+                  "variableName": "v4_int"
+                },
+                "comparator": "GREATER_THAN",
+                "rhs": {
+                  "literalValue": {
+                    "int": "0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "9-child74x0_8r1x-START_THREAD": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "10-child74x1_bymk-START_THREAD",
+              "variableMutations": [
+                {
+                  "lhsName": "9-child74x0_8r1x-START_THREAD",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "9-child74x0_8r1x-START_THREAD"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startThread": {
+            "threadSpecName": "child74x0_8r1x",
+            "variables": {
+              "budget_child74x0_8r1x": {
+                "variableName": "v4_int"
+              }
+            }
+          }
+        },
+        "10-child74x1_bymk-START_THREAD": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "11-threads-WAIT_FOR_THREADS",
+              "variableMutations": [
+                {
+                  "lhsName": "10-child74x1_bymk-START_THREAD",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "10-child74x1_bymk-START_THREAD"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startThread": {
+            "threadSpecName": "child74x1_bymk"
+          }
+        },
+        "11-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "12-rw-noop-TASK"
+            }
+          ],
+          "waitForThreads": {
+            "threads": {
+              "threads": [
+                {
+                  "threadRunNumber": {
+                    "variableName": "9-child74x0_8r1x-START_THREAD"
+                  }
+                },
+                {
+                  "threadRunNumber": {
+                    "variableName": "10-child74x1_bymk-START_THREAD"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "12-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "13-exit-EXIT",
+              "variableMutations": [
+                {
+                  "lhsName": "outcome",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "done"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "13-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "defaultValue": {
+              "str": "default-4qvy"
+            },
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_arrstr",
+            "typeDef": {
+              "inlineArrayDef": {
+                "arrayType": {
+                  "primitiveType": "STR"
+                }
+              }
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_bool",
+            "defaultValue": {
+              "bool": true
+            },
+            "typeDef": {
+              "primitiveType": "BOOL"
+            }
+          },
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_int",
+            "defaultValue": {
+              "int": "3"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "searchable": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "9-child74x0_8r1x-START_THREAD",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "10-child74x1_bymk-START_THREAD",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "child74x0_8r1x": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-add-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "variables": [
+              {
+                "variableName": "budget_child74x0_8r1x"
+              },
+              {
+                "literalValue": {
+                  "int": "1"
+                }
+              }
+            ]
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "budget_child74x0_8r1x",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "child74x1_bymk": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}

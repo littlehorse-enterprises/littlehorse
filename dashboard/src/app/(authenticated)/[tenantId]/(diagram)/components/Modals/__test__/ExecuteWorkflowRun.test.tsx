@@ -1,9 +1,11 @@
 import { RunWfRequest, ThreadVarDef, VariableType, WfRunVariableAccessLevel, WfSpec } from 'littlehorse-client/proto'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import React from 'react'
+import { DOT_REPLACEMENT_PATTERN } from '../../Forms/context/StructFormContext'
 import { ExecuteWorkflowRun } from '../ExecuteWorkflowRun'
 
 const runWfSpec = jest.fn().mockResolvedValue({ id: { id: 'wf-run-id' } })
+const getStructDef = jest.fn()
 
 jest.mock('../../../wfSpec/[...props]/actions/runWfSpec', () => ({
   runWfSpec: (...args: unknown[]) => runWfSpec(...args),
@@ -16,7 +18,9 @@ jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn() }),
 }))
 jest.mock('sonner', () => ({ toast: { success: jest.fn(), error: jest.fn() } }))
-jest.mock('../../Forms/components/StructDefGroup', () => ({ StructDefGroup: () => null }))
+jest.mock('@/app/actions/getStructDef', () => ({
+  getStructDef: (...args: unknown[]) => getStructDef(...args),
+}))
 
 const primitive = (
   name: string,
@@ -59,6 +63,117 @@ const mapVariable = (name: string): ThreadVarDef =>
     searchable: false,
     jsonIndexes: [],
   }) as unknown as ThreadVarDef
+
+const structVariable = (name: string, required: boolean, defaultValue?: unknown): ThreadVarDef =>
+  ({
+    varDef: {
+      name,
+      typeDef: {
+        definedType: { oneofKind: 'structDefId', structDefId: { name: 'person', version: 0 } },
+        masked: false,
+      },
+      jsonIndexes: [],
+      ...(defaultValue ? { defaultValue } : {}),
+    },
+    required,
+    searchable: false,
+    jsonIndexes: [],
+  }) as unknown as ThreadVarDef
+
+const inlineStructVariable = (name: string, required: boolean): ThreadVarDef =>
+  ({
+    varDef: {
+      name,
+      typeDef: {
+        definedType: {
+          oneofKind: 'inlineStructDef',
+          inlineStructDef: {
+            fields: {
+              name: {
+                fieldType: {
+                  definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+                  masked: false,
+                },
+                isNullable: false,
+              },
+              aliases: {
+                fieldType: {
+                  definedType: {
+                    oneofKind: 'inlineArrayDef',
+                    inlineArrayDef: {
+                      arrayType: {
+                        definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+                        masked: false,
+                      },
+                    },
+                  },
+                  masked: false,
+                },
+                isNullable: true,
+              },
+              address: {
+                fieldType: {
+                  definedType: {
+                    oneofKind: 'inlineStructDef',
+                    inlineStructDef: {
+                      fields: {
+                        city: {
+                          fieldType: {
+                            definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR },
+                            masked: false,
+                          },
+                          isNullable: false,
+                        },
+                      },
+                    },
+                  },
+                  masked: false,
+                },
+                isNullable: false,
+              },
+              account: {
+                fieldType: {
+                  definedType: { oneofKind: 'structDefId', structDefId: { name: 'person', version: 0 } },
+                  masked: false,
+                },
+                isNullable: false,
+              },
+            },
+          },
+        },
+        masked: false,
+      },
+      jsonIndexes: [],
+    },
+    required,
+    searchable: false,
+    jsonIndexes: [],
+  }) as unknown as ThreadVarDef
+
+const personStructDef = {
+  id: { name: 'person', version: 0 },
+  structDef: {
+    fields: {
+      name: {
+        fieldType: { definedType: { oneofKind: 'primitiveType', primitiveType: VariableType.STR } },
+      },
+    },
+  },
+}
+
+const personDefaultValue = {
+  value: {
+    oneofKind: 'struct',
+    struct: {
+      structDefId: { name: 'person', version: 0 },
+      struct: {
+        fields: {
+          name: { value: { value: { oneofKind: 'str', str: 'Ada' } }, masked: false },
+        },
+      },
+    },
+  },
+}
 
 const buildWfSpec = (variableDefs: ThreadVarDef[]): WfSpec =>
   ({
@@ -172,6 +287,124 @@ describe('ExecuteWorkflowRun variables payload', () => {
 
     const variables = await sentVariables()
     expect(variables['required-defaulted'].value).toEqual({ oneofKind: 'str', str: 'from-wfspec' })
+  })
+
+  it('sends a dotted variable name with its declared type', async () => {
+    const { fill, submit, sentVariables } = setup([primitive('customer.id', VariableType.STR, true)])
+
+    fill(`customer${DOT_REPLACEMENT_PATTERN}id`, 'cust-123')
+    submit()
+
+    expect((await sentVariables())['customer.id'].value).toEqual({ oneofKind: 'str', str: 'cust-123' })
+  })
+
+  it('omits an untouched optional struct with defaults', async () => {
+    getStructDef.mockResolvedValue(personStructDef)
+    const { fill, submit, sentVariables } = setup([
+      primitive('required-str', VariableType.STR, true),
+      structVariable('profile', false, personDefaultValue),
+    ])
+
+    fill('required-str', 'req')
+    await waitFor(() => expect(document.querySelector(`#${CSS.escape('structValues.profile.name')}`)).not.toBeNull())
+    submit()
+
+    expect((await sentVariables())['profile']).toBeUndefined()
+  })
+
+  it('sends an optional struct after the user overrides a default', async () => {
+    getStructDef.mockResolvedValue(personStructDef)
+    const { fill, submit, sentVariables } = setup([
+      primitive('required-str', VariableType.STR, true),
+      structVariable('profile', false, personDefaultValue),
+    ])
+
+    fill('required-str', 'req')
+    const nameFieldId = 'structValues.profile.name'
+    await waitFor(() => expect(document.querySelector(`#${CSS.escape(nameFieldId)}`)).not.toBeNull())
+    fill(nameFieldId, 'Grace')
+    submit()
+
+    expect((await sentVariables())['profile'].value).toEqual({
+      oneofKind: 'struct',
+      struct: {
+        structDefId: { name: 'person', version: 0 },
+        struct: {
+          fields: {
+            name: { value: { value: { oneofKind: 'str', str: 'Grace' } }, masked: false },
+          },
+        },
+      },
+    })
+  })
+
+  it('sends recursive inline structs without StructDefIds and preserves nested named IDs', async () => {
+    getStructDef.mockResolvedValue(personStructDef)
+    const { fill, submit, sentVariables } = setup([inlineStructVariable('profile', true)])
+
+    const nameFieldId = 'structValues.profile.name'
+    const aliasesFieldId = 'structValues.profile.aliases'
+    const cityFieldId = 'structValues.profile.address.city'
+    const accountNameFieldId = 'structValues.profile.account.name'
+    await waitFor(() => expect(document.querySelector(`#${CSS.escape(accountNameFieldId)}`)).not.toBeNull())
+
+    fill(nameFieldId, 'Ada')
+    fill(aliasesFieldId, '["A","Countess"]')
+    fill(cityFieldId, 'London')
+    fill(accountNameFieldId, 'Analytical Engines')
+    submit()
+
+    const profile = (await sentVariables())['profile']
+    expect(profile.value.oneofKind).toBe('struct')
+    if (profile.value.oneofKind !== 'struct') throw new Error('Expected Struct value')
+    expect(profile.value.struct.structDefId).toBeUndefined()
+
+    const fields = profile.value.struct.struct?.fields
+    expect(fields?.name.value?.value).toEqual({ oneofKind: 'str', str: 'Ada' })
+    expect(fields?.aliases.value?.value).toEqual({
+      oneofKind: 'array',
+      array: {
+        items: [{ value: { oneofKind: 'str', str: 'A' } }, { value: { oneofKind: 'str', str: 'Countess' } }],
+      },
+    })
+
+    const address = fields?.address.value?.value
+    expect(address?.oneofKind).toBe('struct')
+    if (address?.oneofKind !== 'struct') throw new Error('Expected nested Struct value')
+    expect(address.struct.structDefId).toBeUndefined()
+    expect(address.struct.struct?.fields.city.value?.value).toEqual({ oneofKind: 'str', str: 'London' })
+
+    const account = fields?.account.value?.value
+    expect(account?.oneofKind).toBe('struct')
+    if (account?.oneofKind !== 'struct') throw new Error('Expected named Struct value')
+    expect(account.struct.structDefId).toEqual({ name: 'person', version: 0 })
+  })
+
+  it('blocks submission when a required inline struct field is blank', async () => {
+    getStructDef.mockResolvedValue(personStructDef)
+    const { submit } = setup([inlineStructVariable('profile', true)])
+
+    await waitFor(() =>
+      expect(document.querySelector(`#${CSS.escape('structValues.profile.account.name')}`)).not.toBeNull()
+    )
+    submit()
+
+    await waitFor(() => expect(document.body.textContent).toContain('name is required'))
+    expect(runWfSpec).not.toHaveBeenCalled()
+  })
+
+  it('omits an optional inline struct without requiring its nested fields', async () => {
+    getStructDef.mockResolvedValue(personStructDef)
+    const { fill, submit, sentVariables } = setup([
+      primitive('required-str', VariableType.STR, true),
+      inlineStructVariable('optional-profile', false),
+    ])
+
+    fill('required-str', 'req')
+    submit()
+
+    expect((await sentVariables())['optional-profile']).toBeUndefined()
+    expect(document.body.textContent).not.toContain('name is required')
   })
 
   it('sends JSON and Map values entered in a textarea', async () => {

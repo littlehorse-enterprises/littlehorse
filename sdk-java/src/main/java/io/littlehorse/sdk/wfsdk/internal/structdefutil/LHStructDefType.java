@@ -13,6 +13,7 @@ import io.littlehorse.sdk.worker.internal.util.PlaceholderUtil;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.RecordComponent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -71,6 +72,11 @@ public class LHStructDefType extends LHClassType {
             throw new IllegalArgumentException(
                     "Cannot create LHStructDefType, missing `@LHStructDef` annotation on provided class: "
                             + this.clazz);
+        }
+
+        // If this is a record, validate the canonical constructor for its components.
+        if (this.clazz.isRecord()) {
+            validateRecordCanonicalConstructor();
         }
 
         this.inlineStructDef = this.buildInlineStructDef();
@@ -178,8 +184,7 @@ public class LHStructDefType extends LHClassType {
         tempMarked.add(this);
 
         for (LHStructProperty property : this.getStructProperties()) {
-            LHClassType coreType =
-                    property.getPropertyType(typeAdapterRegistry).getCoreComponentType(typeAdapterRegistry);
+            LHClassType coreType = getResolvedDependencyType(property.getPropertyType(typeAdapterRegistry));
 
             if (coreType instanceof LHPrimitiveType) {
                 continue;
@@ -187,6 +192,9 @@ public class LHStructDefType extends LHClassType {
             if (coreType instanceof LHStructDefType) {
                 LHStructDefType propertyCoreType = (LHStructDefType) coreType;
                 propertyCoreType.detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (coreType instanceof LHInlineStructDefType) {
+                detectInlineDependencies(
+                        (LHInlineStructDefType) coreType, visited, sortedList, tempMarked, currentPath);
             } else {
                 throw new IllegalArgumentException(
                         "Missing @LHStructDef annotation on non-primitive class used in an LHStructDef getter or setter: "
@@ -199,6 +207,43 @@ public class LHStructDefType extends LHClassType {
         tempMarked.remove(this);
         visited.add(this);
         sortedList.add(this);
+    }
+
+    private LHClassType getResolvedDependencyType(LHClassType type) {
+        if (type instanceof LHArrayType) {
+            return getResolvedDependencyType(((LHArrayType) type).getResolvedComponentType());
+        }
+        if (type instanceof LHMapType) {
+            return getResolvedDependencyType(((LHMapType) type).getResolvedValueType());
+        }
+        return type;
+    }
+
+    private void detectInlineDependencies(
+            LHInlineStructDefType inlineType,
+            Set<LHClassType> visited,
+            List<LHStructDefType> sortedList,
+            Set<LHClassType> tempMarked,
+            List<LHClassType> currentPath)
+            throws IntrospectionException {
+        if (tempMarked.contains(inlineType)) {
+            currentPath.add(inlineType);
+            throw new StructDefCircularDependencyException(buildCircularDependencyExceptionMessage(currentPath));
+        }
+
+        tempMarked.add(inlineType);
+        currentPath.add(inlineType);
+        for (LHStructProperty property : inlineType.getStructProperties()) {
+            LHClassType propertyType = getResolvedDependencyType(property.getPropertyType(typeAdapterRegistry));
+            if (propertyType instanceof LHStructDefType) {
+                ((LHStructDefType) propertyType).detectCycle(visited, sortedList, tempMarked, currentPath);
+            } else if (propertyType instanceof LHInlineStructDefType) {
+                detectInlineDependencies(
+                        (LHInlineStructDefType) propertyType, visited, sortedList, tempMarked, currentPath);
+            }
+        }
+        currentPath.remove(currentPath.size() - 1);
+        tempMarked.remove(inlineType);
     }
 
     private static String buildCircularDependencyExceptionMessage(List<LHClassType> classList) {
@@ -240,6 +285,13 @@ public class LHStructDefType extends LHClassType {
     }
 
     private List<LHStructProperty> buildStructProperties() throws IntrospectionException {
+        if (this.clazz.isRecord()) {
+            return List.of(this.clazz.getRecordComponents()).stream()
+                    .map((RecordComponent recordComponent) -> new LHStructProperty(recordComponent, this))
+                    .filter((LHStructProperty property) -> !property.isIgnored())
+                    .collect(Collectors.toUnmodifiableList());
+        }
+
         return List.of(Introspector.getBeanInfo(this.clazz).getPropertyDescriptors()).stream()
                 // Default property descriptor provided by Java, should be filtered out
                 .filter((PropertyDescriptor pd) -> !"class".equals(pd.getName()))
@@ -273,5 +325,33 @@ public class LHStructDefType extends LHClassType {
         }
 
         return inlineStructDef.build();
+    }
+
+    /**
+     * Validate that the record class has a canonical constructor matching its record
+     * components.
+     *
+     * <p>This method assumes `this.clazz` is a Java record and inspects its
+     * {@link RecordComponent}s to build the expected canonical constructor
+     * parameter types. It throws an {@link IllegalArgumentException} if the
+     * canonical constructor is missing. The canonical constructor is required for
+     * reflective deserialization and for creating default instances when no-arg
+     * constructors are unavailable.
+     */
+    private void validateRecordCanonicalConstructor() {
+        RecordComponent[] rcs = this.clazz.getRecordComponents();
+        Class<?>[] paramTypes = new Class<?>[rcs.length];
+        for (int i = 0; i < rcs.length; i++) {
+            paramTypes[i] = rcs[i].getType();
+        }
+
+        try {
+            this.clazz.getDeclaredConstructor(paramTypes);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(
+                    "Record class " + this.clazz.getName()
+                            + " does not have the canonical constructor for its components",
+                    e);
+        }
     }
 }

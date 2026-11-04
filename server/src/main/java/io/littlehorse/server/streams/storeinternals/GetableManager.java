@@ -249,7 +249,7 @@ public class GetableManager extends ReadOnlyGetableManager {
 
         Map<String, GetableToStore<?, ?>> uncommittedChangesCopy = Map.copyOf(uncommittedChanges);
 
-        verifySize(uncommittedChanges.values());
+        verifySize(uncommittedChangesCopy.values());
         for (Map.Entry<String, GetableToStore<?, ?>> entry : uncommittedChangesCopy.entrySet()) {
             String storeableKey = entry.getKey();
             GetableToStore entity = entry.getValue();

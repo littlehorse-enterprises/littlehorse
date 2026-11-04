@@ -9,12 +9,13 @@ import java.lang.annotation.Target;
  * Methods annotated with {@code @LHStructIgnore} and their properties
  * will be excluded from StructDefs generated using this annotation.
  *
- * This annotation can be applied to getter/setter methods of a StructDef class.
+ * This annotation can be applied to getter/setter methods or record components
+ * of a StructDef class.
  *
  * @see java.lang.annotation.ElementType
  * @see java.lang.annotation.RetentionPolicy
  * @see java.lang.annotation.Target
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LHStructIgnore {}

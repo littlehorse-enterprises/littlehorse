@@ -1,0 +1,11 @@
+{
+  "java": {
+    "command": ["sdk-java/conformance/build/install/sdk-java-conformance/bin/sdk-java-conformance"],
+    "build": "./gradlew :sdk-java-conformance:installDist",
+    "mint": "sdk-java/conformance/build/install/sdk-java-conformance/bin/sdk-java-conformance mint sdk-conformance"
+  },
+  "js": {
+    "command": ["node", "sdk-js/conformance/build/testee.js"],
+    "build": "npm --prefix sdk-js run build && npm --prefix sdk-js run build:conformance"
+  }
+}

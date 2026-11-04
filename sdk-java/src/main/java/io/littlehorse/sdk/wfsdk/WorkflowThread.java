@@ -157,6 +157,13 @@ public interface WorkflowThread {
     InlineLHStructBuilder buildInlineStruct();
 
     /**
+     * Creates a builder for a native Map value with dynamic keys and values.
+     * This is the Map analog of {@link #buildStruct(String)}.
+     * @return a Map builder
+     */
+    LHMapBuilder buildMap();
+
+    /**
      * Creates a variable of type INT in the ThreadSpec.
      * @param name is the name of the variable.
      * @return a WfRunVariable.
@@ -219,6 +226,15 @@ public interface WorkflowThread {
      * @return a WfRunVariable.
      */
     WfRunVariable declareStruct(String name, Class<?> clazz);
+
+    /**
+     * Creates an inline Struct variable based on an unannotated POJO class.
+     *
+     * @param name is the name of the variable.
+     * @param clazz is the class that defines the inline Struct schema.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareInlineStruct(String name, Class<?> clazz);
 
     /**
      * Creates a Struct variable based on your StructDef name. Uses latest version of the StructDef.

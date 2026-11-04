@@ -31,7 +31,9 @@ include(
         'external-event',
         'hundred-tasks',
         'interrupt-handler',
+        'inline-struct-def',
         'inline-struct-placeholder',
+        'inline-workflow',
         'json',
         'maps',
         'mutation',
@@ -56,3 +58,6 @@ include(
 }
 
 project(":quickstart").projectDir = new File(rootProject.projectDir, "examples/java/quickstart")
+
+include 'sdk-java-conformance'
+project(":sdk-java-conformance").projectDir = new File(rootProject.projectDir, "sdk-java/conformance")

@@ -153,4 +153,5 @@ enum MetricWindowType {
     TASK_METRIC = 1;
     USER_TASK_METRIC = 2;
     NODE_METRIC = 3;  
+    QUOTA_USAGE_METRIC = 4;
 }

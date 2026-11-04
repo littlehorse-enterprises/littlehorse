@@ -1,0 +1,47 @@
+# Surface capabilities excused from needing a case; freshness ratchets both
+# ways, so a stale entry fails. todo = awaiting a case; not_applicable = no
+# compiled-output effect (with the reason).
+todo:
+  - id: Workflow#getPlaceholderValues
+    reason: the placeholder mechanism substitutes names at build time and deserves its own case family; nothing examines it yet
+  - id: Workflow#getTypeAdapterRegistry
+    reason: adapter-aware compilation (Java's compileWorkflow(LHConfig) overload) shapes literal encoding; needs an adapter case family
+not_applicable:
+  - id: ExternalEventNodeOutput#registeredAs
+    reason: shapes the PutExternalEventDefRequest side-registration, not the WfSpec; examined in the registrations area
+  - id: ExternalEventNodeOutput#withCorrelatedEventConfig
+    reason: shapes the PutExternalEventDefRequest side-registration, not the WfSpec; examined in the registrations area
+  - id: IfElseBody#body
+    reason: the SAM of a callback type; user code implements it, nothing compiles from the method itself
+  - id: InterruptHandler#withEventType
+    reason: shapes the ExternalEventDef side-registration, not the WfSpec; examined in the registrations area
+  - id: SpawnedThreads#buildNode
+    reason: compiler plumbing invoked internally by waitForThreads; its output is pinned by the wait-for-threads probe
+  - id: ThreadFunc#threadFunction
+    reason: the SAM of a callback type; user code implements it, nothing compiles from the method itself
+  - id: ThrowEventNodeOutput#registeredAs
+    reason: shapes the PutWorkflowEventDefRequest side-registration, not the WfSpec; examined in the registrations area
+  - id: Workflow#compileAndSaveToDisk
+    reason: file-IO wrapper over compileWfToJson; writing the same document to disk adds no comparable output
+  - id: Workflow#compileWfToJson
+    reason: serialization wrapper over compileWorkflow, which every case pins; comparison is semantic, so the wrapper's formatting has no distinct observable
+  - id: Workflow#doesWfSpecExist
+    reason: an RPC, not a compilation; live-server behavior belongs to the planned runtime area and is exercised today by the integration tests
+  - id: Workflow#getDefaultTaskTimeout
+    reason: query over the builder; the matching setter's compiled effect is pinned by the task-timeout case
+  - id: Workflow#getExternalEventDefsToRegister
+    reason: query over side-registrations; examined in the registrations area
+  - id: Workflow#getName
+    reason: query over the builder; no compiled effect
+  - id: Workflow#getRequiredChildWfSpecNames
+    reason: query derived from compilation; examined in the registrations area
+  - id: Workflow#getRequiredExternalEventDefNames
+    reason: query derived from compilation; examined in the registrations area
+  - id: Workflow#getRequiredTaskDefNames
+    reason: query derived from compilation; examined in the registrations area
+  - id: Workflow#getRequiredWorkflowEventDefNames
+    reason: query derived from compilation; examined in the registrations area
+  - id: Workflow#getWorkflowEventDefsToRegister
+    reason: query over side-registrations; examined in the registrations area
+  - id: Workflow#registerWfSpec
+    reason: an RPC, not a compilation (event defs first, then the spec); live-server behavior belongs to the planned runtime area and is exercised today by the integration tests and the examples harness

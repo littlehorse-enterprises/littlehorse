@@ -15,6 +15,7 @@ import littlehorse.model.service_pb2 as service__pb2
 import littlehorse.model.struct_def_pb2 as struct__def__pb2
 import littlehorse.model.task_def_pb2 as task__def__pb2
 import littlehorse.model.task_run_pb2 as task__run__pb2
+import littlehorse.model.type_definition_pb2 as type__definition__pb2
 import littlehorse.model.user_tasks_pb2 as user__tasks__pb2
 import littlehorse.model.variable_pb2 as variable__pb2
 import littlehorse.model.wf_run_pb2 as wf__run__pb2
@@ -136,6 +137,16 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.RunWfRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
                 _registered_method=True)
+        self.RunInlineWf = channel.unary_unary(
+                '/littlehorse.LittleHorse/RunInlineWf',
+                request_serializer=service__pb2.RunInlineWfRequest.SerializeToString,
+                response_deserializer=wf__run__pb2.WfRun.FromString,
+                _registered_method=True)
+        self.GetInlineWfSpec = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetInlineWfSpec',
+                request_serializer=object__id__pb2.WfRunId.SerializeToString,
+                response_deserializer=wf__run__pb2.InlineWfSpec.FromString,
+                _registered_method=True)
         self.ScheduleWf = channel.unary_unary(
                 '/littlehorse.LittleHorse/ScheduleWf',
                 request_serializer=service__pb2.ScheduleWfRequest.SerializeToString,
@@ -226,6 +237,11 @@ class LittleHorseStub(object):
                 request_serializer=object__id__pb2.VariableId.SerializeToString,
                 response_deserializer=variable__pb2.Variable.FromString,
                 _registered_method=True)
+        self.PutVariable = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutVariable',
+                request_serializer=service__pb2.PutVariableRequest.SerializeToString,
+                response_deserializer=type__definition__pb2.VariableValue.FromString,
+                _registered_method=True)
         self.ListVariables = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListVariables',
                 request_serializer=service__pb2.ListVariablesRequest.SerializeToString,
@@ -300,6 +316,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
                 request_serializer=service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
                 response_deserializer=wf__run__pb2.WfRun.FromString,
+                _registered_method=True)
+        self.SearchWorkflowMigrationPlan = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+                request_serializer=service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+                response_deserializer=service__pb2.WorkflowMigrationPlanIdList.FromString,
                 _registered_method=True)
         self.SearchCorrelatedEvent = channel.unary_unary(
                 '/littlehorse.LittleHorse/SearchCorrelatedEvent',
@@ -516,6 +537,11 @@ class LittleHorseStub(object):
                 request_serializer=metrics__pb2.ListTaskMetricsRequest.SerializeToString,
                 response_deserializer=metrics__pb2.MetricsList.FromString,
                 _registered_method=True)
+        self.ListQuotaUsageMetrics = channel.unary_unary(
+                '/littlehorse.LittleHorse/ListQuotaUsageMetrics',
+                request_serializer=metrics__pb2.ListQuotaUsageMetricsRequest.SerializeToString,
+                response_deserializer=metrics__pb2.MetricsList.FromString,
+                _registered_method=True)
         self.ListWfMetrics = channel.unary_unary(
                 '/littlehorse.LittleHorse/ListWfMetrics',
                 request_serializer=metrics__pb2.ListWfMetricsRequest.SerializeToString,
@@ -548,7 +574,7 @@ class LittleHorseStub(object):
                 _registered_method=True)
         self.GetQuota = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetQuota',
-                request_serializer=acls__pb2.QuotaId.SerializeToString,
+                request_serializer=object__id__pb2.QuotaId.SerializeToString,
                 response_deserializer=acls__pb2.Quota.FromString,
                 _registered_method=True)
         self.PutPrincipal = channel.unary_unary(
@@ -724,6 +750,20 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RunInlineWf(self, request, context):
+        """Starts a durable run from an unregistered workflow definition.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetInlineWfSpec(self, request, context):
+        """Fetches the run-owned inline definition. Its lifecycle follows the owning WfRun.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ScheduleWf(self, request, context):
         """Schedule repeated WfRun based on a cron expression
         """
@@ -867,6 +907,14 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PutVariable(self, request, context):
+        """Replaces the value of an existing Variable and attempts to advance its workflow.
+        Returns the previous value, respecting the variable's masking configuration.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListVariables(self, request, context):
         """List all Variables from a WfRun.
         """
@@ -973,6 +1021,13 @@ class LittleHorseServicer(object):
     def ApplyWorkflowMigrationPlan(self, request, context):
         """EXPERIMENTAL: Applies a workflow migration plan to a live WfRun, moving it onto the
         destination WfSpec.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchWorkflowMigrationPlan(self, request, context):
+        """EXPERIMENTAL: Search for WorkflowMigrationPlan's.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1309,6 +1364,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListQuotaUsageMetrics(self, request, context):
+        """Lists quota usage metric windows for a quota and time range.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListWfMetrics(self, request, context):
         """Lists available metric windows for a given WfSpecId and time range.
         """
@@ -1491,6 +1553,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.RunWfRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
             ),
+            'RunInlineWf': grpc.unary_unary_rpc_method_handler(
+                    servicer.RunInlineWf,
+                    request_deserializer=service__pb2.RunInlineWfRequest.FromString,
+                    response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'GetInlineWfSpec': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetInlineWfSpec,
+                    request_deserializer=object__id__pb2.WfRunId.FromString,
+                    response_serializer=wf__run__pb2.InlineWfSpec.SerializeToString,
+            ),
             'ScheduleWf': grpc.unary_unary_rpc_method_handler(
                     servicer.ScheduleWf,
                     request_deserializer=service__pb2.ScheduleWfRequest.FromString,
@@ -1581,6 +1653,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=object__id__pb2.VariableId.FromString,
                     response_serializer=variable__pb2.Variable.SerializeToString,
             ),
+            'PutVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutVariable,
+                    request_deserializer=service__pb2.PutVariableRequest.FromString,
+                    response_serializer=type__definition__pb2.VariableValue.SerializeToString,
+            ),
             'ListVariables': grpc.unary_unary_rpc_method_handler(
                     servicer.ListVariables,
                     request_deserializer=service__pb2.ListVariablesRequest.FromString,
@@ -1655,6 +1732,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.ApplyWorkflowMigrationPlan,
                     request_deserializer=service__pb2.ApplyWorkflowMigrationPlanRequest.FromString,
                     response_serializer=wf__run__pb2.WfRun.SerializeToString,
+            ),
+            'SearchWorkflowMigrationPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchWorkflowMigrationPlan,
+                    request_deserializer=service__pb2.SearchWorkflowMigrationPlanRequest.FromString,
+                    response_serializer=service__pb2.WorkflowMigrationPlanIdList.SerializeToString,
             ),
             'SearchCorrelatedEvent': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchCorrelatedEvent,
@@ -1871,6 +1953,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=metrics__pb2.ListTaskMetricsRequest.FromString,
                     response_serializer=metrics__pb2.MetricsList.SerializeToString,
             ),
+            'ListQuotaUsageMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListQuotaUsageMetrics,
+                    request_deserializer=metrics__pb2.ListQuotaUsageMetricsRequest.FromString,
+                    response_serializer=metrics__pb2.MetricsList.SerializeToString,
+            ),
             'ListWfMetrics': grpc.unary_unary_rpc_method_handler(
                     servicer.ListWfMetrics,
                     request_deserializer=metrics__pb2.ListWfMetricsRequest.FromString,
@@ -1903,7 +1990,7 @@ def add_LittleHorseServicer_to_server(servicer, server):
             ),
             'GetQuota': grpc.unary_unary_rpc_method_handler(
                     servicer.GetQuota,
-                    request_deserializer=acls__pb2.QuotaId.FromString,
+                    request_deserializer=object__id__pb2.QuotaId.FromString,
                     response_serializer=acls__pb2.Quota.SerializeToString,
             ),
             'PutPrincipal': grpc.unary_unary_rpc_method_handler(
@@ -2407,6 +2494,60 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def RunInlineWf(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/RunInlineWf',
+            service__pb2.RunInlineWfRequest.SerializeToString,
+            wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetInlineWfSpec(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetInlineWfSpec',
+            object__id__pb2.WfRunId.SerializeToString,
+            wf__run__pb2.InlineWfSpec.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ScheduleWf(request,
             target,
             options=(),
@@ -2893,6 +3034,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def PutVariable(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutVariable',
+            service__pb2.PutVariableRequest.SerializeToString,
+            type__definition__pb2.VariableValue.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ListVariables(request,
             target,
             options=(),
@@ -3287,6 +3455,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ApplyWorkflowMigrationPlan',
             service__pb2.ApplyWorkflowMigrationPlanRequest.SerializeToString,
             wf__run__pb2.WfRun.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchWorkflowMigrationPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchWorkflowMigrationPlan',
+            service__pb2.SearchWorkflowMigrationPlanRequest.SerializeToString,
+            service__pb2.WorkflowMigrationPlanIdList.FromString,
             options,
             channel_credentials,
             insecure,
@@ -4459,6 +4654,33 @@ class LittleHorse(object):
             _registered_method=True)
 
     @staticmethod
+    def ListQuotaUsageMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/ListQuotaUsageMetrics',
+            metrics__pb2.ListQuotaUsageMetricsRequest.SerializeToString,
+            metrics__pb2.MetricsList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def ListWfMetrics(request,
             target,
             options=(),
@@ -4635,7 +4857,7 @@ class LittleHorse(object):
             request,
             target,
             '/littlehorse.LittleHorse/GetQuota',
-            acls__pb2.QuotaId.SerializeToString,
+            object__id__pb2.QuotaId.SerializeToString,
             acls__pb2.Quota.FromString,
             options,
             channel_credentials,

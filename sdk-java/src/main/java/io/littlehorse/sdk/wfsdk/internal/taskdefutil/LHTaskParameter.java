@@ -26,6 +26,9 @@ public class LHTaskParameter {
     @Getter
     private final VariableDef variableDef;
 
+    @Getter
+    private final LHClassType variableClassType;
+
     public LHTaskParameter(
             Parameter parameter, LHTypeAdapterRegistry typeAdapterRegistry, Map<String, String> placeholderValues) {
         this.parameter = parameter;
@@ -43,23 +46,35 @@ public class LHTaskParameter {
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateLHMapUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
-
-        LHClassType variableClassType;
+        metadata.validateInlineStructUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         if (metadata.isLHArray()) {
-            variableClassType = new LHArrayType(parameter.getType(), typeAdapterRegistry, resolvedPlaceholderValues);
+            this.variableClassType = new LHArrayType(
+                    parameter.getType(),
+                    typeAdapterRegistry,
+                    resolvedPlaceholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
         } else if (metadata.isLHMap()) {
-            variableClassType = resolveMapType(parameter, typeAdapterRegistry, resolvedPlaceholderValues);
+            this.variableClassType = resolveMapType(parameter, typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
-            variableClassType = new LHStructDefId(structDefName.get());
+            this.variableClassType = new LHStructDefId(structDefName.get());
+        } else if (metadata.isInlineStruct()) {
+            this.variableClassType = LHClassType.resolve(
+                    parameter.getType(),
+                    typeAdapterRegistry,
+                    resolvedPlaceholderValues,
+                    LHClassType.ResolutionContext.STRUCT_MEMBER);
         } else {
-            variableClassType =
+            this.variableClassType =
                     LHClassType.fromJavaClass(parameter.getType(), typeAdapterRegistry, resolvedPlaceholderValues);
         }
+        metadata.validateInlineStructType(
+                variableClassType, LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         this.variableDef = VariableDef.newBuilder()
                 .setName(variableName)
-                .setTypeDef(variableClassType.getTypeDefinition().toBuilder()
+                .setTypeDef(this.variableClassType.getTypeDefinition().toBuilder()
                         .setMasked(metadata.isMasked())
                         .build())
                 .build();
@@ -88,7 +103,11 @@ public class LHTaskParameter {
             Type[] typeArgs = paramType.getActualTypeArguments();
             if (typeArgs.length == 2 && typeArgs[0] instanceof Class && typeArgs[1] instanceof Class) {
                 return new LHMapType(
-                        (Class<?>) typeArgs[0], (Class<?>) typeArgs[1], typeAdapterRegistry, placeholderValues);
+                        (Class<?>) typeArgs[0],
+                        (Class<?>) typeArgs[1],
+                        typeAdapterRegistry,
+                        placeholderValues,
+                        LHClassType.ResolutionContext.STRUCT_MEMBER);
             }
         }
 
