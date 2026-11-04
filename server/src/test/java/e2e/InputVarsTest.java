@@ -3,6 +3,7 @@ package e2e;
 import com.google.protobuf.Timestamp;
 import e2e.Struct.Car;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -14,7 +15,6 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -47,44 +47,53 @@ public class InputVarsTest {
 
     @LHWorkflow("input-vars-wf")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("input-vars-wf", thread -> {
-            WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
-            WfRunVariable tsVar = thread.addVariable("ts-var", VariableType.TIMESTAMP);
+        return Workflow.newWorkflow(
+                "input-vars-wf",
+                thread -> {
+                    WfRunVariable myVar = thread.addVariable("my-var", VariableType.INT);
+                    WfRunVariable tsVar = thread.addVariable("ts-var", VariableType.TIMESTAMP);
 
-            thread.execute("ab-double-it", myVar);
-            thread.execute("ab-subtract", 10, 8);
-            thread.execute("print-timestamps", tsVar, tsVar, tsVar, tsVar, tsVar);
-        });
+                    thread.execute("ab-double-it", myVar);
+                    thread.execute("ab-subtract", 10, 8);
+                    thread.execute("print-timestamps", tsVar, tsVar, tsVar, tsVar, tsVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("struct-var-wf")
     public Workflow structWorkflow() {
-        return new WorkflowImpl("struct-var-wf", thread -> {
-            WfRunVariable structVar = thread.declareStruct("struct-input", Car.class);
-            thread.execute("increment-mileage", structVar);
-            thread.execute("change-details", structVar, "Mustang", "Mach-E");
-        });
+        return Workflow.newWorkflow(
+                "struct-var-wf",
+                thread -> {
+                    WfRunVariable structVar = thread.declareStruct("struct-input", Car.class);
+                    thread.execute("increment-mileage", structVar);
+                    thread.execute("change-details", structVar, "Mustang", "Mach-E");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("json-input-vars-wf")
     public Workflow jsonInputVarsWf() {
-        return new WorkflowImpl("json-input-vars-wf", thread -> {
-            WfRunVariable myVar = thread.addVariable("my-json-var", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "json-input-vars-wf",
+                thread -> {
+                    WfRunVariable myVar = thread.addVariable("my-json-var", VariableType.JSON_OBJ);
 
-            // Use JsonPath to pass in a String from a nested subobject.
-            NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
+                    // Use JsonPath to pass in a String from a nested subobject.
+                    NodeOutput taskOutput = thread.execute("count-length", myVar.jsonPath("$.subObject.foo"));
 
-            // Use jsonpath to edit a nested field in a big object
-            thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
+                    // Use jsonpath to edit a nested field in a big object
+                    thread.mutate(myVar.jsonPath("$.subObject.bar"), VariableMutationType.ADD, taskOutput);
 
-            // Pass in a JSON_OBJ to a Java task that takes in a POJO.
-            // Behold the magic of the Java LH SDK!
-            thread.execute("process-big-obj", myVar);
+                    // Pass in a JSON_OBJ to a Java task that takes in a POJO.
+                    // Behold the magic of the Java LH SDK!
+                    thread.execute("process-big-obj", myVar);
 
-            // Can also pass in a whole sub object rather than just a
-            // string
-            thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
-        });
+                    // Can also pass in a whole sub object rather than just a
+                    // string
+                    thread.execute("process-sub-obj", myVar.jsonPath("$.subObject"));
+                },
+                new LHConfig());
     }
 
     @Test

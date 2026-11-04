@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,18 +23,21 @@ public class ExceptionHandlerExample {
 
     private static final Logger log = LoggerFactory.getLogger(ExceptionHandlerExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-exception-handler", wf -> {
-            NodeOutput node = wf.execute("fail");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-exception-handler",
+                wf -> {
+                    NodeOutput node = wf.execute("fail");
 
-            wf.handleError( // Handle technical failure
-                    node, handler -> {
-                        handler.execute("my-task");
-                    });
+                    wf.handleError( // Handle technical failure
+                            node, handler -> {
+                                handler.execute("my-task");
+                            });
 
-            // Execution resumes after handling exception.
-            wf.execute("my-task");
-        });
+                    // Execution resumes after handling exception.
+                    wf.execute("my-task");
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -69,7 +71,7 @@ public class ExceptionHandlerExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

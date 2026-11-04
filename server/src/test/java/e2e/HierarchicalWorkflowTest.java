@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.DeleteWfSpecRequest;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -36,9 +37,12 @@ public class HierarchicalWorkflowTest {
 
     @Test
     void shouldRejectInvalidWfSpecReference() {
-        Workflow workflow = Workflow.newWorkflow("asfjawepoig-not-a-valid-workflow", wf -> {
-            wf.sleepSeconds(1);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "asfjawepoig-not-a-valid-workflow",
+                wf -> {
+                    wf.sleepSeconds(1);
+                },
+                new LHConfig());
 
         String nonexistentWfSpec = randomString();
         workflow.setParent(nonexistentWfSpec);
@@ -135,14 +139,20 @@ public class HierarchicalWorkflowTest {
      */
     private Pair<String, String> createParentAndChild() {
         String parentName = randomString();
-        Workflow parent = Workflow.newWorkflow(parentName, wf -> {
-            wf.sleepSeconds(0);
-        });
+        Workflow parent = Workflow.newWorkflow(
+                parentName,
+                wf -> {
+                    wf.sleepSeconds(0);
+                },
+                new LHConfig());
 
         String childName = randomString();
-        Workflow child = Workflow.newWorkflow(childName, wf -> {
-            wf.waitForEvent(EVENT_NAME);
-        });
+        Workflow child = Workflow.newWorkflow(
+                childName,
+                wf -> {
+                    wf.waitForEvent(EVENT_NAME);
+                },
+                new LHConfig());
         child.setParent(parentName);
 
         // Register parent and child

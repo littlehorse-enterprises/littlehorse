@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.grpc.Status.Code;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.TaskRun;
@@ -39,44 +40,50 @@ public class RescueThreadRunTest {
 
     @LHWorkflow("simple-rescue-threadrun")
     public Workflow getSimpleWorkflow() {
-        return Workflow.newWorkflow("simple-rescue-threadrun", wf -> {
-            WfRunVariable timesToFail = wf.addVariable("times-to-fail", 1);
-            WfRunVariable didMutationHappen = wf.addVariable("did-mutation-happen", false);
+        return Workflow.newWorkflow(
+                "simple-rescue-threadrun",
+                wf -> {
+                    WfRunVariable timesToFail = wf.addVariable("times-to-fail", 1);
+                    WfRunVariable didMutationHappen = wf.addVariable("did-mutation-happen", false);
 
-            // Fail a configurable amount of times
-            wf.execute("throw-error-x-times", timesToFail);
-            wf.mutate(didMutationHappen, VariableMutationType.ASSIGN, true);
+                    // Fail a configurable amount of times
+                    wf.execute("throw-error-x-times", timesToFail);
+                    wf.mutate(didMutationHappen, VariableMutationType.ASSIGN, true);
 
-            // Should continue on for free
-            wf.execute("no-rescue-needed");
-        });
+                    // Should continue on for free
+                    wf.execute("no-rescue-needed");
+                },
+                new LHConfig());
     }
 
     // This test allows us to test edge cases about starting and resuming failed child/parent threadruns
     // when doing the RescueThreadRun RPC.
     @LHWorkflow("multi-thread-rescue-threadrun")
     public Workflow getMultiThreadWorkflow() {
-        return Workflow.newWorkflow("multi-thread-rescue-threadrun", wf -> {
+        return Workflow.newWorkflow(
+                "multi-thread-rescue-threadrun",
+                wf -> {
 
-            // Allow us to control which threadRun fails and when
-            WfRunVariable parentFailures = wf.addVariable("parent-failures", 0);
-            WfRunVariable childFailures = wf.addVariable("child-failures", 0);
+                    // Allow us to control which threadRun fails and when
+                    WfRunVariable parentFailures = wf.addVariable("parent-failures", 0);
+                    WfRunVariable childFailures = wf.addVariable("child-failures", 0);
 
-            SpawnedThread childThreadHandle = wf.spawnThread(
-                    child -> {
-                        child.execute("throw-error-x-times", childFailures);
+                    SpawnedThread childThreadHandle = wf.spawnThread(
+                            child -> {
+                                child.execute("throw-error-x-times", childFailures);
 
-                        // WaitForEvent allows us to control when each one completes
-                        child.waitForEvent("rescue-complete-child");
-                    },
-                    "child",
-                    null);
+                                // WaitForEvent allows us to control when each one completes
+                                child.waitForEvent("rescue-complete-child");
+                            },
+                            "child",
+                            null);
 
-            wf.execute("throw-error-x-times", parentFailures);
-            wf.waitForEvent("rescue-complete-parent");
+                    wf.execute("throw-error-x-times", parentFailures);
+                    wf.waitForEvent("rescue-complete-parent");
 
-            wf.waitForThreads(SpawnedThreads.of(childThreadHandle));
-        });
+                    wf.waitForThreads(SpawnedThreads.of(childThreadHandle));
+                },
+                new LHConfig());
     }
 
     @Test

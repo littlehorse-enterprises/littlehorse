@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
@@ -175,25 +176,28 @@ public class ChildThreadTest {
 
     @LHWorkflow("basic-child-thread")
     public Workflow getBasicChildThreadWorkflow() {
-        return Workflow.newWorkflow("basic-child-thread", wf -> {
-            WfRunVariable sharedVar = wf.addVariable("shared-var", VariableType.INT);
+        return Workflow.newWorkflow(
+                "basic-child-thread",
+                wf -> {
+                    WfRunVariable sharedVar = wf.addVariable("shared-var", VariableType.INT);
 
-            SpawnedThread childThread = wf.spawnThread(
-                    child -> {
-                        child.mutate(
-                                sharedVar,
-                                VariableMutationType.ASSIGN,
-                                child.waitForEvent(COMPLETE_CHILD).jsonPath("$.result"));
-                    },
-                    "child-thread",
-                    Map.of());
+                    SpawnedThread childThread = wf.spawnThread(
+                            child -> {
+                                child.mutate(
+                                        sharedVar,
+                                        VariableMutationType.ASSIGN,
+                                        child.waitForEvent(COMPLETE_CHILD).jsonPath("$.result"));
+                            },
+                            "child-thread",
+                            Map.of());
 
-            wf.mutate(
-                    sharedVar,
-                    VariableMutationType.ASSIGN,
-                    wf.waitForEvent(COMPLETE_PARENT).jsonPath("$.result"));
+                    wf.mutate(
+                            sharedVar,
+                            VariableMutationType.ASSIGN,
+                            wf.waitForEvent(COMPLETE_PARENT).jsonPath("$.result"));
 
-            wf.waitForThreads(SpawnedThreads.of(childThread));
-        });
+                    wf.waitForThreads(SpawnedThreads.of(childThread));
+                },
+                new LHConfig());
     }
 }
