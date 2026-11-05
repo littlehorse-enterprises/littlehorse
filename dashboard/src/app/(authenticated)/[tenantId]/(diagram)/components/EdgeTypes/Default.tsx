@@ -2,6 +2,7 @@ import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
 import { CircleAlertIcon, GitBranch } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
+import { EXCEPTION_COLOR } from '../ExceptionHandlers/exceptionHandlers'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
 import { pathReachesTarget, routeLabelPoint, routeToPath, snapEdgeRoute } from './elkRoute'
 import { edgeLabelSize } from './edgeLabel'
@@ -37,10 +38,15 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
     const labelPoint = snapped.labelPoint ?? routeLabelPoint(snapped.points)
     labelX = labelPoint.x
     labelY = labelPoint.y
-    paths = snapped.paths.map(path => ({
-      path: routeToPath(path),
-      terminal: pathReachesTarget(path, snapped.points),
-    }))
+    // A taken exception/resume path redraws the trunk it shares with untaken
+    // siblings, so the faded sibling can't hide it.
+    const taken = (data?.isExceptionEdge || data?.isResumeEdge) && data.fade === false
+    paths = taken
+      ? [{ path: edgePath, terminal: true }]
+      : snapped.paths.map(path => ({
+          path: routeToPath(path),
+          terminal: pathReachesTarget(path, snapped.points),
+        }))
   } else {
     ;[edgePath, labelX, labelY] = getSmoothStepPath({
       sourceX,
@@ -72,7 +78,18 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
           key={index}
           id={`${id}-${index}`}
           path={path}
-          style={style}
+          style={
+            data?.isExceptionEdge
+              ? {
+                  ...style,
+                  stroke: style?.stroke || EXCEPTION_COLOR,
+                  strokeWidth: style?.strokeWidth || 1.5,
+                  opacity: data.fade ? 0.25 : 1,
+                }
+              : data?.isResumeEdge
+                ? { ...style, opacity: data.fade ? 0.25 : 1 }
+                : style
+          }
           {...rest}
           interactionWidth={0}
           markerEnd={terminal ? markerEnd : undefined}

@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WorkflowDefinition } from '@/types'
-import { LHStatus, WfRun } from 'littlehorse-client/proto'
+import { LHStatus, ThreadSpec, WfRun } from 'littlehorse-client/proto'
 import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -34,7 +34,12 @@ import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { extractEdges } from './EdgeTypes/extractEdges'
-import { getNodeRunsList, LayoutManager } from './LayoutManager'
+import {
+  extractExceptionHandlers,
+  findHandlerRuns,
+  type ExceptionHandlerData,
+} from './ExceptionHandlers/exceptionHandlers'
+import { getNodeRunsList, LayoutManager, NodeRunsResolver } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes, getCycleNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
@@ -68,6 +73,18 @@ const threadFromUrl = (
   }
 }
 
+const extractDiagram = (spec: WorkflowDefinition, threadName: string, threadSpec: ThreadSpec) => {
+  const handlers = extractExceptionHandlers(spec, threadName)
+  if (handlers.nodes.length === 0) return { nodes: extractNodes(threadSpec), edges: extractEdges(threadSpec) }
+  // Handler groups paint at z 0, beneath the edges and nodes they contain.
+  return {
+    nodes: [...extractNodes(threadSpec), ...handlers.nodes].map(n =>
+      n.type === 'exceptionHandler' ? n : { ...n, zIndex: 1 }
+    ),
+    edges: [...extractEdges(threadSpec), ...handlers.edges].map(e => ({ ...e, zIndex: 1 })),
+  }
+}
+
 export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, headerActions }) => {
   const { tenantId } = useWhoAmI()
   const pathname = usePathname()
@@ -96,12 +113,29 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     return threadSpec
   }, [spec, thread.name])
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
-  const [nodes, setNodes, onNodesChange] = useNodesState(extractNodes(threadSpec))
+  const [edges, setEdges, onEdgesChange] = useEdgesState(extractDiagram(spec, thread.name, threadSpec).edges)
+  const [nodes, setNodes, onNodesChange] = useNodesState(extractDiagram(spec, thread.name, threadSpec).nodes)
 
   const threadRun = useMemo(() => wfRun?.threadRuns.find(tr => tr.number === thread.number), [thread.number, wfRun])
   const threadNodeRuns = threadRun?.nodeRuns
   const nodeOutputValues = threadRun?.nodeOutputValues
+
+  const handlerRuns = useMemo(() => {
+    if (!wfRun) return new Map<string, never>()
+    const groups = extractExceptionHandlers(spec, thread.name)
+      .nodes.filter(n => n.type === 'exceptionHandler')
+      .map(n => n.data as ExceptionHandlerData)
+    return findHandlerRuns(groups, threadNodeRuns, wfRun.threadRuns)
+  }, [spec, thread.name, threadNodeRuns, wfRun])
+
+  const getNodeRuns = useCallback<NodeRunsResolver>(
+    n => {
+      const groupId = n.data?.groupId
+      if (!wfRun || !groupId) return getNodeRunsList(n.id, threadNodeRuns)
+      return getNodeRunsList(n.data.specNodeId, handlerRuns.get(groupId)?.nodeRuns ?? [])
+    },
+    [wfRun, threadNodeRuns, handlerRuns]
+  )
 
   const lastAppliedThread = useRef<string | null>(null)
 
@@ -132,11 +166,12 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     if (appliedResetKey.current === resetKey) return
     appliedResetKey.current = resetKey
     lastAppliedThread.current = null
-    const extractedNodes = extractNodes(threadSpec).map(node => ({
+    const extracted = extractDiagram(spec, thread.name, threadSpec)
+    const extractedNodes = extracted.nodes.map(node => ({
       ...node,
       data: { ...node.data, layoutKey: resetKey },
     }))
-    const extractedEdges = extractEdges(threadSpec)
+    const extractedEdges = extracted.edges
 
     if (!wfRun) {
       const defaultNodeId = getNodeAfterEntrypoint(threadSpec)
@@ -155,18 +190,22 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     setNode(undefined)
     setNodes(extractedNodes)
     setEdges(extractedEdges)
-  }, [resetKey, thread.name, threadSpec, setNodes, setEdges, wfRun])
+  }, [resetKey, spec, thread.name, threadSpec, setNodes, setEdges, wfRun])
 
   useEffect(() => {
     if (!wfRun) return
     const withNodeRuns = <T extends RFNode>(n: T): T => {
-      const nodeRunsList = getNodeRunsList(n.id, threadNodeRuns)
+      if (n.type === 'exceptionHandler') {
+        const run = handlerRuns.get(n.id)?.run
+        return { ...n, data: { ...n.data, run, fade: !run } }
+      }
+      const nodeRunsList = getNodeRuns(n)
       const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
       return { ...n, data: { ...n.data, fade, nodeRunsList } }
     }
     setNodes(current => current.map(withNodeRuns))
     setNode(current => (current ? withNodeRuns(current) : current))
-  }, [threadNodeRuns, wfRun, setNodes])
+  }, [getNodeRuns, handlerRuns, wfRun, setNodes])
 
   useEffect(() => {
     if (!wfRun) return
@@ -178,13 +217,19 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
               data: {
                 ...edge.data,
                 nodeOutputValues,
-                fade: edge.data.isConditionalBranchEdge ? !isBranchEdgeReached(edge.target, threadNodeRuns) : undefined,
+                fade: edge.data.isConditionalBranchEdge
+                  ? !isBranchEdgeReached(edge.target, threadNodeRuns)
+                  : edge.data.isExceptionEdge
+                    ? !handlerRuns.has(edge.data.handlerGroupId!)
+                    : edge.data.isResumeEdge
+                      ? handlerRuns.get(edge.data.handlerGroupId!)?.run.status !== LHStatus.COMPLETED
+                      : undefined,
               },
             }
           : edge
       )
     )
-  }, [threadNodeRuns, nodeOutputValues, wfRun, setEdges])
+  }, [threadNodeRuns, nodeOutputValues, handlerRuns, wfRun, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)
@@ -294,7 +339,7 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
           </ReactFlow>
           <LayoutManager
             layoutKey={resetKey}
-            nodeRuns={threadNodeRuns}
+            getNodeRuns={getNodeRuns}
             viewportKey={viewportKey}
             setNodes={setNodes}
             setEdges={setEdges}

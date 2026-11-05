@@ -28,9 +28,11 @@ export const SelectedNode: FC = () => {
     if (!selectedNodeId) return
     const { getNodes, setNodes } = store.getState()
     const currentNodes = getNodes()
-    const needsUpdate = currentNodes.some(node => (node.selected ? node.zIndex !== 9999 : node.zIndex !== 1))
+    const zIndexOf = (node: { selected?: boolean; type?: string }) =>
+      node.type === 'exceptionHandler' ? 0 : node.selected ? 9999 : 1
+    const needsUpdate = currentNodes.some(node => node.zIndex !== zIndexOf(node))
     if (needsUpdate) {
-      setNodes(currentNodes.map(node => (node.selected ? { ...node, zIndex: 9999 } : { ...node, zIndex: 1 })))
+      setNodes(currentNodes.map(node => ({ ...node, zIndex: zIndexOf(node) })))
     }
   }, [selectedNodeId, store])
 

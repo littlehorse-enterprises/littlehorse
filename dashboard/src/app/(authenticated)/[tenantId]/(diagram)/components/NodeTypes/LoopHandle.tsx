@@ -2,7 +2,7 @@ import { Node } from 'littlehorse-client/proto'
 import { ComponentType, FC } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
 
-type Props = NodeProps<{ outgoingEdges?: Node['outgoingEdges'] }>
+type Props = NodeProps<{ outgoingEdges?: Node['outgoingEdges']; failureHandlers?: Node['failureHandlers'] }>
 
 export const withLoopHandle = (Component: ComponentType<Props>): FC<Props> => {
   const WithLoopHandle: FC<Props> = props => (
@@ -10,6 +10,9 @@ export const withLoopHandle = (Component: ComponentType<Props>): FC<Props> => {
       <Component {...props} />
       {props.data.outgoingEdges?.some(edge => edge.sinkNodeName.startsWith('cycle-')) && (
         <Handle type="source" id="source-loop" position={Position.Bottom} className="bg-transparent" />
+      )}
+      {(props.data.failureHandlers?.length ?? 0) > 0 && (
+        <Handle type="source" id="source-failure" position={Position.Bottom} className="bg-transparent" />
       )}
     </>
   )
