@@ -9,6 +9,10 @@ on:
         description: "Preview changes without updating pull requests or issues"
         type: boolean
         default: true
+      operationsPerRun:
+        description: "Maximum number of operations per run"
+        type: number
+        default: 1000
 
 concurrency:
   group: stale-prs
@@ -26,6 +30,7 @@ jobs:
         uses: actions/stale@v11
         with:
           debug-only: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run }}
+          operations-per-run: ${{ inputs.operationsPerRun || 1000 }}
           # Label inactive issues without commenting or closing them.
           days-before-issue-stale: 30
           days-before-issue-close: -1 # Don't close stale issues
