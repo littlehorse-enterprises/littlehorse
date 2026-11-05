@@ -3,6 +3,7 @@ package e2e;
 import e2e.Struct.Car;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEvent;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventId;
@@ -45,33 +46,42 @@ public class ExternalEventTest {
 
     @LHWorkflow("basic-external-event")
     public Workflow getBasicExternalEventWorkflow() {
-        return Workflow.newWorkflow("basic-external-event", thread -> {
-            WfRunVariable evtOutput = thread.declareStr("evt-output");
-            thread.mutate(
-                    evtOutput,
-                    VariableMutationType.ASSIGN,
-                    thread.waitForEvent(EVT_NAME).registeredAs(String.class));
-            thread.execute("basic-external-event-task", evtOutput);
-        });
+        return Workflow.newWorkflow(
+                "basic-external-event",
+                thread -> {
+                    WfRunVariable evtOutput = thread.declareStr("evt-output");
+                    thread.mutate(
+                            evtOutput,
+                            VariableMutationType.ASSIGN,
+                            thread.waitForEvent(EVT_NAME).registeredAs(String.class));
+                    thread.execute("basic-external-event-task", evtOutput);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("struct-external-event")
     public Workflow getStructExternalEventWorkflow() {
-        return Workflow.newWorkflow("struct-external-event", thread -> {
-            WfRunVariable evtOutput = thread.declareStruct("struct-evt-output", Car.class);
-            thread.mutate(
-                    evtOutput,
-                    VariableMutationType.ASSIGN,
-                    thread.waitForEvent(STRUCT_EVT_NAME).registeredAs(Car.class));
-            thread.execute("struct-external-event-task", evtOutput);
-        });
+        return Workflow.newWorkflow(
+                "struct-external-event",
+                thread -> {
+                    WfRunVariable evtOutput = thread.declareStruct("struct-evt-output", Car.class);
+                    thread.mutate(
+                            evtOutput,
+                            VariableMutationType.ASSIGN,
+                            thread.waitForEvent(STRUCT_EVT_NAME).registeredAs(Car.class));
+                    thread.execute("struct-external-event-task", evtOutput);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("external-event-timeout")
     public Workflow getTimeoutWorkflow() {
-        return Workflow.newWorkflow("external-event-timeout", wf -> {
-            wf.waitForEvent(EVT_NAME).timeout(1);
-        });
+        return Workflow.newWorkflow(
+                "external-event-timeout",
+                wf -> {
+                    wf.waitForEvent(EVT_NAME).timeout(1);
+                },
+                new LHConfig());
     }
 
     @Test

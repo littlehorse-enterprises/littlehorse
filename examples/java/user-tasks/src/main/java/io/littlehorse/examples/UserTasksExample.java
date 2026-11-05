@@ -24,8 +24,8 @@ public class UserTasksExample {
     private static final String IT_REQUEST_FORM = "it-request";
     public static final String APPROVAL_FORM = "approve-it-request";
 
-    public Workflow getWorkflow() {
-        return new WorkflowImpl(WF_NAME, this::wf);
+    public Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(WF_NAME, this::wf, config);
     }
 
     public void wf(WorkflowThread wf) {
@@ -111,7 +111,7 @@ public class UserTasksExample {
         StructDef approvalFormStructDef = registerStructDef(client, ApprovalForm.class);
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

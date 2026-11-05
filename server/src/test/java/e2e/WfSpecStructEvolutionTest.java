@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
@@ -15,7 +16,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
 import java.time.Duration;
@@ -37,9 +37,12 @@ public class WfSpecStructEvolutionTest {
         waitForStructDef(structDefName, 0);
 
         // Register a WfSpec exposing the struct as a PUBLIC_VAR; this pins (and freezes) it at v0.
-        Workflow original = new WorkflowImpl(wfSpecName, thread -> {
-            thread.declareStruct("in", structDefName).asPublic();
-        });
+        Workflow original = Workflow.newWorkflow(
+                wfSpecName,
+                thread -> {
+                    thread.declareStruct("in", structDefName).asPublic();
+                },
+                new LHConfig());
         WfSpec originalSpec = client.putWfSpec(original.compileWorkflow());
         assertThat(pinnedStructVersion(originalSpec)).isEqualTo(0);
 
@@ -48,9 +51,12 @@ public class WfSpecStructEvolutionTest {
         waitForStructDef(structDefName, 1);
 
         // Re-registering the same WfSpec should now succeed and re-pin to v1.
-        Workflow evolved = new WorkflowImpl(wfSpecName, thread -> {
-            thread.declareStruct("in", structDefName).asPublic();
-        });
+        Workflow evolved = Workflow.newWorkflow(
+                wfSpecName,
+                thread -> {
+                    thread.declareStruct("in", structDefName).asPublic();
+                },
+                new LHConfig());
         WfSpec evolvedSpec = client.putWfSpec(evolved.compileWorkflow());
         assertThat(pinnedStructVersion(evolvedSpec)).isEqualTo(1);
     }
@@ -63,15 +69,21 @@ public class WfSpecStructEvolutionTest {
         putStructDefV0(structDefName);
         waitForStructDef(structDefName, 0);
 
-        Workflow original = new WorkflowImpl(wfSpecName, thread -> {
-            thread.declareStruct("in", structDefName).asPublic();
-        });
+        Workflow original = Workflow.newWorkflow(
+                wfSpecName,
+                thread -> {
+                    thread.declareStruct("in", structDefName).asPublic();
+                },
+                new LHConfig());
         client.putWfSpec(original.compileWorkflow());
 
         // Changing the frozen public variable from a Struct to a primitive must still be rejected.
-        Workflow incompatible = new WorkflowImpl(wfSpecName, thread -> {
-            thread.addVariable("in", VariableType.STR).asPublic();
-        });
+        Workflow incompatible = Workflow.newWorkflow(
+                wfSpecName,
+                thread -> {
+                    thread.addVariable("in", VariableType.STR).asPublic();
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> client.putWfSpec(incompatible.compileWorkflow()))
                 .isInstanceOf(StatusRuntimeException.class)

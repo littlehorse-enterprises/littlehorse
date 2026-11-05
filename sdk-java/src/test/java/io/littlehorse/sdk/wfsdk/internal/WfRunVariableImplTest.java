@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
@@ -19,6 +20,7 @@ import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.Library;
 import java.util.Map;
@@ -45,7 +47,7 @@ public class WfRunVariableImplTest {
 
     @Test
     void validateVariableAllowJsonPath() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", threadFunction);
+        WorkflowImpl workflow = (WorkflowImpl) Workflow.newWorkflow("my-workflow", threadFunction, new LHConfig());
         WorkflowThreadImpl wfThread = new WorkflowThreadImpl("wf-thread", workflow, threadFunction);
         WfRunVariableImpl variable = WfRunVariableImpl.createPrimitiveVar("my-var", VariableType.STR, wfThread);
 
@@ -64,10 +66,13 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldSerializeDefaultArrayAsNativeLHArray() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            io.littlehorse.sdk.wfsdk.WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
-            arrVar.withDefault(new Long[] {1L, 2L});
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    io.littlehorse.sdk.wfsdk.WfRunVariable arrVar = thread.declareArray("my-array", Long.class);
+                    arrVar.withDefault(new Long[] {1L, 2L});
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         ThreadVarDef varDef =
@@ -82,11 +87,14 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldSerializeSizeAsUnaryVariableAssignmentSource() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            var inputArray = thread.declareArray("input-array", Long.class);
-            var arraySize = thread.declareInt("array-size");
-            arraySize.assign(inputArray.size());
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    var inputArray = thread.declareArray("input-array", Long.class);
+                    var arraySize = thread.declareInt("array-size");
+                    arraySize.assign(inputArray.size());
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
 
@@ -111,17 +119,23 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldRejectPutOnNonMapVariable() {
-        assertThrows(LHWfSpecBuilderException.class, () -> new WorkflowImpl("my-workflow", thread -> {
-                    thread.declareStr("not-a-map").put("key", 42L);
-                })
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareStr("not-a-map").put("key", 42L);
+                        },
+                        new LHConfig())
                 .compileWorkflow());
     }
 
     @Test
     void shouldDeclareMapWithCorrectTypeDefinition() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareMap("my-map", String.class, Long.class);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareMap("my-map", String.class, Long.class);
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         ThreadVarDef varDef =
@@ -136,9 +150,12 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldDeclareInlineStructWithEmbeddedSchema() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareInlineStruct("address", InlineAddress.class);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineStruct("address", InlineAddress.class);
+                },
+                new LHConfig());
 
         PutWfSpecRequest request = workflow.compileWorkflow();
         TypeDefinition typeDef = request.getThreadSpecsOrThrow(request.getEntrypointThreadName())
@@ -158,9 +175,12 @@ public class WfRunVariableImplTest {
     void shouldSerializeInlineStructDefaultWithoutStructDefId() {
         InlineAddress address = new InlineAddress();
         address.setStreet("Main St");
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareInlineStruct("address", InlineAddress.class).withDefault(address);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineStruct("address", InlineAddress.class).withDefault(address);
+                },
+                new LHConfig());
 
         VariableValue defaultValue = workflow.compileWorkflow()
                 .getThreadSpecsOrThrow("entrypoint")
@@ -183,9 +203,12 @@ public class WfRunVariableImplTest {
     void shouldSerializeNamedStructDefaultWithStructDefId() {
         Library library = new Library();
         library.setName("Central");
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareStruct("library", Library.class).withDefault(library);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareStruct("library", Library.class).withDefault(library);
+                },
+                new LHConfig());
 
         VariableValue defaultValue = workflow.compileWorkflow()
                 .getThreadSpecsOrThrow("entrypoint")
@@ -213,9 +236,12 @@ public class WfRunVariableImplTest {
                                 .setValue(VariableValue.newBuilder().setStr("Central"))
                                 .build())
                 .build();
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareStruct("library", "library").withDefault(library);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareStruct("library", "library").withDefault(library);
+                },
+                new LHConfig());
 
         VariableValue defaultValue = workflow.compileWorkflow()
                 .getThreadSpecsOrThrow("entrypoint")
@@ -229,12 +255,15 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldCreateNestedPathOnNamedStructWithoutDefaultValue() {
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareStruct("library", Library.class)
-                    .required()
-                    .get("books")
-                    .get(0);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareStruct("library", Library.class)
+                            .required()
+                            .get("books")
+                            .get(0);
+                },
+                new LHConfig());
 
         assertDoesNotThrow(() -> {
             workflow.compileWorkflow();
@@ -245,10 +274,14 @@ public class WfRunVariableImplTest {
     void shouldDeclareAndDefaultNativeContainersWithInlinePojoMembers() {
         InlineAddress address = new InlineAddress();
         address.setStreet("Main St");
-        WorkflowImpl workflow = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareArray("addresses", InlineAddress.class).withDefault(new InlineAddress[] {address});
-            thread.declareMap("address-map", String.class, InlineAddress.class).withDefault(Map.of("home", address));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareArray("addresses", InlineAddress.class).withDefault(new InlineAddress[] {address});
+                    thread.declareMap("address-map", String.class, InlineAddress.class)
+                            .withDefault(Map.of("home", address));
+                },
+                new LHConfig());
 
         PutWfSpecRequest request = workflow.compileWorkflow();
         ThreadVarDef arrayVar = request.getThreadSpecsOrThrow("entrypoint").getVariableDefs(0);
@@ -279,11 +312,14 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldCompileMapPutAsPathBasedAssign() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            var map = thread.declareMap("my-map", String.class, Long.class);
-            var key = thread.declareStr("key");
-            map.put(key, 42L);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    var map = thread.declareMap("my-map", String.class, Long.class);
+                    var key = thread.declareStr("key");
+                    map.put(key, 42L);
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         VariableMutation mutation =
@@ -305,10 +341,14 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldSerializeDefaultMapAsNativeLHMap() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            io.littlehorse.sdk.wfsdk.WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            mapVar.withDefault(Map.of("x", 1L, "y", 2L));
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    io.littlehorse.sdk.wfsdk.WfRunVariable mapVar =
+                            thread.declareMap("my-map", String.class, Long.class);
+                    mapVar.withDefault(Map.of("x", 1L, "y", 2L));
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         ThreadVarDef varDef =
@@ -322,19 +362,25 @@ public class WfRunVariableImplTest {
     @Test
     void shouldRejectNonPrimitiveMapKeyType() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new WorkflowImpl("my-workflow", thread -> {
-                        // String[] is not a primitive key type
-                        thread.declareMap("bad-map", String[].class, Long.class);
-                    })
+            Workflow.newWorkflow(
+                            "my-workflow",
+                            thread -> {
+                                // String[] is not a primitive key type
+                                thread.declareMap("bad-map", String[].class, Long.class);
+                            },
+                            new LHConfig())
                     .compileWorkflow();
         });
     }
 
     @Test
     void shouldDeclareMapWithArrayValueType() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareMap("my-map", String.class, Long[].class);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareMap("my-map", String.class, Long[].class);
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         ThreadVarDef varDef =
@@ -352,9 +398,12 @@ public class WfRunVariableImplTest {
 
     @Test
     void shouldDeclareMapWithStructValueType() {
-        WorkflowImpl wf = new WorkflowImpl("my-workflow", thread -> {
-            thread.declareMap("my-map", String.class, Library.class);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareMap("my-map", String.class, Library.class);
+                },
+                new LHConfig());
 
         PutWfSpecRequest pwf = wf.compileWorkflow();
         ThreadVarDef varDef =

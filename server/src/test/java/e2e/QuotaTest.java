@@ -28,7 +28,6 @@ import io.littlehorse.sdk.common.proto.QuotaIdList;
 import io.littlehorse.sdk.common.proto.SearchQuotaRequest;
 import io.littlehorse.sdk.common.proto.TenantId;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -58,12 +57,15 @@ public class QuotaTest {
 
     @LHWorkflow("quota-test-wf")
     public Workflow getQuotaWf() {
-        return new WorkflowImpl("quota-test-wf", wf -> {
-            wf.execute("quota-test-noop");
-            wf.execute("quota-test-noop");
-            wf.execute("quota-test-noop");
-            wf.execute("quota-test-noop");
-        });
+        return Workflow.newWorkflow(
+                "quota-test-wf",
+                wf -> {
+                    wf.execute("quota-test-noop");
+                    wf.execute("quota-test-noop");
+                    wf.execute("quota-test-noop");
+                    wf.execute("quota-test-noop");
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("quota-test-noop")
