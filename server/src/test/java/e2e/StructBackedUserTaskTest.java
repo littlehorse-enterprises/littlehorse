@@ -181,6 +181,41 @@ public class StructBackedUserTaskTest {
     }
 
     @Test
+    void shouldRejectProgressWithWrongStructDefVersion() {
+        StructBackedTask task = registerStructBackedTask();
+        workflowVerifier
+                .prepareRun(workflow(task.userTaskDefName()))
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId runId = getUserTaskRunId(wfRun.getId());
+                    UserTaskRun original = client.getUserTaskRun(runId);
+                    assertThatThrownBy(() -> client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                                    .setUserTaskRunId(runId)
+                                    .setUserId("obiwan")
+                                    .setOutput(VariableValue.newBuilder()
+                                            .setStruct(Struct.newBuilder()
+                                                    .setStructDefId(original.getResultStructDefId().toBuilder()
+                                                            .setVersion(original.getResultStructDefId()
+                                                                            .getVersion()
+                                                                    + 1))
+                                                    .setStruct(InlineStruct.getDefaultInstance())))
+                                    .build()))
+                            .isInstanceOfSatisfying(StatusRuntimeException.class, exception -> assertThat(
+                                            exception.getStatus().getCode())
+                                    .isEqualTo(io.grpc.Status.Code.INVALID_ARGUMENT))
+                            .hasMessageContaining("result StructDefId");
+                    assertThat(client.getUserTaskRun(runId)).isEqualTo(original);
+                    client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(runId)
+                            .setUserId("obiwan")
+                            .setOutput(structOutput(task.structDef(), true))
+                            .build());
+                })
+                .waitForStatus(COMPLETED)
+                .start();
+    }
+
+    @Test
     void shouldCompleteWithoutClientStructDefId() {
         StructBackedTask task = registerStructBackedTask();
         StructDef latestStructDef = client.putStructDef(PutStructDefRequest.newBuilder()

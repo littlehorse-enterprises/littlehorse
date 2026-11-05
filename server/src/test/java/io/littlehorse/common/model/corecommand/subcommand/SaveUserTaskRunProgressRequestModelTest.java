@@ -84,6 +84,20 @@ public class SaveUserTaskRunProgressRequestModelTest {
     }
 
     @Test
+    void shouldRejectProgressWithWrongStructDefId() {
+        TestData testData = arrangeStructScenario(
+                taskId -> createProgressRequest(taskId, InlineStruct.getDefaultInstance()).toBuilder()
+                        .setOutput(VariableValue.newBuilder()
+                                .setStruct(Struct.newBuilder()
+                                        .setStructDefId(
+                                                new StructDefIdModel("wrong-schema", STRUCT_DEF_VERSION).toProto())
+                                        .setStruct(InlineStruct.getDefaultInstance())))
+                        .build());
+
+        assertInvalidField(testData, "result StructDefId");
+    }
+
+    @Test
     void shouldRejectUnknownStructField() {
         TestData testData = arrangeScenarioWithOutput(inlineStruct(
                 "unknownField", VariableValue.newBuilder().setStr("value").build()));
@@ -259,7 +273,9 @@ public class SaveUserTaskRunProgressRequestModelTest {
         freshContext.metadataManager().put(taskDef);
         freshContext.metadataManager().put(createStructDef(structDefId, freshContext));
         freshContext.metadataManager().put(createNestedStructDef(freshContext));
-        freshContext.getableManager().put(createUserTaskRun(nodeRunId, taskDef.getObjectId(), freshContext));
+        UserTaskRunModel task = createUserTaskRun(nodeRunId, taskDef.getObjectId(), freshContext);
+        task.setResultStructDefId(structDefId);
+        freshContext.getableManager().put(task);
         freshContext.endExecution();
 
         return new TestData(

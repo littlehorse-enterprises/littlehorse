@@ -395,8 +395,17 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
                         Status.INVALID_ARGUMENT,
                         "Progress for a struct-backed UserTaskDef must contain a Struct output");
             }
+            StructDefIdModel submittedSchemaId = partialProgress.getStruct().getStructDefId();
+            if (submittedSchemaId != null
+                    && !submittedSchemaId
+                            .toProto()
+                            .build()
+                            .equals(resultStructDefId.toProto().build())) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT, "Progress must use the UserTaskRun's result StructDefId");
+            }
             validatePartialStructResults(
-                    partialProgress.getStruct().getInlineStruct().getFields(), userTaskDef);
+                    partialProgress.getStruct().getInlineStruct().getFields(), resultStructDefId);
             output = partialProgress;
             results.clear();
             UTESavedModel saved = new UTESavedModel(req.getUserId(), partialProgress);
@@ -415,8 +424,8 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     }
 
     private void validatePartialStructResults(
-            Map<String, StructFieldModel> partialResults, UserTaskDefModel userTaskDef) {
-        StructDefModel structDef = executionContext.metadataManager().get(userTaskDef.getResultStructDefId());
+            Map<String, StructFieldModel> partialResults, StructDefIdModel outputSchemaId) {
+        StructDefModel structDef = executionContext.metadataManager().get(outputSchemaId);
         Map<String, StructFieldDefModel> fieldDefs = structDef.getStructDef().getFields();
 
         for (Map.Entry<String, StructFieldModel> result : partialResults.entrySet()) {
@@ -424,8 +433,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             if (fieldDef == null) {
                 throw new LHApiException(
                         Status.INVALID_ARGUMENT,
-                        "Field '%s' is not defined in StructDef %s"
-                                .formatted(result.getKey(), userTaskDef.getResultStructDefId()));
+                        "Field '%s' is not defined in StructDef %s".formatted(result.getKey(), outputSchemaId));
             }
 
             try {
