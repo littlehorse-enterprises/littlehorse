@@ -2,14 +2,17 @@ package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHStructDef;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -75,13 +78,23 @@ public class WorkflowCompilationTest {
                 "referenced-types",
                 thread -> {
                     thread.declareStruct("root", ReferencedRoot.class);
+                    thread.declareArray("root-array", ReferencedRoot.class);
+                    thread.declareMap("root-map", String.class, ReferencedRoot[].class);
                     thread.declareArray("nested-array", NestedReferencedType.class);
+                    thread.declareArray("matrix", NestedReferencedType[].class);
+                    thread.declareMap("array-map", String.class, NestedReferencedType[][].class);
                     thread.declareMap("nested-map", String.class, NestedReferencedType.class);
                     thread.spawnThread(
-                            child -> child.declareInlineStruct("child", ChildReferencedType.class), "child", Map.of());
-                    thread.registerInterruptHandler(
-                                    "interrupt",
-                                    handler -> handler.declareInlineStruct("handler", ChildReferencedType.class))
+                            child -> {
+                                child.declareInlineStruct("child", ChildReferencedType.class);
+                                child.declareArray("child-array", ChildReferencedType.class);
+                            },
+                            "child",
+                            Map.of());
+                    thread.registerInterruptHandler("interrupt", handler -> {
+                                handler.declareInlineStruct("handler", ChildReferencedType.class);
+                                handler.declareMap("handler-map", String.class, ChildReferencedType[].class);
+                            })
                             .withEventType(EventReferencedType.class);
                     thread.waitForEvent("external-event").registeredAs(RegisteredExternalEventType.class);
                     thread.throwEvent("workflow-event", "payload").registeredAs(RegisteredWorkflowEventType.class);
@@ -93,16 +106,107 @@ public class WorkflowCompilationTest {
         Assertions.assertThat(referencedTypes)
                 .contains(
                         ReferencedRoot.class,
+                        ReferencedRoot[].class,
                         NestedReferencedType.class,
+                        NestedReferencedType[].class,
+                        NestedReferencedType[][].class,
+                        Map.class,
                         ChildReferencedType.class,
+                        ChildReferencedType[].class,
                         EventReferencedType.class,
                         RegisteredExternalEventType.class,
                         RegisteredWorkflowEventType.class,
                         String.class,
                         Long.class,
                         Boolean.class);
+        Assertions.assertThat(workflow.getReferencedJavaTypes()).isEqualTo(referencedTypes);
+        workflow.compileWorkflow();
+        Assertions.assertThat(workflow.getReferencedJavaTypes()).isEqualTo(referencedTypes);
         Assertions.assertThatThrownBy(() -> referencedTypes.add(Object.class))
                 .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    public static class ContainerProperties {
+        public NestedReferencedType[][] getCustomers() {
+            return null;
+        }
+
+        public void setCustomers(NestedReferencedType[][] customers) {}
+
+        public Map<String, NestedReferencedType[]> getByName() {
+            return null;
+        }
+
+        public void setByName(Map<String, NestedReferencedType[]> byName) {}
+    }
+
+    @LHStructDef("named-container-properties")
+    public static class NamedContainerProperties extends ContainerProperties {}
+
+    @Test
+    void shouldDiscoverContainersInInlineAndNamedBeanProperties() {
+        for (boolean named : new boolean[] {false, true}) {
+            Workflow workflow = Workflow.newWorkflow("container-properties", thread -> {
+                if (named) {
+                    thread.declareStruct("container", NamedContainerProperties.class);
+                } else {
+                    thread.declareInlineStruct("container", ContainerProperties.class);
+                }
+            });
+            Assertions.assertThat(workflow.getReferencedJavaTypes())
+                    .containsExactlyInAnyOrder(
+                            named ? NamedContainerProperties.class : ContainerProperties.class,
+                            NestedReferencedType[][].class,
+                            NestedReferencedType[].class,
+                            NestedReferencedType.class,
+                            Map.class,
+                            String.class);
+        }
+    }
+
+    @Test
+    void shouldDiscoverAdaptedArrayAndMapTypesWithoutInventingScalarArrays() {
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDAdapter()).build();
+        Workflow workflow = Workflow.newWorkflow(
+                "adapted-containers",
+                thread -> {
+                    thread.declareArray("ids", UUID[].class);
+                    thread.declareMap("ids-by-name", String.class, UUID[].class);
+                    thread.declareMap("scalar-map", UUID.class, Long.class);
+                },
+                config);
+
+        Assertions.assertThat(workflow.getReferencedJavaTypes())
+                .containsExactlyInAnyOrder(
+                        UUID[][].class, UUID[].class, UUID.class, Map.class, String.class, Long.class);
+    }
+
+    @Test
+    void shouldNotInferTypesFromJsonDefaultsOrNamedStructIds() {
+        Workflow workflow = Workflow.newWorkflow("runtime-values", thread -> {
+            thread.declareJsonObj("json").withDefault(new HashMap<>(Map.of("customer", new NestedReferencedType())));
+            thread.declareStruct("server-defined", "server-defined");
+            thread.declareStr("scalar");
+        });
+
+        Assertions.assertThat(workflow.getReferencedJavaTypes())
+                .doesNotContain(
+                        HashMap.class, NestedReferencedType.class, NestedReferencedType[].class, String[].class);
+    }
+
+    private static class UUIDAdapter implements LHStringAdapter<UUID> {
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
+
+        public String toString(UUID value) {
+            return value.toString();
+        }
+
+        public UUID fromString(String value) {
+            return UUID.fromString(value);
+        }
     }
 
     @Test

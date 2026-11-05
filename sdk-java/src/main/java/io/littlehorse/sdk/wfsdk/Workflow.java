@@ -311,9 +311,13 @@ public abstract class Workflow {
      *
      * <p>This includes classes used by variable declarations, event registrations, child threads,
      * handlers, and recursively discovered JavaBean properties.
+     * Arrays include their actual array class, each component array dimension, and the leaf
+     * component class. Native typed maps include {@link Map}, their key types, and their value types;
+     * concrete map implementations are not inferred.
      *
      * <p>Only classes encountered during SDK type resolution are collected. Default values and
      * other runtime objects are not inspected to discover additional classes.
+     * This set describes referenced types, not which classes require reflective construction.
      *
      * @return an immutable set of referenced Java classes
      */

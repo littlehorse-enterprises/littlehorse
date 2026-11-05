@@ -8,7 +8,9 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructDef;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 public class LHClassTypeTest {
@@ -16,6 +18,47 @@ public class LHClassTypeTest {
         public String getName() {
             return "name";
         }
+    }
+
+    @Test
+    void shouldCollectDirectlyConstructedTypesAndRestoreNestedCollectorsAfterFailure() {
+        Set<Class<?>> outer = new HashSet<>();
+        Set<Class<?>> inner = new HashSet<>();
+        LHTypeAdapterRegistry registry = LHTypeAdapterRegistry.empty();
+        LHClassType.collectReferencedJavaTypes(outer::add, () -> {
+            new LHPrimitiveType(String.class, registry);
+            assertThatThrownBy(() -> LHClassType.collectReferencedJavaTypes(inner::add, () -> {
+                        new LHArrayType(UnannotatedPojo[][].class, registry);
+                        throw new IllegalStateException("nested compilation failed");
+                    }))
+                    .hasMessage("nested compilation failed");
+            new LHMapType(String.class, Long.class, registry);
+            new LHStructDefType(ChildClass.class, registry);
+            return null;
+        });
+        Set<Class<?>> snapshot = new HashSet<>(outer);
+        new LHPrimitiveType(Boolean.class, registry);
+        assertThat(outer)
+                .isEqualTo(snapshot)
+                .containsExactlyInAnyOrder(String.class, Map.class, Long.class, ChildClass.class);
+        assertThat(inner)
+                .containsExactlyInAnyOrder(
+                        UnannotatedPojo[][].class, UnannotatedPojo[].class, UnannotatedPojo.class, String.class);
+    }
+
+    @Test
+    void shouldCollectSupportedPrimitiveArraysAndTheirComponents() {
+        for (Class<?> array :
+                new Class<?>[] {int[].class, long[].class, float[].class, double[].class, boolean[].class}) {
+            Set<Class<?>> types = new HashSet<>();
+            LHClassType.collectReferencedJavaTypes(
+                    types::add, () -> new LHArrayType(array, LHTypeAdapterRegistry.empty()));
+            assertThat(types).containsExactlyInAnyOrder(array, array.getComponentType());
+        }
+        Set<Class<?>> bytes = new HashSet<>();
+        LHClassType.collectReferencedJavaTypes(
+                bytes::add, () -> LHClassType.fromJavaClass(byte[].class, LHTypeAdapterRegistry.empty()));
+        assertThat(bytes).containsExactlyInAnyOrder(byte[].class, byte.class);
     }
 
     @Test

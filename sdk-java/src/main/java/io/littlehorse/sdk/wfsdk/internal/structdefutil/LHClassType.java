@@ -77,11 +77,6 @@ public abstract class LHClassType {
             throw new IllegalArgumentException("Class type should not be null");
         }
 
-        Consumer<Class<?>> collector = referencedJavaTypeCollector.get();
-        if (collector != null) {
-            collector.accept(classType);
-        }
-
         if (void.class.equals(classType) || Void.class.equals(classType)) {
             throw new IllegalArgumentException(
                     "Void type is not supported as a variable type in LittleHorse. Void cases should be handled before creating LHClassTypes.");
@@ -161,6 +156,18 @@ public abstract class LHClassType {
         this.clazz = Objects.requireNonNull(clazz);
         this.typeAdapterRegistry = Objects.requireNonNull(lhTypeAdapterRegistry);
         this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
+        Consumer<Class<?>> collector = referencedJavaTypeCollector.get();
+        if (collector != null) {
+            // All Java-backed types pass here, including directly constructed native arrays and maps.
+            Class<?> referencedType = clazz;
+            while (true) {
+                collector.accept(referencedType);
+                if (!referencedType.isArray()) {
+                    break;
+                }
+                referencedType = referencedType.getComponentType();
+            }
+        }
     }
 
     public Class<?> getClassType() {
