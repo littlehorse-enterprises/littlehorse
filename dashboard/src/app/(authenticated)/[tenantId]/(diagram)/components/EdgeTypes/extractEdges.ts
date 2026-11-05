@@ -6,6 +6,9 @@ import type { EdgeRoute } from './elkRoute'
 export type DiagramEdgeData = EdgeProto & {
   isElseEdge?: boolean
   isConditionalBranchEdge?: boolean
+  isExceptionEdge?: boolean
+  isResumeEdge?: boolean
+  handlerGroupId?: string
   fade?: boolean
   nodeOutputValues?: Record<string, VariableValue>
   route?: EdgeRoute

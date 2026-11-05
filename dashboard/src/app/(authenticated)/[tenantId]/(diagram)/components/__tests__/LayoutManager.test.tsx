@@ -4,7 +4,7 @@ import { layoutDiagram } from '../graphLayout'
 import { LayoutManager } from '../LayoutManager'
 
 jest.mock('reactflow', () => ({ useStore: jest.fn(), useReactFlow: jest.fn(), useOnViewportChange: jest.fn() }))
-jest.mock('../graphLayout', () => ({ layoutDiagram: jest.fn() }))
+jest.mock('../graphLayout', () => ({ layoutDiagram: jest.fn(), specNodeId: (node: Node) => node.id }))
 
 const node = (layoutKey: string): Node => ({
   id: 'shared-node-name',
@@ -16,11 +16,18 @@ const node = (layoutKey: string): Node => ({
 })
 const layout = () => ({
   graph: { id: 'root', children: [{ id: 'shared-node-name', x: 100, y: 100 }] },
+  boxes: new Map([['shared-node-name', { id: 'shared-node-name', x: 100, y: 100 }]]),
   routes: new Map(),
 })
 let nodes: Node[]
 const edges: [] = []
-const props = { viewportKey: 'test-viewport', setNodes: jest.fn(), setEdges: jest.fn(), onLayoutComplete: jest.fn() }
+const props = {
+  getNodeRuns: () => undefined,
+  viewportKey: 'test-viewport',
+  setNodes: jest.fn(),
+  setEdges: jest.fn(),
+  onLayoutComplete: jest.fn(),
+}
 
 beforeEach(() => {
   jest.clearAllMocks()

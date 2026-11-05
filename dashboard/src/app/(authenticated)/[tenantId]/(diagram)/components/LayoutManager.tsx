@@ -2,7 +2,7 @@ import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
 import { nodeDimensions } from './nodeDimensions'
-import { layoutDiagram } from './graphLayout'
+import { layoutDiagram, specNodeId } from './graphLayout'
 
 export { ELK_LAYOUT_OPTIONS } from './graphLayout'
 
@@ -15,8 +15,10 @@ export const getNodeRunsList = (nodeId: string, nodeRuns?: NodeRun[]): NodeRun[]
       return bPos - aPos
     })
 
+export type NodeRunsResolver = (node: Node) => NodeRun[] | undefined
+
 type LayoutManagerProps = {
-  nodeRuns?: NodeRun[]
+  getNodeRuns: NodeRunsResolver
   /**
    * Identity of the graph currently displayed (spec/run/thread). Layout runs
    * exactly once per key: reruns triggered by anything else — selection
@@ -39,7 +41,7 @@ type LayoutManagerProps = {
 }
 
 export const LayoutManager: FC<LayoutManagerProps> = ({
-  nodeRuns,
+  getNodeRuns,
   layoutKey,
   viewportKey,
   setNodes,
@@ -64,14 +66,22 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   const onLoad = useCallback(
     async (nodes: Node[], edges: Edge[], key: string) => {
       try {
-        const { graph: laidOutGraph, routes } = await layoutDiagram(nodes, edges)
+        const { boxes, routes } = await layoutDiagram(nodes, edges)
         if (currentLayoutKey.current !== key) return
 
         const laidOutNodes = nodes.map(node => {
-          const elkNode = laidOutGraph.children?.find(n => n.id === node.id)
-          const nodeRunsList = getNodeRunsList(node.id, nodeRuns)
+          const elkNode = boxes.get(node.id)
+          if (node.type === 'exceptionHandler') {
+            return {
+              ...node,
+              data: { ...node.data, size: { w: elkNode?.width ?? 0, h: elkNode?.height ?? 0 } },
+              position: { x: elkNode?.x ?? 0, y: elkNode?.y ?? 0 },
+              isLaidOut: true,
+            }
+          }
+          const nodeRunsList = getNodeRuns(node)
           const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
-          const { w, h } = nodeDimensions(node.type, node.id)
+          const { w, h } = nodeDimensions(node.type, specNodeId(node))
           return {
             ...node,
             data: { ...node.data, fade, nodeRunsList },
@@ -109,7 +119,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, setViewport, viewportKey, nodeRuns, setNodes, setEdges, onLayoutComplete]
+    [fitView, setViewport, viewportKey, getNodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
   const laidOutKey = useRef<string | null>(null)

@@ -1,4 +1,4 @@
-import ELK, { type ElkNode } from 'elkjs/lib/elk.bundled.js'
+import ELK, { type ElkExtendedEdge, type ElkNode } from 'elkjs/lib/elk.bundled.js'
 import { Edge, Node } from 'reactflow'
 import { conditionLabelParts, edgeLabelSize } from './EdgeTypes/edgeLabel'
 import { type DiagramEdgeData } from './EdgeTypes/extractEdges'
@@ -32,12 +32,51 @@ export const ELK_LAYOUT_OPTIONS = {
 
 const portId = (node: string, handle: string) => `${node}/${handle}`
 
-export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): ElkNode => ({
-  id: 'root',
-  layoutOptions: ELK_LAYOUT_OPTIONS,
-  children: nodes.map(node => {
-    const { w, h } = nodeDimensions(node.type, node.id)
-    const loop = edges.some(edge => edge.source === node.id && edge.sourceHandle === 'source-loop')
+/** The handler group a node is drawn inside (groups can nest). */
+const groupOf = (node?: Node): string | undefined =>
+  node?.type === 'exceptionHandler' ? node.data?.parentGroupId : node?.data?.groupId
+
+/** Inlined handler nodes carry their ThreadSpec id; footprints come from it. */
+export const specNodeId = (node: Node): string => node.data?.specNodeId ?? node.id
+
+const HANDLER_GROUP_OPTIONS = {
+  'elk.padding': '[top=34,left=24,bottom=34,right=24]',
+}
+
+// Handler groups are compound nodes: edges cross into and out of them, and
+// every coordinate comes back absolute so reactflow nodes stay unparented.
+const HIERARCHY_OPTIONS = {
+  'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
+  'org.eclipse.elk.json.edgeCoords': 'ROOT',
+  'org.eclipse.elk.json.shapeCoords': 'ROOT',
+}
+
+export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): ElkNode => {
+  const byId = new Map(nodes.map(node => [node.id, node]))
+  const groupsAround = (id: string) => {
+    const chain: string[] = []
+    for (let group = groupOf(byId.get(id)); group; group = groupOf(byId.get(group))) chain.push(group)
+    return chain
+  }
+  // ELK wants each edge in the innermost group holding both ends.
+  const containerOf = (edge: Edge) => {
+    const aroundTarget = new Set(groupsAround(edge.target))
+    return groupsAround(edge.source).find(group => aroundTarget.has(group))
+  }
+
+  const elkNode = (node: Node): ElkNode => {
+    if (node.type === 'exceptionHandler') {
+      return {
+        id: node.id,
+        layoutOptions: HANDLER_GROUP_OPTIONS,
+        children: nodes.filter(child => groupOf(child) === node.id).map(elkNode),
+        edges: edges.filter(edge => containerOf(edge) === node.id).map(elkEdge),
+      }
+    }
+    const { w, h } = nodeDimensions(node.type, specNodeId(node))
+    const extraSouth = ['source-loop', 'source-failure'].filter(handle =>
+      edges.some(edge => edge.source === node.id && edge.sourceHandle === handle)
+    )
     return {
       id: node.id,
       width: w,
@@ -46,11 +85,12 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
       ports: [
         { id: portId(node.id, 'target-0'), layoutOptions: { 'elk.port.side': 'WEST' } },
         { id: portId(node.id, 'source-0'), layoutOptions: { 'elk.port.side': 'EAST' } },
-        ...(loop ? [{ id: portId(node.id, 'source-loop'), layoutOptions: { 'elk.port.side': 'SOUTH' } }] : []),
+        ...extraSouth.map(handle => ({ id: portId(node.id, handle), layoutOptions: { 'elk.port.side': 'SOUTH' } })),
       ],
     }
-  }),
-  edges: edges.map(edge => {
+  }
+
+  const elkEdge = (edge: Edge<DiagramEdgeData>) => {
     const label = edgeLabelSize(edge.data)
     return {
       id: edge.id,
@@ -72,15 +112,37 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
           ]
         : [],
     }
-  }),
-})
+  }
+
+  const hasGroups = nodes.some(node => node.type === 'exceptionHandler')
+
+  return {
+    id: 'root',
+    layoutOptions: hasGroups ? { ...ELK_LAYOUT_OPTIONS, ...HIERARCHY_OPTIONS } : ELK_LAYOUT_OPTIONS,
+    children: nodes.filter(node => !groupOf(node)).map(elkNode),
+    edges: edges.filter(edge => containerOf(edge) === undefined).map(elkEdge),
+  }
+}
+
+const flatten = (node: ElkNode): ElkNode[] => (node.children ?? []).flatMap(child => [child, ...flatten(child)])
+const flattenEdges = (node: ElkNode): ElkExtendedEdge[] => [
+  ...(node.edges ?? []),
+  ...(node.children ?? []).flatMap(flattenEdges),
+]
 
 export const layoutDiagram = async (nodes: Node[], edges: Edge<DiagramEdgeData>[]) => {
   const graph = await elk.layout(buildElkGraph(nodes, edges))
-  const routes = (graph.edges ?? []).map(edge => {
+  const routes = flattenEdges(graph).map(edge => {
     const section = edge.sections?.[0]
     if (!section) throw new Error(`ELK did not route edge ${edge.id}`)
-    return { id: edge.id, points: [section.startPoint, ...(section.bendPoints ?? []), section.endPoint] }
+    // Converting nested coordinates to root ones adds float noise (161.66…66
+    // vs 161.66…63), which breaks the exact-equality checks downstream.
+    const points = [section.startPoint, ...(section.bendPoints ?? []), section.endPoint].map(point => ({
+      x: Math.round(point.x * 1000) / 1000,
+      y: Math.round(point.y * 1000) / 1000,
+    }))
+    return { id: edge.id, points }
   })
-  return { graph, routes: planRoutes(edges, routes) }
+  const boxes = new Map(flatten(graph).map(node => [node.id, node]))
+  return { graph, boxes, routes: planRoutes(edges, routes) }
 }
