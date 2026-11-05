@@ -77,8 +77,9 @@ public class SaveUserTaskRunProgressRequestModelTest {
             Assertions.assertThat(event.getType()).isEqualTo(EventCase.SAVED);
             Assertions.assertThat(event.getTime()).isEqualTo(testData.savedAt());
             Assertions.assertThat(event.getSaved().getUserId()).isEqualTo("anakin");
-            Assertions.assertThat(event.getSaved().toProto().getResultsMap())
-                    .containsOnly(java.util.Map.entry(STR_FIELD, requestedItem));
+            Assertions.assertThat(event.getSaved().toProto().getResultsMap()).isEmpty();
+            Assertions.assertThat(event.getSaved().toProto().getOutput())
+                    .isEqualTo(testData.progress().getOutput());
         });
     }
 
