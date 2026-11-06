@@ -1,6 +1,6 @@
-# Proposal: Oneof Support in `Struct`s
+# Proposal: OneOf Support in `Struct`s
 
-- [Proposal: Oneof Support in `Struct`s](#proposal-oneof-support-in-structs)
+- [Proposal: OneOf Support in `Struct`s](#proposal-oneof-support-in-structs)
   - [Background](#background)
   - [Proposed Solution](#proposed-solution)
     - [Client-Side (SDK) Changes](#client-side-sdk-changes)
@@ -152,7 +152,7 @@ func (Payment) LHStructDef() littlehorse.LHStructDefInfo {
 }
 ```
 
-With `IsOneOf: true`, `Name` must be empty. Otherwise, exported fields can declare groups with `lhoneof` tags; neither form means an ordinary Struct. Alternatives must be pointers. Serialization checks pointer presence independently of JSON `omitempty`, so pointers to zero or empty values count as selections.
+A helper type sets `IsOneOf: true` and leaves `Name` empty because it is embedded, not registered. To group fields in a named Struct instead, tag each participating field with `lhoneof:"method"`. A type with neither marker is an ordinary Struct. Field names still come from `json` tags; `lh` tags remain optional. Alternatives must be pointers. Serialization checks pointer presence independently of JSON `omitempty`, so pointers to zero or empty values count as selections.
 
 In **JavaScript / TypeScript**, we will add an `lhOneOf` helper that follows the existing [`lhStruct` API](../sdk-js/src/worker/zodSchema.ts):
 
@@ -175,6 +175,8 @@ const payment = Payment.parse({
   orderId: 'order-123', method: { cardToken: 'tok_abc' },
 })
 ```
+
+Alternatives are declared with their value schemas, such as `z.string()`, but `lhOneOf` makes each one optional. Its inferred type is `{ cardToken?: string; bankAccountId?: string; walletId?: string }`, so the example above type-checks, and `parse` rejects objects with more than one alternative set.
 
 ### Selections and Unset Fields
 
@@ -215,7 +217,7 @@ Alternatives cannot have defaults or schema-level nullability. Explicit wire nul
 
 ### Workflow Access and Updates
 
-Both APIs use nested paths such as `method.cardToken`; reading an unset alternative returns `NULL`. Assigning a second alternative fails and preserves the previous value. Switch selections by replacing the containing Struct (`method`). Alternatives are not cleared automatically; field removal is outside scope.
+Both APIs use nested paths such as `method.cardToken`; reading an unset alternative returns `NULL`. Assigning a second alternative, whether from a literal, task output, or `ExternalEvent`, fails the `NodeRun` with `VAR_SUB_ERROR`, like other failed variable mutations. All mutations on that edge roll back, preserving the previous value. Switch selections by replacing the containing Struct (`method`). Alternatives are not cleared automatically; field removal is outside scope.
 
 ### Protobuf Changes
 
