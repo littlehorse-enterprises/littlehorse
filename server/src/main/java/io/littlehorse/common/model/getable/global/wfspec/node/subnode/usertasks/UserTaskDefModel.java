@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
 import io.littlehorse.common.util.LHUtil;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
+import lombok.Setter;
 
 public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
 
@@ -28,6 +30,10 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
 
     public String description;
     public int version;
+
+    @Getter
+    @Setter
+    private StructDefIdModel resultStructDefId;
 
     public UserTaskDefModel() {
         fields = new ArrayList<>();
@@ -44,6 +50,7 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
                 .setVersion(version);
 
         if (description != null) out.setDescription(description);
+        if (resultStructDefId != null) out.setResultStructDefId(resultStructDefId.toProto());
 
         for (UserTaskFieldModel utf : fields) {
             out.addFields(utf.toProto());
@@ -58,6 +65,9 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
         createdAt = LHUtil.fromProtoTs(p.getCreatedAt());
         version = p.getVersion();
         if (p.hasDescription()) description = p.getDescription();
+        if (p.hasResultStructDefId()) {
+            resultStructDefId = StructDefIdModel.fromProto(p.getResultStructDefId(), context);
+        }
 
         for (UserTaskField utf : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utf, UserTaskFieldModel.class, context));
