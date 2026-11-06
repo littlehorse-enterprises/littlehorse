@@ -42,4 +42,5 @@ lhctl run basic-workflow name Obi-Wan
 - [`quickstart/`](./quickstart/README.md): KYC-style getting-started workflow.
 - [`structdef/`](./structdef/README.md): Struct definition and usage.
 - [`taskmetadata/`](./taskmetadata/README.md): Task metadata usage.
+- [`user-tasks/`](./user-tasks/README.md): IT requests and Finance approvals using Struct-backed user tasks.
 - [`wait-for-condition/`](./wait-for-condition/README.md): Wait-for-condition pattern.
