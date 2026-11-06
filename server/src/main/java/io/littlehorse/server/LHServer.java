@@ -150,7 +150,8 @@ public class LHServer {
                 commandSender,
                 requestQuotaManager,
                 internalComms.getAsyncWaiters(),
-                lhInternalClient);
+                lhInternalClient,
+                healthService.getMeterRegistry());
     }
 
     public String getInstanceName() {

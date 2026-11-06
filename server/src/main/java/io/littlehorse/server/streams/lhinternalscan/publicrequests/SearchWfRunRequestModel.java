@@ -17,14 +17,18 @@ import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
 import io.littlehorse.sdk.common.proto.VariableMatch;
+import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
+import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.lhinternalscan.PublicScanRequest;
 import io.littlehorse.server.streams.lhinternalscan.SearchScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.TagScanBoundaryStrategy;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.scanfilter.ScanFilterModel;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchWfRunReply;
 import io.littlehorse.server.streams.storeinternals.index.Attribute;
+import io.littlehorse.server.streams.storeinternals.index.Tag;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
 import java.util.ArrayList;
@@ -33,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -52,6 +57,9 @@ public class SearchWfRunRequestModel
 
     // not from proto
     private ExecutionContext executionContext;
+
+    @Getter
+    private String strategy = "unselected";
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
@@ -122,6 +130,53 @@ public class SearchWfRunRequestModel
         return out;
     }
 
+    @Override
+    public InternalScan getInternalSearch(RequestExecutionContext ctx) {
+        InternalScan scan = super.getInternalSearch(ctx);
+        strategy = "wfrun_index";
+        if (variableMatches.isEmpty()
+                || wfSpecMajorVersion != null
+                || earliestStart != null
+                || latestStart != null
+                || parentWfRunId != null) {
+            return scan;
+        }
+
+        // Existing variables retain their original WfSpecId after a workflow migration.
+        // Keep version-scoped searches on the WfRun index rather than changing their semantics.
+        // Draft merge blocker: retained definitions do not establish coverage after WfSpec deletion.
+        List<WfSpecModel> versions =
+                ctx.metadataManager().getAllFromPrefix(WfSpecIdModel.getPrefix(wfSpecName), WfSpecModel.class);
+        for (VariableMatchModel match : variableMatches) {
+            if (match.getValue().getValueType() != ValueCase.STR || versions.isEmpty()) continue;
+            boolean indexed = versions.stream().allMatch(version -> {
+                ThreadVarDefModel variable = version.getThreadSpecs()
+                        .get(version.getEntrypointThreadName())
+                        .getVarDef(match.getVarName());
+                return variable != null
+                        && variable.isSearchable()
+                        && !variable.getVarDef().isMaskedValue()
+                        && variable.getVarDef().getTypeDef().getPrimitiveType() == VariableType.STR;
+            });
+            if (!indexed) continue;
+
+            Attribute workflowAttribute = getSearchAttributes().getFirst();
+            String prefix = Tag.getAttributeString(
+                    GetableClassEnum.VARIABLE,
+                    List.of(
+                            workflowAttribute,
+                            new Attribute(
+                                    match.getVarName(),
+                                    LHUtil.toLHDbSearchFormat(match.getValue().getStrVal()))));
+            scan.tagScan = new TagScanBoundaryStrategy(prefix, Optional.empty(), Optional.empty()).buildScanProto();
+            if (status != null) scan.filters.add(new ScanFilterModel(status));
+            strategy = "variable_index";
+            log.debug("Selected variable index for workflow search");
+            break;
+        }
+        return scan;
+    }
+
     public List<Attribute> getSearchAttributes() {
         List<Attribute> out = new ArrayList<>();
         boolean hasName = wfSpecName != null && !wfSpecName.isEmpty();
@@ -180,8 +235,6 @@ public class SearchWfRunRequestModel
 
     @Override
     public List<ScanFilterModel> getFilters(RequestExecutionContext ctx) throws LHApiException {
-        // TODO: optimize it so that we send a Variable Search query before sending a WfRun Scan.
-
         List<ScanFilterModel> out = new ArrayList<>();
         if (wfSpecName == null || wfSpecName.isEmpty()) {
             if (!variableMatches.isEmpty()) {
