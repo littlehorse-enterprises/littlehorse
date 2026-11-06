@@ -23,6 +23,7 @@ namespace LittleHorse.Sdk
         internal string? LHC_OAUTH_CLIENT_ID { get; }
         internal string? LHC_OAUTH_CLIENT_SECRET { get; }
         internal string? LHC_OAUTH_ACCESS_TOKEN_URL { get; }
+        internal string? LHC_OAUTH_CA_CERT { get; }
         internal string? LHC_TENANT_ID { get; }
         internal bool LHC_GRPC_RESOURCE_EXHAUSTED_RETRY { get; } = true;
         internal int LHW_NUM_WORKER_THREADS { get; } = 8;
@@ -61,6 +62,9 @@ namespace LittleHorse.Sdk
             var oauthAccessTokenUrl = Environment.GetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL");
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var oauthCaCert = Environment.GetEnvironmentVariable("LHC_OAUTH_CA_CERT");
+            if (!string.IsNullOrEmpty(oauthCaCert))
+                LHC_OAUTH_CA_CERT = oauthCaCert;
             var resourceExhaustedRetry = Environment.GetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY");
             if (!string.IsNullOrEmpty(resourceExhaustedRetry))
                 LHC_GRPC_RESOURCE_EXHAUSTED_RETRY = bool.Parse(resourceExhaustedRetry);
@@ -111,6 +115,9 @@ namespace LittleHorse.Sdk
             var oauthAccessTokenUrl = properties["LHC_OAUTH_ACCESS_TOKEN_URL"];
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var oauthCaCert = properties["LHC_OAUTH_CA_CERT"];
+            if (!string.IsNullOrEmpty(oauthCaCert))
+                LHC_OAUTH_CA_CERT = oauthCaCert;
             var resourceExhaustedRetry = properties["LHC_GRPC_RESOURCE_EXHAUSTED_RETRY"];
             if (!string.IsNullOrEmpty(resourceExhaustedRetry))
                 LHC_GRPC_RESOURCE_EXHAUSTED_RETRY = bool.Parse(resourceExhaustedRetry);
@@ -158,6 +165,9 @@ namespace LittleHorse.Sdk
                 configArguments!, "LHC_OAUTH_ACCESS_TOKEN_URL");
             if (!string.IsNullOrEmpty(oauthAccessTokenUrl))
                 LHC_OAUTH_ACCESS_TOKEN_URL = oauthAccessTokenUrl;
+            var oauthCaCert = GetValueIfKeyIsPresent(configArguments!, "LHC_OAUTH_CA_CERT");
+            if (!string.IsNullOrEmpty(oauthCaCert))
+                LHC_OAUTH_CA_CERT = oauthCaCert;
             var resourceExhaustedRetry = GetValueIfKeyIsPresent(
                 configArguments!, "LHC_GRPC_RESOURCE_EXHAUSTED_RETRY");
             if (!string.IsNullOrEmpty(resourceExhaustedRetry))

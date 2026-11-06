@@ -196,6 +196,8 @@ Run keycloak and creates clients:
 ./local-dev/setup.sh --keycloak
 ```
 
+Keycloak listens on `http://localhost:8888` and `https://localhost:8443`. The HTTPS port uses the certificates from `./local-dev/issue-certificates.sh`, which `setup.sh` creates if they don't exist.
+
 Clients:
 
 | Client Id | Client Secret                    | Description                                                      |
@@ -213,6 +215,14 @@ Run the server:
 ```
 
 > Check file [oauth.config](configs/oauth.config)
+
+To test clients against Keycloak over HTTPS, run the server with [oauth-https.config](configs/oauth-https.config). Keycloak only accepts a token when it's introspected through the same URL that issued it, so the server calls Keycloak over HTTPS too, trusting the local CA through `LHS_OAUTH_CA_CERT`:
+
+```
+./local-dev/do-server.sh oauth-https
+```
+
+Clients then use the `https://localhost:8443` URLs and set `LHC_OAUTH_CA_CERT` to `local-dev/certs/ca/ca.crt`, as shown in the config file. `LHC_OAUTH_CA_CERT` is supported by `lhctl` and every SDK.
 
 Open Keycloak:
 

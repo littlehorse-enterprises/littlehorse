@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime
+import ssl
 from typing import Any, Optional, cast
 import time
 from authlib.integrations.requests_client import OAuth2Session
@@ -7,6 +8,8 @@ import grpc
 from google.rpc.error_details_pb2 import RetryInfo
 from google.rpc.status_pb2 import Status
 from grpc.aio import ClientCallDetails
+from requests.adapters import HTTPAdapter
+from requests.utils import DEFAULT_CA_BUNDLE_PATH
 
 from littlehorse.exceptions import OAuthException
 
@@ -33,6 +36,23 @@ class AccessToken:
         return datetime.fromtimestamp(float(self.data["expires_at"]))
 
 
+class _SSLContextAdapter(HTTPAdapter):
+    def __init__(self, ssl_context: ssl.SSLContext) -> None:
+        self._ssl_context = ssl_context
+        super().__init__()
+
+    def init_poolmanager(self, *args: Any, **kwargs: Any) -> None:
+        kwargs["ssl_context"] = self._ssl_context
+        super().init_poolmanager(*args, **kwargs)
+
+
+def _trusting_ca_adapter(ca_cert: str) -> HTTPAdapter:
+    """Trusts the CAs in ca_cert in addition to the ones requests trusts by default."""
+    context = ssl.create_default_context(cafile=DEFAULT_CA_BUNDLE_PATH)
+    context.load_verify_locations(cafile=ca_cert)
+    return _SSLContextAdapter(context)
+
+
 # https://grpc.io/docs/guides/auth/#python
 # https://docs.authlib.org/en/latest/client/oauth2.html#oauth2session-for-client-credentials
 class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
@@ -41,10 +61,12 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
         client_id: Optional[str],
         client_secret: Optional[str],
         token_endpoint_url: Optional[str],
+        ca_cert: Optional[str] = None,
     ) -> None:
         self.client_id = client_id
         self.client_secret = client_secret
         self.token_endpoint_url = token_endpoint_url
+        self._adapter = None if ca_cert is None else _trusting_ca_adapter(ca_cert)
 
         self._token: Optional[AccessToken] = None
 
@@ -66,6 +88,8 @@ class OAuthCredentialsProvider(grpc.AuthMetadataPlugin):
             client = OAuth2Session(
                 client_id=self.client_id, client_secret=self.client_secret
             )
+            if self._adapter is not None:
+                client.mount("https://", self._adapter)
 
             token_data = client.fetch_token(
                 url=self.token_endpoint_url,
