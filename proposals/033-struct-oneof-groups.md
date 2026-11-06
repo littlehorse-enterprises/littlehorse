@@ -262,5 +262,6 @@ JSON Schema can express this constraint with optional, non-null alternative prop
 |-------------|----------|
 | Support only one of the two SDK APIs. | Reduces SDK work, but forces either string groups or extra types onto users whose models fit the other approach better. |
 | Put a list of alternative field names in one annotation above `Payment`. | Defines the rule once, but renaming a field also requires editing its name in the annotation. |
+| Keep alternatives flat and store groups as a constraint on the StructDef, like protobuf. | Paths stay unchanged, so existing fields could move into a oneof compatibly when at most one is set. Nesting changes paths such as `cardToken` to `method.cardToken`, making such moves incompatible; a flat constraint can be added in a future proposal. |
 | Make `Payment.method` hold a `CardPayment` or `BankPayment` object through a sealed interface or native union. | The language restricts the value to one alternative, but the SDK needs subtype mapping and users need a separate class for each alternative. |
 | Add a required-selection setting. | Useful for enforcing business rules such as a payment requiring a method, but adds SDK configuration and validation semantics. Deferred beyond the MVP; all choices initially allow zero or one selection. |
