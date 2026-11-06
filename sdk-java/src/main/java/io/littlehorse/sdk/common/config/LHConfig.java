@@ -30,7 +30,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,12 +37,18 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
-/** This class is used to configure the LHClient class. */
+/**
+ * Configures LittleHorse clients and workers.
+ *
+ * <p>A fully constructed instance supports concurrent getters and stub creation. Registered
+ * interceptors and type adapters must themselves support concurrent use. Builders are not thread-safe.
+ */
 @Slf4j
 public class LHConfig extends ConfigBase {
 
@@ -132,8 +137,9 @@ public class LHConfig extends ConfigBase {
         return Arrays.stream(ConfigKeys.values()).map(Enum::name).collect(Collectors.toUnmodifiableSet());
     }
 
-    private Map<String, Channel> createdChannels;
+    private final Map<String, Channel> createdChannels = new ConcurrentHashMap<>();
 
+    // Initialized under this instance's monitor in isOauth().
     private OAuthClient oauthClient;
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
@@ -143,7 +149,6 @@ public class LHConfig extends ConfigBase {
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
-        createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         clientInterceptors = Collections.emptyList();
     }
@@ -167,7 +172,6 @@ public class LHConfig extends ConfigBase {
      */
     public LHConfig(Properties props, ClientInterceptor... clientInterceptors) {
         super(props);
-        this.createdChannels = new HashMap<>();
         this.typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         this.clientInterceptors =
                 Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
@@ -193,7 +197,6 @@ public class LHConfig extends ConfigBase {
      */
     public LHConfig(Path propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
-        createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         this.clientInterceptors =
                 Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
@@ -219,7 +222,6 @@ public class LHConfig extends ConfigBase {
      */
     public LHConfig(String propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
-        createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         this.clientInterceptors =
                 Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
@@ -230,9 +232,8 @@ public class LHConfig extends ConfigBase {
             LHTypeAdapterRegistry typeAdapterRegistry,
             List<ClientInterceptor> clientInterceptors) {
         super(configSource);
-        createdChannels = new HashMap<>();
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
-        this.clientInterceptors = clientInterceptors;
+        this.clientInterceptors = List.copyOf(clientInterceptors);
     }
 
     /**
@@ -245,7 +246,7 @@ public class LHConfig extends ConfigBase {
     }
 
     /**
-     * Fluent builder for composing configuration from multiple sources.
+     * Fluent builder for composing configuration from multiple sources. Use a builder from one thread.
      */
     public static class LHConfigBuilder {
 
@@ -399,7 +400,6 @@ public class LHConfig extends ConfigBase {
      */
     public LHConfig(Map<String, Object> configs, ClientInterceptor... clientInterceptors) {
         super(configs);
-        createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
         this.clientInterceptors =
                 Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
@@ -528,7 +528,7 @@ public class LHConfig extends ConfigBase {
         return getBaseFutureStub(host, port).withCallCredentials(getCredentials(tenantId));
     }
 
-    private CallCredentials getCredentials(TenantId tenantId) {
+    private synchronized CallCredentials getCredentials(TenantId tenantId) {
         if (isOauth()) {
             return new CompositeCallCredentials(oauthCredentialsProvider, new TenantMetadataProvider(tenantId));
         } else {
@@ -548,11 +548,10 @@ public class LHConfig extends ConfigBase {
      * @return a gRPC channel for that specified host/port combo.
      */
     private Channel getChannel(String host, int port) {
-        String hostKey = host + ":" + port;
-        if (createdChannels.containsKey(hostKey)) {
-            return createdChannels.get(hostKey);
-        }
+        return createdChannels.computeIfAbsent(host + ":" + port, ignored -> createChannel(host, port));
+    }
 
+    private Channel createChannel(String host, int port) {
         ManagedChannelBuilder<?> builder;
 
         String caCertFile = getOrSetDefault(CA_CERT_KEY, null);
@@ -596,7 +595,6 @@ public class LHConfig extends ConfigBase {
                     Stream.concat(Stream.of(RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR), clientInterceptors.stream())
                             .collect(Collectors.toList()));
         }
-        createdChannels.put(hostKey, out);
         return out;
     }
 
@@ -710,7 +708,7 @@ public class LHConfig extends ConfigBase {
      *
      * @return true when OAuth config is complete; false otherwise
      */
-    public boolean isOauth() {
+    public synchronized boolean isOauth() {
         String clientId = getOrSetDefault(OAUTH_CLIENT_ID_KEY, null);
         String clientSecret = getOrSetDefault(OAUTH_CLIENT_SECRET_KEY, null);
         String tokenEndpointUrl = getOrSetDefault(OAUTH_ACCESS_TOKEN_URL_KEY, null);
