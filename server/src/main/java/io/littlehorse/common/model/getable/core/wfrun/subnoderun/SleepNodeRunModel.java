@@ -12,7 +12,6 @@ import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.SleepNodeModel;
 import io.littlehorse.common.util.LHUtil;
-import io.littlehorse.sdk.common.proto.SleepNode.SleepLengthCase;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
@@ -72,7 +71,7 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         }
 
         try {
-            maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
+            maturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun(), nodeRun.getArrivalTime());
             Objects.requireNonNull(maturationTime, "Maturation resolved to null.");
             SleepNodeMaturedModel snm = new SleepNodeMaturedModel(nodeRun.getId());
             CommandModel command = new CommandModel(snm, maturationTime);
@@ -105,12 +104,12 @@ public class SleepNodeRunModel extends SubNodeRun<SleepNodeRun> {
         }
 
         SleepNodeModel sleepNode = getNode().sleepNode;
-        if (sleepNode == null || sleepNode.type == SleepLengthCase.RAW_SECONDS) {
+        if (sleepNode == null) {
             return;
         }
 
         try {
-            Date newMaturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun());
+            Date newMaturationTime = sleepNode.getMaturationTime(nodeRun.getThreadRun(), nodeRun.getArrivalTime());
             Objects.requireNonNull(newMaturationTime, "Maturation resolved to null.");
             if (maturationTime != null && maturationTime.equals(newMaturationTime)) {
                 return;

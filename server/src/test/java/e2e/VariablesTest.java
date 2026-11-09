@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -19,7 +20,6 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
@@ -187,47 +187,61 @@ public class VariablesTest {
 
     @LHWorkflow("assign-null-wf")
     public Workflow assignNullVariable() {
-        return new WorkflowImpl("assign-null-wf", thread -> {
-            WfRunVariable myVar = thread.declareJsonObj("some-json-obj");
-            myVar.assign(null);
-        });
+        return Workflow.newWorkflow(
+                "assign-null-wf",
+                thread -> {
+                    WfRunVariable myVar = thread.declareJsonObj("some-json-obj");
+                    myVar.assign(null);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("masked-variables-wf")
     public Workflow buildChildWf() {
-        return new WorkflowImpl("masked-variables-wf", thread -> {
-            WfRunVariable textVariable =
-                    thread.addVariable("text", VariableType.STR).masked().required();
-            TaskNodeOutput lengthNodeOutput = thread.execute("get-text-length", textVariable);
-            WfRunVariable length = thread.addVariable("length", VariableType.INT);
-            thread.mutate(length, VariableMutationType.ASSIGN, lengthNodeOutput);
-            thread.execute("print-number", length);
-        });
+        return Workflow.newWorkflow(
+                "masked-variables-wf",
+                thread -> {
+                    WfRunVariable textVariable = thread.addVariable("text", VariableType.STR)
+                            .masked()
+                            .required();
+                    TaskNodeOutput lengthNodeOutput = thread.execute("get-text-length", textVariable);
+                    WfRunVariable length = thread.addVariable("length", VariableType.INT);
+                    thread.mutate(length, VariableMutationType.ASSIGN, lengthNodeOutput);
+                    thread.execute("print-number", length);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("mutation-wf")
     public Workflow buildMutationWf() {
-        return new WorkflowImpl("mutation-wf", thread -> {
-            WfRunVariable valueAVariable =
-                    thread.addVariable("value-a", VariableType.INT).required();
-            WfRunVariable valueBVariable =
-                    thread.addVariable("value-b", VariableType.INT).required();
-            WfRunVariable resultVariable = thread.addVariable("result", VariableType.INT);
-            thread.mutate(valueAVariable, VariableMutationType.DIVIDE, valueBVariable);
-            thread.mutate(resultVariable, VariableMutationType.ASSIGN, valueAVariable);
-            thread.execute("print-number", resultVariable);
-        });
+        return Workflow.newWorkflow(
+                "mutation-wf",
+                thread -> {
+                    WfRunVariable valueAVariable =
+                            thread.addVariable("value-a", VariableType.INT).required();
+                    WfRunVariable valueBVariable =
+                            thread.addVariable("value-b", VariableType.INT).required();
+                    WfRunVariable resultVariable = thread.addVariable("result", VariableType.INT);
+                    thread.mutate(valueAVariable, VariableMutationType.DIVIDE, valueBVariable);
+                    thread.mutate(resultVariable, VariableMutationType.ASSIGN, valueAVariable);
+                    thread.execute("print-number", resultVariable);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("wf-run-id")
     public Workflow buildWfRunIdWf() {
-        return new WorkflowImpl("wf-run-id", thread -> {
-            WfRunVariable valueAVariable = thread.addVariable("wfrun-a", VariableType.WF_RUN_ID)
-                    .withDefault(WfRunId.newBuilder().setId("default-id").build());
-            thread.declareJsonObj("my-json-blob").searchableOn("$.someField", VariableType.STR);
-            TaskNodeOutput output = thread.execute("print-wf-run-id", valueAVariable);
-            thread.execute("print-wf-run-id", output);
-        });
+        return Workflow.newWorkflow(
+                "wf-run-id",
+                thread -> {
+                    WfRunVariable valueAVariable = thread.addVariable("wfrun-a", VariableType.WF_RUN_ID)
+                            .withDefault(
+                                    WfRunId.newBuilder().setId("default-id").build());
+                    thread.declareJsonObj("my-json-blob").searchableOn("$.someField", VariableType.STR);
+                    TaskNodeOutput output = thread.execute("print-wf-run-id", valueAVariable);
+                    thread.execute("print-wf-run-id", output);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("get-text-length")

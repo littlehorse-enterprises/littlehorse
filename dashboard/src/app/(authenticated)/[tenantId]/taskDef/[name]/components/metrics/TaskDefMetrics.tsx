@@ -1,5 +1,6 @@
 'use client'
 
+import { useMetricsRefresh } from '@/app/(authenticated)/[tenantId]/(diagram)/wfSpec/[...props]/components/metrics/useMetricsRefresh'
 import { WfSpecMetricsContent } from '@/app/(authenticated)/[tenantId]/(diagram)/wfSpec/[...props]/components/metrics/WfSpecMetricsContent'
 import { ViewMode } from '@/app/(authenticated)/[tenantId]/(diagram)/wfSpec/[...props]/components/metrics/wfSpecMetricsTypes'
 import { Card } from '@/components/ui/card'
@@ -42,11 +43,13 @@ export const TaskDefMetrics: FC<TaskDefMetricsProps> = ({ taskDefId }) => {
     return { result, rangeStartMs, rangeEndMs: nowMs }
   }, [taskDefId, rangeNum, tenantId])
 
-  const { data, error, isLoading } = useSWR(['taskMetrics', taskDefName, tenantId, rangeMinutes], fetcher, {
-    refreshInterval: 120_000,
-    revalidateOnFocus: true,
-    revalidateOnMount: true,
-  })
+  const { data, error, isLoading, isValidating, mutate } = useSWR(
+    ['taskMetrics', taskDefName, tenantId, rangeMinutes],
+    fetcher,
+    { refreshInterval: 120_000, revalidateOnFocus: true, revalidateOnMount: true }
+  )
+
+  const { isManualRefreshing, redrawKey, refresh } = useMetricsRefresh(mutate)
 
   const { countData, latencyData, pieData } = useMemo(() => {
     if (data === undefined) {
@@ -74,8 +77,11 @@ export const TaskDefMetrics: FC<TaskDefMetricsProps> = ({ taskDefId }) => {
           onBucketMinutesChange={setBucketMinutes}
           rangeMinutes={rangeMinutes}
           onRangeMinutesChange={setRangeMinutes}
+          isRefreshing={isManualRefreshing || isValidating}
+          onRefresh={refresh}
         />
         <WfSpecMetricsContent
+          redrawKey={redrawKey}
           isLoading={isLoading}
           error={error}
           hasData={hasData}

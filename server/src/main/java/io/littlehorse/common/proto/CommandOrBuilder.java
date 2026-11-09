@@ -552,5 +552,35 @@ public interface CommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.ApplyWorkflowMigrationPlanRequestOrBuilder getApplyWorkflowMigrationPlanOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return Whether the putVariable field is set.
+   */
+  boolean hasPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   * @return The putVariable.
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequest getPutVariable();
+  /**
+   * <code>.littlehorse.PutVariableRequest put_variable = 39;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutVariableRequestOrBuilder getPutVariableOrBuilder();
+
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return Whether the runInlineWf field is set.
+   */
+  boolean hasRunInlineWf();
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   * @return The runInlineWf.
+   */
+  io.littlehorse.sdk.common.proto.RunInlineWfRequest getRunInlineWf();
+  /**
+   * <code>.littlehorse.RunInlineWfRequest run_inline_wf = 40;</code>
+   */
+  io.littlehorse.sdk.common.proto.RunInlineWfRequestOrBuilder getRunInlineWfOrBuilder();
+
   io.littlehorse.common.proto.Command.CommandCase getCommandCase();
 }

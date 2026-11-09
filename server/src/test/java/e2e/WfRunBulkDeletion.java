@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.BulkDeleteWfRun;
 import io.littlehorse.sdk.common.proto.BulkJob;
 import io.littlehorse.sdk.common.proto.BulkJobId;
@@ -131,11 +132,11 @@ public class WfRunBulkDeletion {
 
     @LHWorkflow("instant-complete")
     public Workflow getInstantComplete() {
-        return Workflow.newWorkflow("instant-complete", wf -> {});
+        return Workflow.newWorkflow("instant-complete", wf -> {}, new LHConfig());
     }
 
     @LHWorkflow("infinite-running")
     public Workflow getInfiniteRunning() {
-        return Workflow.newWorkflow("infinite-running", wf -> wf.sleepSeconds(2_000_000_000L));
+        return Workflow.newWorkflow("infinite-running", wf -> wf.sleepSeconds(2_000_000_000L), new LHConfig());
     }
 }

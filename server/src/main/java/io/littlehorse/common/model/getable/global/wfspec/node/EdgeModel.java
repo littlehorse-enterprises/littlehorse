@@ -14,7 +14,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutati
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.VariableMutation;
-import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -183,7 +183,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         }
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException, InvalidExpressionException {
         if (this.getSinkNodeName().equals(source.getName())) {
             throw new InvalidEdgeException("Self loop not allowed!", this.getSinkNodeName());

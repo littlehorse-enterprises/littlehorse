@@ -94,7 +94,8 @@ public class CommandProcessorTest {
         // Resolved lazily: TestCoreProcessorContext re-registers its own stores into the mock
         // context, and the worker must see the same ones the processor writes to.
         CoreStoreProvider coreStoreProvider = mock();
-        when(coreStoreProvider.nativeCoreStore(anyInt()))
+        lenient()
+                .when(coreStoreProvider.nativeCoreStore(anyInt()))
                 .thenAnswer(invocation -> mockProcessorContext.getStateStore(ServerTopology.CORE_STORE));
         lenient()
                 .when(coreStoreProvider.getNativeGlobalStore())

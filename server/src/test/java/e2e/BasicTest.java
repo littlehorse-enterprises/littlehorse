@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -38,21 +38,27 @@ public class BasicTest {
 
     @LHWorkflow("test-basic")
     public Workflow getBasic() {
-        return new WorkflowImpl("test-basic", thread -> {
-            thread.execute("one");
-            thread.execute("two");
-            thread.execute("three");
-            thread.execute("five");
-            thread.execute("seven");
-        });
+        return Workflow.newWorkflow(
+                "test-basic",
+                thread -> {
+                    thread.execute("one");
+                    thread.execute("two");
+                    thread.execute("three");
+                    thread.execute("five");
+                    thread.execute("seven");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("test-reused-tasks")
     public Workflow getPepe() {
-        return new WorkflowImpl("test-reused-tasks", thread -> {
-            WfRunVariable output = thread.declareStr("output");
-            output.assign(thread.execute("reused-task"));
-        });
+        return Workflow.newWorkflow(
+                "test-reused-tasks",
+                thread -> {
+                    WfRunVariable output = thread.declareStr("output");
+                    output.assign(thread.execute("reused-task"));
+                },
+                new LHConfig());
     }
 
     @Test

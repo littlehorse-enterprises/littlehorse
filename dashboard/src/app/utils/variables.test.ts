@@ -21,6 +21,7 @@ import {
   isStructFieldRequired,
   lhPathToString,
   variableMutationLhsToString,
+  type VariableDisplayContext,
 } from './variables'
 import { normalizeUtcTimestampString } from './timestamp'
 
@@ -908,5 +909,31 @@ describe('isStructFieldRequired', () => {
     expect(isStructFieldRequired({ isNullable: false })).toBe(true)
     expect(isStructFieldRequired({ isNullable: true })).toBe(false)
     expect(isStructFieldRequired({ isNullable: false, defaultValue: VariableValue.create() })).toBe(false)
+  })
+})
+
+describe('getVariable with node output context', () => {
+  const variable: VariableAssignment = {
+    source: { oneofKind: 'nodeOutput', nodeOutput: { nodeName: '1-greet-TASK' } },
+    path: { oneofKind: undefined },
+  } as VariableAssignment
+
+  it('returns the node name without runtime context', () => {
+    expect(getVariable(variable)).toEqual('1-greet-TASK')
+  })
+
+  it('returns the resolved task output when runtime context is provided', () => {
+    const context: VariableDisplayContext = {
+      nodeOutputValues: { '1-greet-TASK': { value: { oneofKind: 'str', str: 'hello there, Obi-Wan' } } },
+    }
+    expect(getVariable(variable, 0, context)).toEqual('hello there, Obi-Wan')
+  })
+
+  it('applies a jsonPath to a resolved JSON output', () => {
+    const withPath = { ...variable, path: { oneofKind: 'jsonPath', jsonPath: '$.bar' } } as VariableAssignment
+    const context: VariableDisplayContext = {
+      nodeOutputValues: { '1-greet-TASK': { value: { oneofKind: 'jsonObj', jsonObj: '{"bar": 15}' } } },
+    }
+    expect(getVariable(withPath, 0, context)).toEqual('15')
   })
 })

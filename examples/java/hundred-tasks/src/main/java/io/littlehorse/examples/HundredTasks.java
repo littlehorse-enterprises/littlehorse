@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,15 +19,18 @@ import java.util.Properties;
  */
 public class HundredTasks {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("hundred-tasks", wf -> {
-            for (int i = 0; i < 25; i++) {
-                wf.execute("task-1");
-                wf.execute("task-2");
-                wf.execute("task-3");
-                wf.execute("task-4");
-            }
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "hundred-tasks",
+                wf -> {
+                    for (int i = 0; i < 25; i++) {
+                        wf.execute("task-1");
+                        wf.execute("task-2");
+                        wf.execute("task-3");
+                        wf.execute("task-4");
+                    }
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -66,7 +68,7 @@ public class HundredTasks {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

@@ -58,6 +58,7 @@ from littlehorse.utils import to_type
 REPORT_TASK_RETRIES_INTERVAL_SECONDS = 2
 REPORT_TASK_FAIL_RETRIES = 15
 HEARTBEAT_INTERVAL_SECONDS = 60
+INITIAL_REGISTRATION_RETRY_SECONDS = 1
 POLL_TASK_INTERVAL_SECONDS = 5
 GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
@@ -670,6 +671,7 @@ class LHTaskWorker:
 
     async def _heartbeat(self) -> None:
         stub = self._config.stub(async_channel=True, name="heartbeat")
+        registered = False
 
         while self._liveness_controller.keep_worker_running:
             self._log.debug(
@@ -698,9 +700,14 @@ class LHTaskWorker:
                     e,
                 )
                 self._liveness_controller.notify_worker_failure()
-                await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
+                await asyncio.sleep(
+                    HEARTBEAT_INTERVAL_SECONDS
+                    if registered
+                    else INITIAL_REGISTRATION_RETRY_SECONDS
+                )
                 continue
 
+            registered = True
             self._liveness_controller.notify_success_call(reply)
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 

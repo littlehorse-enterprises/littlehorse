@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.SearchVariableRequest;
 import io.littlehorse.sdk.common.proto.VariableIdList;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -88,9 +89,12 @@ public class JsonArrSearchTest {
 
     @LHWorkflow("json-arr-idx")
     public Workflow buildWorkflow() {
-        return Workflow.newWorkflow("json-arr-idx", wf -> {
-            wf.addVariable("json-var", VariableType.JSON_ARR).searchable();
-            // Don't do anything with it
-        });
+        return Workflow.newWorkflow(
+                "json-arr-idx",
+                wf -> {
+                    wf.addVariable("json-var", VariableType.JSON_ARR).searchable();
+                    // Don't do anything with it
+                },
+                new LHConfig());
     }
 }

@@ -1,0 +1,53 @@
+name: Manage stale pull requests and issues
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Preview changes without updating pull requests or issues"
+        type: boolean
+        default: true
+      operationsPerRun:
+        description: "Maximum number of operations per run"
+        type: number
+        default: 1000
+
+concurrency:
+  group: stale-prs
+  cancel-in-progress: false
+
+jobs:
+  stale-prs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # Save progress between runs using the Actions cache.
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Manage stale pull requests and issues
+        uses: actions/stale@v11
+        with:
+          debug-only: ${{ github.event_name == 'workflow_dispatch' && inputs.dry-run }}
+          operations-per-run: ${{ inputs.operationsPerRun || 1000 }}
+          # Label inactive issues without commenting or closing them.
+          days-before-issue-stale: 30
+          days-before-issue-close: -1 # Don't close stale issues
+          stale-issue-label: stale
+          stale-issue-message: ""
+          remove-issue-stale-when-updated: true
+          days-before-pr-stale: 30
+          days-before-pr-close: 15
+          stale-pr-label: stale
+          exempt-pr-labels: keep-open
+          remove-pr-stale-when-updated: true
+          stale-pr-message: >-
+            This pull request has been marked stale after 30 days of inactivity.
+            It will be closed if there is no further activity within 15 days.
+            Comment or update the pull request to keep it active, or ask a
+            maintainer to add the keep-open label to exempt it.
+          close-pr-message: >-
+            This pull request has been automatically closed after 15 more days
+            of inactivity since being marked stale. Please reopen it if you
+            would like to continue working on it.

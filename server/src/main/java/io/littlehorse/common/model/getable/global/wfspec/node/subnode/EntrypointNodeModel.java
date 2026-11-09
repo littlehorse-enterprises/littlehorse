@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.EntrypointNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class EntrypointNodeModel extends SubNode<EntrypointNode> {
     public void initFrom(Message proto, ExecutionContext context) {}
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws LHApiException {}
+    public void validate(ExecutionContext ctx) throws LHApiException {}
 
     @Override
     public EntrypointRunModel createSubNodeRun(Date time, CoreProcessorContext processorContext) {

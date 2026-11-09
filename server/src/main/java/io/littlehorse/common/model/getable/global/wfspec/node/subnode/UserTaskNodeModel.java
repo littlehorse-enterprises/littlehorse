@@ -11,6 +11,7 @@ import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
@@ -23,7 +24,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,7 +126,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         UserTaskDefModel utd;
         if (userTaskDefVersion == null) {
             utd = metadataManager.getLastFromPrefix(
@@ -182,7 +182,16 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
-        // TODO (#1575): create a strong structure for user task outputs
-        return Optional.of(new ReturnTypeModel(VariableType.JSON_OBJ));
+        UserTaskDefModel userTaskDef = manager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        if (userTaskDef == null) {
+            return Optional.empty();
+        }
+        if (userTaskDef.getResultStructDefId() != null) {
+            return Optional.of(new ReturnTypeModel(new TypeDefinitionModel(userTaskDef.getResultStructDefId())));
+        }
+        if (!userTaskDef.getFields().isEmpty()) {
+            return Optional.of(new ReturnTypeModel(VariableType.JSON_OBJ));
+        }
+        return Optional.of(new ReturnTypeModel());
     }
 }

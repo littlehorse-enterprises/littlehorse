@@ -1,6 +1,7 @@
 package e2e;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
@@ -17,7 +18,6 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -184,116 +184,140 @@ public class FailureHandlingTest {
 
     @LHWorkflow("handle-error-wf")
     public Workflow handleErrorWorkflow() {
-        return new WorkflowImpl("handle-error-wf", thread -> {
-            NodeOutput node = thread.execute("fail");
-            thread.handleError(node, handler -> {
-                handler.execute("my-handler");
-            });
-            thread.execute("my-task");
-        });
+        return Workflow.newWorkflow(
+                "handle-error-wf",
+                thread -> {
+                    NodeOutput node = thread.execute("fail");
+                    thread.handleError(node, handler -> {
+                        handler.execute("my-handler");
+                    });
+                    thread.execute("my-task");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-client-specific-exception")
     public Workflow handleClientSpecificException() {
-        return new WorkflowImpl("handle-client-specific-exception", thread -> {
-            NodeOutput node = thread.execute("business-exception-failure");
-            thread.handleException(node, handler -> {
-                WfRunVariable failureContent =
-                        handler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
-                handler.execute("my-handler-with-args", failureContent.jsonPath("server"));
-            });
-            thread.execute("my-task");
-        });
+        return Workflow.newWorkflow(
+                "handle-client-specific-exception",
+                thread -> {
+                    NodeOutput node = thread.execute("business-exception-failure");
+                    thread.handleException(node, handler -> {
+                        WfRunVariable failureContent =
+                                handler.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
+                        handler.execute("my-handler-with-args", failureContent.jsonPath("server"));
+                    });
+                    thread.execute("my-task");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-exception-wf")
     public Workflow handleExceptionWorkflow() {
-        return new WorkflowImpl("handle-exception-wf", thread -> {
-            SpawnedThread spawnThread = thread.spawnThread(
-                    subThread -> {
-                        subThread.fail("my-exception", "this is a exception");
-                    },
-                    "sub-thread",
-                    Map.of());
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
-            thread.handleException(waitForThread, "my-exception", handler -> {
-                handler.execute("my-task");
-            });
-        });
+        return Workflow.newWorkflow(
+                "handle-exception-wf",
+                thread -> {
+                    SpawnedThread spawnThread = thread.spawnThread(
+                            subThread -> {
+                                subThread.fail("my-exception", "this is a exception");
+                            },
+                            "sub-thread",
+                            Map.of());
+                    WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
+                    thread.handleException(waitForThread, "my-exception", handler -> {
+                        handler.execute("my-task");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-any-exception-wf")
     public Workflow handleAnyExceptionWorkflow() {
-        return new WorkflowImpl("handle-any-exception-wf", thread -> {
-            WfRunVariable failWithUserDefinedException =
-                    thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
-            SpawnedThread spawnThread = thread.spawnThread(
-                    subThread -> {
-                        WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
-                        subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
-                                ifBody -> subThread.fail("custom-exception", "this is a exception"),
-                                elseBody -> subThread.execute("fail"));
-                    },
-                    "sub-thread",
-                    Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
-            thread.handleException(waitForThread, handler -> {
-                handler.execute("my-task");
-            });
-        });
+        return Workflow.newWorkflow(
+                "handle-any-exception-wf",
+                thread -> {
+                    WfRunVariable failWithUserDefinedException =
+                            thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
+                    SpawnedThread spawnThread = thread.spawnThread(
+                            subThread -> {
+                                WfRunVariable shouldItFails =
+                                        subThread.addVariable("should-it-fails", VariableType.BOOL);
+                                subThread.doIfElse(
+                                        subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                        ifBody -> subThread.fail("custom-exception", "this is a exception"),
+                                        elseBody -> subThread.execute("fail"));
+                            },
+                            "sub-thread",
+                            Map.of("should-it-fails", failWithUserDefinedException));
+                    WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
+                    thread.handleException(waitForThread, handler -> {
+                        handler.execute("my-task");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-any-error-wf")
     public Workflow handleAnyErrorWorkflow() {
-        return new WorkflowImpl("handle-any-error-wf", thread -> {
-            WfRunVariable failWithUserDefinedException =
-                    thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
-            SpawnedThread spawnThread = thread.spawnThread(
-                    subThread -> {
-                        WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
-                        subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
-                                ifBody -> subThread.fail("custom-exception", "this is a exception"),
-                                elseBody -> subThread.execute("fail"));
-                    },
-                    "sub-thread",
-                    Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
-            thread.handleError(waitForThread, handler -> {
-                handler.execute("my-task");
-            });
-        });
+        return Workflow.newWorkflow(
+                "handle-any-error-wf",
+                thread -> {
+                    WfRunVariable failWithUserDefinedException =
+                            thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
+                    SpawnedThread spawnThread = thread.spawnThread(
+                            subThread -> {
+                                WfRunVariable shouldItFails =
+                                        subThread.addVariable("should-it-fails", VariableType.BOOL);
+                                subThread.doIfElse(
+                                        subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                        ifBody -> subThread.fail("custom-exception", "this is a exception"),
+                                        elseBody -> subThread.execute("fail"));
+                            },
+                            "sub-thread",
+                            Map.of("should-it-fails", failWithUserDefinedException));
+                    WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
+                    thread.handleError(waitForThread, handler -> {
+                        handler.execute("my-task");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("exception-failure-wf")
     public Workflow exceptionFailureWf() {
-        return new WorkflowImpl("exception-failure-wf", thread -> {
-            thread.execute("business-exception-failure");
-            thread.execute("my-task");
-        });
+        return Workflow.newWorkflow(
+                "exception-failure-wf",
+                thread -> {
+                    thread.execute("business-exception-failure");
+                    thread.execute("my-task");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-any-failure-wf")
     public Workflow handleAnyFailureWorkflow() {
-        return new WorkflowImpl("handle-any-failure-wf", thread -> {
-            WfRunVariable failWithUserDefinedException =
-                    thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
-            SpawnedThread spawnThread = thread.spawnThread(
-                    subThread -> {
-                        WfRunVariable shouldItFails = subThread.addVariable("should-it-fails", VariableType.BOOL);
-                        subThread.doIfElse(
-                                subThread.condition(shouldItFails, Comparator.EQUALS, true),
-                                ifBody -> ifBody.fail("custom-exception", "this is a exception"),
-                                elseBody -> elseBody.execute("fail"));
-                    },
-                    "sub-thread",
-                    Map.of("should-it-fails", failWithUserDefinedException));
-            WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
-            thread.handleAnyFailure(waitForThread, handler -> {
-                handler.execute("my-task");
-            });
-        });
+        return Workflow.newWorkflow(
+                "handle-any-failure-wf",
+                thread -> {
+                    WfRunVariable failWithUserDefinedException =
+                            thread.addVariable("fail-with-user-defined-exception", VariableType.BOOL);
+                    SpawnedThread spawnThread = thread.spawnThread(
+                            subThread -> {
+                                WfRunVariable shouldItFails =
+                                        subThread.addVariable("should-it-fails", VariableType.BOOL);
+                                subThread.doIfElse(
+                                        subThread.condition(shouldItFails, Comparator.EQUALS, true),
+                                        ifBody -> ifBody.fail("custom-exception", "this is a exception"),
+                                        elseBody -> elseBody.execute("fail"));
+                            },
+                            "sub-thread",
+                            Map.of("should-it-fails", failWithUserDefinedException));
+                    WaitForThreadsNodeOutput waitForThread = thread.waitForThreads(SpawnedThreads.of(spawnThread));
+                    thread.handleAnyFailure(waitForThread, handler -> {
+                        handler.execute("my-task");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("fail")

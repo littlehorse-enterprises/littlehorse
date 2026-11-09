@@ -35,7 +35,6 @@ import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.NopNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -230,7 +229,7 @@ public class NodeModel extends LHSerializable<Node> {
         return Optional.empty();
     }
 
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         getSubNode().validate(ctx);
         // This can throw an exception, so let's call it here to catch it early on.
         try {

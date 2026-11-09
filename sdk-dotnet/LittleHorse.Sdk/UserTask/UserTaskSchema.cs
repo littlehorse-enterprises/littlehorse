@@ -10,7 +10,8 @@ namespace LittleHorse.Sdk.UserTask;
 public class UserTaskSchema
 {
     private PutUserTaskDefRequest? _compiled;
-    private readonly object _taskObject;
+    private readonly object? _taskObject;
+    private readonly StructDefId? _resultStructDefId;
     private readonly string _userTaskDefName;
     
     /// <summary>
@@ -25,6 +26,22 @@ public class UserTaskSchema
     }
     
     /// <summary>
+    /// Creates a user task schema with a registered StructDef as its minimum output schema.
+    /// </summary>
+    /// <param name="resultStructDefId">The resolved ID returned by registering a StructDef.</param>
+    /// <param name="userTaskDefName">The user task definition name.</param>
+    public UserTaskSchema(StructDefId resultStructDefId, string userTaskDefName)
+    {
+        ArgumentNullException.ThrowIfNull(resultStructDefId);
+        if (string.IsNullOrWhiteSpace(resultStructDefId.Name) || resultStructDefId.Version < 0)
+            throw new ArgumentException("A resolved StructDef name and version are required.", nameof(resultStructDefId));
+        if (string.IsNullOrWhiteSpace(userTaskDefName))
+            throw new ArgumentException("A user task definition name is required.", nameof(userTaskDefName));
+        _resultStructDefId = resultStructDefId.Clone();
+        _userTaskDefName = userTaskDefName;
+    }
+
+    /// <summary>
     /// Compiles the user task schema into a PutUserTaskDefRequest.
     /// - Fields in task object should be primitive types.
     /// - If field has not set a <c>DisplayName</c>, it will assign the field name.
@@ -33,13 +50,15 @@ public class UserTaskSchema
     /// <returns>The compiled PutUserTaskDefRequest</returns>
     public PutUserTaskDefRequest Compile()
     {
-        return _compiled ??= CompileHelper();
+        return (_compiled ??= CompileHelper()).Clone();
     }
     
     private PutUserTaskDefRequest CompileHelper() 
     {
+        if (_resultStructDefId != null)
+            return new PutUserTaskDefRequest { Name = _userTaskDefName, ResultStructDefId = _resultStructDefId.Clone() };
         var putUserTaskDefRequest = new PutUserTaskDefRequest();
-        Type taskObjectType = _taskObject.GetType();
+        Type taskObjectType = _taskObject!.GetType();
         foreach (FieldInfo field in taskObjectType.GetFields())
         {
             UserTaskFieldAttribute userTaskFieldAttribute = 

@@ -7,19 +7,25 @@ import "common_enums.proto";
 import "object_id.proto";
 import "type_definition.proto";
 import "workflow_migration.proto";
+import "wf_spec.proto";
 
 option go_package = ".;lhproto";
 option java_multiple_files = true;
 option java_package = "io.littlehorse.sdk.common.proto";
 option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
 
-// A WfRun is a running instance of a WfSpec.
+// A WfRun is a running instance of a registered or inline workflow definition.
 message WfRun {
   // The ID of the WfRun.
   WfRunId id = 1;
 
-  // The ID of the WfSpec that this WfRun belongs to.
-  WfSpecId wf_spec_id = 2;
+  oneof wf_spec_source {
+    // The ID of the registered WfSpec that this WfRun belongs to.
+    WfSpecId wf_spec_id = 2;
+
+    // Must be true when selected. Fetch the inline definition using this WfRun's id.
+    bool is_inline = 16;
+  }
 
   // When a WfRun is migrated from an old verison of a WfSpec to a newer one, we add the
   // old WfSpecId to this list for historical auditing and debugging purposes.
@@ -295,4 +301,18 @@ message ThreadHaltReason {
     // Stopped by a NodeRun in the parent.
     HaltedByParentNodeHaltReason halted_by_parent = 7;
   }
+}
+
+// Immutable, server-normalized snapshot stored in the owning WfRun's partition.
+// Created by RunInlineWf and deleted with its WfRun; not independently writable.
+message InlineWfSpec {
+
+  // Output only; must be absent in RunInlineWf requests.
+  WfRunId id = 1;
+  // Output only; must be absent in RunInlineWf requests.
+  google.protobuf.Timestamp created_at = 2;
+
+  map<string, ThreadSpec> thread_specs = 3;
+  string entrypoint_thread_name = 4;
+  optional WorkflowRetentionPolicy retention_policy = 5;
 }

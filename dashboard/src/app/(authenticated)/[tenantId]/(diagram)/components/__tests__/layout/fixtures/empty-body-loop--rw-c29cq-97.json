@@ -1,0 +1,392 @@
+{
+  "name": "rw-c29cq-97",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-decline-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-decline-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-nop-NOP",
+              "variableMutations": [
+                {
+                  "lhsName": "v5_int",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "int": "2"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-1-rw-decline-TASK-rw-declined",
+              "specificFailure": "rw-declined"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-decline"
+            }
+          }
+        },
+        "2-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v5_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              },
+              "variableMutations": [
+                {
+                  "lhsName": "v1_int",
+                  "rhsAssignment": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "v1_int"
+                      },
+                      "mutationType": "SUBTRACT",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "2"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "lhsName": "v5_int",
+                  "rhsAssignment": {
+                    "expression": {
+                      "lhs": {
+                        "variableName": "v5_int"
+                      },
+                      "mutationType": "SUBTRACT",
+                      "rhs": {
+                        "literalValue": {
+                          "int": "1"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "sinkNodeName": "3-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v5_int"
+                  },
+                  "comparator": "LESS_THAN_EQ",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "nop": {}
+        },
+        "3-nop-NOP": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-nop-NOP",
+              "condition": {
+                "expression": {
+                  "lhs": {
+                    "variableName": "v5_int"
+                  },
+                  "comparator": "GREATER_THAN",
+                  "rhs": {
+                    "literalValue": {
+                      "int": "0"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "sinkNodeName": "4-each97_yrf1-START_MULTIPLE_THREADS"
+            }
+          ],
+          "nop": {}
+        },
+        "4-each97_yrf1-START_MULTIPLE_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "5-threads-WAIT_FOR_THREADS",
+              "variableMutations": [
+                {
+                  "lhsName": "4-each97_yrf1-START_MULTIPLE_THREADS",
+                  "rhsAssignment": {
+                    "nodeOutput": {
+                      "nodeName": "4-each97_yrf1-START_MULTIPLE_THREADS"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "startMultipleThreads": {
+            "threadSpecName": "each97_yrf1",
+            "iterable": {
+              "variableName": "v3_jsonarr"
+            }
+          }
+        },
+        "5-threads-WAIT_FOR_THREADS": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "6-rw-echo-TASK"
+            }
+          ],
+          "waitForThreads": {
+            "threadList": {
+              "variableName": "4-each97_yrf1-START_MULTIPLE_THREADS"
+            }
+          }
+        },
+        "6-rw-echo-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "7-rw-noop-TASK"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-echo"
+            },
+            "retries": 2,
+            "variables": [
+              {
+                "formatString": {
+                  "format": {
+                    "literalValue": {
+                      "str": "fmt-{0}"
+                    }
+                  },
+                  "args": [
+                    {
+                      "variableName": "v0_str"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "7-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "8-exit-EXIT",
+              "variableMutations": [
+                {
+                  "lhsName": "outcome",
+                  "rhsAssignment": {
+                    "literalValue": {
+                      "str": "done"
+                    }
+                  }
+                }
+              ]
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "8-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "v0_str",
+            "defaultValue": {
+              "str": "default-9m6y"
+            },
+            "typeDef": {
+              "primitiveType": "STR",
+              "masked": true
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v1_int",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v2_double",
+            "typeDef": {
+              "primitiveType": "DOUBLE"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v3_jsonarr",
+            "defaultValue": {
+              "jsonArr": "[4,1]"
+            },
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v4_timestamp",
+            "typeDef": {
+              "primitiveType": "TIMESTAMP"
+            }
+          },
+          "required": true,
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "outcome",
+            "typeDef": {
+              "primitiveType": "STR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "v5_int",
+            "defaultValue": {
+              "int": "4"
+            },
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        },
+        {
+          "varDef": {
+            "name": "4-each97_yrf1-START_MULTIPLE_THREADS",
+            "typeDef": {
+              "primitiveType": "JSON_ARR"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    },
+    "exn-handler-1-rw-decline-TASK-rw-declined": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-noop-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-noop-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-noop"
+            }
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      }
+    },
+    "each97_yrf1": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-rw-add-TASK"
+            }
+          ],
+          "entrypoint": {}
+        },
+        "1-rw-add-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "rw-add"
+            },
+            "variables": [
+              {
+                "variableName": "INPUT"
+              },
+              {
+                "literalValue": {
+                  "int": "1"
+                }
+              }
+            ]
+          }
+        },
+        "2-exit-EXIT": {
+          "exit": {}
+        }
+      },
+      "variableDefs": [
+        {
+          "varDef": {
+            "name": "INPUT",
+            "typeDef": {
+              "primitiveType": "INT"
+            }
+          },
+          "accessLevel": "PRIVATE_VAR"
+        }
+      ]
+    }
+  },
+  "entrypointThreadName": "entrypoint"
+}

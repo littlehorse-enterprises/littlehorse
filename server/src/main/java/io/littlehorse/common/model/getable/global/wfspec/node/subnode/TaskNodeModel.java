@@ -29,7 +29,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
@@ -130,7 +129,7 @@ public class TaskNodeModel extends SubNode<TaskNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         // Can only validate the type of TaskDef if we know it ahead of time...
         if (taskToExecuteType == TaskToExecuteCase.TASK_DEF_ID) {
             TaskDefModel taskDef = ctx.metadataManager().get(new TaskDefIdModel(taskDefId.getName()));

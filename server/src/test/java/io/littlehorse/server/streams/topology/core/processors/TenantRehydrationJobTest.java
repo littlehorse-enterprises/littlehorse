@@ -158,21 +158,20 @@ public class TenantRehydrationJobTest {
         verify(server, times(5)).onTaskScheduled(any(), any(), any(), eq(DEFAULT_TENANT));
     }
 
-    /**
-     * The hint is what keeps rehydration from walking every tombstone left by completed tasks, so
-     * the scan must actually start from it.
-     */
     @Test
-    void shouldResumeFromThePersistedTaskQueueHint() throws Exception {
+    void shouldReofferOlderTaskWhenAnotherTaskDefAdvancesTheHint() throws Exception {
         registerTenant(DEFAULT_TENANT);
-        ScheduledTaskModel old = seedScheduledTaskAt(DEFAULT_TENANT, new Date(1_000L));
-        ScheduledTaskModel recent = seedScheduledTaskAt(DEFAULT_TENANT, new Date(9_000L));
+        ScheduledTaskModel pending = seedScheduledTaskAt(DEFAULT_TENANT, new Date(1_000L));
+        ScheduledTaskModel claimed = seedScheduledTaskAt(DEFAULT_TENANT, new Date(5_000L), "other-task");
+        tenantStore(DEFAULT_TENANT).delete(claimed);
         tenantStore(DEFAULT_TENANT).put(new TaskQueueHintModel(new Date(5_000L)));
 
         newJob(UNLIMITED_BUDGET).run(jobContext());
 
-        verify(server, never()).onTaskScheduled(any(), any(), eq(old.getTaskRunId()), any());
-        verify(server).onTaskScheduled(any(), any(), eq(recent.getTaskRunId()), any());
+        verify(server)
+                .onTaskScheduled(
+                        eq(TASK_ID), eq(pending.getTaskDefId()), eq(pending.getTaskRunId()), eq(DEFAULT_TENANT));
+        verify(server, never()).onTaskScheduled(any(), any(), eq(claimed.getTaskRunId()), any());
     }
 
     // ------------------------------------------------------------------
@@ -203,6 +202,10 @@ public class TenantRehydrationJobTest {
     }
 
     private ScheduledTaskModel seedScheduledTaskAt(TenantIdModel tenantId, Date createdAt) {
+        return seedScheduledTaskAt(tenantId, createdAt, "my-task");
+    }
+
+    private ScheduledTaskModel seedScheduledTaskAt(TenantIdModel tenantId, Date createdAt, String taskDefName) {
         TestCoreProcessorContext processorContext = TestCoreProcessorContext.create(
                 io.littlehorse.common.proto.Command.newBuilder()
                         .setRunWf(io.littlehorse.sdk.common.proto.RunWfRequest.newBuilder()
@@ -214,7 +217,7 @@ public class TenantRehydrationJobTest {
         NodeRunModel nodeRun = TestUtil.nodeRun();
         UserTaskRunModel userTaskRun = TestUtil.userTaskRun(UUID.randomUUID().toString(), nodeRun, processorContext);
         ScheduledTaskModel scheduledTask = new ScheduledTaskModel(
-                TestUtil.taskDef("my-task").getObjectId(), List.of(), userTaskRun, processorContext);
+                TestUtil.taskDef(taskDefName).getObjectId(), List.of(), userTaskRun, processorContext);
         scheduledTask.setCreatedAt(createdAt);
         // Give each task a distinct TaskRunId so the queue's de-duplication does not hide anything.
         scheduledTask.setTaskRunId(new TaskRunIdModel(

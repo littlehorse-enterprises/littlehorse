@@ -9,6 +9,7 @@ import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -22,7 +23,6 @@ import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
@@ -329,11 +329,14 @@ public class MapsTest {
 
     @Test
     public void shouldRejectSizeOfOnMapAtRegistration() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-size-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable mapSize = thread.declareInt("map-size");
-            mapSize.assign(mapVar.size());
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-map-size-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable mapSize = thread.declareInt("map-size");
+                    mapSize.assign(mapVar.size());
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
                 .matches(
@@ -468,63 +471,81 @@ public class MapsTest {
 
     @LHWorkflow("empty-map-assign-wf")
     public Workflow buildEmptyMapAssignWf() {
-        return new WorkflowImpl("empty-map-assign-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-empty-map");
-            mapVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "empty-map-assign-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-empty-map");
+                    mapVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("filled-map-assign-wf")
     public Workflow buildFilledMapAssignWf() {
-        return new WorkflowImpl("filled-map-assign-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "filled-map-assign-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-get-wf")
     public Workflow buildMapGetWf() {
-        return new WorkflowImpl("map-get-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable picked = thread.declareInt("picked");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            picked.assign(mapVar.get("hello"));
-        });
+        return Workflow.newWorkflow(
+                "map-get-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable picked = thread.declareInt("picked");
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    picked.assign(mapVar.get("hello"));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-get-missing-wf")
     public Workflow buildMapGetMissingWf() {
-        return new WorkflowImpl("map-get-missing-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable picked = thread.declareInt("picked");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            picked.assign(mapVar.get("nonexistent-key"));
-        });
+        return Workflow.newWorkflow(
+                "map-get-missing-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable picked = thread.declareInt("picked");
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    picked.assign(mapVar.get("nonexistent-key"));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-extend-wf")
     public Workflow buildMapExtendWf() {
-        return new WorkflowImpl("map-extend-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            // Put a new entry: "new-key" -> 99
-            mapVar.assign(mapVar.extend(thread.execute("produce-single-entry-map")));
-        });
+        return Workflow.newWorkflow(
+                "map-extend-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    // Put a new entry: "new-key" -> 99
+                    mapVar.assign(mapVar.extend(thread.execute("produce-single-entry-map")));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-remove-key-wf")
     public Workflow buildMapRemoveKeyWf() {
-        return new WorkflowImpl("map-remove-key-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            mapVar.assign(mapVar.removeKey("hello"));
-        });
+        return Workflow.newWorkflow(
+                "map-remove-key-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    mapVar.assign(mapVar.removeKey("hello"));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-empty-map")
@@ -552,13 +573,16 @@ public class MapsTest {
 
     @LHWorkflow("map-extend-merge-wf")
     public Workflow buildMapExtendMergeWf() {
-        return new WorkflowImpl("map-extend-merge-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            // Merge in a full map: replaces "hello" and appends "brand-new".
-            mapVar.assign(mapVar.extend(thread.execute("produce-overlapping-map")));
-        });
+        return Workflow.newWorkflow(
+                "map-extend-merge-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    // Merge in a full map: replaces "hello" and appends "brand-new".
+                    mapVar.assign(mapVar.extend(thread.execute("produce-overlapping-map")));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-overlapping-map")
@@ -572,14 +596,17 @@ public class MapsTest {
 
     @LHWorkflow("map-equality-wf")
     public Workflow buildMapEqualityWf() {
-        return new WorkflowImpl("map-equality-wf", thread -> {
-            WfRunVariable left =
-                    thread.declareMap("left", String.class, Long.class).required();
-            WfRunVariable right =
-                    thread.declareMap("right", String.class, Long.class).required();
-            WfRunVariable areEqual = thread.declareBool("are-equal");
-            areEqual.assign(left.isEqualTo(right));
-        });
+        return Workflow.newWorkflow(
+                "map-equality-wf",
+                thread -> {
+                    WfRunVariable left =
+                            thread.declareMap("left", String.class, Long.class).required();
+                    WfRunVariable right =
+                            thread.declareMap("right", String.class, Long.class).required();
+                    WfRunVariable areEqual = thread.declareBool("are-equal");
+                    areEqual.assign(left.isEqualTo(right));
+                },
+                new LHConfig());
     }
 
     private static VariableValue nativeMap(Map<String, Long> map) throws Exception {
@@ -592,11 +619,14 @@ public class MapsTest {
 
     @LHWorkflow("map-nullable-wf")
     public Workflow buildMapNullableWf() {
-        return new WorkflowImpl("map-nullable-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-nullable-map");
-            mapVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "map-nullable-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-nullable-map");
+                    mapVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-nullable-map")
@@ -613,11 +643,14 @@ public class MapsTest {
 
     @LHWorkflow("map-int-key-wf")
     public Workflow buildMapIntKeyWf() {
-        return new WorkflowImpl("map-int-key-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", Long.class, String.class);
-            TaskNodeOutput produced = thread.execute("produce-int-key-map");
-            mapVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "map-int-key-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", Long.class, String.class);
+                    TaskNodeOutput produced = thread.execute("produce-int-key-map");
+                    mapVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-int-key-map")
@@ -631,14 +664,17 @@ public class MapsTest {
 
     @LHWorkflow("map-task-input-wf")
     public Workflow buildMapTaskInputWf() {
-        return new WorkflowImpl("map-task-input-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable result = thread.declareInt("result");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            TaskNodeOutput count = thread.execute("count-map-keys", mapVar);
-            result.assign(count);
-        });
+        return Workflow.newWorkflow(
+                "map-task-input-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable result = thread.declareInt("result");
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    TaskNodeOutput count = thread.execute("count-map-keys", mapVar);
+                    result.assign(count);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("count-map-keys")
@@ -648,11 +684,14 @@ public class MapsTest {
 
     @LHWorkflow("map-struct-value-wf")
     public Workflow buildMapStructValueWf() {
-        return new WorkflowImpl("map-struct-value-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Person.class);
-            TaskNodeOutput produced = thread.execute("produce-person-map");
-            mapVar.assign(produced);
-        });
+        return Workflow.newWorkflow(
+                "map-struct-value-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Person.class);
+                    TaskNodeOutput produced = thread.execute("produce-person-map");
+                    mapVar.assign(produced);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-person-map")
@@ -671,10 +710,13 @@ public class MapsTest {
 
     @LHWorkflow("map-array-value-wf")
     public Workflow buildMapArrayValueWf() {
-        return new WorkflowImpl("map-array-value-wf", thread -> {
-            // Map<STR, ARRAY<INT>> as a required input variable
-            thread.declareMap("my-map", String.class, Long[].class).required();
-        });
+        return Workflow.newWorkflow(
+                "map-array-value-wf",
+                thread -> {
+                    // Map<STR, ARRAY<INT>> as a required input variable
+                    thread.declareMap("my-map", String.class, Long[].class).required();
+                },
+                new LHConfig());
     }
 
     @Test
@@ -752,11 +794,14 @@ public class MapsTest {
 
     @Test
     public void shouldRejectPutWithIncompatibleKeyTypeAtRegistration() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-key-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable key = thread.declareInt("key");
-            mapVar.put(key, 42L);
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-map-put-key-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable key = thread.declareInt("key");
+                    mapVar.put(key, 42L);
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
             if (!(exn instanceof StatusRuntimeException)) return false;
@@ -766,10 +811,13 @@ public class MapsTest {
 
     @Test
     public void shouldRejectPutWithIncompatibleValueTypeAtRegistration() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-map-put-value-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            mapVar.put("key", "not-a-long");
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-map-put-value-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    mapVar.put("key", "not-a-long");
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
             if (!(exn instanceof StatusRuntimeException)) return false;
@@ -798,44 +846,56 @@ public class MapsTest {
 
     @LHWorkflow("map-put-wf")
     public Workflow buildMapPutWf() {
-        return new WorkflowImpl("map-put-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            mapVar.put("new-key", 77L);
-        });
+        return Workflow.newWorkflow(
+                "map-put-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    mapVar.put("new-key", 77L);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-put-overwrite-wf")
     public Workflow buildMapPutOverwriteWf() {
-        return new WorkflowImpl("map-put-overwrite-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            mapVar.put("hello", 999L);
-        });
+        return Workflow.newWorkflow(
+                "map-put-overwrite-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    mapVar.put("hello", 999L);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-put-dynamic-key-wf")
     public Workflow buildMapPutDynamicKeyWf() {
-        return new WorkflowImpl("map-put-dynamic-key-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            WfRunVariable dynamicKey = thread.declareStr("dynamic-key");
-            TaskNodeOutput produced = thread.execute("produce-map");
-            mapVar.assign(produced);
-            TaskNodeOutput keyValue = thread.execute("produce-key-name");
-            dynamicKey.assign(keyValue);
-            mapVar.put(dynamicKey, 123L);
-        });
+        return Workflow.newWorkflow(
+                "map-put-dynamic-key-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    WfRunVariable dynamicKey = thread.declareStr("dynamic-key");
+                    TaskNodeOutput produced = thread.execute("produce-map");
+                    mapVar.assign(produced);
+                    TaskNodeOutput keyValue = thread.execute("produce-key-name");
+                    dynamicKey.assign(keyValue);
+                    mapVar.put(dynamicKey, 123L);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("map-put-coerced-value-wf")
     public Workflow buildMapPutCoercedValueWf() {
-        return new WorkflowImpl("map-put-coerced-value-wf", thread -> {
-            WfRunVariable mapVar =
-                    thread.declareMap("my-map", String.class, Double.class).withDefault(Map.of());
-            mapVar.put("ratio", 7L);
-        });
+        return Workflow.newWorkflow(
+                "map-put-coerced-value-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Double.class)
+                            .withDefault(Map.of());
+                    mapVar.put("ratio", 7L);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("produce-key-name")
@@ -845,12 +905,15 @@ public class MapsTest {
 
     @LHWorkflow("map-builder-wf")
     public Workflow buildMapBuilderWf() {
-        return new WorkflowImpl("map-builder-wf", thread -> {
-            WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
-            LHMapBuilder builder = thread.buildMap();
-            builder.put("alpha", 1L);
-            builder.put("beta", 2L);
-            mapVar.assign(builder);
-        });
+        return Workflow.newWorkflow(
+                "map-builder-wf",
+                thread -> {
+                    WfRunVariable mapVar = thread.declareMap("my-map", String.class, Long.class);
+                    LHMapBuilder builder = thread.buildMap();
+                    builder.put("alpha", 1L);
+                    builder.put("beta", 2L);
+                    mapVar.assign(builder);
+                },
+                new LHConfig());
     }
 }
