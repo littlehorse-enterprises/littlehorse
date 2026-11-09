@@ -12,7 +12,7 @@ permissions:
   contents: write
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       snapshot-version: ${{ steps.extract.outputs.version }}
     steps:
@@ -36,7 +36,7 @@ jobs:
 
   publish-java-libraries:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6

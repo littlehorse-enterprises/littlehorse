@@ -23,7 +23,7 @@ permissions:
   contents: read
 jobs:
   lh-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -51,7 +51,7 @@ jobs:
           prefix: branch-
 
   lh-canary:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -74,7 +74,7 @@ jobs:
           prefix: branch-
 
   lh-dashboard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -111,7 +111,7 @@ jobs:
           prefix: branch-
 
   lh-standalone:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - lh-server
     steps:
