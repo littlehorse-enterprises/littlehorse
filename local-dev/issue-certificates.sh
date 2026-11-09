@@ -28,7 +28,8 @@ openssl req -x509 -sha256 -nodes \
     -subj '/O=lh server/CN=localhost' \
     -keyout "$CA_PATH/ca.key" \
     -out "$CA_PATH/ca.crt" \
-    -addext "subjectAltName = DNS:localhost" > /dev/null 2>&1
+    -addext "subjectAltName = DNS:localhost" \
+    -addext "keyUsage = critical, keyCertSign, cRLSign" > /dev/null 2>&1
 ########################################################
 # Server Certs
 ########################################################
@@ -43,7 +44,7 @@ openssl x509 -req -sha256 -days 3650 \
     -in "$SERVER_PATH/server.csr" \
     -out "$SERVER_PATH/server.crt" \
     -set_serial 0 \
-    -extfile <(printf "subjectAltName=DNS:localhost") > /dev/null 2>&1
+    -extfile <(printf "subjectAltName=DNS:localhost\nauthorityKeyIdentifier=keyid,issuer\nsubjectKeyIdentifier=hash\nbasicConstraints=CA:FALSE\nkeyUsage=digitalSignature,keyEncipherment\nextendedKeyUsage=serverAuth") > /dev/null 2>&1
 # Keycloak reads the key from a Docker volume as a different user
 chmod 644 "$SERVER_PATH/server.key"
 ########################################################
@@ -60,4 +61,5 @@ openssl x509 -req -sha256 -days 3650 \
     -CAkey "$CA_PATH/ca.key" \
     -in "$CLIENT_PATH/client.csr" \
     -out "$CLIENT_PATH/client.crt" \
-    -set_serial 1 > /dev/null 2>&1
+    -set_serial 1 \
+    -extfile <(printf "authorityKeyIdentifier=keyid,issuer\nsubjectKeyIdentifier=hash\nbasicConstraints=CA:FALSE\nkeyUsage=digitalSignature,keyEncipherment\nextendedKeyUsage=clientAuth") > /dev/null 2>&1
