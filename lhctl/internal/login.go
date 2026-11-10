@@ -64,8 +64,9 @@ func run(cmd *cobra.Command, args []string) {
 		Handler: mux,
 	}
 
-	mux.HandleFunc("/", handleHomeRequest(oauth2Config))
-	mux.HandleFunc("/callback", handleCallbackRequest(ctx, localServer, &lhConfig, oauthProvider, oauth2Config))
+	verifier := oauth2.GenerateVerifier()
+	mux.HandleFunc("/", handleHomeRequest(oauth2Config, verifier))
+	mux.HandleFunc("/callback", handleCallbackRequest(ctx, localServer, &lhConfig, oauthProvider, oauth2Config, verifier))
 
 	time.AfterFunc(time.Minute, func() {
 		Fatal("Timeout")
@@ -103,7 +104,7 @@ func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value strin
 	http.SetCookie(w, c)
 }
 
-func handleHomeRequest(oauth2Config oauth2.Config) func(http.ResponseWriter, *http.Request) {
+func handleHomeRequest(oauth2Config oauth2.Config, verifier string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		state, err := randString(16)
 		if err != nil {
@@ -117,11 +118,11 @@ func handleHomeRequest(oauth2Config oauth2.Config) func(http.ResponseWriter, *ht
 		}
 		setCallbackCookie(w, r, "state", state)
 		setCallbackCookie(w, r, "nonce", nonce)
-		http.Redirect(w, r, oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce)), http.StatusFound)
+		http.Redirect(w, r, oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce), oauth2.S256ChallengeOption(verifier)), http.StatusFound)
 	}
 }
 
-func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConfig *littlehorse.LHConfig, oauthProvider *oidc.Provider, oauth2Config oauth2.Config) func(http.ResponseWriter, *http.Request) {
+func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConfig *littlehorse.LHConfig, oauthProvider *oidc.Provider, oauth2Config oauth2.Config, verifier string) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		state, err := r.Cookie("state")
 		if err != nil {
@@ -131,7 +132,7 @@ func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConf
 			Fatal("State did not match")
 		}
 
-		oauth2Token, err := oauth2Config.Exchange(ctx, r.URL.Query().Get("code"))
+		oauth2Token, err := oauth2Config.Exchange(ctx, r.URL.Query().Get("code"), oauth2.VerifierOption(verifier))
 		if err != nil {
 			Fatal("Failed to exchange token: " + err.Error())
 		}
