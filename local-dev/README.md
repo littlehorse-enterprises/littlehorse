@@ -204,7 +204,7 @@ Clients:
 | worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)     |
 | canary    | 8b629ff9b2684014b8c62d4da8cc371e | For LH Canary to issue access tokens (Client Credentials FLow)   |
 | dashboard | 74b897a0b5804ad3879b2117e1d51015 | For LH Dasboard to issue access tokens (Client Credentials FLow) |
-| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow)       |
+| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow, PKCE required) |
 
 Run the server:
 
