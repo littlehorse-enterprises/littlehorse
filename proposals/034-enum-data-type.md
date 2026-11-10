@@ -23,8 +23,6 @@ The typing model builds on [Proposal 002](./002-move-to-strong-typing.md), and t
 
 | Object | Role |
 |--------|------|
-| `EnumDef` | a versioned enum definition. |
-| `EnumDefId` | the name and version of a registered `EnumDef`. |
 | `InlineEnumDef` | a `TypeDefinition` that contains a list of members. |
 | `EnumMemberDef` | the definition of one member, which contains a name and a backing value. |
 | `Enum` | a `VariableValue` that represents one member of an `InlineEnumDef`. |
@@ -47,42 +45,20 @@ Validation rules:
 - Reject duplicate member names or backing values.
 - Reject a definition that has no members.
 - Member names are case-sensitive.
-- `EnumDef` names must be valid LittleHorse names (valid hostnames).
-
-### Type Identity, Membership, and Null
-
-- Two `EnumDef`s with different names are different types, even if their members are the same. 
-- Comparisons with NULL use the existing `Comparer` behavior: NULL is equal to NULL, and NULL is less than every member regardless of backing value.
-- The default value of an enum variable must be a valid member.
 
 ### Assignment and Comparisons
 
+- Comparisons with NULL use the existing `Comparer` behavior: NULL is equal to NULL, and NULL is less than every member regardless of backing value.
+- The default value of an enum variable must be a valid member.
 - `assign()` accepts a member-name literal or a native enum member.
 - The server resolves member-name literals against the target's declared enum type. WfSpec validation rejects unknown members.
 - `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `LESS_THAN_EQ`, `GREATER_THAN`, and `GREATER_THAN_EQ` compare enum backing values.
 
-### Versioning and Evolution
-
-- `NO_MEMBER_UPDATES` rejects all changes to the resolved members. It accepts description changes.
-- `FULLY_COMPATIBLE_MEMBER_UPDATES` accepts only new members. It rejects member renames, renumbers, and removals.
-
 ## Protobuf Changes
 
-### Metadata and Type Definitions
+### Type Definitions
 
 ```proto
-message EnumDefId {
-  string name = 1;
-  int32 version = 2;
-}
-
-message EnumDef {
-  EnumDefId id = 1;
-  optional string description = 2;
-  google.protobuf.Timestamp created_at = 3;
-  InlineEnumDef enum_def = 4;
-}
-
 message InlineEnumDef {
   repeated EnumMemberDef members = 1;
 }
@@ -93,55 +69,35 @@ message EnumMemberDef {
 }
 ```
 
-RPC changes:
-
-```proto
-message PutEnumDefRequest {
-  string name = 1;
-  optional string description = 2;
-  InlineEnumDef enum_def = 3;
-  EnumDefCompatibilityType allowed_updates = 4;
-}
-
-enum EnumDefCompatibilityType {
-  NO_MEMBER_UPDATES = 0;
-  FULLY_COMPATIBLE_MEMBER_UPDATES = 1;
-}
-```
-
 ### Runtime Values
 
 ```proto
 message Enum {
-  optional EnumDefId id = 1;
-  string name = 2;
+  string name = 1;
 }
 ```
 
-### Metadata RPCs
-
-| API | Required behavior |
-|-----|-------------------|
-| `PutEnumDef` | Create or update an `EnumDef`. Each change, including a description change, creates a new version. |
-| `GetEnumDef` | Get a definition by name and version. If there is no version, get the latest version. |
-| `SearchEnumDef` | Search in a tenant. |
-| `DeleteEnumDef` | Delete an `EnumDef` by name and version. |
-
 ## Client-Side (SDK) Changes
 
-### Declaring and Registering Enum Types
-
-You can declare a named enum variable with the latest version or with a specified version:
+### Declaring Enum Types
 
 ```java
-wf.declareEnum("dir", "direction");     // Latest version at workflow registration.
-wf.declareEnum("dir", "direction", 1);  // Exactly version 1.
+public enum Direction {
+    NORTH,                    // 0
+    @LHEnumValueDef(10) EAST, // 10
+    SOUTH,                    // 11
+    WEST                      // 12
+}
+WfRunVariable dir = wf.declareInlineEnum("dir", Direction.class);
 ```
 
-To read the name of the Enum, call `name()`. It returns a read-only `LHExpression` that resolves to a `STR`. 
+> `@LHEnumValueDef(10)` gives an explicit backing value.
+
+To read the name of the Enum, call `name()`. It returns a `LHExpression` that resolves to a `STR`. 
 
 ```java
-WfRunVariable dir = wf.declareEnum("dir", "direction");
+dir.assign(Direction.NORTH);
+// Or:
 dir.assign("NORTH");
 dir.name(); // NORTH
 ```
@@ -150,7 +106,7 @@ Unlike `get()` on a Struct, `name()` does not return a `WfRunVariable`, so it ca
 
 ### Inline Enums
 
-Inline enums are opt-in, the same as inline structs. A Java enum without annotations continues to map to `JSON_OBJ`. Thus, an SDK upgrade does not change the schema of existing StructDefs and TaskDefs that use Java enums.
+Inline enums are opt-in, the same as inline structs. A Java enum without annotations continues to map to `JSON_OBJ`. Thus, an SDK upgrade does not change the schema of existing `StructDef`s and `TaskDef`s that use Java enums.
 
 | Position | Opt-in |
 |----------|--------|
@@ -158,17 +114,7 @@ Inline enums are opt-in, the same as inline structs. A Java enum without annotat
 | Task parameter or return | `@LHType(isInlineEnum = true)` |
 | Workflow variable | `wf.declareInlineEnum(name, Direction.class)` |
 
-The opt-in requires a Java enum class without `@LHEnumDef`. (A class with `@LHEnumDef` has already been registered as an `EnumDef`)
-
 ```java
-// No @LHEnumDef: embed this definition wherever it is opted in.
-public enum Direction {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
-}
-
 @LHStructDef("journey")
 public class Journey {
     @LHStructField(isInlineEnum = true)
@@ -176,63 +122,47 @@ public class Journey {
 }
 ```
 
-### Registering Named Enum Definitions
-
-```java
-@LHEnumDef("direction")
-public enum Direction {
-    NORTH,                    // 0
-    @LHEnumValueDef(10) EAST, // 10
-    SOUTH,                    // 11
-    WEST                      // 12
-}
-```
-
-- `@LHEnumDef("direction")` gives the name of the registered EnumDef.
-- `@LHEnumValueDef(10)` gives an explicit backing value.
-
-The Java SDK reads the annotated enum class with reflection. Then it builds and registers the ordered EnumDef:
-
-```java
-LHEnumDefType enumDefType = new LHEnumDefType(Direction.class);
-client.putEnumDef(enumDefType.toPutEnumDefRequest());
-```
+`InlineEnumDef`s 
 
 ### Branching on an Enum
 
 Because Enums are compared via their backing value, the existing conditionals are already supported. This also means the RHS of a comparison can be a native Enum, or a string literal that resolves to the matching Enum on the server.
 
 ```java
-WfRunVariable dir = wf.declareEnum("dir", "direction");
+WfRunVariable dir = wf.declareInlineEnum("dir", Direction.class);
+dir.assign(Direction.NORTH);
+// Or:
 dir.assign("NORTH");
-// Useful for InlineEnums
-wf.doIf(dir.isEqualTo(Direction.NORTH), body -> { ... });
-// Useful for EnumDefs
-wf.doIf(dir.isEqualTo("NORTH"), body -> { ... });
+wf.doIf(dir.isEqualTo(Direction.NORTH), ifBranch -> { ... }, elseBranch -> { ... });
 ```
 
-- An enum variable, node output, or expression can be on the right side. For example, `dir.isEqualTo(taskOutput)` is valid if the TaskDef returns the `direction` enum.
+- An enum variable, node output, or expression can be on the right side. For example, `dir.isEqualTo(taskOutput)` is valid if the TaskDef returns a valid member of the `InlineEnumDef`.
 - A right side whose type is `STR` *and* is not a literal is not accepted. For example, a `STR` variable or a TaskDef that returns `STR`. The server cannot validate this at registration time. To compare an enum with a `STR` variable, compare the member name: `dir.name().isEqualTo(strVariable)`.
 
 ## CLI Support
 
 ### `lhctl`
 
-Add EnumDef get, search, and delete commands based on StructDef.
-
-```bash
-lhctl get enumDef order-status 0
-lhctl search enumDef order
-lhctl delete enumDef order-status 0
-```
-
 Enums are accepted on the CLI as case-sensitive member names:
 
 ```bash
-lhctl run order-workflow status SUCCEEDED
+lhctl run order-workflow direction NORTH
 ```
 
+Something like this would be rejected as an invalid member:
+
+```bash
+lhctl run order-workflow direction north
+lhctl run order-workflow direction GARBAGE
+```
+
+## Server-side error handling
+
+If a TaskRun returns an Enum value that is not accepted by a workflow variable, the `WfRun` will terminate with a `LHVarSubError`. This becomes a `NodeFailureException`, which can be caught and handled. Note that in this scenario, the problematic `TaskRun` still succeeds and shows as green. The issue is caught in the MUTATION node directly after it.
+
 ## Alternatives Considered
+
+> I am leaving this for future reading, but `EnumDef`s are no longer being considered as a part of this proposal.
 
 This was brought up during a Server weekly meeting. Instead of adding a completely new container type `EnumDef`, we can try to take advantage of the existing `StructDef` implementation like so:
 
@@ -263,5 +193,5 @@ Grouping `InlineEnumDef` underneath `StructDef` does allow re-use of existing ve
 
 ## Future Work
 
-- **Dashboard.** Once `EnumDef` is implemented, we can render dropdown menus for Workflow executions.
-- **UserTask fields.** Enum UserTask fields need `UserTaskField` to move from `VariableType` to `TypeDefinition`. Then, we can use `EnumDef`s to render custom dropdown menus.
+- **Dashboard.** Once `Enum` is implemented, we can render dropdown menus for Workflow executions.
+- **UserTask fields.** Enum UserTask fields need `UserTaskField` to move from `VariableType` to `TypeDefinition`. Then, we can use `InlineEnumDef`s to render custom dropdown menus.
