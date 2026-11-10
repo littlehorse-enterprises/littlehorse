@@ -53,6 +53,17 @@ Validation rules:
 - `assign()` accepts a member-name literal or a native enum member.
 - The server resolves member-name literals against the target's declared enum type. WfSpec validation rejects unknown members.
 - `EQUALS`, `NOT_EQUALS`, `LESS_THAN`, `LESS_THAN_EQ`, `GREATER_THAN`, and `GREATER_THAN_EQ` compare enum backing values.
+- At workflow registration time, `InlineEnumDef`s are compared structurally. That is, even if one definition is a subset of another, it will be rejected unless they are exact matches. At runtime, values are still checked for legality.
+
+### StructDef versioning
+
+Adding, removing, or renumbering members in an `InlineEnumDef` would be considered a full type change. When a `StructDef` field is required, its type cannot change. So, a `StructDef` that has a required `InlineEnumDef` as a field type is locked into that `InlineEnumDef`. It cannot add, remove, or renumber members. Optional fields are not included in this check.
+
+### Server-side error handling
+
+If a TaskRun returns an illegal Enum value, it will fail with a TASK_OUTPUT_SERDE_ERROR. The NodeRun will fail with VAR_MUTATION_ERROR, which can be caught and handled. For dynamic tasks, since we can't check the return value at runtime we can fail with a VARR_SUB_ERROR if the return value is not a valid enum.
+
+One case that remains open is what to do if a TaskRun sends a valid Enum member, but as a string (i.e., STR NORTH intead of ENUM NORTH). We could convert this implicitly to an Enum, or reject it as an incorrect type. I personally prefer the stricter approach of rejecting this, but can see the merit of converting it.
 
 ## Protobuf Changes
 
@@ -106,7 +117,7 @@ Unlike `get()` on a Struct, `name()` does not return a `WfRunVariable`, so it ca
 
 ### Inline Enums
 
-Inline enums are opt-in, the same as inline structs. A Java enum without annotations continues to map to `JSON_OBJ`. Thus, an SDK upgrade does not change the schema of existing `StructDef`s and `TaskDef`s that use Java enums.
+Inline enums are opt-in, the same as inline structs. A Java enum without annotations continues to map to `JSON_OBJ`. Thus, an SDK upgrade does not change the schema of existing `WfSpec`s and `TaskDef`s that use Java enums.
 
 | Position | Opt-in |
 |----------|--------|
@@ -114,6 +125,7 @@ Inline enums are opt-in, the same as inline structs. A Java enum without annotat
 | Task parameter or return | `@LHType(isInlineEnum = true)` |
 | Workflow variable | `wf.declareInlineEnum(name, Direction.class)` |
 
+> Note that since StructDefs don't allow JSON_OBJ fields, this may be unnecessary.
 ```java
 @LHStructDef("journey")
 public class Journey {
@@ -121,8 +133,6 @@ public class Journey {
     private Direction direction;
 }
 ```
-
-`InlineEnumDef`s 
 
 ### Branching on an Enum
 
@@ -156,9 +166,6 @@ lhctl run order-workflow direction north
 lhctl run order-workflow direction GARBAGE
 ```
 
-## Server-side error handling
-
-If a TaskRun returns an Enum value that is not accepted by a workflow variable, the `WfRun` will terminate with a `LHVarSubError`. This becomes a `NodeFailureException`, which can be caught and handled. Note that in this scenario, the problematic `TaskRun` still succeeds and shows as green. The issue is caught in the MUTATION node directly after it.
 
 ## Alternatives Considered
 
