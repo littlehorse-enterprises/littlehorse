@@ -54,7 +54,15 @@ public abstract class ConfigBase {
 
     protected abstract String[] getEnvKeyPrefixes();
 
-    // Generated defaults, such as worker IDs, must be shared by concurrent callers.
+    /**
+     * Returns the configured value, storing the supplied default if the key is unset and the default
+     * is non-null. Lookup and default initialization are synchronized on this configuration instance,
+     * so concurrent callers share the first stored default, including generated worker IDs.
+     *
+     * @param key the configuration key
+     * @param defaultVal the default to store if unset, or null to leave the key unset
+     * @return the configured value, or the supplied default if unset
+     */
     protected synchronized String getOrSetDefault(String key, String defaultVal) {
         if (!props.containsKey(key)) {
             if (defaultVal != null) {
