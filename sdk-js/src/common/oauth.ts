@@ -39,10 +39,44 @@ export interface TokenStatus {
 export class OAuthError extends LHError {}
 
 const DEFAULT_REFRESH_SKEW_MS = 30_000
+const MAX_REDIRECTS = 5
+const BODYLESS_STATUSES = new Set([204, 205, 304])
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308])
+
+interface RawResponse {
+  status: number
+  location?: string
+  body: Buffer
+}
+
+function requestOnce(url: URL, init: RequestInit | undefined, ca: string[]): Promise<RawResponse> {
+  return new Promise((resolve, reject) => {
+    const req = request(
+      url,
+      { method: init?.method ?? 'GET', headers: init?.headers as OutgoingHttpHeaders, ca },
+      res => {
+        const chunks: Buffer[] = []
+        res.on('data', (chunk: Buffer) => chunks.push(chunk))
+        res.on('end', () =>
+          resolve({ status: res.statusCode ?? 0, location: res.headers.location, body: Buffer.concat(chunks) })
+        )
+        res.on('error', reject)
+      }
+    )
+    req.on('error', reject)
+    if (typeof init?.body === 'string') {
+      req.write(init.body)
+    }
+    req.end()
+  })
+}
 
 /**
  * A fetch that also trusts `caCert`. Global fetch can't take a custom CA
- * without the undici package, so this goes through https.request.
+ * without the undici package, so this goes through https.request. It follows
+ * only same-origin 307/308 redirects, which keep the method, body and
+ * credentials, and rejects any other redirect instead of sending the
+ * credentials elsewhere.
  */
 export function fetchTrustingCa(caCert: string): typeof fetch {
   try {
@@ -52,24 +86,28 @@ export function fetchTrustingCa(caCert: string): typeof fetch {
   }
   const ca = [...rootCertificates, caCert]
 
-  return ((input: string | URL, init?: RequestInit) =>
-    new Promise<Response>((resolve, reject) => {
-      const req = request(
-        input,
-        { method: init?.method ?? 'GET', headers: init?.headers as OutgoingHttpHeaders, ca },
-        res => {
-          const chunks: Buffer[] = []
-          res.on('data', (chunk: Buffer) => chunks.push(chunk))
-          res.on('end', () => resolve(new Response(Buffer.concat(chunks), { status: res.statusCode })))
-          res.on('error', reject)
-        }
-      )
-      req.on('error', reject)
-      if (typeof init?.body === 'string') {
-        req.write(init.body)
+  return (async (input: string | URL, init?: RequestInit) => {
+    let url = new URL(input)
+    for (let redirects = 0; ; redirects++) {
+      const res = await requestOnce(url, init, ca)
+      if (!REDIRECT_STATUSES.has(res.status)) {
+        return new Response(BODYLESS_STATUSES.has(res.status) ? null : res.body, { status: res.status })
       }
-      req.end()
-    })) as typeof fetch
+      if (res.status !== 307 && res.status !== 308) {
+        throw new OAuthError(`OAuth token endpoint redirected with HTTP ${res.status}; only 307 and 308 are followed`)
+      }
+      if (redirects === MAX_REDIRECTS) {
+        throw new OAuthError(`OAuth token endpoint redirected more than ${MAX_REDIRECTS} times`)
+      }
+      const next = new URL(res.location ?? '', url)
+      if (next.origin !== url.origin) {
+        throw new OAuthError(
+          `OAuth token endpoint redirected to another origin (${next.origin}); set LHC_OAUTH_ACCESS_TOKEN_URL to the final URL`
+        )
+      }
+      url = next
+    }
+  }) as typeof fetch
 }
 
 export class OAuthCredentialsProvider {
@@ -138,8 +176,10 @@ export class OAuthCredentialsProvider {
       throw new OAuthError(`OAuth token request failed with HTTP ${response.status}`)
     }
 
-    const body = (await response.json()) as { access_token?: string; expires_in?: number }
-    if (!body.access_token) {
+    const body = (await response.json().catch(() => undefined)) as
+      | { access_token?: string; expires_in?: number }
+      | undefined
+    if (!body?.access_token) {
       throw new OAuthError('OAuth token response did not contain an access_token')
     }
 
