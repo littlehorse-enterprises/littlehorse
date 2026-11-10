@@ -118,8 +118,15 @@ jobs:
         with:
           version: 10.19.0
 
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: sdk-rust -> target
+
       - name: Build Testees
         run: |
+          cargo build --manifest-path sdk-rust/Cargo.toml --features conformance --bin lh-conformance --locked
           ./gradlew :sdk-java-conformance:installDist
           pnpm --dir sdk-js install --frozen-lockfile
           pnpm --dir sdk-js run build

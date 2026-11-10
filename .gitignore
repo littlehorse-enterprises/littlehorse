@@ -54,3 +54,6 @@ global.json
 # java profiling
 .profileconfig.json
 examples/js/*/package-lock.json
+
+# Rust
+**/target/
