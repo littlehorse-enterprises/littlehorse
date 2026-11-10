@@ -45,6 +45,10 @@ class _SSLContextAdapter(HTTPAdapter):
         kwargs["ssl_context"] = self._ssl_context
         super().init_poolmanager(*args, **kwargs)
 
+    def proxy_manager_for(self, proxy: str, **proxy_kwargs: Any) -> Any:
+        proxy_kwargs["ssl_context"] = self._ssl_context
+        return super().proxy_manager_for(proxy, **proxy_kwargs)
+
 
 def _trusting_ca_adapter(ca_cert: str) -> HTTPAdapter:
     """Trusts the CAs in ca_cert in addition to the ones requests trusts by default."""
