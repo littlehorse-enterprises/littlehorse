@@ -7,8 +7,7 @@ import java.util.concurrent.Executor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * gRPC call credentials provider that injects OAuth bearer tokens. Concurrent requests share a
- * synchronized token cache and refresh expired tokens one at a time.
+ * gRPC call credentials provider that injects OAuth bearer tokens.
  */
 @Slf4j
 public class OAuthCredentialsProvider extends CallCredentials {
@@ -27,20 +26,16 @@ public class OAuthCredentialsProvider extends CallCredentials {
         this.oauthClient = oauthClient;
     }
 
-    private synchronized TokenStatus getCurrentToken() {
-        if (currentToken == null || !currentToken.isValid()) {
-            currentToken = oauthClient.getAccessToken();
-        }
-        return currentToken;
-    }
-
     @Override
     public void applyRequestMetadata(RequestInfo requestInfo, Executor executor, MetadataApplier metadataApplier) {
         executor.execute(() -> {
             try {
-                TokenStatus token = getCurrentToken();
+                if (currentToken == null || !currentToken.isValid()) {
+                    currentToken = oauthClient.getAccessToken();
+                }
+
                 Metadata headers = new Metadata();
-                headers.put(AUTHORIZATION_HEADER_KEY, String.format("Bearer %s", token.getToken()));
+                headers.put(AUTHORIZATION_HEADER_KEY, String.format("Bearer %s", currentToken.getToken()));
                 metadataApplier.apply(headers);
             } catch (Exception e) {
                 log.error("Error when getting access token", e);
