@@ -2,18 +2,19 @@
 
 [[package]]
 name = "authlib"
-version = "1.6.12"
+version = "1.9.1"
 description = "The ultimate Python library in building OAuth and OpenID Connect servers and clients."
 optional = false
-python-versions = ">=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "authlib-1.6.12-py2.py3-none-any.whl", hash = "sha256:e9229ad7fde610b139dd12f5edbe97eab9ee78bfb85691247e767727850b99ab"},
-    {file = "authlib-1.6.12.tar.gz", hash = "sha256:0656d8482f28fc8221929d5f35b2bde5d13e10555ebc06b4561b0d622e83b1bd"},
+    {file = "authlib-1.9.1-py2.py3-none-any.whl", hash = "sha256:8b9be8b1e5174dcbf5520e984f1a22dc2edae5b6e40a61d4cedbf86b97e9e69b"},
+    {file = "authlib-1.9.1.tar.gz", hash = "sha256:5c7d9848f47cac340f060f76ae0bc09b59f5c8e89cc1bb032d4370a0c55b5974"},
 ]
 
 [package.dependencies]
-cryptography = "*"
+cryptography = ">=45.0.1"
+joserfc = ">=1.6.8"
 
 [[package]]
 name = "black"
@@ -526,6 +527,24 @@ files = [
     {file = "iniconfig-2.3.0-py3-none-any.whl", hash = "sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12"},
     {file = "iniconfig-2.3.0.tar.gz", hash = "sha256:c76315c77db068650d49c5b56314774a7804df16fee4402c1f19d6d15d8c4730"},
 ]
+
+[[package]]
+name = "joserfc"
+version = "1.7.7"
+description = "The ultimate Python library for JOSE RFCs, including JWS, JWE, JWK, JWA, JWT"
+optional = false
+python-versions = ">=3.10"
+groups = ["main"]
+files = [
+    {file = "joserfc-1.7.7-py3-none-any.whl", hash = "sha256:06979cfbab78bc802f14c0358f32969826cc26720e13cb38926ffdc86bc0cb2c"},
+    {file = "joserfc-1.7.7.tar.gz", hash = "sha256:471d0fd12a5a0d1c0942de280f39efe6f597878315033270b504d4d006d25510"},
+]
+
+[package.dependencies]
+cryptography = ">=45.0.1"
+
+[package.extras]
+drafts = ["pycryptodome"]
 
 [[package]]
 name = "jproperties"
