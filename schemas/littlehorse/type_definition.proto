@@ -71,7 +71,7 @@ message StructFieldDef {
   TypeDefinition field_type = 1;
   
   // The default value of the field, which should match the Field Type. If not
-  // provided, then the field is treated as required.
+  // provided, then the field is treated as required unless nullable or in a oneof group.
   optional VariableValue default_value = 2;
 
   // If true, then the field is treated as nullable, and its value may be set to null.
@@ -79,6 +79,10 @@ message StructFieldDef {
 
   // Optional human-readable description of this field's purpose.
   optional string description = 4;
+
+  // Fields with the same group name in this Struct allow zero or one populated member.
+  // Group names follow Struct field naming rules and have a separate namespace.
+  optional string oneof_group = 5;
 }
 
 // VariableValue is a structure containing a value in LittleHorse. It can be
