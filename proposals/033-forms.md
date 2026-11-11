@@ -6,13 +6,15 @@ Author: Jake Rose
 
 - [Motivation](#motivation)
 - [Proposal](#proposal)
+  - [Allowed Field Paths](#allowed-field-paths)
 - [Protobuf Changes](#protobuf-changes)
   - [Existing Messages](#existing-messages)
   - [object_id.proto](#object_idproto)
   - [form.proto](#formproto)
   - [service.proto](#serviceproto)
-- [Alternative: UI Metadata on StructDef](#alternative-ui-metadata-on-structdef)
+- [Form Publication](#form-publication)
 - [Form Version Resolution](#form-version-resolution)
+- [Alternative: UI Metadata on StructDef](#alternative-ui-metadata-on-structdef)
 - [Future Work](#future-work)
 
 ## Motivation
@@ -43,6 +45,34 @@ referenced StructDef.
 Clients own presentation conventions, including widgets, labels, page grouping,
 options, and predicates. These conventions can evolve without protobuf changes;
 clients must agree on a metadata format to render the same Form consistently.
+
+### Allowed Field Paths
+
+`field_path` identifies an answer starting at the root of the result Struct.
+When publishing a Form:
+
+- Paths must be present, non-empty, and unique by their sequence of keys.
+- Every selector must be a static `key` naming a Struct field. Nested paths
+  can only pass through Struct-typed fields.
+- Array indexes and dynamic selectors are not supported. A path can target
+  a whole array, map, or JSON field, but cannot select values inside it.
+
+The server rejects invalid paths with `INVALID_ARGUMENT`.
+
+For example, this path selects `city` inside the nested `address` Struct:
+
+```json
+{
+  "fieldPath": {
+    "path": [
+      { "key": "address" },
+      { "key": "city" }
+    ]
+  },
+  "metadata": {}
+}
+```
+
 
 ## Protobuf Changes
 
@@ -151,6 +181,11 @@ message SearchFormRequest {
   }
 }
 
+message DeleteFormRequest {
+  // Exact form version to delete; other versions are unaffected.
+  FormId id = 1;
+}
+
 message FormIdList {
   // Form identifiers returned by the search.
   repeated FormId results = 1;
@@ -161,7 +196,30 @@ message FormIdList {
 rpc PutForm(PutFormRequest) returns (Form) {}
 rpc GetForm(GetFormRequest) returns (Form) {}
 rpc SearchForm(SearchFormRequest) returns (FormIdList) {}
+rpc DeleteForm(DeleteFormRequest) returns (google.protobuf.Empty) {}
 ```
+
+## Form Publication and versioning
+
+`PutForm` creates version `0` for a new name. For an existing name, it compares
+the request with the latest version: identical content returns that Form unchanged;
+changed content creates the next version (`latest + 1`). Earlier versions remain
+unchanged.
+
+Content includes `result_struct_def_id`, field order, field paths, and metadata.
+Metadata maps are compared by their keys and string values, regardless of entry
+order. Server-generated IDs and creation timestamps are excluded from comparison.
+
+When a `UserTaskRun` with a FormReference is created, the server resolves the
+specified Form version if present, or the latest version at that time if omitted.
+The UserTaskRun records the resolved FormId and retains it for its lifetime;
+publishing a newer Form does not change the Form version of an existing run.
+
+Publication-time path validation does not guarantee compatibility with the task's
+resolved StructDef. Form version resolution does not revalidate field paths or
+check metadata or schema compatibility, and incompatibility does not block task
+creation. Clients handle presentation and schema differences. The server still
+validates submitted task output against the task's resolved output schema.
 
 ## Alternative: UI Metadata on StructDef
 
@@ -185,19 +243,6 @@ same StructDef.
 | Adding or removing Struct fields | UI settings stay with their fields, so there is less to update separately. Page layouts and rules that use those fields still need to be checked. | The existing Form can stay unchanged if it still works with the new StructDef version. A new Form version is needed to change what the UI shows. |
 | Reading forms from clients | Clients fetch the StructDef to read its UI metadata. | Clients fetch the Form to read its UI metadata. |
 | Runtime behavior | New UserTaskRuns resolve the latest StructDef version when they are created, so they automatically get its updated UI metadata and form layout. No separate Form needs to be published. | At task creation, the specified Form version is resolved, or the latest if omitted. Existing runs keep their resolved Form version. Compatibility with the task's resolved output schema is the client's responsibility, not a runtime server check. |
-
-## Form Version Resolution
-
-When a `UserTaskRun` with a FormReference is created, the server resolves the
-specified Form version if present, or the latest version at that time if omitted.
-The UserTaskRun records the resolved FormId and retains it for its lifetime;
-publishing a newer Form does not change the Form version of an existing run.
-
-Publication-time path validation does not guarantee compatibility with the task's
-resolved StructDef. Form version resolution does not revalidate field paths or
-check metadata or schema compatibility, and incompatibility does not block task
-creation. Clients handle presentation and schema differences. The server still
-validates submitted task output against the task's resolved output schema.
 
 ## Future Work
 
