@@ -33,6 +33,13 @@ public final class LHInlineStructDefType extends LHClassType {
 
     public List<LHStructProperty> getStructProperties() throws IntrospectionException {
         if (structProperties == null) {
+            if (clazz.isRecord()) {
+                structProperties = java.util.Arrays.stream(clazz.getRecordComponents())
+                        .map(component -> new LHStructProperty(component, this))
+                        .filter(property -> !property.isIgnored())
+                        .toList();
+                return structProperties;
+            }
             structProperties = List.of(Introspector.getBeanInfo(clazz).getPropertyDescriptors()).stream()
                     .filter(property -> !"class".equals(property.getName()))
                     .map(property -> new LHStructProperty(property, this))
@@ -43,14 +50,10 @@ public final class LHInlineStructDefType extends LHClassType {
     }
 
     private InlineStructDef buildInlineStructDef() {
-        InlineStructDef.Builder definition = InlineStructDef.newBuilder();
         try {
-            for (LHStructProperty property : getStructProperties()) {
-                definition.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
-            }
+            return LHStructSchema.build(clazz, getStructProperties(), typeAdapterRegistry);
         } catch (IntrospectionException e) {
             throw new IllegalStateException("Cannot build InlineStructDef for type: " + clazz.getName(), e);
         }
-        return definition.build();
     }
 }
