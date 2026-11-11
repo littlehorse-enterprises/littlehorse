@@ -18,6 +18,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", null);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", null);
             Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", null);
+            Environment.SetEnvironmentVariable("LHC_OAUTH_CA_CERT", null);
             Environment.SetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", null);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", null);
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", null);
@@ -36,6 +37,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             string oauthClientId = "oauth-client-id";
             string oauthClientSecret = "oauth-client-secret";
             string oauthAccessTokenUrl = "oauth-access-token-url";
+            string oauthCaCert = "oauth-ca-cert";
             string resourceExhaustedRetry = "false";
             string numberWorkerThreads = "15";
             string taskWorkerVersion = "task-worker-version";
@@ -50,6 +52,7 @@ namespace LittleHorse.Sdk.Tests.Internal
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_ID", oauthClientId);
             Environment.SetEnvironmentVariable("LHC_OAUTH_CLIENT_SECRET", oauthClientSecret);
             Environment.SetEnvironmentVariable("LHC_OAUTH_ACCESS_TOKEN_URL", oauthAccessTokenUrl);
+            Environment.SetEnvironmentVariable("LHC_OAUTH_CA_CERT", oauthCaCert);
             Environment.SetEnvironmentVariable("LHC_GRPC_RESOURCE_EXHAUSTED_RETRY", resourceExhaustedRetry);
             Environment.SetEnvironmentVariable("LHW_NUM_WORKER_THREADS", numberWorkerThreads);
             Environment.SetEnvironmentVariable("LHW_TASK_WORKER_VERSION", taskWorkerVersion);
@@ -66,13 +69,13 @@ namespace LittleHorse.Sdk.Tests.Internal
             Assert.Equal(oauthClientId, inputVariables.LHC_OAUTH_CLIENT_ID);
             Assert.Equal(oauthClientSecret, inputVariables.LHC_OAUTH_CLIENT_SECRET);
             Assert.Equal(oauthAccessTokenUrl, inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL);
+            Assert.Equal(oauthCaCert, inputVariables.LHC_OAUTH_CA_CERT);
             Assert.Equal(bool.Parse(resourceExhaustedRetry), inputVariables.LHC_GRPC_RESOURCE_EXHAUSTED_RETRY);
             Assert.Equal(int.Parse(numberWorkerThreads), inputVariables.LHW_NUM_WORKER_THREADS);
             Assert.Equal(taskWorkerVersion, inputVariables.LHW_TASK_WORKER_VERSION);
             
             CleanEnvironmentVariables();
         }
-        
         [Fact]
         public void LHConfigVariables_WithoutLHEnvVariables_ShouldReturnDefaultOptions()
         {
