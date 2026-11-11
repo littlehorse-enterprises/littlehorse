@@ -132,7 +132,7 @@ func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConf
 			Fatal("State did not match")
 		}
 
-		oauth2Token, err := oauth2Config.Exchange(ctx, r.URL.Query().Get("code"))
+		oauth2Token, err := oauth2Config.Exchange(ctx, r.URL.Query().Get("code"), oauth2.VerifierOption(verifier))
 		if err != nil {
 			Fatal("Failed to exchange token: " + err.Error())
 		}
