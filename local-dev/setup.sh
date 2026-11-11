@@ -119,9 +119,12 @@ EOF
         protocol=openid-connect \
         clientId="$CLI_CLIENT_ID" \
         id="$CLI_CLIENT_ID" \
-        directAccessGrantsEnabled:=false \
         publicClient:=true \
-        redirectUris:='["http://127.0.0.1:25242/callback"]'
+        standardFlowEnabled:=true \
+        implicitFlowEnabled:=false \
+        directAccessGrantsEnabled:=false \
+        redirectUris:='["http://127.0.0.1:25242/callback"]' \
+        attributes:='{"pkce.code.challenge.method": "S256"}'
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
             protocol=openid-connect \
