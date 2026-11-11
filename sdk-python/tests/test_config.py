@@ -14,8 +14,13 @@ from littlehorse.config import LHConfig
 class TestLHConfig(unittest.TestCase):
     faker = Faker()
 
-    def tearDown(self):
-        os.environ.clear()
+    def setUp(self):
+        # Restores the environment afterwards; clearing it all breaks OpenSSL on Windows (SYSTEMROOT).
+        environment = patch.dict(os.environ)
+        environment.start()
+        self.addCleanup(environment.stop)
+        for key in [key for key in os.environ if key.startswith(("LHC_", "LHW_"))]:
+            del os.environ[key]
 
     def test_str(self):
         os.environ["LHC_VARIABLE"] = "my-lhc-variable"
