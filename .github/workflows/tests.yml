@@ -52,6 +52,10 @@ jobs:
       - name: Tests
         run: go test ./sdk-go/...
 
+      - name: lhctl Tests
+        working-directory: ./lhctl
+        run: go test ./...
+
   tests-sdk-js:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-24.04
