@@ -762,6 +762,24 @@ describe('getVariableValue', () => {
     expect(getVariableValue(variableValue)).toEqual('[1,2,3]')
   })
 
+  it('should not round nested int64 values beyond the safe integer range', () => {
+    const variableValue = VariableValue.fromJson({
+      struct: {
+        struct: {
+          fields: {
+            small: { value: { int: '42' } },
+            big: { value: { int: '9007199254740993' } },
+            items: { value: { array: { items: [{ int: '-9007199254740993' }] } } },
+          },
+        },
+      },
+    })
+
+    expect(getVariableValue(variableValue)).toEqual(
+      '{"small":42,"big":"9007199254740993","items":["-9007199254740993"]}'
+    )
+  })
+
   it('should render native map as JSON object keyed by entry keys', () => {
     const variableValue = VariableValue.fromJson({
       map: {

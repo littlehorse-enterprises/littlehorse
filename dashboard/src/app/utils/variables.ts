@@ -227,7 +227,9 @@ const toNumberIfPossible = (value: unknown): number | unknown => {
   }
   if (typeof value === 'string') {
     const parsed = Number(value)
-    return Number.isNaN(parsed) ? value : parsed
+    if (Number.isNaN(parsed)) return value
+    // int64 arrives as a string: keep it when a JS number would silently round it.
+    return Number.isInteger(parsed) && !Number.isSafeInteger(parsed) ? value : parsed
   }
   return value
 }
