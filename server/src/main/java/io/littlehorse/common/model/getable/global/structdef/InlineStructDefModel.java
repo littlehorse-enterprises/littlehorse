@@ -85,8 +85,8 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
 
     // Designed to provide detailed feedback
     public static void validateStructDefFieldName(String name) throws InvalidStructDefFieldNameException {
-        if (name == null) {
-            throw new InvalidStructDefFieldNameException("illegal state, names cannot be null");
+        if (name == null || name.isEmpty()) {
+            throw new InvalidStructDefFieldNameException("illegal state, names cannot be null or empty");
         }
 
         if (!Character.isLetter(name.charAt(0))) {
@@ -119,6 +119,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
      */
     public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
+        Map<String, String> selections = new HashMap<>();
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
@@ -146,6 +147,13 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     inlineStruct.getFields().put(fieldName, defaultField);
                 }
             } else {
+                if (fieldDef.getOneofGroup() != null) {
+                    String previous = selections.putIfAbsent(fieldDef.getOneofGroup(), fieldName);
+                    if (previous != null) {
+                        throw new StructValidationException("Oneof group '%s' has multiple selections: '%s' and '%s'"
+                                .formatted(fieldDef.getOneofGroup(), previous, fieldName));
+                    }
+                }
                 StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
                 try {
                     fieldDef.validateAgainst(fieldValue, metadataManager);

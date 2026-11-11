@@ -105,6 +105,11 @@ public class InlineStructDefUtil {
                 oldStructDef.getFields().entrySet();
         Set<Entry<String, StructFieldDefModel>> changedFields = new HashSet<>(newFields);
         changedFields.removeAll(oldFields);
+        // Removed alternatives also change the schema, even when no replacement field exists.
+        oldFields.stream()
+                .filter(entry -> entry.getValue().getOneofGroup() != null)
+                .filter(entry -> !newStructDef.getFields().containsKey(entry.getKey()))
+                .forEach(changedFields::add);
 
         return changedFields.stream().map(Entry::getKey).collect(Collectors.toSet());
     }
@@ -133,6 +138,35 @@ public class InlineStructDefUtil {
         incompatibleFields.addAll(getChangedFields(newRequiredFields, oldRequiredFields));
         incompatibleFields.addAll(getNewFieldsWithoutDefault(newRequiredFields, oldRequiredFields));
 
+        Map<String, StructFieldDefModel> oldFields = oldStructDef.getFields();
+        Map<String, StructFieldDefModel> newFields = newStructDef.getFields();
+        for (var entry : oldFields.entrySet()) {
+            String name = entry.getKey();
+            StructFieldDefModel oldField = entry.getValue();
+            StructFieldDefModel newField = newFields.get(name);
+            if (oldField.getOneofGroup() != null) {
+                if (newField == null
+                        || !Objects.equals(oldField.getOneofGroup(), newField.getOneofGroup())
+                        || !oldField.getFieldType().equals(newField.getFieldType())) {
+                    incompatibleFields.add(name);
+                }
+            } else if (newField != null && newField.getOneofGroup() != null) {
+                String group = newField.getOneofGroup();
+                long existingMembers = newFields.entrySet().stream()
+                        .filter(field -> group.equals(field.getValue().getOneofGroup()))
+                        .filter(field -> oldFields.containsKey(field.getKey()))
+                        .count();
+                boolean groupExisted =
+                        oldFields.values().stream().anyMatch(field -> group.equals(field.getOneofGroup()));
+                if (oldField.isRequired()
+                        || oldField.isNullable()
+                        || groupExisted
+                        || existingMembers != 1
+                        || !oldField.getFieldType().equals(newField.getFieldType())) {
+                    incompatibleFields.add(name);
+                }
+            }
+        }
         return incompatibleFields;
     }
 

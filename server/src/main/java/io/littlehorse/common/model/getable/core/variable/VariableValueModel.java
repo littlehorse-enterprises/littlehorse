@@ -402,6 +402,15 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
     public void updateViaLhPath(
             LHPathModel path, Map<Selector, VariableValueModel> resolvedMapKeys, VariableValueModel value)
             throws LHVarSubError {
+        updateViaLhPath(path, resolvedMapKeys, value, false);
+    }
+
+    public void updateViaLhPath(
+            LHPathModel path,
+            Map<Selector, VariableValueModel> resolvedMapKeys,
+            VariableValueModel value,
+            boolean unsetAlternative)
+            throws LHVarSubError {
         List<Selector> selectors = path.getPath();
         if (selectors.isEmpty()) {
             throw new LHVarSubError(null, "Empty LHPath on LHS mutation");
@@ -415,7 +424,12 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             }
         }
 
-        target.setAtSelector(selectors.get(selectors.size() - 1), resolvedMapKeys, value);
+        Selector last = selectors.get(selectors.size() - 1);
+        if (unsetAlternative && target.valueType == ValueCase.STRUCT && value.isNull()) {
+            target.struct.getInlineStruct().getFields().remove(last.getKey());
+        } else {
+            target.setAtSelector(last, resolvedMapKeys, value);
+        }
     }
 
     private VariableValueModel getSingleStep(Selector selector, Map<Selector, VariableValueModel> resolvedMapKeys)
