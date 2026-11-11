@@ -155,7 +155,12 @@ describe('UserTaskRunNode', () => {
     expect(screen.getByTestId('nodevar-epoch:')).toHaveTextContent('epoch: 42')
 
     // Results and Events mocks
-    expect(screen.getByTestId('results-mock')).toHaveTextContent('Results:')
+    expect(screen.getByTestId('results-mock')).toHaveTextContent(
+      `Results: ${JSON.stringify([
+        ['requestedItem', { value: { oneofKind: 'str', str: 'testing' } }],
+        ['justification', { value: { oneofKind: 'str', str: 'as' } }],
+      ])}`
+    )
     expect(screen.getByText('EventsMock')).toBeInTheDocument()
   })
 })
