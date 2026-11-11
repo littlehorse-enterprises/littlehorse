@@ -1,7 +1,7 @@
 package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.awaitility.Awaitility.await;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -18,6 +18,9 @@ import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +38,7 @@ public class MetricsQueryTest {
     private Workflow errorWorkflow;
 
     @Test
-    void shouldQueryMetricsForMultipleWorkflows() throws InterruptedException {
+    void shouldQueryMetricsForMultipleWorkflows() {
         for (int i = 0; i < 33; i++) {
             workflowVerifier
                     .prepareRun(workflow)
@@ -48,8 +51,6 @@ public class MetricsQueryTest {
                     .waitForStatus(LHStatus.ERROR)
                     .start();
         }
-
-        Thread.sleep(65000);
 
         ListWfMetricsRequest completedWfRequest = ListWfMetricsRequest.newBuilder()
                 .setWfSpec(WfSpecId.newBuilder()
@@ -65,6 +66,21 @@ public class MetricsQueryTest {
                         .setRevision(0)
                         .build())
                 .build();
+
+        // Aggregation is asynchronous and can span more than one minute bucket.
+        // Wait for the expected data instead of assuming a fixed delay is sufficient.
+        await().atMost(Duration.ofSeconds(90)).untilAsserted(() -> {
+            assertThat(client.listWfMetrics(completedWfRequest).getWindowsList().stream()
+                            .mapToLong(window ->
+                                    window.getWorkflow().getRunningToCompleted().getCount())
+                            .sum())
+                    .isEqualTo(33);
+            assertThat(client.listWfMetrics(errorWfRequest).getWindowsList().stream()
+                            .mapToLong(window ->
+                                    window.getWorkflow().getRunningToError().getCount())
+                            .sum())
+                    .isEqualTo(5);
+        });
 
         MetricsList response = client.listWfMetrics(completedWfRequest);
         MetricsList errorResponse = client.listWfMetrics(errorWfRequest);
@@ -113,12 +129,22 @@ public class MetricsQueryTest {
 
         assertThat(metricWindowById.hasWorkflow()).isTrue();
 
-        // Verify that searching with latestOnly=true returns only the most recent window
-        MetricWindowIdList latestMetricResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
-                .setWfSpecName("metrics-test-workflow")
-                .setLatestOnly(true)
-                .build());
-        assertEquals(1, latestMetricResult.getResultsList().size());
+        // latestOnly selects the previous wall-clock minute, which may be empty
+        // after a scheduling delay. Compare IDs, not an unconditional count of one.
+        await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
+            Instant minute = Instant.now().truncatedTo(ChronoUnit.MINUTES);
+            MetricWindowIdList latestMetricResult = client.searchWfMetricWindow(SearchWfMetricWindowRequest.newBuilder()
+                    .setWfSpecName("metrics-test-workflow")
+                    .setLatestOnly(true)
+                    .build());
+            // Retry if the RPC crossed a minute boundary.
+            assertThat(Instant.now().truncatedTo(ChronoUnit.MINUTES)).isEqualTo(minute);
+            long previousMinute = minute.minus(1, ChronoUnit.MINUTES).getEpochSecond();
+            assertThat(latestMetricResult.getResultsList())
+                    .containsExactlyInAnyOrderElementsOf(searchResult.getResultsList().stream()
+                            .filter(id -> id.getWindowStart().getSeconds() == previousMinute)
+                            .toList());
+        });
     }
 
     @LHWorkflow("metrics-error-workflow")
