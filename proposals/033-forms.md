@@ -103,12 +103,10 @@ message Form {
   FormId id = 1;
   // Result schema used to validate field paths at Form publication.
   StructDefId result_struct_def_id = 2;
-  // Optional heading displayed for the form.
-  optional string title = 3;
   // Form fields in default display order; clients may group them using metadata.
-  repeated FormField fields = 4;
+  repeated FormField fields = 3;
   // Time this form version was created.
-  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp created_at = 4;
 }
 
 message FormField {
@@ -128,10 +126,8 @@ message PutFormRequest {
   string name = 1;
   // Result schema used to validate field paths at Form publication.
   StructDefId result_struct_def_id = 2;
-  // Optional heading displayed for the form.
-  optional string title = 3;
   // Form fields in default display order; clients may group them using metadata.
-  repeated FormField fields = 4;
+  repeated FormField fields = 3;
 }
 
 message GetFormRequest {
