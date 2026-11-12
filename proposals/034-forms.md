@@ -31,7 +31,7 @@ each UserTaskRun returns a resolved Form ready to render.
 ## Design
 
 Existing-message excerpts show additions after the
-[Struct-backed UserTask proposal](028-struct-backed-user-tasks.md).
+[Struct-backed UserTask proposal](029-struct-backed-user-tasks.md).
 
 ### FormDef
 
@@ -267,7 +267,7 @@ change detection.
 
 #### Creating a UserTaskRun
 
-Under the [Struct-backed UserTask proposal](028-struct-backed-user-tasks.md#schema-and-usertaskdef-versioning),
+Under the [Struct-backed UserTask proposal](029-struct-backed-user-tasks.md#schema-and-usertaskdef-versioning),
 the run resolves the latest StructDef version at or above the UserTaskDef's
 minimum version. The FormDef resolves to the pinned version, or the latest if
 unpinned. `form.form_def_id` records the version used.
