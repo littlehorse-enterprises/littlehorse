@@ -79,8 +79,7 @@ public class VariableMutationValidationTest {
     @Test
     void shouldFailWhenAssigningNullToNonNullableStructField() {
         verifier.prepareRun(
-                        nullNonNullableStructFieldWf,
-                        Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
+                        nullNonNullableStructFieldWf, Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> assertThat(nodeRun.getFailuresList())
                         .extracting(Failure::getFailureName)
@@ -95,13 +94,13 @@ public class VariableMutationValidationTest {
     @Test
     void shouldRollbackAllMutationsWhenValidationFails() {
         verifier.prepareRun(
-                        rollbackOnValidationFailureWf,
-                        Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
+                        rollbackOnValidationFailureWf, Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> assertThat(nodeRun.getFailuresList())
                         .extracting(Failure::getFailureName)
                         .contains(LHErrorType.VAR_SUB_ERROR.name()))
-                .thenVerifyVariable(0, "counter", val -> assertThat(val.getInt()).isZero())
+                .thenVerifyVariable(
+                        0, "counter", val -> assertThat(val.getInt()).isZero())
                 .thenVerifyVariable(0, "profile", val -> assertThat(
                                 val.getStruct().getStruct().getFieldsMap().get("name"))
                         .extracting(field -> field.getValue().getStr())
