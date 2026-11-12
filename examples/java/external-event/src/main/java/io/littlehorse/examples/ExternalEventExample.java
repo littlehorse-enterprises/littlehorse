@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,16 +25,19 @@ public class ExternalEventExample {
 
     private static final Logger log = LoggerFactory.getLogger(ExternalEventExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-external-event", wf -> {
-            WfRunVariable name = wf.declareStr("name").searchable();
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-external-event",
+                wf -> {
+                    WfRunVariable name = wf.declareStr("name").searchable();
 
-            wf.execute("ask-for-name");
+                    wf.execute("ask-for-name");
 
-            name.assign(wf.waitForEvent("name-event"));
+                    name.assign(wf.waitForEvent("name-event"));
 
-            wf.execute("greet", name);
-        });
+                    wf.execute("greet", name);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -69,7 +71,7 @@ public class ExternalEventExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorkers(config);

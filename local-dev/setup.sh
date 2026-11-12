@@ -20,11 +20,17 @@ services:
   keycloak:
     ports:
       - "8888:8888"
+      - "8443:8443"
     container_name: lh-server-auth
     image: quay.io/keycloak/keycloak:23.0
     command:
       - start-dev
       - --http-port=8888
+      - --https-port=8443
+      - --https-certificate-file=/opt/keycloak/conf/certs/server.crt
+      - --https-certificate-key-file=/opt/keycloak/conf/certs/server.key
+    volumes:
+      - ./certs/server:/opt/keycloak/conf/certs:ro
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -37,6 +43,10 @@ fi
 
 setup_keycloak() {
     echo "Setting Up Keycloak"
+    if [ ! -f "$WORK_DIR/certs/server/server.crt" ]; then
+        "$SCRIPT_DIR/issue-certificates.sh"
+    fi
+
     docker compose --file /dev/stdin \
         --project-directory "$WORK_DIR" \
         --project-name lh-server-auth-local-dev \
@@ -109,9 +119,12 @@ EOF
         protocol=openid-connect \
         clientId="$CLI_CLIENT_ID" \
         id="$CLI_CLIENT_ID" \
-        directAccessGrantsEnabled:=false \
         publicClient:=true \
-        redirectUris:='["http://127.0.0.1:25242/callback"]'
+        standardFlowEnabled:=true \
+        implicitFlowEnabled:=false \
+        directAccessGrantsEnabled:=false \
+        redirectUris:='["http://127.0.0.1:25242/callback"]' \
+        attributes:='{"pkce.code.challenge.method": "S256"}'
 
     http -q -A bearer -a "$KEYCLOAK_ADMIN_ACCESS_TOKEN" POST "http://localhost:${KEYCLOAK_PORT}/admin/realms/${REALM_NAME}/clients" \
             protocol=openid-connect \
@@ -140,7 +153,7 @@ EOF
 
     echo "Client '${CLI_CLIENT_ID}' created"
 
-    echo "Keycloak: http://localhost:${KEYCLOAK_PORT}"
+    echo "Keycloak: http://localhost:${KEYCLOAK_PORT} and https://localhost:8443"
 }
 
 create_keycloak_client() {

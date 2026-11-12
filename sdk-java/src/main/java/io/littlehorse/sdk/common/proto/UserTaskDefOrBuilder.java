@@ -80,58 +80,63 @@ public interface UserTaskDefOrBuilder extends
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
+  @java.lang.Deprecated java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
       getFieldsList();
   /**
    * <pre>
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
   /**
    * <pre>
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
-  int getFieldsCount();
+  @java.lang.Deprecated int getFieldsCount();
   /**
    * <pre>
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
+  @java.lang.Deprecated java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList();
   /**
    * <pre>
    * These are the fields comprise the User Task. A User Task Manager application, or
    * any application used to complete a UserTaskRun, should inspect these fields and
    * display form entries for each one.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 4;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 4 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index);
 
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -140,7 +145,7 @@ public interface UserTaskDefOrBuilder extends
   boolean hasCreatedAt();
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
@@ -149,10 +154,40 @@ public interface UserTaskDefOrBuilder extends
   com.google.protobuf.Timestamp getCreatedAt();
   /**
    * <pre>
-   * The time the UserTaskRun was created.
+   * The time the UserTaskDef was created.
    * </pre>
    *
    * <code>.google.protobuf.Timestamp created_at = 5;</code>
    */
   com.google.protobuf.TimestampOrBuilder getCreatedAtOrBuilder();
+
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   * @return Whether the resultStructDefId field is set.
+   */
+  boolean hasResultStructDefId();
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   * @return The resultStructDefId.
+   */
+  io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId();
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of a UserTaskRun.
+   * Unset for legacy UserTaskDefs that use fields.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder();
 }

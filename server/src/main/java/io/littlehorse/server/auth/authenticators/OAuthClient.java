@@ -8,15 +8,18 @@ import com.nimbusds.oauth2.sdk.TokenIntrospectionSuccessResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.BearerAccessToken;
 import com.nimbusds.openid.connect.sdk.OIDCScopeValue;
+import io.littlehorse.sdk.common.auth.OAuthCaCertificates;
 import io.littlehorse.sdk.common.auth.TokenStatus;
 import io.littlehorse.sdk.common.exception.EntityProviderException;
 import io.littlehorse.server.auth.OAuthConfig;
 import io.littlehorse.server.auth.UnauthenticatedException;
 import java.io.IOException;
 import java.time.Instant;
+import javax.net.ssl.SSLSocketFactory;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -30,11 +33,14 @@ public class OAuthClient {
 
     private final OAuthConfig config;
     private final ClientAuthentication credentials;
+    private final SSLSocketFactory sslSocketFactory;
 
     public OAuthClient(OAuthConfig config) {
         this.config = config;
         this.credentials =
                 new ClientSecretBasic(new ClientID(config.getClientId()), new Secret(config.getClientSecret()));
+        this.sslSocketFactory =
+                config.getCaCert() == null ? null : OAuthCaCertificates.sslSocketFactory(config.getCaCert());
     }
 
     public TokenStatus introspect(String token) {
@@ -42,8 +48,11 @@ public class OAuthClient {
             TokenIntrospectionRequest request = new TokenIntrospectionRequest(
                     config.getIntrospectionEndpointURI(), credentials, new BearerAccessToken(token));
 
-            TokenIntrospectionResponse response =
-                    TokenIntrospectionResponse.parse(request.toHTTPRequest().send());
+            HTTPRequest httpRequest = request.toHTTPRequest();
+            if (sslSocketFactory != null) {
+                httpRequest.setSSLSocketFactory(sslSocketFactory);
+            }
+            TokenIntrospectionResponse response = TokenIntrospectionResponse.parse(httpRequest.send());
 
             if (!response.indicatesSuccess()) {
                 throw new EntityProviderException("Error getting the token status: "
