@@ -294,9 +294,8 @@ namespace LittleHorse.Sdk {
             {
                 _oAuthConfig = new OAuthConfig(_inputVariables.LHC_OAUTH_CLIENT_ID, 
                     _inputVariables.LHC_OAUTH_CLIENT_SECRET, 
-                    _inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL);
-
-                if (_oAuthClient is null)
+                    _inputVariables.LHC_OAUTH_ACCESS_TOKEN_URL,
+                    _inputVariables.LHC_OAUTH_CA_CERT);
                 {
                     _oAuthClient = new OAuthClient(_oAuthConfig);
                 }

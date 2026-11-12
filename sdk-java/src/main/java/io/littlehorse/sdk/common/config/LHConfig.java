@@ -62,6 +62,7 @@ public class LHConfig extends ConfigBase {
         LHC_OAUTH_CLIENT_ID,
         LHC_OAUTH_CLIENT_SECRET,
         LHC_OAUTH_ACCESS_TOKEN_URL,
+        LHC_OAUTH_CA_CERT,
         LHW_TASK_WORKER_ID,
         LHW_TASK_WORKER_VERSION,
         LHW_NUM_WORKER_THREADS,
@@ -108,6 +109,9 @@ public class LHConfig extends ConfigBase {
 
     /** OAuth access token url. */
     public static final String OAUTH_ACCESS_TOKEN_URL_KEY = ConfigKeys.LHC_OAUTH_ACCESS_TOKEN_URL.name();
+
+    /** Optional PEM file with CAs trusted for the OAuth token endpoint, besides the JVM default CAs. */
+    public static final String OAUTH_CA_CERT_KEY = ConfigKeys.LHC_OAUTH_CA_CERT.name();
 
     /** The number of worker threads to run. */
     public static final String NUM_WORKER_THREADS_KEY = ConfigKeys.LHW_NUM_WORKER_THREADS.name();
@@ -727,10 +731,12 @@ public class LHConfig extends ConfigBase {
         log.debug("OAuth is enable");
 
         if (oauthConfig == null) {
+            String caCert = getOrSetDefault(OAUTH_CA_CERT_KEY, null);
             oauthConfig = OAuthConfig.builder()
                     .tokenEndpointURI(URI.create(tokenEndpointUrl))
                     .clientId(clientId)
                     .clientSecret(clientSecret)
+                    .caCert(caCert == null ? null : new File(caCert))
                     .build();
         }
 

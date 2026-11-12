@@ -31,6 +31,7 @@ export const CONFIG_NAMES = [
   'LHC_OAUTH_CLIENT_ID',
   'LHC_OAUTH_CLIENT_SECRET',
   'LHC_OAUTH_ACCESS_TOKEN_URL',
+  'LHC_OAUTH_CA_CERT',
 ] as const
 
 export type Config = {
@@ -121,6 +122,7 @@ export class LHConfig {
   private oauthClientId?: string
   private oauthClientSecret?: string
   private oauthTokenEndpoint?: string
+  private oauthCaCert?: string
   private readonly transports = new Map<string, GrpcTransport>()
   private readonly typeAdapters = new LHTypeAdapterRegistry()
 
@@ -153,6 +155,7 @@ export class LHConfig {
     this.oauthClientId = mergedConfig.LHC_OAUTH_CLIENT_ID
     this.oauthClientSecret = mergedConfig.LHC_OAUTH_CLIENT_SECRET
     this.oauthTokenEndpoint = mergedConfig.LHC_OAUTH_ACCESS_TOKEN_URL
+    this.oauthCaCert = mergedConfig.LHC_OAUTH_CA_CERT
 
     if (this.protocol !== 'PLAINTEXT' && this.protocol !== 'TLS') {
       // Java throws here too; falling back silently would ship plaintext
@@ -440,6 +443,7 @@ export class LHConfig {
       clientId: this.oauthClientId!,
       clientSecret: this.oauthClientSecret!,
       tokenEndpoint: this.oauthTokenEndpoint!,
+      caCert: this.oauthCaCert ? readFileSync(this.oauthCaCert, 'utf8') : undefined,
     })
     return this.oauth
   }
