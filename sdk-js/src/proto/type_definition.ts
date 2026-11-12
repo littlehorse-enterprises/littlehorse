@@ -142,7 +142,7 @@ export interface StructFieldDef {
     fieldType?: TypeDefinition;
     /**
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      *
      * @generated from protobuf field: optional littlehorse.VariableValue default_value = 2
      */
@@ -159,6 +159,13 @@ export interface StructFieldDef {
      * @generated from protobuf field: optional string description = 4
      */
     description?: string;
+    /**
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     *
+     * @generated from protobuf field: optional string oneof_group = 5
+     */
+    oneofGroup?: string;
 }
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -746,7 +753,8 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
             { no: 1, name: "field_type", kind: "message", T: () => TypeDefinition },
             { no: 2, name: "default_value", kind: "message", T: () => VariableValue },
             { no: 3, name: "is_nullable", kind: "scalar", T: 8 /*ScalarType.BOOL*/ },
-            { no: 4, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
+            { no: 4, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
+            { no: 5, name: "oneof_group", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<StructFieldDef>): StructFieldDef {
@@ -773,6 +781,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
                 case /* optional string description */ 4:
                     message.description = reader.string();
                     break;
+                case /* optional string oneof_group */ 5:
+                    message.oneofGroup = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -797,6 +808,9 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
         /* optional string description = 4; */
         if (message.description !== undefined)
             writer.tag(4, WireType.LengthDelimited).string(message.description);
+        /* optional string oneof_group = 5; */
+        if (message.oneofGroup !== undefined)
+            writer.tag(5, WireType.LengthDelimited).string(message.oneofGroup);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
