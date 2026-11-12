@@ -5,129 +5,430 @@ Author: Jake Rose
 ## Table of Contents
 
 - [Motivation](#motivation)
-- [Schema Options](#schema-options)
-  - [Forms](#forms)
-  - [Option 1: Client-Defined UI Metadata in Forms](#option-1-client-defined-ui-metadata-in-forms)
-  - [Option 2: Server-Defined UI Metadata in Forms](#option-2-server-defined-ui-metadata-in-forms)
-  - [Option 3: UI Metadata in StructDefs](#option-3-ui-metadata-in-structdefs)
+- [Design](#design)
+  - [FormDef](#formdef)
+  - [Placeholders](#placeholders)
+  - [Runtime Form](#runtime-form)
+  - [API](#api)
 - [Compatibility](#compatibility)
 - [E2E Lifecycle](#e2e-lifecycle)
+- [Integrating with Industry Standards](#integrating-with-industry-standards)
+- [Rejected Alternatives](#rejected-alternatives)
+  - [Server-Defined UI Metadata](#server-defined-ui-metadata)
+  - [UI Metadata in StructDefs](#ui-metadata-in-structdefs)
 - [Future Work](#future-work)
 
 ## Motivation
 
-Struct-backed User Tasks define typed output but need a way to describe how
-clients collect that output. This proposal compares three options for where UI
-metadata lives and who defines its format.
+Struct-backed User Tasks define typed output but not how clients should present
+it. Clients can build their own screens, but cannot fetch task-specific UI
+settings from LittleHorse and render them with a reusable component.
 
-## Schema Options
+This proposal adds FormDefs: optional, client-defined UI metadata for the fields
+of a result StructDef. WfSpecs supply workflow values through placeholders, and
+each UserTaskRun returns a resolved Form ready to render.
 
-The options are alternatives, not schemas to combine. Existing-message excerpts
-show additions after the Struct-backed UserTask proposal. Options 1 and 2 share
-the following Form references and APIs; Option 3 uses StructDef APIs instead.
+## Design
 
-### Forms
+Existing-message excerpts show additions after the
+[Struct-backed UserTask proposal](028-struct-backed-user-tasks.md).
+
+### FormDef
+
+A FormDef holds static UI metadata for a result StructDef: form-level settings,
+such as pages or a layout, and settings for individual fields. Clients
+define the metadata keys and their meaning; the server stores them without
+interpreting them. Each value is either a literal or a reference to a
+placeholder supplied by the WfSpec.
 
 ```protobuf
+message FormDef {
+  FormDefId id = 1;
+  StructDefId result_struct_def_id = 2;
+  repeated FormFieldDef fields = 3;
+  google.protobuf.Timestamp created_at = 4;
+  // Client-defined settings for the whole form, such as pages or layout.
+  map<string, FormMetadataValue> metadata = 5;
+}
+
+message FormFieldDef {
+  // Root-relative path to the answer within the result Struct.
+  LHPath field_path = 1;
+  // Client-defined settings such as labels, widgets, and pages.
+  map<string, FormMetadataValue> metadata = 2;
+}
+
+message FormMetadataValue {
+  oneof value {
+    VariableValue literal = 1;
+    // Name of a placeholder supplied by the user task node.
+    string placeholder = 2;
+  }
+}
+
 // user_tasks.proto
 message UserTaskDef {
   // ... existing fields unchanged.
-  // Optional form used to collect this task's output.
-  // Allows client to reference pinned version of the form.
-  FormReference form = 7;
+  optional FormDefReference form_def = 7;
+}
+```
+
+### Placeholders
+
+The WfSpec's user task node supplies placeholder values as VariableAssignments.
+The FormDef decides which metadata key each placeholder fills, at the form level
+or on a field, so the WfSpec only needs placeholder names. One placeholder may
+fill several keys.
+
+Placeholders are metadata values, not keys. If the key were the placeholder,
+`withPlaceholder("label", ...)` would set the value of the `label` key like a
+normal key-value update. Since every field can have a `label`, it would set them
+all to the same value. Keys should only name UI settings, such as `label` or
+`widget`. Referencing the placeholder as a value lets the FormDef choose exactly
+which field and key each placeholder fills.
+
+```protobuf
+// wf_spec.proto
+message UserTaskNode {
+  // ... existing fields unchanged.
+  map<string, VariableAssignment> placeholders = 8;
+}
+```
+
+```java
+wf.assignUserTask("review-order", null, "reviewers")
+    .withPlaceholder("greeting", wf.format("Hello {0}, approve this order?", customerName))
+    .withPlaceholder("regions", allowedRegions);
+```
+
+Text is built with the existing `format` support, so the server never parses
+metadata strings. Placeholders can hold any type, such as a list of options.
+
+### Runtime Form
+
+When it creates a UserTaskRun, the server copies the FormDef's metadata and
+fields into a Form. Literals are kept, and each placeholder reference is replaced
+by its resolved value. Clients get everything needed to render from the UserTaskRun.
+
+```protobuf
+// user_tasks.proto
+message UserTaskRun {
+  // ... existing fields unchanged.
+  Form form = 15;
+}
+
+message Form {
+  FormDefId form_def_id = 1;
+  repeated FormField fields = 2;
+  map<string, VariableValue> metadata = 3;
+}
+
+message FormField {
+  LHPath field_path = 1;
+  map<string, VariableValue> metadata = 2;
+}
+```
+
+For example, this FormDef field:
+
+```json
+{
+  "fieldPath": "approved",
+  "metadata": {
+    "label": { "placeholder": "greeting" },
+    "widget": { "literal": { "str": "checkbox" } }
+  }
+}
+```
+
+becomes this Form field on the UserTaskRun:
+
+```json
+{
+  "fieldPath": "approved",
+  "metadata": {
+    "label": { "str": "Hello Jake, approve this order?" },
+    "widget": { "str": "checkbox" }
+  }
+}
+```
+
+### API
+
+```protobuf
+message FormDefId {
+  string name = 1;
+  int32 version = 2;
+}
+
+message FormDefReference {
+  string name = 1;
+  // Set pins this version; omitted means latest when each UserTaskRun is created.
+  optional int32 version = 2;
 }
 
 // service.proto
 message PutUserTaskDefRequest {
   // ... existing fields unchanged.
-  // Optional form to associate with the task definition.
-  FormReference form = 5;
+  optional FormDefReference form_def = 5;
 }
 
-// user_tasks.proto
-message UserTaskRun {
-  // ... existing fields unchanged.
-  // Exact form version retained for this task run.
-  FormId form_id = 15;
+message PutFormDefRequest {
+  string name = 1;
+  StructDefId result_struct_def_id = 2;
+  repeated FormFieldDef fields = 3;
+  map<string, FormMetadataValue> metadata = 4;
 }
 
-message FormId {
-  // Name of the form.
+message GetFormDefRequest {
   string name = 1;
-  // Exact revision of the named form.
-  int32 version = 2;
-}
-message FormReference {
-  // Name of the form to use.
-  string name = 1;
-  // Exact revision to use; omitted means latest, while 0 is explicit.
+  // Omitted means latest; 0 is explicit.
   optional int32 version = 2;
 }
 
-message GetFormRequest {
-  // Name of the form to fetch.
-  string name = 1;
-  // Exact revision to fetch; omitted means latest, while 0 is explicit.
-  optional int32 version = 2;
-}
-
-message SearchFormRequest {
-  // Pagination token from a previous search response.
+message SearchFormDefRequest {
   optional bytes bookmark = 1;
-  // Maximum number of results to return.
   optional int32 limit = 2;
-  // Selects the form search filter.
-  oneof form_criteria {
-    // Match form names starting with this prefix.
+  oneof form_def_criteria {
     string prefix = 3;
-    // Match this exact form name.
     string name = 4;
   }
 }
 
-message DeleteFormRequest {
-  // Exact form version to delete; other versions are unaffected.
-  FormId id = 1;
+message DeleteFormDefRequest {
+  // Exact version; other versions are unaffected.
+  FormDefId id = 1;
 }
 
-message FormIdList {
-  // Form identifiers returned by the search.
-  repeated FormId results = 1;
-  // Pagination token used to request the next page.
+message FormDefIdList {
+  repeated FormDefId results = 1;
   optional bytes bookmark = 2;
 }
 
-rpc PutForm(PutFormRequest) returns (Form) {}
-rpc GetForm(GetFormRequest) returns (Form) {}
-rpc SearchForm(SearchFormRequest) returns (FormIdList) {}
-rpc DeleteForm(DeleteFormRequest) returns (google.protobuf.Empty) {}
+rpc PutFormDef(PutFormDefRequest) returns (FormDef) {}
+rpc GetFormDef(GetFormDefRequest) returns (FormDef) {}
+rpc SearchFormDef(SearchFormDefRequest) returns (FormDefIdList) {}
+rpc DeleteFormDef(DeleteFormDefRequest) returns (google.protobuf.Empty) {}
 ```
 
-### Option 1: Client-Defined UI Metadata in Forms
+## Compatibility
 
-```protobuf
-message Form {
-  FormId id = 1;
-  StructDefId result_struct_def_id = 2;
-  repeated FormField fields = 3;
-  google.protobuf.Timestamp created_at = 4;
-}
+### Registration
 
-message FormField {
-  // Root-relative path to the answer within the result Struct.
-  LHPath field_path = 1;
-  // Client-defined settings, including widgets, pages, and predicates.
-  map<string, string> metadata = 2;
-}
+#### Registering a FormDef
 
-message PutFormRequest {
-  string name = 1;
-  StructDefId result_struct_def_id = 2;
-  repeated FormField fields = 3;
+`PutFormDef` is rejected if the referenced StructDef does not exist or any field
+path is invalid. Paths must be non-empty, use fixed Struct field names, and not
+duplicate another field's path. Nested Struct fields are supported; array
+indexes and dynamic selectors are not. Placeholder names must be non-empty.
+Invalid requests return `INVALID_ARGUMENT`.
+
+The server does not validate metadata keys or literal values; their meaning is
+left to clients.
+
+#### Registering a UserTaskDef
+
+If a FormDef is specified, `PutUserTaskDef` checks the given version, or the
+current latest if omitted. The reference is stored as given, so an omitted
+version is not pinned. Registration is rejected if:
+
+- The FormDef does not exist.
+- The UserTaskDef does not have a Struct-backed result.
+- The FormDef's result StructDef name differs from the UserTaskDef's. Versions
+  do not need to match: the UserTaskDef specifies a minimum version, while the
+  FormDef references an exact version or name.
+
+#### Registering a WfSpec
+
+`PutWfSpec` checks each user task node against its UserTaskDef's pinned FormDef
+version, or the current latest if unpinned. Registration is rejected if:
+
+- The FormDef references a placeholder the node does not supply.
+- The node supplies a placeholder the FormDef does not reference.
+
+For an unpinned FormDef, a later version may reference placeholders the node does
+not supply. See [Creating a UserTaskRun](#creating-a-usertaskrun).
+
+### Versioning
+
+`PutFormDef` creates version `0` for a new name. Identical content returns the
+latest existing FormDef; changed content creates `latest + 1`. Comparison
+includes the referenced StructDef, field order, form-level and field metadata
+keys, and whether each value is a literal or placeholder. It excludes generated IDs and timestamps.
+Metadata map entry order does not affect equality.
+
+FormDefs resolve like StructDefs. If the UserTaskDef sets a FormDef version, that
+version is pinned. If not, each new UserTaskRun uses the latest FormDef version
+at creation, so publishing a FormDef version updates new runs without a new
+UserTaskDef or WfSpec. `PutUserTaskDef` includes the FormDef reference in its
+change detection.
+
+### Runtime Behavior
+
+#### Creating a UserTaskRun
+
+Under the [Struct-backed UserTask proposal](028-struct-backed-user-tasks.md#schema-and-usertaskdef-versioning),
+the run resolves the latest StructDef version at or above the UserTaskDef's
+minimum version. The FormDef resolves to the pinned version, or the latest if
+unpinned. `form.form_def_id` records the version used.
+
+The server evaluates the node's placeholder assignments in the executing thread
+and builds `UserTaskRun.form`: form-level and field metadata literals are copied
+and placeholder references
+are replaced with their resolved values. Field paths and order are preserved.
+The Form is a snapshot; later workflow variable changes do not update it.
+
+If a placeholder fails to evaluate, the node fails with `VAR_SUB_ERROR`, the same
+as existing user task node assignments such as `notes`, `user_id`, and
+`user_group`. If the FormDef references a placeholder the node does not supply,
+which can happen after an unpinned FormDef is updated, that metadata entry is
+omitted and the task is still created.
+
+The server does not repeat FormDef-to-StructDef compatibility validation at task
+creation.
+
+#### After a StructDef or FormDef Update
+
+Existing runs retain their resolved schema and Form. New runs may resolve newer
+StructDef versions. A StructDef update does not change the FormDef; displaying a
+new field requires a new FormDef version. New runs use it automatically if the
+FormDef is unpinned. If it is pinned, a new UserTaskDef version and a WfSpec
+registered with it are also required.
+
+Clients must use the run's resolved output schema and handle presentation
+differences. An older FormDef may omit a newly added nullable or defaulted field,
+but removed or changed fields can make it unusable. Data-schema compatibility
+does not guarantee that the UI still works.
+
+#### Completing a UserTaskRun
+
+The server validates submitted answers against the run's resolved output schema.
+Form settings and client-side validation do not replace this check.
+
+## E2E Lifecycle
+
+1. Publish a StructDef defining the answer fields and their types.
+2. Publish a FormDef referencing that StructDef, with literal metadata and
+   placeholder references for its fields.
+3. Publish a UserTaskDef referencing the StructDef and FormDef. Set a FormDef
+   version to pin it, or omit it to use the latest for each new run.
+4. Publish a WfSpec whose user task node supplies the FormDef's placeholders. The
+   server checks that they match.
+5. Run the WfSpec. The server evaluates the placeholders and stores the resolved
+   Form on the UserTaskRun.
+6. The client fetches the UserTaskRun and its resolved StructDef, then renders
+   `form` with a reusable renderer.
+7. The client submits the answers through `CompleteUserTaskRunRequest.output`.
+   The server validates them against the task's schema and completes the task if valid.
+
+## Integrating with Industry Standards
+
+LittleHorse does not depend on any form library. Because metadata keys are
+client-defined, a client can adopt an existing library's conventions. For
+example, the MIT-licensed [SurveyJS Form Library](https://github.com/surveyjs/survey-library)
+renders an interactive form from JSON.
+
+If FormDef metadata uses SurveyJS property names, a UserTaskRun returns this Form:
+
+```json
+{
+  "metadata": {
+    "title": { "str": "Order review" },
+    "showProgressBar": { "str": "top" }
+  },
+  "fields": [
+    {
+      "fieldPath": "approved",
+      "metadata": {
+        "page": { "str": "review" },
+        "type": { "str": "boolean" },
+        "title": { "str": "Hello Jake, approve this order?" }
+      }
+    },
+    {
+      "fieldPath": "reason",
+      "metadata": {
+        "page": { "str": "review" },
+        "type": { "str": "comment" },
+        "title": { "str": "Why not?" },
+        "visibleIf": { "str": "{approved} = false" }
+      }
+    },
+    {
+      "fieldPath": "region",
+      "metadata": {
+        "page": { "str": "shipping" },
+        "type": { "str": "dropdown" },
+        "title": { "str": "Region" },
+        "choices": { "jsonArr": "[\"US\", \"EU\"]" }
+      }
+    }
+  ]
 }
 ```
 
-### Option 2: Server-Defined UI Metadata in Forms
+A small adapter groups fields by `page` and copies the remaining metadata into
+SurveyJS elements:
+
+```ts
+function toSurveyJson(form: Form) {
+  const pages = new Map<string, object[]>();
+  for (const field of form.fields) {
+    const { page = "main", ...props } = toJson(field.metadata);
+    if (!pages.has(page)) pages.set(page, []);
+    pages.get(page)!.push({ name: toName(field.fieldPath), ...props });
+  }
+  return {
+    ...toJson(form.metadata),
+    pages: [...pages].map(([name, elements]) => ({ name, elements })),
+  };
+}
+```
+
+It produces this SurveyJS JSON:
+
+```json
+{
+  "title": "Order review",
+  "showProgressBar": "top",
+  "pages": [
+    {
+      "name": "review",
+      "elements": [
+        { "name": "approved", "type": "boolean", "title": "Hello Jake, approve this order?" },
+        { "name": "reason", "type": "comment", "title": "Why not?", "visibleIf": "{approved} = false" }
+      ]
+    },
+    {
+      "name": "shipping",
+      "elements": [
+        { "name": "region", "type": "dropdown", "title": "Region", "choices": ["US", "EU"] }
+      ]
+    }
+  ]
+}
+```
+
+The client renders it and submits the answers as the task output:
+
+```ts
+const survey = new Model(toSurveyJson(run.form));
+survey.onComplete.add(({ data }) =>
+  client.completeUserTaskRun({ userTaskRunId: run.id, output: toStruct(data), userId }),
+);
+```
+
+`toJson` unwraps `VariableValue`s, `toName` converts an `LHPath` to a field name,
+and `toStruct` converts `{ "approved": false, "reason": "Too expensive",
+"region": "EU" }` into a Struct. SurveyJS evaluates `visibleIf`; the server
+still validates the submitted Struct against the run's output schema.
+
+## Rejected Alternatives
+
+### Server-Defined UI Metadata
+
+Forms with typed pages, widgets, options, and visibility predicates defined in
+protobuf:
 
 ```protobuf
 message Form {
@@ -187,20 +488,17 @@ message PutFormRequest {
 }
 ```
 
-### Option 3: UI Metadata in StructDefs
+Rejected because the server would own the UI vocabulary: every new widget or
+setting requires protobuf, server, and SDK changes. Clients still implement
+rendering and predicate evaluation, and the supported expression subset would
+need its own specification. Client-defined metadata covers the same needs while
+keeping UI conventions out of the server.
+
+### UI Metadata in StructDefs
+
+Client-defined metadata stored directly on StructDef fields:
 
 ```protobuf
-message StructDef {
-  StructDefId id = 1;
-  optional string description = 2;
-  google.protobuf.Timestamp created_at = 3;
-  InlineStructDef struct_def = 4;
-}
-
-message InlineStructDef {
-  map<string, StructFieldDef> fields = 1;
-}
-
 message StructFieldDef {
   TypeDefinition field_type = 1;
   optional VariableValue default_value = 2;
@@ -211,106 +509,14 @@ message StructFieldDef {
 }
 ```
 
-## Compatibility
-
-### Registration
-
-#### Registering a StructDef
-
-For Option 3, metadata is stored on StructFieldDef, not submitted Struct values.
-Metadata-only changes create a new StructDef version but do not change the data
-contract. `PutStructDef` must compare metadata for versioning while excluding it
-from data-schema compatibility checks. The server does not interpret it.
-
-#### Registering a Form (Options 1 and 2)
-
-For both options, the server rejects `PutForm` if the referenced StructDef does not exist or any
-field path is invalid. Paths must be non-empty, use fixed Struct field names,
-and not duplicate another field's path. Nested Struct fields are supported;
-array indexes and dynamic selectors are not. Invalid paths return
-`INVALID_ARGUMENT`.
-
-##### Option 1
-
-Metadata interpretation and validation are left to clients.
-
-##### Option 2
-
-The server also rejects incompatible widget/type combinations, invalid option
-values, and unsupported or invalid boolean predicates. The supported expression
-subset must be specified if this option is selected.
-
-#### Registering a UserTaskDef
-
-The result StructDef must exist. For Options 1 and 2, if a FormReference is
-provided, the server checks the specified Form version, or the current latest
-version if omitted. Registration is rejected if that Form does not exist or its
-result StructDef name differs from the UserTaskDef's result StructDef name.
-The versions do not need to match: the UserTaskDef specifies a minimum version,
-while the Form references an exact version. A Form requires a Struct-backed
-result contract.
-
-This check does not pin an unversioned FormReference; it still means latest at
-task creation. Option 3 has no separate Form reference to check.
-
-### Versioning
-
-`PutForm` creates version `0` for a new name. Identical content returns the latest
-existing Form; changed content creates `latest + 1`. Comparison includes the
-referenced StructDef, field/page order, and presentation settings, but excludes
-generated IDs and timestamps. Metadata map entry order does not affect equality.
-
-### Runtime Behavior
-
-#### Creating a UserTaskRun
-
-Under the [Struct-backed UserTask proposal](028-struct-backed-user-tasks.md#schema-and-usertaskdef-versioning),
-the run resolves the latest StructDef version at or above the UserTaskDef's
-minimum version. For Options 1 and 2, it also resolves the specified Form version,
-or the latest if omitted. The run retains those resolved IDs.
-
-The server does not repeat Form-to-StructDef compatibility validation at task
-creation. The registration check describes the definitions at registration time,
-not a guarantee that independently updated Forms and StructDefs remain compatible.
-
-#### After a StructDef or Form Update
-
-Existing runs retain their resolved schema and Form IDs. New runs may resolve
-newer versions. For Options 1 and 2, a StructDef update does not automatically
-update the Form; displaying a new field requires publishing and selecting a Form
-version that includes it. UI-only changes can create a Form version without a
-StructDef change. For Option 3, UI metadata changes travel with the new StructDef
-version, so there is no separate Form to update.
-
-Clients must use the run's resolved output schema and handle presentation
-differences. An older Form may omit a newly added nullable or defaulted field,
-but removed or changed fields can make it unusable. Data-schema compatibility
-does not guarantee that the UI still works. Clients render controls and evaluate
-predicates, including the typed predicates in Option 2.
-
-#### Completing a UserTaskRun
-
-The server validates submitted answers against the run's resolved output schema
-in every option. Form settings and client-side validation do not replace this
-check.
-
-## E2E Lifecycle
-
-For Option 1:
-
-1. Publish a StructDef defining the answer fields and their types.
-2. Publish a Form referencing that StructDef, with client-defined UI metadata for its fields.
-3. Publish a UserTaskDef referencing the StructDef and Form.
-4. Publish and run a WfSpec using that UserTaskDef. The server creates a UserTaskRun
-   and records the selected StructDef and Form versions.
-5. The client fetches the task and its recorded StructDef and Form, then uses a
-   reusable renderer to display the inputs.
-6. The client submits the answers through `CompleteUserTaskRunRequest.output`.
-   The server validates them against the task's schema and completes the task if valid.
+Rejected because it couples presentation to the data schema. A UI-only change
+creates a new StructDef version, each StructDef version has exactly one
+presentation, and `PutStructDef` would need to exclude metadata from
+compatibility checks. It also has no natural place for workflow placeholders.
 
 ## Future Work
 
 SDK annotations could provide an optional convenience for generating UI metadata
 from classes registered as StructDefs. They are outside the scope of this proposal
-and may not be necessary if creating Forms directly through the API or client
-tooling (or supplying metadata through `PutStructDef` in Option 3) is sufficient.
+and may not be necessary if creating FormDefs directly through the API or client
+tooling is sufficient.
