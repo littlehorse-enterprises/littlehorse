@@ -56,4 +56,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 028 | [Java Records as `StructDef` Types](./028-java-records-for-structdefs.md)                          | Jacob Snarr                      | [#2295](https://github.com/littlehorse-enterprises/littlehorse/pull/2295) |
 | 030 | [Put Variables ](./030-put-variables.md)                                                           | Eduwer Camacaro                  | TODO |
 | 031 | [Run Inline Workflows ](./031-inline-workflows.md)                                                 | Eduwer Camacaro                  | TODO |
-| 032 | [Versioned Forms for Struct-Backed User Tasks](./032-user-task-form-presentation.md)               | Jake Rose                        | TODO (Draft) |
+| 034 | [UI Metadata for Struct-Backed User Tasks](./034-forms.md)                                         | Jake Rose                        | [#2534](https://github.com/littlehorse-enterprises/littlehorse/issues/2534) |
