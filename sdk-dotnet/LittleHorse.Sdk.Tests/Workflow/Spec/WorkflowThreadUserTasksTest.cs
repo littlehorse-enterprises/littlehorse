@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.Workflow.Spec;
 using Moq;
@@ -20,6 +21,47 @@ public class WorkflowThreadUserTasksTest
         _action = ParentEntrypoint;
     }
     
+    [Fact]
+    public void StructBackedOutput_ShouldCompileWholeStructAndFieldReferences()
+    {
+        var parent = new Sdk.Workflow.Spec.Workflow("struct-user-task", _action);
+        var thread = new WorkflowThread(parent, wf =>
+        {
+            var result = wf.DeclareStruct("result", "request-form", 0);
+            var output = wf.AssignUserTask("request", "anakin", null);
+            result.Assign(output);
+            wf.Execute("consume", output, output.Get("address").Get("city"), result.Get("item"), result);
+            result.Get("item").Assign("updated");
+        }).Compile();
+
+        var userTask = thread.Nodes.Values.Single(node => node.UserTask != null);
+        Assert.Equal("request-form", thread.VariableDefs.Single().VarDef.TypeDef.StructDefId.Name);
+        Assert.Equal("1-request-USER_TASK", userTask.OutgoingEdges.Single().VariableMutations.Single().RhsAssignment.NodeOutput.NodeName);
+        var task = thread.Nodes.Values.Single(node => node.Task != null);
+        Assert.Equal("1-request-USER_TASK", task.Task.Variables[0].NodeOutput.NodeName);
+        Assert.Null(task.Task.Variables[0].LhPath);
+        Assert.Equal(new[] { "address", "city" }, task.Task.Variables[1].LhPath.Path.Select(p => p.Key));
+        Assert.Equal("result", task.Task.Variables[2].VariableName);
+        Assert.Equal("item", task.Task.Variables[2].LhPath.Path.Single().Key);
+        Assert.Null(task.Task.Variables[3].LhPath);
+        Assert.Equal("item", task.OutgoingEdges.Single().VariableMutations.Single().LhsLhPath.Path.Single().Key);
+    }
+
+    [Fact]
+    public void StructSelectors_ShouldNotMixWithJsonPath()
+    {
+        var parent = new Sdk.Workflow.Spec.Workflow("struct-user-task", _action);
+        new WorkflowThread(parent, wf =>
+        {
+            var output = wf.AssignUserTask("request", "anakin", null);
+            Assert.Throws<InvalidOperationException>(() => output.WithJsonPath("$.address").Get("city"));
+            Assert.Throws<Exception>(() => output.Get("address").WithJsonPath("$.city"));
+            var variable = wf.DeclareJsonObj("result");
+            Assert.Throws<InvalidOperationException>(() => variable.WithJsonPath("$.address").Get("city"));
+            Assert.Throws<LittleHorse.Sdk.Exceptions.LHMisconfigurationException>(() => variable.Get("address").WithJsonPath("$.city"));
+        }).Compile();
+    }
+
     [Fact]
     public void WfThread_WithUserTaskAssignedToGroup_ShouldCompile()
     {

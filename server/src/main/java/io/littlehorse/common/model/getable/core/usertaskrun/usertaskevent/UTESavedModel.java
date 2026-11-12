@@ -8,18 +8,28 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class UTESavedModel extends LHSerializable<UTESaved> {
 
     private String userId;
     private Map<String, VariableValueModel> results;
+    private VariableValueModel output;
 
     public UTESavedModel() {
         this.results = new HashMap<>();
+    }
+
+    public UTESavedModel(String userId, Map<String, VariableValueModel> results) {
+        this.userId = userId;
+        this.results = results;
+    }
+
+    public UTESavedModel(String userId, VariableValueModel output) {
+        this();
+        this.userId = userId;
+        this.output = output.getCopy();
     }
 
     @Override
@@ -35,6 +45,9 @@ public class UTESavedModel extends LHSerializable<UTESaved> {
         for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
             out.putResults(entry.getKey(), entry.getValue().toProto().build());
         }
+        if (output != null) {
+            out.setOutput(output.toProto());
+        }
 
         return out;
     }
@@ -43,6 +56,7 @@ public class UTESavedModel extends LHSerializable<UTESaved> {
     public void initFrom(Message proto, ExecutionContext ctx) {
         UTESaved p = (UTESaved) proto;
         userId = p.getUserId();
+        output = p.hasOutput() ? VariableValueModel.fromProto(p.getOutput(), ctx) : null;
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             VariableValueModel varVal = VariableValueModel.fromProto(entry.getValue(), ctx);
             results.put(entry.getKey(), varVal);

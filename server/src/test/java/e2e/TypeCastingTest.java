@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -13,7 +14,6 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -132,11 +132,14 @@ public class TypeCastingTest {
 
     @Test
     void shouldFailUnsupportedCast() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-cast", wf -> {
-            WfRunVariable doubleVar = wf.addVariable("double-var", VariableType.DOUBLE);
-            WfRunVariable boolVar = wf.addVariable("bool-var", VariableType.BOOL);
-            boolVar.assign(doubleVar.castTo(VariableType.BOOL));
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-cast",
+                wf -> {
+                    WfRunVariable doubleVar = wf.addVariable("double-var", VariableType.DOUBLE);
+                    WfRunVariable boolVar = wf.addVariable("bool-var", VariableType.BOOL);
+                    boolVar.assign(doubleVar.castTo(VariableType.BOOL));
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> {
                     invalidWorkflow.registerWfSpec(client);
@@ -157,10 +160,13 @@ public class TypeCastingTest {
 
     @Test
     void shouldFailWorkflowRegistrationForUnsupportedIntToBoolCast() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-int-bool-cast", wf -> {
-            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            wf.execute("invert-boolean", intVar.castTo(VariableType.BOOL));
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-int-bool-cast",
+                wf -> {
+                    WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+                    wf.execute("invert-boolean", intVar.castTo(VariableType.BOOL));
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client))
                 .matches(
@@ -176,10 +182,13 @@ public class TypeCastingTest {
 
     @Test
     void shouldFailWorkflowRegistrationForMissingManualCast() {
-        Workflow invalidWorkflow = new WorkflowImpl("missing-manual-cast", wf -> {
-            WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR);
-            wf.execute("int-times-two", strVar);
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "missing-manual-cast",
+                wf -> {
+                    WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR);
+                    wf.execute("int-times-two", strVar);
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
             StatusRuntimeException sre = (StatusRuntimeException) exn;
@@ -192,11 +201,14 @@ public class TypeCastingTest {
 
     @Test
     void shouldFailVariableAssignmentWithoutExplicitCast() {
-        Workflow invalidWorkflow = new WorkflowImpl("invalid-var-assignment", wf -> {
-            WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR);
-            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
-            intVar.assign(strVar);
-        });
+        Workflow invalidWorkflow = Workflow.newWorkflow(
+                "invalid-var-assignment",
+                wf -> {
+                    WfRunVariable strVar = wf.addVariable("str-var", VariableType.STR);
+                    WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT);
+                    intVar.assign(strVar);
+                },
+                new LHConfig());
 
         assertThatThrownBy(() -> invalidWorkflow.registerWfSpec(client)).matches(exn -> {
             StatusRuntimeException sre = (StatusRuntimeException) exn;
@@ -208,65 +220,78 @@ public class TypeCastingTest {
 
     @LHWorkflow("automatic-casting-wf")
     public Workflow automaticCastingWorkflow() {
-        return new WorkflowImpl("automatic-casting-wf", wf -> {
-            WfRunVariable intVar = wf.addVariable("int-var", VariableType.INT).withDefault(42);
-            WfRunVariable doubleVar =
-                    wf.addVariable("double-var", VariableType.DOUBLE).withDefault(3.14);
-            WfRunVariable boolVar =
-                    wf.addVariable("bool-var", VariableType.BOOL).withDefault(true);
+        return Workflow.newWorkflow(
+                "automatic-casting-wf",
+                wf -> {
+                    WfRunVariable intVar =
+                            wf.addVariable("int-var", VariableType.INT).withDefault(42);
+                    WfRunVariable doubleVar =
+                            wf.addVariable("double-var", VariableType.DOUBLE).withDefault(3.14);
+                    WfRunVariable boolVar =
+                            wf.addVariable("bool-var", VariableType.BOOL).withDefault(true);
 
-            wf.execute("prefix-string", intVar);
-            wf.execute("double-times-one-point-five", intVar);
-            wf.execute("prefix-string", doubleVar);
-            wf.execute("prefix-string", boolVar);
-        });
+                    wf.execute("prefix-string", intVar);
+                    wf.execute("double-times-one-point-five", intVar);
+                    wf.execute("prefix-string", doubleVar);
+                    wf.execute("prefix-string", boolVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("manual-casting-wf")
     public Workflow manualCastingWorkflow() {
-        return new WorkflowImpl("manual-casting-wf", wf -> {
-            WfRunVariable strIntVar =
-                    wf.addVariable("str-var", VariableType.STR).withDefault("3");
-            WfRunVariable strDoubleVar =
-                    wf.addVariable("str-double-var", VariableType.STR).withDefault("3.14");
-            WfRunVariable doubleVar =
-                    wf.addVariable("double-var", VariableType.DOUBLE).withDefault(123.67);
+        return Workflow.newWorkflow(
+                "manual-casting-wf",
+                wf -> {
+                    WfRunVariable strIntVar =
+                            wf.addVariable("str-var", VariableType.STR).withDefault("3");
+                    WfRunVariable strDoubleVar =
+                            wf.addVariable("str-double-var", VariableType.STR).withDefault("3.14");
+                    WfRunVariable doubleVar =
+                            wf.addVariable("double-var", VariableType.DOUBLE).withDefault(123.67);
 
-            wf.execute("int-times-two", strIntVar.castTo(VariableType.INT));
-            wf.execute("double-times-one-point-five", strDoubleVar.castTo(VariableType.DOUBLE));
+                    wf.execute("int-times-two", strIntVar.castTo(VariableType.INT));
+                    wf.execute("double-times-one-point-five", strDoubleVar.castTo(VariableType.DOUBLE));
 
-            WfRunVariable boolStrVar =
-                    wf.addVariable("bool-str-var", VariableType.STR).withDefault("true");
-            wf.execute("invert-boolean", boolStrVar.castTo(VariableType.BOOL));
+                    WfRunVariable boolStrVar =
+                            wf.addVariable("bool-str-var", VariableType.STR).withDefault("true");
+                    wf.execute("invert-boolean", boolStrVar.castTo(VariableType.BOOL));
 
-            wf.execute("int-times-two", doubleVar.castTo(VariableType.INT));
-        });
+                    wf.execute("int-times-two", doubleVar.castTo(VariableType.INT));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("variable-assignment-casting-wf")
     public Workflow variableAssignmentCastingWorkflow() {
-        return new WorkflowImpl("variable-assignment-casting-wf", wf -> {
-            WfRunVariable inputStr =
-                    wf.addVariable("input-str", VariableType.STR).withDefault("456");
-            WfRunVariable resultInt = wf.addVariable("result-int", VariableType.INT);
+        return Workflow.newWorkflow(
+                "variable-assignment-casting-wf",
+                wf -> {
+                    WfRunVariable inputStr =
+                            wf.addVariable("input-str", VariableType.STR).withDefault("456");
+                    WfRunVariable resultInt = wf.addVariable("result-int", VariableType.INT);
 
-            resultInt.assign(inputStr.castTo(VariableType.INT));
+                    resultInt.assign(inputStr.castTo(VariableType.INT));
 
-            wf.execute("int-times-two", resultInt);
-        });
+                    wf.execute("int-times-two", resultInt);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("complex-casting-chains-wf")
     public Workflow complexCastingChainsWorkflow() {
-        return new WorkflowImpl("complex-casting-chains-wf", wf -> {
-            WfRunVariable initialStr =
-                    wf.addVariable("initial-str", VariableType.STR).withDefault("100");
+        return Workflow.newWorkflow(
+                "complex-casting-chains-wf",
+                wf -> {
+                    WfRunVariable initialStr =
+                            wf.addVariable("initial-str", VariableType.STR).withDefault("100");
 
-            NodeOutput step1 = wf.execute("int-times-two", initialStr.castTo(VariableType.INT));
-            NodeOutput step2 = wf.execute("double-times-one-point-five", step1);
-            NodeOutput step3 = wf.execute("int-times-two", step2.castTo(VariableType.INT));
-            wf.execute("prefix-string", step3);
-        });
+                    NodeOutput step1 = wf.execute("int-times-two", initialStr.castTo(VariableType.INT));
+                    NodeOutput step2 = wf.execute("double-times-one-point-five", step1);
+                    NodeOutput step3 = wf.execute("int-times-two", step2.castTo(VariableType.INT));
+                    wf.execute("prefix-string", step3);
+                },
+                new LHConfig());
     }
 
     public Object castingWorker() {

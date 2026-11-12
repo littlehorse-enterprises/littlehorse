@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
@@ -108,12 +109,15 @@ public class InterruptOnExternalEventTest {
      */
     @LHWorkflow("interrupt-on-external-event")
     public Workflow getInterruptOnExternalEventWf() {
-        return Workflow.newWorkflow("interrupt-on-external-event", parent -> {
-            parent.waitForEvent(PARENT_EVENT);
+        return Workflow.newWorkflow(
+                "interrupt-on-external-event",
+                parent -> {
+                    parent.waitForEvent(PARENT_EVENT);
 
-            parent.registerInterruptHandler(INTERRUPT_TRIGGER, child -> {
-                child.waitForEvent(CHILD_EVENT);
-            });
-        });
+                    parent.registerInterruptHandler(INTERRUPT_TRIGGER, child -> {
+                        child.waitForEvent(CHILD_EVENT);
+                    });
+                },
+                new LHConfig());
     }
 }

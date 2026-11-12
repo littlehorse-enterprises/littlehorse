@@ -33,6 +33,7 @@ private static final long serialVersionUID = 0L;
   }
   private StructFieldDef() {
     description_ = "";
+    oneofGroup_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -92,7 +93,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -105,7 +106,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -118,7 +119,7 @@ private static final long serialVersionUID = 0L;
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -202,6 +203,68 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int ONEOF_GROUP_FIELD_NUMBER = 5;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object oneofGroup_ = "";
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return Whether the oneofGroup field is set.
+   */
+  @java.lang.Override
+  public boolean hasOneofGroup() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return The oneofGroup.
+   */
+  @java.lang.Override
+  public java.lang.String getOneofGroup() {
+    java.lang.Object ref = oneofGroup_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      oneofGroup_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return The bytes for oneofGroup.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getOneofGroupBytes() {
+    java.lang.Object ref = oneofGroup_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      oneofGroup_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -228,6 +291,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       com.google.protobuf.GeneratedMessage.writeString(output, 4, description_);
     }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 5, oneofGroup_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -251,6 +317,9 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.GeneratedMessage.computeStringSize(4, description_);
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(5, oneofGroup_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -284,6 +353,11 @@ private static final long serialVersionUID = 0L;
       if (!getDescription()
           .equals(other.getDescription())) return false;
     }
+    if (hasOneofGroup() != other.hasOneofGroup()) return false;
+    if (hasOneofGroup()) {
+      if (!getOneofGroup()
+          .equals(other.getOneofGroup())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -309,6 +383,10 @@ private static final long serialVersionUID = 0L;
     if (hasDescription()) {
       hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
       hash = (53 * hash) + getDescription().hashCode();
+    }
+    if (hasOneofGroup()) {
+      hash = (37 * hash) + ONEOF_GROUP_FIELD_NUMBER;
+      hash = (53 * hash) + getOneofGroup().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -464,6 +542,7 @@ private static final long serialVersionUID = 0L;
       }
       isNullable_ = false;
       description_ = "";
+      oneofGroup_ = "";
       return this;
     }
 
@@ -517,6 +596,10 @@ private static final long serialVersionUID = 0L;
         result.description_ = description_;
         to_bitField0_ |= 0x00000004;
       }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.oneofGroup_ = oneofGroup_;
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -544,6 +627,11 @@ private static final long serialVersionUID = 0L;
       if (other.hasDescription()) {
         description_ = other.description_;
         bitField0_ |= 0x00000008;
+        onChanged();
+      }
+      if (other.hasOneofGroup()) {
+        oneofGroup_ = other.oneofGroup_;
+        bitField0_ |= 0x00000010;
         onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
@@ -596,6 +684,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000008;
               break;
             } // case 34
+            case 42: {
+              oneofGroup_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 42
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -776,7 +869,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -788,7 +881,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -804,7 +897,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -825,7 +918,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -844,7 +937,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -870,7 +963,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -888,7 +981,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -901,7 +994,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -917,7 +1010,7 @@ private static final long serialVersionUID = 0L;
     /**
      * <pre>
      * The default value of the field, which should match the Field Type. If not
-     * provided, then the field is treated as required.
+     * provided, then the field is treated as required unless nullable or in a oneof group.
      * </pre>
      *
      * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -1079,6 +1172,115 @@ private static final long serialVersionUID = 0L;
       checkByteStringIsUtf8(value);
       description_ = value;
       bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object oneofGroup_ = "";
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @return Whether the oneofGroup field is set.
+     */
+    public boolean hasOneofGroup() {
+      return ((bitField0_ & 0x00000010) != 0);
+    }
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @return The oneofGroup.
+     */
+    public java.lang.String getOneofGroup() {
+      java.lang.Object ref = oneofGroup_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        oneofGroup_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @return The bytes for oneofGroup.
+     */
+    public com.google.protobuf.ByteString
+        getOneofGroupBytes() {
+      java.lang.Object ref = oneofGroup_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        oneofGroup_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @param value The oneofGroup to set.
+     * @return This builder for chaining.
+     */
+    public Builder setOneofGroup(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      oneofGroup_ = value;
+      bitField0_ |= 0x00000010;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearOneofGroup() {
+      oneofGroup_ = getDefaultInstance().getOneofGroup();
+      bitField0_ = (bitField0_ & ~0x00000010);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Fields with the same group name in this Struct allow zero or one populated member.
+     * Group names follow Struct field naming rules and have a separate namespace.
+     * </pre>
+     *
+     * <code>optional string oneof_group = 5;</code>
+     * @param value The bytes for oneofGroup to set.
+     * @return This builder for chaining.
+     */
+    public Builder setOneofGroupBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      oneofGroup_ = value;
+      bitField0_ |= 0x00000010;
       onChanged();
       return this;
     }

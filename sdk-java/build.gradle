@@ -86,6 +86,9 @@ dependencies {
     // Logging interface
     implementation "org.slf4j:slf4j-api:${slf4jVersion}"
 
+    // Guava is exposed by the generated gRPC future stubs.
+    api "com.google.guava:guava:${guavaVersion}"
+
     // Utils
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 

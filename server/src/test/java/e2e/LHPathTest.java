@@ -7,12 +7,12 @@ import e2e.Struct.PersonPojo;
 import e2e.Struct.PhoneNumbers;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -55,10 +55,13 @@ public class LHPathTest {
 
     @Test
     void shouldFailGetOnStructWithInvalidField() {
-        Workflow invalid = Workflow.newWorkflow("fail-get-on-struct", wf -> {
-            WfRunVariable person = wf.declareStruct("person", Person.class);
-            wf.execute("greet-lh-path", person.get("age"));
-        });
+        Workflow invalid = Workflow.newWorkflow(
+                "fail-get-on-struct",
+                wf -> {
+                    WfRunVariable person = wf.declareStruct("person", Person.class);
+                    wf.execute("greet-lh-path", person.get("age"));
+                },
+                new LHConfig());
 
         Assertions.assertThatThrownBy(() -> {
                     invalid.registerWfSpec(client);
@@ -75,14 +78,17 @@ public class LHPathTest {
 
     @LHWorkflow("lh-path-structs")
     public Workflow testLhPathWorkflowOnStructs() {
-        return new WorkflowImpl("lh-path-structs", wf -> {
-            WfRunVariable personStruct =
-                    wf.declareStruct("person", Person.class).required();
+        return Workflow.newWorkflow(
+                "lh-path-structs",
+                wf -> {
+                    WfRunVariable personStruct =
+                            wf.declareStruct("person", Person.class).required();
 
-            wf.execute("greet-lh-path", personStruct.get("name"));
-            wf.execute("lookup-friend", personStruct.get("friends").get(0));
-            wf.execute("call-phone", personStruct.get("phoneNumbers").get("home"));
-        });
+                    wf.execute("greet-lh-path", personStruct.get("name"));
+                    wf.execute("lookup-friend", personStruct.get("friends").get(0));
+                    wf.execute("call-phone", personStruct.get("phoneNumbers").get("home"));
+                },
+                new LHConfig());
     }
 
     @Test
@@ -105,13 +111,16 @@ public class LHPathTest {
 
     @LHWorkflow("lh-path-json-obj")
     public Workflow testLhPathWorkflowOnJSONObj() {
-        return new WorkflowImpl("lh-path-json-obj", wf -> {
-            WfRunVariable personJsonObj = wf.declareJsonObj("person").required();
+        return Workflow.newWorkflow(
+                "lh-path-json-obj",
+                wf -> {
+                    WfRunVariable personJsonObj = wf.declareJsonObj("person").required();
 
-            wf.execute("greet-lh-path", personJsonObj.get("name"));
-            wf.execute("lookup-friend", personJsonObj.get("friends").get(0));
-            wf.execute("call-phone", personJsonObj.get("phoneNumbers").get("home"));
-        });
+                    wf.execute("greet-lh-path", personJsonObj.get("name"));
+                    wf.execute("lookup-friend", personJsonObj.get("friends").get(0));
+                    wf.execute("call-phone", personJsonObj.get("phoneNumbers").get("home"));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("greet-lh-path")

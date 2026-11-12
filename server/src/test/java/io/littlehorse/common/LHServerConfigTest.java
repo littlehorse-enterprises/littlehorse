@@ -391,6 +391,41 @@ public class LHServerConfigTest {
         }
 
         @Test
+        void loadOAuthCaCertFromProperties() throws IOException {
+            Path caCert = Files.createTempFile("oauth-ca", ".crt");
+            String server =
+                    "https://" + faker.internet().url() + "/" + faker.internet().slug();
+
+            Properties properties = new Properties();
+            properties.put("LHS_OAUTH_CLIENT_ID", "client-id");
+            properties.put("LHS_OAUTH_CLIENT_SECRET", "client-secret");
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
+            properties.put("LHS_OAUTH_CA_CERT", caCert.toString());
+
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.getOAuthConfig().getCaCert()).isEqualTo(caCert.toFile());
+        }
+
+        @Test
+        void throwsExceptionIfOAuthCaCertFileDoesNotExist() {
+            String server =
+                    "https://" + faker.internet().url() + "/" + faker.internet().slug();
+
+            Properties properties = new Properties();
+            properties.put("LHS_OAUTH_CLIENT_ID", "client-id");
+            properties.put("LHS_OAUTH_CLIENT_SECRET", "client-secret");
+            properties.put("LHS_OAUTH_INTROSPECT_URL", server);
+            properties.put("LHS_OAUTH_CA_CERT", "/tmp/missing-" + UUID.randomUUID() + ".crt");
+
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThatThrownBy(config::getOAuthConfig)
+                    .isExactlyInstanceOf(LHMisconfigurationException.class)
+                    .hasMessage("Invalid configuration: File location specified on LHS_OAUTH_CA_CERT is invalid");
+        }
+
+        @Test
         void throwsExceptionIfItIsAnInvalidURLWhenLoadingOAuthSettings() {
             String clientId = UUID.randomUUID().toString();
             String clientSecret = UUID.randomUUID().toString();

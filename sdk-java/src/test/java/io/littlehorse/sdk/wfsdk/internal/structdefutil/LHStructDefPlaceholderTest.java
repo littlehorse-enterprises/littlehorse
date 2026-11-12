@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.PutStructDefRequest;
 import io.littlehorse.sdk.common.proto.PutWfSpecRequest;
@@ -146,7 +147,10 @@ public class LHStructDefPlaceholderTest {
     @Test
     public void shouldResolvePlaceholderInDeclareStructWithClass() {
         Workflow wf = Workflow.newWorkflow(
-                "placeholder-struct-wf", thread -> thread.declareStruct("my-address", Address.class), PLACEHOLDERS);
+                "placeholder-struct-wf",
+                thread -> thread.declareStruct("my-address", Address.class),
+                new LHConfig(),
+                PLACEHOLDERS);
 
         VariableDef varDef = declaredVarDef(wf);
 
@@ -158,6 +162,7 @@ public class LHStructDefPlaceholderTest {
         Workflow wf = Workflow.newWorkflow(
                 "placeholder-struct-name-wf",
                 thread -> thread.declareStruct("my-address", "${company}-address"),
+                new LHConfig(),
                 PLACEHOLDERS);
 
         VariableDef varDef = declaredVarDef(wf);
@@ -170,6 +175,7 @@ public class LHStructDefPlaceholderTest {
         Workflow wf = Workflow.newWorkflow(
                 "placeholder-struct-default-name-wf",
                 thread -> thread.declareStruct("my-address", "${company:acme-default}-address"),
+                new LHConfig(),
                 Map.of());
 
         VariableDef varDef = declaredVarDef(wf);

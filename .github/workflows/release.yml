@@ -12,19 +12,19 @@ permissions:
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
       prerelease: ${{ steps.is_prerelease.outputs.prerelease }}
       publish_js: ${{ steps.check_js.outputs.publish_js }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Set Tag
         id: set_tag
@@ -66,16 +66,16 @@ jobs:
       tag: ${{ needs.prepare.outputs.tag }}
 
   publish-java-libraries:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: "corretto"
           java-version: "17"
@@ -117,16 +117,16 @@ jobs:
           closeSonatypeStagingRepository
 
   publish-java-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: "corretto"
           java-version: "25"
@@ -166,13 +166,13 @@ jobs:
           closeSonatypeStagingRepository
 
   publish-sdk-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Dump version
         env:
@@ -180,9 +180,9 @@ jobs:
         run: sed -i "s/version = \".*\"/version = \"${TAG,,}\"/g" sdk-python/pyproject.toml
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.9"
+          python-version: "3.13"
 
       - name: Install Dependencies
         run: |
@@ -197,7 +197,7 @@ jobs:
           poetry build
 
       - name: Publish Package
-        uses: pypa/gh-action-pypi-publish@v1.13.0
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
@@ -205,7 +205,7 @@ jobs:
 
   publish-sdk-js:
     if: ${{ needs.prepare.outputs.publish_js == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -213,17 +213,17 @@ jobs:
       working-directory: ./sdk-js
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup NodeJS
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
           package-manager-cache: false
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
         with:
           version: 10.19.0
 
@@ -255,17 +255,25 @@ jobs:
           fi
 
   publish-sdk-dotnet:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+
       - name: Setup Dotnet
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "6"
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+  
       - name: Bump version
         env:
           TAG: ${{ needs.prepare.outputs.tag }}
@@ -275,20 +283,18 @@ jobs:
       - name: Create Package
         run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Publish Package to nuget.org
-        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg --api-key ${{steps.login.outputs.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
 
   build-lhctl:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - prepare
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Go
-        uses: actions/setup-go@v6
+        uses: actions/setup-go@v7
         with:
           go-version: "1.25"
 
@@ -312,15 +318,15 @@ jobs:
       - publish-sdk-python
       - publish-sdk-js
       - publish-sdk-dotnet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.13"
 
       - name: Resolve release notes
         env:

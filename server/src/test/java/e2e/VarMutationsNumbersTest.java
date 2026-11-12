@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.*;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -9,7 +10,6 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -57,24 +57,27 @@ public class VarMutationsNumbersTest {
 
     @LHWorkflow("test-mutation-workflow")
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl("test-mutation-workflow", thread -> {
-            WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
+        return Workflow.newWorkflow(
+                "test-mutation-workflow",
+                thread -> {
+                    WfRunVariable myInt = thread.addVariable("my-int", VariableType.INT);
 
-            WfRunVariable myDouble = thread.addVariable("my-double", VariableType.DOUBLE);
+                    WfRunVariable myDouble = thread.addVariable("my-double", VariableType.DOUBLE);
 
-            WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
+                    WfRunVariable myOtherInt = thread.addVariable("my-other-int", VariableType.INT);
 
-            NodeOutput output = thread.execute("ad-simple");
-            thread.mutate(myInt, VariableMutationType.ADD, output);
-            thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
+                    NodeOutput output = thread.execute("ad-simple");
+                    thread.mutate(myInt, VariableMutationType.ADD, output);
+                    thread.mutate(myInt, VariableMutationType.SUBTRACT, 2);
 
-            // ensure that we can cast from double to int, and that the
-            // original type is respected
-            thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble.castToInt());
+                    // ensure that we can cast from double to int, and that the
+                    // original type is respected
+                    thread.mutate(myOtherInt, VariableMutationType.ASSIGN, myDouble.castToInt());
 
-            // Do some math, and divide by zero to show that failures work
-            thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
-        });
+                    // Do some math, and divide by zero to show that failures work
+                    thread.mutate(myOtherInt, VariableMutationType.DIVIDE, myInt);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("ad-simple")

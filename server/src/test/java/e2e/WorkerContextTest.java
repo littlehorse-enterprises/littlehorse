@@ -2,11 +2,11 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
@@ -72,10 +72,13 @@ public class WorkerContextTest {
 
     @LHWorkflow("worker-context-test")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("worker-context-test", thread -> {
-            thread.execute("worker-context-test");
-            thread.execute("worker-context-test");
-        });
+        return Workflow.newWorkflow(
+                "worker-context-test",
+                thread -> {
+                    thread.execute("worker-context-test");
+                    thread.execute("worker-context-test");
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("worker-context-test")

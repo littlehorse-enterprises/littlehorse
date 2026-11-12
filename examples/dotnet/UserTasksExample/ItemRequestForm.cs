@@ -1,16 +1,13 @@
-using LittleHorse.Sdk.UserTask;
+using LittleHorse.Sdk.Worker;
 
 namespace UserTasksExample;
 
+[LHStructDef("item-request-form")]
 public class ItemRequestForm
 {
-    [UserTaskField(
-        DisplayName = "Your Request", 
-        Description = "The item you are requesting.")]
-    public string? RequestedItem;
-    
-    [UserTaskField(
-        DisplayName = "Request Justification", 
-        Description = "Why you need this request.")]
-    public string? Justification;
+    [LHStructField(name: "requestedItem", description: "The item you are requesting.")]
+    public string RequestedItem { get; set; } = string.Empty;
+
+    [LHStructField(name: "justification", description: "Why you need this request.")]
+    public string Justification { get; set; } = string.Empty;
 }

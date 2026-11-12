@@ -45,15 +45,18 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 017 | [Workflow Metrics](./017-workflow-metrics.md)                                                      | Christian Caicedo                | N/A |
 | 018 | [TypeScript WfSpec minimal API](./018-typescript-wfspec-minimal-api.md)                            | Hazim Arafa                      | [#2162](https://github.com/littlehorse-enterprises/littlehorse/pull/2132) |
 | 019 | [Buildling `Struct`s Inside `WfSpec`](./019-struct-field-assignment-in-wfspec.md)                  | Colt McNealy                     | #2219 |
-| 020 | [Quotas](./019-quotas.md)                                                                          | Colt McNealy                     | TODO |
+| 020 | [Quotas](./020-quotas.md)                                                                          | Colt McNealy                     | TODO |
 | 021 | [Counted Tags](./021-counted-tags.md)                                                              | Eduwer Camacaro                  | TODO |
 | 022 | [Workflow Migrations](./022-workflow-migrations.md)                                                | Jake Rose.                       | TODO |
-| 023 | [Native Maps](./024-native-maps.md)                                                                | Jacob Snarr                      | [#2368](https://github.com/littlehorse-enterprises/littlehorse/pull/2368)  |
+| 023 | [Native Maps](./023-native-maps.md)                                                                | Jacob Snarr                      | [#2368](https://github.com/littlehorse-enterprises/littlehorse/pull/2368)  |
 | 024 | [Bulk Delete WfRun](./024-bulk-delete-wf-run.md)                                                   | Eduwer Camacaro                       | [#2370](https://github.com/littlehorse-enterprises/littlehorse/pull/2370) |
 | 025 | [StructFieldDef Descriptions](./025-structfielddef-descriptions.md)                                | Jacob Snarr                      | TODO |
 | 026 | [Thread Run Queue](./026-thread-run-queue.md)                                                      | Jake Rose                        | TODO |
 | 027 | [RunChildWf with Specific ID](./027-runchildwf-with-id.md)                                         | Colt McNealy                     | [#2501](https://github.com/littlehorse-enterprises/littlehorse/issues/2501) |
 | 028 | [Java Records as `StructDef` Types](./028-java-records-for-structdefs.md)                          | Jacob Snarr                      | [#2295](https://github.com/littlehorse-enterprises/littlehorse/pull/2295) |
-| 030 | [Put Variables ](./030-put-variables.md)                                                           | Eduwer Camacaro                  | TODO |
-| 031 | [Run Inline Workflows ](./031-inline-workflows.md)                                                 | Eduwer Camacaro                  | TODO |
+| 029 | [Struct-Backed User Tasks](./029-struct-backed-user-tasks.md)                                      | Eduwer Camacaro                  | TODO |
+| 030 | [Run Inline Workflows ](./030-inline-workflows.md)                                                 | Eduwer Camacaro                  | TODO |
+| 031 | [Put Variables ](./031-put-variables.md)                                                           | Eduwer Camacaro                  | TODO |
+| 032 | [Tenant Name](./032-tenant-name.md)                                                               | Eduwer Camacaro                  | TODO |
+| 033 | [OneOf Support in `Struct`s](./033-struct-oneof-groups.md)                                          | Jacob Snarr                     | [#2531](https://github.com/littlehorse-enterprises/littlehorse/issues/2531) |
 | 034 | [UI Metadata for Struct-Backed User Tasks](./034-forms.md)                                         | Jake Rose                        | [#2534](https://github.com/littlehorse-enterprises/littlehorse/issues/2534) |

@@ -34,6 +34,7 @@ CA_CERT = "LHC_CA_CERT"
 OAUTH_CLIENT_ID = "LHC_OAUTH_CLIENT_ID"
 OAUTH_CLIENT_SECRET = "LHC_OAUTH_CLIENT_SECRET"
 OAUTH_TOKEN_ENDPOINT_URL = "LHC_OAUTH_ACCESS_TOKEN_URL"
+OAUTH_CA_CERT = "LHC_OAUTH_CA_CERT"
 NUM_WORKER_THREADS = "LHW_NUM_WORKER_THREADS"
 TASK_WORKER_ID = "LHW_TASK_WORKER_ID"
 TASK_WORKER_VERSION = "LHW_TASK_WORKER_VERSION"
@@ -256,6 +257,16 @@ class LHConfig:
         return self.get(OAUTH_TOKEN_ENDPOINT_URL)
 
     @property
+    def oauth_ca_cert(self) -> Optional[str]:
+        """Returns the path to a PEM file with CAs trusted for the OAuth2
+        token endpoint, in addition to the default ones.
+
+        Returns:
+            Optional[str]: Path to the CA certificates, or None if not configured.
+        """
+        return self.get(OAUTH_CA_CERT)
+
+    @property
     def grpc_keepalive_time_ms(self) -> int:
         """Returns the keepalive ping interval for the internal grpc
         client in milliseconds.
@@ -396,6 +407,7 @@ class LHConfig:
                     client_id=self.oauth_client_id,
                     client_secret=self.oauth_client_secret,
                     token_endpoint_url=self.oauth_token_endpoint_url,
+                    ca_cert=self.oauth_ca_cert,
                 )
             )
 
