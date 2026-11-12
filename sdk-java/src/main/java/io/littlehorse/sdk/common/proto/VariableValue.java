@@ -67,6 +67,7 @@ private static final long serialVersionUID = 0L;
     STRUCT(11),
     ARRAY(12),
     MAP(13),
+    ENUM(14),
     VALUE_NOT_SET(0);
     private final int value;
     private ValueCase(int value) {
@@ -96,6 +97,7 @@ private static final long serialVersionUID = 0L;
         case 11: return STRUCT;
         case 12: return ARRAY;
         case 13: return MAP;
+        case 14: return ENUM;
         case 0: return VALUE_NOT_SET;
         default: return null;
       }
@@ -636,6 +638,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.Map.getDefaultInstance();
   }
 
+  public static final int ENUM_FIELD_NUMBER = 14;
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   * @return Whether the enum field is set.
+   */
+  @java.lang.Override
+  public boolean hasEnum() {
+    return valueCase_ == 14;
+  }
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   * @return The enum.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.Enum getEnum() {
+    if (valueCase_ == 14) {
+       return (io.littlehorse.sdk.common.proto.Enum) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.EnumOrBuilder getEnumOrBuilder() {
+    if (valueCase_ == 14) {
+       return (io.littlehorse.sdk.common.proto.Enum) value_;
+    }
+    return io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -689,6 +734,9 @@ private static final long serialVersionUID = 0L;
     }
     if (valueCase_ == 13) {
       output.writeMessage(13, (io.littlehorse.sdk.common.proto.Map) value_);
+    }
+    if (valueCase_ == 14) {
+      output.writeMessage(14, (io.littlehorse.sdk.common.proto.Enum) value_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -747,6 +795,10 @@ private static final long serialVersionUID = 0L;
     if (valueCase_ == 13) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(13, (io.littlehorse.sdk.common.proto.Map) value_);
+    }
+    if (valueCase_ == 14) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(14, (io.littlehorse.sdk.common.proto.Enum) value_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -814,6 +866,10 @@ private static final long serialVersionUID = 0L;
         if (!getMap()
             .equals(other.getMap())) return false;
         break;
+      case 14:
+        if (!getEnum()
+            .equals(other.getEnum())) return false;
+        break;
       case 0:
       default:
     }
@@ -879,6 +935,10 @@ private static final long serialVersionUID = 0L;
       case 13:
         hash = (37 * hash) + MAP_FIELD_NUMBER;
         hash = (53 * hash) + getMap().hashCode();
+        break;
+      case 14:
+        hash = (37 * hash) + ENUM_FIELD_NUMBER;
+        hash = (53 * hash) + getEnum().hashCode();
         break;
       case 0:
       default:
@@ -1035,6 +1095,9 @@ private static final long serialVersionUID = 0L;
       if (mapBuilder_ != null) {
         mapBuilder_.clear();
       }
+      if (enumBuilder_ != null) {
+        enumBuilder_.clear();
+      }
       valueCase_ = 0;
       value_ = null;
       return this;
@@ -1095,6 +1158,10 @@ private static final long serialVersionUID = 0L;
       if (valueCase_ == 13 &&
           mapBuilder_ != null) {
         result.value_ = mapBuilder_.build();
+      }
+      if (valueCase_ == 14 &&
+          enumBuilder_ != null) {
+        result.value_ = enumBuilder_.build();
       }
     }
 
@@ -1163,6 +1230,10 @@ private static final long serialVersionUID = 0L;
         }
         case MAP: {
           mergeMap(other.getMap());
+          break;
+        }
+        case ENUM: {
+          mergeEnum(other.getEnum());
           break;
         }
         case VALUE_NOT_SET: {
@@ -1268,6 +1339,13 @@ private static final long serialVersionUID = 0L;
               valueCase_ = 13;
               break;
             } // case 106
+            case 114: {
+              input.readMessage(
+                  internalGetEnumFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              valueCase_ = 14;
+              break;
+            } // case 114
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2775,6 +2853,184 @@ private static final long serialVersionUID = 0L;
       valueCase_ = 13;
       onChanged();
       return mapBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Enum, io.littlehorse.sdk.common.proto.Enum.Builder, io.littlehorse.sdk.common.proto.EnumOrBuilder> enumBuilder_;
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     * @return Whether the enum field is set.
+     */
+    @java.lang.Override
+    public boolean hasEnum() {
+      return valueCase_ == 14;
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     * @return The enum.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.Enum getEnum() {
+      if (enumBuilder_ == null) {
+        if (valueCase_ == 14) {
+          return (io.littlehorse.sdk.common.proto.Enum) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+      } else {
+        if (valueCase_ == 14) {
+          return enumBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    public Builder setEnum(io.littlehorse.sdk.common.proto.Enum value) {
+      if (enumBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        value_ = value;
+        onChanged();
+      } else {
+        enumBuilder_.setMessage(value);
+      }
+      valueCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    public Builder setEnum(
+        io.littlehorse.sdk.common.proto.Enum.Builder builderForValue) {
+      if (enumBuilder_ == null) {
+        value_ = builderForValue.build();
+        onChanged();
+      } else {
+        enumBuilder_.setMessage(builderForValue.build());
+      }
+      valueCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    public Builder mergeEnum(io.littlehorse.sdk.common.proto.Enum value) {
+      if (enumBuilder_ == null) {
+        if (valueCase_ == 14 &&
+            value_ != io.littlehorse.sdk.common.proto.Enum.getDefaultInstance()) {
+          value_ = io.littlehorse.sdk.common.proto.Enum.newBuilder((io.littlehorse.sdk.common.proto.Enum) value_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          value_ = value;
+        }
+        onChanged();
+      } else {
+        if (valueCase_ == 14) {
+          enumBuilder_.mergeFrom(value);
+        } else {
+          enumBuilder_.setMessage(value);
+        }
+      }
+      valueCase_ = 14;
+      return this;
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    public Builder clearEnum() {
+      if (enumBuilder_ == null) {
+        if (valueCase_ == 14) {
+          valueCase_ = 0;
+          value_ = null;
+          onChanged();
+        }
+      } else {
+        if (valueCase_ == 14) {
+          valueCase_ = 0;
+          value_ = null;
+        }
+        enumBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    public io.littlehorse.sdk.common.proto.Enum.Builder getEnumBuilder() {
+      return internalGetEnumFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.EnumOrBuilder getEnumOrBuilder() {
+      if ((valueCase_ == 14) && (enumBuilder_ != null)) {
+        return enumBuilder_.getMessageOrBuilder();
+      } else {
+        if (valueCase_ == 14) {
+          return (io.littlehorse.sdk.common.proto.Enum) value_;
+        }
+        return io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An Enum object.
+     * </pre>
+     *
+     * <code>.littlehorse.Enum enum = 14;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Enum, io.littlehorse.sdk.common.proto.Enum.Builder, io.littlehorse.sdk.common.proto.EnumOrBuilder> 
+        internalGetEnumFieldBuilder() {
+      if (enumBuilder_ == null) {
+        if (!(valueCase_ == 14)) {
+          value_ = io.littlehorse.sdk.common.proto.Enum.getDefaultInstance();
+        }
+        enumBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.Enum, io.littlehorse.sdk.common.proto.Enum.Builder, io.littlehorse.sdk.common.proto.EnumOrBuilder>(
+                (io.littlehorse.sdk.common.proto.Enum) value_,
+                getParentForChildren(),
+                isClean());
+        value_ = null;
+      }
+      valueCase_ = 14;
+      onChanged();
+      return enumBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.VariableValue)

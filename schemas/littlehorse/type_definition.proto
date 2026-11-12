@@ -33,6 +33,9 @@ message TypeDefinition {
     
     // An inline Map definition.
     InlineMapDef inline_map_def = 8;
+
+    // An inline Enum definition.
+    InlineEnumDef inline_enum_def = 9;
   }
 
   // For compatibility purposes.
@@ -85,6 +88,20 @@ message StructFieldDef {
   optional string oneof_group = 5;
 }
 
+// Inline schema definition for a native LittleHorse Enum.
+message InlineEnumDef {
+  repeated EnumMemberDef values = 1;
+}
+
+// The definition of a member in an InlineEnumDef.
+message EnumMemberDef {
+  // The name of the enum member. Must be unique within the InlineEnumDef.
+  string name = 1;
+
+  // The integer value of the enum member. Must be unique within the InlineEnumDef.
+  optional int32 value = 2;
+}
+
 // VariableValue is a structure containing a value in LittleHorse. It can be
 // used to pass input variables into a WfRun/ThreadRun/TaskRun/etc, as output
 // from a TaskRun, as the value of a WfRun's Variable, etc.
@@ -130,7 +147,16 @@ message VariableValue {
 
     // A Map object.
     Map map = 13;
+
+    // An Enum object.
+    Enum enum = 14;
   }
+}
+
+// An enum is a single value from an InlineEnumDef.
+message Enum {
+  // The name of the enum member. Must be unique within the InlineEnumDef.
+  string name = 1;
 }
 
 // A Map is a strongly-typed mapping from key values to value values.

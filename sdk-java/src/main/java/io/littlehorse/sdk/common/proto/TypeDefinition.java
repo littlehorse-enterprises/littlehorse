@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
     INLINE_ARRAY_DEF(6),
     INLINE_STRUCT_DEF(7),
     INLINE_MAP_DEF(8),
+    INLINE_ENUM_DEF(9),
     DEFINEDTYPE_NOT_SET(0);
     private final int value;
     private DefinedTypeCase(int value) {
@@ -81,6 +82,7 @@ private static final long serialVersionUID = 0L;
         case 6: return INLINE_ARRAY_DEF;
         case 7: return INLINE_STRUCT_DEF;
         case 8: return INLINE_MAP_DEF;
+        case 9: return INLINE_ENUM_DEF;
         case 0: return DEFINEDTYPE_NOT_SET;
         default: return null;
       }
@@ -311,6 +313,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.InlineMapDef.getDefaultInstance();
   }
 
+  public static final int INLINE_ENUM_DEF_FIELD_NUMBER = 9;
+  /**
+   * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   * @return Whether the inlineEnumDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasInlineEnumDef() {
+    return definedTypeCase_ == 9;
+  }
+  /**
+   * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   * @return The inlineEnumDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineEnumDef getInlineEnumDef() {
+    if (definedTypeCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder getInlineEnumDefOrBuilder() {
+    if (definedTypeCase_ == 9) {
+       return (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_;
+    }
+    return io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+  }
+
   public static final int MASKED_FIELD_NUMBER = 4;
   private boolean masked_ = false;
   /**
@@ -358,6 +403,9 @@ private static final long serialVersionUID = 0L;
     if (definedTypeCase_ == 8) {
       output.writeMessage(8, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
     }
+    if (definedTypeCase_ == 9) {
+      output.writeMessage(9, (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -390,6 +438,10 @@ private static final long serialVersionUID = 0L;
     if (definedTypeCase_ == 8) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(8, (io.littlehorse.sdk.common.proto.InlineMapDef) definedType_);
+    }
+    if (definedTypeCase_ == 9) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(9, (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -430,6 +482,10 @@ private static final long serialVersionUID = 0L;
         if (!getInlineMapDef()
             .equals(other.getInlineMapDef())) return false;
         break;
+      case 9:
+        if (!getInlineEnumDef()
+            .equals(other.getInlineEnumDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -467,6 +523,10 @@ private static final long serialVersionUID = 0L;
       case 8:
         hash = (37 * hash) + INLINE_MAP_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getInlineMapDef().hashCode();
+        break;
+      case 9:
+        hash = (37 * hash) + INLINE_ENUM_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getInlineEnumDef().hashCode();
         break;
       case 0:
       default:
@@ -619,6 +679,9 @@ private static final long serialVersionUID = 0L;
       if (inlineMapDefBuilder_ != null) {
         inlineMapDefBuilder_.clear();
       }
+      if (inlineEnumDefBuilder_ != null) {
+        inlineEnumDefBuilder_.clear();
+      }
       masked_ = false;
       definedTypeCase_ = 0;
       definedType_ = null;
@@ -656,7 +719,7 @@ private static final long serialVersionUID = 0L;
 
     private void buildPartial0(io.littlehorse.sdk.common.proto.TypeDefinition result) {
       int from_bitField0_ = bitField0_;
-      if (((from_bitField0_ & 0x00000020) != 0)) {
+      if (((from_bitField0_ & 0x00000040) != 0)) {
         result.masked_ = masked_;
       }
     }
@@ -679,6 +742,10 @@ private static final long serialVersionUID = 0L;
       if (definedTypeCase_ == 8 &&
           inlineMapDefBuilder_ != null) {
         result.definedType_ = inlineMapDefBuilder_.build();
+      }
+      if (definedTypeCase_ == 9 &&
+          inlineEnumDefBuilder_ != null) {
+        result.definedType_ = inlineEnumDefBuilder_.build();
       }
     }
 
@@ -716,6 +783,10 @@ private static final long serialVersionUID = 0L;
         }
         case INLINE_MAP_DEF: {
           mergeInlineMapDef(other.getInlineMapDef());
+          break;
+        }
+        case INLINE_ENUM_DEF: {
+          mergeInlineEnumDef(other.getInlineEnumDef());
           break;
         }
         case DEFINEDTYPE_NOT_SET: {
@@ -756,7 +827,7 @@ private static final long serialVersionUID = 0L;
             } // case 8
             case 32: {
               masked_ = input.readBool();
-              bitField0_ |= 0x00000020;
+              bitField0_ |= 0x00000040;
               break;
             } // case 32
             case 42: {
@@ -787,6 +858,13 @@ private static final long serialVersionUID = 0L;
               definedTypeCase_ = 8;
               break;
             } // case 66
+            case 74: {
+              input.readMessage(
+                  internalGetInlineEnumDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              definedTypeCase_ = 9;
+              break;
+            } // case 74
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1623,6 +1701,184 @@ private static final long serialVersionUID = 0L;
       return inlineMapDefBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InlineEnumDef, io.littlehorse.sdk.common.proto.InlineEnumDef.Builder, io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder> inlineEnumDefBuilder_;
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     * @return Whether the inlineEnumDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasInlineEnumDef() {
+      return definedTypeCase_ == 9;
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     * @return The inlineEnumDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineEnumDef getInlineEnumDef() {
+      if (inlineEnumDefBuilder_ == null) {
+        if (definedTypeCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+      } else {
+        if (definedTypeCase_ == 9) {
+          return inlineEnumDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    public Builder setInlineEnumDef(io.littlehorse.sdk.common.proto.InlineEnumDef value) {
+      if (inlineEnumDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        definedType_ = value;
+        onChanged();
+      } else {
+        inlineEnumDefBuilder_.setMessage(value);
+      }
+      definedTypeCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    public Builder setInlineEnumDef(
+        io.littlehorse.sdk.common.proto.InlineEnumDef.Builder builderForValue) {
+      if (inlineEnumDefBuilder_ == null) {
+        definedType_ = builderForValue.build();
+        onChanged();
+      } else {
+        inlineEnumDefBuilder_.setMessage(builderForValue.build());
+      }
+      definedTypeCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    public Builder mergeInlineEnumDef(io.littlehorse.sdk.common.proto.InlineEnumDef value) {
+      if (inlineEnumDefBuilder_ == null) {
+        if (definedTypeCase_ == 9 &&
+            definedType_ != io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance()) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineEnumDef.newBuilder((io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          definedType_ = value;
+        }
+        onChanged();
+      } else {
+        if (definedTypeCase_ == 9) {
+          inlineEnumDefBuilder_.mergeFrom(value);
+        } else {
+          inlineEnumDefBuilder_.setMessage(value);
+        }
+      }
+      definedTypeCase_ = 9;
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    public Builder clearInlineEnumDef() {
+      if (inlineEnumDefBuilder_ == null) {
+        if (definedTypeCase_ == 9) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+          onChanged();
+        }
+      } else {
+        if (definedTypeCase_ == 9) {
+          definedTypeCase_ = 0;
+          definedType_ = null;
+        }
+        inlineEnumDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    public io.littlehorse.sdk.common.proto.InlineEnumDef.Builder getInlineEnumDefBuilder() {
+      return internalGetInlineEnumDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder getInlineEnumDefOrBuilder() {
+      if ((definedTypeCase_ == 9) && (inlineEnumDefBuilder_ != null)) {
+        return inlineEnumDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (definedTypeCase_ == 9) {
+          return (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_;
+        }
+        return io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * An inline Enum definition.
+     * </pre>
+     *
+     * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.InlineEnumDef, io.littlehorse.sdk.common.proto.InlineEnumDef.Builder, io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder> 
+        internalGetInlineEnumDefFieldBuilder() {
+      if (inlineEnumDefBuilder_ == null) {
+        if (!(definedTypeCase_ == 9)) {
+          definedType_ = io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance();
+        }
+        inlineEnumDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.InlineEnumDef, io.littlehorse.sdk.common.proto.InlineEnumDef.Builder, io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder>(
+                (io.littlehorse.sdk.common.proto.InlineEnumDef) definedType_,
+                getParentForChildren(),
+                isClean());
+        definedType_ = null;
+      }
+      definedTypeCase_ = 9;
+      onChanged();
+      return inlineEnumDefBuilder_;
+    }
+
     private boolean masked_ ;
     /**
      * <pre>
@@ -1648,7 +1904,7 @@ private static final long serialVersionUID = 0L;
     public Builder setMasked(boolean value) {
 
       masked_ = value;
-      bitField0_ |= 0x00000020;
+      bitField0_ |= 0x00000040;
       onChanged();
       return this;
     }
@@ -1661,7 +1917,7 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearMasked() {
-      bitField0_ = (bitField0_ & ~0x00000020);
+      bitField0_ = (bitField0_ & ~0x00000040);
       masked_ = false;
       onChanged();
       return this;
