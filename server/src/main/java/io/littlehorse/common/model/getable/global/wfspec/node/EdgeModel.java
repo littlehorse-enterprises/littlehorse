@@ -177,7 +177,7 @@ public class EdgeModel extends LHSerializable<Edge> {
             }
         }
 
-        // Only the final values must satisfy their declared types; intermediate states may not.
+        // Validate all buffered values before committing any changes.
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
             try {
                 threadRun

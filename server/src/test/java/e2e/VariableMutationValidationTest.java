@@ -2,6 +2,8 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import e2e.Struct.MutationProfile;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -31,16 +33,22 @@ public class VariableMutationValidationTest {
 
     private WorkflowVerifier verifier;
 
-    @LHWorkflow("mutation-validation-primitives")
-    private Workflow primitivesWf;
+    @LHWorkflow("mutation-validation-valid-mutations")
+    private Workflow validMutationsWf;
 
-    @LHWorkflow("mutation-validation-structs")
-    private Workflow structsWf;
+    @LHWorkflow("mutation-validation-null-non-nullable-struct-field")
+    private Workflow nullNonNullableStructFieldWf;
+
+    @LHWorkflow("mutation-validation-rollback-on-validation-failure")
+    private Workflow rollbackOnValidationFailureWf;
+
+    @LHWorkflow("mutation-validation-masked-struct-field-path-mutation")
+    private Workflow maskedStructFieldPathMutationWf;
 
     @Test
     void shouldKeepApplyingValidMutations() {
         verifier.prepareRun(
-                        primitivesWf,
+                        validMutationsWf,
                         Arg.of("my-int", 5),
                         Arg.of("my-double", 1.5),
                         Arg.of("my-json-arr", List.of("a")),
@@ -53,20 +61,25 @@ public class VariableMutationValidationTest {
                         0, "my-arr", val -> assertThat(val.getArray().getItemsList())
                                 .extracting(VariableValue::getInt)
                                 .containsExactly(1L, 2L, 3L, 4L))
-                .thenVerifyVariable(0, "my-json-arr", val -> assertThat(parseJson(val.getJsonArr(), List.class))
-                        .containsExactly("a", "b"))
-                .thenVerifyVariable(0, "my-json-obj", val -> assertThat(parseJson(val.getJsonObj(), Map.class))
-                        .containsEntry("name", "new")
-                        .containsEntry("count", 3L)
-                        .containsEntry("added", true))
+                .thenVerifyVariable(0, "my-json-arr", val -> {
+                    JsonArray jsonArray = parseJson(val.getJsonArr(), JsonArray.class);
+                    assertThat(jsonArray.size()).isEqualTo(2);
+                    assertThat(jsonArray.get(0).getAsString()).isEqualTo("a");
+                    assertThat(jsonArray.get(1).getAsString()).isEqualTo("b");
+                })
+                .thenVerifyVariable(0, "my-json-obj", val -> {
+                    JsonObject jsonObject = parseJson(val.getJsonObj(), JsonObject.class);
+                    assertThat(jsonObject.get("name").getAsString()).isEqualTo("new");
+                    assertThat(jsonObject.get("count").getAsLong()).isEqualTo(3L);
+                    assertThat(jsonObject.get("added").getAsBoolean()).isTrue();
+                })
                 .start();
     }
 
     @Test
     void shouldFailWhenAssigningNullToNonNullableStructField() {
         verifier.prepareRun(
-                        structsWf,
-                        Arg.of("action", "null-name"),
+                        nullNonNullableStructFieldWf,
                         Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
                 .waitForStatus(LHStatus.ERROR)
                 .thenVerifyLastNodeRun(0, nodeRun -> assertThat(nodeRun.getFailuresList())
@@ -80,16 +93,19 @@ public class VariableMutationValidationTest {
     }
 
     @Test
-    void shouldAllowTemporarilyInvalidValueRestoredOnSameEdge() {
+    void shouldRollbackAllMutationsWhenValidationFails() {
         verifier.prepareRun(
-                        structsWf,
-                        Arg.of("action", "restore-name"),
+                        rollbackOnValidationFailureWf,
                         Arg.of("profile", new MutationProfile("Obi-Wan", "hello there")))
-                .waitForStatus(LHStatus.COMPLETED)
+                .waitForStatus(LHStatus.ERROR)
+                .thenVerifyLastNodeRun(0, nodeRun -> assertThat(nodeRun.getFailuresList())
+                        .extracting(Failure::getFailureName)
+                        .contains(LHErrorType.VAR_SUB_ERROR.name()))
+                .thenVerifyVariable(0, "counter", val -> assertThat(val.getInt()).isZero())
                 .thenVerifyVariable(0, "profile", val -> assertThat(
                                 val.getStruct().getStruct().getFieldsMap().get("name"))
                         .extracting(field -> field.getValue().getStr())
-                        .isEqualTo("Ben"))
+                        .isEqualTo("Obi-Wan"))
                 .start();
     }
 
@@ -101,7 +117,7 @@ public class VariableMutationValidationTest {
                         .setStruct(profile.getStruct().getStruct().toBuilder().removeFields("secret")))
                 .build();
 
-        verifier.prepareRun(structsWf, Arg.of("action", "set-secret"), Arg.of("profile", profileWithoutSecret))
+        verifier.prepareRun(maskedStructFieldPathMutationWf, Arg.of("profile", profileWithoutSecret))
                 .waitForStatus(LHStatus.COMPLETED)
                 .thenVerifyVariable(0, "profile", val -> {
                     StructField secret =
@@ -113,10 +129,10 @@ public class VariableMutationValidationTest {
                 .start();
     }
 
-    @LHWorkflow("mutation-validation-primitives")
-    public Workflow buildPrimitivesWf() {
+    @LHWorkflow("mutation-validation-valid-mutations")
+    public Workflow buildValidMutationsWf() {
         return Workflow.newWorkflow(
-                "mutation-validation-primitives",
+                "mutation-validation-valid-mutations",
                 wf -> {
                     WfRunVariable myInt = wf.declareInt("my-int").required();
                     WfRunVariable myDouble = wf.declareDouble("my-double").required();
@@ -137,23 +153,40 @@ public class VariableMutationValidationTest {
                 new LHConfig());
     }
 
-    @LHWorkflow("mutation-validation-structs")
-    public Workflow buildStructsWf() {
+    @LHWorkflow("mutation-validation-null-non-nullable-struct-field")
+    public Workflow buildNullNonNullableStructFieldWf() {
         return Workflow.newWorkflow(
-                "mutation-validation-structs",
+                "mutation-validation-null-non-nullable-struct-field",
                 wf -> {
-                    WfRunVariable action = wf.declareStr("action").required();
                     WfRunVariable profile =
                             wf.declareStruct("profile", MutationProfile.class).required();
+                    profile.get("name").assign(null);
+                },
+                new LHConfig());
+    }
 
-                    wf.doIf(action.isEqualTo("null-name"), then -> profile.get("name")
-                            .assign(null));
-                    wf.doIf(action.isEqualTo("set-secret"), then -> profile.get("secret")
-                            .assign("hunter2"));
-                    wf.doIf(action.isEqualTo("restore-name"), then -> {
-                        profile.get("name").assign(null);
-                        profile.get("name").assign("Ben");
-                    });
+    @LHWorkflow("mutation-validation-rollback-on-validation-failure")
+    public Workflow buildRollbackOnValidationFailureWf() {
+        return Workflow.newWorkflow(
+                "mutation-validation-rollback-on-validation-failure",
+                wf -> {
+                    WfRunVariable profile =
+                            wf.declareStruct("profile", MutationProfile.class).required();
+                    WfRunVariable counter = wf.declareInt("counter").withDefault(0);
+                    counter.assign(1);
+                    profile.get("name").assign(null);
+                },
+                new LHConfig());
+    }
+
+    @LHWorkflow("mutation-validation-masked-struct-field-path-mutation")
+    public Workflow buildMaskedStructFieldPathMutationWf() {
+        return Workflow.newWorkflow(
+                "mutation-validation-masked-struct-field-path-mutation",
+                wf -> {
+                    WfRunVariable profile =
+                            wf.declareStruct("profile", MutationProfile.class).required();
+                    profile.get("secret").assign("hunter2");
                 },
                 new LHConfig());
     }
