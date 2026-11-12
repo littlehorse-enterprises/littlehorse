@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.grpc.Status;
@@ -13,7 +14,6 @@ import io.littlehorse.common.AuthorizationContext;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.TestStreamObserver;
 import io.littlehorse.common.exceptions.LHApiException;
-import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CommandModel;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -35,9 +35,8 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.errors.TimeoutException;
@@ -45,15 +44,18 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentCaptor;
 
+@Timeout(10)
 class CommandSenderTest {
 
     private final BackendInternalComms internalComms = mock(BackendInternalComms.class);
-    private final ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
+    // Run callbacks inline so these unit tests control completion without depending on thread scheduling.
+    private final ExecutorService threadPool = MoreExecutors.newDirectExecutorService();
     private final LHProducer commandProducer = mock(LHProducer.class);
     private final LHProducer taskClaimProducer = mock(LHProducer.class);
     private final LHServerConfig serverConfig = mock(LHServerConfig.class);
@@ -83,29 +85,40 @@ class CommandSenderTest {
         when(recordMetadata.topic()).thenReturn(topicName);
     }
 
+    @AfterEach
+    public void tearDown() {
+        threadPool.shutdownNow();
+    }
+
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
-    public void shouldSendTaskClaimEvent() throws Exception {
-        ScheduledTaskModel scheduledTask = mock(ScheduledTaskModel.class);
-        when(scheduledTask.getTaskRunId()).thenReturn(new TaskRunIdModel(new WfRunIdModel("test"), "test-guid"));
+    public void shouldSendTaskClaimEvent() {
+        TaskRunIdModel taskRunId = new TaskRunIdModel(new WfRunIdModel("test"), "test-guid");
         PollTaskRequestObserver client = mock(PollTaskRequestObserver.class);
         when(client.getTenantId()).thenReturn(new TenantIdModel("test-tenant"));
         when(client.getPrincipalId()).thenReturn(new PrincipalIdModel("test-principal"));
         StreamObserver<PollTaskResponse> responseObserver = mock(StreamObserver.class);
         when(client.getResponseObserver()).thenReturn(responseObserver);
-        CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
+        CompletableFuture<RecordMetadata> producerResult = new CompletableFuture<>();
         producerWithResult(taskClaimProducer, producerResult);
-        sender.tryToClaimTaskAndReturnToClient(scheduledTask.getTaskRunId(), client);
-        threadPool.shutdown();
-        threadPool.awaitTermination(10, TimeUnit.SECONDS);
-        verify(responseObserver).onNext(any());
+        CompletableFuture<Message> commandResult = new CompletableFuture<>();
+        when(asyncWaiters.getOrRegisterFuture(anyString(), any(), any())).thenReturn(commandResult);
+        PollTaskResponse response = PollTaskResponse.getDefaultInstance();
+
+        sender.tryToClaimTaskAndReturnToClient(taskRunId, client);
+        verifyNoInteractions(asyncWaiters, responseObserver);
+
+        producerResult.complete(recordMetadata);
+        verify(asyncWaiters).getOrRegisterFuture(anyString(), eq(Message.class), any());
+        verifyNoInteractions(responseObserver);
+
+        commandResult.complete(response);
+        verify(responseObserver).onNext(same(response));
+        verify(client, never()).onError(any());
     }
 
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
-    public void shouldThrowApiExceptionWhenLHProducerFailed() throws Exception {
-        ScheduledTaskModel scheduledTask = mock(ScheduledTaskModel.class);
-        when(scheduledTask.getTaskRunId()).thenReturn(new TaskRunIdModel(new WfRunIdModel("test"), "test-guid"));
+    public void shouldThrowApiExceptionWhenLHProducerFailed() {
+        TaskRunIdModel taskRunId = new TaskRunIdModel(new WfRunIdModel("test"), "test-guid");
         PollTaskRequestObserver client = mock(PollTaskRequestObserver.class);
         when(client.getTenantId()).thenReturn(new TenantIdModel("test-tenant"));
         when(client.getPrincipalId()).thenReturn(new PrincipalIdModel("test-principal"));
@@ -113,9 +126,7 @@ class CommandSenderTest {
         producerWithResult(taskClaimProducer, producerResult);
         ArgumentCaptor<LHApiException> exceptionCaptor = ArgumentCaptor.forClass(LHApiException.class);
 
-        sender.tryToClaimTaskAndReturnToClient(scheduledTask.getTaskRunId(), client);
-        threadPool.shutdown();
-        threadPool.awaitTermination(10, TimeUnit.SECONDS);
+        sender.tryToClaimTaskAndReturnToClient(taskRunId, client);
         verify(client).onError(exceptionCaptor.capture());
         LHApiException thrown = exceptionCaptor.getValue();
         assertThat(thrown.getMessage())
@@ -124,7 +135,6 @@ class CommandSenderTest {
     }
 
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     public void shouldSendReportTaskRunAndWaitForProducer() throws Exception {
 
         TenantIdModel tenantId = new TenantIdModel("test-tenant");
@@ -142,7 +152,6 @@ class CommandSenderTest {
     }
 
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
     public void shouldThrowApiExceptionWhenLHProducerFailedOnReportTaskRun() {
         TenantIdModel tenantId = new TenantIdModel("test-tenant");
         PrincipalIdModel principalId = new PrincipalIdModel("test-principal");
