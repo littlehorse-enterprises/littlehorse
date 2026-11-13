@@ -9,21 +9,21 @@ import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
-import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -202,10 +202,6 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 TypeDefinitionModel typeToCoerceTo = lhsRealType;
                 txnCache.put(lhsName, lhsVal.operate(operation, rhsVal, typeToCoerceTo));
             }
-            // Validate each mutation before the next one runs. The edge transaction
-            // commits only after every mutation succeeds, so failures preserve the old value.
-            lhsRealType.validateCompatibility(
-                    txnCache.get(lhsName), thread.getExecutionContext().metadataManager());
         } catch (LHVarSubError exn) {
             throw exn;
         } catch (Exception exn) {
@@ -216,28 +212,18 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
 
     private boolean isOneofAlternative(TypeDefinitionModel rootType, ReadOnlyMetadataManager manager)
             throws InvalidExpressionException {
-        LHPath.Builder parent = lhsLhPath.toProto();
-        int lastIndex = parent.getPathCount() - 1;
-        LHPath.Selector last = parent.getPath(lastIndex);
-        parent.removePath(lastIndex);
+        List<LHPath.Selector> path = lhsLhPath.getPath();
+        LHPath.Selector last = path.get(path.size() - 1);
+        if (last.getSelectorTypeCase() != LHPath.Selector.SelectorTypeCase.KEY) return false;
         Optional<TypeDefinitionModel> parentType =
-                rootType.getNestedType(LHPathModel.fromProto(parent.build(), null), manager);
-        if (parentType.isEmpty() || last.getSelectorTypeCase() != LHPath.Selector.SelectorTypeCase.KEY) return false;
-        TypeDefinitionModel type = parentType.get();
-        InlineStructDefModel definition;
-        switch (type.getDefinedTypeCase()) {
-            case STRUCT_DEF_ID:
-                definition = new WfService(manager)
-                        .getStructDef(type.getStructDefId())
-                        .getStructDef();
-                break;
-            case INLINE_STRUCT_DEF:
-                definition = type.getInlineStructDef();
-                break;
-            default:
-                return false;
+                rootType.getNestedType(new LHPathModel(path.subList(0, path.size() - 1)), manager);
+        if (parentType.isEmpty()
+                || (parentType.get().getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID
+                        && parentType.get().getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF)) {
+            return false;
         }
-        StructFieldDefModel field = definition.getFields().get(last.getKey());
+        StructFieldDefModel field = StructBuilderModel.getFieldDefinitions(parentType.get(), manager)
+                .get(last.getKey());
         return field != null && field.getOneofGroup() != null;
     }
 

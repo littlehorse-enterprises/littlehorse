@@ -73,8 +73,13 @@ class StructOneOfTest {
         var old = definition(Map.of("card", alternative));
         assertThat(breaking(definition(Map.of("card", alternative, "bank", alternative)), old))
                 .isEmpty();
-        assertThat(breaking(definition(Map.of("card", alternative)), definition(Map.of("card", optional))))
+        assertThat(breaking(
+                        definition(Map.of("note", optional, "card", alternative)),
+                        definition(Map.of("note", optional))))
                 .isEmpty();
+        // Older versions fill in defaults, so an existing field can never join a group.
+        assertThat(breaking(definition(Map.of("card", alternative)), definition(Map.of("card", optional))))
+                .contains("card");
         assertThat(breaking(
                         definition(Map.of("card", alternative)),
                         definition(Map.of("card", field().setIsNullable(true).build()))))
@@ -95,11 +100,15 @@ class StructOneOfTest {
     }
 
     @Test
-    void noSchemaUpdatesRejectsRemovalOfAnAlternative() {
-        var old = definition(Map.of("card", field().setOneofGroup("method").build()));
+    void noSchemaUpdatesRejectsRemovedFields() {
+        var old = definition(Map.of(
+                "card",
+                field().setOneofGroup("method").build(),
+                "note",
+                field().setIsNullable(true).build()));
         assertThat(InlineStructDefUtil.getIncompatibleFields(
                         StructDefCompatibilityType.NO_SCHEMA_UPDATES, definition(Map.of()), old))
-                .contains("card");
+                .containsExactlyInAnyOrder("card", "note");
     }
 
     private java.util.Set<String> breaking(InlineStructDefModel next, InlineStructDefModel previous) {

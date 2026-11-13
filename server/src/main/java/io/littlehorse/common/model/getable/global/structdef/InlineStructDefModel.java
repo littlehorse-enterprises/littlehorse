@@ -12,6 +12,7 @@ import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -119,7 +120,7 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
      */
     public void validateAgainstSuperset(InlineStructModel inlineStruct, ReadOnlyMetadataManager metadataManager)
             throws StructValidationException {
-        Map<String, String> selections = new HashMap<>();
+        validateOneofSelections(fields, inlineStruct.getFields().keySet());
         for (Entry<String, StructFieldDefModel> entry : this.fields.entrySet()) {
             String fieldName = entry.getKey();
             StructFieldDefModel fieldDef = entry.getValue();
@@ -147,13 +148,6 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     inlineStruct.getFields().put(fieldName, defaultField);
                 }
             } else {
-                if (fieldDef.getOneofGroup() != null) {
-                    String previous = selections.putIfAbsent(fieldDef.getOneofGroup(), fieldName);
-                    if (previous != null) {
-                        throw new StructValidationException("Oneof group '%s' has multiple selections: '%s' and '%s'"
-                                .formatted(fieldDef.getOneofGroup(), previous, fieldName));
-                    }
-                }
                 StructFieldModel fieldValue = inlineStruct.getFields().get(fieldName);
                 try {
                     fieldDef.validateAgainst(fieldValue, metadataManager);
@@ -161,6 +155,21 @@ public class InlineStructDefModel extends LHSerializable<InlineStructDef> {
                     throw new StructValidationException(
                             String.format("Field '%s' is invalid: %s", fieldName, e.getMessage()));
                 }
+            }
+        }
+    }
+
+    public static void validateOneofSelections(
+            Map<String, StructFieldDefModel> fieldDefs, Collection<String> presentFields)
+            throws StructValidationException {
+        Map<String, String> selections = new HashMap<>();
+        for (String fieldName : presentFields) {
+            StructFieldDefModel fieldDef = fieldDefs.get(fieldName);
+            if (fieldDef == null || fieldDef.getOneofGroup() == null) continue;
+            String previous = selections.putIfAbsent(fieldDef.getOneofGroup(), fieldName);
+            if (previous != null) {
+                throw new StructValidationException("Oneof group '%s' has multiple selections: '%s' and '%s'"
+                        .formatted(fieldDef.getOneofGroup(), previous, fieldName));
             }
         }
     }
