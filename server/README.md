@@ -61,10 +61,10 @@ Result:
 
 The Prometheus endpoint exports these metrics for public gRPC methods:
 
-- `grpc_server_processing_duration_seconds_bucket`, `_count`, and `_sum`: server processing duration in seconds, labeled by `lh_cluster_id`, `service`, `method`, `methodType`, and `statusCode`.
+- `grpc_server_processing_duration_seconds_bucket`, `_count`, `_sum`, and `_max`: server processing duration in seconds, labeled by `lh_cluster_id`, `service`, `method`, `methodType`, and `statusCode`.
 - `grpc_server_requests_received_messages_total` and `grpc_server_responses_sent_messages_total`: request and response message counts, labeled by `lh_cluster_id`, `service`, `method`, and `methodType`.
 
-The duration histogram has finite buckets at 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s, 30s, and 60s. Prometheus also exports the `+Inf` bucket. Each observed method/status label set therefore has 14 bucket series in addition to its existing count and sum series.
+The duration histogram has finite buckets at 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 1s, 2s, 5s, 10s, 30s, and 60s. Prometheus also exports the `+Inf` bucket. Each observed method/status label set therefore has 14 bucket series plus the existing count, sum, and max series, 17 series total.
 
 Durations measure server-side call processing, not client round-trip latency. For streaming RPCs, the duration covers the lifetime of the stream until it closes; it is not a per-message duration.
 
