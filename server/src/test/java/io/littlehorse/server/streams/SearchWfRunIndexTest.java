@@ -2,15 +2,11 @@ package io.littlehorse.server.streams;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import io.grpc.Context;
 import io.grpc.InsecureChannelCredentials;
-import io.grpc.Status;
-import io.grpc.testing.StreamRecorder;
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
@@ -32,28 +28,20 @@ import io.littlehorse.sdk.common.proto.VariableMatch;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
-import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.proto.WfSpec;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.server.LHServerListener;
 import io.littlehorse.server.TestRequestExecutionContext;
-import io.littlehorse.server.auth.AuthorizationProtocol;
-import io.littlehorse.server.listener.ListenerProtocol;
-import io.littlehorse.server.listener.ServerListenerConfig;
 import io.littlehorse.server.streams.lhinternalscan.InternalScan;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchWfRunRequestModel;
 import io.littlehorse.server.streams.store.StoredGetable;
 import io.littlehorse.server.streams.stores.TenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CoreStoreProvider;
 import io.littlehorse.server.streams.topology.core.RequestExecutionContext;
-import io.micrometer.prometheusmetrics.PrometheusConfig;
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.utils.Bytes;
@@ -231,90 +219,6 @@ class SearchWfRunIndexTest {
                         .tagScan
                         .getKeyPrefix())
                 .startsWith(GetableClassEnum.WF_RUN.getNumber() + "/");
-    }
-
-    @Test
-    void shouldRecordOneStrategyHistogramObservationPerPublicPage() throws Exception {
-        putRun("first", "needle", LHStatus.RUNNING);
-        putRun("second", "needle", LHStatus.RUNNING);
-        var config = ServerListenerConfig.builder()
-                .name("test")
-                .port(0)
-                .protocol(ListenerProtocol.PLAIN)
-                .authorizationProtocol(AuthorizationProtocol.NONE)
-                .config(ctx.getLhConfig())
-                .build();
-        var registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-        BackendInternalComms observedBackend = spy(backend);
-        try (var executor = Executors.newVirtualThreadPerTaskExecutor();
-                var listener = new LHServerListener(
-                        config,
-                        null,
-                        observedBackend,
-                        executor,
-                        null,
-                        null,
-                        List.of(),
-                        contextKey,
-                        null,
-                        null,
-                        null,
-                        null,
-                        registry)) {
-            var request = request("needle").setLimit(1);
-            StreamRecorder<WfRunIdList> first = StreamRecorder.create();
-            listener.searchWfRun(request.build(), first);
-            assertThat(first.getError()).isNull();
-            assertThat(first.getValues().getFirst().hasBookmark()).isTrue();
-            StreamRecorder<WfRunIdList> second = StreamRecorder.create();
-            listener.searchWfRun(
-                    request.setBookmark(first.getValues().getFirst().getBookmark())
-                            .build(),
-                    second);
-            assertThat(second.getError()).isNull();
-            assertThat(registry.get("lh.search.duration")
-                            .tags("strategy", "variable_index", "outcome", "success")
-                            .timer()
-                            .count())
-                    .isEqualTo(2);
-
-            StreamRecorder<WfRunIdList> listing = StreamRecorder.create();
-            listener.searchWfRun(
-                    SearchWfRunRequest.newBuilder()
-                            .setWfSpecName("indexed-search")
-                            .build(),
-                    listing);
-            assertThat(listing.getError()).isNull();
-            assertThat(registry.get("lh.search.duration")
-                            .tags("strategy", "wfrun_index", "outcome", "success")
-                            .timer()
-                            .count())
-                    .isEqualTo(1);
-
-            doThrow(Status.UNAVAILABLE.asRuntimeException())
-                    .when(observedBackend)
-                    .doScan(any());
-            StreamRecorder<WfRunIdList> failed = StreamRecorder.create();
-            listener.searchWfRun(request("needle").build(), failed);
-            assertThat(Status.fromThrowable(failed.getError()).getCode()).isEqualTo(Status.Code.UNAVAILABLE);
-            assertThat(registry.get("lh.search.duration")
-                            .tags("strategy", "variable_index", "outcome", "error")
-                            .timer()
-                            .count())
-                    .isEqualTo(1);
-
-            StreamRecorder<WfRunIdList> invalid = StreamRecorder.create();
-            listener.searchWfRun(request("needle").clearWfSpecName().build(), invalid);
-            assertThat(Status.fromThrowable(invalid.getError()).getCode()).isEqualTo(Status.Code.INVALID_ARGUMENT);
-            assertThat(registry.get("lh.search.duration")
-                            .tags("strategy", "unselected", "outcome", "error")
-                            .timer()
-                            .count())
-                    .isEqualTo(1);
-            assertThat(registry.scrape()).contains("lh_search_duration_seconds_bucket");
-        } finally {
-            registry.close();
-        }
     }
 
     @Test

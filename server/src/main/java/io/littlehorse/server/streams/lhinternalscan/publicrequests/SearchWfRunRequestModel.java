@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,9 +56,6 @@ public class SearchWfRunRequestModel
 
     // not from proto
     private ExecutionContext executionContext;
-
-    @Getter
-    private String strategy = "unselected";
 
     public GetableClassEnum getObjectType() {
         return GetableClassEnum.WF_RUN;
@@ -133,7 +129,6 @@ public class SearchWfRunRequestModel
     @Override
     public InternalScan getInternalSearch(RequestExecutionContext ctx) {
         InternalScan scan = super.getInternalSearch(ctx);
-        strategy = "wfrun_index";
         if (variableMatches.isEmpty()
                 || wfSpecMajorVersion != null
                 || earliestStart != null
@@ -170,7 +165,6 @@ public class SearchWfRunRequestModel
                                     LHUtil.toLHDbSearchFormat(match.getValue().getStrVal()))));
             scan.tagScan = new TagScanBoundaryStrategy(prefix, Optional.empty(), Optional.empty()).buildScanProto();
             if (status != null) scan.filters.add(new ScanFilterModel(status));
-            strategy = "variable_index";
             log.debug("Selected variable index for workflow search");
             break;
         }
