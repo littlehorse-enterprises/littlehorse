@@ -90,7 +90,7 @@ message StructFieldDef {
 
 // Inline schema definition for a native LittleHorse Enum.
 message InlineEnumDef {
-  repeated EnumMemberDef values = 1;
+  repeated EnumMemberDef members = 1;
 }
 
 // The definition of a member in an InlineEnumDef.
@@ -99,7 +99,7 @@ message EnumMemberDef {
   string name = 1;
 
   // The integer value of the enum member. Must be unique within the InlineEnumDef.
-  optional int32 value = 2;
+  optional int32 backing_value = 2;
 }
 
 // VariableValue is a structure containing a value in LittleHorse. It can be

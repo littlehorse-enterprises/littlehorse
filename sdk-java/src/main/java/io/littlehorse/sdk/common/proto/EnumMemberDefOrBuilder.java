@@ -35,17 +35,17 @@ public interface EnumMemberDefOrBuilder extends
    * The integer value of the enum member. Must be unique within the InlineEnumDef.
    * </pre>
    *
-   * <code>optional int32 value = 2;</code>
-   * @return Whether the value field is set.
+   * <code>optional int32 backing_value = 2;</code>
+   * @return Whether the backingValue field is set.
    */
-  boolean hasValue();
+  boolean hasBackingValue();
   /**
    * <pre>
    * The integer value of the enum member. Must be unique within the InlineEnumDef.
    * </pre>
    *
-   * <code>optional int32 value = 2;</code>
-   * @return The value.
+   * <code>optional int32 backing_value = 2;</code>
+   * @return The backingValue.
    */
-  int getValue();
+  int getBackingValue();
 }

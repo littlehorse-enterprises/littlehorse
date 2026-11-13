@@ -11,26 +11,26 @@ public interface InlineEnumDefOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> 
-      getValuesList();
+      getMembersList();
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.EnumMemberDef getValues(int index);
+  io.littlehorse.sdk.common.proto.EnumMemberDef getMembers(int index);
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
-  int getValuesCount();
+  int getMembersCount();
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   java.util.List<? extends io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> 
-      getValuesOrBuilderList();
+      getMembersOrBuilderList();
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
-  io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getValuesOrBuilder(
+  io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getMembersOrBuilder(
       int index);
 }

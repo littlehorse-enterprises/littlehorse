@@ -32,7 +32,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private InlineEnumDef() {
-    values_ = java.util.Collections.emptyList();
+    members_ = java.util.Collections.emptyList();
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -48,45 +48,45 @@ private static final long serialVersionUID = 0L;
             io.littlehorse.sdk.common.proto.InlineEnumDef.class, io.littlehorse.sdk.common.proto.InlineEnumDef.Builder.class);
   }
 
-  public static final int VALUES_FIELD_NUMBER = 1;
+  public static final int MEMBERS_FIELD_NUMBER = 1;
   @SuppressWarnings("serial")
-  private java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> values_;
+  private java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> members_;
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   @java.lang.Override
-  public java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> getValuesList() {
-    return values_;
+  public java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> getMembersList() {
+    return members_;
   }
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   @java.lang.Override
   public java.util.List<? extends io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> 
-      getValuesOrBuilderList() {
-    return values_;
+      getMembersOrBuilderList() {
+    return members_;
   }
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   @java.lang.Override
-  public int getValuesCount() {
-    return values_.size();
+  public int getMembersCount() {
+    return members_.size();
   }
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EnumMemberDef getValues(int index) {
-    return values_.get(index);
+  public io.littlehorse.sdk.common.proto.EnumMemberDef getMembers(int index) {
+    return members_.get(index);
   }
   /**
-   * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+   * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
    */
   @java.lang.Override
-  public io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getValuesOrBuilder(
+  public io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getMembersOrBuilder(
       int index) {
-    return values_.get(index);
+    return members_.get(index);
   }
 
   private byte memoizedIsInitialized = -1;
@@ -103,8 +103,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    for (int i = 0; i < values_.size(); i++) {
-      output.writeMessage(1, values_.get(i));
+    for (int i = 0; i < members_.size(); i++) {
+      output.writeMessage(1, members_.get(i));
     }
     getUnknownFields().writeTo(output);
   }
@@ -115,9 +115,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    for (int i = 0; i < values_.size(); i++) {
+    for (int i = 0; i < members_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(1, values_.get(i));
+        .computeMessageSize(1, members_.get(i));
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -134,8 +134,8 @@ private static final long serialVersionUID = 0L;
     }
     io.littlehorse.sdk.common.proto.InlineEnumDef other = (io.littlehorse.sdk.common.proto.InlineEnumDef) obj;
 
-    if (!getValuesList()
-        .equals(other.getValuesList())) return false;
+    if (!getMembersList()
+        .equals(other.getMembersList())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -147,9 +147,9 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    if (getValuesCount() > 0) {
-      hash = (37 * hash) + VALUES_FIELD_NUMBER;
-      hash = (53 * hash) + getValuesList().hashCode();
+    if (getMembersCount() > 0) {
+      hash = (37 * hash) + MEMBERS_FIELD_NUMBER;
+      hash = (53 * hash) + getMembersList().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -286,11 +286,11 @@ private static final long serialVersionUID = 0L;
     public Builder clear() {
       super.clear();
       bitField0_ = 0;
-      if (valuesBuilder_ == null) {
-        values_ = java.util.Collections.emptyList();
+      if (membersBuilder_ == null) {
+        members_ = java.util.Collections.emptyList();
       } else {
-        values_ = null;
-        valuesBuilder_.clear();
+        members_ = null;
+        membersBuilder_.clear();
       }
       bitField0_ = (bitField0_ & ~0x00000001);
       return this;
@@ -326,14 +326,14 @@ private static final long serialVersionUID = 0L;
     }
 
     private void buildPartialRepeatedFields(io.littlehorse.sdk.common.proto.InlineEnumDef result) {
-      if (valuesBuilder_ == null) {
+      if (membersBuilder_ == null) {
         if (((bitField0_ & 0x00000001) != 0)) {
-          values_ = java.util.Collections.unmodifiableList(values_);
+          members_ = java.util.Collections.unmodifiableList(members_);
           bitField0_ = (bitField0_ & ~0x00000001);
         }
-        result.values_ = values_;
+        result.members_ = members_;
       } else {
-        result.values_ = valuesBuilder_.build();
+        result.members_ = membersBuilder_.build();
       }
     }
 
@@ -353,29 +353,29 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(io.littlehorse.sdk.common.proto.InlineEnumDef other) {
       if (other == io.littlehorse.sdk.common.proto.InlineEnumDef.getDefaultInstance()) return this;
-      if (valuesBuilder_ == null) {
-        if (!other.values_.isEmpty()) {
-          if (values_.isEmpty()) {
-            values_ = other.values_;
+      if (membersBuilder_ == null) {
+        if (!other.members_.isEmpty()) {
+          if (members_.isEmpty()) {
+            members_ = other.members_;
             bitField0_ = (bitField0_ & ~0x00000001);
           } else {
-            ensureValuesIsMutable();
-            values_.addAll(other.values_);
+            ensureMembersIsMutable();
+            members_.addAll(other.members_);
           }
           onChanged();
         }
       } else {
-        if (!other.values_.isEmpty()) {
-          if (valuesBuilder_.isEmpty()) {
-            valuesBuilder_.dispose();
-            valuesBuilder_ = null;
-            values_ = other.values_;
+        if (!other.members_.isEmpty()) {
+          if (membersBuilder_.isEmpty()) {
+            membersBuilder_.dispose();
+            membersBuilder_ = null;
+            members_ = other.members_;
             bitField0_ = (bitField0_ & ~0x00000001);
-            valuesBuilder_ = 
+            membersBuilder_ = 
               com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                 internalGetValuesFieldBuilder() : null;
+                 internalGetMembersFieldBuilder() : null;
           } else {
-            valuesBuilder_.addAllMessages(other.values_);
+            membersBuilder_.addAllMessages(other.members_);
           }
         }
       }
@@ -410,11 +410,11 @@ private static final long serialVersionUID = 0L;
                   input.readMessage(
                       io.littlehorse.sdk.common.proto.EnumMemberDef.parser(),
                       extensionRegistry);
-              if (valuesBuilder_ == null) {
-                ensureValuesIsMutable();
-                values_.add(m);
+              if (membersBuilder_ == null) {
+                ensureMembersIsMutable();
+                members_.add(m);
               } else {
-                valuesBuilder_.addMessage(m);
+                membersBuilder_.addMessage(m);
               }
               break;
             } // case 10
@@ -435,244 +435,244 @@ private static final long serialVersionUID = 0L;
     }
     private int bitField0_;
 
-    private java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> values_ =
+    private java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> members_ =
       java.util.Collections.emptyList();
-    private void ensureValuesIsMutable() {
+    private void ensureMembersIsMutable() {
       if (!((bitField0_ & 0x00000001) != 0)) {
-        values_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.EnumMemberDef>(values_);
+        members_ = new java.util.ArrayList<io.littlehorse.sdk.common.proto.EnumMemberDef>(members_);
         bitField0_ |= 0x00000001;
        }
     }
 
     private com.google.protobuf.RepeatedFieldBuilder<
-        io.littlehorse.sdk.common.proto.EnumMemberDef, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder, io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> valuesBuilder_;
+        io.littlehorse.sdk.common.proto.EnumMemberDef, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder, io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> membersBuilder_;
 
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> getValuesList() {
-      if (valuesBuilder_ == null) {
-        return java.util.Collections.unmodifiableList(values_);
+    public java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef> getMembersList() {
+      if (membersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(members_);
       } else {
-        return valuesBuilder_.getMessageList();
+        return membersBuilder_.getMessageList();
       }
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public int getValuesCount() {
-      if (valuesBuilder_ == null) {
-        return values_.size();
+    public int getMembersCount() {
+      if (membersBuilder_ == null) {
+        return members_.size();
       } else {
-        return valuesBuilder_.getCount();
+        return membersBuilder_.getCount();
       }
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EnumMemberDef getValues(int index) {
-      if (valuesBuilder_ == null) {
-        return values_.get(index);
+    public io.littlehorse.sdk.common.proto.EnumMemberDef getMembers(int index) {
+      if (membersBuilder_ == null) {
+        return members_.get(index);
       } else {
-        return valuesBuilder_.getMessage(index);
+        return membersBuilder_.getMessage(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder setValues(
+    public Builder setMembers(
         int index, io.littlehorse.sdk.common.proto.EnumMemberDef value) {
-      if (valuesBuilder_ == null) {
+      if (membersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureValuesIsMutable();
-        values_.set(index, value);
+        ensureMembersIsMutable();
+        members_.set(index, value);
         onChanged();
       } else {
-        valuesBuilder_.setMessage(index, value);
+        membersBuilder_.setMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder setValues(
+    public Builder setMembers(
         int index, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder builderForValue) {
-      if (valuesBuilder_ == null) {
-        ensureValuesIsMutable();
-        values_.set(index, builderForValue.build());
+      if (membersBuilder_ == null) {
+        ensureMembersIsMutable();
+        members_.set(index, builderForValue.build());
         onChanged();
       } else {
-        valuesBuilder_.setMessage(index, builderForValue.build());
+        membersBuilder_.setMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder addValues(io.littlehorse.sdk.common.proto.EnumMemberDef value) {
-      if (valuesBuilder_ == null) {
+    public Builder addMembers(io.littlehorse.sdk.common.proto.EnumMemberDef value) {
+      if (membersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureValuesIsMutable();
-        values_.add(value);
+        ensureMembersIsMutable();
+        members_.add(value);
         onChanged();
       } else {
-        valuesBuilder_.addMessage(value);
+        membersBuilder_.addMessage(value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder addValues(
+    public Builder addMembers(
         int index, io.littlehorse.sdk.common.proto.EnumMemberDef value) {
-      if (valuesBuilder_ == null) {
+      if (membersBuilder_ == null) {
         if (value == null) {
           throw new NullPointerException();
         }
-        ensureValuesIsMutable();
-        values_.add(index, value);
+        ensureMembersIsMutable();
+        members_.add(index, value);
         onChanged();
       } else {
-        valuesBuilder_.addMessage(index, value);
+        membersBuilder_.addMessage(index, value);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder addValues(
+    public Builder addMembers(
         io.littlehorse.sdk.common.proto.EnumMemberDef.Builder builderForValue) {
-      if (valuesBuilder_ == null) {
-        ensureValuesIsMutable();
-        values_.add(builderForValue.build());
+      if (membersBuilder_ == null) {
+        ensureMembersIsMutable();
+        members_.add(builderForValue.build());
         onChanged();
       } else {
-        valuesBuilder_.addMessage(builderForValue.build());
+        membersBuilder_.addMessage(builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder addValues(
+    public Builder addMembers(
         int index, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder builderForValue) {
-      if (valuesBuilder_ == null) {
-        ensureValuesIsMutable();
-        values_.add(index, builderForValue.build());
+      if (membersBuilder_ == null) {
+        ensureMembersIsMutable();
+        members_.add(index, builderForValue.build());
         onChanged();
       } else {
-        valuesBuilder_.addMessage(index, builderForValue.build());
+        membersBuilder_.addMessage(index, builderForValue.build());
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder addAllValues(
+    public Builder addAllMembers(
         java.lang.Iterable<? extends io.littlehorse.sdk.common.proto.EnumMemberDef> values) {
-      if (valuesBuilder_ == null) {
-        ensureValuesIsMutable();
+      if (membersBuilder_ == null) {
+        ensureMembersIsMutable();
         com.google.protobuf.AbstractMessageLite.Builder.addAll(
-            values, values_);
+            values, members_);
         onChanged();
       } else {
-        valuesBuilder_.addAllMessages(values);
+        membersBuilder_.addAllMessages(values);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder clearValues() {
-      if (valuesBuilder_ == null) {
-        values_ = java.util.Collections.emptyList();
+    public Builder clearMembers() {
+      if (membersBuilder_ == null) {
+        members_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
       } else {
-        valuesBuilder_.clear();
+        membersBuilder_.clear();
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public Builder removeValues(int index) {
-      if (valuesBuilder_ == null) {
-        ensureValuesIsMutable();
-        values_.remove(index);
+    public Builder removeMembers(int index) {
+      if (membersBuilder_ == null) {
+        ensureMembersIsMutable();
+        members_.remove(index);
         onChanged();
       } else {
-        valuesBuilder_.remove(index);
+        membersBuilder_.remove(index);
       }
       return this;
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder getValuesBuilder(
+    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder getMembersBuilder(
         int index) {
-      return internalGetValuesFieldBuilder().getBuilder(index);
+      return internalGetMembersFieldBuilder().getBuilder(index);
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getValuesOrBuilder(
+    public io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder getMembersOrBuilder(
         int index) {
-      if (valuesBuilder_ == null) {
-        return values_.get(index);  } else {
-        return valuesBuilder_.getMessageOrBuilder(index);
+      if (membersBuilder_ == null) {
+        return members_.get(index);  } else {
+        return membersBuilder_.getMessageOrBuilder(index);
       }
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
     public java.util.List<? extends io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> 
-         getValuesOrBuilderList() {
-      if (valuesBuilder_ != null) {
-        return valuesBuilder_.getMessageOrBuilderList();
+         getMembersOrBuilderList() {
+      if (membersBuilder_ != null) {
+        return membersBuilder_.getMessageOrBuilderList();
       } else {
-        return java.util.Collections.unmodifiableList(values_);
+        return java.util.Collections.unmodifiableList(members_);
       }
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder addValuesBuilder() {
-      return internalGetValuesFieldBuilder().addBuilder(
+    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder addMembersBuilder() {
+      return internalGetMembersFieldBuilder().addBuilder(
           io.littlehorse.sdk.common.proto.EnumMemberDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
-    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder addValuesBuilder(
+    public io.littlehorse.sdk.common.proto.EnumMemberDef.Builder addMembersBuilder(
         int index) {
-      return internalGetValuesFieldBuilder().addBuilder(
+      return internalGetMembersFieldBuilder().addBuilder(
           index, io.littlehorse.sdk.common.proto.EnumMemberDef.getDefaultInstance());
     }
     /**
-     * <code>repeated .littlehorse.EnumMemberDef values = 1;</code>
+     * <code>repeated .littlehorse.EnumMemberDef members = 1;</code>
      */
     public java.util.List<io.littlehorse.sdk.common.proto.EnumMemberDef.Builder> 
-         getValuesBuilderList() {
-      return internalGetValuesFieldBuilder().getBuilderList();
+         getMembersBuilderList() {
+      return internalGetMembersFieldBuilder().getBuilderList();
     }
     private com.google.protobuf.RepeatedFieldBuilder<
         io.littlehorse.sdk.common.proto.EnumMemberDef, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder, io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder> 
-        internalGetValuesFieldBuilder() {
-      if (valuesBuilder_ == null) {
-        valuesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+        internalGetMembersFieldBuilder() {
+      if (membersBuilder_ == null) {
+        membersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
             io.littlehorse.sdk.common.proto.EnumMemberDef, io.littlehorse.sdk.common.proto.EnumMemberDef.Builder, io.littlehorse.sdk.common.proto.EnumMemberDefOrBuilder>(
-                values_,
+                members_,
                 ((bitField0_ & 0x00000001) != 0),
                 getParentForChildren(),
                 isClean());
-        values_ = null;
+        members_ = null;
       }
-      return valuesBuilder_;
+      return membersBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.InlineEnumDef)

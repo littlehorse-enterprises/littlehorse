@@ -96,18 +96,18 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int VALUE_FIELD_NUMBER = 2;
-  private int value_ = 0;
+  public static final int BACKING_VALUE_FIELD_NUMBER = 2;
+  private int backingValue_ = 0;
   /**
    * <pre>
    * The integer value of the enum member. Must be unique within the InlineEnumDef.
    * </pre>
    *
-   * <code>optional int32 value = 2;</code>
-   * @return Whether the value field is set.
+   * <code>optional int32 backing_value = 2;</code>
+   * @return Whether the backingValue field is set.
    */
   @java.lang.Override
-  public boolean hasValue() {
+  public boolean hasBackingValue() {
     return ((bitField0_ & 0x00000001) != 0);
   }
   /**
@@ -115,12 +115,12 @@ private static final long serialVersionUID = 0L;
    * The integer value of the enum member. Must be unique within the InlineEnumDef.
    * </pre>
    *
-   * <code>optional int32 value = 2;</code>
-   * @return The value.
+   * <code>optional int32 backing_value = 2;</code>
+   * @return The backingValue.
    */
   @java.lang.Override
-  public int getValue() {
-    return value_;
+  public int getBackingValue() {
+    return backingValue_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -141,7 +141,7 @@ private static final long serialVersionUID = 0L;
       com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
     }
     if (((bitField0_ & 0x00000001) != 0)) {
-      output.writeInt32(2, value_);
+      output.writeInt32(2, backingValue_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -157,7 +157,7 @@ private static final long serialVersionUID = 0L;
     }
     if (((bitField0_ & 0x00000001) != 0)) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(2, value_);
+        .computeInt32Size(2, backingValue_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -176,10 +176,10 @@ private static final long serialVersionUID = 0L;
 
     if (!getName()
         .equals(other.getName())) return false;
-    if (hasValue() != other.hasValue()) return false;
-    if (hasValue()) {
-      if (getValue()
-          != other.getValue()) return false;
+    if (hasBackingValue() != other.hasBackingValue()) return false;
+    if (hasBackingValue()) {
+      if (getBackingValue()
+          != other.getBackingValue()) return false;
     }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
@@ -194,9 +194,9 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NAME_FIELD_NUMBER;
     hash = (53 * hash) + getName().hashCode();
-    if (hasValue()) {
-      hash = (37 * hash) + VALUE_FIELD_NUMBER;
-      hash = (53 * hash) + getValue();
+    if (hasBackingValue()) {
+      hash = (37 * hash) + BACKING_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getBackingValue();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -334,7 +334,7 @@ private static final long serialVersionUID = 0L;
       super.clear();
       bitField0_ = 0;
       name_ = "";
-      value_ = 0;
+      backingValue_ = 0;
       return this;
     }
 
@@ -373,7 +373,7 @@ private static final long serialVersionUID = 0L;
       }
       int to_bitField0_ = 0;
       if (((from_bitField0_ & 0x00000002) != 0)) {
-        result.value_ = value_;
+        result.backingValue_ = backingValue_;
         to_bitField0_ |= 0x00000001;
       }
       result.bitField0_ |= to_bitField0_;
@@ -396,8 +396,8 @@ private static final long serialVersionUID = 0L;
         bitField0_ |= 0x00000001;
         onChanged();
       }
-      if (other.hasValue()) {
-        setValue(other.getValue());
+      if (other.hasBackingValue()) {
+        setBackingValue(other.getBackingValue());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -431,7 +431,7 @@ private static final long serialVersionUID = 0L;
               break;
             } // case 10
             case 16: {
-              value_ = input.readInt32();
+              backingValue_ = input.readInt32();
               bitField0_ |= 0x00000002;
               break;
             } // case 16
@@ -544,17 +544,17 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int value_ ;
+    private int backingValue_ ;
     /**
      * <pre>
      * The integer value of the enum member. Must be unique within the InlineEnumDef.
      * </pre>
      *
-     * <code>optional int32 value = 2;</code>
-     * @return Whether the value field is set.
+     * <code>optional int32 backing_value = 2;</code>
+     * @return Whether the backingValue field is set.
      */
     @java.lang.Override
-    public boolean hasValue() {
+    public boolean hasBackingValue() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
@@ -562,25 +562,25 @@ private static final long serialVersionUID = 0L;
      * The integer value of the enum member. Must be unique within the InlineEnumDef.
      * </pre>
      *
-     * <code>optional int32 value = 2;</code>
-     * @return The value.
+     * <code>optional int32 backing_value = 2;</code>
+     * @return The backingValue.
      */
     @java.lang.Override
-    public int getValue() {
-      return value_;
+    public int getBackingValue() {
+      return backingValue_;
     }
     /**
      * <pre>
      * The integer value of the enum member. Must be unique within the InlineEnumDef.
      * </pre>
      *
-     * <code>optional int32 value = 2;</code>
-     * @param value The value to set.
+     * <code>optional int32 backing_value = 2;</code>
+     * @param value The backingValue to set.
      * @return This builder for chaining.
      */
-    public Builder setValue(int value) {
+    public Builder setBackingValue(int value) {
 
-      value_ = value;
+      backingValue_ = value;
       bitField0_ |= 0x00000002;
       onChanged();
       return this;
@@ -590,12 +590,12 @@ private static final long serialVersionUID = 0L;
      * The integer value of the enum member. Must be unique within the InlineEnumDef.
      * </pre>
      *
-     * <code>optional int32 value = 2;</code>
+     * <code>optional int32 backing_value = 2;</code>
      * @return This builder for chaining.
      */
-    public Builder clearValue() {
+    public Builder clearBackingValue() {
       bitField0_ = (bitField0_ & ~0x00000002);
-      value_ = 0;
+      backingValue_ = 0;
       onChanged();
       return this;
     }
