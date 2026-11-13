@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Dispatch, SetStateAction } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { getAttemptOutput, getAttemptResult } from '@/app/utils/struct'
+import { tryFormatAsJson } from '@/app/utils/tryFormatAsJson'
 import { OutputModal } from './OutputModal'
 
 export const Attempts = ({
@@ -23,6 +24,9 @@ export const Attempts = ({
   if (!attempt) {
     return null
   }
+  const result = getAttemptResult(attempt.result)
+  const outputType = attempt.result.oneofKind === 'output' ? attempt.result.output.value.oneofKind : undefined
+  const formattedResult = outputType === 'jsonObj' || outputType === 'jsonArr' ? tryFormatAsJson(result) : result
   return (
     <div className="mb-4 mt-4 rounded-lg border border-gray-200 bg-gray-50">
       <Accordion type="single" collapsible defaultValue="attempts">
@@ -63,7 +67,7 @@ export const Attempts = ({
                 <NodeVariable label="taskWorkerVersion:" text={`${attempt.taskWorkerVersion}`} />
               )}
               {attempt.logOutput && <NodeVariable label="logOutput:" text={`${getAttemptOutput(attempt.logOutput)}`} />}
-              <OutputModal label="result:" message={`${getAttemptResult(attempt.result)}`} />
+              <OutputModal label="result:" message={formattedResult} buttonText={result} />
             </div>
           </AccordionContent>
         </AccordionItem>
