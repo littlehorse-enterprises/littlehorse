@@ -58,7 +58,8 @@ export function corpusRevision() {
   // The TREE hash of areas/, not a commit hash: computed purely from file
   // contents, so identical corpora stamp identically no matter how history
   // was squashed or rebased (a squash-merge once made every stamp "stale").
-  const rev = execFileSync('git', ['rev-parse', '--short', 'HEAD:sdk-conformance/areas'], {
+  // Fix the abbreviation length so clones of different sizes stamp identically.
+  const rev = execFileSync('git', ['rev-parse', '--short=9', 'HEAD:sdk-conformance/areas'], {
     cwd: REPO_ROOT, encoding: 'utf8',
   }).trim()
   const dirty = execFileSync('git', ['status', '--porcelain', '--', 'sdk-conformance/areas'], {

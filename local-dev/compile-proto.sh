@@ -137,3 +137,5 @@ $docker_run protoc \
     service.proto
 
 echo "The Force will be with you. Always."
+
+# Rust generates its bindings from schemas/littlehorse during cargo build.
