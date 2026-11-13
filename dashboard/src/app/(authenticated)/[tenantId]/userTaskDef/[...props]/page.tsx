@@ -1,3 +1,4 @@
+import { getStructDef } from '@/app/actions/getStructDef'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ClientError, Status } from 'nice-grpc-common'
@@ -13,7 +14,11 @@ export default async function Page({ params }: Props) {
 
   try {
     const spec = await getUserTaskDef({ name, version, tenantId })
-    return <UserTaskDef spec={spec} />
+    // The page is still useful without the fields, e.g. when the StructDef was deleted.
+    const resultStructDef = spec.resultStructDefId
+      ? await getStructDef(tenantId, spec.resultStructDefId).catch(() => undefined)
+      : undefined
+    return <UserTaskDef spec={spec} resultStructDef={resultStructDef} />
   } catch (error) {
     if (error instanceof ClientError && error.code === Status.NOT_FOUND) return notFound()
     throw error
