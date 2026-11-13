@@ -59,3 +59,4 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 031 | [Put Variables ](./031-put-variables.md)                                                           | Eduwer Camacaro                  | TODO |
 | 032 | [Tenant Name](./032-tenant-name.md)                                                               | Eduwer Camacaro                  | TODO |
 | 033 | [OneOf Support in `Struct`s](./033-struct-oneof-groups.md)                                          | Jacob Snarr                     | [#2531](https://github.com/littlehorse-enterprises/littlehorse/issues/2531) |
+| 034 | [UI Metadata for Struct-Backed User Tasks](./034-forms.md)                                         | Jake Rose                        | [#2534](https://github.com/littlehorse-enterprises/littlehorse/issues/2534) |
