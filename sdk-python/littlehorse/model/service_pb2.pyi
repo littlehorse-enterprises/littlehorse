@@ -15,6 +15,7 @@ import littlehorse.model.user_tasks_pb2 as _user_tasks_pb2
 import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 import littlehorse.model.task_def_pb2 as _task_def_pb2
 import littlehorse.model.struct_def_pb2 as _struct_def_pb2
+import littlehorse.model.form_def_pb2 as _form_def_pb2
 import littlehorse.model.acls_pb2 as _acls_pb2
 import littlehorse.model.workflow_event_pb2 as _workflow_event_pb2
 import littlehorse.model.scheduled_wf_run_pb2 as _scheduled_wf_run_pb2
@@ -124,16 +125,18 @@ class PutWorkflowEventDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
-    __slots__ = ("name", "fields", "description", "result_struct_def_id")
+    __slots__ = ("name", "fields", "description", "result_struct_def_id", "form_def")
     NAME_FIELD_NUMBER: _ClassVar[int]
     FIELDS_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
     RESULT_STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    FORM_DEF_FIELD_NUMBER: _ClassVar[int]
     name: str
     fields: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskField]
     description: str
     result_struct_def_id: _object_id_pb2.StructDefId
-    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ..., result_struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
+    form_def: _form_def_pb2.FormDefReference
+    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ..., result_struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., form_def: _Optional[_Union[_form_def_pb2.FormDefReference, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
     __slots__ = ("name", "retention_policy", "content_type", "correlated_event_config")
@@ -208,6 +211,39 @@ class DeleteStructDefRequest(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.StructDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
+
+class PutFormDefRequest(_message.Message):
+    __slots__ = ("name", "result_struct_def_id", "fields", "metadata")
+    class MetadataEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _form_def_pb2.FormMetadataValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_form_def_pb2.FormMetadataValue, _Mapping]] = ...) -> None: ...
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    RESULT_STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
+    FIELDS_FIELD_NUMBER: _ClassVar[int]
+    METADATA_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    result_struct_def_id: _object_id_pb2.StructDefId
+    fields: _containers.RepeatedCompositeFieldContainer[_form_def_pb2.FormFieldDef]
+    metadata: _containers.MessageMap[str, _form_def_pb2.FormMetadataValue]
+    def __init__(self, name: _Optional[str] = ..., result_struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ..., fields: _Optional[_Iterable[_Union[_form_def_pb2.FormFieldDef, _Mapping]]] = ..., metadata: _Optional[_Mapping[str, _form_def_pb2.FormMetadataValue]] = ...) -> None: ...
+
+class GetFormDefRequest(_message.Message):
+    __slots__ = ("name", "version")
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    VERSION_FIELD_NUMBER: _ClassVar[int]
+    name: str
+    version: int
+    def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
+
+class DeleteFormDefRequest(_message.Message):
+    __slots__ = ("id",)
+    ID_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.FormDefId
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.FormDefId, _Mapping]] = ...) -> None: ...
 
 class DeleteUserTaskDefRequest(_message.Message):
     __slots__ = ("id",)
@@ -569,6 +605,26 @@ class StructDefIdList(_message.Message):
     results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.StructDefId]
     bookmark: bytes
     def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.StructDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
+
+class SearchFormDefRequest(_message.Message):
+    __slots__ = ("bookmark", "limit", "prefix", "name")
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    PREFIX_FIELD_NUMBER: _ClassVar[int]
+    NAME_FIELD_NUMBER: _ClassVar[int]
+    bookmark: bytes
+    limit: int
+    prefix: str
+    name: str
+    def __init__(self, bookmark: _Optional[bytes] = ..., limit: _Optional[int] = ..., prefix: _Optional[str] = ..., name: _Optional[str] = ...) -> None: ...
+
+class FormDefIdList(_message.Message):
+    __slots__ = ("results", "bookmark")
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    BOOKMARK_FIELD_NUMBER: _ClassVar[int]
+    results: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.FormDefId]
+    bookmark: bytes
+    def __init__(self, results: _Optional[_Iterable[_Union[_object_id_pb2.FormDefId, _Mapping]]] = ..., bookmark: _Optional[bytes] = ...) -> None: ...
 
 class UserTaskDefIdList(_message.Message):
     __slots__ = ("results", "bookmark")

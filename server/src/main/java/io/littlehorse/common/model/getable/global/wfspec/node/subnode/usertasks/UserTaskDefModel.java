@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.model.AbstractGetable;
 import io.littlehorse.common.model.MetadataGetable;
+import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.common.proto.TagStorageType;
@@ -35,6 +36,10 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
     @Setter
     private StructDefIdModel resultStructDefId;
 
+    @Getter
+    @Setter
+    private FormDefReferenceModel formDef;
+
     public UserTaskDefModel() {
         fields = new ArrayList<>();
     }
@@ -51,6 +56,7 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
 
         if (description != null) out.setDescription(description);
         if (resultStructDefId != null) out.setResultStructDefId(resultStructDefId.toProto());
+        if (formDef != null) out.setFormDef(formDef.toProto());
 
         for (UserTaskFieldModel utf : fields) {
             out.addFields(utf.toProto());
@@ -67,6 +73,9 @@ public class UserTaskDefModel extends MetadataGetable<UserTaskDef> {
         if (p.hasDescription()) description = p.getDescription();
         if (p.hasResultStructDefId()) {
             resultStructDefId = StructDefIdModel.fromProto(p.getResultStructDefId(), context);
+        }
+        if (p.hasFormDef()) {
+            formDef = LHSerializable.fromProto(p.getFormDef(), FormDefReferenceModel.class, context);
         }
 
         for (UserTaskField utf : p.getFieldsList()) {

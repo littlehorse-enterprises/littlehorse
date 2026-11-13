@@ -17,6 +17,7 @@ import "user_tasks.proto";
 import "wf_spec.proto";
 import "task_def.proto";
 import "struct_def.proto";
+import "form_def.proto";
 import "acls.proto";
 import "workflow_event.proto";
 import "scheduled_wf_run.proto";
@@ -83,6 +84,13 @@ service LittleHorse {
 
   // EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
   rpc ValidateStructDefEvolution(ValidateStructDefEvolutionRequest) returns (ValidateStructDefEvolutionResponse) {}
+
+  // Creates a FormDef. Identical content returns the latest existing version;
+  // changed content creates a new version.
+  rpc PutFormDef(PutFormDefRequest) returns (FormDef) {}
+
+  // Gets a FormDef.
+  rpc GetFormDef(GetFormDefRequest) returns (FormDef) {}
 
   // Creates a UserTaskDef.
   rpc PutUserTaskDef(PutUserTaskDefRequest) returns (UserTaskDef) {}
@@ -291,6 +299,9 @@ service LittleHorse {
   // Search for StructDef's
   rpc SearchStructDef(SearchStructDefRequest) returns (StructDefIdList) {}
 
+  // Search for FormDef's
+  rpc SearchFormDef(SearchFormDefRequest) returns (FormDefIdList) {}
+
   // Get an InactiveThreadRun
   rpc GetInactiveThreadRun(InactiveThreadRunId) returns (InactiveThreadRun) {}
 
@@ -343,6 +354,8 @@ service LittleHorse {
   rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
   // EXPERIMENTAL: Deletes a StructDef.
   rpc DeleteStructDef(DeleteStructDefRequest) returns (google.protobuf.Empty) {}
+  // Deletes an exact FormDef version.
+  rpc DeleteFormDef(DeleteFormDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a WfSpec.
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
   // Deletes a UserTaskDef.
@@ -566,6 +579,9 @@ message PutUserTaskDefRequest {
 
   // The exact StructDef that defines the result of this UserTaskDef.
   StructDefId result_struct_def_id = 4;
+
+  // Optional FormDef with UI metadata for collecting the result.
+  optional FormDefReference form_def = 5;
 }
 
 // Field to create an ExternalEventDef.
@@ -668,6 +684,36 @@ message DeleteTaskDefRequest {
 message DeleteStructDefRequest {
   // The ID of the StructDef to delete.
   StructDefId id = 1;
+}
+
+// Creates a new FormDef.
+message PutFormDefRequest {
+  // The name of the FormDef.
+  string name = 1;
+
+  // The StructDef whose fields the FormDef describes.
+  StructDefId result_struct_def_id = 2;
+
+  // UI metadata for individual fields.
+  repeated FormFieldDef fields = 3;
+
+  // Client-defined settings for the whole form.
+  map<string, FormMetadataValue> metadata = 4;
+}
+
+// Gets a FormDef.
+message GetFormDefRequest {
+  // The name of the FormDef.
+  string name = 1;
+
+  // The exact version. If omitted, returns the latest version.
+  optional int32 version = 2;
+}
+
+// Deletes an exact FormDef version.
+message DeleteFormDefRequest {
+  // The ID of the FormDef to delete.
+  FormDefId id = 1;
 }
 
 // Deletes a UserTaskDef.
@@ -1111,6 +1157,33 @@ message StructDefIdList {
   // The bookmark can be used for cursor-based pagination. If it is null, the server
   // has returned all results. If it is set, you can pass it into your next request
   // to resume searching where your previous request left off.
+  optional bytes bookmark = 2;
+}
+
+// Search for FormDef's.
+message SearchFormDefRequest {
+  // Bookmark for cursor-based pagination; pass if applicable.
+  optional bytes bookmark = 1;
+
+  // Maximum results to return in one request.
+  optional int32 limit = 2;
+
+  // Optionally specify filters. If no filters are specified, all FormDef's are
+  // returned.
+  oneof form_def_criteria {
+    // Return all FormDef's with a specific prefix.
+    string prefix = 3;
+    // Return all FormDef's with a specific name.
+    string name = 4;
+  }
+}
+
+// List of FormDef Id's.
+message FormDefIdList {
+  // The result object Id's
+  repeated FormDefId results = 1;
+
+  // Bookmark for the next page; unset if all results were returned.
   optional bytes bookmark = 2;
 }
 

@@ -172,5 +172,32 @@ public interface MetadataOutputTopicRecordOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.StructDefOrBuilder getStructDefOrBuilder();
 
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   * @return Whether the formDef field is set.
+   */
+  boolean hasFormDef();
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   * @return The formDef.
+   */
+  io.littlehorse.sdk.common.proto.FormDef getFormDef();
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.FormDefOrBuilder getFormDefOrBuilder();
+
   io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord.MetadataRecordCase getMetadataRecordCase();
 }

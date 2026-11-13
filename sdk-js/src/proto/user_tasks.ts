@@ -11,11 +11,13 @@ import type { PartialMessage } from "@protobuf-ts/runtime";
 import { reflectionMergePartial } from "@protobuf-ts/runtime";
 import { MessageType } from "@protobuf-ts/runtime";
 import { TaskRunId } from "./object_id";
+import { Form } from "./form_def";
 import { NodeRunId } from "./object_id";
 import { VariableValue } from "./type_definition";
 import { UserTaskDefId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { VariableType } from "./common_enums";
+import { FormDefReference } from "./form_def";
 import { StructDefId } from "./object_id";
 import { Timestamp } from "./google/protobuf/timestamp";
 /**
@@ -67,6 +69,12 @@ export interface UserTaskDef {
      * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 6
      */
     resultStructDefId?: StructDefId;
+    /**
+     * Optional `FormDef` with UI metadata for collecting the result.
+     *
+     * @generated from protobuf field: optional littlehorse.FormDefReference form_def = 7
+     */
+    formDef?: FormDefReference;
 }
 /**
  * A UserTaskField is a specific field of data to be entered into a UserTaskRun.
@@ -221,6 +229,12 @@ export interface UserTaskRun {
      * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 14
      */
     resultStructDefId?: StructDefId;
+    /**
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     *
+     * @generated from protobuf field: littlehorse.Form form = 15
+     */
+    form?: Form;
 }
 /**
  * Re-Assigns a UserTaskRun to a specific userId or userGroup.
@@ -764,7 +778,8 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
             { no: 3, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
             { no: 4, name: "fields", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => UserTaskField },
             { no: 5, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 6, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
+            { no: 6, name: "result_struct_def_id", kind: "message", T: () => StructDefId },
+            { no: 7, name: "form_def", kind: "message", T: () => FormDefReference }
         ]);
     }
     create(value?: PartialMessage<UserTaskDef>): UserTaskDef {
@@ -799,6 +814,9 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
                 case /* littlehorse.StructDefId result_struct_def_id */ 6:
                     message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
                     break;
+                case /* optional littlehorse.FormDefReference form_def */ 7:
+                    message.formDef = FormDefReference.internalBinaryRead(reader, reader.uint32(), options, message.formDef);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -829,6 +847,9 @@ class UserTaskDef$Type extends MessageType<UserTaskDef> {
         /* littlehorse.StructDefId result_struct_def_id = 6; */
         if (message.resultStructDefId)
             StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(6, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.FormDefReference form_def = 7; */
+        if (message.formDef)
+            FormDefReference.internalBinaryWrite(message.formDef, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -934,7 +955,8 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
             { no: 11, name: "node_run_id", kind: "message", T: () => NodeRunId },
             { no: 12, name: "epoch", kind: "scalar", T: 5 /*ScalarType.INT32*/ },
             { no: 13, name: "output", kind: "message", T: () => VariableValue },
-            { no: 14, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
+            { no: 14, name: "result_struct_def_id", kind: "message", T: () => StructDefId },
+            { no: 15, name: "form", kind: "message", T: () => Form }
         ]);
     }
     create(value?: PartialMessage<UserTaskRun>): UserTaskRun {
@@ -990,6 +1012,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
                     break;
                 case /* littlehorse.StructDefId result_struct_def_id */ 14:
                     message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
+                    break;
+                case /* littlehorse.Form form */ 15:
+                    message.form = Form.internalBinaryRead(reader, reader.uint32(), options, message.form);
                     break;
                 default:
                     let u = options.readUnknownField;
@@ -1062,6 +1087,9 @@ class UserTaskRun$Type extends MessageType<UserTaskRun> {
         /* littlehorse.StructDefId result_struct_def_id = 14; */
         if (message.resultStructDefId)
             StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.Form form = 15; */
+        if (message.form)
+            Form.internalBinaryWrite(message.form, writer.tag(15, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

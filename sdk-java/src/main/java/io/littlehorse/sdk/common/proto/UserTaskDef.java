@@ -333,6 +333,44 @@ private static final long serialVersionUID = 0L;
     return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
   }
 
+  public static final int FORM_DEF_FIELD_NUMBER = 7;
+  private io.littlehorse.sdk.common.proto.FormDefReference formDef_;
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   * @return Whether the formDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasFormDef() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   * @return The formDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FormDefReference getFormDef() {
+    return formDef_ == null ? io.littlehorse.sdk.common.proto.FormDefReference.getDefaultInstance() : formDef_;
+  }
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder getFormDefOrBuilder() {
+    return formDef_ == null ? io.littlehorse.sdk.common.proto.FormDefReference.getDefaultInstance() : formDef_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -365,6 +403,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(6, getResultStructDefId());
     }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      output.writeMessage(7, getFormDef());
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -395,6 +436,10 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, getResultStructDefId());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, getFormDef());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -432,6 +477,11 @@ private static final long serialVersionUID = 0L;
       if (!getResultStructDefId()
           .equals(other.getResultStructDefId())) return false;
     }
+    if (hasFormDef() != other.hasFormDef()) return false;
+    if (hasFormDef()) {
+      if (!getFormDef()
+          .equals(other.getFormDef())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -462,6 +512,10 @@ private static final long serialVersionUID = 0L;
     if (hasResultStructDefId()) {
       hash = (37 * hash) + RESULT_STRUCT_DEF_ID_FIELD_NUMBER;
       hash = (53 * hash) + getResultStructDefId().hashCode();
+    }
+    if (hasFormDef()) {
+      hash = (37 * hash) + FORM_DEF_FIELD_NUMBER;
+      hash = (53 * hash) + getFormDef().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -600,6 +654,7 @@ private static final long serialVersionUID = 0L;
         internalGetFieldsFieldBuilder();
         internalGetCreatedAtFieldBuilder();
         internalGetResultStructDefIdFieldBuilder();
+        internalGetFormDefFieldBuilder();
       }
     }
     @java.lang.Override
@@ -625,6 +680,11 @@ private static final long serialVersionUID = 0L;
       if (resultStructDefIdBuilder_ != null) {
         resultStructDefIdBuilder_.dispose();
         resultStructDefIdBuilder_ = null;
+      }
+      formDef_ = null;
+      if (formDefBuilder_ != null) {
+        formDefBuilder_.dispose();
+        formDefBuilder_ = null;
       }
       return this;
     }
@@ -695,6 +755,12 @@ private static final long serialVersionUID = 0L;
             : resultStructDefIdBuilder_.build();
         to_bitField0_ |= 0x00000004;
       }
+      if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.formDef_ = formDefBuilder_ == null
+            ? formDef_
+            : formDefBuilder_.build();
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -754,6 +820,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasResultStructDefId()) {
         mergeResultStructDefId(other.getResultStructDefId());
+      }
+      if (other.hasFormDef()) {
+        mergeFormDef(other.getFormDef());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -823,6 +892,13 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetFormDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1778,6 +1854,163 @@ private static final long serialVersionUID = 0L;
         resultStructDefId_ = null;
       }
       return resultStructDefIdBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.FormDefReference formDef_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.FormDefReference, io.littlehorse.sdk.common.proto.FormDefReference.Builder, io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder> formDefBuilder_;
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     * @return Whether the formDef field is set.
+     */
+    public boolean hasFormDef() {
+      return ((bitField0_ & 0x00000040) != 0);
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     * @return The formDef.
+     */
+    public io.littlehorse.sdk.common.proto.FormDefReference getFormDef() {
+      if (formDefBuilder_ == null) {
+        return formDef_ == null ? io.littlehorse.sdk.common.proto.FormDefReference.getDefaultInstance() : formDef_;
+      } else {
+        return formDefBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public Builder setFormDef(io.littlehorse.sdk.common.proto.FormDefReference value) {
+      if (formDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        formDef_ = value;
+      } else {
+        formDefBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public Builder setFormDef(
+        io.littlehorse.sdk.common.proto.FormDefReference.Builder builderForValue) {
+      if (formDefBuilder_ == null) {
+        formDef_ = builderForValue.build();
+      } else {
+        formDefBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public Builder mergeFormDef(io.littlehorse.sdk.common.proto.FormDefReference value) {
+      if (formDefBuilder_ == null) {
+        if (((bitField0_ & 0x00000040) != 0) &&
+          formDef_ != null &&
+          formDef_ != io.littlehorse.sdk.common.proto.FormDefReference.getDefaultInstance()) {
+          getFormDefBuilder().mergeFrom(value);
+        } else {
+          formDef_ = value;
+        }
+      } else {
+        formDefBuilder_.mergeFrom(value);
+      }
+      if (formDef_ != null) {
+        bitField0_ |= 0x00000040;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public Builder clearFormDef() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      formDef_ = null;
+      if (formDefBuilder_ != null) {
+        formDefBuilder_.dispose();
+        formDefBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FormDefReference.Builder getFormDefBuilder() {
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return internalGetFormDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder getFormDefOrBuilder() {
+      if (formDefBuilder_ != null) {
+        return formDefBuilder_.getMessageOrBuilder();
+      } else {
+        return formDef_ == null ?
+            io.littlehorse.sdk.common.proto.FormDefReference.getDefaultInstance() : formDef_;
+      }
+    }
+    /**
+     * <pre>
+     * Optional `FormDef` with UI metadata for collecting the result.
+     * </pre>
+     *
+     * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.FormDefReference, io.littlehorse.sdk.common.proto.FormDefReference.Builder, io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder> 
+        internalGetFormDefFieldBuilder() {
+      if (formDefBuilder_ == null) {
+        formDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.FormDefReference, io.littlehorse.sdk.common.proto.FormDefReference.Builder, io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder>(
+                getFormDef(),
+                getParentForChildren(),
+                isClean());
+        formDef_ = null;
+      }
+      return formDefBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskDef)

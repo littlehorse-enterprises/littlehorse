@@ -7,27 +7,38 @@ import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.exceptions.LHVarSubError;
+import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidNodeException;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.subnoderun.UserTaskNodeRunModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
 import io.littlehorse.common.model.getable.global.wfspec.ReturnTypeModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
+import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
 import io.littlehorse.sdk.common.proto.UTActionTrigger.UTHook;
 import io.littlehorse.sdk.common.proto.UserTaskNode;
+import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import io.littlehorse.server.streams.topology.core.WfService;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +57,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private ReadOnlyMetadataManager metadataManager;
     private CoreProcessorContext processorContext;
     private VariableAssignmentModel onCancellationException;
+    private Map<String, VariableAssignmentModel> placeholders = new HashMap<>();
 
     public UserTaskNodeModel() {
         this.actions = new ArrayList<>();
@@ -81,6 +93,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             out.setOnCancellationExceptionName(onCancellationException.toProto());
         }
 
+        for (Map.Entry<String, VariableAssignmentModel> entry : placeholders.entrySet()) {
+            out.putPlaceholders(entry.getKey(), entry.getValue().toProto().build());
+        }
+
         return out;
     }
 
@@ -105,6 +121,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         if (p.hasOnCancellationExceptionName()) {
             onCancellationException = LHSerializable.fromProto(
                     p.getOnCancellationExceptionName(), VariableAssignmentModel.class, context);
+        }
+        for (Map.Entry<String, VariableAssignment> entry :
+                p.getPlaceholdersMap().entrySet()) {
+            placeholders.put(entry.getKey(), VariableAssignmentModel.fromProto(entry.getValue(), context));
         }
         this.metadataManager = context.metadataManager();
         this.processorContext = context.castOnSupport(CoreProcessorContext.class);
@@ -158,6 +178,67 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
                 && userGroup.getRhsLiteralValue().getStrVal().trim().isEmpty()) {
             throw new InvalidNodeException("UserGroup can't be empty", node);
         }
+
+        validatePlaceholders(utd);
+    }
+
+    private void validatePlaceholders(UserTaskDefModel utd) throws InvalidNodeException {
+        FormDefReferenceModel ref = utd.getFormDef();
+        if (ref == null) {
+            if (!placeholders.isEmpty()) {
+                throw new InvalidNodeException("Placeholders require a UserTaskDef with a FormDef", node);
+            }
+            return;
+        }
+        FormDefModel formDef = new WfService(metadataManager).getFormDef(ref);
+        if (formDef == null) {
+            throw new InvalidNodeException("FormDef " + ref.getName() + " not found", node);
+        }
+        Set<String> required = formDef.getPlaceholderNames();
+        Set<String> missing = new HashSet<>(required);
+        missing.removeAll(placeholders.keySet());
+        if (!missing.isEmpty()) {
+            throw new InvalidNodeException("Missing FormDef placeholders: " + missing, node);
+        }
+        Set<String> unused = new HashSet<>(placeholders.keySet());
+        unused.removeAll(required);
+        if (!unused.isEmpty()) {
+            throw new InvalidNodeException("Placeholders not referenced by FormDef: " + unused, node);
+        }
+        for (Map.Entry<String, VariableAssignmentModel> entry : placeholders.entrySet()) {
+            if (exposesMaskedValue(entry.getValue())) {
+                throw new InvalidNodeException(
+                        "Placeholder %s exposes a masked value. Unmask it or pass a reference instead"
+                                .formatted(entry.getKey()),
+                        node);
+            }
+        }
+    }
+
+    // Masked fields inside a resolved Struct stay masked, so only masked variables and masked results are rejected.
+    private boolean exposesMaskedValue(VariableAssignmentModel assignment) throws InvalidNodeException {
+        ThreadSpecModel threadSpec = node.getThreadSpec();
+        for (String varName : assignment.getRequiredWfRunVarNames()) {
+            ThreadVarDefModel varDef = threadSpec.getVarDef(varName);
+            if (varDef != null && varDef.getVarDef().getTypeDef().isMasked()) return true;
+        }
+        try {
+            return assignment
+                    .resolveType(metadataManager, threadSpec.getWfSpec(), threadSpec.getName())
+                    .map(TypeDefinitionModel::isMasked)
+                    .orElse(false);
+        } catch (InvalidExpressionException exn) {
+            throw new InvalidNodeException("Invalid placeholder assignment: " + exn.getMessage(), node);
+        }
+    }
+
+    @Override
+    public Set<String> getNeededVariableNames() {
+        Set<String> out = new HashSet<>();
+        for (VariableAssignmentModel assignment : placeholders.values()) {
+            out.addAll(assignment.getRequiredWfRunVarNames());
+        }
+        return out;
     }
 
     public String assignExceptionNameVariable(ThreadRunModel threadRun) {

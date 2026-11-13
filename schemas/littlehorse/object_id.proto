@@ -51,6 +51,15 @@ message StructDefId {
   int32 version = 2;
 }
 
+// Unique identifier for a `FormDef`.
+message FormDefId {
+  // The name of the `FormDef`.
+  string name = 1;
+
+  // The version of the `FormDef`.
+  int32 version = 2;
+}
+
 // ID for ExternalEventDef
 message ExternalEventDefId {
   // ExternalEventDef's are uniquedly identified by their name and version.

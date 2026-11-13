@@ -50,30 +50,31 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
       "nt.proto\032\020user_tasks.proto\032\016task_run.pro" +
       "to\032\016task_def.proto\032\rwf_spec.proto\032\014wf_ru" +
       "n.proto\032\016variable.proto\032\020struct_def.prot" +
-      "o\032\024external_event.proto\"\325\003\n\021OutputTopicR" +
-      "ecord\022-\n\ttimestamp\030\001 \001(\0132\032.google.protob" +
-      "uf.Timestamp\022(\n\010task_run\030\002 \001(\0132\024.littleh" +
-      "orse.TaskRunH\000\0224\n\016workflow_event\030\003 \001(\0132\032" +
-      ".littlehorse.WorkflowEventH\000\022$\n\006wf_run\030\004" +
-      " \001(\0132\022.littlehorse.WfRunH\000\0221\n\ruser_task_" +
-      "run\030\005 \001(\0132\030.littlehorse.UserTaskRunH\000\022)\n" +
-      "\010variable\030\006 \001(\0132\025.littlehorse.VariableH\000" +
-      "\0224\n\016external_event\030\007 \001(\0132\032.littlehorse.E" +
-      "xternalEventH\000\0228\n\020correlated_event\030\010 \001(\013" +
-      "2\034.littlehorse.CorrelatedEventH\000\0222\n\017task" +
-      "_checkpoint\030\t \001(\0132\027.littlehorse.Checkpoi" +
-      "ntH\000B\t\n\007payload\"\333\002\n\031MetadataOutputTopicR" +
-      "ecord\022&\n\007wf_spec\030\001 \001(\0132\023.littlehorse.WfS" +
-      "pecH\000\022(\n\010task_def\030\002 \001(\0132\024.littlehorse.Ta" +
-      "skDefH\000\022;\n\022external_event_def\030\003 \001(\0132\035.li" +
-      "ttlehorse.ExternalEventDefH\000\022;\n\022workflow" +
-      "_event_def\030\004 \001(\0132\035.littlehorse.WorkflowE" +
-      "ventDefH\000\0221\n\ruser_task_def\030\005 \001(\0132\030.littl" +
-      "ehorse.UserTaskDefH\000\022,\n\nstruct_def\030\006 \001(\013" +
-      "2\026.littlehorse.StructDefH\000B\021\n\017metadata_r" +
-      "ecordBM\n\037io.littlehorse.sdk.common.proto" +
-      "P\001Z\t.;lhproto\252\002\034LittleHorse.Sdk.Common.P" +
-      "rotob\006proto3"
+      "o\032\016form_def.proto\032\024external_event.proto\"" +
+      "\325\003\n\021OutputTopicRecord\022-\n\ttimestamp\030\001 \001(\013" +
+      "2\032.google.protobuf.Timestamp\022(\n\010task_run" +
+      "\030\002 \001(\0132\024.littlehorse.TaskRunH\000\0224\n\016workfl" +
+      "ow_event\030\003 \001(\0132\032.littlehorse.WorkflowEve" +
+      "ntH\000\022$\n\006wf_run\030\004 \001(\0132\022.littlehorse.WfRun" +
+      "H\000\0221\n\ruser_task_run\030\005 \001(\0132\030.littlehorse." +
+      "UserTaskRunH\000\022)\n\010variable\030\006 \001(\0132\025.little" +
+      "horse.VariableH\000\0224\n\016external_event\030\007 \001(\013" +
+      "2\032.littlehorse.ExternalEventH\000\0228\n\020correl" +
+      "ated_event\030\010 \001(\0132\034.littlehorse.Correlate" +
+      "dEventH\000\0222\n\017task_checkpoint\030\t \001(\0132\027.litt" +
+      "lehorse.CheckpointH\000B\t\n\007payload\"\205\003\n\031Meta" +
+      "dataOutputTopicRecord\022&\n\007wf_spec\030\001 \001(\0132\023" +
+      ".littlehorse.WfSpecH\000\022(\n\010task_def\030\002 \001(\0132" +
+      "\024.littlehorse.TaskDefH\000\022;\n\022external_even" +
+      "t_def\030\003 \001(\0132\035.littlehorse.ExternalEventD" +
+      "efH\000\022;\n\022workflow_event_def\030\004 \001(\0132\035.littl" +
+      "ehorse.WorkflowEventDefH\000\0221\n\ruser_task_d" +
+      "ef\030\005 \001(\0132\030.littlehorse.UserTaskDefH\000\022,\n\n" +
+      "struct_def\030\006 \001(\0132\026.littlehorse.StructDef" +
+      "H\000\022(\n\010form_def\030\007 \001(\0132\024.littlehorse.FormD" +
+      "efH\000B\021\n\017metadata_recordBM\n\037io.littlehors" +
+      "e.sdk.common.protoP\001Z\t.;lhproto\252\002\034Little" +
+      "Horse.Sdk.Common.Protob\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -87,6 +88,7 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
           io.littlehorse.sdk.common.proto.WfRunOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.StructDefOuterClass.getDescriptor(),
+          io.littlehorse.sdk.common.proto.FormDefOuterClass.getDescriptor(),
           io.littlehorse.sdk.common.proto.ExternalEventOuterClass.getDescriptor(),
         });
     internal_static_littlehorse_OutputTopicRecord_descriptor =
@@ -100,7 +102,7 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_MetadataOutputTopicRecord_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_MetadataOutputTopicRecord_descriptor,
-        new java.lang.String[] { "WfSpec", "TaskDef", "ExternalEventDef", "WorkflowEventDef", "UserTaskDef", "StructDef", "MetadataRecord", });
+        new java.lang.String[] { "WfSpec", "TaskDef", "ExternalEventDef", "WorkflowEventDef", "UserTaskDef", "StructDef", "FormDef", "MetadataRecord", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.TimestampProto.getDescriptor();
     io.littlehorse.sdk.common.proto.WorkflowEventOuterClass.getDescriptor();
@@ -111,6 +113,7 @@ public final class OutputTopic extends com.google.protobuf.GeneratedFile {
     io.littlehorse.sdk.common.proto.WfRunOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.VariableOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.StructDefOuterClass.getDescriptor();
+    io.littlehorse.sdk.common.proto.FormDefOuterClass.getDescriptor();
     io.littlehorse.sdk.common.proto.ExternalEventOuterClass.getDescriptor();
   }
 

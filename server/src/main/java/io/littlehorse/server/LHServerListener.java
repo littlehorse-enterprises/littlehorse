@@ -41,6 +41,7 @@ import io.littlehorse.common.model.getable.global.acl.TenantModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -72,6 +73,7 @@ import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.DeleteFormDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
@@ -80,6 +82,7 @@ import io.littlehorse.common.model.metadatacommand.subcommand.DeleteUserTaskDefR
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWfSpecRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteWorkflowEventDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutExternalEventDefRequestModel;
+import io.littlehorse.common.model.metadatacommand.subcommand.PutFormDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutPrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutStructDefRequestModel;
@@ -117,6 +120,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchBulkJob
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchCorrelatedEventRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchExternalEventRequestModel;
+import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchFormDefRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchNodeRunRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchPrincipalRequestModel;
 import io.littlehorse.server.streams.lhinternalscan.publicrequests.SearchQuotaRequestModel;
@@ -145,6 +149,7 @@ import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchBu
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchCorrelatedEventReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchExternalEventReply;
+import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchFormDefReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchNodeRunReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchPrincipalRequestReply;
 import io.littlehorse.server.streams.lhinternalscan.publicsearchreplies.SearchQuotaRequestReply;
@@ -444,6 +449,39 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         PutStructDefRequestModel reqModel =
                 LHSerializable.fromProto(req, PutStructDefRequestModel.class, requestContext());
         processCommand(new MetadataCommandModel(reqModel), ctx, StructDef.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
+    public void putFormDef(PutFormDefRequest req, StreamObserver<FormDef> ctx) {
+        PutFormDefRequestModel reqModel = PutFormDefRequestModel.fromProto(req, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, FormDef.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
+    public void getFormDef(GetFormDefRequest req, StreamObserver<FormDef> ctx) {
+        FormDefModel formDef =
+                getServiceFromContext().getFormDef(req.getName(), req.hasVersion() ? req.getVersion() : null);
+        if (formDef == null) {
+            throw new LHApiException(Status.NOT_FOUND, "Couldn't find FormDef %s".formatted(req.getName()));
+        }
+        ctx.onNext(formDef.toProto().build());
+        ctx.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
+    public void searchFormDef(SearchFormDefRequest req, StreamObserver<FormDefIdList> ctx) {
+        handleScan(SearchFormDefRequestModel.fromProto(req, requestContext()), ctx, SearchFormDefReply.class);
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
+    public void deleteFormDef(DeleteFormDefRequest req, StreamObserver<Empty> ctx) {
+        DeleteFormDefRequestModel reqModel =
+                LHSerializable.fromProto(req, DeleteFormDefRequestModel.class, requestContext());
+        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
     }
 
     @Override
