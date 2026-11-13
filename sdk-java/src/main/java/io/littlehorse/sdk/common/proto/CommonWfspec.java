@@ -47,6 +47,11 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_littlehorse_VariableAssignment_SizeOf_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_littlehorse_VariableAssignment_EnumName_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_littlehorse_VariableAssignment_EnumName_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_littlehorse_VariableAssignment_Expression_descriptor;
   static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -147,7 +152,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n\023common_wfspec.proto\022\013littlehorse\032\022comm" +
       "on_enums.proto\032\017object_id.proto\032\025type_de" +
-      "finition.proto\"\247\010\n\022VariableAssignment\022\023\n" +
+      "finition.proto\"\244\t\n\022VariableAssignment\022\023\n" +
       "\tjson_path\030\001 \001(\tH\000\022&\n\007lh_path\030\010 \001(\0132\023.li" +
       "ttlehorse.LHPathH\000\022\027\n\rvariable_name\030\002 \001(" +
       "\tH\001\0223\n\rliteral_value\030\003 \001(\0132\032.littlehorse" +
@@ -160,94 +165,97 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       "builder\030\t \001(\0132\032.littlehorse.StructBuilde" +
       "rH\001\0229\n\007size_of\030\n \001(\0132&.littlehorse.Varia" +
       "bleAssignment.SizeOfH\001\022.\n\013map_builder\030\013 " +
-      "\001(\0132\027.littlehorse.MapBuilderH\001\0225\n\013target" +
-      "_type\030\007 \001(\0132\033.littlehorse.TypeDefinition" +
-      "H\002\210\001\001\032n\n\014FormatString\022/\n\006format\030\001 \001(\0132\037." +
-      "littlehorse.VariableAssignment\022-\n\004args\030\002" +
-      " \003(\0132\037.littlehorse.VariableAssignment\032(\n" +
-      "\023NodeOutputReference\022\021\n\tnode_name\030\001 \001(\t\032" +
-      ":\n\006SizeOf\0220\n\007operand\030\001 \001(\0132\037.littlehorse" +
-      ".VariableAssignment\032\340\001\n\nExpression\022,\n\003lh" +
-      "s\030\001 \001(\0132\037.littlehorse.VariableAssignment" +
-      "\022:\n\rmutation_type\030\002 \001(\0162!.littlehorse.Va" +
-      "riableMutationTypeH\000\022-\n\ncomparator\030\004 \001(\016" +
-      "2\027.littlehorse.ComparatorH\000\022,\n\003rhs\030\003 \001(\013" +
-      "2\037.littlehorse.VariableAssignmentB\013\n\tope" +
-      "rationB\006\n\004pathB\010\n\006sourceB\016\n\014_target_type" +
-      "\"q\n\rStructBuilder\022/\n\rstruct_def_id\030\001 \001(\013" +
-      "2\030.littlehorse.StructDefId\022/\n\005value\030\002 \001(" +
-      "\0132 .littlehorse.InlineStructBuilder\"\247\001\n\023" +
-      "InlineStructBuilder\022<\n\006fields\030\001 \003(\0132,.li" +
-      "ttlehorse.InlineStructBuilder.FieldsEntr" +
-      "y\032R\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\0222\n\005value\030\002" +
-      " \001(\0132#.littlehorse.InlineStructFieldValu" +
-      "e:\0028\001\"\234\001\n\026InlineStructFieldValue\0227\n\014simp" +
-      "le_value\030\001 \001(\0132\037.littlehorse.VariableAss" +
-      "ignmentH\000\0229\n\rsub_structure\030\002 \001(\0132 .littl" +
-      "ehorse.InlineStructBuilderH\000B\016\n\014struct_v" +
-      "alue\"\342\001\n\nMapBuilder\022.\n\007entries\030\001 \003(\0132\035.l" +
-      "ittlehorse.MapBuilder.Entry\0220\n\010map_type\030" +
-      "\002 \001(\0132\031.littlehorse.InlineMapDefH\000\210\001\001\032e\n" +
-      "\005Entry\022,\n\003key\030\001 \001(\0132\037.littlehorse.Variab" +
-      "leAssignment\022.\n\005value\030\002 \001(\0132\037.littlehors" +
-      "e.VariableAssignmentB\013\n\t_map_type\"\343\003\n\020Va" +
-      "riableMutation\022\020\n\010lhs_name\030\001 \001(\t\022\032\n\rlhs_" +
-      "json_path\030\002 \001(\tH\001\210\001\001\022-\n\013lhs_lh_path\030\007 \001(" +
-      "\0132\023.littlehorse.LHPathH\002\210\001\001\0224\n\toperation" +
-      "\030\003 \001(\0162!.littlehorse.VariableMutationTyp" +
-      "e\0229\n\016rhs_assignment\030\004 \001(\0132\037.littlehorse." +
-      "VariableAssignmentH\000\0223\n\rliteral_value\030\005 " +
-      "\001(\0132\032.littlehorse.VariableValueH\000\022E\n\013nod" +
-      "e_output\030\006 \001(\0132..littlehorse.VariableMut" +
-      "ation.NodeOutputSourceH\000\032V\n\020NodeOutputSo" +
-      "urce\022\022\n\010jsonpath\030\n \001(\tH\000\022&\n\007lh_path\030\013 \001(" +
-      "\0132\023.littlehorse.LHPathH\000B\006\n\004pathB\013\n\trhs_" +
-      "valueB\020\n\016_lhs_json_pathB\016\n\014_lhs_lh_path\"" +
-      "\211\002\n\013VariableDef\022,\n\004type\030\001 \001(\0162\031.littleho" +
-      "rse.VariableTypeH\000\210\001\001\022\014\n\004name\030\002 \001(\t\0226\n\rd" +
-      "efault_value\030\003 \001(\0132\032.littlehorse.Variabl" +
-      "eValueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H\002\210\001\001\0222" +
-      "\n\010type_def\030\005 \001(\0132\033.littlehorse.TypeDefin" +
-      "itionH\003\210\001\001B\007\n\005_typeB\020\n\016_default_valueB\017\n" +
-      "\r_masked_valueB\013\n\t_type_def\"\357\004\n\017UTAction" +
-      "Trigger\0224\n\004task\030\001 \001(\0132$.littlehorse.UTAc" +
-      "tionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001(\0132&." +
-      "littlehorse.UTActionTrigger.UTACancelH\000\022" +
-      "<\n\010reassign\030\003 \001(\0132(.littlehorse.UTAction" +
-      "Trigger.UTAReassignH\000\0226\n\rdelay_seconds\030\005" +
-      " \001(\0132\037.littlehorse.VariableAssignment\0221\n" +
-      "\004hook\030\006 \001(\0162#.littlehorse.UTActionTrigge" +
-      "r.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n\004task" +
-      "\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmutatio" +
-      "ns\030\002 \003(\0132\035.littlehorse.VariableMutation\032" +
-      "\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037.littl" +
-      "ehorse.VariableAssignmentH\000\210\001\001\0228\n\nuser_g" +
-      "roup\030\002 \001(\0132\037.littlehorse.VariableAssignm" +
-      "entH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group\".\n\006U" +
-      "THook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_ASSIGNE" +
-      "D\020\001B\010\n\006action\"c\n\035ExponentialBackoffRetry" +
-      "Policy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n\014max_" +
-      "delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"\311\002\n\010T" +
-      "askNode\022-\n\013task_def_id\030\001 \001(\0132\026.littlehor" +
-      "se.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(\0132\037.l" +
-      "ittlehorse.VariableAssignmentH\000\022\027\n\017timeo" +
-      "ut_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L\n\023exp" +
-      "onential_backoff\030\005 \001(\0132*.littlehorse.Exp" +
-      "onentialBackoffRetryPolicyH\001\210\001\001\0222\n\tvaria" +
-      "bles\030\004 \003(\0132\037.littlehorse.VariableAssignm" +
-      "entB\021\n\017task_to_executeB\026\n\024_exponential_b" +
-      "ackoff\"\245\001\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.little" +
-      "horse.LHPath.Selector\032o\n\010Selector\022\r\n\003key" +
-      "\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H\000\0222\n\007dynamic\030\003 \001" +
-      "(\0132\037.littlehorse.VariableAssignmentH\000B\017\n" +
-      "\rselector_type*\262\001\n\024VariableMutationType\022" +
-      "\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n\010SUBT" +
-      "RACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n\021REMO" +
-      "VE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016\n\nREM" +
-      "OVE_KEY\020\010\022\007\n\003AND\020\t\022\006\n\002OR\020\n\022\007\n\003POW\020\013BM\n\037i" +
-      "o.littlehorse.sdk.common.protoP\001Z\t.;lhpr" +
-      "oto\252\002\034LittleHorse.Sdk.Common.Protob\006prot" +
-      "o3"
+      "\001(\0132\027.littlehorse.MapBuilderH\001\022=\n\tenum_n" +
+      "ame\030\014 \001(\0132(.littlehorse.VariableAssignme" +
+      "nt.EnumNameH\001\0225\n\013target_type\030\007 \001(\0132\033.lit" +
+      "tlehorse.TypeDefinitionH\002\210\001\001\032n\n\014FormatSt" +
+      "ring\022/\n\006format\030\001 \001(\0132\037.littlehorse.Varia" +
+      "bleAssignment\022-\n\004args\030\002 \003(\0132\037.littlehors" +
+      "e.VariableAssignment\032(\n\023NodeOutputRefere" +
+      "nce\022\021\n\tnode_name\030\001 \001(\t\032:\n\006SizeOf\0220\n\007oper" +
+      "and\030\001 \001(\0132\037.littlehorse.VariableAssignme" +
+      "nt\032<\n\010EnumName\0220\n\007operand\030\001 \001(\0132\037.little" +
+      "horse.VariableAssignment\032\340\001\n\nExpression\022" +
+      ",\n\003lhs\030\001 \001(\0132\037.littlehorse.VariableAssig" +
+      "nment\022:\n\rmutation_type\030\002 \001(\0162!.littlehor" +
+      "se.VariableMutationTypeH\000\022-\n\ncomparator\030" +
+      "\004 \001(\0162\027.littlehorse.ComparatorH\000\022,\n\003rhs\030" +
+      "\003 \001(\0132\037.littlehorse.VariableAssignmentB\013" +
+      "\n\toperationB\006\n\004pathB\010\n\006sourceB\016\n\014_target" +
+      "_type\"q\n\rStructBuilder\022/\n\rstruct_def_id\030" +
+      "\001 \001(\0132\030.littlehorse.StructDefId\022/\n\005value" +
+      "\030\002 \001(\0132 .littlehorse.InlineStructBuilder" +
+      "\"\247\001\n\023InlineStructBuilder\022<\n\006fields\030\001 \003(\013" +
+      "2,.littlehorse.InlineStructBuilder.Field" +
+      "sEntry\032R\n\013FieldsEntry\022\013\n\003key\030\001 \001(\t\0222\n\005va" +
+      "lue\030\002 \001(\0132#.littlehorse.InlineStructFiel" +
+      "dValue:\0028\001\"\234\001\n\026InlineStructFieldValue\0227\n" +
+      "\014simple_value\030\001 \001(\0132\037.littlehorse.Variab" +
+      "leAssignmentH\000\0229\n\rsub_structure\030\002 \001(\0132 ." +
+      "littlehorse.InlineStructBuilderH\000B\016\n\014str" +
+      "uct_value\"\342\001\n\nMapBuilder\022.\n\007entries\030\001 \003(" +
+      "\0132\035.littlehorse.MapBuilder.Entry\0220\n\010map_" +
+      "type\030\002 \001(\0132\031.littlehorse.InlineMapDefH\000\210" +
+      "\001\001\032e\n\005Entry\022,\n\003key\030\001 \001(\0132\037.littlehorse.V" +
+      "ariableAssignment\022.\n\005value\030\002 \001(\0132\037.littl" +
+      "ehorse.VariableAssignmentB\013\n\t_map_type\"\343" +
+      "\003\n\020VariableMutation\022\020\n\010lhs_name\030\001 \001(\t\022\032\n" +
+      "\rlhs_json_path\030\002 \001(\tH\001\210\001\001\022-\n\013lhs_lh_path" +
+      "\030\007 \001(\0132\023.littlehorse.LHPathH\002\210\001\001\0224\n\toper" +
+      "ation\030\003 \001(\0162!.littlehorse.VariableMutati" +
+      "onType\0229\n\016rhs_assignment\030\004 \001(\0132\037.littleh" +
+      "orse.VariableAssignmentH\000\0223\n\rliteral_val" +
+      "ue\030\005 \001(\0132\032.littlehorse.VariableValueH\000\022E" +
+      "\n\013node_output\030\006 \001(\0132..littlehorse.Variab" +
+      "leMutation.NodeOutputSourceH\000\032V\n\020NodeOut" +
+      "putSource\022\022\n\010jsonpath\030\n \001(\tH\000\022&\n\007lh_path" +
+      "\030\013 \001(\0132\023.littlehorse.LHPathH\000B\006\n\004pathB\013\n" +
+      "\trhs_valueB\020\n\016_lhs_json_pathB\016\n\014_lhs_lh_" +
+      "path\"\211\002\n\013VariableDef\022,\n\004type\030\001 \001(\0162\031.lit" +
+      "tlehorse.VariableTypeH\000\210\001\001\022\014\n\004name\030\002 \001(\t" +
+      "\0226\n\rdefault_value\030\003 \001(\0132\032.littlehorse.Va" +
+      "riableValueH\001\210\001\001\022\031\n\014masked_value\030\004 \001(\010H\002" +
+      "\210\001\001\0222\n\010type_def\030\005 \001(\0132\033.littlehorse.Type" +
+      "DefinitionH\003\210\001\001B\007\n\005_typeB\020\n\016_default_val" +
+      "ueB\017\n\r_masked_valueB\013\n\t_type_def\"\357\004\n\017UTA" +
+      "ctionTrigger\0224\n\004task\030\001 \001(\0132$.littlehorse" +
+      ".UTActionTrigger.UTATaskH\000\0228\n\006cancel\030\002 \001" +
+      "(\0132&.littlehorse.UTActionTrigger.UTACanc" +
+      "elH\000\022<\n\010reassign\030\003 \001(\0132(.littlehorse.UTA" +
+      "ctionTrigger.UTAReassignH\000\0226\n\rdelay_seco" +
+      "nds\030\005 \001(\0132\037.littlehorse.VariableAssignme" +
+      "nt\0221\n\004hook\030\006 \001(\0162#.littlehorse.UTActionT" +
+      "rigger.UTHook\032\013\n\tUTACancel\032`\n\007UTATask\022#\n" +
+      "\004task\030\001 \001(\0132\025.littlehorse.TaskNode\0220\n\tmu" +
+      "tations\030\002 \003(\0132\035.littlehorse.VariableMuta" +
+      "tion\032\231\001\n\013UTAReassign\0225\n\007user_id\030\001 \001(\0132\037." +
+      "littlehorse.VariableAssignmentH\000\210\001\001\0228\n\nu" +
+      "ser_group\030\002 \001(\0132\037.littlehorse.VariableAs" +
+      "signmentH\001\210\001\001B\n\n\010_user_idB\r\n\013_user_group" +
+      "\".\n\006UTHook\022\016\n\nON_ARRIVAL\020\000\022\024\n\020ON_TASK_AS" +
+      "SIGNED\020\001B\010\n\006action\"c\n\035ExponentialBackoff" +
+      "RetryPolicy\022\030\n\020base_interval_ms\030\001 \001(\005\022\024\n" +
+      "\014max_delay_ms\030\002 \001(\003\022\022\n\nmultiplier\030\003 \001(\002\"" +
+      "\311\002\n\010TaskNode\022-\n\013task_def_id\030\001 \001(\0132\026.litt" +
+      "lehorse.TaskDefIdH\000\0227\n\014dynamic_task\030\006 \001(" +
+      "\0132\037.littlehorse.VariableAssignmentH\000\022\027\n\017" +
+      "timeout_seconds\030\002 \001(\005\022\017\n\007retries\030\003 \001(\005\022L" +
+      "\n\023exponential_backoff\030\005 \001(\0132*.littlehors" +
+      "e.ExponentialBackoffRetryPolicyH\001\210\001\001\0222\n\t" +
+      "variables\030\004 \003(\0132\037.littlehorse.VariableAs" +
+      "signmentB\021\n\017task_to_executeB\026\n\024_exponent" +
+      "ial_backoff\"\245\001\n\006LHPath\022*\n\004path\030\001 \003(\0132\034.l" +
+      "ittlehorse.LHPath.Selector\032o\n\010Selector\022\r" +
+      "\n\003key\030\001 \001(\tH\000\022\017\n\005index\030\002 \001(\005H\000\0222\n\007dynami" +
+      "c\030\003 \001(\0132\037.littlehorse.VariableAssignment" +
+      "H\000B\017\n\rselector_type*\262\001\n\024VariableMutation" +
+      "Type\022\n\n\006ASSIGN\020\000\022\007\n\003ADD\020\001\022\n\n\006EXTEND\020\002\022\014\n" +
+      "\010SUBTRACT\020\003\022\014\n\010MULTIPLY\020\004\022\n\n\006DIVIDE\020\005\022\025\n" +
+      "\021REMOVE_IF_PRESENT\020\006\022\020\n\014REMOVE_INDEX\020\007\022\016" +
+      "\n\nREMOVE_KEY\020\010\022\007\n\003AND\020\t\022\006\n\002OR\020\n\022\007\n\003POW\020\013" +
+      "BM\n\037io.littlehorse.sdk.common.protoP\001Z\t." +
+      ";lhproto\252\002\034LittleHorse.Sdk.Common.Protob" +
+      "\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -261,7 +269,7 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
     internal_static_littlehorse_VariableAssignment_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableAssignment_descriptor,
-        new java.lang.String[] { "JsonPath", "LhPath", "VariableName", "LiteralValue", "FormatString", "NodeOutput", "Expression", "StructBuilder", "SizeOf", "MapBuilder", "TargetType", "Path", "Source", });
+        new java.lang.String[] { "JsonPath", "LhPath", "VariableName", "LiteralValue", "FormatString", "NodeOutput", "Expression", "StructBuilder", "SizeOf", "MapBuilder", "EnumName", "TargetType", "Path", "Source", });
     internal_static_littlehorse_VariableAssignment_FormatString_descriptor =
       internal_static_littlehorse_VariableAssignment_descriptor.getNestedTypes().get(0);
     internal_static_littlehorse_VariableAssignment_FormatString_fieldAccessorTable = new
@@ -280,8 +288,14 @@ public final class CommonWfspec extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableAssignment_SizeOf_descriptor,
         new java.lang.String[] { "Operand", });
-    internal_static_littlehorse_VariableAssignment_Expression_descriptor =
+    internal_static_littlehorse_VariableAssignment_EnumName_descriptor =
       internal_static_littlehorse_VariableAssignment_descriptor.getNestedTypes().get(3);
+    internal_static_littlehorse_VariableAssignment_EnumName_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_littlehorse_VariableAssignment_EnumName_descriptor,
+        new java.lang.String[] { "Operand", });
+    internal_static_littlehorse_VariableAssignment_Expression_descriptor =
+      internal_static_littlehorse_VariableAssignment_descriptor.getNestedTypes().get(4);
     internal_static_littlehorse_VariableAssignment_Expression_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_littlehorse_VariableAssignment_Expression_descriptor,
