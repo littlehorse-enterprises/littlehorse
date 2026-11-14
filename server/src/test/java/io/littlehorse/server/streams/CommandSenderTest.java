@@ -45,6 +45,7 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.streams.KeyQueryMetadata;
 import org.apache.kafka.streams.state.HostInfo;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -83,22 +84,36 @@ class CommandSenderTest {
         when(recordMetadata.topic()).thenReturn(topicName);
     }
 
+    @AfterEach
+    public void tearDown() {
+        threadPool.shutdownNow();
+    }
+
     @Test
-    @Timeout(value = 1000, unit = TimeUnit.MILLISECONDS)
-    public void shouldSendTaskClaimEvent() throws Exception {
-        ScheduledTaskModel scheduledTask = mock(ScheduledTaskModel.class);
-        when(scheduledTask.getTaskRunId()).thenReturn(new TaskRunIdModel(new WfRunIdModel("test"), "test-guid"));
+    public void shouldSendTaskClaimEvent() {
+        TaskRunIdModel taskRunId = new TaskRunIdModel(new WfRunIdModel("test"), "test-guid");
         PollTaskRequestObserver client = mock(PollTaskRequestObserver.class);
         when(client.getTenantId()).thenReturn(new TenantIdModel("test-tenant"));
         when(client.getPrincipalId()).thenReturn(new PrincipalIdModel("test-principal"));
         StreamObserver<PollTaskResponse> responseObserver = mock(StreamObserver.class);
         when(client.getResponseObserver()).thenReturn(responseObserver);
-        CompletableFuture<RecordMetadata> producerResult = CompletableFuture.completedFuture(recordMetadata);
+        CompletableFuture<RecordMetadata> producerResult = new CompletableFuture<>();
         producerWithResult(taskClaimProducer, producerResult);
-        sender.tryToClaimTaskAndReturnToClient(scheduledTask.getTaskRunId(), client);
-        threadPool.shutdown();
-        threadPool.awaitTermination(10, TimeUnit.SECONDS);
-        verify(responseObserver).onNext(any());
+        CompletableFuture<Message> commandResult = new CompletableFuture<>();
+        when(asyncWaiters.getOrRegisterFuture(anyString(), any(), any())).thenReturn(commandResult);
+        PollTaskResponse response = PollTaskResponse.getDefaultInstance();
+
+        sender.tryToClaimTaskAndReturnToClient(taskRunId, client);
+        verifyNoInteractions(asyncWaiters, responseObserver);
+
+        producerResult.complete(recordMetadata);
+        verify(asyncWaiters).getOrRegisterFuture(anyString(), eq(Message.class), any());
+        verifyNoInteractions(responseObserver);
+
+        commandResult.complete(response);
+        Awaitility.await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> verify(responseObserver)
+                .onNext(same(response)));
+        verify(client, never()).onError(any());
     }
 
     @Test
