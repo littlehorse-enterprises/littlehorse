@@ -7,8 +7,13 @@ import java.util.regex.Pattern;
 public class Version {
     private static final Pattern pattern = Pattern.compile(
             "(?<major>0|[1-9]\\d*)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?(?:-(?<prerelease>[a-zA-Z0-9]+))?");
+    private static final LittleHorseVersion CURRENT_SERVER_VERSION = parseCurrentServerVersion();
 
     public static LittleHorseVersion getCurrentServerVersion() {
+        return CURRENT_SERVER_VERSION;
+    }
+
+    private static LittleHorseVersion parseCurrentServerVersion() {
         Matcher matcher = pattern.matcher(io.littlehorse.server.ServerVersion.VERSION);
         if (matcher.matches()) {
             LittleHorseVersion.Builder builder = LittleHorseVersion.newBuilder()

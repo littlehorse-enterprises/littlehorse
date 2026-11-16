@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class VersionTest {
     @Test
-    void shouldReturnConsistentVersionForConcurrentCalls() throws Exception {
+    void shouldReturnCachedVersionForConcurrentCalls() throws Exception {
         LittleHorseVersion expected = Version.getCurrentServerVersion();
         Assertions.assertThat(expected).isNotNull();
         CountDownLatch start = new CountDownLatch(1);
@@ -21,7 +21,7 @@ public class VersionTest {
                 results.add(executor.submit(() -> {
                     start.await();
                     for (int iteration = 0; iteration < 1_000; iteration++) {
-                        Assertions.assertThat(Version.getCurrentServerVersion()).isEqualTo(expected);
+                        Assertions.assertThat(Version.getCurrentServerVersion()).isSameAs(expected);
                     }
                     return null;
                 }));
