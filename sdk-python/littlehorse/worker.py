@@ -65,8 +65,6 @@ INITIAL_REGISTRATION_RETRY_SECONDS = 1
 POLL_TASK_INTERVAL_SECONDS = 5
 GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
 
-logger = logging.getLogger(__name__)
-
 
 def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
     """Return the signature of *func* with string annotations resolved.
@@ -442,7 +440,9 @@ class LHConnection:
             else task.exception()
         )
         if failure is not None:
-            logger.error("Accepted TaskRun did not finish reporting", exc_info=failure)
+            self._log.error(
+                "Accepted TaskRun did not finish reporting", exc_info=failure
+            )
             if self._failure is None:
                 self._failure = failure
 
@@ -906,7 +906,7 @@ class LHTaskWorker:
             else task.exception()
         )
         if failure is not None:
-            logger.error(
+            self._log.error(
                 "Worker connection did not drain successfully", exc_info=failure
             )
             if self._failure is None:
