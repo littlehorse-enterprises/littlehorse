@@ -49,7 +49,7 @@
 - [x] Update documentation and basic example using real APIs, cleanup ordering, explicit error outcomes, honest limits, and Kubernetes budgeting.
 - [x] Run focused tests, full `poetry run python -m unittest discover -v`, `poetry run black --check .`, `poetry run ruff check .`, and `poetry run mypy .`.
 - [x] Review all cancellation/admission/reporting/reconciliation paths; obtain fresh review, fix significant findings with regressions.
-- [ ] Commit with Conventional Commit title and `Fixes #2650`, push the feature branch, and open a draft PR.
+- [x] Commit with Conventional Commit title and `Fixes #2650`, push the feature branch, and open a draft PR.
 
 ## Progress
 
@@ -60,3 +60,4 @@
 - Verification: 306 unittest tests pass on Python 3.10 and 3.13; 61 focused worker tests pass; pytest also passes all 306 tests on 3.10. Black, Ruff, and mypy pass.
 - Independent review found no Critical/Important issues. Three extra boundary checks passed during review; persisting them as dedicated regressions is deferred (unchanged repeated-stop deadline, pre-stop reporting exhaustion followed by retirement, startup failure with accepted sibling work).
 - Limits: no live LittleHorse server or Windows execution; process-level signals use fake RPC boundaries. Cancellation requires cooperative task code.
+- Draft PR: https://github.com/littlehorse-enterprises/littlehorse/pull/2651
