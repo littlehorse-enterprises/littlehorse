@@ -95,7 +95,7 @@ var getTenantCmd = &cobra.Command{
 func init() {
 	putCmd.AddCommand(putTenantCmd)
 	putTenantCmd.Flags().String("name", "", "Human-readable tenant name; an empty string clears it.")
-	searchTenantCmd.Flags().String("name", "", "Return tenants whose name contains this string.")
+	searchTenantCmd.Flags().String("name", "", "Return tenants whose name exactly matches this string.")
 	putTenantCmd.Flags().Bool("all-entity-events", false, "Enable output for all eligible entities; false does not select this mode.")
 	putTenantCmd.Flags().Bool("no-entity-events", false, "Enable output only for explicitly-enabled entities; false does not select this mode.")
 	putTenantCmd.Flags().Bool("disable-output-topic", false, "Disable output without fetching existing settings; false does not select this mode.")
