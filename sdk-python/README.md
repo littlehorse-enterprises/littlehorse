@@ -48,13 +48,124 @@ Set python version:
 poetry env use python3.9
 ```
 
-## Worker shutdown on Windows
+## Graceful worker shutdown
 
-`littlehorse.start(...)` installs shutdown hooks for `SIGTERM` and `SIGINT`.
-On runtimes that do not support `asyncio` signal handlers (for example, Windows
-event loops), the SDK falls back to `signal.signal(...)` when available. If a
-signal cannot be registered in the current runtime/thread, startup still
-continues and workers can be stopped by calling `worker.stop()`.
+The existing integration handles `SIGTERM` and `SIGINT` automatically:
+
+```python
+worker = LHTaskWorker(greeting, "greet", config, shutdown_timeout=30.0)
+await littlehorse.start(worker)
+# Accepted executions AND their result reports have finished successfully.
+# Application resources used by tasks can now be closed.
+```
+
+`worker.stop()` is a synchronous shutdown **request**, not a completion signal.
+The running `worker.start()` or `littlehorse.start(...)` coroutine is the
+completion boundary: keep awaiting it until it returns or raises. Calling
+`stop()` repeatedly is safe, including before startup; it does not restart the
+deadline or cancel accepted work. A stopped worker cannot be restarted.
+
+On the first stop request the SDK stops heartbeat registration and polling.
+Every TaskRun already received by the polling consumer while admission was open
+is owned by the SDK, including tasks waiting for execution capacity. Shutdown
+waits for those executions and their result acknowledgements, including reporting
+retries. Reporting does not occupy execution slots. Connections removed/replaced
+during heartbeat reconciliation retain ownership of their accepted work.
+Replies not delivered to the consumer before admission closes are outside this
+boundary; tasks claimed by the server but not received may need server-side
+timeout/retry recovery.
+
+### Deadlines, failures, and cancellation
+
+`shutdown_timeout` is a positive finite number of seconds, default **30**,
+measured from the first `stop()` request, not from startup. Each worker has its
+own deadline; `littlehorse.start(*workers)` waits for all of them.
+
+- Successful return means accepted task executions finished and their results
+  were acknowledged. A task's ordinary business/technical failure is still
+  serialized and reported as usual; it does not itself make draining fail.
+- Deadline expiry cancels and joins SDK-owned polling, execution, and reporting
+  tasks, then raises built-in `TimeoutError`. This is **not** graceful success.
+- Exhausting normal result-reporting retries raises
+  `littlehorse.exceptions.TaskResultReportingException`, after draining other
+  accepted work (or reaching the deadline). A reporting failure that occurred
+  before shutdown is retained and cannot later become graceful success.
+- Cancelling `start()` aborts and joins owned work and propagates
+  `asyncio.CancelledError`. It is not equivalent to calling `stop()`.
+  Unrelated application asyncio tasks are not cancelled.
+- Cancellation cleanup is cooperative and may extend beyond the drain deadline.
+  Task code must yield to the event loop and propagate cancellation after its
+  cleanup. Blocking code or code suppressing cancellation cannot be forcibly
+  stopped by asyncio.
+
+Keep application-owned resources and the `LHConfig`/RPC channels usable until
+`start()` finishes. After an exception, owned work has been joined, so application
+cleanup can run, but the application must treat shutdown as unsuccessful.
+Shared configuration channels are not closed by worker draining.
+
+### Application-owned signals (optional)
+
+Most applications can keep the SDK's default handlers. If the application needs
+to own signals, pass `handle_signals=False`; the SDK will not install or replace
+any signal handlers. Register handlers that call the same public `worker.stop()`
+method, and still await `start()`:
+
+```python
+import asyncio
+import io
+import signal
+
+import littlehorse
+from littlehorse.config import LHConfig
+from littlehorse.worker import LHTaskWorker
+
+
+async def main() -> None:
+    config = LHConfig()
+    with io.StringIO() as application_resource:
+        async def record(message: str) -> str:
+            application_resource.write(message + "\n")
+            return message
+
+        littlehorse.create_task_def(record, "record", config)
+        worker = LHTaskWorker(record, "record", config, shutdown_timeout=20.0)
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGTERM, signal.SIGINT):
+            loop.add_signal_handler(sig, worker.stop)
+        try:
+            await littlehorse.start(worker, handle_signals=False)
+        finally:
+            for sig in (signal.SIGTERM, signal.SIGINT):
+                loop.remove_signal_handler(sig)
+    # The application resource closes only after SDK draining/cancellation cleanup.
+    # Shutdown exceptions propagate; they are not converted to success.
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+This application-owned example uses POSIX asyncio signal handlers. The default
+SDK `shutdown_hook(*workers)` also supports runtimes without asyncio signal
+handlers (for example, Windows) by falling back to `signal.signal(...)`.
+If registration is unavailable in the runtime/thread, startup continues; request
+shutdown with `worker.stop()` from the running event loop and await `start()`.
+
+See the [basic example](../examples/python/basic/README.md) for both styles.
+
+### Kubernetes and delivery limits
+
+Budget `terminationGracePeriodSeconds` for **drain deadline + application cleanup
++ margin** (use the largest concurrent worker deadline). A 30-second drain
+deadline needs more than a 30-second termination grace period. Cancellation
+cleanup also consumes the budget.
+
+Increasing termination grace alone does not fix missing reporting ownership;
+waiting only for task functions or an application execution counter does not
+cover result acknowledgement. SIGKILL, process failure, or permanent network
+failure can still prevent completion. A result acknowledgement does not promise
+exactly-once external side effects: retain appropriate task idempotency and
+workflow timeout/retry policies.
 
 ## Checkpoint callbacks
 

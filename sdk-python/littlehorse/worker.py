@@ -6,7 +6,9 @@ import functools
 from types import FrameType
 from inspect import Parameter, signature, iscoroutinefunction
 import logging
+import math
 import signal
+import time
 import traceback
 from google.protobuf.json_format import MessageToJson
 from typing import (
@@ -22,6 +24,7 @@ from typing import (
 from littlehorse.config import LHConfig
 from littlehorse.exceptions import (
     TaskSchemaMismatchException,
+    TaskResultReportingException,
     LHTaskException as LHTaskPythonException,
 )
 from littlehorse.model import (
@@ -61,6 +64,8 @@ HEARTBEAT_INTERVAL_SECONDS = 60
 INITIAL_REGISTRATION_RETRY_SECONDS = 1
 POLL_TASK_INTERVAL_SECONDS = 5
 GRPC_UNARY_CALL_TIMEOUT_SECONDS = 30
+
+logger = logging.getLogger(__name__)
 
 
 def _resolved_signature(func: Callable[..., Any]) -> inspect.Signature:
@@ -408,6 +413,10 @@ class LHConnection:
         self._config = config
         self._ask_for_work_semaphore = asyncio.Semaphore()
         self._schedule_task_semaphore = asyncio.Semaphore(config.num_worker_threads)
+        self._stopped = False
+        self._poll_task: Optional[asyncio.Task[None]] = None
+        self._tasks: set[asyncio.Task[None]] = set()
+        self._failure: Optional[BaseException] = None
         self._stub = self._config.stub(
             server=self.server, async_channel=True, name=self._task.task_name
         )
@@ -418,46 +427,66 @@ class LHConnection:
             task.task_def_id.name,
             task.task_run_id.wf_run_id.id,
         )
-        await self._schedule_task_semaphore.acquire()
-        asyncio.create_task(self._execute_task(task))
+        started = asyncio.Event()
+        execution = asyncio.create_task(self._execute_task(task, started))
+        # Own the result before the first suspension, including capacity waits.
+        self._tasks.add(execution)
+        execution.add_done_callback(self._task_done)
+        await started.wait()
 
-    async def _execute_task(self, task: ScheduledTask) -> None:
+    def _task_done(self, task: asyncio.Task[None]) -> None:
+        self._tasks.discard(task)
+        failure = (
+            asyncio.CancelledError("Accepted TaskRun was cancelled")
+            if task.cancelled()
+            else task.exception()
+        )
+        if failure is not None:
+            logger.error("Accepted TaskRun did not finish reporting", exc_info=failure)
+            if self._failure is None:
+                self._failure = failure
+
+    async def _execute_task(self, task: ScheduledTask, started: asyncio.Event) -> None:
+        async with self._schedule_task_semaphore:
+            started.set()
+            task_result = await self._run_task(task)
+        await self._report_task(task_result, REPORT_TASK_FAIL_RETRIES)
+
+    async def _run_task(self, task: ScheduledTask) -> ReportTaskRun:
         context = WorkerContext(task, self._stub)
-
-        # Deserialize task variables, handling struct types
-        from littlehorse.lh_struct import is_lh_struct, deserialize_struct
-
-        params = [
-            p
-            for p in self._task._signature.parameters.values()
-            if p.annotation is not WorkerContext
-        ]
-        args: list[Any] = []
-        for i, var in enumerate(task.variables):
-            val = var.value
-            if i < len(params):
-                anno = params[i].annotation
-                if get_origin(anno) is Annotated:
-                    anno = get_args(anno)[0]
-                # Deserialize struct into the annotated class
-                if (
-                    val.WhichOneof("value") == "struct"
-                    and isinstance(anno, type)
-                    and is_lh_struct(anno)
-                ):
-                    args.append(deserialize_struct(val.struct, anno))
-                    continue
-            args.append(extract_value(val))
-
-        if self._task.has_context():
-            args.append(context)
-
         output: Optional[VariableValue] = None
         task_error: Optional[LHTaskError] = None
         task_exception: Optional[LHTaskException] = None
         status: TaskStatus
 
         try:
+            # Input failures must also release capacity and produce a result.
+            from littlehorse.lh_struct import is_lh_struct, deserialize_struct
+
+            params = [
+                p
+                for p in self._task._signature.parameters.values()
+                if p.annotation is not WorkerContext
+            ]
+            args: list[Any] = []
+            for i, var in enumerate(task.variables):
+                val = var.value
+                if i < len(params):
+                    anno = params[i].annotation
+                    if get_origin(anno) is Annotated:
+                        anno = get_args(anno)[0]
+                    if (
+                        val.WhichOneof("value") == "struct"
+                        and isinstance(anno, type)
+                        and is_lh_struct(anno)
+                    ):
+                        args.append(deserialize_struct(val.struct, anno))
+                        continue
+                args.append(extract_value(val))
+
+            if self._task.has_context():
+                args.append(context)
+
             raw_output = await self._task._callable(*args)
             try:
                 output = to_variable_value(raw_output)
@@ -482,6 +511,8 @@ class LHConnection:
                 message=exn.message,
                 content=exn.content,
             )
+        except asyncio.CancelledError:
+            raise
         except BaseException:
             output = None
             stacktrace = traceback.format_exc()
@@ -492,12 +523,10 @@ class LHConnection:
                 message=stacktrace,
             )
 
-        self._schedule_task_semaphore.release()
-
         current_time = Timestamp()
         current_time.GetCurrentTime()
 
-        task_result = ReportTaskRun(
+        return ReportTaskRun(
             task_run_id=task.task_run_id,
             time=current_time,
             attempt_number=task.attempt_number,
@@ -510,8 +539,6 @@ class LHConnection:
             ),
         )
 
-        asyncio.create_task(self._report_task(task_result, REPORT_TASK_FAIL_RETRIES))
-
     async def _report_task(self, task_result: ReportTaskRun, retries_left: int) -> None:
         if retries_left <= 0:
             self._log.error(
@@ -519,7 +546,11 @@ class LHConnection:
                 task_result.task_run_id.task_guid,
                 task_result.task_run_id.wf_run_id.id,
             )
-            return
+            raise TaskResultReportingException(
+                f"Reporting retries exhausted for TaskRun "
+                f"{task_result.task_run_id.task_guid} in workflow "
+                f"{task_result.task_run_id.wf_run_id.id}"
+            )
 
         self._log.debug(
             "Reporting task '%s'",
@@ -561,6 +592,8 @@ class LHConnection:
 
         try:
             async for reply in self._stub.PollTask(generator()):
+                if not self.running:
+                    break
                 if reply.HasField("result"):
                     await self._schedule_task(reply.result)
                 else:
@@ -582,16 +615,39 @@ class LHConnection:
             f"Starting server connection {self.server} "
             f"for task '{self._task.task_name}'"
         )
+        if self._stopped:
+            return
         self.running = True
-        await self._ask_for_work()
+        self._poll_task = asyncio.create_task(self._ask_for_work())
+        try:
+            poll_results = await asyncio.gather(self._poll_task, return_exceptions=True)
+            if isinstance(poll_results[0], BaseException) and not self._stopped:
+                raise poll_results[0]
+            self.stop()
+            if self._tasks:
+                await asyncio.wait(self._tasks)
+            if self._failure is not None:
+                raise self._failure
+        finally:
+            self.stop()
+            pending = [self._poll_task, *self._tasks]
+            for task in pending:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*pending, return_exceptions=True)
 
     def stop(self) -> None:
+        if self._stopped:
+            return
         self._log.info(
             f"Stopping server connection {self.server} "
             f"for task '{self._task.task_name}'"
         )
         self.running = False
+        self._stopped = True
         self._ask_for_work_semaphore.release()
+        if self._poll_task is not None and not self._poll_task.done():
+            self._poll_task.cancel()
 
 
 class TaskWorkerHealthReason(Enum):
@@ -660,7 +716,12 @@ class LHTaskWorker:
     _log = logging.getLogger("LHTaskWorker")
 
     def __init__(
-        self, callable: Callable[..., Any], task_def_name: str, config: LHConfig
+        self,
+        callable: Callable[..., Any],
+        task_def_name: str,
+        config: LHConfig,
+        *,
+        shutdown_timeout: float = 30.0,
     ) -> None:
         if config is None:
             raise ValueError("LHConfig cannot be None")
@@ -671,8 +732,16 @@ class LHTaskWorker:
         if callable is None:
             raise ValueError("Callable cannot be None")
 
+        if not math.isfinite(shutdown_timeout) or shutdown_timeout <= 0:
+            raise ValueError("shutdown_timeout must be finite and greater than zero")
+
         self._config = config
         self._connections: dict[str, LHConnection] = {}
+        self._connection_tasks: dict[asyncio.Task[None], LHConnection] = {}
+        self._heartbeat_task: Optional[asyncio.Task[None]] = None
+        self._failure: Optional[BaseException] = None
+        self._shutdown_timeout = shutdown_timeout
+        self._shutdown_deadline: Optional[float] = None
         self._liveness_controller = LHLivenessController()
         self._task_def_name = task_def_name
         self._callable = callable
@@ -717,6 +786,8 @@ class LHTaskWorker:
                 continue
 
             registered = True
+            if not self.is_running:
+                break
             self._liveness_controller.notify_success_call(reply)
             hosts = [f"{host.host}:{host.port}" for host in reply.your_hosts]
 
@@ -757,7 +828,9 @@ class LHTaskWorker:
             for host in hosts_to_be_added:
                 new_connection = LHConnection(host, self._config, self._task)
                 self._connections[host] = new_connection
-                asyncio.create_task(new_connection.start())
+                connection_task = asyncio.create_task(new_connection.start())
+                self._connection_tasks[connection_task] = new_connection
+                connection_task.add_done_callback(self._connection_done)
 
             await asyncio.sleep(HEARTBEAT_INTERVAL_SECONDS)
 
@@ -769,24 +842,91 @@ class LHTaskWorker:
         return self._liveness_controller.keep_worker_running
 
     async def start(self) -> None:
-        """Starts polling for and executing tasks."""
+        """Run until stopped and all accepted executions and results are drained.
+
+        Raises TimeoutError on drain expiry, TaskResultReportingException on
+        exhausted reporting retries, and CancelledError if cancelled. Cancellation
+        aborts owned work rather than completing a graceful shutdown.
+        """
         self._log.info(f"Starting worker '{self._task_def_name}'")
 
-        # get the task definition from the server
-        stub = self._config.stub()
-        reply: TaskDef = stub.GetTaskDef(
-            TaskDefId(name=self._task_def_name), timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS
-        )
-        self._task = LHTask(self._callable, reply)
+        if not self.is_running:
+            return
+        try:
+            stub = self._config.stub()
+            reply: TaskDef = stub.GetTaskDef(
+                TaskDefId(name=self._task_def_name),
+                timeout=GRPC_UNARY_CALL_TIMEOUT_SECONDS,
+            )
+            self._task = LHTask(self._callable, reply)
+            self._heartbeat_task = asyncio.create_task(self._heartbeat())
+            heartbeat_results = await asyncio.gather(
+                self._heartbeat_task, return_exceptions=True
+            )
+            heartbeat_failure = heartbeat_results[0]
+            if isinstance(heartbeat_failure, BaseException) and (
+                self.is_running
+                or not isinstance(heartbeat_failure, asyncio.CancelledError)
+            ):
+                self._failure = heartbeat_failure
+            self.stop()
+            assert self._shutdown_deadline is not None
+            try:
+                await asyncio.wait_for(
+                    self._drain_connections(),
+                    max(0.0, self._shutdown_deadline - time.monotonic()),
+                )
+            except asyncio.TimeoutError as error:
+                raise TimeoutError("Worker shutdown deadline expired") from error
+            if time.monotonic() >= self._shutdown_deadline:
+                raise TimeoutError("Worker shutdown deadline expired")
+            if self._failure is not None:
+                raise self._failure
+        finally:
+            self.stop()
+            pending = list(self._connection_tasks)
+            if self._heartbeat_task is not None:
+                pending.append(self._heartbeat_task)
+            for task in pending:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*pending, return_exceptions=True)
 
-        await self._heartbeat()
+    async def _drain_connections(self) -> None:
+        if self._connection_tasks:
+            await asyncio.wait(self._connection_tasks)
+
+    def _connection_done(self, task: asyncio.Task[None]) -> None:
+        connection = self._connection_tasks.pop(task)
+        if self._connections.get(connection.server) is connection:
+            self._connections.pop(connection.server)
+        failure = (
+            asyncio.CancelledError("Worker connection was cancelled")
+            if task.cancelled()
+            else task.exception()
+        )
+        if failure is not None:
+            logger.error(
+                "Worker connection did not drain successfully", exc_info=failure
+            )
+            if self._failure is None:
+                self._failure = failure
 
     def stop(self) -> None:
-        """Cleanly shuts down the Task Worker."""
-        self._log.info(f"Stopping worker '{self._task.task_name}'")
+        """Request shutdown synchronously; await start() for completion.
+
+        The first request starts the shutdown_timeout deadline (default 30 seconds).
+        Repeated requests do not restart the deadline or cancel accepted work.
+        """
+        if self._shutdown_deadline is not None:
+            return
+        self._log.info(f"Stopping worker '{self._task_def_name}'")
+        self._shutdown_deadline = time.monotonic() + self._shutdown_timeout
         self._liveness_controller.stop()
 
-        for connection in self._connections.values():
+        if self._heartbeat_task is not None and not self._heartbeat_task.done():
+            self._heartbeat_task.cancel()
+        for connection in self._connection_tasks.values():
             connection.stop()
 
     def register_task_def(self) -> None:
@@ -925,8 +1065,18 @@ def shutdown_hook(*workers: LHTaskWorker) -> None:
                 pass
 
 
-async def start(*workers: LHTaskWorker) -> None:
-    """Starts a list of workers"""
-    shutdown_hook(*workers)
+async def start(*workers: LHTaskWorker, handle_signals: bool = True) -> None:
+    """Run workers through shutdown, including acknowledged task results.
+
+    By default SIGTERM/SIGINT request graceful shutdown. Set handle_signals=False
+    to leave application handlers untouched and call worker.stop() yourself.
+    """
+    if handle_signals:
+        shutdown_hook(*workers)
     tasks = [asyncio.create_task(worker.start()) for worker in workers]
-    await asyncio.gather(*tasks)
+    try:
+        await asyncio.gather(*tasks)
+    finally:
+        for worker in workers:
+            worker.stop()
+        await asyncio.gather(*tasks, return_exceptions=True)

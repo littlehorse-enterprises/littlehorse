@@ -9,6 +9,10 @@ class TaskSchemaMismatchException(Exception):
         super().__init__(self.message)
 
 
+class TaskResultReportingException(Exception):
+    """An accepted TaskRun's result could not be acknowledged after retries."""
+
+
 class OAuthException(Exception):
     def __init__(self, message: str):
         self.message = message
