@@ -266,6 +266,8 @@ JSON Schema can express this constraint with [`dependentSchemas`](https://json-s
   - Adding a new group, or adding a new field to an existing group, is compatible, since alternatives are never required.
   - Moving any existing field into a group, removing a field from a group, moving an alternative to another group, removing an alternative, or changing an alternative's type is incompatible and requires a new StructDef name. Older versions of a StructDef may still be pinned by `WfSpec`s and fill in defaults for fields they consider missing, so a value that selected a new alternative could gain a second selection when it passes through an older version.
 
+  These rules also apply to Structs embedded in fields, arrays, and maps, including optional and nullable containers.
+
   Under `NO_SCHEMA_UPDATES`, any added, changed, or removed field is incompatible, including alternatives.
 - **Future evolution:** Moving existing fields into a group under the same StructDef name will be addressed in a separate proposal, including any data checks or new compatibility modes.
 - **Switching SDK APIs:** Moving between declaration styles preserves values and paths when the generated schemas and field names are identical.

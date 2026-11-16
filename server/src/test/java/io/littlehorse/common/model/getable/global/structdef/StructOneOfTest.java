@@ -100,6 +100,52 @@ class StructOneOfTest {
     }
 
     @Test
+    void enforcesEvolutionRulesInsideEmbeddedStructs() {
+        var separate = InlineStructDef.newBuilder()
+                .putFields("card", field().setOneofGroup("cardMethod").build())
+                .putFields("bank", field().setOneofGroup("bankMethod").build())
+                .build();
+        var merged = InlineStructDef.newBuilder()
+                .putFields("card", field().setOneofGroup("method").build())
+                .putFields("bank", field().setOneofGroup("method").build())
+                .build();
+        var added = merged.toBuilder()
+                .putFields("wallet", field().setOneofGroup("method").build())
+                .build();
+
+        assertThat(breaking(embedded(merged), embedded(separate))).contains("payment.card", "payment.bank");
+        assertThat(breaking(arrayOf(merged), arrayOf(separate))).contains("payment[].card", "payment[].bank");
+        assertThat(breaking(mapOf(merged), mapOf(separate))).contains("payment{}.card", "payment{}.bank");
+        assertThat(breaking(embedded(added), embedded(merged))).isEmpty();
+    }
+
+    private InlineStructDefModel embedded(InlineStructDef inner) {
+        return withPayment(TypeDefinition.newBuilder().setInlineStructDef(inner));
+    }
+
+    private InlineStructDefModel arrayOf(InlineStructDef inner) {
+        return withPayment(TypeDefinition.newBuilder()
+                .setInlineArrayDef(InlineArrayDef.newBuilder()
+                        .setArrayType(TypeDefinition.newBuilder().setInlineStructDef(inner))));
+    }
+
+    private InlineStructDefModel mapOf(InlineStructDef inner) {
+        return withPayment(TypeDefinition.newBuilder()
+                .setInlineMapDef(InlineMapDef.newBuilder()
+                        .setKeyType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                        .setValueType(TypeDefinition.newBuilder().setInlineStructDef(inner))));
+    }
+
+    private InlineStructDefModel withPayment(TypeDefinition.Builder type) {
+        return definition(Map.of(
+                "payment",
+                StructFieldDef.newBuilder()
+                        .setFieldType(type)
+                        .setIsNullable(true)
+                        .build()));
+    }
+
+    @Test
     void noSchemaUpdatesRejectsRemovedFields() {
         var old = definition(Map.of(
                 "card",
