@@ -44,6 +44,18 @@ describe('expanded task results', () => {
       expanded: '[\n    {\n        "ok": true\n    }\n]',
     },
     {
+      name: 'JSON object with a large ID',
+      value: { oneofKind: 'jsonObj', jsonObj: '{"ledgerEntryId":1859273648201937921}' },
+      preview: '{"ledgerEntryId":1859273648201937921}',
+      expanded: '{\n    "ledgerEntryId": 1859273648201937921\n}',
+    },
+    {
+      name: 'JSON array with a large ID',
+      value: { oneofKind: 'jsonArr', jsonArr: '[1859273648201937921]' },
+      preview: '[1859273648201937921]',
+      expanded: '[\n    1859273648201937921\n]',
+    },
+    {
       name: 'JSON-looking string',
       value: { oneofKind: 'str', str: '{"ok":true}' },
       preview: '{"ok":true}',
