@@ -76,34 +76,34 @@ func TestPutTenantCommand(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
 		flags []string
+		fetch bool
 		want  *lhproto.PutTenantRequest
 	}{
-		{"omitted", nil, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"rename", []string{"--name=Acme"}, &lhproto.PutTenantRequest{Id: "acme", Name: &name}},
-		{"clear name", []string{"--name="}, &lhproto.PutTenantRequest{Id: "acme", Name: &emptyName}},
-		{"all events", []string{"--all-entity-events"}, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: all}},
-		{"explicit entities", []string{"--no-entity-events"}, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: none}},
-		{"replace and rename", []string{"--all-entity-events", "--name=Acme"}, &lhproto.PutTenantRequest{Id: "acme", Name: &name, OutputTopicConfig: all}},
-		{"false all", []string{"--all-entity-events=false"}, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"false none", []string{"--no-entity-events=false"}, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"all false", []string{"--all-entity-events=false", "--no-entity-events=false"}, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"false all with none", []string{"--all-entity-events=false", "--no-entity-events"}, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: none}},
-		{"disable", []string{"--disable-output-topic"}, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"disable and rename", []string{"--disable-output-topic", "--name=Acme"}, &lhproto.PutTenantRequest{Id: "acme", Name: &name}},
-		{"false disable with all", []string{"--disable-output-topic=false", "--all-entity-events"}, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: all}},
-		{"false mode with disable", []string{"--all-entity-events=false", "--disable-output-topic"}, &lhproto.PutTenantRequest{Id: "acme"}},
-		{"disable conflicts with all", []string{"--disable-output-topic", "--all-entity-events"}, nil},
-		{"disable conflicts with none", []string{"--disable-output-topic", "--no-entity-events"}, nil},
-		{"conflicting modes", []string{"--all-entity-events", "--no-entity-events"}, nil},
+		{"omitted", nil, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"rename", []string{"--name=Acme"}, true, &lhproto.PutTenantRequest{Id: "acme", Name: &name}},
+		{"clear name", []string{"--name="}, true, &lhproto.PutTenantRequest{Id: "acme", Name: &emptyName}},
+		{"all events", []string{"--all-entity-events"}, false, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: all}},
+		{"explicit entities", []string{"--no-entity-events"}, false, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: none}},
+		{"replace and rename", []string{"--all-entity-events", "--name=Acme"}, false, &lhproto.PutTenantRequest{Id: "acme", Name: &name, OutputTopicConfig: all}},
+		{"false all", []string{"--all-entity-events=false"}, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"false none", []string{"--no-entity-events=false"}, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"all false", []string{"--all-entity-events=false", "--no-entity-events=false"}, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"false all with none", []string{"--all-entity-events=false", "--no-entity-events"}, false, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: none}},
+		{"disable", []string{"--disable-output-topic"}, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"disable and rename", []string{"--disable-output-topic", "--name=Acme"}, false, &lhproto.PutTenantRequest{Id: "acme", Name: &name}},
+		{"false disable with all", []string{"--disable-output-topic=false", "--all-entity-events"}, false, &lhproto.PutTenantRequest{Id: "acme", OutputTopicConfig: all}},
+		{"false mode with disable", []string{"--all-entity-events=false", "--disable-output-topic"}, false, &lhproto.PutTenantRequest{Id: "acme"}},
+		{"disable conflicts with all", []string{"--disable-output-topic", "--all-entity-events"}, false, nil},
+		{"disable conflicts with none", []string{"--disable-output-topic", "--no-entity-events"}, false, nil},
+		{"conflicting modes", []string{"--all-entity-events", "--no-entity-events"}, false, nil},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fake := &putTenantClient{getErr: status.Error(codes.PermissionDenied, "must not fetch")}
-			var client lhproto.LittleHorseClient = fake
-			globalClient = &client
-			globalConfig = &littlehorse.LHConfig{}
-			if tc.name == "rename" || tc.name == "clear name" {
-				fake.getErr = nil
+			fake := &putTenantClient{}
+			if !tc.fetch {
+				fake.getErr = status.Error(codes.PermissionDenied, "must not fetch")
 			}
+			var client lhproto.LittleHorseClient = fake
+			globalClient, globalConfig = &client, &littlehorse.LHConfig{}
 			err := runPutTenant(t, append([]string{"acme"}, tc.flags...)...)
 			if tc.want == nil {
 				if err == nil || fake.request != nil || fake.gets != 0 {
@@ -202,7 +202,7 @@ func TestPutTenantPreservesFetchedConfig(t *testing.T) {
 func TestPutTenantFetchFailurePreventsWrite(t *testing.T) {
 	previousClient, previousConfig := globalClient, globalConfig
 	t.Cleanup(func() { globalClient, globalConfig = previousClient, previousConfig })
-	for _, code := range []codes.Code{codes.NotFound, codes.PermissionDenied, codes.Unavailable, codes.DeadlineExceeded} {
+	for _, code := range []codes.Code{codes.PermissionDenied, codes.Unavailable, codes.DeadlineExceeded} {
 		t.Run(code.String(), func(t *testing.T) {
 			fake := &putTenantClient{getErr: status.Error(code, "read failed")}
 			var client lhproto.LittleHorseClient = fake
@@ -226,5 +226,20 @@ func TestPutTenantDoesNotRetryFailedWrite(t *testing.T) {
 	}
 	if len(fake.calls) != 2 {
 		t.Fatalf("unexpected retries: %v", fake.calls)
+	}
+}
+
+func TestPutTenantCreatesMissingTenantWithName(t *testing.T) {
+	previousClient, previousConfig := globalClient, globalConfig
+	t.Cleanup(func() { globalClient, globalConfig = previousClient, previousConfig })
+	fake := &putTenantClient{getErr: status.Error(codes.NotFound, "no tenant")}
+	var client lhproto.LittleHorseClient = fake
+	globalClient, globalConfig = &client, &littlehorse.LHConfig{}
+	if err := runPutTenant(t, "acme", "--name=Acme"); err != nil {
+		t.Fatal(err)
+	}
+	name := "Acme"
+	if want := (&lhproto.PutTenantRequest{Id: "acme", Name: &name}); !proto.Equal(fake.request, want) {
+		t.Fatalf("got %v, want %v", fake.request, want)
 	}
 }

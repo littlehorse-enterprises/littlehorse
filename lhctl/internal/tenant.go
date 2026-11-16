@@ -7,14 +7,16 @@ import (
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/spf13/cobra"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var putTenantCmd = &cobra.Command{
 	Use:   "tenant <id>",
 	Short: "Create or update a Tenant.",
-	Long: `Create or update a Tenant. A name-only update fetches and resends the current output configuration.
-This is not atomic: concurrent changes or stale reads can overwrite output settings.
-With no name or output mode, output is disabled. Use an explicit output flag when creating a named tenant.`,
+	Long: `Create or update a Tenant. A name-only update fetches and resends the current output configuration;
+if the Tenant does not exist, it is created with output disabled. This is not atomic: concurrent changes
+can be overwritten. With no name or output flag, output is disabled.`,
 	Args: cobra.ExactArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		allEvents, _ := cmd.Flags().GetBool("all-entity-events")
@@ -44,11 +46,12 @@ With no name or output mode, output is disabled. Use an explicit output flag whe
 		ctx := requestContext(cmd)
 		if putTenantReq.Name != nil && !allEvents && !noEvents && !disable {
 			tenant, err := client.GetTenant(ctx, &lhproto.TenantId{Id: args[0]})
-			if err != nil {
-				return fmt.Errorf("cannot preserve output settings for tenant %q: %w; use an explicit output flag to create or replace settings", args[0], err)
+			if err == nil {
+				// Copy the complete config, including absence. This read/modify/write is not atomic.
+				putTenantReq.OutputTopicConfig = tenant.OutputTopicConfig
+			} else if status.Code(err) != codes.NotFound {
+				return fmt.Errorf("cannot preserve output settings for tenant %q: %w; use an explicit output flag to replace settings", args[0], err)
 			}
-			// Copy the complete config, including absence. This read/modify/write is not atomic.
-			putTenantReq.OutputTopicConfig = tenant.OutputTopicConfig
 		}
 		response, err := client.PutTenant(ctx, putTenantReq)
 		if err != nil {
