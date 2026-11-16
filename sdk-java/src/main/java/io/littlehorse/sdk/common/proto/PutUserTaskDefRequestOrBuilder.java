@@ -35,53 +35,58 @@ public interface PutUserTaskDefRequestOrBuilder extends
    * The fields that should be presented to the user on the screen in order to fill
    * out the User Task. Note that these fields also define a data contract for the
    * result of the UserTaskDef.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2 [deprecated = true];</code>
    */
-  java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
+  @java.lang.Deprecated java.util.List<io.littlehorse.sdk.common.proto.UserTaskField> 
       getFieldsList();
   /**
    * <pre>
    * The fields that should be presented to the user on the screen in order to fill
    * out the User Task. Note that these fields also define a data contract for the
    * result of the UserTaskDef.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.UserTaskField getFields(int index);
   /**
    * <pre>
    * The fields that should be presented to the user on the screen in order to fill
    * out the User Task. Note that these fields also define a data contract for the
    * result of the UserTaskDef.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2 [deprecated = true];</code>
    */
-  int getFieldsCount();
+  @java.lang.Deprecated int getFieldsCount();
   /**
    * <pre>
    * The fields that should be presented to the user on the screen in order to fill
    * out the User Task. Note that these fields also define a data contract for the
    * result of the UserTaskDef.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2 [deprecated = true];</code>
    */
-  java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
+  @java.lang.Deprecated java.util.List<? extends io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder> 
       getFieldsOrBuilderList();
   /**
    * <pre>
    * The fields that should be presented to the user on the screen in order to fill
    * out the User Task. Note that these fields also define a data contract for the
    * result of the UserTaskDef.
+   * Deprecated: use result_struct_def_id.
    * </pre>
    *
-   * <code>repeated .littlehorse.UserTaskField fields = 2;</code>
+   * <code>repeated .littlehorse.UserTaskField fields = 2 [deprecated = true];</code>
    */
-  io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
+  @java.lang.Deprecated io.littlehorse.sdk.common.proto.UserTaskFieldOrBuilder getFieldsOrBuilder(
       int index);
 
   /**
@@ -115,4 +120,31 @@ public interface PutUserTaskDefRequestOrBuilder extends
    */
   com.google.protobuf.ByteString
       getDescriptionBytes();
+
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of this UserTaskDef.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 4;</code>
+   * @return Whether the resultStructDefId field is set.
+   */
+  boolean hasResultStructDefId();
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of this UserTaskDef.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 4;</code>
+   * @return The resultStructDefId.
+   */
+  io.littlehorse.sdk.common.proto.StructDefId getResultStructDefId();
+  /**
+   * <pre>
+   * The exact StructDef that defines the result of this UserTaskDef.
+   * </pre>
+   *
+   * <code>.littlehorse.StructDefId result_struct_def_id = 4;</code>
+   */
+  io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder();
 }

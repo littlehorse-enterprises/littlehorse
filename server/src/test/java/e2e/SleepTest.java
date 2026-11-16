@@ -2,6 +2,7 @@ package e2e;
 
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.SleepNodeRun;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -126,23 +127,29 @@ public class SleepTest {
 
     @LHWorkflow("sleep-test")
     public Workflow getWorkflow() {
-        return Workflow.newWorkflow("sleep-test", wf -> {
-            WfRunVariable myVar = wf.addVariable("timestamp-to-wait-for", VariableType.INT);
-            wf.registerInterruptHandler(INTERRUPT_EVENT, handler -> {
-                WfRunVariable updatedTimestamp = handler.declareInt(WorkflowThread.HANDLER_INPUT_VAR);
-                handler.mutate(myVar, VariableMutationType.ASSIGN, updatedTimestamp);
-            });
-            wf.sleepUntil(myVar);
-        });
+        return Workflow.newWorkflow(
+                "sleep-test",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("timestamp-to-wait-for", VariableType.INT);
+                    wf.registerInterruptHandler(INTERRUPT_EVENT, handler -> {
+                        WfRunVariable updatedTimestamp = handler.declareInt(WorkflowThread.HANDLER_INPUT_VAR);
+                        handler.mutate(myVar, VariableMutationType.ASSIGN, updatedTimestamp);
+                    });
+                    wf.sleepUntil(myVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("sleep-test-w-archived-threads")
     public Workflow getSleepWithArchivedThreads() {
-        return Workflow.newWorkflow("sleep-test-w-archived-threads", wf -> {
-            WfRunVariable jsonArr = wf.declareJsonArr("arr").required();
-            wf.spawnThreadForEach(jsonArr, "child-thread", child -> {
-                child.sleepSeconds(1);
-            });
-        });
+        return Workflow.newWorkflow(
+                "sleep-test-w-archived-threads",
+                wf -> {
+                    WfRunVariable jsonArr = wf.declareJsonArr("arr").required();
+                    wf.spawnThreadForEach(jsonArr, "child-thread", child -> {
+                        child.sleepSeconds(1);
+                    });
+                },
+                new LHConfig());
     }
 }

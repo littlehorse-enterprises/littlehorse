@@ -6,7 +6,6 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,26 +25,32 @@ public class VariablesExample {
 
     private static final Logger log = LoggerFactory.getLogger(VariablesExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-variables", wf -> {
-            WfRunVariable inputText = wf.declareStr("input-text").searchable().masked();
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-variables",
+                wf -> {
+                    WfRunVariable inputText =
+                            wf.declareStr("input-text").searchable().masked();
 
-            WfRunVariable addLength = wf.declareBool("add-length").searchable();
+                    WfRunVariable addLength = wf.declareBool("add-length").searchable();
 
-            WfRunVariable userId = wf.declareInt("user-id").searchable();
+                    WfRunVariable userId = wf.declareInt("user-id").searchable();
 
-            WfRunVariable sentimentScore = wf.declareDouble("sentiment-score").searchable();
+                    WfRunVariable sentimentScore =
+                            wf.declareDouble("sentiment-score").searchable();
 
-            WfRunVariable processedResult = wf.declareJsonObj("processed-result")
-                    .searchableOn("$.sentimentScore", VariableType.DOUBLE)
-                    .masked();
+                    WfRunVariable processedResult = wf.declareJsonObj("processed-result")
+                            .searchableOn("$.sentimentScore", VariableType.DOUBLE)
+                            .masked();
 
-            NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
-            sentimentScore.assign(sentimentAnalysisOutput);
-            NodeOutput processedTextOutput = wf.execute("process-text", inputText, sentimentScore, addLength, userId);
-            processedResult.assign(processedTextOutput);
-            wf.execute("send", processedResult);
-        });
+                    NodeOutput sentimentAnalysisOutput = wf.execute("sentiment-analysis", inputText);
+                    sentimentScore.assign(sentimentAnalysisOutput);
+                    NodeOutput processedTextOutput =
+                            wf.execute("process-text", inputText, sentimentScore, addLength, userId);
+                    processedResult.assign(processedTextOutput);
+                    wf.execute("send", processedResult);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -80,7 +85,7 @@ public class VariablesExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         List<LHTaskWorker> workers = getTaskWorker(config);

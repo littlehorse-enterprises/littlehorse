@@ -33,7 +33,7 @@ public class QuickstartExample {
 
     public static void main(String[] args) throws IOException {
         LHConfig config = new LHConfig(getConfigProps());
-        Workflow workflow = new QuickstartWorkflow().getWorkflow();
+        Workflow workflow = new QuickstartWorkflow().getWorkflow(config);
         List<LHTaskWorker> workers = getTaskWorkers(config);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> workers.forEach(LHTaskWorker::close)));

@@ -39,3 +39,24 @@ func TestNewConfigFromPropsCanDisableResourceExhaustedRetry(t *testing.T) {
 	assert.False(t, config.GrpcResourceExhaustedRetry)
 	assert.Nil(t, config.UnaryInterceptors)
 }
+
+func TestNewConfigFromPropsReadsOauthCallbackPort(t *testing.T) {
+	propsPath := filepath.Join(t.TempDir(), "littlehorse.config")
+	props := "LHC_OAUTH_CALLBACK_PORT=30000\nLHW_NUM_WORKER_THREADS=8\n"
+	require.NoError(t, os.WriteFile(propsPath, []byte(props), 0o600))
+
+	config, err := littlehorse.NewConfigFromProps(propsPath)
+
+	require.NoError(t, err)
+	assert.Equal(t, int32(30000), config.OauthConfig.CallbackPort)
+}
+
+func TestNewConfigFromPropsUsesDefaultOauthCallbackPort(t *testing.T) {
+	propsPath := filepath.Join(t.TempDir(), "littlehorse.config")
+	require.NoError(t, os.WriteFile(propsPath, []byte("LHW_NUM_WORKER_THREADS=8\n"), 0o600))
+
+	config, err := littlehorse.NewConfigFromProps(propsPath)
+
+	require.NoError(t, err)
+	assert.Equal(t, int32(littlehorse.DEFAULT_OAUTH_CALLBACK_PORT), config.OauthConfig.CallbackPort)
+}

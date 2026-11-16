@@ -1,8 +1,9 @@
 package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructField;
+import java.io.Serializable;
 
-public class DeliveryAddress {
+public class DeliveryAddress implements Serializable {
     @LHStructField(description = "The street address for the delivery destination.")
     private String street;
 

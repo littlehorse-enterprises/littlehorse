@@ -15,7 +15,6 @@ import io.littlehorse.sdk.common.proto.ThrowEventNode;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.MetadataProcessorContext;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
@@ -67,7 +66,7 @@ public class ThrowEventNodeModel extends SubNode<ThrowEventNode> {
     }
 
     @Override
-    public void validate(MetadataProcessorContext ctx) throws InvalidNodeException {
+    public void validate(ExecutionContext ctx) throws InvalidNodeException {
         WorkflowEventDefModel eventDef = context.service().getWorkflowEventDef(workflowEventDefId);
         if (eventDef == null) {
             throw new InvalidNodeException("Refers to missing workflowEventDef %s".formatted(workflowEventDefId), node);

@@ -6,6 +6,7 @@ import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.InvalidEdgeException;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
 import io.littlehorse.common.exceptions.validation.InvalidMutationException;
+import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
@@ -14,7 +15,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableMutati
 import io.littlehorse.sdk.common.proto.Edge;
 import io.littlehorse.sdk.common.proto.Node.NodeCase;
 import io.littlehorse.sdk.common.proto.VariableMutation;
-import io.littlehorse.server.streams.storeinternals.MetadataManager;
+import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,6 +177,23 @@ public class EdgeModel extends LHSerializable<Edge> {
             }
         }
 
+        // Validate all buffered values before committing any changes.
+        for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
+            try {
+                threadRun
+                        .getThreadSpec()
+                        .getVarDef(entry.getKey())
+                        .getVarDef()
+                        .getTypeDef()
+                        .validateCompatibility(
+                                entry.getValue(),
+                                threadRun.getExecutionContext().metadataManager());
+            } catch (TypeValidationException exn) {
+                throw new LHVarSubError(
+                        exn, "Mutated variable %s is invalid: %s".formatted(entry.getKey(), exn.getMessage()));
+            }
+        }
+
         // If we got here so far, that means that all of the mutations are valid. We need to flush them
         // to the data store by actually telling the ThreadRun to mutate the variables.
         for (Map.Entry<String, VariableValueModel> entry : writeAheadBuffer.entrySet()) {
@@ -183,7 +201,7 @@ public class EdgeModel extends LHSerializable<Edge> {
         }
     }
 
-    public void validate(NodeModel source, MetadataManager manager, ThreadSpecModel threadSpec)
+    public void validate(NodeModel source, ReadOnlyMetadataManager manager, ThreadSpecModel threadSpec)
             throws InvalidEdgeException, InvalidExpressionException {
         if (this.getSinkNodeName().equals(source.getName())) {
             throw new InvalidEdgeException("Self loop not allowed!", this.getSinkNodeName());

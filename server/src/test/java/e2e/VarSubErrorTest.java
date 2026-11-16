@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -171,15 +172,18 @@ public class VarSubErrorTest {
      */
     @LHWorkflow("var-type-validations")
     public Workflow getVarTypeValidationsWf() {
-        return Workflow.newWorkflow("var-type-validations", wf -> {
-            WfRunVariable inputInt =
-                    wf.addVariable("input-int", VariableType.INT).required();
-            WfRunVariable inputJson = wf.addVariable("input-json", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "var-type-validations",
+                wf -> {
+                    WfRunVariable inputInt =
+                            wf.addVariable("input-int", VariableType.INT).required();
+                    WfRunVariable inputJson = wf.addVariable("input-json", VariableType.JSON_OBJ);
 
-            wf.execute("takes-in-int", inputJson.jsonPath("$.int"));
-            wf.execute("takes-in-int", inputInt);
-            wf.execute("takes-in-string", inputJson.jsonPath("$.string"));
-        });
+                    wf.execute("takes-in-int", inputJson.jsonPath("$.int"));
+                    wf.execute("takes-in-int", inputInt);
+                    wf.execute("takes-in-string", inputJson.jsonPath("$.string"));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("takes-in-int")

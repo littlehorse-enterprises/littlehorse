@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.*;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Count;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest;
 import io.littlehorse.sdk.common.proto.CountNodeRunRequest.WfSpecFilter;
@@ -38,27 +39,36 @@ public class CountNodeRunTest {
     @BeforeEach
     void setup() {
 
-        Workflow revision0 = Workflow.newWorkflow(WF_SPEC_NAME, wf -> {
-            wf.execute("count-node-run-task");
-        });
+        Workflow revision0 = Workflow.newWorkflow(
+                WF_SPEC_NAME,
+                wf -> {
+                    wf.execute("count-node-run-task");
+                },
+                new LHConfig());
         WfSpec rev0Spec = client.putWfSpec(revision0.compileWorkflow());
         assertThat(rev0Spec.getId().getMajorVersion()).isEqualTo(0);
         assertThat(rev0Spec.getId().getRevision()).isEqualTo(0);
 
         // Register a minor revision (0/1) by adding an optional variable.
-        Workflow revision1 = Workflow.newWorkflow(WF_SPEC_NAME, wf -> {
-            wf.execute("count-node-run-task");
-            wf.addVariable("optional-var", VariableType.STR);
-        });
+        Workflow revision1 = Workflow.newWorkflow(
+                WF_SPEC_NAME,
+                wf -> {
+                    wf.execute("count-node-run-task");
+                    wf.addVariable("optional-var", VariableType.STR);
+                },
+                new LHConfig());
         WfSpec rev1Spec = client.putWfSpec(revision1.compileWorkflow());
         assertThat(rev1Spec.getId().getMajorVersion()).isEqualTo(0);
         assertThat(rev1Spec.getId().getRevision()).isEqualTo(1);
 
         // Register a major version (1/0) by adding a required variable.
-        Workflow majorVersion1 = Workflow.newWorkflow(WF_SPEC_NAME, wf -> {
-            wf.execute("count-node-run-task");
-            wf.addVariable("required-var", VariableType.BOOL).required();
-        });
+        Workflow majorVersion1 = Workflow.newWorkflow(
+                WF_SPEC_NAME,
+                wf -> {
+                    wf.execute("count-node-run-task");
+                    wf.addVariable("required-var", VariableType.BOOL).required();
+                },
+                new LHConfig());
         WfSpec major1Spec = client.putWfSpec(majorVersion1.compileWorkflow());
         assertThat(major1Spec.getId().getMajorVersion()).isEqualTo(1);
         assertThat(major1Spec.getId().getRevision()).isEqualTo(0);

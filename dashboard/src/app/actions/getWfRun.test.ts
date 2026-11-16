@@ -1,6 +1,15 @@
 /** @jest-environment node */
 import { lhClient } from '@/app/lhClient'
-import { NodeRun, TaskRun, TaskRunId, ThreadRun, VariableAssignment, WfRun, WfSpec } from 'littlehorse-client/proto'
+import {
+  InlineWfSpec,
+  NodeRun,
+  TaskRun,
+  TaskRunId,
+  ThreadRun,
+  VariableAssignment,
+  WfRun,
+  WfSpec,
+} from 'littlehorse-client/proto'
 import { ClientError, Status } from 'nice-grpc-common'
 import { getWfRun } from './getWfRun'
 import { searchWfRun } from '../(authenticated)/[tenantId]/(diagram)/wfSpec/[...props]/actions/searchWfRun'
@@ -15,6 +24,7 @@ const props = { wfRunId, tenantId: 'tenant' }
 const client = {
   getWfRun: jest.fn(),
   getWfSpec: jest.fn(),
+  getInlineWfSpec: jest.fn(),
   listNodeRuns: jest.fn(),
   listVariables: jest.fn(),
   getTaskRun: jest.fn<Promise<TaskRun>, [TaskRunId]>(),
@@ -31,7 +41,7 @@ const configureWorkflow = (referencedNames: string[], allNames = referencedNames
   client.getWfRun.mockResolvedValue(
     WfRun.create({
       id: wfRunId,
-      wfSpecId: { name: 'spec' },
+      wfSpecSource: { oneofKind: 'wfSpecId', wfSpecId: { name: 'spec', majorVersion: 0, revision: 0 } },
       threadRuns: [ThreadRun.create({ number: 0, threadSpecName: 'main' })],
     })
   )
@@ -78,6 +88,37 @@ beforeEach(() => {
 })
 
 afterEach(() => jest.restoreAllMocks())
+
+it('loads inline workflows with paginated node runs and condition outputs', async () => {
+  const nodeRuns = configureWorkflow(['first', 'second'])
+  const wfSpec = await client.getWfSpec()
+  client.getWfSpec.mockClear()
+  client.getWfRun.mockResolvedValue(
+    WfRun.create({
+      id: wfRunId,
+      wfSpecSource: { oneofKind: 'isInline', isInline: true },
+      threadRuns: [ThreadRun.create({ number: 0, threadSpecName: 'main' })],
+    })
+  )
+  client.getInlineWfSpec.mockResolvedValue(
+    InlineWfSpec.create({
+      entrypointThreadName: wfSpec.entrypointThreadName,
+      threadSpecs: wfSpec.threadSpecs,
+    })
+  )
+  const bookmark = new Uint8Array([1])
+  client.listNodeRuns
+    .mockResolvedValueOnce({ results: [nodeRuns[0]], bookmark })
+    .mockResolvedValueOnce({ results: [nodeRuns[1]] })
+
+  const result = await getWfRun(props)
+
+  expect(client.getInlineWfSpec).toHaveBeenCalledWith(wfRunId)
+  expect(client.getWfSpec).not.toHaveBeenCalled()
+  expect(client.listNodeRuns).toHaveBeenLastCalledWith({ wfRunId, bookmark })
+  expect(result.wfRun.threadRuns[0].nodeRuns).toEqual(nodeRuns)
+  expect(Object.keys(result.wfRun.threadRuns[0].nodeOutputValues!)).toEqual(['first', 'second'])
+})
 
 it.each([Status.NOT_FOUND, Status.UNAVAILABLE, Status.RESOURCE_EXHAUSTED])(
   'preserves the workflow and other outputs when a task fetch fails with status %s',

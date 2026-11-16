@@ -5,8 +5,8 @@ import {
   TaskRunId,
   VariableAssignment,
   VariableValue,
-  WfSpec,
 } from 'littlehorse-client/proto'
+import { WorkflowDefinition } from '@/types'
 
 const collectNodeOutputNames = (assignment: VariableAssignment | undefined, names: Set<string>): void => {
   if (!assignment) return
@@ -53,7 +53,7 @@ const collectStructNodeOutputNames = (builder: InlineStructBuilder | undefined, 
 }
 
 /** Only condition operands need runtime outputs. Node-output references use the latest execution in their thread. */
-export const getConditionTaskRunIds = (wfSpec: WfSpec, nodeRuns: NodeRun[]): TaskRunId[] => {
+export const getConditionTaskRunIds = (wfSpec: WorkflowDefinition, nodeRuns: NodeRun[]): TaskRunId[] => {
   const referencedNodes = new Map<string, Set<string>>()
   for (const [threadName, thread] of Object.entries(wfSpec.threadSpecs)) {
     const names = new Set<string>()

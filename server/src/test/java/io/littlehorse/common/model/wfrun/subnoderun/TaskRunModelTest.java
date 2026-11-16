@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import io.littlehorse.TestUtil;
 import io.littlehorse.common.AuthorizationContext;
+import io.littlehorse.common.model.LHTimer;
 import io.littlehorse.common.model.corecommand.subcommand.ReportTaskRunModel;
 import io.littlehorse.common.model.corecommand.subcommand.TaskClaimEventModel;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -39,6 +40,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
+import org.mockito.ArgumentCaptor;
 
 public class TaskRunModelTest {
 
@@ -131,5 +133,19 @@ public class TaskRunModelTest {
         assertThat(taskRun.getLatestAttempt().getError()).isNotNull();
         assertThat(taskRun.getLatestAttempt().getError().getMessage())
                 .contains("incompatible with declared return type");
+    }
+
+    @Test
+    void shouldScheduleTimeoutTimerPastTwentyFiveDays() {
+        TaskRunModel taskRun = TestUtil.taskRun();
+        int thirtyDays = 30 * 24 * 60 * 60;
+        taskRun.setTimeoutSeconds(thirtyDays);
+        long before = System.currentTimeMillis();
+
+        taskRun.sendUpdatedTimeoutTimerCommand(processorContext);
+
+        ArgumentCaptor<LHTimer> timer = ArgumentCaptor.forClass(LHTimer.class);
+        verify(taskManager).scheduleTimer(timer.capture());
+        assertThat(timer.getValue().maturationTime.getTime()).isGreaterThanOrEqualTo(before + 1000L * thirtyDays);
     }
 }

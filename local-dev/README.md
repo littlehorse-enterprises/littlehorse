@@ -68,7 +68,7 @@ This repository requires the following system dependencies:
 - `pre-commit` (this is a dev dependency)
 - `python` and [poetry](https://python-poetry.org/).
     - [sdk-python](sdk-python): >= 3.9
-- `nvm` and `node` >= 20
+- `nvm` and Node 24 LTS (run `nvm install && nvm use` from the repository root).
 
 ### Setup Pre-commit
 
@@ -142,12 +142,12 @@ Result:
 
 ### Running the Dashboard
 
-To run the dashboard, you can do the following (it requires `npm` to be installed).
+To run the dashboard, use Node 24 and pnpm 10.19.0 as described in the [dashboard requirements](../dashboard/README.md#requirements).
 
 ```
 cd dashboard
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 The dashboard will be accessible on `localhost:3000` by default. This assumes that you have the LH Server accessible and running on `localhost:2023` with no authentication. That can be done as described above.
@@ -196,6 +196,8 @@ Run keycloak and creates clients:
 ./local-dev/setup.sh --keycloak
 ```
 
+Keycloak listens on `http://localhost:8888` and `https://localhost:8443`. The HTTPS port uses the certificates from `./local-dev/issue-certificates.sh`, which `setup.sh` creates if they don't exist.
+
 Clients:
 
 | Client Id | Client Secret                    | Description                                                      |
@@ -204,7 +206,7 @@ Clients:
 | worker    | 40317ab43bd34a9e93499c7ea03ad398 | For Workers to issue access tokens (Client Credentials FLow)     |
 | canary    | 8b629ff9b2684014b8c62d4da8cc371e | For LH Canary to issue access tokens (Client Credentials FLow)   |
 | dashboard | 74b897a0b5804ad3879b2117e1d51015 | For LH Dasboard to issue access tokens (Client Credentials FLow) |
-| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow)       |
+| lhctl     | N/A                              | For lhctl to issue access tokens (Authorization Code Flow, PKCE required) |
 
 Run the server:
 
@@ -213,6 +215,14 @@ Run the server:
 ```
 
 > Check file [oauth.config](configs/oauth.config)
+
+To test clients against Keycloak over HTTPS, run the server with [oauth-https.config](configs/oauth-https.config). Keycloak only accepts a token when it's introspected through the same URL that issued it, so the server calls Keycloak over HTTPS too, trusting the local CA through `LHS_OAUTH_CA_CERT`:
+
+```
+./local-dev/do-server.sh oauth-https
+```
+
+Clients then use the `https://localhost:8443` URLs and set `LHC_OAUTH_CA_CERT` to `local-dev/certs/ca/ca.crt`, as shown in the config file. `LHC_OAUTH_CA_CERT` is supported by `lhctl` and every SDK.
 
 Open Keycloak:
 

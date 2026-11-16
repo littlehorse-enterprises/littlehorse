@@ -32,6 +32,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.InlineWfSpecModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -50,6 +51,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -703,6 +705,15 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     }
 
     @Override
+    @Authorize(
+            resources = ACLResource.ACL_WORKFLOW,
+            actions = {ACLAction.RUN, ACLAction.WRITE_METADATA})
+    public void runInlineWf(RunInlineWfRequest req, StreamObserver<WfRun> ctx) {
+        RunInlineWfRequestModel model = LHSerializable.fromProto(req, RunInlineWfRequestModel.class, requestContext());
+        processCommand(new CommandModel(model), ctx, WfRun.class);
+    }
+
+    @Override
     @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.RUN)
     public void scheduleWf(ScheduleWfRequest req, StreamObserver<ScheduledWfRun> ctx) {
         ScheduleWfRequestModel reqModel = LHSerializable.fromProto(req, ScheduleWfRequestModel.class, requestContext());
@@ -803,6 +814,18 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
         InactiveThreadRunModel checkpoint = internalComms.getObject(id, InactiveThreadRunModel.class, requestContext());
         observer.onNext(checkpoint.toProto().build());
         observer.onCompleted();
+    }
+
+    @Override
+    @Authorize(resources = ACLResource.ACL_WORKFLOW, actions = ACLAction.READ)
+    public void getInlineWfSpec(WfRunId req, StreamObserver<InlineWfSpec> ctx) {
+        if (req.getId().isEmpty()) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "An owning WfRun ID is required");
+        }
+        InlineWfSpecIdModel id = LHSerializable.fromProto(req, InlineWfSpecIdModel.class, requestContext());
+        InlineWfSpecModel spec = internalComms.getObject(id, InlineWfSpecModel.class, requestContext());
+        ctx.onNext(spec.toProto().build());
+        ctx.onCompleted();
     }
 
     @Override

@@ -14,6 +14,7 @@ import io.littlehorse.common.model.getable.core.taskworkergroup.TaskWorkerGroupM
 import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.wfrun.InactiveThreadRunModel;
+import io.littlehorse.common.model.getable.core.wfrun.InlineWfSpecModel;
 import io.littlehorse.common.model.getable.core.wfrun.ScheduledWfRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.WfRunModel;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
@@ -35,6 +36,7 @@ import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
 import io.littlehorse.common.model.getable.objectId.NodeRunIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
@@ -85,6 +87,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
     public static GetableClassEnum getTypeEnum(Class<? extends AbstractGetable<?>> cls) {
         if (cls.equals(WfRunModel.class)) {
             return GetableClassEnum.WF_RUN;
+        } else if (cls.equals(InlineWfSpecModel.class)) {
+            return GetableClassEnum.INLINE_WF_SPEC;
         } else if (cls.equals(NodeRunModel.class)) {
             return GetableClassEnum.NODE_RUN;
         } else if (cls.equals(WfSpecModel.class)) {
@@ -144,6 +148,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
 
     public static Class<? extends AbstractGetable<?>> getCls(GetableClassEnum type) {
         switch (type) {
+            case INLINE_WF_SPEC:
+                return InlineWfSpecModel.class;
             case WF_RUN:
                 return WfRunModel.class;
             case NODE_RUN:
@@ -206,6 +212,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
 
     public static Class<? extends ObjectIdModel<?, ?, ?>> getIdCls(GetableClassEnum type) {
         switch (type) {
+            case INLINE_WF_SPEC:
+                return InlineWfSpecIdModel.class;
             case WF_RUN:
                 return WfRunIdModel.class;
             case NODE_RUN:

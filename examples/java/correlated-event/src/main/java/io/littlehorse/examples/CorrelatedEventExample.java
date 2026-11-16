@@ -34,11 +34,14 @@ public class CorrelatedEventExample {
 
     private static final Logger log = LoggerFactory.getLogger(CorrelatedEventExample.class);
 
-    private static Workflow getWorkflow() {
-        return Workflow.newWorkflow(WF_NAME, wf -> {
-            WfRunVariable documentId = wf.declareStr("document-id");
-            wf.waitForEvent(EVENT_NAME).withCorrelationId(documentId);
-        });
+    private static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                WF_NAME,
+                wf -> {
+                    WfRunVariable documentId = wf.declareStr("document-id");
+                    wf.waitForEvent(EVENT_NAME).withCorrelationId(documentId);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -66,7 +69,7 @@ public class CorrelatedEventExample {
                 .setCorrelatedEventConfig(CorrelatedEventConfig.newBuilder().setDeleteAfterFirstCorrelation(false))
                 .build());
 
-        Workflow workflowGenerator = getWorkflow();
+        Workflow workflowGenerator = getWorkflow(config);
         workflowGenerator.registerWfSpec(client);
 
         // For fun, let's run the workflow

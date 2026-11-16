@@ -3,13 +3,12 @@ run-name: Tests
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - master
+  merge_group:
+    types: [checks_requested]
 jobs:
   tests-sdk-java:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -31,7 +30,7 @@ jobs:
 
   tests-sdk-go:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         go-version: ["1.25", "1.26"]
@@ -50,17 +49,24 @@ jobs:
       - name: Tests
         run: go test ./sdk-go/...
 
+      - name: lhctl Tests
+        working-directory: ./lhctl
+        run: go test ./...
+
   tests-sdk-js:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        node-version: ["22", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node
+      - name: Setup Node ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -88,7 +94,7 @@ jobs:
     # anyone's merge until teams opt in.
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -106,7 +112,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -137,7 +143,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        os: ["ubuntu-latest", "windows-latest"]
+        os: ["ubuntu-24.04", "windows-latest"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -169,7 +175,7 @@ jobs:
 
   tests-canary:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -185,7 +191,7 @@ jobs:
 
   tests-server-unit:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -204,7 +210,7 @@ jobs:
 
   tests-server-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -220,7 +226,7 @@ jobs:
 
   tests-server-e2e-slow:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -236,7 +242,7 @@ jobs:
 
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -258,7 +264,7 @@ jobs:
 
   tests-test-utils-container:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -280,7 +286,7 @@ jobs:
 
   tests-dashboard:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -302,9 +308,24 @@ jobs:
           pnpm run build
           pnpm run test
 
+      - name: Start Smoke Test Backend
+        run: docker run --detach --name lh-dashboard-smoke --publish 127.0.0.1:2023:2023 ghcr.io/littlehorse-enterprises/littlehorse/lh-standalone:master
+
+      - name: Development Smoke Test
+        working-directory: ./dashboard
+        run: pnpm run test:smoke
+
+      - name: Cleanup Smoke Test Backend
+        if: always()
+        run: |
+          if [ "${{ job.status }}" != "success" ]; then
+            docker logs --tail 80 lh-dashboard-smoke || true
+          fi
+          docker rm --force lh-dashboard-smoke || true
+
   tests-sdk-dotnet:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6

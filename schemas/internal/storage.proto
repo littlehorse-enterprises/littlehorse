@@ -72,6 +72,7 @@ enum GetableClassEnum {
     BULK_JOB = 24;
     ACTIVE_BULK_JOB = 25;
     WORKFLOW_MIGRATION_PLAN = 26;
+    INLINE_WF_SPEC = 27;
 }
 
 message AttributePb {

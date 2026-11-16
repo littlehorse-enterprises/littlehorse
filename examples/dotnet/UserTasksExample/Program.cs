@@ -1,6 +1,7 @@
-﻿using LittleHorse.Sdk;
+using LittleHorse.Sdk;
 using LittleHorse.Sdk.Common.Proto;
 using LittleHorse.Sdk.UserTask;
+using LittleHorse.Sdk.Helper;
 using LittleHorse.Sdk.Worker;
 using LittleHorse.Sdk.Workflow.Spec;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,7 +46,7 @@ public abstract class Program
         void MyEntryPoint(WorkflowThread wf)
         {
             WfRunVariable userId = wf.DeclareStr("user-id");
-            WfRunVariable itRequest = wf.DeclareJsonObj("it-request");
+            WfRunVariable itRequest = wf.DeclareStruct("it-request", typeof(ItemRequestForm));
             WfRunVariable isApproved = wf.DeclareBool("is-approved");
             // Get the IT Request
             UserTaskOutput formOutput = wf.AssignUserTask(
@@ -71,8 +72,8 @@ public abstract class Program
                     wf.Format(
                         "User {0} is requesting to buy item {1}.\nJustification: {2}",
                         userId,
-                        itRequest.WithJsonPath("$.RequestedItem"),
-                        itRequest.WithJsonPath("$.Justification")
+                        itRequest.Get("requestedItem"),
+                        itRequest.Get("justification")
                     )
                 );
             String financeTeamEmailBody = "Hi finance team, you have a new assigned task";
@@ -91,7 +92,7 @@ public abstract class Program
                 60
             );
 
-            isApproved.Assign(financeUserTaskOutput.WithJsonPath("$.IsApproved"));
+            isApproved.Assign(financeUserTaskOutput.Get("isApproved"));
 
             wf.DoIf(
                 isApproved.IsEqualTo(true),
@@ -103,7 +104,7 @@ public abstract class Program
                         wf.Format(
                             "Dear {0}, your request for {1} has been approved!",
                             userId,
-                            itRequest.WithJsonPath("$.RequestedItem")
+                            itRequest.Get("requestedItem")
                         )
                     );
                 }).DoElse(elseBody => {
@@ -113,13 +114,25 @@ public abstract class Program
                         wf.Format(
                             "Dear {0}, your request for {1} has been denied.",
                             userId,
-                            itRequest.WithJsonPath("$.RequestedItem")
+                            itRequest.Get("requestedItem")
                         )
                     );
                 });
         }
         
         return new Workflow(WorkflowName, MyEntryPoint);
+    }
+
+    private static PutStructDefRequest CreateStructDef(Type type)
+    {
+        var schema = new LHStructDefType(type);
+        return new PutStructDefRequest
+        {
+            Name = schema.GetStructDefId().Name,
+            Description = schema.GetStructDefDescription(),
+            StructDef = schema.GetInlineStructDef(),
+            AllowedUpdates = StructDefCompatibilityType.NoSchemaUpdates
+        };
     }
 
     static async Task Main(string[] args)
@@ -134,22 +147,25 @@ public abstract class Program
 
             await worker.RegisterTaskDef();
             
-            // Create the User Task Def
+            var requestStruct = await client.PutStructDefAsync(CreateStructDef(typeof(ItemRequestForm)));
+            var approvalStruct = await client.PutStructDefAsync(CreateStructDef(typeof(ApprovalForm)));
+
+            // Register the UserTaskDefs with the resolved minimum StructDef versions.
             UserTaskSchema requestForm = new UserTaskSchema(
-                new ItemRequestForm(),
+                requestStruct.Id,
                 ItRequestForm
             );
             await client.PutUserTaskDefAsync(requestForm.Compile());
 
             UserTaskSchema approvalForm = new UserTaskSchema(
-                new ApprovalForm(),
+                approvalStruct.Id,
                 ApprovalForm
             );
             await client.PutUserTaskDefAsync(approvalForm.Compile());
 
             await GetWorkflow().RegisterWfSpec(client);
 
-            await Task.Delay(300);
+            Console.CancelKeyPress += (_, _) => worker.Close();
 
             await worker.Start();
         }

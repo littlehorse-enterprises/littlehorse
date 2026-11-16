@@ -124,14 +124,16 @@ class PutWorkflowEventDefRequest(_message.Message):
     def __init__(self, name: _Optional[str] = ..., content_type: _Optional[_Union[_type_definition_pb2.ReturnType, _Mapping]] = ...) -> None: ...
 
 class PutUserTaskDefRequest(_message.Message):
-    __slots__ = ("name", "fields", "description")
+    __slots__ = ("name", "fields", "description", "result_struct_def_id")
     NAME_FIELD_NUMBER: _ClassVar[int]
     FIELDS_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
+    RESULT_STRUCT_DEF_ID_FIELD_NUMBER: _ClassVar[int]
     name: str
     fields: _containers.RepeatedCompositeFieldContainer[_user_tasks_pb2.UserTaskField]
     description: str
-    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ...) -> None: ...
+    result_struct_def_id: _object_id_pb2.StructDefId
+    def __init__(self, name: _Optional[str] = ..., fields: _Optional[_Iterable[_Union[_user_tasks_pb2.UserTaskField, _Mapping]]] = ..., description: _Optional[str] = ..., result_struct_def_id: _Optional[_Union[_object_id_pb2.StructDefId, _Mapping]] = ...) -> None: ...
 
 class PutExternalEventDefRequest(_message.Message):
     __slots__ = ("name", "retention_policy", "content_type", "correlated_event_config")
@@ -230,6 +232,23 @@ class DeleteWorkflowEventDefRequest(_message.Message):
     ID_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WorkflowEventDefId
     def __init__(self, id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ...) -> None: ...
+
+class RunInlineWfRequest(_message.Message):
+    __slots__ = ("wf_spec", "variables", "id")
+    class VariablesEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _type_definition_pb2.VariableValue
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ...) -> None: ...
+    WF_SPEC_FIELD_NUMBER: _ClassVar[int]
+    VARIABLES_FIELD_NUMBER: _ClassVar[int]
+    ID_FIELD_NUMBER: _ClassVar[int]
+    wf_spec: _wf_run_pb2.InlineWfSpec
+    variables: _containers.MessageMap[str, _type_definition_pb2.VariableValue]
+    id: str
+    def __init__(self, wf_spec: _Optional[_Union[_wf_run_pb2.InlineWfSpec, _Mapping]] = ..., variables: _Optional[_Mapping[str, _type_definition_pb2.VariableValue]] = ..., id: _Optional[str] = ...) -> None: ...
 
 class RunWfRequest(_message.Message):
     __slots__ = ("wf_spec_name", "major_version", "revision", "variables", "id", "parent_wf_run_id")

@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.littlehorse.common.LHServerConfig;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.InactiveThreadRun;
 import io.littlehorse.sdk.common.proto.InactiveThreadRunId;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -245,22 +246,28 @@ public class ThreadRunQueueTest {
 
     @LHWorkflow("thread-run-queue-wf")
     public Workflow buildThreadRunQueueWf() {
-        return Workflow.newWorkflow("thread-run-queue-wf", wf -> {
-            WfRunVariable arr = wf.declareJsonArr("json-arr").required();
+        return Workflow.newWorkflow(
+                "thread-run-queue-wf",
+                wf -> {
+                    WfRunVariable arr = wf.declareJsonArr("json-arr").required();
 
-            wf.spawnThreadForEach(arr, "queued-child", child -> child.waitForEvent(CONTINUE_EVENT));
-            wf.waitForEvent(FINISH_EVENT);
-        });
+                    wf.spawnThreadForEach(arr, "queued-child", child -> child.waitForEvent(CONTINUE_EVENT));
+                    wf.waitForEvent(FINISH_EVENT);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("thread-run-queue-parent-failure-wf")
     public Workflow buildParentFailureWf() {
-        return Workflow.newWorkflow("thread-run-queue-parent-failure-wf", wf -> {
-            WfRunVariable arr = wf.declareJsonArr("json-arr").required();
-            WfRunVariable integer = wf.addVariable("integer", VariableType.INT);
+        return Workflow.newWorkflow(
+                "thread-run-queue-parent-failure-wf",
+                wf -> {
+                    WfRunVariable arr = wf.declareJsonArr("json-arr").required();
+                    WfRunVariable integer = wf.addVariable("integer", VariableType.INT);
 
-            wf.spawnThreadForEach(arr, "queued-child", child -> child.waitForEvent(CONTINUE_EVENT));
-            wf.mutate(integer, VariableMutationType.ASSIGN, wf.waitForEvent(FAIL_EVENT));
-        });
+                    wf.spawnThreadForEach(arr, "queued-child", child -> child.waitForEvent(CONTINUE_EVENT));
+                    wf.mutate(integer, VariableMutationType.ASSIGN, wf.waitForEvent(FAIL_EVENT));
+                },
+                new LHConfig());
     }
 }

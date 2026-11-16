@@ -294,7 +294,7 @@ public class TaskRunModel extends CoreGetable<TaskRun> implements CoreOutputTopi
         int latestAttemptNumber = attempts.size() - 1;
         taskResult.setAttemptNumber(Math.max(latestAttemptNumber, 0));
         taskResult.setTaskRunId(id);
-        taskResult.setTime(new Date(System.currentTimeMillis() + (1000 * timeoutSeconds)));
+        taskResult.setTime(new Date(System.currentTimeMillis() + (1000L * timeoutSeconds)));
         taskResult.setStatus(TaskStatus.TASK_TIMEOUT);
         taskResult.setTotalCheckpoints(totalCheckpoints);
         CommandModel timerCommand = new CommandModel(taskResult, taskResult.getTime());

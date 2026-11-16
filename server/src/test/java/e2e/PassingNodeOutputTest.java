@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -41,15 +42,18 @@ public class PassingNodeOutputTest {
 
     @LHWorkflow("node-output-test")
     public Workflow getNodeOutputTest() {
-        return Workflow.newWorkflow("node-output-test", wf -> {
-            WfRunVariable input = wf.addVariable("num-iters", 3);
+        return Workflow.newWorkflow(
+                "node-output-test",
+                wf -> {
+                    WfRunVariable input = wf.addVariable("num-iters", 3);
 
-            wf.doWhile(wf.condition(input, Comparator.GREATER_THAN, 0), loop -> {
-                NodeOutput first = loop.execute("node-output-echo", input);
-                loop.execute("node-output-negative", first);
-                loop.mutate(input, VariableMutationType.SUBTRACT, 1);
-            });
-        });
+                    wf.doWhile(wf.condition(input, Comparator.GREATER_THAN, 0), loop -> {
+                        NodeOutput first = loop.execute("node-output-echo", input);
+                        loop.execute("node-output-negative", first);
+                        loop.mutate(input, VariableMutationType.SUBTRACT, 1);
+                    });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("node-output-echo")

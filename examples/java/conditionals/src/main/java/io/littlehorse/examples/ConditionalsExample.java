@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,21 +23,24 @@ public class ConditionalsExample {
 
     private static final Logger log = LoggerFactory.getLogger(ConditionalsExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-conditionals", wf -> {
-            WfRunVariable foo = wf.declareJsonObj("foo");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-conditionals",
+                wf -> {
+                    WfRunVariable foo = wf.declareJsonObj("foo");
 
-            wf.execute("task-a");
+                    wf.execute("task-a");
 
-            wf.doIf(foo.jsonPath("$.bar").isGreaterThan(10), ifHandler -> {
-                        ifHandler.execute("task-b");
-                    })
-                    .doElse(elseHandler -> {
-                        elseHandler.execute("task-c");
-                    });
+                    wf.doIf(foo.jsonPath("$.bar").isGreaterThan(10), ifHandler -> {
+                                ifHandler.execute("task-b");
+                            })
+                            .doElse(elseHandler -> {
+                                elseHandler.execute("task-c");
+                            });
 
-            wf.execute("task-d");
-        });
+                    wf.execute("task-d");
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -75,7 +77,7 @@ public class ConditionalsExample {
         LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New workers
         List<LHTaskWorker> workers = getTaskWorkers(config);

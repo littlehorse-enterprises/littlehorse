@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Interrupted;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.ThreadHaltReason;
@@ -240,45 +241,51 @@ public class InterruptOnChildThreadTest {
 
     @LHWorkflow("interrupt-and-child-thread")
     public Workflow getInterruptAndChildThreadWf() {
-        return Workflow.newWorkflow("interrupt-and-child-thread", parent -> {
-            SpawnedThread childHandle = parent.spawnThread(
-                    child -> {
-                        child.waitForEvent(COMPLETE_CHILD);
+        return Workflow.newWorkflow(
+                "interrupt-and-child-thread",
+                parent -> {
+                    SpawnedThread childHandle = parent.spawnThread(
+                            child -> {
+                                child.waitForEvent(COMPLETE_CHILD);
 
-                        child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
-                            childInterrupt.execute("iact-dummy");
-                        });
-                    },
-                    "child-thread",
-                    Map.of());
+                                child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
+                                    childInterrupt.execute("iact-dummy");
+                                });
+                            },
+                            "child-thread",
+                            Map.of());
 
-            parent.waitForThreads(SpawnedThreads.of(childHandle));
-            parent.waitForEvent(COMPLETE_PARENT);
+                    parent.waitForThreads(SpawnedThreads.of(childHandle));
+                    parent.waitForEvent(COMPLETE_PARENT);
 
-            parent.registerInterruptHandler(PARENT_INTERRUPT_TRIGGER, parentInterrupt -> {
-                parentInterrupt.execute("iact-dummy");
-            });
-        });
+                    parent.registerInterruptHandler(PARENT_INTERRUPT_TRIGGER, parentInterrupt -> {
+                        parentInterrupt.execute("iact-dummy");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("handle-failure-on-interrupt")
     public Workflow getHandleFailureOnInterruptThreadWf() {
-        return Workflow.newWorkflow("handle-failure-on-interrupt", parent -> {
-            SpawnedThread childHandle = parent.spawnThread(
-                    child -> {
-                        child.sleepSeconds(1);
+        return Workflow.newWorkflow(
+                "handle-failure-on-interrupt",
+                parent -> {
+                    SpawnedThread childHandle = parent.spawnThread(
+                            child -> {
+                                child.sleepSeconds(1);
 
-                        child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
-                            childInterrupt.fail("i-fail", "failed");
-                        });
-                    },
-                    "child-thread",
-                    Map.of());
+                                child.registerInterruptHandler(CHILD_INTERRUPT_TRIGGER, childInterrupt -> {
+                                    childInterrupt.fail("i-fail", "failed");
+                                });
+                            },
+                            "child-thread",
+                            Map.of());
 
-            WaitForThreadsNodeOutput waitForThreads = parent.waitForThreads(SpawnedThreads.of(childHandle));
+                    WaitForThreadsNodeOutput waitForThreads = parent.waitForThreads(SpawnedThreads.of(childHandle));
 
-            parent.handleAnyFailure(waitForThreads, WorkflowThread::complete);
-        });
+                    parent.handleAnyFailure(waitForThreads, WorkflowThread::complete);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("iact-dummy")

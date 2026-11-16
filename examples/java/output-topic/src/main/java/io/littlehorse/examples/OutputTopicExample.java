@@ -9,7 +9,6 @@ import io.littlehorse.sdk.common.proto.PutTenantRequest;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,17 +30,22 @@ import org.apache.kafka.common.serialization.Serdes;
  */
 public class OutputTopicExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("output-topic", wf -> {
-            WfRunVariable theName = wf.declareStr("input-name").searchable().asPublic();
-            WfRunVariable ignoredGreeting = wf.declareStr("ignored");
-            WfRunVariable publicGreeting = wf.declareStr("public-greeting").asPublic();
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "output-topic",
+                wf -> {
+                    WfRunVariable theName =
+                            wf.declareStr("input-name").searchable().asPublic();
+                    WfRunVariable ignoredGreeting = wf.declareStr("ignored");
+                    WfRunVariable publicGreeting =
+                            wf.declareStr("public-greeting").asPublic();
 
-            NodeOutput result = wf.execute("greet", theName);
+                    NodeOutput result = wf.execute("greet", theName);
 
-            ignoredGreeting.assign(result);
-            publicGreeting.assign(result);
-        });
+                    ignoredGreeting.assign(result);
+                    publicGreeting.assign(result);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -83,7 +87,7 @@ public class OutputTopicExample {
         worker.start();
 
         // Register WfSpec
-        getWorkflow().registerWfSpec(config.getBlockingStub());
+        getWorkflow(config).registerWfSpec(config.getBlockingStub());
 
         // Start Kafka Consumer
         Properties kafkaProps = new Properties();

@@ -27,9 +27,10 @@ import littlehorse.model.common_enums_pb2 as common__enums__pb2
 import littlehorse.model.object_id_pb2 as object__id__pb2
 import littlehorse.model.type_definition_pb2 as type__definition__pb2
 import littlehorse.model.workflow_migration_pb2 as workflow__migration__pb2
+import littlehorse.model.wf_spec_pb2 as wf__spec__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cwf_run.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\x1a\x0fobject_id.proto\x1a\x15type_definition.proto\x1a\x18workflow_migration.proto\"\xe4\x07\n\x05WfRun\x12 \n\x02id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12)\n\nwf_spec_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x33\n\x14old_wf_spec_versions\x18\x03 \x03(\x0b\x32\x15.littlehorse.WfSpecId\x12%\n\x06status\x18\x04 \x01(\x0e\x32\x15.littlehorse.LHStatus\x12!\n\x19greatest_threadrun_number\x18\x05 \x01(\x05\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12+\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x16.littlehorse.ThreadRun\x12\x39\n\x12pending_interrupts\x18\t \x03(\x0b\x32\x1d.littlehorse.PendingInterrupt\x12<\n\x10pending_failures\x18\n \x03(\x0b\x32\".littlehorse.PendingFailureHandler\x12\x46\n\x0eparent_trigger\x18\x0b \x01(\x0b\x32).littlehorse.WfRun.ParentTriggerReferenceH\x01\x88\x01\x01\x12H\n\x1aworkflow_migration_plan_id\x18\x0c \x01(\x0b\x32$.littlehorse.WorkflowMigrationPlanId\x12G\n\x13migration_variables\x18\r \x03(\x0b\x32*.littlehorse.WfRun.MigrationVariablesEntry\x12\x18\n\x10thread_run_queue\x18\x0e \x03(\x05\x1a\x99\x01\n\x16ParentTriggerReference\x12\x33\n\x13triggering_node_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.NodeRunId\x12\x35\n\x10waiting_node_run\x18\x02 \x01(\x0b\x32\x16.littlehorse.NodeRunIdH\x00\x88\x01\x01\x42\x13\n\x11_waiting_node_run\x1aU\n\x17MigrationVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.MigrationVars:\x02\x38\x01\x42\x0b\n\t_end_timeB\x11\n\x0f_parent_trigger\"\x85\x06\n\tThreadRun\x12)\n\nwf_spec_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12%\n\x06status\x18\x03 \x01(\x0e\x32\x15.littlehorse.LHStatus\x12\x18\n\x10thread_spec_name\x18\x04 \x01(\t\x12.\n\nstart_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x1a\n\rerror_message\x18\x07 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x10\x63hild_thread_ids\x18\x08 \x03(\x05\x12\x1d\n\x10parent_thread_id\x18\t \x01(\x05H\x02\x88\x01\x01\x12\x33\n\x0chalt_reasons\x18\n \x03(\x0b\x32\x1d.littlehorse.ThreadHaltReason\x12?\n\x14interrupt_trigger_id\x18\x0b \x01(\x0b\x32\x1c.littlehorse.ExternalEventIdH\x03\x88\x01\x01\x12\x44\n\x15\x66\x61ilure_being_handled\x18\x0c \x01(\x0b\x32 .littlehorse.FailureBeingHandledH\x04\x88\x01\x01\x12\x1d\n\x15\x63urrent_node_position\x18\r \x01(\x05\x12\x1f\n\x17handled_failed_children\x18\x0e \x03(\x05\x12%\n\x04type\x18\x0f \x01(\x0e\x32\x17.littlehorse.ThreadType\x12/\n\x06output\x18\x10 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x05\x88\x01\x01\x42\x0b\n\t_end_timeB\x10\n\x0e_error_messageB\x13\n\x11_parent_thread_idB\x17\n\x15_interrupt_trigger_idB\x18\n\x16_failure_being_handledB\t\n\x07_output\"\xec\x01\n\x11InactiveThreadRun\x12*\n\nthread_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.ThreadRun\x12\x36\n\x08\x61rchived\x18\x02 \x01(\x0b\x32\".littlehorse.ArchivedThreadRunInfoH\x00\x12\x32\n\x06queued\x18\x03 \x01(\x0b\x32 .littlehorse.QueuedThreadRunInfoH\x00\x12,\n\x02id\x18\x04 \x01(\x0b\x32 .littlehorse.InactiveThreadRunIdB\x11\n\x0finactive_reason\"\x17\n\x15\x41rchivedThreadRunInfo\"\xa8\x01\n\x13QueuedThreadRunInfo\x12\x43\n\ninput_vars\x18\x01 \x03(\x0b\x32/.littlehorse.QueuedThreadRunInfo.InputVarsEntry\x1aL\n\x0eInputVarsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\"c\n\x13\x46\x61ilureBeingHandled\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x19\n\x11node_run_position\x18\x02 \x01(\x05\x12\x16\n\x0e\x66\x61ilure_number\x18\x03 \x01(\x05\"\x85\x01\n\x10PendingInterrupt\x12\x37\n\x11\x65xternal_event_id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\x12\x19\n\x11handler_spec_name\x18\x02 \x01(\t\x12\x1d\n\x15interrupted_thread_id\x18\x03 \x01(\x05\"M\n\x15PendingFailureHandler\x12\x19\n\x11\x66\x61iled_thread_run\x18\x01 \x01(\x05\x12\x19\n\x11handler_spec_name\x18\x02 \x01(\t\"U\n\x1aPendingInterruptHaltReason\x12\x37\n\x11\x65xternal_event_id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\"<\n\x1fPendingFailureHandlerHaltReason\x12\x19\n\x11node_run_position\x18\x01 \x01(\x05\"6\n\x19HandlingFailureHaltReason\x12\x19\n\x11handler_thread_id\x18\x01 \x01(\x05\"c\n\x1cHaltedByParentNodeHaltReason\x12 \n\x18parent_thread_run_number\x18\x01 \x01(\x05\x12!\n\x19waiting_node_run_position\x18\x02 \x01(\x05\"(\n\x0cParentHalted\x12\x18\n\x10parent_thread_id\x18\x01 \x01(\x05\"*\n\x0bInterrupted\x12\x1b\n\x13interrupt_thread_id\x18\x01 \x01(\x05\"&\n\nManualHalt\x12\x18\n\x0fmeaning_of_life\x18\x89\x01 \x01(\x08\"\xcb\x03\n\x10ThreadHaltReason\x12\x32\n\rparent_halted\x18\x01 \x01(\x0b\x32\x19.littlehorse.ParentHaltedH\x00\x12/\n\x0binterrupted\x18\x02 \x01(\x0b\x32\x18.littlehorse.InterruptedH\x00\x12\x44\n\x11pending_interrupt\x18\x03 \x01(\x0b\x32\'.littlehorse.PendingInterruptHaltReasonH\x00\x12G\n\x0fpending_failure\x18\x04 \x01(\x0b\x32,.littlehorse.PendingFailureHandlerHaltReasonH\x00\x12\x42\n\x10handling_failure\x18\x05 \x01(\x0b\x32&.littlehorse.HandlingFailureHaltReasonH\x00\x12.\n\x0bmanual_halt\x18\x06 \x01(\x0b\x32\x17.littlehorse.ManualHaltH\x00\x12\x45\n\x10halted_by_parent\x18\x07 \x01(\x0b\x32).littlehorse.HaltedByParentNodeHaltReasonH\x00\x42\x08\n\x06reason*K\n\nThreadType\x12\x0e\n\nENTRYPOINT\x10\x00\x12\t\n\x05\x43HILD\x10\x01\x12\r\n\tINTERRUPT\x10\x02\x12\x13\n\x0f\x46\x41ILURE_HANDLER\x10\x03\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0cwf_run.proto\x12\x0blittlehorse\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x12\x63ommon_enums.proto\x1a\x0fobject_id.proto\x1a\x15type_definition.proto\x1a\x18workflow_migration.proto\x1a\rwf_spec.proto\"\x8d\x08\n\x05WfRun\x12 \n\x02id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12+\n\nwf_spec_id\x18\x02 \x01(\x0b\x32\x15.littlehorse.WfSpecIdH\x00\x12\x13\n\tis_inline\x18\x10 \x01(\x08H\x00\x12\x33\n\x14old_wf_spec_versions\x18\x03 \x03(\x0b\x32\x15.littlehorse.WfSpecId\x12%\n\x06status\x18\x04 \x01(\x0e\x32\x15.littlehorse.LHStatus\x12!\n\x19greatest_threadrun_number\x18\x05 \x01(\x05\x12.\n\nstart_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x07 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x01\x88\x01\x01\x12+\n\x0bthread_runs\x18\x08 \x03(\x0b\x32\x16.littlehorse.ThreadRun\x12\x39\n\x12pending_interrupts\x18\t \x03(\x0b\x32\x1d.littlehorse.PendingInterrupt\x12<\n\x10pending_failures\x18\n \x03(\x0b\x32\".littlehorse.PendingFailureHandler\x12\x46\n\x0eparent_trigger\x18\x0b \x01(\x0b\x32).littlehorse.WfRun.ParentTriggerReferenceH\x02\x88\x01\x01\x12H\n\x1aworkflow_migration_plan_id\x18\x0c \x01(\x0b\x32$.littlehorse.WorkflowMigrationPlanId\x12G\n\x13migration_variables\x18\r \x03(\x0b\x32*.littlehorse.WfRun.MigrationVariablesEntry\x12\x18\n\x10thread_run_queue\x18\x0e \x03(\x05\x1a\x99\x01\n\x16ParentTriggerReference\x12\x33\n\x13triggering_node_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.NodeRunId\x12\x35\n\x10waiting_node_run\x18\x02 \x01(\x0b\x32\x16.littlehorse.NodeRunIdH\x00\x88\x01\x01\x42\x13\n\x11_waiting_node_run\x1aU\n\x17MigrationVariablesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.MigrationVars:\x02\x38\x01\x42\x10\n\x0ewf_spec_sourceB\x0b\n\t_end_timeB\x11\n\x0f_parent_trigger\"\x85\x06\n\tThreadRun\x12)\n\nwf_spec_id\x18\x01 \x01(\x0b\x32\x15.littlehorse.WfSpecId\x12\x0e\n\x06number\x18\x02 \x01(\x05\x12%\n\x06status\x18\x03 \x01(\x0e\x32\x15.littlehorse.LHStatus\x12\x18\n\x10thread_spec_name\x18\x04 \x01(\t\x12.\n\nstart_time\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x31\n\x08\x65nd_time\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.TimestampH\x00\x88\x01\x01\x12\x1a\n\rerror_message\x18\x07 \x01(\tH\x01\x88\x01\x01\x12\x18\n\x10\x63hild_thread_ids\x18\x08 \x03(\x05\x12\x1d\n\x10parent_thread_id\x18\t \x01(\x05H\x02\x88\x01\x01\x12\x33\n\x0chalt_reasons\x18\n \x03(\x0b\x32\x1d.littlehorse.ThreadHaltReason\x12?\n\x14interrupt_trigger_id\x18\x0b \x01(\x0b\x32\x1c.littlehorse.ExternalEventIdH\x03\x88\x01\x01\x12\x44\n\x15\x66\x61ilure_being_handled\x18\x0c \x01(\x0b\x32 .littlehorse.FailureBeingHandledH\x04\x88\x01\x01\x12\x1d\n\x15\x63urrent_node_position\x18\r \x01(\x05\x12\x1f\n\x17handled_failed_children\x18\x0e \x03(\x05\x12%\n\x04type\x18\x0f \x01(\x0e\x32\x17.littlehorse.ThreadType\x12/\n\x06output\x18\x10 \x01(\x0b\x32\x1a.littlehorse.VariableValueH\x05\x88\x01\x01\x42\x0b\n\t_end_timeB\x10\n\x0e_error_messageB\x13\n\x11_parent_thread_idB\x17\n\x15_interrupt_trigger_idB\x18\n\x16_failure_being_handledB\t\n\x07_output\"\xec\x01\n\x11InactiveThreadRun\x12*\n\nthread_run\x18\x01 \x01(\x0b\x32\x16.littlehorse.ThreadRun\x12\x36\n\x08\x61rchived\x18\x02 \x01(\x0b\x32\".littlehorse.ArchivedThreadRunInfoH\x00\x12\x32\n\x06queued\x18\x03 \x01(\x0b\x32 .littlehorse.QueuedThreadRunInfoH\x00\x12,\n\x02id\x18\x04 \x01(\x0b\x32 .littlehorse.InactiveThreadRunIdB\x11\n\x0finactive_reason\"\x17\n\x15\x41rchivedThreadRunInfo\"\xa8\x01\n\x13QueuedThreadRunInfo\x12\x43\n\ninput_vars\x18\x01 \x03(\x0b\x32/.littlehorse.QueuedThreadRunInfo.InputVarsEntry\x1aL\n\x0eInputVarsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12)\n\x05value\x18\x02 \x01(\x0b\x32\x1a.littlehorse.VariableValue:\x02\x38\x01\"c\n\x13\x46\x61ilureBeingHandled\x12\x19\n\x11thread_run_number\x18\x01 \x01(\x05\x12\x19\n\x11node_run_position\x18\x02 \x01(\x05\x12\x16\n\x0e\x66\x61ilure_number\x18\x03 \x01(\x05\"\x85\x01\n\x10PendingInterrupt\x12\x37\n\x11\x65xternal_event_id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\x12\x19\n\x11handler_spec_name\x18\x02 \x01(\t\x12\x1d\n\x15interrupted_thread_id\x18\x03 \x01(\x05\"M\n\x15PendingFailureHandler\x12\x19\n\x11\x66\x61iled_thread_run\x18\x01 \x01(\x05\x12\x19\n\x11handler_spec_name\x18\x02 \x01(\t\"U\n\x1aPendingInterruptHaltReason\x12\x37\n\x11\x65xternal_event_id\x18\x01 \x01(\x0b\x32\x1c.littlehorse.ExternalEventId\"<\n\x1fPendingFailureHandlerHaltReason\x12\x19\n\x11node_run_position\x18\x01 \x01(\x05\"6\n\x19HandlingFailureHaltReason\x12\x19\n\x11handler_thread_id\x18\x01 \x01(\x05\"c\n\x1cHaltedByParentNodeHaltReason\x12 \n\x18parent_thread_run_number\x18\x01 \x01(\x05\x12!\n\x19waiting_node_run_position\x18\x02 \x01(\x05\"(\n\x0cParentHalted\x12\x18\n\x10parent_thread_id\x18\x01 \x01(\x05\"*\n\x0bInterrupted\x12\x1b\n\x13interrupt_thread_id\x18\x01 \x01(\x05\"&\n\nManualHalt\x12\x18\n\x0fmeaning_of_life\x18\x89\x01 \x01(\x08\"\xcb\x03\n\x10ThreadHaltReason\x12\x32\n\rparent_halted\x18\x01 \x01(\x0b\x32\x19.littlehorse.ParentHaltedH\x00\x12/\n\x0binterrupted\x18\x02 \x01(\x0b\x32\x18.littlehorse.InterruptedH\x00\x12\x44\n\x11pending_interrupt\x18\x03 \x01(\x0b\x32\'.littlehorse.PendingInterruptHaltReasonH\x00\x12G\n\x0fpending_failure\x18\x04 \x01(\x0b\x32,.littlehorse.PendingFailureHandlerHaltReasonH\x00\x12\x42\n\x10handling_failure\x18\x05 \x01(\x0b\x32&.littlehorse.HandlingFailureHaltReasonH\x00\x12.\n\x0bmanual_halt\x18\x06 \x01(\x0b\x32\x17.littlehorse.ManualHaltH\x00\x12\x45\n\x10halted_by_parent\x18\x07 \x01(\x0b\x32).littlehorse.HaltedByParentNodeHaltReasonH\x00\x42\x08\n\x06reason\"\xe9\x02\n\x0cInlineWfSpec\x12 \n\x02id\x18\x01 \x01(\x0b\x32\x14.littlehorse.WfRunId\x12.\n\ncreated_at\x18\x02 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12@\n\x0cthread_specs\x18\x03 \x03(\x0b\x32*.littlehorse.InlineWfSpec.ThreadSpecsEntry\x12\x1e\n\x16\x65ntrypoint_thread_name\x18\x04 \x01(\t\x12\x43\n\x10retention_policy\x18\x05 \x01(\x0b\x32$.littlehorse.WorkflowRetentionPolicyH\x00\x88\x01\x01\x1aK\n\x10ThreadSpecsEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12&\n\x05value\x18\x02 \x01(\x0b\x32\x17.littlehorse.ThreadSpec:\x02\x38\x01\x42\x13\n\x11_retention_policy*K\n\nThreadType\x12\x0e\n\nENTRYPOINT\x10\x00\x12\t\n\x05\x43HILD\x10\x01\x12\r\n\tINTERRUPT\x10\x02\x12\x13\n\x0f\x46\x41ILURE_HANDLER\x10\x03\x42M\n\x1fio.littlehorse.sdk.common.protoP\x01Z\t.;lhproto\xaa\x02\x1cLittleHorse.Sdk.Common.Protob\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -41,44 +42,50 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_WFRUN_MIGRATIONVARIABLESENTRY']._serialized_options = b'8\001'
   _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._loaded_options = None
   _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._serialized_options = b'8\001'
-  _globals['_THREADTYPE']._serialized_start=3568
-  _globals['_THREADTYPE']._serialized_end=3643
-  _globals['_WFRUN']._serialized_start=149
-  _globals['_WFRUN']._serialized_end=1145
-  _globals['_WFRUN_PARENTTRIGGERREFERENCE']._serialized_start=873
-  _globals['_WFRUN_PARENTTRIGGERREFERENCE']._serialized_end=1026
-  _globals['_WFRUN_MIGRATIONVARIABLESENTRY']._serialized_start=1028
-  _globals['_WFRUN_MIGRATIONVARIABLESENTRY']._serialized_end=1113
-  _globals['_THREADRUN']._serialized_start=1148
-  _globals['_THREADRUN']._serialized_end=1921
-  _globals['_INACTIVETHREADRUN']._serialized_start=1924
-  _globals['_INACTIVETHREADRUN']._serialized_end=2160
-  _globals['_ARCHIVEDTHREADRUNINFO']._serialized_start=2162
-  _globals['_ARCHIVEDTHREADRUNINFO']._serialized_end=2185
-  _globals['_QUEUEDTHREADRUNINFO']._serialized_start=2188
-  _globals['_QUEUEDTHREADRUNINFO']._serialized_end=2356
-  _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._serialized_start=2280
-  _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._serialized_end=2356
-  _globals['_FAILUREBEINGHANDLED']._serialized_start=2358
-  _globals['_FAILUREBEINGHANDLED']._serialized_end=2457
-  _globals['_PENDINGINTERRUPT']._serialized_start=2460
-  _globals['_PENDINGINTERRUPT']._serialized_end=2593
-  _globals['_PENDINGFAILUREHANDLER']._serialized_start=2595
-  _globals['_PENDINGFAILUREHANDLER']._serialized_end=2672
-  _globals['_PENDINGINTERRUPTHALTREASON']._serialized_start=2674
-  _globals['_PENDINGINTERRUPTHALTREASON']._serialized_end=2759
-  _globals['_PENDINGFAILUREHANDLERHALTREASON']._serialized_start=2761
-  _globals['_PENDINGFAILUREHANDLERHALTREASON']._serialized_end=2821
-  _globals['_HANDLINGFAILUREHALTREASON']._serialized_start=2823
-  _globals['_HANDLINGFAILUREHALTREASON']._serialized_end=2877
-  _globals['_HALTEDBYPARENTNODEHALTREASON']._serialized_start=2879
-  _globals['_HALTEDBYPARENTNODEHALTREASON']._serialized_end=2978
-  _globals['_PARENTHALTED']._serialized_start=2980
-  _globals['_PARENTHALTED']._serialized_end=3020
-  _globals['_INTERRUPTED']._serialized_start=3022
-  _globals['_INTERRUPTED']._serialized_end=3064
-  _globals['_MANUALHALT']._serialized_start=3066
-  _globals['_MANUALHALT']._serialized_end=3104
-  _globals['_THREADHALTREASON']._serialized_start=3107
-  _globals['_THREADHALTREASON']._serialized_end=3566
+  _globals['_INLINEWFSPEC_THREADSPECSENTRY']._loaded_options = None
+  _globals['_INLINEWFSPEC_THREADSPECSENTRY']._serialized_options = b'8\001'
+  _globals['_THREADTYPE']._serialized_start=3988
+  _globals['_THREADTYPE']._serialized_end=4063
+  _globals['_WFRUN']._serialized_start=164
+  _globals['_WFRUN']._serialized_end=1201
+  _globals['_WFRUN_PARENTTRIGGERREFERENCE']._serialized_start=911
+  _globals['_WFRUN_PARENTTRIGGERREFERENCE']._serialized_end=1064
+  _globals['_WFRUN_MIGRATIONVARIABLESENTRY']._serialized_start=1066
+  _globals['_WFRUN_MIGRATIONVARIABLESENTRY']._serialized_end=1151
+  _globals['_THREADRUN']._serialized_start=1204
+  _globals['_THREADRUN']._serialized_end=1977
+  _globals['_INACTIVETHREADRUN']._serialized_start=1980
+  _globals['_INACTIVETHREADRUN']._serialized_end=2216
+  _globals['_ARCHIVEDTHREADRUNINFO']._serialized_start=2218
+  _globals['_ARCHIVEDTHREADRUNINFO']._serialized_end=2241
+  _globals['_QUEUEDTHREADRUNINFO']._serialized_start=2244
+  _globals['_QUEUEDTHREADRUNINFO']._serialized_end=2412
+  _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._serialized_start=2336
+  _globals['_QUEUEDTHREADRUNINFO_INPUTVARSENTRY']._serialized_end=2412
+  _globals['_FAILUREBEINGHANDLED']._serialized_start=2414
+  _globals['_FAILUREBEINGHANDLED']._serialized_end=2513
+  _globals['_PENDINGINTERRUPT']._serialized_start=2516
+  _globals['_PENDINGINTERRUPT']._serialized_end=2649
+  _globals['_PENDINGFAILUREHANDLER']._serialized_start=2651
+  _globals['_PENDINGFAILUREHANDLER']._serialized_end=2728
+  _globals['_PENDINGINTERRUPTHALTREASON']._serialized_start=2730
+  _globals['_PENDINGINTERRUPTHALTREASON']._serialized_end=2815
+  _globals['_PENDINGFAILUREHANDLERHALTREASON']._serialized_start=2817
+  _globals['_PENDINGFAILUREHANDLERHALTREASON']._serialized_end=2877
+  _globals['_HANDLINGFAILUREHALTREASON']._serialized_start=2879
+  _globals['_HANDLINGFAILUREHALTREASON']._serialized_end=2933
+  _globals['_HALTEDBYPARENTNODEHALTREASON']._serialized_start=2935
+  _globals['_HALTEDBYPARENTNODEHALTREASON']._serialized_end=3034
+  _globals['_PARENTHALTED']._serialized_start=3036
+  _globals['_PARENTHALTED']._serialized_end=3076
+  _globals['_INTERRUPTED']._serialized_start=3078
+  _globals['_INTERRUPTED']._serialized_end=3120
+  _globals['_MANUALHALT']._serialized_start=3122
+  _globals['_MANUALHALT']._serialized_end=3160
+  _globals['_THREADHALTREASON']._serialized_start=3163
+  _globals['_THREADHALTREASON']._serialized_end=3622
+  _globals['_INLINEWFSPEC']._serialized_start=3625
+  _globals['_INLINEWFSPEC']._serialized_end=3986
+  _globals['_INLINEWFSPEC_THREADSPECSENTRY']._serialized_start=3890
+  _globals['_INLINEWFSPEC_THREADSPECSENTRY']._serialized_end=3965
 # @@protoc_insertion_point(module_scope)

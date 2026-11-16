@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.core.wfrun.subnoderun.ExternalEventNo
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
+import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.VariableIdModel;
 import io.littlehorse.common.model.getable.objectId.WfRunIdModel;
 import io.littlehorse.common.proto.InternalDeleteWfRunRequest;
@@ -189,6 +190,8 @@ public class InternalDeleteWfRunRequestModel extends CoreSubCommand<InternalDele
 
         log.trace("Completing WfRun deletion for {}", wfRunId);
 
+        // Keep the definition available until all resumable cleanup has finished.
+        if (wfRun.isInline()) manager.delete(new InlineWfSpecIdModel(wfRunId));
         manager.delete(wfRunId);
         return null;
     }

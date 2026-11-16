@@ -2,6 +2,7 @@ package io.littlehorse.examples;
 
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
+import java.io.Serializable;
 
 /**
  * A named StructDef that contains an InlineStructDef as one of its fields.
@@ -12,7 +13,7 @@ import io.littlehorse.sdk.worker.LHStructField;
  * registered StructDef.
  */
 @LHStructDef(value = "order", description = "A customer order with a delivery address.")
-public class Order {
+public class Order implements Serializable {
 
     @LHStructField(description = "A unique identifier for this order.")
     private String orderId;

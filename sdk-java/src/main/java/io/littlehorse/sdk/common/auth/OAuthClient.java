@@ -8,12 +8,14 @@ import com.nimbusds.oauth2.sdk.TokenResponse;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthentication;
 import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
+import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
 import com.nimbusds.oauth2.sdk.token.AccessToken;
 import io.littlehorse.sdk.common.exception.EntityProviderException;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import javax.net.ssl.SSLSocketFactory;
 import lombok.extern.slf4j.Slf4j;
 
 // Examples:
@@ -29,6 +31,7 @@ public class OAuthClient {
 
     private final OAuthConfig config;
     private final ClientAuthentication credentials;
+    private final SSLSocketFactory sslSocketFactory;
 
     /**
      * Creates an OAuthClient from OAuth configuration.
@@ -39,6 +42,8 @@ public class OAuthClient {
         this.config = config;
         this.credentials =
                 new ClientSecretBasic(new ClientID(config.getClientId()), new Secret(config.getClientSecret()));
+        this.sslSocketFactory =
+                config.getCaCert() == null ? null : OAuthCaCertificates.sslSocketFactory(config.getCaCert());
     }
 
     /**
@@ -51,7 +56,11 @@ public class OAuthClient {
             TokenRequest request =
                     new TokenRequest(config.getTokenEndpointURI(), credentials, new ClientCredentialsGrant());
 
-            TokenResponse response = TokenResponse.parse(request.toHTTPRequest().send());
+            HTTPRequest httpRequest = request.toHTTPRequest();
+            if (sslSocketFactory != null) {
+                httpRequest.setSSLSocketFactory(sslSocketFactory);
+            }
+            TokenResponse response = TokenResponse.parse(httpRequest.send());
 
             if (!response.indicatesSuccess()) {
                 throw new EntityProviderException("Error getting the token status: "

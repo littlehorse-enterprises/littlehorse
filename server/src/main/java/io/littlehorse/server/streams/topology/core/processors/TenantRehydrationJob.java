@@ -8,7 +8,6 @@ import io.littlehorse.sdk.common.proto.Tenant;
 import io.littlehorse.server.LHServer;
 import io.littlehorse.server.streams.store.LHKeyValueIterator;
 import io.littlehorse.server.streams.store.StoredGetable;
-import io.littlehorse.server.streams.storeinternals.TaskQueueHintModel;
 import io.littlehorse.server.streams.stores.ReadOnlyTenantScopedStore;
 import io.littlehorse.server.streams.topology.core.CommandProcessorOutput;
 import io.littlehorse.server.streams.topology.core.background.PartitionBackgroundJob;
@@ -71,8 +70,8 @@ class TenantRehydrationJob implements PartitionBackgroundJob<CommandProcessorOut
     private Deque<TenantIdModel> pendingTenants;
 
     /**
-     * Where to resume inside the tenant at the head of {@link #pendingTenants}. Null means "not
-     * started yet", which is the signal to read that tenant's persisted hint.
+     * Where to resume inside the tenant at the head of {@link #pendingTenants}. Null means scan
+     * from the beginning: a newer claimed task cannot rule out older pending tasks.
      */
     private String resumeKey;
 
@@ -140,19 +139,8 @@ class TenantRehydrationJob implements PartitionBackgroundJob<CommandProcessorOut
             throws InterruptedException {
         ReadOnlyTenantScopedStore store = ctx.coreStore(tenantId);
 
-        if (resumeKey == null) {
-            TaskQueueHintModel hint = store.get(TaskQueueHintModel.TASK_QUEUE_HINT_KEY, TaskQueueHintModel.class);
-            if (hint == null) {
-                log.warn(
-                        "No task queue hint for tenant {} on partition {}; may need to iterate over many tombstones",
-                        tenantId,
-                        ctx.partition());
-            }
-            resumeKey = hint == null ? "" : hint.getKeyToResumeFrom();
-        }
-
         try (LHKeyValueIterator<ScheduledTaskModel> iter =
-                store.range(resumeKey, END_OF_RANGE, ScheduledTaskModel.class)) {
+                store.range(resumeKey == null ? "" : resumeKey, END_OF_RANGE, ScheduledTaskModel.class)) {
             while (iter.hasNext()) {
                 if (Thread.currentThread().isInterrupted()) {
                     // Partition revoked. Stop immediately rather than offering tasks for a partition

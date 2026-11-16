@@ -43,4 +43,13 @@ else
   export NEXTAUTH_SECRET=$(uuidgen)
 fi
 
-/entrypoint.sh
+if [ "$SSL" = "enabled" ]; then
+    if [ ! -f /ssl/tls.crt ] || [ ! -f /ssl/tls.key ]; then
+        echo "SSL certificate and key are required for SSL to work"
+        exit 1
+    fi
+
+    supervisord -c /etc/supervisord.conf
+else
+    node /app/server.js
+fi

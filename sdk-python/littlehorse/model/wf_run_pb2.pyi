@@ -5,6 +5,7 @@ import littlehorse.model.common_enums_pb2 as _common_enums_pb2
 import littlehorse.model.object_id_pb2 as _object_id_pb2
 import littlehorse.model.type_definition_pb2 as _type_definition_pb2
 import littlehorse.model.workflow_migration_pb2 as _workflow_migration_pb2
+import littlehorse.model.wf_spec_pb2 as _wf_spec_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf.internal import enum_type_wrapper as _enum_type_wrapper
 from google.protobuf import descriptor as _descriptor
@@ -26,7 +27,7 @@ INTERRUPT: ThreadType
 FAILURE_HANDLER: ThreadType
 
 class WfRun(_message.Message):
-    __slots__ = ("id", "wf_spec_id", "old_wf_spec_versions", "status", "greatest_threadrun_number", "start_time", "end_time", "thread_runs", "pending_interrupts", "pending_failures", "parent_trigger", "workflow_migration_plan_id", "migration_variables", "thread_run_queue")
+    __slots__ = ("id", "wf_spec_id", "is_inline", "old_wf_spec_versions", "status", "greatest_threadrun_number", "start_time", "end_time", "thread_runs", "pending_interrupts", "pending_failures", "parent_trigger", "workflow_migration_plan_id", "migration_variables", "thread_run_queue")
     class ParentTriggerReference(_message.Message):
         __slots__ = ("triggering_node_run", "waiting_node_run")
         TRIGGERING_NODE_RUN_FIELD_NUMBER: _ClassVar[int]
@@ -43,6 +44,7 @@ class WfRun(_message.Message):
         def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_workflow_migration_pb2.MigrationVars, _Mapping]] = ...) -> None: ...
     ID_FIELD_NUMBER: _ClassVar[int]
     WF_SPEC_ID_FIELD_NUMBER: _ClassVar[int]
+    IS_INLINE_FIELD_NUMBER: _ClassVar[int]
     OLD_WF_SPEC_VERSIONS_FIELD_NUMBER: _ClassVar[int]
     STATUS_FIELD_NUMBER: _ClassVar[int]
     GREATEST_THREADRUN_NUMBER_FIELD_NUMBER: _ClassVar[int]
@@ -57,6 +59,7 @@ class WfRun(_message.Message):
     THREAD_RUN_QUEUE_FIELD_NUMBER: _ClassVar[int]
     id: _object_id_pb2.WfRunId
     wf_spec_id: _object_id_pb2.WfSpecId
+    is_inline: bool
     old_wf_spec_versions: _containers.RepeatedCompositeFieldContainer[_object_id_pb2.WfSpecId]
     status: _common_enums_pb2.LHStatus
     greatest_threadrun_number: int
@@ -69,7 +72,7 @@ class WfRun(_message.Message):
     workflow_migration_plan_id: _object_id_pb2.WorkflowMigrationPlanId
     migration_variables: _containers.MessageMap[str, _workflow_migration_pb2.MigrationVars]
     thread_run_queue: _containers.RepeatedScalarFieldContainer[int]
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., old_wf_spec_versions: _Optional[_Iterable[_Union[_object_id_pb2.WfSpecId, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., greatest_threadrun_number: _Optional[int] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_runs: _Optional[_Iterable[_Union[ThreadRun, _Mapping]]] = ..., pending_interrupts: _Optional[_Iterable[_Union[PendingInterrupt, _Mapping]]] = ..., pending_failures: _Optional[_Iterable[_Union[PendingFailureHandler, _Mapping]]] = ..., parent_trigger: _Optional[_Union[WfRun.ParentTriggerReference, _Mapping]] = ..., workflow_migration_plan_id: _Optional[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]] = ..., migration_variables: _Optional[_Mapping[str, _workflow_migration_pb2.MigrationVars]] = ..., thread_run_queue: _Optional[_Iterable[int]] = ...) -> None: ...
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., wf_spec_id: _Optional[_Union[_object_id_pb2.WfSpecId, _Mapping]] = ..., is_inline: _Optional[bool] = ..., old_wf_spec_versions: _Optional[_Iterable[_Union[_object_id_pb2.WfSpecId, _Mapping]]] = ..., status: _Optional[_Union[_common_enums_pb2.LHStatus, str]] = ..., greatest_threadrun_number: _Optional[int] = ..., start_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., end_time: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_runs: _Optional[_Iterable[_Union[ThreadRun, _Mapping]]] = ..., pending_interrupts: _Optional[_Iterable[_Union[PendingInterrupt, _Mapping]]] = ..., pending_failures: _Optional[_Iterable[_Union[PendingFailureHandler, _Mapping]]] = ..., parent_trigger: _Optional[_Union[WfRun.ParentTriggerReference, _Mapping]] = ..., workflow_migration_plan_id: _Optional[_Union[_object_id_pb2.WorkflowMigrationPlanId, _Mapping]] = ..., migration_variables: _Optional[_Mapping[str, _workflow_migration_pb2.MigrationVars]] = ..., thread_run_queue: _Optional[_Iterable[int]] = ...) -> None: ...
 
 class ThreadRun(_message.Message):
     __slots__ = ("wf_spec_id", "number", "status", "thread_spec_name", "start_time", "end_time", "error_message", "child_thread_ids", "parent_thread_id", "halt_reasons", "interrupt_trigger_id", "failure_being_handled", "current_node_position", "handled_failed_children", "type", "output")
@@ -225,3 +228,24 @@ class ThreadHaltReason(_message.Message):
     manual_halt: ManualHalt
     halted_by_parent: HaltedByParentNodeHaltReason
     def __init__(self, parent_halted: _Optional[_Union[ParentHalted, _Mapping]] = ..., interrupted: _Optional[_Union[Interrupted, _Mapping]] = ..., pending_interrupt: _Optional[_Union[PendingInterruptHaltReason, _Mapping]] = ..., pending_failure: _Optional[_Union[PendingFailureHandlerHaltReason, _Mapping]] = ..., handling_failure: _Optional[_Union[HandlingFailureHaltReason, _Mapping]] = ..., manual_halt: _Optional[_Union[ManualHalt, _Mapping]] = ..., halted_by_parent: _Optional[_Union[HaltedByParentNodeHaltReason, _Mapping]] = ...) -> None: ...
+
+class InlineWfSpec(_message.Message):
+    __slots__ = ("id", "created_at", "thread_specs", "entrypoint_thread_name", "retention_policy")
+    class ThreadSpecsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _wf_spec_pb2.ThreadSpec
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_wf_spec_pb2.ThreadSpec, _Mapping]] = ...) -> None: ...
+    ID_FIELD_NUMBER: _ClassVar[int]
+    CREATED_AT_FIELD_NUMBER: _ClassVar[int]
+    THREAD_SPECS_FIELD_NUMBER: _ClassVar[int]
+    ENTRYPOINT_THREAD_NAME_FIELD_NUMBER: _ClassVar[int]
+    RETENTION_POLICY_FIELD_NUMBER: _ClassVar[int]
+    id: _object_id_pb2.WfRunId
+    created_at: _timestamp_pb2.Timestamp
+    thread_specs: _containers.MessageMap[str, _wf_spec_pb2.ThreadSpec]
+    entrypoint_thread_name: str
+    retention_policy: _wf_spec_pb2.WorkflowRetentionPolicy
+    def __init__(self, id: _Optional[_Union[_object_id_pb2.WfRunId, _Mapping]] = ..., created_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., thread_specs: _Optional[_Mapping[str, _wf_spec_pb2.ThreadSpec]] = ..., entrypoint_thread_name: _Optional[str] = ..., retention_policy: _Optional[_Union[_wf_spec_pb2.WorkflowRetentionPolicy, _Mapping]] = ...) -> None: ...

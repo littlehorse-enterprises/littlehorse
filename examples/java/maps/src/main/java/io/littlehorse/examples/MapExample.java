@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.LHMapBuilder;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.util.List;
 import java.util.Properties;
@@ -22,31 +21,36 @@ import org.slf4j.LoggerFactory;
 public class MapExample {
     private static final Logger log = LoggerFactory.getLogger(MapExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("reserve-inventory", wf -> {
-            WfRunVariable inventory = wf.declareMap("inventory", String.class, Integer.class);
-            WfRunVariable itemToReserve = wf.declareStr("item-to-reserve").withDefault("apples");
-            WfRunVariable quantityToReserve =
-                    wf.declareInt("quantity-to-reserve").withDefault(2);
-            WfRunVariable availableQuantity = wf.declareInt("available-quantity");
-            WfRunVariable remainingQuantity = wf.declareInt("remaining-quantity");
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "reserve-inventory",
+                wf -> {
+                    WfRunVariable inventory = wf.declareMap("inventory", String.class, Integer.class);
+                    WfRunVariable itemToReserve =
+                            wf.declareStr("item-to-reserve").withDefault("apples");
+                    WfRunVariable quantityToReserve =
+                            wf.declareInt("quantity-to-reserve").withDefault(2);
+                    WfRunVariable availableQuantity = wf.declareInt("available-quantity");
+                    WfRunVariable remainingQuantity = wf.declareInt("remaining-quantity");
 
-            inventory.assign(wf.execute("get-inventory"));
+                    inventory.assign(wf.execute("get-inventory"));
 
-            availableQuantity.assign(inventory.get(itemToReserve));
+                    availableQuantity.assign(inventory.get(itemToReserve));
 
-            wf.doIf(availableQuantity.isGreaterThanEq(quantityToReserve), ifBody -> {
-                        remainingQuantity.assign(availableQuantity.subtract(quantityToReserve));
-                        inventory.put(itemToReserve, remainingQuantity);
+                    wf.doIf(availableQuantity.isGreaterThanEq(quantityToReserve), ifBody -> {
+                                remainingQuantity.assign(availableQuantity.subtract(quantityToReserve));
+                                inventory.put(itemToReserve, remainingQuantity);
 
-                        LHMapBuilder reservation = ifBody.buildMap().put(itemToReserve, quantityToReserve);
-                        ifBody.execute("reserve-items", reservation);
-                        ifBody.execute("save-inventory", inventory);
-                    })
-                    .doElse(elseBody -> {
-                        elseBody.execute("notify-out-of-stock", itemToReserve, quantityToReserve, availableQuantity);
-                    });
-        });
+                                LHMapBuilder reservation = ifBody.buildMap().put(itemToReserve, quantityToReserve);
+                                ifBody.execute("reserve-items", reservation);
+                                ifBody.execute("save-inventory", inventory);
+                            })
+                            .doElse(elseBody -> {
+                                elseBody.execute(
+                                        "notify-out-of-stock", itemToReserve, quantityToReserve, availableQuantity);
+                            });
+                },
+                config);
     }
 
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
@@ -63,7 +67,7 @@ public class MapExample {
         LHConfig cfg = new LHConfig(props);
         LittleHorseGrpc.LittleHorseBlockingStub client = cfg.getBlockingStub();
 
-        Workflow wf = getWorkflow();
+        Workflow wf = getWorkflow(cfg);
         List<LHTaskWorker> workers = getWorkers(cfg);
 
         // register task defs

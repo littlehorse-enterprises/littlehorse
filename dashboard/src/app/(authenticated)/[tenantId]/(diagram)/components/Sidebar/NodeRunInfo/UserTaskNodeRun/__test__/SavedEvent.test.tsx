@@ -4,6 +4,7 @@ import { SavedEvent } from '../SavedEvent'
 import { UserTaskEvent_UTESaved, VariableValue } from 'littlehorse-client/proto'
 
 jest.mock('@/app/utils', () => ({
+  ...jest.requireActual('@/app/utils'),
   formatDateReadable: jest.fn(() => 'FORMATTED_DATE'),
 }))
 
@@ -48,6 +49,26 @@ describe('SavedEvent', () => {
     const results = screen.getByTestId('results')
     expect(results).toBeInTheDocument()
     expect(results).toHaveTextContent(JSON.stringify(Object.entries(savedEvent.results)))
+  })
+
+  it('renders the saved Struct fields of a struct-backed user task', () => {
+    const requestedItem: VariableValue = { value: { oneofKind: 'str', str: 'laptop' } }
+    const savedEvent: UserTaskEvent_UTESaved = {
+      userId: 'alice',
+      results: {},
+      output: {
+        value: {
+          oneofKind: 'struct',
+          struct: {
+            structDefId: { name: 'item-request-form', version: 0 },
+            struct: { fields: { requestedItem: { value: requestedItem, masked: false } } },
+          },
+        },
+      },
+    }
+    render(<SavedEvent event={savedEvent} />)
+
+    expect(screen.getByTestId('results')).toHaveTextContent(JSON.stringify([['requestedItem', requestedItem]]))
   })
 
   it('does not render Results when event.results is empty', () => {

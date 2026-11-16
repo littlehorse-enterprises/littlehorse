@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
@@ -43,25 +44,29 @@ public class OutOfScopeVarAccessTest {
 
     @LHWorkflow("access-out-of-scope-var")
     public Workflow getAccessOutOfScopeVarWf() {
-        return Workflow.newWorkflow("access-out-of-scope-var", wf -> {
-            SpawnedThread spawnedThread = wf.spawnThread(
-                    child -> {
-                        variableOnlyAccessibleInChild = child.addVariable("out-of-scope-var", VariableType.BOOL);
-                        child.fail("some-failure", "some failure message");
-                    },
-                    "child-thread",
-                    Map.of());
+        return Workflow.newWorkflow(
+                "access-out-of-scope-var",
+                wf -> {
+                    SpawnedThread spawnedThread = wf.spawnThread(
+                            child -> {
+                                variableOnlyAccessibleInChild =
+                                        child.addVariable("out-of-scope-var", VariableType.BOOL);
+                                child.fail("some-failure", "some failure message");
+                            },
+                            "child-thread",
+                            Map.of());
 
-            // In order to "trick" the SDK into creating a WfSpec that accesses an
-            // out-of-scope variable, we have to use a failure handler on a waitForThreads
-            // node.
-            NodeOutput nodeThatWillFail = wf.waitForThreads(SpawnedThreads.of(spawnedThread));
+                    // In order to "trick" the SDK into creating a WfSpec that accesses an
+                    // out-of-scope variable, we have to use a failure handler on a waitForThreads
+                    // node.
+                    NodeOutput nodeThatWillFail = wf.waitForThreads(SpawnedThreads.of(spawnedThread));
 
-            wf.handleException(nodeThatWillFail, handler -> {
-                // We once had an NPE in which accessing a variable from the child in this thread
-                // was permitted by the SDK but the server threw an orzdash.
-                handler.mutate(variableOnlyAccessibleInChild, VariableMutationType.ASSIGN, true);
-            });
-        });
+                    wf.handleException(nodeThatWillFail, handler -> {
+                        // We once had an NPE in which accessing a variable from the child in this thread
+                        // was permitted by the SDK but the server threw an orzdash.
+                        handler.mutate(variableOnlyAccessibleInChild, VariableMutationType.ASSIGN, true);
+                    });
+                },
+                new LHConfig());
     }
 }

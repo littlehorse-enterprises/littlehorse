@@ -13,7 +13,6 @@ import io.littlehorse.common.proto.SleepNodeMaturedPb;
 import io.littlehorse.server.streams.storeinternals.GetableManager;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
-import io.littlehorse.server.streams.topology.core.WfService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,14 +55,13 @@ public class SleepNodeMaturedModel extends CoreSubCommand<SleepNodeMaturedPb> {
     @Override
     public Empty process(CoreProcessorContext executionContext, LHServerConfig config) {
         GetableManager getableManager = executionContext.getableManager();
-        WfService service = executionContext.service();
         WfRunModel wfRunModel = getableManager.get(nodeRunId.getWfRunId());
         if (wfRunModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfRun found.");
             return null;
         }
 
-        WfSpecModel wfSpecModel = service.getWfSpec(wfRunModel.getWfSpecId());
+        WfSpecModel wfSpecModel = wfRunModel.getWfSpec();
         if (wfSpecModel == null) {
             log.debug("Uh oh, invalid timer event, no associated WfSpec found.");
             return null;

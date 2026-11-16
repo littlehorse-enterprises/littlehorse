@@ -1,10 +1,8 @@
 package io.littlehorse.common.model.corecommand.subcommand;
 
 import com.google.protobuf.Message;
-import io.grpc.Status;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.LHServerConfig;
-import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.ScheduledTaskModel;
 import io.littlehorse.common.model.corecommand.CoreSubCommand;
 import io.littlehorse.common.model.getable.core.taskrun.TaskRunModel;
@@ -70,7 +68,7 @@ public class TaskClaimEventModel extends CoreSubCommand<TaskClaimEventPb> {
         TaskRunModel taskRun = executionContext.getableManager().get(taskRunId);
         if (taskRun == null) {
             log.debug("Got claimTask for non-existent taskRun {}", taskRunId);
-            throw new LHApiException(Status.INVALID_ARGUMENT, "Got claimTask for nonexistent taskRun {}" + taskRunId);
+            return PollTaskResponse.getDefaultInstance();
         }
 
         // Needs to be done before we process the event, since processing the event
