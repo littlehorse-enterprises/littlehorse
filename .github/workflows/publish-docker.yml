@@ -12,7 +12,7 @@ permissions:
   contents: read
 jobs:
   build-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -32,7 +32,7 @@ jobs:
           path: server/build/install/server
 
   lh-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - build-server
     steps:
@@ -58,7 +58,7 @@ jobs:
             type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-canary:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -85,7 +85,7 @@ jobs:
             type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lhctl:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -106,7 +106,7 @@ jobs:
             type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-dashboard:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -151,7 +151,7 @@ jobs:
             type=ref,event=branch,enable=${{ github.ref_name == 'master' }}
 
   lh-standalone:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - build-server
     steps:

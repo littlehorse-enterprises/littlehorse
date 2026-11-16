@@ -40,7 +40,7 @@ public interface StructFieldDefOrBuilder extends
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -50,7 +50,7 @@ public interface StructFieldDefOrBuilder extends
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -60,7 +60,7 @@ public interface StructFieldDefOrBuilder extends
   /**
    * <pre>
    * The default value of the field, which should match the Field Type. If not
-   * provided, then the field is treated as required.
+   * provided, then the field is treated as required unless nullable or in a oneof group.
    * </pre>
    *
    * <code>optional .littlehorse.VariableValue default_value = 2;</code>
@@ -105,4 +105,36 @@ public interface StructFieldDefOrBuilder extends
    */
   com.google.protobuf.ByteString
       getDescriptionBytes();
+
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return Whether the oneofGroup field is set.
+   */
+  boolean hasOneofGroup();
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return The oneofGroup.
+   */
+  java.lang.String getOneofGroup();
+  /**
+   * <pre>
+   * Fields with the same group name in this Struct allow zero or one populated member.
+   * Group names follow Struct field naming rules and have a separate namespace.
+   * </pre>
+   *
+   * <code>optional string oneof_group = 5;</code>
+   * @return The bytes for oneofGroup.
+   */
+  com.google.protobuf.ByteString
+      getOneofGroupBytes();
 }

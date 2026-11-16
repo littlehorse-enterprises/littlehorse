@@ -10,7 +10,6 @@ import io.littlehorse.sdk.wfsdk.LHStructBuilder;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHTaskWorker;
@@ -37,37 +36,40 @@ public class StructBuilderExample {
 
     private static final Logger log = LoggerFactory.getLogger(StructBuilderExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("assemble-person", wf -> {
-            // Input variables
-            WfRunVariable name = wf.declareStr("name").required();
-            WfRunVariable email = wf.declareStr("email").required();
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "assemble-person",
+                wf -> {
+                    // Input variables
+                    WfRunVariable name = wf.declareStr("name").required();
+                    WfRunVariable email = wf.declareStr("email").required();
 
-            // Internal variable to hold the assembled person
-            WfRunVariable personRecord = wf.declareStruct("person-record", Person.class);
+                    // Internal variable to hold the assembled person
+                    WfRunVariable personRecord = wf.declareStruct("person-record", Person.class);
 
-            // Fetch the address from an external source
-            NodeOutput addressOutput = wf.execute("fetch-address", name);
+                    // Fetch the address from an external source
+                    NodeOutput addressOutput = wf.execute("fetch-address", name);
 
-            // Build the Person struct using buildStruct + buildInlineStruct.
-            // This is the key feature: we assemble a Struct inside the WfSpec
-            // instead of relying on a task to return a complete Struct.
-            LHStructBuilder personStruct = wf.buildStruct("person")
-                    .put("name", name)
-                    .put("email", email)
-                    .put(
-                            "address",
-                            wf.buildInlineStruct()
-                                    .put("street", addressOutput.get("street"))
-                                    .put("city", addressOutput.get("city"))
-                                    .put("state", addressOutput.get("state"))
-                                    .put("zip", addressOutput.get("zip")));
+                    // Build the Person struct using buildStruct + buildInlineStruct.
+                    // This is the key feature: we assemble a Struct inside the WfSpec
+                    // instead of relying on a task to return a complete Struct.
+                    LHStructBuilder personStruct = wf.buildStruct("person")
+                            .put("name", name)
+                            .put("email", email)
+                            .put(
+                                    "address",
+                                    wf.buildInlineStruct()
+                                            .put("street", addressOutput.get("street"))
+                                            .put("city", addressOutput.get("city"))
+                                            .put("state", addressOutput.get("state"))
+                                            .put("zip", addressOutput.get("zip")));
 
-            personRecord.assign(personStruct);
+                    personRecord.assign(personStruct);
 
-            // Use the assembled Struct
-            wf.execute("save-person", personRecord);
-        });
+                    // Use the assembled Struct
+                    wf.execute("save-person", personRecord);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -132,7 +134,7 @@ public class StructBuilderExample {
         Properties props = getConfigProps();
         LHConfig config = new LHConfig(props);
 
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         List<LHTaskWorker> workers = getTaskWorkers(config);
 

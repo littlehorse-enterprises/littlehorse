@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import e2e.Struct.PinStructV0;
 import e2e.Struct.PinStructV1;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.ExternalEventDef;
 import io.littlehorse.sdk.common.proto.ExternalEventDefId;
 import io.littlehorse.sdk.common.proto.ExternalEventRetentionPolicy;
@@ -342,9 +343,12 @@ public class StructDefLifecycleTest {
         }
 
         public Workflow getWfPinTest() {
-            return Workflow.newWorkflow(WF_SPEC_NAME, w -> {
-                w.declareStruct("in", STRUCT_DEF_NAME).required();
-            });
+            return Workflow.newWorkflow(
+                    WF_SPEC_NAME,
+                    w -> {
+                        w.declareStruct("in", STRUCT_DEF_NAME).required();
+                    },
+                    new LHConfig());
         }
     }
 

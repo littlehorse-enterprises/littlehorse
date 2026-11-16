@@ -3,6 +3,7 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.COMPLETED;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
@@ -21,7 +22,6 @@ import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -249,70 +249,82 @@ public class SpawnThreadsForEachWithFailureHandlerTest {
 
     @LHWorkflow("handle-exception-on-children")
     public Workflow buildHandleExceptionOnChildren() {
-        return new WorkflowImpl("handle-exception-on-children", wf -> {
-            WfRunVariable threadsToSpawn =
-                    wf.addVariable("to-spawn", VariableType.JSON_ARR).required();
-            WfRunVariable emptyJson = wf.addVariable("json-obj", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "handle-exception-on-children",
+                wf -> {
+                    WfRunVariable threadsToSpawn =
+                            wf.addVariable("to-spawn", VariableType.JSON_ARR).required();
+                    WfRunVariable emptyJson = wf.addVariable("json-obj", VariableType.JSON_OBJ);
 
-            SpawnedThreads childThreads = wf.spawnThreadForEach(
-                    threadsToSpawn,
-                    "child",
-                    child -> {
-                        WfRunVariable input =
-                                child.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
+                    SpawnedThreads childThreads = wf.spawnThreadForEach(
+                            threadsToSpawn,
+                            "child",
+                            child -> {
+                                WfRunVariable input =
+                                        child.addVariable(WorkflowThread.HANDLER_INPUT_VAR, VariableType.JSON_OBJ);
 
-                        // We want to be able to handle two different types of cases:
-                        // 1. The child thread fails immediately (i.e. in the same Command) when it's started
-                        // 2. The child thread fails later during execution (i.e. in a later Command)
-                        //
-                        // Putting in a TaskRun that is optionally executed allows us to test both cases with the
-                        // same WfSpec.
-                        child.doIf(
-                                child.condition(input.jsonPath("$.executeTask"), Comparator.EQUALS, true), ifBody -> {
-                                    ifBody.execute("dummy-task-spawnthreadtest");
-                                });
+                                // We want to be able to handle two different types of cases:
+                                // 1. The child thread fails immediately (i.e. in the same Command) when it's started
+                                // 2. The child thread fails later during execution (i.e. in a later Command)
+                                //
+                                // Putting in a TaskRun that is optionally executed allows us to test both cases with
+                                // the
+                                // same WfSpec.
+                                child.doIf(
+                                        child.condition(input.jsonPath("$.executeTask"), Comparator.EQUALS, true),
+                                        ifBody -> {
+                                            ifBody.execute("dummy-task-spawnthreadtest");
+                                        });
 
-                        child.doIf(
-                                child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_BUT_RECOVER),
-                                ifBody -> {
-                                    ifBody.fail(EXCEPTION_BUT_RECOVER, "failed due to exception");
-                                });
-                        child.doIf(
-                                child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_BUT_STILL_FAIL),
-                                ifBody -> {
-                                    ifBody.fail(EXCEPTION_BUT_STILL_FAIL, "failed due to exception");
-                                });
-                        child.doIf(
-                                child.condition(
-                                        input.jsonPath("$.endResult"), Comparator.EQUALS, EXCEPTION_DONT_HANDLE),
-                                ifBody -> {
-                                    ifBody.fail(EXCEPTION_DONT_HANDLE, "failed due to exception");
-                                });
+                                child.doIf(
+                                        child.condition(
+                                                input.jsonPath("$.endResult"),
+                                                Comparator.EQUALS,
+                                                EXCEPTION_BUT_RECOVER),
+                                        ifBody -> {
+                                            ifBody.fail(EXCEPTION_BUT_RECOVER, "failed due to exception");
+                                        });
+                                child.doIf(
+                                        child.condition(
+                                                input.jsonPath("$.endResult"),
+                                                Comparator.EQUALS,
+                                                EXCEPTION_BUT_STILL_FAIL),
+                                        ifBody -> {
+                                            ifBody.fail(EXCEPTION_BUT_STILL_FAIL, "failed due to exception");
+                                        });
+                                child.doIf(
+                                        child.condition(
+                                                input.jsonPath("$.endResult"),
+                                                Comparator.EQUALS,
+                                                EXCEPTION_DONT_HANDLE),
+                                        ifBody -> {
+                                            ifBody.fail(EXCEPTION_DONT_HANDLE, "failed due to exception");
+                                        });
 
-                        child.doIf(
-                                child.condition(input.jsonPath("$.endResult"), Comparator.EQUALS, "error"), ifBody -> {
-                                    // Cause a VarSubError
-                                    ifBody.mutate(
-                                            emptyJson.jsonPath("$.notarealpath"),
-                                            VariableMutationType.MULTIPLY,
-                                            emptyJson.jsonPath("$.asdfasdf"));
-                                });
-                    },
-                    Map.of());
+                                child.doIf(
+                                        child.condition(input.jsonPath("$.endResult"), Comparator.EQUALS, "error"),
+                                        ifBody -> {
+                                            // Cause a VarSubError
+                                            ifBody.mutate(
+                                                    emptyJson.jsonPath("$.notarealpath"),
+                                                    VariableMutationType.MULTIPLY,
+                                                    emptyJson.jsonPath("$.asdfasdf"));
+                                        });
+                            },
+                            Map.of());
 
-            WaitForThreadsNodeOutput wftn = wf.waitForThreads(childThreads);
-            wftn.handleErrorOnChild(LHErrorType.VAR_SUB_ERROR, handler -> {});
+                    WaitForThreadsNodeOutput wftn = wf.waitForThreads(childThreads);
+                    wftn.handleErrorOnChild(LHErrorType.VAR_SUB_ERROR, handler -> {});
 
-            wftn.handleExceptionOnChild(EXCEPTION_BUT_RECOVER, handler -> {
-                handler.execute("dummy-task-spawnthreadtest");
-            });
+                    wftn.handleExceptionOnChild(EXCEPTION_BUT_RECOVER, handler -> {
+                        handler.execute("dummy-task-spawnthreadtest");
+                    });
 
-            wftn.handleExceptionOnChild(EXCEPTION_BUT_STILL_FAIL, handler -> {
-                handler.fail(STILL_FAILED, "should still fail");
-            });
-        });
+                    wftn.handleExceptionOnChild(EXCEPTION_BUT_STILL_FAIL, handler -> {
+                        handler.fail(STILL_FAILED, "should still fail");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("dummy-task-spawnthreadtest")

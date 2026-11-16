@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -11,7 +12,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -68,14 +68,17 @@ public class VarMutationListsTest {
 
     @LHWorkflow("workflow-test-lists")
     public Workflow getWorkflowImpl() {
-        return new WorkflowImpl("workflow-test-lists", thread -> {
-            WfRunVariable listOne = thread.addVariable("list-one", VariableType.JSON_ARR);
+        return Workflow.newWorkflow(
+                "workflow-test-lists",
+                thread -> {
+                    WfRunVariable listOne = thread.addVariable("list-one", VariableType.JSON_ARR);
 
-            thread.execute("af-simple");
+                    thread.execute("af-simple");
 
-            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
-            thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
-            thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
-        });
+                    thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, 5);
+                    thread.mutate(listOne, VariableMutationType.REMOVE_IF_PRESENT, "hello");
+                    thread.mutate(listOne, VariableMutationType.REMOVE_INDEX, 3);
+                },
+                new LHConfig());
     }
 }

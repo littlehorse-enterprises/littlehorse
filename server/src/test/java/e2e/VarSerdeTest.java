@@ -51,9 +51,12 @@ public class VarSerdeTest {
     private WorkflowVerifier verifier;
 
     @LHWorkflow("var-serde-test")
-    private Workflow varSerdeWf = Workflow.newWorkflow("var-serde-test", wf -> {
-        wf.execute(TASK_NAME);
-    });
+    private Workflow varSerdeWf = Workflow.newWorkflow(
+            "var-serde-test",
+            wf -> {
+                wf.execute(TASK_NAME);
+            },
+            new LHConfig());
 
     @Test
     public void shouldPropagateMalformedJsonObjThroughReportTask() {

@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.AwaitWorkflowEventRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
@@ -8,7 +9,6 @@ import io.littlehorse.sdk.common.proto.WorkflowEventDefId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -58,11 +58,14 @@ public class WorkflowEventsTest {
 
     @LHWorkflow("events")
     public Workflow eventsWf() {
-        return new WorkflowImpl("events", entrypoint -> {
-            WfRunVariable sleepTime = entrypoint.addVariable("sleep-time", 0);
-            WfRunVariable input = entrypoint.addVariable("input", "hello there");
-            entrypoint.sleepSeconds(sleepTime);
-            entrypoint.throwEvent("user-created", input).registeredAs(String.class);
-        });
+        return Workflow.newWorkflow(
+                "events",
+                entrypoint -> {
+                    WfRunVariable sleepTime = entrypoint.addVariable("sleep-time", 0);
+                    WfRunVariable input = entrypoint.addVariable("input", "hello there");
+                    entrypoint.sleepSeconds(sleepTime);
+                    entrypoint.throwEvent("user-created", input).registeredAs(String.class);
+                },
+                new LHConfig());
     }
 }

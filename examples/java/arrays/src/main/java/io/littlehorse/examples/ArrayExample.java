@@ -5,7 +5,6 @@ import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.util.List;
 import java.util.Properties;
@@ -15,15 +14,19 @@ import org.slf4j.LoggerFactory;
 public class ArrayExample {
     private static final Logger log = LoggerFactory.getLogger(ArrayExample.class);
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-arrays", wf -> {
-            WfRunVariable arrVar = wf.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-arrays",
+                wf -> {
+                    WfRunVariable arrVar =
+                            wf.declareArray("my-array", Long.class).withDefault(new Long[] {1L, 2L, 3L});
 
-            NodeOutput produced = wf.execute("produce-array");
-            arrVar.assign(arrVar.extend(produced));
+                    NodeOutput produced = wf.execute("produce-array");
+                    arrVar.assign(arrVar.extend(produced));
 
-            wf.execute("consume-array", arrVar);
-        });
+                    wf.execute("consume-array", arrVar);
+                },
+                config);
     }
 
     public static List<LHTaskWorker> getWorkers(LHConfig config) {
@@ -37,7 +40,7 @@ public class ArrayExample {
         LHConfig cfg = new LHConfig(props);
         LittleHorseGrpc.LittleHorseBlockingStub client = cfg.getBlockingStub();
 
-        Workflow wf = getWorkflow();
+        Workflow wf = getWorkflow(cfg);
         List<LHTaskWorker> workers = getWorkers(cfg);
 
         // register task defs

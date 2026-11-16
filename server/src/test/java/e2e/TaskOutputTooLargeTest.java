@@ -2,6 +2,7 @@ package e2e;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskAttempt;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -34,21 +35,27 @@ public class TaskOutputTooLargeTest {
 
     @LHWorkflow("task-output-size")
     public Workflow getTaskOutputSizeWf() {
-        return Workflow.newWorkflow("task-output-size", wf -> {
-            WfRunVariable payloadSize =
-                    wf.addVariable("payload-size", VariableType.INT).required();
-            wf.execute("return-bytes-of-size", payloadSize);
-        });
+        return Workflow.newWorkflow(
+                "task-output-size",
+                wf -> {
+                    WfRunVariable payloadSize =
+                            wf.addVariable("payload-size", VariableType.INT).required();
+                    wf.execute("return-bytes-of-size", payloadSize);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("task-run-size")
     public Workflow getTaskRunSizeWf() {
-        return Workflow.newWorkflow("task-run-size", wf -> {
-            WfRunVariable payloadSize =
-                    wf.addVariable("payload-size", VariableType.INT).required();
-            TaskNodeOutput bytes = wf.execute("return-bytes-of-size", payloadSize);
-            wf.execute("receive-and-return-bytes", bytes);
-        });
+        return Workflow.newWorkflow(
+                "task-run-size",
+                wf -> {
+                    WfRunVariable payloadSize =
+                            wf.addVariable("payload-size", VariableType.INT).required();
+                    TaskNodeOutput bytes = wf.execute("return-bytes-of-size", payloadSize);
+                    wf.execute("receive-and-return-bytes", bytes);
+                },
+                new LHConfig());
     }
 
     @Test

@@ -3,6 +3,7 @@ package e2e;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHJsonProcessingException;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -11,7 +12,6 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -82,22 +82,28 @@ public class JsonMutationTest {
 
     @LHWorkflow("json-mutation-workflow")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("json-mutation-workflow", thread -> {
-            WfRunVariable myObj = thread.addVariable("my-obj", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "json-mutation-workflow",
+                thread -> {
+                    WfRunVariable myObj = thread.addVariable("my-obj", VariableType.JSON_OBJ);
 
-            thread.execute("ae-simple");
-            thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
-        });
+                    thread.execute("ae-simple");
+                    thread.mutate(myObj, VariableMutationType.REMOVE_KEY, "foo");
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("json-dynamic-get-workflow")
     public Workflow buildDynamicGetWorkflow() {
-        return new WorkflowImpl("json-dynamic-get-workflow", thread -> {
-            WfRunVariable myObj = thread.declareJsonObj("my-obj").withDefault(Map.of("answer", 42L));
-            WfRunVariable key = thread.declareStr("key").withDefault("answer");
-            WfRunVariable picked = thread.declareInt("picked");
-            picked.assign(myObj.get(key));
-        });
+        return Workflow.newWorkflow(
+                "json-dynamic-get-workflow",
+                thread -> {
+                    WfRunVariable myObj = thread.declareJsonObj("my-obj").withDefault(Map.of("answer", 42L));
+                    WfRunVariable key = thread.declareStr("key").withDefault("answer");
+                    WfRunVariable picked = thread.declareInt("picked");
+                    picked.assign(myObj.get(key));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("ae-simple")

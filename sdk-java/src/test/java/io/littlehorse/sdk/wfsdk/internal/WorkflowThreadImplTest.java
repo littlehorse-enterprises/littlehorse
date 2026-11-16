@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import io.littlehorse.sdk.common.adapter.LHIntegerAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Comparator;
@@ -54,10 +55,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testSleepUntil() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
-            thread.sleepUntil(var);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
+                    thread.sleepUntil(var);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
@@ -70,10 +74,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testEarlyReturn() {
-        WorkflowImpl workflow = new WorkflowImpl("asdf", wf -> {
-            wf.execute("some-task");
-            wf.fail("some-exception", "some error message");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "asdf",
+                wf -> {
+                    wf.execute("some-task");
+                    wf.fail("some-exception", "some error message");
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
@@ -89,14 +96,17 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testEarlyReturnInIfStatement() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
-            thread.doIf(thread.condition(var, Comparator.LESS_THAN, 10), ifBody -> {
-                ifBody.execute("foo");
-                ifBody.complete();
-            });
-            thread.execute("bar");
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    WfRunVariable var = thread.addVariable("my-var", VariableType.INT);
+                    thread.doIf(thread.condition(var, Comparator.LESS_THAN, 10), ifBody -> {
+                        ifBody.execute("foo");
+                        ifBody.complete();
+                    });
+                    thread.execute("bar");
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         List<Map.Entry<String, Node>> exitNodes =
@@ -123,10 +133,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testDefaultVarVals() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.addVariable("int-var", 123);
-            thread.addVariable("object-var", new Foo("asdf", "fdsa"));
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.addVariable("int-var", 123);
+                    thread.addVariable("object-var", new Foo("asdf", "fdsa"));
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         List<ThreadVarDef> varDefs =
@@ -143,12 +156,15 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWhileLoopConditional() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf");
-            thread.doWhile(thread.condition("asf", Comparator.EQUALS, "asf"), loop -> {
-                loop.execute("fdsa");
-            });
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf");
+                    thread.doWhile(thread.condition("asf", Comparator.EQUALS, "asf"), loop -> {
+                        loop.execute("fdsa");
+                    });
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -180,9 +196,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void noRetriesByDefault() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf");
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf");
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node taskNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
@@ -192,10 +211,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void setIndividualRetry() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf").withRetries(2);
-            ;
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf").withRetries(2);
+                    ;
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node taskNode =
                 wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName()).getNodesOrThrow("1-asdf-TASK");
@@ -205,10 +227,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void setDefaultRetryAndOverride() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf");
-            thread.execute("asdf").withRetries(2);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf");
+                    thread.execute("asdf").withRetries(2);
+                },
+                new LHConfig());
         wf.setDefaultTaskRetries(1);
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node defaultNode =
@@ -223,17 +248,20 @@ public class WorkflowThreadImplTest {
 
     @Test
     void setDefaultExponentialBackoffPolicyAndOverride() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf");
-            thread.execute("asdf").withRetries(2);
-            thread.execute("asdf")
-                    .withRetries(42)
-                    .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
-                            .setBaseIntervalMs(500)
-                            .setMultiplier(137)
-                            .setMaxDelayMs(100000)
-                            .build());
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf");
+                    thread.execute("asdf").withRetries(2);
+                    thread.execute("asdf")
+                            .withRetries(42)
+                            .withExponentialBackoff(ExponentialBackoffRetryPolicy.newBuilder()
+                                    .setBaseIntervalMs(500)
+                                    .setMultiplier(137)
+                                    .setMaxDelayMs(100000)
+                                    .build());
+                },
+                new LHConfig());
         wf.setDefaultTaskExponentialBackoffPolicy(ExponentialBackoffRetryPolicy.newBuilder()
                 .setBaseIntervalMs(500)
                 .setMultiplier(2)
@@ -263,15 +291,18 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldCaptureWorkflowEventDefNames() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.throwEvent("event-one", "fdsa");
-            thread.spawnThread(
-                    child -> {
-                        child.throwEvent("event-from-child", "asdf");
-                    },
-                    "child",
-                    null);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.throwEvent("event-one", "fdsa");
+                    thread.spawnThread(
+                            child -> {
+                                child.throwEvent("event-from-child", "asdf");
+                            },
+                            "child",
+                            null);
+                },
+                new LHConfig());
 
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-one");
         Assertions.assertThat(wf.getRequiredWorkflowEventDefNames()).contains("event-from-child");
@@ -279,13 +310,16 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldUseTypeAdapterForWorkflowEventRegisteredAsClass() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
-        });
         LHConfig config =
                 LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.throwEvent("event-one", UUID.randomUUID()).registeredAs(UUID.class);
+                },
+                config);
 
-        wf.compileWorkflow(config);
+        wf.compileWorkflow();
 
         PutWorkflowEventDefRequest eventDef =
                 wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
@@ -293,14 +327,39 @@ public class WorkflowThreadImplTest {
     }
 
     @Test
+    void shouldUseTypeAdapterBeforeAnyWorkflowCompilation() {
+        UUID defaultValue = UUID.randomUUID();
+        LHConfig config =
+                LHConfig.newBuilder().addTypeAdapter(new UUIDIntegerAdapter()).build();
+        Workflow wf = Workflow.newWorkflow(
+                "configured-workflow",
+                thread -> {
+                    thread.addVariable("id", defaultValue);
+                },
+                config);
+
+        assertThat(wf.getRequiredTaskDefNames()).isEmpty();
+        VariableDef id = wf.compileWorkflow()
+                .getThreadSpecsOrThrow("entrypoint")
+                .getVariableDefs(0)
+                .getVarDef();
+
+        assertThat(id.getTypeDef().getPrimitiveType()).isEqualTo(VariableType.INT);
+        assertThat(id.getDefaultValue().getInt()).isEqualTo(defaultValue.hashCode());
+    }
+
+    @Test
     void shouldUseTypeAdapterForExternalEventRegisteredAsClass() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.waitForEvent("event-one").registeredAs(UUID.class);
-        });
         LHConfig config =
                 LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.waitForEvent("event-one").registeredAs(UUID.class);
+                },
+                config);
 
-        wf.compileWorkflow(config);
+        wf.compileWorkflow();
 
         PutExternalEventDefRequest eventDef =
                 wf.getExternalEventDefsToRegister().stream().findFirst().orElseThrow();
@@ -309,15 +368,17 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldUseTypeAdapterFromConfigForWorkflowEventRegisteredAsClass() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            WfRunVariable strVar = thread.declareStr("some-var");
-            thread.throwEvent("event-one", strVar).registeredAs(UUID.class);
-        });
-
         LHConfig config =
                 LHConfig.newBuilder().addTypeAdapter(new UUIDConfigAdapter()).build();
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    WfRunVariable strVar = thread.declareStr("some-var");
+                    thread.throwEvent("event-one", strVar).registeredAs(UUID.class);
+                },
+                config);
 
-        wf.compileWorkflow(config);
+        wf.compileWorkflow();
 
         PutWorkflowEventDefRequest eventDef =
                 wf.getWorkflowEventDefsToRegister().stream().findFirst().orElseThrow();
@@ -326,10 +387,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void setDefaultTaskTimeout() {
-        WorkflowImpl wf = new WorkflowImpl("asdf", thread -> {
-            thread.execute("asdf");
-            thread.execute("asdf").timeout(42);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "asdf",
+                thread -> {
+                    thread.execute("asdf");
+                    thread.execute("asdf").timeout(42);
+                },
+                new LHConfig());
         wf.setDefaultTaskTimeout(19);
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         Node taskNode =
@@ -344,9 +408,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void ensureNoWfSpecGcByDefault() {
-        WorkflowImpl wf = new WorkflowImpl("some-wf", thread -> {
-            thread.execute("some-task");
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "some-wf",
+                thread -> {
+                    thread.execute("some-task");
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         assertThat(wfSpec.hasRetentionPolicy()).isFalse();
 
@@ -357,9 +424,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWfRetentionPolicy() {
-        Workflow wf = new WorkflowImpl("some-wf", thread -> {
-                    thread.execute("some-task");
-                })
+        Workflow wf = Workflow.newWorkflow(
+                        "some-wf",
+                        thread -> {
+                            thread.execute("some-task");
+                        },
+                        new LHConfig())
                 .withRetentionPolicy(WorkflowRetentionPolicy.newBuilder()
                         .setSecondsAfterWfTermination(Duration.ofDays(30).toSeconds())
                         .build());
@@ -377,9 +447,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testDefaultThreadRetentionPolicy() {
-        Workflow wf = new WorkflowImpl("some-wf", thread -> {
-                    thread.execute("some-task");
-                })
+        Workflow wf = Workflow.newWorkflow(
+                        "some-wf",
+                        thread -> {
+                            thread.execute("some-task");
+                        },
+                        new LHConfig())
                 .withDefaultThreadRetentionPolicy(ThreadRetentionPolicy.newBuilder()
                         .setSecondsAfterThreadTermination(30)
                         .build());
@@ -395,18 +468,21 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testOverrideThreadRetentionPolicy() {
-        Workflow wf = new WorkflowImpl("some-wf", thread -> {
-                    thread.execute("some-task");
-                    thread.spawnThread(
-                            child -> {
-                                child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
-                                        .setSecondsAfterThreadTermination(50)
-                                        .build());
-                                child.execute("another-task");
-                            },
-                            "child-thread",
-                            null);
-                })
+        Workflow wf = Workflow.newWorkflow(
+                        "some-wf",
+                        thread -> {
+                            thread.execute("some-task");
+                            thread.spawnThread(
+                                    child -> {
+                                        child.withRetentionPolicy(ThreadRetentionPolicy.newBuilder()
+                                                .setSecondsAfterThreadTermination(50)
+                                                .build());
+                                        child.execute("another-task");
+                                    },
+                                    "child-thread",
+                                    null);
+                        },
+                        new LHConfig())
                 .withDefaultThreadRetentionPolicy(ThreadRetentionPolicy.newBuilder()
                         .setSecondsAfterThreadTermination(30)
                         .build());
@@ -426,9 +502,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testTimeoutOnExternalEventNode() {
-        Workflow wf = new WorkflowImpl("some-wf", thread -> {
-            thread.waitForEvent("some-event").timeout(10);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "some-wf",
+                thread -> {
+                    thread.waitForEvent("some-event").timeout(10);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -439,10 +518,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldAutomaticallyMaskCorrelationIdFromMaskedVar() {
-        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
-            WfRunVariable ssn = wf.declareStr("ssn").masked();
-            wf.waitForEvent("identity-verified").withCorrelationId(ssn);
-        });
+        Workflow wfGen = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    WfRunVariable ssn = wf.declareStr("ssn").masked();
+                    wf.waitForEvent("identity-verified").withCorrelationId(ssn);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -452,10 +534,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldNotMaskNormalVariableAsCorrelationId() {
-        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
-            WfRunVariable email = wf.declareStr("email");
-            wf.waitForEvent("identity-verified").withCorrelationId(email);
-        });
+        Workflow wfGen = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    WfRunVariable email = wf.declareStr("email");
+                    wf.waitForEvent("identity-verified").withCorrelationId(email);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -465,10 +550,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldMaskCorrelationIdIfITellItTo() {
-        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
-            WfRunVariable email = wf.declareStr("email");
-            wf.waitForEvent("identity-verified").withCorrelationId(email, true);
-        });
+        Workflow wfGen = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    WfRunVariable email = wf.declareStr("email");
+                    wf.waitForEvent("identity-verified").withCorrelationId(email, true);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -478,10 +566,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void shouldNotMaskCorrelationIdIfITellItNotTo() {
-        Workflow wfGen = new WorkflowImpl("some-wf", wf -> {
-            WfRunVariable ssn = wf.declareStr("ssn").masked();
-            wf.waitForEvent("identity-verified").withCorrelationId(ssn, false);
-        });
+        Workflow wfGen = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    WfRunVariable ssn = wf.declareStr("ssn").masked();
+                    wf.waitForEvent("identity-verified").withCorrelationId(ssn, false);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wfGen.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -491,11 +582,14 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWaitForThreadsHandleAnyFailureOnChild() {
-        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
-            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
-            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
-            result.handleAnyFailureOnChild(handler -> {});
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+                    WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+                    result.handleAnyFailureOnChild(handler -> {});
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(3);
@@ -512,12 +606,15 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWaitForThreadsHandleAnyErrorOnChild() {
-        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
-            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
-            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
-            result.handleErrorOnChild(LHErrorType.TIMEOUT, handler -> {});
-            result.handleErrorOnChild(null, handler -> {});
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+                    WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+                    result.handleErrorOnChild(LHErrorType.TIMEOUT, handler -> {});
+                    result.handleErrorOnChild(null, handler -> {});
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(4);
@@ -541,12 +638,15 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWaitForThreadsHandleAnyExceptionOnChild() {
-        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
-            SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
-            WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
-            result.handleExceptionOnChild("my-exception", handler -> {});
-            result.handleExceptionOnChild(null, handler -> {});
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    SpawnedThread child = wf.spawnThread(childThread -> {}, "child", Map.of());
+                    WaitForThreadsNodeOutput result = wf.waitForThreads(SpawnedThreads.of(child));
+                    result.handleExceptionOnChild("my-exception", handler -> {});
+                    result.handleExceptionOnChild(null, handler -> {});
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(4);
@@ -571,10 +671,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testWaitForParallelSpawnThreads() {
-        Workflow workflow = new WorkflowImpl("some-wf", wf -> {
-            WfRunVariable toSpawn = wf.addVariable("to-spawn", VariableType.JSON_ARR);
-            wf.waitForThreads(wf.spawnThreadForEach(toSpawn, "child", child -> {}));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "some-wf",
+                wf -> {
+                    WfRunVariable toSpawn = wf.addVariable("to-spawn", VariableType.JSON_ARR);
+                    wf.waitForThreads(wf.spawnThreadForEach(toSpawn, "child", child -> {}));
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(2);
@@ -588,11 +691,14 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testThrowEventNode() {
-        Workflow workflow = new WorkflowImpl("throw-event-wf", wf -> {
-            WfRunVariable var = wf.addVariable("my-var", VariableType.STR);
-            wf.throwEvent("my-event", var);
-            wf.throwEvent("another-event", "some-content");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "throw-event-wf",
+                wf -> {
+                    WfRunVariable var = wf.addVariable("my-var", VariableType.STR);
+                    wf.throwEvent("my-event", var);
+                    wf.throwEvent("another-event", "some-content");
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(1);
@@ -611,10 +717,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testReminderTaskWithNoArguments() {
-        Workflow workflow = new WorkflowImpl("throw-event-wf", wf -> {
-            UserTaskOutput uto = wf.assignUserTask("some-usertaskdef", "some-person", "some-group");
-            wf.scheduleReminderTask(uto, 10, "some-taskdef");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "throw-event-wf",
+                wf -> {
+                    UserTaskOutput uto = wf.assignUserTask("some-usertaskdef", "some-person", "some-group");
+                    wf.scheduleReminderTask(uto, 10, "some-taskdef");
+                },
+                new LHConfig());
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
 
         assertThat(wfSpec.getThreadSpecsCount()).isEqualTo(1);
@@ -632,14 +741,17 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testDynamicTask() {
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            wf.execute("some-static-task");
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    wf.execute("some-static-task");
 
-            LHFormatString formatStr = wf.format("some-dynamic-task-{0}", myVar);
-            wf.execute(formatStr);
-            wf.execute(myVar);
-        });
+                    LHFormatString formatStr = wf.format("some-dynamic-task-{0}", myVar);
+                    wf.execute(formatStr);
+                    wf.execute(myVar);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -658,9 +770,12 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testPassingNodeOutput() {
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            wf.execute("some-task", wf.execute("some-other-task"));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    wf.execute("some-task", wf.execute("some-other-task"));
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -674,10 +789,13 @@ public class WorkflowThreadImplTest {
     @Test
     void mutationsShouldUseVariableAssignment() {
         // Deprecated the literal_value and node_output approach
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assign("some-value");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    myVar.assign("some-value");
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -694,10 +812,13 @@ public class WorkflowThreadImplTest {
     @Test
     void nodeOutputMutationsShouldAlsoUseVariableAssignments() {
         // Deprecated the literal_value and node_output approach
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assign(wf.execute("use-the-force"));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    myVar.assign(wf.execute("use-the-force"));
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -714,10 +835,13 @@ public class WorkflowThreadImplTest {
     @Test
     void nodeOutputMutationsShouldCarryJsonPath() {
         // Deprecated the literal_value and node_output approach
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            myVar.assign(wf.execute("use-the-force").jsonPath("$.hello.there"));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    myVar.assign(wf.execute("use-the-force").jsonPath("$.hello.there"));
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -737,11 +861,14 @@ public class WorkflowThreadImplTest {
     @Test
     void assigningVariablesToOtherVariablesShouldUseVariableAssignment() {
         // Deprecated the literal_value and node_output approach
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            WfRunVariable otherVar = wf.addVariable("other-var", VariableType.STR);
-            myVar.assign(otherVar);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    WfRunVariable otherVar = wf.addVariable("other-var", VariableType.STR);
+                    myVar.assign(otherVar);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -755,11 +882,14 @@ public class WorkflowThreadImplTest {
     @Test
     void assigningVariablesToOtherVariablesShouldCarryJsonPath() {
         // Deprecated the literal_value and node_output approach
-        Workflow workflow = new WorkflowImpl("obiwan", wf -> {
-            WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
-            WfRunVariable otherVar = wf.addVariable("other-var", VariableType.JSON_OBJ);
-            myVar.assign(otherVar.jsonPath("$.hello.there"));
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "obiwan",
+                wf -> {
+                    WfRunVariable myVar = wf.addVariable("my-var", VariableType.STR);
+                    WfRunVariable otherVar = wf.addVariable("other-var", VariableType.JSON_OBJ);
+                    myVar.assign(otherVar.jsonPath("$.hello.there"));
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = workflow.compileWorkflow();
         ThreadSpec entrypoint = wfSpec.getThreadSpecsOrThrow(wfSpec.getEntrypointThreadName());
@@ -784,9 +914,12 @@ public class WorkflowThreadImplTest {
     @Test()
     public void shouldValidateEmptyUserNameOnUserTaskDefinition() {
         Throwable throwable = Assertions.catchThrowable(() -> {
-            Workflow.newWorkflow("my-wf", thread -> {
-                        thread.assignUserTask("some-usertaskdef", "", null);
-                    })
+            Workflow.newWorkflow(
+                            "my-wf",
+                            thread -> {
+                                thread.assignUserTask("some-usertaskdef", "", null);
+                            },
+                            new LHConfig())
                     .compileWorkflow();
         });
         Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -796,9 +929,12 @@ public class WorkflowThreadImplTest {
     @Test()
     public void shouldValidateEmptyGroupNameOnUserTaskDefinition() {
         Throwable throwable = Assertions.catchThrowable(() -> {
-            Workflow.newWorkflow("my-wf", thread -> {
-                        thread.assignUserTask("some-usertaskdef", null, "");
-                    })
+            Workflow.newWorkflow(
+                            "my-wf",
+                            thread -> {
+                                thread.assignUserTask("some-usertaskdef", null, "");
+                            },
+                            new LHConfig())
                     .compileWorkflow();
         });
         Assertions.assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
@@ -807,10 +943,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testCompleteWithoutReturnValue() {
-        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
-            thread.execute("some-task");
-            thread.complete();
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "test-workflow",
+                thread -> {
+                    thread.execute("some-task");
+                    thread.complete();
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
@@ -827,10 +966,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testCompleteWithLiteralReturnValue() {
-        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
-            thread.execute("some-task");
-            thread.complete("success");
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "test-workflow",
+                thread -> {
+                    thread.execute("some-task");
+                    thread.complete("success");
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
@@ -849,11 +991,14 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testCompleteWithVariableReturnValue() {
-        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
-            WfRunVariable result = thread.addVariable("result", VariableType.STR);
-            thread.execute("some-task");
-            thread.complete(result);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "test-workflow",
+                thread -> {
+                    WfRunVariable result = thread.addVariable("result", VariableType.STR);
+                    thread.execute("some-task");
+                    thread.complete(result);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
@@ -872,10 +1017,13 @@ public class WorkflowThreadImplTest {
 
     @Test
     void testCompleteWithNodeOutputReturnValue() {
-        WorkflowImpl wf = new WorkflowImpl("test-workflow", thread -> {
-            var taskOutput = thread.execute("some-task");
-            thread.complete(taskOutput);
-        });
+        Workflow wf = Workflow.newWorkflow(
+                "test-workflow",
+                thread -> {
+                    var taskOutput = thread.execute("some-task");
+                    thread.complete(taskOutput);
+                },
+                new LHConfig());
 
         PutWfSpecRequest wfSpec = wf.compileWorkflow();
 
@@ -902,6 +1050,23 @@ public class WorkflowThreadImplTest {
         @Override
         public UUID fromString(String src) {
             return UUID.fromString(src);
+        }
+
+        @Override
+        public Class<UUID> getTypeClass() {
+            return UUID.class;
+        }
+    }
+
+    private static class UUIDIntegerAdapter extends LHIntegerAdapter<UUID> {
+        @Override
+        public Integer toInteger(UUID src) {
+            return src.hashCode();
+        }
+
+        @Override
+        public UUID fromInteger(Integer src) {
+            return new UUID(0, src);
         }
 
         @Override
