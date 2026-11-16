@@ -14,7 +14,7 @@ describe('tryFormatAsJson', () => {
       String.raw`{"text":"punctuation { [ , : ] }, quote \" and slash \\","escaped":"\u0041\n"}`,
       String.raw`{
     "text": "punctuation { [ , : ] }, quote \" and slash \\",
-    "escaped": "\u0041\n"
+    "escaped": "A\n"
 }`,
     ],
     ['[1,2,3]', '[\n    1,\n    2,\n    3\n]'],
@@ -24,7 +24,7 @@ describe('tryFormatAsJson', () => {
     [' "hello  world" ', '"hello  world"'],
     [' true ', 'true'],
     [' null ', 'null'],
-  ])('formats %s without changing its tokens', (input: string, expected: string) => {
+  ])('formats %s while preserving its values', (input: string, expected: string) => {
     expect(tryFormatAsJson(input)).toBe(expected)
     expect(tryFormatAsJson(expected)).toBe(expected)
   })
@@ -59,4 +59,16 @@ describe('tryFormatAsJson', () => {
       expect(tryFormatAsJson(input)).toBe(input)
     }
   )
+
+  it('returns the original JSON if serialization fails', () => {
+    const losslessJson = jest.requireActual<typeof import('lossless-json')>('lossless-json')
+    const stringify = jest.spyOn(losslessJson, 'stringify').mockImplementationOnce(() => {
+      throw new RangeError('Maximum call stack size exceeded')
+    })
+    try {
+      expect(tryFormatAsJson('{"id":1859273648201937921}')).toBe('{"id":1859273648201937921}')
+    } finally {
+      stringify.mockRestore()
+    }
+  })
 })
