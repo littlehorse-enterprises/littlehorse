@@ -53,7 +53,7 @@ poetry env use python3.9
 The existing integration handles `SIGTERM` and `SIGINT` automatically:
 
 ```python
-worker = LHTaskWorker(greeting, "greet", config, shutdown_timeout=30.0)
+worker = LHTaskWorker(greeting, "greet", config, shutdown_timeout=75.0)
 await littlehorse.start(worker)
 # Accepted executions AND their result reports have finished successfully.
 # Application resources used by tasks can now be closed.
@@ -77,9 +77,15 @@ timeout/retry recovery.
 
 ### Deadlines, failures, and cancellation
 
-`shutdown_timeout` is a positive finite number of seconds, default **30**,
+`shutdown_timeout` is a positive finite number of seconds, default **75**,
 measured from the first `stop()` request, not from startup. Each worker has its
-own deadline; `littlehorse.start(*workers)` waits for all of them.
+own deadline; `littlehorse.start(*workers)` waits for all of them. This allows the
+default 60-second task timeout plus 15 seconds for reporting, not a guarantee that
+every reporting retry can finish within the deadline.
+
+The first shutdown request logs the timeout and outstanding accepted-task count
+at INFO level, including queued executions and pending reports on retired
+connections.
 
 - Successful return means accepted task executions finished and their results
   were acknowledged. A task's ordinary business/technical failure is still
@@ -156,8 +162,8 @@ See the [basic example](../examples/python/basic/README.md) for both styles.
 ### Kubernetes and delivery limits
 
 Budget `terminationGracePeriodSeconds` for **drain deadline + application cleanup
-+ margin** (use the largest concurrent worker deadline). A 30-second drain
-deadline needs more than a 30-second termination grace period. Cancellation
++ margin** (use the largest concurrent worker deadline). A 75-second drain
+deadline needs more than a 75-second termination grace period. Cancellation
 cleanup also consumes the budget.
 
 Increasing termination grace alone does not fix missing reporting ownership;

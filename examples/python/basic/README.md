@@ -42,7 +42,7 @@ lhctl get taskRun <wf_run_id> <task_run_global_id>
 
 `example_basic` uses the SDK's existing SIGTERM/SIGINT handlers. After a signal,
 `littlehorse.start(worker)` returns only after accepted executions **and result
-acknowledgements** finish. Its configured drain deadline is 30 seconds.
+acknowledgements** finish. Its default drain deadline is 75 seconds.
 
 For optional application-owned POSIX signal handling:
 

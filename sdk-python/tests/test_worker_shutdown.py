@@ -213,9 +213,46 @@ class TestWorkerShutdown(unittest.IsolatedAsyncioTestCase):
     async def test_idle_shutdown_wakes_heartbeat_and_polling(self) -> None:
         worker, run, polls = await self.launch()
         await self.heartbeat_idle.wait()
-        worker.stop()
+        with self.assertLogs("LHTaskWorker", level="INFO") as logs:
+            worker.stop()
+        self.assertIn("waiting up to 75.0 seconds for 0 accepted tasks", logs.output[0])
         await self.finish(run)
         self.assertTrue(polls[0].closed.is_set())
+
+    async def test_shutdown_log_counts_queued_running_and_retired_reporting_work(
+        self,
+    ) -> None:
+        async def mixed_task(ctx: WorkerContext) -> str:
+            if ctx.task_run_id.task_guid == "reporting":
+                return "finished"
+            return await self.task(ctx)
+
+        self.rpc.allow_ack.clear()
+        worker, run, polls = await self.launch(
+            mixed_task, hosts=["one", "two"], shutdown_timeout=90.0
+        )
+        await polls[0].deliver("reporting")
+        await self.rpc.reporting.get()
+        await polls[0].deliver("running")
+        await self.executing.get()
+        await polls[0].deliver("queued")
+        self.rpc.hosts = ["two"]
+        self.heartbeat_ticks.put_nowait(None)
+        await polls[0].closed.wait()
+        self.assertNotIn("one:2023", worker._connections)
+        await polls[1].deliver("current")
+        await self.executing.get()
+        with self.assertLogs("LHTaskWorker", level="INFO") as logs:
+            worker.stop()
+            worker.stop()
+        self.assertEqual(len(logs.records), 1)
+        self.assertIn("waiting up to 90.0 seconds for 4 accepted tasks", logs.output[0])
+        self.assertEqual(logs.records[0].shutdown_timeout, 90.0)
+        self.assertEqual(logs.records[0].pending_tasks, 4)
+        self.release_execution.set()
+        self.rpc.allow_ack.set()
+        await self.finish(run)
+        self.assertEqual(len(self.rpc.acknowledged), 4)
 
     async def test_shutdown_during_execution_waits_without_cancelling(self) -> None:
         worker, run, polls = await self.launch()
@@ -515,10 +552,41 @@ class TestWorkerShutdown(unittest.IsolatedAsyncioTestCase):
         ):
             self.stop_workers()
             await draining.wait()
-            clock[0] = 131.0
+            clock[0] = 176.0
             self.rpc.allow_ack.set()
             with self.assertRaises(TimeoutError):
                 await self.finish(run)
+
+    async def test_default_drain_budget_allows_task_timeout_plus_reporting(
+        self,
+    ) -> None:
+        clock = [100.0]
+        self.rpc.allow_ack.clear()
+        worker, run, polls = await self.launch()
+        await polls[0].deliver("full-duration")
+        await self.executing.get()
+        draining = asyncio.Event()
+        original_drain = worker._drain_connections
+
+        async def drain() -> None:
+            draining.set()
+            await original_drain()
+
+        with (
+            patch(
+                "littlehorse.worker.time", SimpleNamespace(monotonic=lambda: clock[0])
+            ),
+            patch.object(worker, "_drain_connections", drain),
+        ):
+            worker.stop()
+            await draining.wait()
+            clock[0] = 160.0
+            self.release_execution.set()
+            await self.rpc.reporting.get()
+            clock[0] = 174.0
+            self.rpc.allow_ack.set()
+            await self.finish(run)
+        self.assertEqual(len(self.rpc.acknowledged), 1)
 
     async def test_worker_failure_does_not_abandon_a_sibling_execution(self) -> None:
         async def fast() -> str:

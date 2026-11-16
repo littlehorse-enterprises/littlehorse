@@ -721,7 +721,7 @@ class LHTaskWorker:
         task_def_name: str,
         config: LHConfig,
         *,
-        shutdown_timeout: float = 30.0,
+        shutdown_timeout: float = 75.0,
     ) -> None:
         if config is None:
             raise ValueError("LHConfig cannot be None")
@@ -915,12 +915,11 @@ class LHTaskWorker:
     def stop(self) -> None:
         """Request shutdown synchronously; await start() for completion.
 
-        The first request starts the shutdown_timeout deadline (default 30 seconds).
+        The first request starts the shutdown_timeout deadline (default 75 seconds).
         Repeated requests do not restart the deadline or cancel accepted work.
         """
         if self._shutdown_deadline is not None:
             return
-        self._log.info(f"Stopping worker '{self._task_def_name}'")
         self._shutdown_deadline = time.monotonic() + self._shutdown_timeout
         self._liveness_controller.stop()
 
@@ -928,6 +927,24 @@ class LHTaskWorker:
             self._heartbeat_task.cancel()
         for connection in self._connection_tasks.values():
             connection.stop()
+
+        pending_tasks = sum(
+            not task.done()
+            for connection in self._connection_tasks.values()
+            for task in connection._tasks
+        )
+        self._log.info(
+            "Stopping worker '%s': waiting up to %s seconds for %d accepted tasks "
+            "to complete execution and result reporting",
+            self._task_def_name,
+            self._shutdown_timeout,
+            pending_tasks,
+            extra={
+                "task_def_name": self._task_def_name,
+                "shutdown_timeout": self._shutdown_timeout,
+                "pending_tasks": pending_tasks,
+            },
+        )
 
     def register_task_def(self) -> None:
         _create_task_def(self._callable, self._task_def_name, self._config)
