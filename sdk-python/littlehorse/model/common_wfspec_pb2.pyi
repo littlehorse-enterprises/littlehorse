@@ -38,7 +38,7 @@ OR: VariableMutationType
 POW: VariableMutationType
 
 class VariableAssignment(_message.Message):
-    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "map_builder", "target_type")
+    __slots__ = ("json_path", "lh_path", "variable_name", "literal_value", "format_string", "node_output", "expression", "struct_builder", "size_of", "map_builder", "enum_name", "target_type")
     class FormatString(_message.Message):
         __slots__ = ("format", "args")
         FORMAT_FIELD_NUMBER: _ClassVar[int]
@@ -52,6 +52,11 @@ class VariableAssignment(_message.Message):
         node_name: str
         def __init__(self, node_name: _Optional[str] = ...) -> None: ...
     class SizeOf(_message.Message):
+        __slots__ = ("operand",)
+        OPERAND_FIELD_NUMBER: _ClassVar[int]
+        operand: VariableAssignment
+        def __init__(self, operand: _Optional[_Union[VariableAssignment, _Mapping]] = ...) -> None: ...
+    class EnumName(_message.Message):
         __slots__ = ("operand",)
         OPERAND_FIELD_NUMBER: _ClassVar[int]
         operand: VariableAssignment
@@ -77,6 +82,7 @@ class VariableAssignment(_message.Message):
     STRUCT_BUILDER_FIELD_NUMBER: _ClassVar[int]
     SIZE_OF_FIELD_NUMBER: _ClassVar[int]
     MAP_BUILDER_FIELD_NUMBER: _ClassVar[int]
+    ENUM_NAME_FIELD_NUMBER: _ClassVar[int]
     TARGET_TYPE_FIELD_NUMBER: _ClassVar[int]
     json_path: str
     lh_path: LHPath
@@ -88,8 +94,9 @@ class VariableAssignment(_message.Message):
     struct_builder: StructBuilder
     size_of: VariableAssignment.SizeOf
     map_builder: MapBuilder
+    enum_name: VariableAssignment.EnumName
     target_type: _type_definition_pb2.TypeDefinition
-    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., size_of: _Optional[_Union[VariableAssignment.SizeOf, _Mapping]] = ..., map_builder: _Optional[_Union[MapBuilder, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
+    def __init__(self, json_path: _Optional[str] = ..., lh_path: _Optional[_Union[LHPath, _Mapping]] = ..., variable_name: _Optional[str] = ..., literal_value: _Optional[_Union[_type_definition_pb2.VariableValue, _Mapping]] = ..., format_string: _Optional[_Union[VariableAssignment.FormatString, _Mapping]] = ..., node_output: _Optional[_Union[VariableAssignment.NodeOutputReference, _Mapping]] = ..., expression: _Optional[_Union[VariableAssignment.Expression, _Mapping]] = ..., struct_builder: _Optional[_Union[StructBuilder, _Mapping]] = ..., size_of: _Optional[_Union[VariableAssignment.SizeOf, _Mapping]] = ..., map_builder: _Optional[_Union[MapBuilder, _Mapping]] = ..., enum_name: _Optional[_Union[VariableAssignment.EnumName, _Mapping]] = ..., target_type: _Optional[_Union[_type_definition_pb2.TypeDefinition, _Mapping]] = ...) -> None: ...
 
 class StructBuilder(_message.Message):
     __slots__ = ("struct_def_id", "value")
