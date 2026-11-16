@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -20,11 +21,14 @@ public class TaskReturnNullTest {
 
     @LHWorkflow("task-null-return-wf")
     public Workflow getWorkflow() {
-        return Workflow.newWorkflow("task-null-return-wf", wf -> {
-            WfRunVariable in = wf.declareStr("in").required();
-            wf.execute("maybe-return-int", in);
-            wf.complete();
-        });
+        return Workflow.newWorkflow(
+                "task-null-return-wf",
+                wf -> {
+                    WfRunVariable in = wf.declareStr("in").required();
+                    wf.execute("maybe-return-int", in);
+                    wf.complete();
+                },
+                new LHConfig());
     }
 
     @Test

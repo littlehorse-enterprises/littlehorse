@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.PutExternalEventDefRequest;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,18 +19,21 @@ import java.util.Properties;
 public class WaitForConditionExample {
     private static final String INTERRUPT_NAME = "subtract";
 
-    public static Workflow getWorkflow() {
+    public static Workflow getWorkflow(LHConfig config) {
 
-        return new WorkflowImpl("example-wait-for-condition", wf -> {
-            WfRunVariable counter = wf.declareInt("counter").withDefault(2);
+        return Workflow.newWorkflow(
+                "example-wait-for-condition",
+                wf -> {
+                    WfRunVariable counter = wf.declareInt("counter").withDefault(2);
 
-            wf.waitForCondition(counter.isEqualTo(0));
+                    wf.waitForCondition(counter.isEqualTo(0));
 
-            // Interrupt handler which mutates the parent variable
-            wf.registerInterruptHandler(INTERRUPT_NAME, handler -> {
-                counter.assign(counter.subtract(1));
-            });
-        });
+                    // Interrupt handler which mutates the parent variable
+                    wf.registerInterruptHandler(INTERRUPT_NAME, handler -> {
+                        counter.assign(counter.subtract(1));
+                    });
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -53,7 +55,7 @@ public class WaitForConditionExample {
         client.putExternalEventDef(
                 PutExternalEventDefRequest.newBuilder().setName(INTERRUPT_NAME).build());
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // Register a workflow
         workflow.registerWfSpec(config.getBlockingStub());

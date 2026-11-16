@@ -3,13 +3,12 @@ run-name: Tests
 on:
   workflow_dispatch:
   pull_request:
-  push:
-    branches:
-      - master
+  merge_group:
+    types: [checks_requested]
 jobs:
   tests-sdk-java:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -31,7 +30,7 @@ jobs:
 
   tests-sdk-go:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         go-version: ["1.25", "1.26"]
@@ -50,9 +49,13 @@ jobs:
       - name: Tests
         run: go test ./sdk-go/...
 
+      - name: lhctl Tests
+        working-directory: ./lhctl
+        run: go test ./...
+
   tests-sdk-js:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         node-version: ["22", "24"]
@@ -91,7 +94,7 @@ jobs:
     # anyone's merge until teams opt in.
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     continue-on-error: true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -140,7 +143,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        os: ["ubuntu-latest", "windows-latest"]
+        os: ["ubuntu-24.04", "windows-latest"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -172,7 +175,7 @@ jobs:
 
   tests-canary:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -188,7 +191,7 @@ jobs:
 
   tests-server-unit:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -207,7 +210,7 @@ jobs:
 
   tests-server-e2e:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -223,7 +226,7 @@ jobs:
 
   tests-server-e2e-slow:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -239,7 +242,7 @@ jobs:
 
   tests-test-utils:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -261,7 +264,7 @@ jobs:
 
   tests-test-utils-container:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         java-version: ["17", "21", "24"]
@@ -283,7 +286,7 @@ jobs:
 
   tests-dashboard:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -322,7 +325,7 @@ jobs:
 
   tests-sdk-dotnet:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6

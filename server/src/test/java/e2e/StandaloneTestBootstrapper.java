@@ -109,6 +109,7 @@ public class StandaloneTestBootstrapper implements TestBootstrapper {
 
     private Properties getServer2Config() {
         Properties result = getBaseServerConfig();
+        result.put(LHServerConfig.HEALTH_SERVICE_PORT_KEY, "1823");
         result.put(LHServerConfig.INTERNAL_ADVERTISED_PORT_KEY, "2012");
         result.put(LHServerConfig.INTERNAL_BIND_PORT_KEY, "2012");
         result.put(LHServerConfig.ADVERTISED_LISTENERS_KEY, "PLAIN://localhost:2024");

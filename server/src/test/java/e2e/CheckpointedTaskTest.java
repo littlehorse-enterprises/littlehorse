@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CheckpointId;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.LHStatus;
@@ -14,7 +15,6 @@ import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.LHTest;
@@ -81,11 +81,14 @@ public class CheckpointedTaskTest {
 
     @LHWorkflow("checkpointed-task-test")
     public Workflow buildWorkflow() {
-        return new WorkflowImpl("checkpointed-task-test", thread -> {
-            WfRunVariable updateExecutions = thread.declareBool("update-executions");
-            thread.complete(
-                    thread.execute("task-with-checkpoint", updateExecutions).withRetries(1));
-        });
+        return Workflow.newWorkflow(
+                "checkpointed-task-test",
+                thread -> {
+                    WfRunVariable updateExecutions = thread.declareBool("update-executions");
+                    thread.complete(thread.execute("task-with-checkpoint", updateExecutions)
+                            .withRetries(1));
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("task-with-checkpoint")

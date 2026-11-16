@@ -1,5 +1,6 @@
 package e2e;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -73,16 +74,19 @@ public class MutationAfterInterruptTest {
 
     @LHWorkflow("mutation-after-interrupt-on-task")
     public Workflow getMutationAfterInterruptOnTaskWf() {
-        return Workflow.newWorkflow("mutation-after-interrupt-on-task", wf -> {
-            WfRunVariable taskOutputVar = wf.addVariable("task-output", VariableType.STR);
+        return Workflow.newWorkflow(
+                "mutation-after-interrupt-on-task",
+                wf -> {
+                    WfRunVariable taskOutputVar = wf.addVariable("task-output", VariableType.STR);
 
-            NodeOutput taskOutput = wf.execute("mutation-after-interrupt-return-string-slowly");
-            wf.mutate(taskOutputVar, VariableMutationType.ASSIGN, taskOutput);
+                    NodeOutput taskOutput = wf.execute("mutation-after-interrupt-return-string-slowly");
+                    wf.mutate(taskOutputVar, VariableMutationType.ASSIGN, taskOutput);
 
-            wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
-                handler.execute("mutation-after-interrupt-return-string-slowly");
-            });
-        });
+                    wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
+                        handler.execute("mutation-after-interrupt-return-string-slowly");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("mutation-after-interrupt-return-string-slowly")
@@ -93,15 +97,18 @@ public class MutationAfterInterruptTest {
 
     @LHWorkflow("mutation-after-interrupt-on-extevt")
     public Workflow getMutationAfterInterruptOnExtEvtWf() {
-        return Workflow.newWorkflow("mutation-after-interrupt-on-ext-evt", wf -> {
-            WfRunVariable extEvtOutputVar = wf.addVariable("event-content", VariableType.STR);
+        return Workflow.newWorkflow(
+                "mutation-after-interrupt-on-ext-evt",
+                wf -> {
+                    WfRunVariable extEvtOutputVar = wf.addVariable("event-content", VariableType.STR);
 
-            NodeOutput extEvtOutput = wf.waitForEvent(PARENT_EVENT);
-            wf.mutate(extEvtOutputVar, VariableMutationType.ASSIGN, extEvtOutput);
+                    NodeOutput extEvtOutput = wf.waitForEvent(PARENT_EVENT);
+                    wf.mutate(extEvtOutputVar, VariableMutationType.ASSIGN, extEvtOutput);
 
-            wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
-                handler.waitForEvent(COMPLETE_INTERRUPT_EVENT);
-            });
-        });
+                    wf.registerInterruptHandler(INTERRUPT_TRIGGER, handler -> {
+                        handler.waitForEvent(COMPLETE_INTERRUPT_EVENT);
+                    });
+                },
+                new LHConfig());
     }
 }

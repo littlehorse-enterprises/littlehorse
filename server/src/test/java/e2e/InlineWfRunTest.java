@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.*;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.wfsdk.InlineWorkflow;
@@ -267,8 +268,9 @@ public class InlineWfRunTest {
 
     @Test
     void rejectsInlineDefinitionLookupForRegisteredRun() {
-        WfSpec spec = client.putWfSpec(Workflow.newWorkflow("registered-" + UUID.randomUUID(), thread -> {})
-                .compileWorkflow());
+        WfSpec spec =
+                client.putWfSpec(Workflow.newWorkflow("registered-" + UUID.randomUUID(), thread -> {}, new LHConfig())
+                        .compileWorkflow());
         RunWfRequest request = RunWfRequest.newBuilder()
                 .setId(UUID.randomUUID().toString())
                 .setWfSpecName(spec.getId().getName())

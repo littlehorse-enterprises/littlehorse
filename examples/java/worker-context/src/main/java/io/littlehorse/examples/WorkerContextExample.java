@@ -4,7 +4,6 @@ import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,11 +17,14 @@ import java.util.Properties;
  */
 public class WorkerContextExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-worker-context", wf -> {
-            WfRunVariable theName = wf.declareInt("request-time");
-            wf.execute("task", theName);
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-worker-context",
+                wf -> {
+                    WfRunVariable theName = wf.declareInt("request-time");
+                    wf.execute("task", theName);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -51,7 +53,7 @@ public class WorkerContextExample {
         LittleHorseGrpc.LittleHorseBlockingStub client = config.getBlockingStub();
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

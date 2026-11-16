@@ -1,13 +1,13 @@
 package e2e;
 
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.Failure;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
@@ -317,112 +317,117 @@ public class ExpressionTest {
      */
     @LHWorkflow("basic-expression-manipulation")
     public Workflow getExpression() {
-        return new WorkflowImpl("test-expression", wf -> {
-            // EXTEND a String test
-            var myStr = wf.declareStr("my-str");
-            wf.doIf(myStr.isNotEqualTo(null), then -> {
-                myStr.assign(myStr.extend("-suffix"));
-            });
-
-            // Add an int and composite expressions
-            var intToAdd = wf.declareInt("int-to-add");
-            var intToAddResult = wf.declareInt("int-to-add-result");
-            wf.doIf(intToAdd.isNotEqualTo(null), then -> {
-                // Tests compound expressions
-                intToAddResult.assign(wf.execute("expr-add-one", intToAdd.add(1)));
-            });
-
-            // Division By Zero test
-            var thingToDivideByZero = wf.declareInt("thing-to-divide-by-zero");
-            var divideByZeroResult = wf.declareInt("divide-by-zero-result");
-            wf.doIf(thingToDivideByZero.isNotEqualTo(null), then -> {
-                divideByZeroResult.assign(thingToDivideByZero.divide(0));
-            });
-
-            // Test precision of arithmetic. Make use of the fact that we don't have
-            // strong typing on json objects so that we can use a jsonpath to arbitrarily
-            // set input values.
-            var divisionTestJson = wf.declareJsonObj("dividend-tests");
-            var divisionResult = wf.declareDouble("division-result");
-            var divisionResultInt = wf.declareInt("division-result-int");
-            wf.doIf(divisionTestJson.isNotEqualTo(null), then -> {
-                LHExpression foobar = divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs"));
-                divisionResult.assign(foobar);
-                divisionResultInt.assign(foobar);
-            });
-
-            // This test uses a complex expression where the things we are computing over
-            // have the double precision. We want to make sure that the computation is executed
-            // with double precision whether we assign the result to an int or a double.
-            var quantity = wf.declareInt("quantity");
-            var price = wf.declareDouble("price");
-            var discountPercentage = wf.declareInt("discount-percentage");
-            var totalPriceInt = wf.declareInt("total-price-int");
-            var totalPriceDouble = wf.declareDouble("total-price-double");
-            wf.doIf(quantity.isNotEqualTo(null), then -> {
-                // TotalPrice = Quantity * Price * (1 - DiscountPercentage / 100)
-                LHExpression pedro =
-                        quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
-                totalPriceInt.assign(pedro);
-                totalPriceDouble.assign(pedro);
-            });
-
-            // Test mutating sub-fields of a json object
-            var json = wf.declareJsonObj("json");
-            wf.doIf(json.isNotEqualTo(null), then -> {
-                json.jsonPath("$.foo").assign("bar");
-            });
-
-            // Test mutating doubly-nested fields of a Json Object
-            var nestedJson = wf.declareJsonObj("nested-json");
-            wf.doIf(nestedJson.isNotEqualTo(null), then -> {
-                nestedJson.jsonPath("$.foo.bar").assign("baz");
-            });
-
-            // Logical AND/OR tests
-            var boolA = wf.declareBool("bool-a").withDefault(false);
-            var boolB = wf.declareBool("bool-b").withDefault(true);
-            var andResult = wf.declareBool("and-result");
-            var orResult = wf.declareBool("or-result");
-            andResult.assign(boolA.and(boolB));
-            orResult.assign(boolA.or(boolB));
-
-            // size() tests across assignment, conditionals, and task inputs.
-            var sizeJsonInput = wf.declareJsonArr("size-json-input");
-            var sizeStrInput = wf.declareStr("size-str-input");
-            var arraySize = wf.declareInt("array-size");
-            var jsonSize = wf.declareInt("json-size");
-            var strSize = wf.declareInt("str-size");
-            var sizeTaskResult = wf.declareInt("size-task-result");
-            var sizeBranch = wf.declareStr("size-branch");
-            var invalidSizeJson = wf.declareJsonObj("invalid-size-json");
-            var invalidSizeResult = wf.declareInt("invalid-size-result");
-
-            var producedArray = wf.execute("expr-produce-size-array");
-            arraySize.assign(producedArray.size());
-            sizeTaskResult.assign(wf.execute("expr-double", producedArray.size()));
-
-            wf.doIfElse(
-                    producedArray.size().isGreaterThan(2),
-                    then -> {
-                        sizeBranch.assign("gt2");
-                    },
-                    otherwise -> {
-                        sizeBranch.assign("lte2");
+        return Workflow.newWorkflow(
+                "test-expression",
+                wf -> {
+                    // EXTEND a String test
+                    var myStr = wf.declareStr("my-str");
+                    wf.doIf(myStr.isNotEqualTo(null), then -> {
+                        myStr.assign(myStr.extend("-suffix"));
                     });
 
-            wf.doIf(sizeJsonInput.isNotEqualTo(null), then -> {
-                jsonSize.assign(sizeJsonInput.size());
-            });
+                    // Add an int and composite expressions
+                    var intToAdd = wf.declareInt("int-to-add");
+                    var intToAddResult = wf.declareInt("int-to-add-result");
+                    wf.doIf(intToAdd.isNotEqualTo(null), then -> {
+                        // Tests compound expressions
+                        intToAddResult.assign(wf.execute("expr-add-one", intToAdd.add(1)));
+                    });
 
-            wf.doIf(sizeStrInput.isNotEqualTo(null), then -> {
-                strSize.assign(sizeStrInput.size());
-            });
+                    // Division By Zero test
+                    var thingToDivideByZero = wf.declareInt("thing-to-divide-by-zero");
+                    var divideByZeroResult = wf.declareInt("divide-by-zero-result");
+                    wf.doIf(thingToDivideByZero.isNotEqualTo(null), then -> {
+                        divideByZeroResult.assign(thingToDivideByZero.divide(0));
+                    });
 
-            wf.doIf(invalidSizeJson.isNotEqualTo(null), then -> {
-                invalidSizeResult.assign(invalidSizeJson.jsonPath("$.value").size());
-            });
-        });
+                    // Test precision of arithmetic. Make use of the fact that we don't have
+                    // strong typing on json objects so that we can use a jsonpath to arbitrarily
+                    // set input values.
+                    var divisionTestJson = wf.declareJsonObj("dividend-tests");
+                    var divisionResult = wf.declareDouble("division-result");
+                    var divisionResultInt = wf.declareInt("division-result-int");
+                    wf.doIf(divisionTestJson.isNotEqualTo(null), then -> {
+                        LHExpression foobar =
+                                divisionTestJson.jsonPath("$.lhs").divide(divisionTestJson.jsonPath("$.rhs"));
+                        divisionResult.assign(foobar);
+                        divisionResultInt.assign(foobar);
+                    });
+
+                    // This test uses a complex expression where the things we are computing over
+                    // have the double precision. We want to make sure that the computation is executed
+                    // with double precision whether we assign the result to an int or a double.
+                    var quantity = wf.declareInt("quantity");
+                    var price = wf.declareDouble("price");
+                    var discountPercentage = wf.declareInt("discount-percentage");
+                    var totalPriceInt = wf.declareInt("total-price-int");
+                    var totalPriceDouble = wf.declareDouble("total-price-double");
+                    wf.doIf(quantity.isNotEqualTo(null), then -> {
+                        // TotalPrice = Quantity * Price * (1 - DiscountPercentage / 100)
+                        LHExpression pedro =
+                                quantity.multiply(price).multiply(wf.subtract(1.0, discountPercentage.divide(100.0)));
+                        totalPriceInt.assign(pedro);
+                        totalPriceDouble.assign(pedro);
+                    });
+
+                    // Test mutating sub-fields of a json object
+                    var json = wf.declareJsonObj("json");
+                    wf.doIf(json.isNotEqualTo(null), then -> {
+                        json.jsonPath("$.foo").assign("bar");
+                    });
+
+                    // Test mutating doubly-nested fields of a Json Object
+                    var nestedJson = wf.declareJsonObj("nested-json");
+                    wf.doIf(nestedJson.isNotEqualTo(null), then -> {
+                        nestedJson.jsonPath("$.foo.bar").assign("baz");
+                    });
+
+                    // Logical AND/OR tests
+                    var boolA = wf.declareBool("bool-a").withDefault(false);
+                    var boolB = wf.declareBool("bool-b").withDefault(true);
+                    var andResult = wf.declareBool("and-result");
+                    var orResult = wf.declareBool("or-result");
+                    andResult.assign(boolA.and(boolB));
+                    orResult.assign(boolA.or(boolB));
+
+                    // size() tests across assignment, conditionals, and task inputs.
+                    var sizeJsonInput = wf.declareJsonArr("size-json-input");
+                    var sizeStrInput = wf.declareStr("size-str-input");
+                    var arraySize = wf.declareInt("array-size");
+                    var jsonSize = wf.declareInt("json-size");
+                    var strSize = wf.declareInt("str-size");
+                    var sizeTaskResult = wf.declareInt("size-task-result");
+                    var sizeBranch = wf.declareStr("size-branch");
+                    var invalidSizeJson = wf.declareJsonObj("invalid-size-json");
+                    var invalidSizeResult = wf.declareInt("invalid-size-result");
+
+                    var producedArray = wf.execute("expr-produce-size-array");
+                    arraySize.assign(producedArray.size());
+                    sizeTaskResult.assign(wf.execute("expr-double", producedArray.size()));
+
+                    wf.doIfElse(
+                            producedArray.size().isGreaterThan(2),
+                            then -> {
+                                sizeBranch.assign("gt2");
+                            },
+                            otherwise -> {
+                                sizeBranch.assign("lte2");
+                            });
+
+                    wf.doIf(sizeJsonInput.isNotEqualTo(null), then -> {
+                        jsonSize.assign(sizeJsonInput.size());
+                    });
+
+                    wf.doIf(sizeStrInput.isNotEqualTo(null), then -> {
+                        strSize.assign(sizeStrInput.size());
+                    });
+
+                    wf.doIf(invalidSizeJson.isNotEqualTo(null), then -> {
+                        invalidSizeResult.assign(
+                                invalidSizeJson.jsonPath("$.value").size());
+                    });
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("expr-add-one")

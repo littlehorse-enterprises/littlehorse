@@ -6,16 +6,19 @@ import io.grpc.Status.Code;
 import io.grpc.StatusRuntimeException;
 import io.littlehorse.common.util.LHUtil;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.CompleteUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.DeleteUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.EditUserTaskRunCommentRequest;
 import io.littlehorse.sdk.common.proto.Failure;
+import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ListUserTaskRunRequest;
 import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
 import io.littlehorse.sdk.common.proto.NodeRun.NodeTypeCase;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest;
 import io.littlehorse.sdk.common.proto.SaveUserTaskRunProgressRequest.SaveUserTaskRunAssignmentPolicy;
 import io.littlehorse.sdk.common.proto.SearchWfRunRequest;
+import io.littlehorse.sdk.common.proto.Struct;
 import io.littlehorse.sdk.common.proto.TaskRun;
 import io.littlehorse.sdk.common.proto.TaskRunId;
 import io.littlehorse.sdk.common.proto.TaskStatus;
@@ -26,6 +29,7 @@ import io.littlehorse.sdk.common.proto.UserTaskRunId;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.proto.WfRunIdList;
 import io.littlehorse.sdk.common.util.Arg;
@@ -34,7 +38,6 @@ import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.UserTaskOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.WorkerContext;
 import io.littlehorse.test.CapturedResult;
@@ -112,6 +115,55 @@ public class UserTaskTest {
                     String taskResult = taskRun.getAttempts(0).getOutput().getStr();
                     Assertions.assertThat(taskResult).contains("kenobi");
                     Assertions.assertThat(taskResult).contains("137");
+                })
+                .start();
+    }
+
+    @Test
+    void shouldSaveAndCompleteLegacyUserTaskWithStructOutput() {
+        workflowVerifier
+                .prepareRun(deadlineReassignmentWorkflow)
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId userTaskRunId = client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResults(0)
+                            .getId();
+                    InlineStruct.Builder fields = InlineStruct.newBuilder()
+                            .putFields(
+                                    "myStr",
+                                    io.littlehorse.sdk.common.proto.StructField.newBuilder()
+                                            .setValue(LHLibUtil.objToVarVal("kenobi"))
+                                            .build());
+                    UserTaskRun saved = client.saveUserTaskRunProgress(SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId("obiwan")
+                            .setPolicy(SaveUserTaskRunAssignmentPolicy.IGNORE_CLAIM)
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder().setStruct(fields)))
+                            .build());
+                    Assertions.assertThat(saved.getResultsMap()).containsOnlyKeys("myStr");
+                    Assertions.assertThat(saved.hasOutput()).isFalse();
+                    Assertions.assertThat(saved.getStatus()).isNotEqualTo(UserTaskRunStatus.DONE);
+
+                    fields.putFields(
+                            "myInt",
+                            io.littlehorse.sdk.common.proto.StructField.newBuilder()
+                                    .setValue(LHLibUtil.objToVarVal(137))
+                                    .build());
+                    client.completeUserTaskRun(CompleteUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(userTaskRunId)
+                            .setUserId("obiwan")
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder().setStruct(fields)))
+                            .build());
+                })
+                .waitForStatus(COMPLETED)
+                .thenVerifyTaskRun(0, 2, taskRun -> {
+                    Assertions.assertThat(taskRun.getAttempts(0).getOutput().getStr())
+                            .contains("kenobi")
+                            .contains("137");
                 })
                 .start();
     }
@@ -278,12 +330,15 @@ public class UserTaskTest {
 
     @Test
     public void shouldValidateUserIdNotEmptyFromResultTask() {
-        Workflow workflow = new WorkflowImpl("test-wf", entrypointThread -> {
-            entrypointThread.addVariable("name", VariableType.STR);
+        Workflow workflow = Workflow.newWorkflow(
+                "test-wf",
+                entrypointThread -> {
+                    entrypointThread.addVariable("name", VariableType.STR);
 
-            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, result, null);
-        });
+                    TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, result, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -302,12 +357,15 @@ public class UserTaskTest {
 
     @Test
     public void shouldValidateGroupIdNotEmptyFromResultTask() {
-        Workflow workflow = new WorkflowImpl("test-wf-group", entrypointThread -> {
-            entrypointThread.addVariable("name", VariableType.STR);
+        Workflow workflow = Workflow.newWorkflow(
+                "test-wf-group",
+                entrypointThread -> {
+                    entrypointThread.addVariable("name", VariableType.STR);
 
-            TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, result);
-        });
+                    TaskNodeOutput result = entrypointThread.execute("return-empty-string-task");
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, result);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -326,10 +384,13 @@ public class UserTaskTest {
 
     @Test
     public void shouldValidateUserIdIsNotEmptyInClientRequest() {
-        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
-            entrypointThread.addVariable("name", VariableType.STR);
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "test-wf-2-group",
+                entrypointThread -> {
+                    entrypointThread.addVariable("name", VariableType.STR);
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+                },
+                new LHConfig());
 
         Throwable throwable = Assertions.catchThrowable(() -> {
             workflowVerifier
@@ -344,10 +405,13 @@ public class UserTaskTest {
 
     @Test
     public void shouldValidateUserGroupIsNotEmptyInClientRequest() {
-        Workflow workflow = new WorkflowImpl("test-wf-2-group", entrypointThread -> {
-            entrypointThread.addVariable("name", VariableType.STR);
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                "test-wf-2-group",
+                entrypointThread -> {
+                    entrypointThread.addVariable("name", VariableType.STR);
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, null, "groupName");
+                },
+                new LHConfig());
 
         Throwable throwable = Assertions.catchThrowable(() -> {
             workflowVerifier
@@ -454,9 +518,12 @@ public class UserTaskTest {
     void shouldCreateAWorkflowAssigningAUserTaskAndAddACommentToIt() {
         String workflowName = "comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -481,9 +548,12 @@ public class UserTaskTest {
     void shouldCreateWorkflowAssignUserTaskAddCommentAndDeleteComment() {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -508,9 +578,12 @@ public class UserTaskTest {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
         String editComment = "This is a edited comment";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -535,9 +608,12 @@ public class UserTaskTest {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
         String editComment = "This is a edited comment";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -572,9 +648,12 @@ public class UserTaskTest {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
         String editComment = "This is a edited comment";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -607,9 +686,12 @@ public class UserTaskTest {
     void shouldThrowExceptionWhenTryToDeleteCommentThatDoesNotExist() {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a comment.";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -640,9 +722,12 @@ public class UserTaskTest {
     void shouldThrowExceptionWhenTryToDeleteCommentThatWasAlreadyDeleted() {
         String workflowName = "delete-comment-on-user-task-run-workflow";
         String comment = "This is a deleted comment.";
-        Workflow workflow = new WorkflowImpl(workflowName, entrypointThread -> {
-            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
-        });
+        Workflow workflow = Workflow.newWorkflow(
+                workflowName,
+                entrypointThread -> {
+                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null);
+                },
+                new LHConfig());
 
         workflowVerifier
                 .prepareRun(workflow)
@@ -671,94 +756,116 @@ public class UserTaskTest {
 
     @LHWorkflow("deadline-reassignment-workflow")
     public Workflow buildDeadlineReassignmentWorkflow() {
-        return new WorkflowImpl("deadline-reassignment-workflow", entrypointThread -> {
-            WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "deadline-reassignment-workflow",
+                entrypointThread -> {
+                    WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
 
-            UserTaskOutput formOutput =
-                    entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
+                    UserTaskOutput formOutput =
+                            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-group", "test-department");
 
-            // Schedule a reminder immediately
-            entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
+                    // Schedule a reminder immediately
+                    entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
 
-            entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
+                    entrypointThread.releaseToGroupOnDeadline(formOutput, 1);
 
-            entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
+                    entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
-            entrypointThread.execute("my-custom-task", formVar);
-        });
+                    entrypointThread.execute("my-custom-task", formVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("schedule-reminder-task-without-user-fields-workflow")
     public Workflow buildReminderTaskWorkflowWithUserGroupField() {
-        return new WorkflowImpl("reminder-task-without-user-fields-workflow", entrypointThread -> {
-            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+        return Workflow.newWorkflow(
+                "reminder-task-without-user-fields-workflow",
+                entrypointThread -> {
+                    UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
 
-            // Schedule a reminder immediately
-            entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
+                    // Schedule a reminder immediately
+                    entrypointThread.scheduleReminderTask(formOutput, 0, "reminder-task");
 
-            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
-        });
+                    entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("worker-context-receives-user-details")
     public Workflow workerContextReceivesUserDetails() {
-        return new WorkflowImpl("worker-context-receives-user-details", entrypointThread -> {
-            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
+        return Workflow.newWorkflow(
+                "worker-context-receives-user-details",
+                entrypointThread -> {
+                    UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "jacob", null);
 
-            // Schedule a reminder immediately
-            entrypointThread.scheduleReminderTask(formOutput, 0, "verify-worker-context", "jacob", null);
+                    // Schedule a reminder immediately
+                    entrypointThread.scheduleReminderTask(formOutput, 0, "verify-worker-context", "jacob", null);
 
-            entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
-        });
+                    entrypointThread.cancelUserTaskRunAfter(formOutput, 5);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("deadline-reassignment-workflow-user-without-group")
     public Workflow buildDeadlineReassignmentWorkflowUserWithoutGroup() {
-        return new WorkflowImpl("deadline-reassignment-workflow-user-without-group", entrypointThread -> {
-            WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
+        return Workflow.newWorkflow(
+                "deadline-reassignment-workflow-user-without-group",
+                entrypointThread -> {
+                    WfRunVariable formVar = entrypointThread.addVariable("form", VariableType.JSON_OBJ);
 
-            UserTaskOutput formOutput = entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null);
+                    UserTaskOutput formOutput =
+                            entrypointThread.assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null);
 
-            entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 1);
+                    entrypointThread.reassignUserTask(formOutput, null, "test-it-department", 1);
 
-            entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
+                    entrypointThread.mutate(formVar, VariableMutationType.ASSIGN, formOutput);
 
-            entrypointThread.execute("my-custom-task", formVar);
-        });
+                    entrypointThread.execute("my-custom-task", formVar);
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("cancel-user-task")
     public Workflow buildCancelUserTaskWorkflow() {
-        return new WorkflowImpl("cancel-user-task", entrypointThread -> {
-            UserTaskOutput formOutput = entrypointThread
-                    .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
-                    .withOnCancellationException("no-response");
-            entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
-                userTaskCanceledHandler.execute("user-task-canceled");
-            });
-        });
+        return Workflow.newWorkflow(
+                "cancel-user-task",
+                entrypointThread -> {
+                    UserTaskOutput formOutput = entrypointThread
+                            .assignUserTask(USER_TASK_DEF_NAME, "test-user-id", null)
+                            .withOnCancellationException("no-response");
+                    entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
+                        userTaskCanceledHandler.execute("user-task-canceled");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("cancel-user-task-on-deadline")
     public Workflow buildCancelUserTaskOnReassignmentWorkflow() {
-        return new WorkflowImpl("cancel-user-task-on-deadline", entrypointThread -> {
-            UserTaskOutput formOutput = entrypointThread
-                    .assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null)
-                    .withOnCancellationException("no-response");
-            entrypointThread.cancelUserTaskRunAfter(formOutput, 2);
-            entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
-                userTaskCanceledHandler.execute("user-task-canceled");
-            });
-        });
+        return Workflow.newWorkflow(
+                "cancel-user-task-on-deadline",
+                entrypointThread -> {
+                    UserTaskOutput formOutput = entrypointThread
+                            .assignUserTask(USER_TASK_DEF_NAME, TEST_USER_ID, null)
+                            .withOnCancellationException("no-response");
+                    entrypointThread.cancelUserTaskRunAfter(formOutput, 2);
+                    entrypointThread.handleException(formOutput, "no-response", userTaskCanceledHandler -> {
+                        userTaskCanceledHandler.execute("user-task-canceled");
+                    });
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("user-task-assignment")
     public Workflow buildUserTaskAssignmentWorkflow() {
-        return new WorkflowImpl("user-task-assignment", wf -> {
-            WfRunVariable userId = wf.declareStr("userId");
-            WfRunVariable userGroup = wf.declareStr("userGroup");
-            wf.assignUserTask(USER_TASK_DEF_NAME, userId, userGroup);
-        });
+        return Workflow.newWorkflow(
+                "user-task-assignment",
+                wf -> {
+                    WfRunVariable userId = wf.declareStr("userId");
+                    WfRunVariable userGroup = wf.declareStr("userGroup");
+                    wf.assignUserTask(USER_TASK_DEF_NAME, userId, userGroup);
+                },
+                new LHConfig());
     }
 
     @LHTaskMethod("my-custom-task")

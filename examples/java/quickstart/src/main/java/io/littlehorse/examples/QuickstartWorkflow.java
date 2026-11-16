@@ -1,5 +1,6 @@
 package io.littlehorse.examples;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHErrorType;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
@@ -42,7 +43,7 @@ public class QuickstartWorkflow {
                 });
     }
 
-    public Workflow getWorkflow() {
-        return Workflow.newWorkflow(WORKFLOW_NAME, this::quickstartWf);
+    public Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(WORKFLOW_NAME, this::quickstartWf, config);
     }
 }

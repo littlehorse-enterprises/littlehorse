@@ -3,7 +3,6 @@ package io.littlehorse.examples;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.sdk.worker.LHTaskWorker;
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,11 +17,14 @@ import java.util.Properties;
  */
 public class BasicExample {
 
-    public static Workflow getWorkflow() {
-        return new WorkflowImpl("example-basic", wf -> {
-            WfRunVariable theName = wf.declareStr("input-name").searchable();
-            wf.execute("greet", theName);
-        });
+    public static Workflow getWorkflow(LHConfig config) {
+        return Workflow.newWorkflow(
+                "example-basic",
+                wf -> {
+                    WfRunVariable theName = wf.declareStr("input-name").searchable();
+                    wf.execute("greet", theName);
+                },
+                config);
     }
 
     public static Properties getConfigProps() throws IOException {
@@ -50,7 +52,7 @@ public class BasicExample {
         LHConfig config = new LHConfig(props);
 
         // New workflow
-        Workflow workflow = getWorkflow();
+        Workflow workflow = getWorkflow(config);
 
         // New worker
         LHTaskWorker worker = getTaskWorker(config);

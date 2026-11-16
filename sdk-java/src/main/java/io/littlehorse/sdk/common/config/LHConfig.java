@@ -2,6 +2,7 @@ package io.littlehorse.sdk.common.config;
 
 import io.grpc.CallCredentials;
 import io.grpc.Channel;
+import io.grpc.ClientInterceptor;
 import io.grpc.ClientInterceptors;
 import io.grpc.CompositeCallCredentials;
 import io.grpc.Grpc;
@@ -26,9 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
@@ -36,6 +40,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 
 /** This class is used to configure the LHClient class. */
@@ -57,6 +62,7 @@ public class LHConfig extends ConfigBase {
         LHC_OAUTH_CLIENT_ID,
         LHC_OAUTH_CLIENT_SECRET,
         LHC_OAUTH_ACCESS_TOKEN_URL,
+        LHC_OAUTH_CA_CERT,
         LHW_TASK_WORKER_ID,
         LHW_TASK_WORKER_VERSION,
         LHW_NUM_WORKER_THREADS,
@@ -104,6 +110,9 @@ public class LHConfig extends ConfigBase {
     /** OAuth access token url. */
     public static final String OAUTH_ACCESS_TOKEN_URL_KEY = ConfigKeys.LHC_OAUTH_ACCESS_TOKEN_URL.name();
 
+    /** Optional PEM file with CAs trusted for the OAuth token endpoint, besides the JVM default CAs. */
+    public static final String OAUTH_CA_CERT_KEY = ConfigKeys.LHC_OAUTH_CA_CERT.name();
+
     /** The number of worker threads to run. */
     public static final String NUM_WORKER_THREADS_KEY = ConfigKeys.LHW_NUM_WORKER_THREADS.name();
 
@@ -133,12 +142,14 @@ public class LHConfig extends ConfigBase {
     private OAuthConfig oauthConfig;
     private OAuthCredentialsProvider oauthCredentialsProvider;
     private final LHTypeAdapterRegistry typeAdapterRegistry;
+    private final List<ClientInterceptor> clientInterceptors;
 
     /** Creates an LHConfig. Loads default values for config from env vars. */
     public LHConfig() {
         super();
         createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        clientInterceptors = Collections.emptyList();
     }
 
     /**
@@ -147,9 +158,23 @@ public class LHConfig extends ConfigBase {
      * @param props configuration values.
      */
     public LHConfig(Properties props) {
+        this(props, new ClientInterceptor[0]);
+    }
+
+    /**
+     * Creates an LHConfig with provided config values and custom gRPC client interceptors.
+     *
+     * @param props configuration values.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
+     */
+    public LHConfig(Properties props, ClientInterceptor... clientInterceptors) {
         super(props);
-        createdChannels = new HashMap<>();
-        typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.createdChannels = new HashMap<>();
+        this.typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.clientInterceptors =
+                Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -158,9 +183,24 @@ public class LHConfig extends ConfigBase {
      * @param propLocation the location of the .properties file.
      */
     public LHConfig(Path propLocation) {
+        this(propLocation, new ClientInterceptor[0]);
+    }
+
+    /**
+     * Creates an LHConfig with config props in a specified .properties file and custom gRPC client
+     * interceptors.
+     *
+     * @param propLocation the location of the .properties file.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
+     */
+    public LHConfig(Path propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
         createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.clientInterceptors =
+                Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -169,15 +209,34 @@ public class LHConfig extends ConfigBase {
      * @param propLocation the location of the .properties file.
      */
     public LHConfig(String propLocation) {
+        this(propLocation, new ClientInterceptor[0]);
+    }
+
+    /**
+     * Creates an LHConfig with config props in a specified .properties file and custom gRPC client
+     * interceptors.
+     *
+     * @param propLocation the location of the .properties file.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
+     */
+    public LHConfig(String propLocation, ClientInterceptor... clientInterceptors) {
         super(propLocation);
         createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.clientInterceptors =
+                Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private LHConfig(ConfigSource configSource, LHTypeAdapterRegistry typeAdapterRegistry) {
+    private LHConfig(
+            ConfigSource configSource,
+            LHTypeAdapterRegistry typeAdapterRegistry,
+            List<ClientInterceptor> clientInterceptors) {
         super(configSource);
         createdChannels = new HashMap<>();
         this.typeAdapterRegistry = Objects.requireNonNull(typeAdapterRegistry, "Type adapter registry cannot be null");
+        this.clientInterceptors = clientInterceptors;
     }
 
     /**
@@ -196,6 +255,7 @@ public class LHConfig extends ConfigBase {
 
         private final ConfigSource configSource = ConfigSource.newSource();
         private Map<Class<?>, LHTypeAdapter<?>> typeAdaptersByClass = new LinkedHashMap<>();
+        private final List<ClientInterceptor> clientInterceptors = new ArrayList<>();
 
         /** Default constructor for the builder. */
         public LHConfigBuilder() {}
@@ -277,6 +337,19 @@ public class LHConfig extends ConfigBase {
         }
 
         /**
+         * Registers a gRPC client interceptor to this config. Interceptors are applied to every
+         * channel created by the resulting {@link LHConfig}, in the order they are added. Useful for
+         * cross-cutting concerns such as metrics or logging.
+         *
+         * @param interceptor the gRPC {@link ClientInterceptor} to register; must not be null
+         * @return this builder
+         */
+        public LHConfigBuilder addClientInterceptor(ClientInterceptor interceptor) {
+            this.clientInterceptors.add(Objects.requireNonNull(interceptor, "Client interceptor cannot be null"));
+            return this;
+        }
+
+        /**
          * Registers a type adapter to this config. Type adapters registered to the config will be used by
          * the SDK for type conversions anywhere that user defined classes can be found.
          *
@@ -304,7 +377,10 @@ public class LHConfig extends ConfigBase {
          * @return a new LHConfig instance
          */
         public LHConfig build() {
-            return new LHConfig(configSource, LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)));
+            return new LHConfig(
+                    configSource,
+                    LHTypeAdapterRegistry.from(new LinkedHashMap<>(typeAdaptersByClass)),
+                    clientInterceptors);
         }
     }
 
@@ -314,9 +390,23 @@ public class LHConfig extends ConfigBase {
      * @param configs configuration values.
      */
     public LHConfig(Map<String, Object> configs) {
+        this(configs, new ClientInterceptor[0]);
+    }
+
+    /**
+     * Creates an LHConfig with provided config values and custom gRPC client interceptors.
+     *
+     * @param configs configuration values.
+     * @param clientInterceptors gRPC {@link ClientInterceptor}s applied to every channel created by
+     *     this config. Useful for cross-cutting concerns such as metrics or logging. Null
+     *     entries are ignored.
+     */
+    public LHConfig(Map<String, Object> configs, ClientInterceptor... clientInterceptors) {
         super(configs);
         createdChannels = new HashMap<>();
         typeAdapterRegistry = LHTypeAdapterRegistry.empty();
+        this.clientInterceptors =
+                Stream.of(clientInterceptors).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -505,7 +595,10 @@ public class LHConfig extends ConfigBase {
 
         Channel out = builder.build();
         if (shouldRetryOnResourceExhausted()) {
-            out = ClientInterceptors.intercept(out, RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR);
+            out = ClientInterceptors.intercept(
+                    out,
+                    Stream.concat(Stream.of(RESOURCE_EXHAUSTED_RETRY_INTERCEPTOR), clientInterceptors.stream())
+                            .collect(Collectors.toList()));
         }
         createdChannels.put(hostKey, out);
         return out;
@@ -638,10 +731,12 @@ public class LHConfig extends ConfigBase {
         log.debug("OAuth is enable");
 
         if (oauthConfig == null) {
+            String caCert = getOrSetDefault(OAUTH_CA_CERT_KEY, null);
             oauthConfig = OAuthConfig.builder()
                     .tokenEndpointURI(URI.create(tokenEndpointUrl))
                     .clientId(clientId)
                     .clientSecret(clientSecret)
+                    .caCert(caCert == null ? null : new File(caCert))
                     .build();
         }
 

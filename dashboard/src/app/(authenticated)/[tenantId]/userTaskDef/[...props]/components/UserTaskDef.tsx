@@ -16,18 +16,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { Timestamp, UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
+import { StructDef, Timestamp, UserTaskDef as UserTaskDefProto, UserTaskRunStatus } from 'littlehorse-client/proto'
 import { RefreshCwIcon } from 'lucide-react'
 import { useParams } from 'next/navigation'
 import React, { FC, Fragment, useState } from 'react'
 import { useDebounce } from 'use-debounce'
 import { Details } from './Details'
 import { Fields } from './Fields'
+import { ResultStructDef } from './ResultStructDef'
 
 type Props = {
   spec: UserTaskDefProto
+  resultStructDef?: StructDef
 }
-export const UserTaskDef: FC<Props> = ({ spec }) => {
+export const UserTaskDef: FC<Props> = ({ spec, resultStructDef }) => {
   const DEBOUNCE_DELAY = 1000
   const userTaskPossibleStatuses = [
     UserTaskRunStatus.ASSIGNED,
@@ -84,6 +86,7 @@ export const UserTaskDef: FC<Props> = ({ spec }) => {
       <Navigation href={routes.search.homeWithType('UserTaskDef')} title="Go back to UserTaskDefs" />
       <Details id={spec} />
       <Fields fields={spec.fields} />
+      {spec.resultStructDefId && <ResultStructDef structDefId={spec.resultStructDefId} structDef={resultStructDef} />}
       <hr className="mt-6" />
       <div className="mb-4 mt-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">Related User Task Runs:</h2>

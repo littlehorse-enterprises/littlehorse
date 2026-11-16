@@ -3,10 +3,10 @@ package e2e;
 import static io.littlehorse.sdk.common.proto.LHStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
+import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
 import io.littlehorse.sdk.wfsdk.Workflow;
-import io.littlehorse.sdk.wfsdk.internal.WorkflowImpl;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
 import io.littlehorse.test.WorkflowVerifier;
@@ -82,59 +82,65 @@ public class WaitForOneOfTest {
 
     @LHWorkflow("wait-for-any-of-test")
     public Workflow buildWaitForAnyOfSuccessWorkflow() {
-        return new WorkflowImpl("wait-for-any-of-test", wf -> {
-            SpawnedThread child1 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-first-event").timeout(2);
-                    },
-                    "child-1",
-                    Map.of());
+        return Workflow.newWorkflow(
+                "wait-for-any-of-test",
+                wf -> {
+                    SpawnedThread child1 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-first-event").timeout(2);
+                            },
+                            "child-1",
+                            Map.of());
 
-            SpawnedThread child2 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-second-event").timeout(2);
-                    },
-                    "child-2",
-                    Map.of());
+                    SpawnedThread child2 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-second-event").timeout(2);
+                            },
+                            "child-2",
+                            Map.of());
 
-            SpawnedThread child3 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-fail-event");
-                        child.fail("business-exception", "some message");
-                    },
-                    "child-3",
-                    Map.of());
+                    SpawnedThread child3 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-fail-event");
+                                child.fail("business-exception", "some message");
+                            },
+                            "child-3",
+                            Map.of());
 
-            wf.waitForAnyOf(SpawnedThreads.of(child1, child2, child3));
-        });
+                    wf.waitForAnyOf(SpawnedThreads.of(child1, child2, child3));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("wait-for-first-of-test")
     public Workflow buildWaitForAnyOfIgnoreFailureWorkflow() {
-        return new WorkflowImpl("wait-for-first-of-test", wf -> {
-            SpawnedThread child1 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-first-event").timeout(2);
-                    },
-                    "child-1",
-                    Map.of());
+        return Workflow.newWorkflow(
+                "wait-for-first-of-test",
+                wf -> {
+                    SpawnedThread child1 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-first-event").timeout(2);
+                            },
+                            "child-1",
+                            Map.of());
 
-            SpawnedThread child2 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-second-event").timeout(2);
-                    },
-                    "child-2",
-                    Map.of());
+                    SpawnedThread child2 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-second-event").timeout(2);
+                            },
+                            "child-2",
+                            Map.of());
 
-            SpawnedThread child3 = wf.spawnThread(
-                    child -> {
-                        child.waitForEvent("wait-for-fail-event");
-                        child.fail("business-exception", "some message");
-                    },
-                    "child-3",
-                    Map.of());
+                    SpawnedThread child3 = wf.spawnThread(
+                            child -> {
+                                child.waitForEvent("wait-for-fail-event");
+                                child.fail("business-exception", "some message");
+                            },
+                            "child-3",
+                            Map.of());
 
-            wf.waitForFirstOf(SpawnedThreads.of(child1, child2, child3));
-        });
+                    wf.waitForFirstOf(SpawnedThreads.of(child1, child2, child3));
+                },
+                new LHConfig());
     }
 }
