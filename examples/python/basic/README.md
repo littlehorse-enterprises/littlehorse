@@ -51,9 +51,9 @@ python -m example_graceful_shutdown
 ```
 
 This version installs application handlers that call synchronous `worker.stop()`
-and runs `littlehorse.start(worker, handle_signals=False)`. It keeps its
-application-owned `greetings.log` file open until SDK draining/cleanup finishes.
-Repeated signals are safe and do not restart its 20-second deadline.
+and runs `littlehorse.start(worker, handle_signals=False)`. It uses environment
+configuration with no file handling. Repeated signals are safe and do not restart
+its 20-second deadline.
 
 Deadline expiry cancels/joins owned work and raises `TimeoutError`; exhausted
 report retries raise `TaskResultReportingException`. Cancelling `start()` aborts
