@@ -98,7 +98,7 @@ public class TenantAdministrationTest {
     @EnumSource(
             value = OutputTopicRecordingLevel.class,
             names = {"ALL_ENTITY_EVENTS", "NO_ENTITY_EVENTS"})
-    void shouldPreserveOutputTopicConfigWhenOmitted(OutputTopicRecordingLevel recordingLevel) {
+    void shouldDisableOutputTopicWhenConfigOmitted(OutputTopicRecordingLevel recordingLevel) {
         OutputTopicConfig outputConfig = OutputTopicConfig.newBuilder()
                 .setDefaultRecordingLevel(recordingLevel)
                 .build();
@@ -113,8 +113,7 @@ public class TenantAdministrationTest {
                 .build());
 
         assertThat(response.getName()).isEqualTo("Updated tenant");
-        assertThat(response.hasOutputTopicConfig()).isTrue();
-        assertThat(response.getOutputTopicConfig()).isEqualTo(outputConfig);
+        assertThat(response.hasOutputTopicConfig()).isFalse();
         assertThat(storedTenant(tenantId)).isEqualTo(response);
     }
 

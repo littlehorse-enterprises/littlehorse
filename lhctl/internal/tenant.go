@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"fmt"
+
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/lhproto"
 	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
@@ -10,8 +12,17 @@ import (
 var putTenantCmd = &cobra.Command{
 	Use:   "tenant <id>",
 	Short: "Create or update a Tenant.",
-	Args:  cobra.ExactArgs(1),
-	Run: func(cmd *cobra.Command, args []string) {
+	Long: `Create or update a Tenant. A name-only update fetches and resends the current output configuration.
+This is not atomic: concurrent changes or stale reads can overwrite output settings.
+With no name or output mode, output is disabled. Use an explicit output flag when creating a named tenant.`,
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		allEvents, _ := cmd.Flags().GetBool("all-entity-events")
+		noEvents, _ := cmd.Flags().GetBool("no-entity-events")
+		disable, _ := cmd.Flags().GetBool("disable-output-topic")
+		if (allEvents && noEvents) || (disable && (allEvents || noEvents)) {
+			return fmt.Errorf("only one of --all-entity-events, --no-entity-events, and --disable-output-topic may be true")
+		}
 		putTenantReq := &lhproto.PutTenantRequest{
 			Id: args[0],
 		}
@@ -20,18 +31,31 @@ var putTenantCmd = &cobra.Command{
 			name, _ := cmd.Flags().GetString("name")
 			putTenantReq.Name = &name
 		}
-
-		if cmd.Flag("all-entity-events").Changed {
+		if allEvents {
 			putTenantReq.OutputTopicConfig = &lhproto.OutputTopicConfig{
 				DefaultRecordingLevel: lhproto.OutputTopicConfig_ALL_ENTITY_EVENTS,
 			}
-		} else if cmd.Flag("no-entity-events").Changed {
+		} else if noEvents {
 			putTenantReq.OutputTopicConfig = &lhproto.OutputTopicConfig{
 				DefaultRecordingLevel: lhproto.OutputTopicConfig_NO_ENTITY_EVENTS,
 			}
 		}
-		littlehorse.PrintResp(getGlobalClient(cmd).PutTenant(requestContext(cmd), putTenantReq))
-
+		client := getGlobalClient(cmd)
+		ctx := requestContext(cmd)
+		if putTenantReq.Name != nil && !allEvents && !noEvents && !disable {
+			tenant, err := client.GetTenant(ctx, &lhproto.TenantId{Id: args[0]})
+			if err != nil {
+				return fmt.Errorf("cannot preserve output settings for tenant %q: %w; use an explicit output flag to create or replace settings", args[0], err)
+			}
+			// Copy the complete config, including absence. This read/modify/write is not atomic.
+			putTenantReq.OutputTopicConfig = tenant.OutputTopicConfig
+		}
+		response, err := client.PutTenant(ctx, putTenantReq)
+		if err != nil {
+			return err
+		}
+		littlehorse.PrintResp(response, nil)
+		return nil
 	},
 }
 
@@ -72,9 +96,9 @@ func init() {
 	putCmd.AddCommand(putTenantCmd)
 	putTenantCmd.Flags().String("name", "", "Human-readable tenant name; an empty string clears it.")
 	searchTenantCmd.Flags().String("name", "", "Return tenants whose name contains this string.")
-	putTenantCmd.Flags().Bool("all-entity-events", false, "If set, the output topic will be enabled for this Tenant for all eligible entities.")
-	putTenantCmd.Flags().Bool("no-entity-events", false, "If set, the output topic will be enabled for this Tenant, but only for explicitly-enabled entities.")
-	putTenantCmd.MarkFlagsMutuallyExclusive("all-entity-events", "no-entity-events")
+	putTenantCmd.Flags().Bool("all-entity-events", false, "Enable output for all eligible entities; false does not select this mode.")
+	putTenantCmd.Flags().Bool("no-entity-events", false, "Enable output only for explicitly-enabled entities; false does not select this mode.")
+	putTenantCmd.Flags().Bool("disable-output-topic", false, "Disable output without fetching existing settings; false does not select this mode.")
 	searchCmd.AddCommand(searchTenantCmd)
 	getCmd.AddCommand(getTenantCmd)
 }

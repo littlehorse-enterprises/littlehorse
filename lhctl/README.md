@@ -32,6 +32,41 @@ Verify the installation:
 lhctl
 ```
 
+## Updating tenants
+
+A name-only update (including clearing the name) fetches the tenant and resends
+its complete output configuration with the new name. This requires permission to
+read the tenant as well as update it. Any read failure, including `NOT_FOUND`,
+aborts without writing. To create a named tenant, explicitly choose an output mode
+or `--disable-output-topic`.
+
+```bash
+# Rename an existing tenant, copying its current output configuration.
+lhctl put tenant acme --name "Acme Production"
+
+# Create or update a tenant with a name and an explicit output configuration.
+lhctl put tenant acme --name "Acme Production" --all-entity-events
+
+# Enable output only for explicitly enabled entities (this does not disable output).
+lhctl put tenant acme --no-entity-events
+
+# Disable output without fetching current settings. May be combined with --name.
+lhctl put tenant acme --disable-output-topic
+
+# Clear an existing tenant's display name, copying its output configuration.
+lhctl put tenant acme --name ""
+```
+
+Only one output flag may be true. A flag set to `false` is treated as unselected.
+With no `--name` and no true output flag, `lhctl put tenant acme` retains the
+existing behavior: it sends no output configuration and disables output. A false
+flag by itself therefore does not make the command a no-op.
+
+The `PutTenant` API remains unchanged: an omitted output configuration disables
+output, and a supplied configuration replaces it. Preservation for name-only
+updates is a CLI convenience. Disabling output does not delete existing Kafka
+topics or their records.
+
 ## Writing `lhctl` commands
 
 To ensure consistency across our CLI commands, we adhere to the following standards, inspired by [Docopt](http://docopt.org) and the [Cobra User Guide](https://github.com/spf13/cobra/blob/main/site/content/user_guide.md). 
