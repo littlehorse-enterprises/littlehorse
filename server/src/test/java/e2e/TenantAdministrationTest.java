@@ -40,6 +40,7 @@ public class TenantAdministrationTest {
                 .build());
 
         assertThat(renamed.getName()).isEqualTo("Renamed");
+        assertThat(renamed.hasOutputTopicConfig()).isTrue();
         assertThat(renamed.getOutputTopicConfig()).isEqualTo(output);
         Awaitility.await().atMost(Duration.ofSeconds(3)).untilAsserted(() -> assertThat(
                         client.getTenant(renamed.getId()))
