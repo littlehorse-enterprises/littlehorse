@@ -56,6 +56,16 @@ describe('expanded task results', () => {
       expanded: '[\n    1859273648201937921\n]',
     },
     {
+      name: 'JSON nested 128 levels deep',
+      value: { oneofKind: 'jsonArr', jsonArr: '['.repeat(128) + '1859273648201937921' + ']'.repeat(128) },
+      preview: '['.repeat(128) + '1859273648201937921' + ']'.repeat(128),
+      expanded: [
+        ...Array.from({ length: 128 }, (_, level) => '    '.repeat(level) + '['),
+        '    '.repeat(128) + '1859273648201937921',
+        ...Array.from({ length: 128 }, (_, level) => '    '.repeat(127 - level) + ']'),
+      ].join('\n'),
+    },
+    {
       name: 'JSON-looking string',
       value: { oneofKind: 'str', str: '{"ok":true}' },
       preview: '{"ok":true}',
