@@ -62,17 +62,26 @@ public final class LHStructSchema {
                 if (property.getDefaultValue(registry).isPresent()) {
                     throw new IllegalArgumentException("Oneof helper " + property + " cannot have a default");
                 }
+                Class<?> helperType = property.getPropertyTypeClass();
+                if (registry.getForClass(helperType).isPresent()) {
+                    throw new IllegalArgumentException(String.format(
+                            "Property '%s' on %s uses %s, which is a @LHStructOneOf helper but also has a registered"
+                                    + " type adapter. Helper fields are flattened into the parent Struct, so the"
+                                    + " helper cannot be converted by an adapter. Either remove the type adapter for"
+                                    + " %s, or remove @LHStructOneOf from %s to store it as a regular field.",
+                            property.getPropertyName(),
+                            type.getName(),
+                            helperType.getName(),
+                            helperType.getSimpleName(),
+                            helperType.getSimpleName()));
+                }
                 InlineStructDef helper = definition(property.getPropertyType(registry));
-                helper.getFieldsMap()
-                        .forEach((name, field) -> put(
-                                result,
-                                owners,
-                                type,
-                                property,
-                                name,
-                                field.toBuilder()
-                                        .setOneofGroup(property.getFieldName())
-                                        .build()));
+                boolean masked = property.isMasked();
+                helper.getFieldsMap().forEach((name, field) -> {
+                    StructFieldDef.Builder flattened = field.toBuilder().setOneofGroup(property.getFieldName());
+                    if (masked) flattened.getFieldTypeBuilder().setMasked(true);
+                    put(result, owners, type, property, name, flattened.build());
+                });
             } else {
                 put(result, owners, type, property, property.getFieldName(), property.toStructFieldDef(registry));
             }

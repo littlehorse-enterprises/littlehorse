@@ -669,11 +669,9 @@ public class LHLibUtil {
             for (LHStructProperty property : structProperties) {
                 String fieldName = property.getFieldName();
                 if (property.isOneofHelper() || property.getOneofGroup() != null) {
-                    property.setValueTo(
-                            structObject,
-                            oneofPropertyValue(struct, property, typeAdapterRegistry),
-                            typeAdapterRegistry,
-                            placeholderValues);
+                    VariableValue value = oneofPropertyValue(struct, property, typeAdapterRegistry);
+                    // Omitted alternatives stay null; oneof alternatives cannot have defaults.
+                    if (value != null) property.setValueTo(structObject, value, typeAdapterRegistry, placeholderValues);
                     continue;
                 }
                 if (!struct.getStruct().containsFields(fieldName)) {
@@ -735,10 +733,9 @@ public class LHLibUtil {
 
             String fieldName = property.getFieldName();
             if (property.isOneofHelper() || property.getOneofGroup() != null) {
-                canonicalArgValues[i] = property.deserializeValue(
-                        oneofPropertyValue(struct, property, typeAdapterRegistry),
-                        typeAdapterRegistry,
-                        placeholderValues);
+                VariableValue value = oneofPropertyValue(struct, property, typeAdapterRegistry);
+                canonicalArgValues[i] =
+                        value == null ? null : property.deserializeValue(value, typeAdapterRegistry, placeholderValues);
                 continue;
             }
             if (!struct.getStruct().containsFields(fieldName)) {
@@ -767,7 +764,7 @@ public class LHLibUtil {
                     ? struct.getStruct()
                             .getFieldsOrThrow(property.getFieldName())
                             .getValue()
-                    : VariableValue.getDefaultInstance();
+                    : null;
         }
         InlineStruct.Builder helper = InlineStruct.newBuilder();
         LHStructSchema.definition(property.getPropertyType(registry))

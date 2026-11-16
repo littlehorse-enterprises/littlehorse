@@ -25,12 +25,14 @@ public record Payment(String orderId, Method method) {}
 
 Both forms generate the same schema and wire fields. A selected card uses the
 workflow path `card`, not `method.card`. A null helper writes an empty selection;
-reading it restores `new Method(null, null)`.
+reading it restores `new Method(null, null)`. Marking the helper property with
+`@LHStructField(masked = true)` masks every flattened alternative.
 
 Field annotations may be placed on fields, getters, setters, or record components.
 Inherited properties share groups. POJO helpers must be public, have public no-arg
-constructors, and expose getters and setters. Helpers cannot also have `@LHStructDef`
-or declare groups on their own fields. Serialized field collisions are rejected.
+constructors, and expose getters and setters. Helpers cannot also have `@LHStructDef`,
+a registered type adapter, or declare groups on their own fields. Serialized field
+collisions are rejected.
 
 Alternatives cannot have defaults or `@LHStructField(isNullable = true)`.
 Explicit null fields on the wire and simultaneous selections are rejected on both

@@ -457,7 +457,7 @@ public class LHStructProperty {
         return this.pd.getWriteMethod();
     }
 
-    private Class<?> getPropertyTypeClass() {
+    Class<?> getPropertyTypeClass() {
         if (this.recordComponent != null) {
             return this.recordComponent.getType();
         }
