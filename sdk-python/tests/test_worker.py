@@ -1,4 +1,5 @@
 from typing import Any
+import asyncio
 import unittest
 import uuid
 import datetime
@@ -106,6 +107,110 @@ class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
         mock_client.PutCheckpoint.assert_called_once()
         self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
 
+    async def test_checkpoint_awaits_callback_before_saving_value_and_logs(self) -> None:
+        for wrapped in (False, True):
+            with self.subTest(wrapped=wrapped):
+                release = asyncio.Event()
+                mock_client = Mock()
+                mock_client.PutCheckpoint = AsyncMock(
+                    return_value=PutCheckpointResponse(
+                        flow_control_continue_type=PutCheckpointResponse.CONTINUE_TASK
+                    )
+                )
+                ctx = WorkerContext(ScheduledTask(), mock_client)
+
+                async def operation(
+                    checkpoint_ctx: CheckpointContext, release: asyncio.Event = release
+                ) -> dict[str, int]:
+                    await release.wait()
+                    checkpoint_ctx.log("Operation completed")
+                    return {"value": 42}
+
+                async def other_work(
+                    mock_client: Mock = mock_client, release: asyncio.Event = release
+                ) -> None:
+                    mock_client.PutCheckpoint.assert_not_called()
+                    release.set()
+
+                other_task = asyncio.create_task(other_work())
+                try:
+                    callback = (
+                        (lambda checkpoint_ctx: operation(checkpoint_ctx))
+                        if wrapped
+                        else operation
+                    )
+                    result = await ctx.execute_and_checkpoint(callback)
+                finally:
+                    await other_task
+
+                self.assertEqual(result, {"value": 42})
+                request = mock_client.PutCheckpoint.call_args.args[0]
+                self.assertEqual(request.value.json_obj, '{"value": 42}')
+                self.assertIn("Operation completed", request.logs)
+                self.assertEqual(ctx._checkpoints_so_far_in_this_run, 1)
+
+    async def test_checkpoint_awaits_future_returned_by_sync_callback(self) -> None:
+        mock_client = Mock()
+        mock_client.PutCheckpoint = AsyncMock(
+            return_value=PutCheckpointResponse(
+                flow_control_continue_type=PutCheckpointResponse.CONTINUE_TASK
+            )
+        )
+        ctx = WorkerContext(ScheduledTask(), mock_client)
+        future = asyncio.get_running_loop().create_future()
+        future.set_result("checkpoint_value")
+
+        result = await ctx.execute_and_checkpoint(lambda checkpoint_ctx: future)
+
+        self.assertEqual(result, "checkpoint_value")
+        self.assertEqual(
+            mock_client.PutCheckpoint.call_args.args[0].value.str, "checkpoint_value"
+        )
+
+    async def test_checkpoint_propagates_callback_errors_without_saving(self) -> None:
+        for error in (ValueError("callback failed"), asyncio.CancelledError()):
+            with self.subTest(error=type(error).__name__):
+                mock_client = Mock()
+                mock_client.PutCheckpoint = AsyncMock()
+                ctx = WorkerContext(ScheduledTask(), mock_client)
+
+                async def operation(
+                    checkpoint_ctx: CheckpointContext, error: BaseException = error
+                ) -> None:
+                    await asyncio.sleep(0)
+                    checkpoint_ctx.log("Incomplete operation")
+                    raise error
+
+                with self.assertRaises(type(error)) as raised:
+                    await ctx.execute_and_checkpoint(operation)
+
+                self.assertIs(raised.exception, error)
+                mock_client.PutCheckpoint.assert_not_called()
+                self.assertEqual(ctx._checkpoints_so_far_in_this_run, 0)
+
+    async def test_checkpoint_cancellation_does_not_save_incomplete_result(self) -> None:
+        mock_client = Mock()
+        mock_client.PutCheckpoint = AsyncMock()
+        ctx = WorkerContext(ScheduledTask(), mock_client)
+        started = asyncio.Event()
+        release = asyncio.Event()
+
+        async def operation(checkpoint_ctx: CheckpointContext) -> str:
+            started.set()
+            await release.wait()
+            return "incomplete"
+
+        task = asyncio.create_task(ctx.execute_and_checkpoint(operation))
+        try:
+            await asyncio.wait_for(started.wait(), timeout=1)
+        finally:
+            task.cancel()
+            with self.assertRaises(asyncio.CancelledError):
+                await task
+
+        mock_client.PutCheckpoint.assert_not_called()
+        self.assertEqual(ctx._checkpoints_so_far_in_this_run, 0)
+
     async def test_should_fetch_checkpoint_on_second_checkpoint_attempt(self):
         task_run_id = TaskRunId(wf_run_id=WfRunId(id="mock-id"), task_guid="mock-guid")
 
@@ -123,10 +228,13 @@ class TestWorkerContext(unittest.IsolatedAsyncioTestCase):
 
         ctx = WorkerContext(scheduled_task, mock_client)
 
-        checkpoint_data = await ctx.execute_and_checkpoint(
-            lambda checkpoint_ctx: "checkpoint_value"
-        )
+        async def operation(checkpoint_ctx: CheckpointContext) -> str:
+            self.fail("Replay must not invoke the callback")
 
+        callback = Mock(wraps=operation)
+        checkpoint_data = await ctx.execute_and_checkpoint(callback)
+
+        callback.assert_not_called()
         mock_client.PutCheckpoint.assert_not_called()
         mock_client.GetCheckpoint.assert_called_once()
         self.assertEqual(checkpoint_data, "checkpoint_value")

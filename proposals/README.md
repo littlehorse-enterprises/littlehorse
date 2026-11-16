@@ -57,5 +57,6 @@ To make a Proposal, please open a PR which adds the Proposasl markdown file and 
 | 029 | [Struct-Backed User Tasks](./029-struct-backed-user-tasks.md)                                      | Eduwer Camacaro                  | TODO |
 | 030 | [Run Inline Workflows ](./030-inline-workflows.md)                                                 | Eduwer Camacaro                  | TODO |
 | 031 | [Put Variables ](./031-put-variables.md)                                                           | Eduwer Camacaro                  | TODO |
-| 032 | [Tenant Name](./032-tenant-name.md)                                                               | Eduwer Camacaro                  | TODO |
-| 033 | [OneOf Support in `Struct`s](./033-struct-oneof-groups.md)                                          | Jacob Snarr                     | [#2531](https://github.com/littlehorse-enterprises/littlehorse/issues/2531) |
+| 032 | [Tenant Name](./032-tenant-name.md)                                                                | Eduwer Camacaro                  | TODO |
+| 033 | [OneOf Support in `Struct`s](./033-struct-oneof-groups.md)                                         | Jacob Snarr                      | [#2531](https://github.com/littlehorse-enterprises/littlehorse/issues/2531) |
+| 034 | [Enum Data Type](./034-enum-data-type.md)                                                          | Liam Mackay                      | [#1101](https://github.com/littlehorse-enterprises/littlehorse/issues/1101) |

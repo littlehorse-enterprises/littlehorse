@@ -140,6 +140,16 @@ public class ReadOnlyMetadataManager {
         return storeResult.getStoredObject();
     }
 
+    public <U extends Message, T extends MetadataGetable<U>> List<T> getAllFromPrefix(String prefix, Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+        try (var iterator = tenantStore.range(prefix, prefix + "~", StoredGetable.class)) {
+            while (iterator.hasNext()) {
+                result.add(clazz.cast(iterator.next().getValue().getStoredObject()));
+            }
+        }
+        return result;
+    }
+
     protected final boolean isClusterLevelObject(ObjectIdModel<?, ?, ?> objectId) {
         return objectId instanceof PrincipalIdModel || objectId instanceof TenantIdModel;
     }
