@@ -6,26 +6,11 @@ import { NodeProps } from '.'
 import { DiagramNodeDiamond, DiagramNodeShell } from './DiagramNodeChrome'
 import { Fade } from './Fade'
 import { grayNodeTheme } from './nodeThemes'
-import { nopSourceHandlePlacements } from './nopHandleLayout'
 import { SelectedNode } from './SelectedNode'
 
 const NopNode: FC<NodeProps<'entrypoint', Node>> = ({ id, data, selected }) => {
   const { fade, nodeRunsList } = data
   const nodeRun = nodeRunsList?.[0]
-
-  const sourceHandles = nopSourceHandlePlacements(data.outgoingEdges || []).map(placement => (
-    <Handle
-      key={placement.id}
-      type="source"
-      position={placement.position}
-      id={placement.id}
-      className="bg-transparent"
-      style={{
-        [placement.position === Position.Top || placement.position === Position.Bottom ? 'left' : 'top']:
-          `${placement.pct * 100}%`,
-      }}
-    />
-  ))
 
   return (
     <>
@@ -40,7 +25,7 @@ const NopNode: FC<NodeProps<'entrypoint', Node>> = ({ id, data, selected }) => {
               innerInsetClass="inset-[1px]"
             />
             <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
-            {sourceHandles}
+            <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
           </div>
         </DiagramNodeShell>
       </Fade>

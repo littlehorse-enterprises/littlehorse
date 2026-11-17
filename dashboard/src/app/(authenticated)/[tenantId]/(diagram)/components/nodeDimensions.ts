@@ -20,7 +20,6 @@ const GLYPH_DIMS: Record<string, { w: number; h: number }> = {
   entrypoint: { w: 24, h: 24 },
   exit: { w: 24, h: 24 },
   nop: { w: 32, h: 32 },
-  cycle: { w: 40, h: 40 },
   sleep: { w: 40, h: 40 },
   startThread: { w: 40, h: 40 },
   waitForThreads: { w: 40, h: 40 },

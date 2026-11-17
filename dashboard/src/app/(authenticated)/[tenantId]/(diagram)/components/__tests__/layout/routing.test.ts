@@ -1,4 +1,4 @@
-import { Edge as EdgeProto } from 'littlehorse-client/proto'
+import { Edge as EdgeProto, VariableAssignment } from 'littlehorse-client/proto'
 import { Edge, Position } from 'reactflow'
 import { planRoutes, pathReachesTarget, snapRoute, unsharedPaths } from '../../EdgeTypes/elkRoute'
 import { DiagramEdgeData } from '../../EdgeTypes/extractEdges'
@@ -21,7 +21,7 @@ const sceneEdge = (id: string): SceneEdge => ({
   source: id,
   target: 'sink',
   targetHandle: 'target-0',
-  isCycleEdge: false,
+  inLoop: false,
   hasLabel: true,
   missingSourceHandle: false,
   missingTargetHandle: false,
@@ -133,9 +133,13 @@ test('snapping only extends the endpoint on the side its handle faces', () => {
 })
 
 test('parallel conditional branches get separate horizontal label runs and one arrow', async () => {
+  const condition = {
+    oneofKind: 'condition' as const,
+    condition: VariableAssignment.create({ source: { oneofKind: 'variableName', variableName: 'approved' } }),
+  }
   const edges = [edge('a', 'source'), edge('b', 'source'), edge('c', 'source')].map(e => ({
     ...e,
-    data: { ...EdgeProto.create(), isElseEdge: true },
+    data: { ...EdgeProto.create(), edgeCondition: condition },
   }))
   const { routes } = await layoutDiagram(
     ['source', 'sink'].map(id => ({ id, type: 'nop', data: {}, position: { x: 0, y: 0 } })),

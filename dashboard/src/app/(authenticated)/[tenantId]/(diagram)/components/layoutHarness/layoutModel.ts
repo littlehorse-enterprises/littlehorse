@@ -3,8 +3,7 @@ import { Position } from 'reactflow'
 import { nodeDimensions } from '../nodeDimensions'
 import { extractEdges } from '../EdgeTypes/extractEdges'
 import { edgeLabelSize } from '../EdgeTypes/edgeLabel'
-import { extractNodes, getCycleNodes } from '../NodeTypes/extractNodes'
-import { nopSourceHandlePlacements } from '../NodeTypes/nopHandleLayout'
+import { extractNodes } from '../NodeTypes/extractNodes'
 import { layoutDiagram } from '../graphLayout'
 import { snapEdgeRoute } from '../EdgeTypes/elkRoute'
 import { Polyline, Rect } from './geometry'
@@ -20,7 +19,8 @@ export interface SceneEdge {
   source: string
   target: string
   targetHandle: string
-  isCycleEdge: boolean
+  /** Source and target can reach each other, so the edge is part of a loop in the spec. */
+  inLoop: boolean
   hasLabel: boolean
   labelRect?: Rect
   polyline: Polyline
@@ -34,20 +34,50 @@ export interface Scene {
   edges: SceneEdge[]
 }
 
-export const rendersHandle = (
-  nodeType: string,
-  type: 'source' | 'target',
-  id: string,
-  outgoing: ThreadSpec['nodes'][string]['outgoingEdges']
-): boolean => {
+export const rendersHandle = (nodeType: string, type: 'source' | 'target', id: string): boolean => {
   if (type === 'target') return nodeType !== 'entrypoint' && id === 'target-0'
-  if (nodeType === 'exit' && id === 'source-0') return false
-  return nopSourceHandlePlacements(outgoing).some(placement => placement.id === id)
+  return id === 'source-0'
+}
+
+/** Groups nodes that can all reach one another (Tarjan's strongly connected components). */
+const loopGroups = (spec: ThreadSpec): Map<string, number> => {
+  const group = new Map<string, number>()
+  const index = new Map<string, number>()
+  const low = new Map<string, number>()
+  const stack: string[] = []
+  const onStack = new Set<string>()
+  let next = 0
+  let groups = 0
+  const visit = (id: string) => {
+    index.set(id, next)
+    low.set(id, next++)
+    stack.push(id)
+    onStack.add(id)
+    for (const { sinkNodeName } of spec.nodes[id]?.outgoingEdges ?? []) {
+      if (!index.has(sinkNodeName)) {
+        visit(sinkNodeName)
+        low.set(id, Math.min(low.get(id)!, low.get(sinkNodeName)!))
+      } else if (onStack.has(sinkNodeName)) {
+        low.set(id, Math.min(low.get(id)!, index.get(sinkNodeName)!))
+      }
+    }
+    if (low.get(id) === index.get(id)) {
+      let member: string
+      do {
+        member = stack.pop()!
+        onStack.delete(member)
+        group.set(member, groups)
+      } while (member !== id)
+      groups++
+    }
+  }
+  for (const id of Object.keys(spec.nodes)) if (!index.has(id)) visit(id)
+  return group
 }
 
 export const buildScene = async (threadSpec: ThreadSpec): Promise<Scene> => {
   const spec = ThreadSpec.clone(threadSpec)
-  getCycleNodes(spec)
+  const groups = loopGroups(spec)
   const rfNodes = extractNodes(spec)
   const rfEdges = extractEdges(spec)
   const { graph, routes } = await layoutDiagram(rfNodes, rfEdges)
@@ -64,12 +94,11 @@ export const buildScene = async (threadSpec: ThreadSpec): Promise<Scene> => {
     if (!planned) throw new Error(`ELK did not route edge ${edge.id}`)
     const source = byId.get(edge.source)!.rect
     const target = byId.get(edge.target)!.rect
-    const loop = edge.sourceHandle === 'source-loop'
     const route = snapEdgeRoute(
       planned,
-      { x: source.x + source.w * (loop ? 0.5 : 1), y: source.y + source.h * (loop ? 1 : 0.5) },
+      { x: source.x + source.w, y: source.y + source.h / 2 },
       { x: target.x, y: target.y + target.h / 2 },
-      loop ? Position.Bottom : Position.Right,
+      Position.Right,
       Position.Left
     )
     const size = edgeLabelSize(edge.data)
@@ -82,23 +111,13 @@ export const buildScene = async (threadSpec: ThreadSpec): Promise<Scene> => {
       source: edge.source,
       target: edge.target,
       targetHandle: edge.targetHandle ?? 'target-0',
-      isCycleEdge: edge.source.startsWith('cycle-') || edge.target.startsWith('cycle-'),
+      inLoop: groups.get(edge.source) === groups.get(edge.target),
       hasLabel: size !== undefined,
       labelRect,
       polyline: route.points,
       paths: route.paths,
-      missingSourceHandle: !rendersHandle(
-        byId.get(edge.source)!.type,
-        'source',
-        edge.sourceHandle!,
-        spec.nodes[edge.source].outgoingEdges
-      ),
-      missingTargetHandle: !rendersHandle(
-        byId.get(edge.target)!.type,
-        'target',
-        edge.targetHandle!,
-        spec.nodes[edge.target].outgoingEdges
-      ),
+      missingSourceHandle: !rendersHandle(byId.get(edge.source)!.type, 'source', edge.sourceHandle!),
+      missingTargetHandle: !rendersHandle(byId.get(edge.target)!.type, 'target', edge.targetHandle!),
     }
   })
   return { nodes, edges }

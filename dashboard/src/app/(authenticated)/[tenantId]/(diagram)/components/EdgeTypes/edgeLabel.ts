@@ -13,7 +13,6 @@ import {
 export type LabelPartKind = 'keyword' | 'source' | 'output' | 'literal' | 'operator'
 export type LabelPart = { text: string; kind: LabelPartKind; title?: string }
 export type LabelEdge = EdgeProto & {
-  isElseEdge?: boolean
   nodeOutputValues?: VariableDisplayContext['nodeOutputValues']
 }
 
@@ -59,22 +58,20 @@ export const conditionLabelParts = (edge: LabelEdge): LabelPart[] => {
 export const edgeLabelSize = (edge?: LabelEdge) => {
   if (!edge) return undefined
   const parts = conditionLabelParts(edge)
-  const condition = parts.length > 0
-  const chip = condition || edge.isElseEdge
+  const chip = parts.length > 0
   const mutation = edge.variableMutations.length > 0
   if (!chip && !mutation) return undefined
   // 9px monospace glyphs are ~5.5px wide; 7px reserves font variation. Operand
   // chips truncate at OPERAND_CHIP_MAX_PX. The base covers the branch icon and
   // card padding; each chip adds its padding + ring, all before Default's 0.75 scale.
-  const chipWidth = condition
-    ? parts.reduce((width, part) => {
-        const text = part.text.length * 7
-        if (part.kind === 'keyword') return width + text
-        if (part.kind === 'operator') return width + text + 8
-        return width + Math.min(text, OPERAND_CHIP_MAX_PX) + 10
-      }, 30) +
-      (parts.length - 1) * 4
-    : 30 + 'Else'.length * 7
+  const chipWidth =
+    parts.reduce((width, part) => {
+      const text = part.text.length * 7
+      if (part.kind === 'keyword') return width + text
+      if (part.kind === 'operator') return width + text + 8
+      return width + Math.min(text, OPERAND_CHIP_MAX_PX) + 10
+    }, 30) +
+    (parts.length - 1) * 4
   return {
     w: Math.max(chip ? chipWidth * 0.75 : 0, mutation ? 16 : 0),
     h: (chip ? 27 * 0.75 : 0) + (mutation ? 16 : 0),

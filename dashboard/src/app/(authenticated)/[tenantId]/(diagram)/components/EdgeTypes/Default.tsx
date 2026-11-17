@@ -1,6 +1,6 @@
 import React, { type FC, useCallback } from 'react'
 import { getSmoothStepPath, EdgeLabelRenderer, BaseEdge, type EdgeProps, Position } from 'reactflow'
-import { CircleAlertIcon, GitBranch } from 'lucide-react'
+import { CircleAlertIcon } from 'lucide-react'
 import { useModal } from '../../hooks/useModal'
 import { EdgeConditionLabel } from './EdgeConditionLabel'
 import { pathReachesTarget, routeLabelPoint, routeToPath, snapEdgeRoute } from './elkRoute'
@@ -57,7 +57,6 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
   const size = edgeLabelSize(data)
   const hasMutation = (data?.variableMutations.length ?? 0) > 0
   const hasCondition = data?.edgeCondition.oneofKind !== undefined
-  const hasChip = hasCondition || data?.isElseEdge
   const { setModal, setShowModal } = useModal()
   const onClick = useCallback(() => {
     if (!data) return
@@ -95,20 +94,13 @@ const CustomEdge: FC<EdgeProps<DiagramEdgeData>> = ({
           >
             <div onClick={onClick} className="flex h-full cursor-pointer flex-col items-center">
               {hasMutation && <CircleAlertIcon size={16} className="shrink-0 fill-gray-200" />}
-              {hasChip && (
+              {hasCondition && (
                 <div className="relative w-full flex-1">
                   <div
                     className="absolute left-1/2 top-1/2 flex items-center justify-center whitespace-nowrap rounded-md border border-violet-200 bg-white px-1.5 py-1"
                     style={{ transform: 'translate(-50%, -50%) scale(0.75)' }}
                   >
-                    {hasCondition ? (
-                      <EdgeConditionLabel edge={data} />
-                    ) : (
-                      <span className="inline-flex items-center gap-0.5">
-                        <GitBranch className="h-2.5 w-2.5 shrink-0 text-violet-600" aria-hidden />
-                        <span className="text-[8px] font-bold uppercase tracking-wide text-violet-800">Else</span>
-                      </span>
-                    )}
+                    <EdgeConditionLabel edge={data} />
                   </div>
                 </div>
               )}

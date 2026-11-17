@@ -104,9 +104,10 @@ export const checkScene = (scene: Scene): Verdict => {
   }
 
   // 4. In a left-to-right layered layout, every non-loop edge flows forward.
-  //    Loop plumbing (cycle-node edges) is exempt: flowing back is its job.
+  //    Edges inside a loop of the spec are exempt: a loop drawn left to right
+  //    has to send at least one of its edges back.
   for (const edge of edges) {
-    if (edge.isCycleEdge) continue
+    if (edge.inLoop) continue
     const source = nodeById.get(edge.source)!
     const target = nodeById.get(edge.target)!
     if (rectCenter(target.rect).x < rectCenter(source.rect).x - 1) {
@@ -130,10 +131,9 @@ export const checkScene = (scene: Scene): Verdict => {
     if (edge.missingTargetHandle) defects.push({ type: 'missing-handle', detail: `${edge.id} (target)` })
   }
 
-  // 7. Connectivity survives the graph transforms: getCycleNodes rewrites
-  //    edges, and a rewrite that drops one leaves a node floating (observed
-  //    live: empty-body while loops lost both forward edges, orphaning the
-  //    loop-end nop). Every node keeps a way in and a way out.
+  // 7. Every edge in the spec is drawn: no node is left without a way in or
+  //    a way out (an earlier graph rewrite dropped edges of empty-body while
+  //    loops and orphaned the loop-end nop).
   const hasIncoming = new Set(edges.map(e => e.target))
   const hasOutgoing = new Set(edges.map(e => e.source))
   for (const node of nodes) {

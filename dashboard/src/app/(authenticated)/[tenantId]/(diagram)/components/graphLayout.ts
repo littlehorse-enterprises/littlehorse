@@ -37,7 +37,6 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
   layoutOptions: ELK_LAYOUT_OPTIONS,
   children: nodes.map(node => {
     const { w, h } = nodeDimensions(node.type, node.id)
-    const loop = edges.some(edge => edge.source === node.id && edge.sourceHandle === 'source-loop')
     return {
       id: node.id,
       width: w,
@@ -46,7 +45,6 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
       ports: [
         { id: portId(node.id, 'target-0'), layoutOptions: { 'elk.port.side': 'WEST' } },
         { id: portId(node.id, 'source-0'), layoutOptions: { 'elk.port.side': 'EAST' } },
-        ...(loop ? [{ id: portId(node.id, 'source-loop'), layoutOptions: { 'elk.port.side': 'SOUTH' } }] : []),
       ],
     }
   }),
@@ -63,7 +61,7 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
               text: edge.data
                 ? conditionLabelParts(edge.data)
                     .map(part => part.text)
-                    .join(' ') || (edge.data.isElseEdge ? 'else' : 'mutations')
+                    .join(' ') || 'mutations'
                 : '',
               width: label.w + 16,
               height: label.h + 16,

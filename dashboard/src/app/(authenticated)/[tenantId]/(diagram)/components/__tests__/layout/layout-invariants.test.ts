@@ -4,10 +4,9 @@
  * Fixtures are real PutWfSpecRequest JSONs produced by the sdk-js random
  * workflow generator (lh-random-workflows, seed 20260826) — every one was
  * accepted and executed by a real LittleHorse server. Each thread is pushed
- * through the app's own diagram pipeline (getCycleNodes -> extractNodes /
- * extractEdges -> the shared ELK graph/ports/labels -> rendered route plan)
- * and the resulting geometry is checked against the
- * readability invariants in invariants.ts.
+ * through the app's own diagram pipeline (extractNodes / extractEdges -> the
+ * shared ELK graph/ports/labels -> rendered route plan) and the resulting
+ * geometry is checked against the readability invariants in invariants.ts.
  *
  * Modes:
  *  - default: RATCHET — per-fixture defect counts must not exceed

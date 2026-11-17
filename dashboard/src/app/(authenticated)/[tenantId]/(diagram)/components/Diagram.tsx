@@ -36,7 +36,7 @@ import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { extractEdges } from './EdgeTypes/extractEdges'
 import { getNodeRunsList, LayoutManager } from './LayoutManager'
 import nodeTypes from './NodeTypes'
-import { extractNodes, getCycleNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
+import { extractNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
 import { ThreadPanel } from './ThreadPanel'
 
@@ -91,9 +91,7 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
 
   const threadSpec = useMemo(() => {
     if (thread === undefined) return spec.threadSpecs[spec.entrypointThreadName]
-    const threadSpec = spec.threadSpecs[thread.name]
-    getCycleNodes(threadSpec)
-    return threadSpec
+    return spec.threadSpecs[thread.name]
   }, [spec, thread.name])
 
   const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
@@ -282,7 +280,6 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
             nodesConnectable={false}
             nodesDraggable={false}
             elementsSelectable
-            onlyRenderVisibleElements={true}
             minZoom={0.01}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}

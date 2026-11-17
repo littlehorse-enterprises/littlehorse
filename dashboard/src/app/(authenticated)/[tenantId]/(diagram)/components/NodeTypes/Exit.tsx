@@ -28,6 +28,8 @@ const ExitNode: FC<NodeProps<'exit', ExitNodeProto>> = ({ id, data, selected }) 
             )}
           >
             <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
+            {/* An EXIT can carry outgoing edges in the spec (e.g. fail() inside a doElse); draw them. */}
+            <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
           </div>
         </DiagramNodeShell>
       </Fade>
