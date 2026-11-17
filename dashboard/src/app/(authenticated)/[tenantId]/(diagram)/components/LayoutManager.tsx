@@ -53,7 +53,6 @@ export const LayoutManager: FC<LayoutManagerProps> = ({ nodeRuns, viewportKey, s
           'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
           'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
           'elk.layered.unnecessaryBendpoints': 'true',
-          'elk.layered.compaction.postCompaction.strategy': 'EDGE_LENGTH',
           'elk.padding': '[top=100,left=100,bottom=100,right=100]',
           'elk.separateConnectedComponents': 'false',
           'org.eclipse.elk.layered.mergeEdges': 'false',
