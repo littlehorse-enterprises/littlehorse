@@ -269,6 +269,7 @@ JSON Schema can express this constraint with [`dependentSchemas`](https://json-s
   These rules also apply to Structs embedded in fields, arrays, and maps, including optional and nullable containers.
 
   Under `NO_SCHEMA_UPDATES`, any added, changed, or removed field is incompatible, including alternatives.
+- **Values validated against older versions:** Validation against a pinned StructDef version ignores fields that version doesn't define. If a newer version adds `bankAccountId` to the `method` group, a `WfRun` pinned to the older version can receive `bankAccountId` from a newer client and later set `cardToken`, storing a value that the newer version rejects. Consumers using the newer version reject it on ingress, and Java task workers reject it when deserializing. Migrating such a `WfRun` to a WfSpec that uses the newer version does not yet re-validate carried-over variables, so the conflict surfaces at the next mutation of that variable; re-validating during migration is tracked separately.
 - **Future evolution:** Moving existing fields into a group under the same StructDef name will be addressed in a separate proposal, including any data checks or new compatibility modes.
 - **Switching SDK APIs:** Moving between declaration styles preserves values and paths when the generated schemas and field names are identical.
 
