@@ -232,6 +232,15 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         return out;
     }
 
+    @Override
+    public Set<String> getNeededNodeNames() {
+        Set<String> out = new HashSet<>();
+        for (VariableAssignmentModel assignment : placeholders.values()) {
+            out.addAll(assignment.getRequiredNodeNames());
+        }
+        return out;
+    }
+
     public String assignExceptionNameVariable(ThreadRunModel threadRun) {
         try {
             if (onCancellationException != null) {

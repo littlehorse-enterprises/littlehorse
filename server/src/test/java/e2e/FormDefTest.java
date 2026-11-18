@@ -1,10 +1,12 @@
 package e2e;
 
+import static io.littlehorse.sdk.common.proto.LHStatus.ERROR;
 import static io.littlehorse.sdk.common.proto.LHStatus.RUNNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.FormDef;
 import io.littlehorse.sdk.common.proto.FormDefReference;
 import io.littlehorse.sdk.common.proto.FormField;
@@ -28,6 +30,7 @@ import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
+import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -187,17 +190,43 @@ public class FormDefTest {
     }
 
     @Test
+        void shouldDeleteWfRunAfterFormPlaceholderEvaluationFails() {
+                String taskName = putFormTask(placeholder("greeting"));
+                Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
+                        WfRunVariable customer = thread.declareStr("customer");
+                        thread.assignUserTask(taskName, "obiwan", null)
+                                        .withPlaceholder("greeting", thread.format("{0,number}", customer));
+                });
+                var id = workflowVerifier
+                                .prepareRun(workflow, Arg.of("customer", "Jake"))
+                                .waitForStatus(ERROR)
+                                .thenVerifyNodeRun(0, 1, node -> {
+                                        assertThat(node.getFailures(0).getMessage()).contains("Failed evaluating placeholder greeting");
+                                        assertThat(node.getUserTask().hasUserTaskRunId()).isFalse();
+                                })
+                                .start();
+
+                client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
+                assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
+                            client.getWfRun(id);
+                            return null;
+                        }))
+                        .isTrue();
+        }
+
+        @Test
     void shouldResolveFormOnUserTaskRun() {
         String userTaskDefName = putFormTask(placeholder("greeting"));
         Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
             WfRunVariable customer = thread.declareStr("customer");
+            var displayName = thread.execute("form-display-name", customer);
             thread.assignUserTask(userTaskDefName, "obiwan", null)
-                    .withPlaceholder("greeting", thread.format("Hello {0}, approve?", customer));
+                    .withPlaceholder("greeting", thread.format("Hello {0}, approve?", displayName));
         });
 
         workflowVerifier
                 .prepareRun(workflow, Arg.of("customer", "Jake"))
-                .waitForStatus(RUNNING)
+                .waitForNodeRunStatus(0, 2, RUNNING)
                 .thenVerifyWfRun(wfRun -> {
                     UserTaskRun run = client.getUserTaskRun(client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
                                     .setWfRunId(wfRun.getId())
@@ -213,7 +242,12 @@ public class FormDefTest {
                 .start();
     }
 
-    private String putFormTask(FormMetadataValue label) {
+        @LHTaskMethod("form-display-name")
+        public String displayName(String customer) {
+                return customer;
+        }
+
+        private String putFormTask(FormMetadataValue label) {
         StructDef structDef = putStructDef();
         FormDef formDef = client.putFormDef(formDefRequest("form-" + UUID.randomUUID(), structDef, label));
         String userTaskDefName = "form-task-" + UUID.randomUUID();

@@ -192,6 +192,8 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     @Override
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        if (userTaskRunId == null) return List.of();
+
         List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
         out.add(userTaskRunId);
 
