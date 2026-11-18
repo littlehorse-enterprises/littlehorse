@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.StatusRuntimeException;
-import io.littlehorse.sdk.common.proto.DeleteFormDefRequest;
 import io.littlehorse.sdk.common.proto.FormDef;
 import io.littlehorse.sdk.common.proto.FormDefReference;
 import io.littlehorse.sdk.common.proto.FormField;
@@ -44,7 +43,7 @@ public class FormDefTest {
     private WorkflowVerifier workflowVerifier;
 
     @Test
-    void shouldVersionGetSearchAndDeleteFormDefs() {
+        void shouldVersionGetAndSearchFormDefs() {
         StructDef structDef = putStructDef();
         String name = "form-" + UUID.randomUUID();
         PutFormDefRequest request = formDefRequest(name, structDef, literal("Approve?"));
@@ -74,12 +73,6 @@ public class FormDefTest {
                         .getResultsList())
                 .containsExactly(original.getId(), updated.getId());
 
-        client.deleteFormDef(
-                DeleteFormDefRequest.newBuilder().setId(updated.getId()).build());
-        Awaitility.await().atMost(Duration.ofSeconds(2)).untilAsserted(() -> assertThat(client.getFormDef(
-                                GetFormDefRequest.newBuilder().setName(name).build())
-                        .getId())
-                .isEqualTo(original.getId()));
     }
 
     @Test
@@ -111,6 +104,20 @@ public class FormDefTest {
                         literal("x"))))
                 .isInstanceOf(StatusRuntimeException.class)
                 .hasMessageContaining("does not exist");
+    }
+
+    @Test
+        void shouldRejectChangingResultStructDefNameAcrossFormVersions() {
+        String name = "form-" + UUID.randomUUID();
+        StructDef originalSchema = putStructDef();
+        StructDef unrelatedSchema = putStructDef();
+        FormDef original = client.putFormDef(formDefRequest(name, originalSchema, literal("Approve?")));
+
+        assertThatThrownBy(() -> client.putFormDef(formDefRequest(name, unrelatedSchema, literal("Approve?"))))
+                .isInstanceOf(StatusRuntimeException.class)
+                .hasMessageContaining("cannot change its result StructDef");
+        assertThat(client.getFormDef(GetFormDefRequest.newBuilder().setName(name).build()))
+                .isEqualTo(original);
     }
 
     @Test

@@ -354,8 +354,6 @@ service LittleHorse {
   rpc DeleteTaskDef(DeleteTaskDefRequest) returns (google.protobuf.Empty) {}
   // EXPERIMENTAL: Deletes a StructDef.
   rpc DeleteStructDef(DeleteStructDefRequest) returns (google.protobuf.Empty) {}
-  // Deletes an exact FormDef version.
-  rpc DeleteFormDef(DeleteFormDefRequest) returns (google.protobuf.Empty) {}
   // Deletes a WfSpec.
   rpc DeleteWfSpec(DeleteWfSpecRequest) returns (google.protobuf.Empty) {}
   // Deletes a UserTaskDef.
@@ -708,12 +706,6 @@ message GetFormDefRequest {
 
   // The exact version. If omitted, returns the latest version.
   optional int32 version = 2;
-}
-
-// Deletes an exact FormDef version.
-message DeleteFormDefRequest {
-  // The ID of the FormDef to delete.
-  FormDefId id = 1;
 }
 
 // Deletes a UserTaskDef.

@@ -73,7 +73,6 @@ import io.littlehorse.common.model.metadatacommand.MetadataCommandModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.CreateBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteBulkJobRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteExternalEventDefRequestModel;
-import io.littlehorse.common.model.metadatacommand.subcommand.DeleteFormDefRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeletePrincipalRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteQuotaRequestModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.DeleteStructDefRequestModel;
@@ -474,14 +473,6 @@ public class LHServerListener extends LittleHorseImplBase implements Closeable {
     @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.READ)
     public void searchFormDef(SearchFormDefRequest req, StreamObserver<FormDefIdList> ctx) {
         handleScan(SearchFormDefRequestModel.fromProto(req, requestContext()), ctx, SearchFormDefReply.class);
-    }
-
-    @Override
-    @Authorize(resources = ACLResource.ACL_USER_TASK, actions = ACLAction.WRITE_METADATA)
-    public void deleteFormDef(DeleteFormDefRequest req, StreamObserver<Empty> ctx) {
-        DeleteFormDefRequestModel reqModel =
-                LHSerializable.fromProto(req, DeleteFormDefRequestModel.class, requestContext());
-        processCommand(new MetadataCommandModel(reqModel), ctx, Empty.class);
     }
 
     @Override

@@ -86,6 +86,13 @@ public class PutFormDefRequestModel extends MetadataSubCommand<PutFormDefRequest
         } else if (spec.contentEquals(latest)) {
             return latest.toProto().build();
         } else {
+            String previousName = latest.getResultStructDefId().getName();
+            if (!previousName.equals(resultStructDefId.getName())) {
+                throw new LHApiException(
+                        Status.INVALID_ARGUMENT,
+                        "FormDef %s cannot change its result StructDef from %s to %s"
+                                .formatted(name, previousName, resultStructDefId.getName()));
+            }
             spec.setId(latest.getObjectId().bumpVersion());
         }
 
