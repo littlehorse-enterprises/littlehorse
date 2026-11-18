@@ -29,6 +29,7 @@ export const routes = {
   },
 
   userTaskDef: {
+    base: (name: string) => `/userTaskDef/${name}`,
     detail: (name: string, version: string | number) => `/userTaskDef/${name}/${version}`,
     audit: (wfRunId: string, userTaskGuid: string) => `/userTaskDef/audit/${wfRunId}/${userTaskGuid}`,
   },

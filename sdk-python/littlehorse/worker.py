@@ -194,6 +194,13 @@ class WorkerContext:
         return "\n".join(self._log_entries)
 
     async def execute_and_checkpoint(self, callable: Callable[..., Any]) -> Any:
+        """Execute a sync or async callback, or return its saved result on replay.
+
+        The callback receives a CheckpointContext. Awaitable results are awaited
+        before persisting the value and checkpoint logs. Exceptions and cancellation
+        propagate without saving an incomplete result. Work may run again if it
+        completes but the checkpoint is not persisted.
+        """
         if (
             self._checkpoints_so_far_in_this_run
             < self._scheduled_task.total_observed_checkpoints
@@ -217,6 +224,8 @@ class WorkerContext:
     async def _save_checkpoint(self, callable: Callable[..., Any]) -> Any:
         checkpoint_context: CheckpointContext = CheckpointContext()
         result: Any = callable(checkpoint_context)
+        if inspect.isawaitable(result):
+            result = await result
 
         response: PutCheckpointResponse = await self._client.PutCheckpoint(
             PutCheckpointRequest(

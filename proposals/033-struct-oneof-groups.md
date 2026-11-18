@@ -217,9 +217,13 @@ Alternatives cannot have defaults or schema-level nullability, and are never req
 
 ### Workflow Access and Updates
 
-Alternatives keep their ordinary paths such as `cardToken`; reading an unset alternative returns `NULL`. In a workflow, assigning `NULL` to an alternative unsets it. Each mutation is checked against the group as soon as it is applied, and an edge's mutations run in order, so switching selections takes two ordered mutations on the same edge: first assign `NULL` to `cardToken`, then assign `walletId`. Replacing the whole Struct also works.
+Alternatives keep their ordinary paths such as `cardToken`; reading an unset alternative returns `NULL`. In a workflow, assigning `NULL` to an alternative unsets it. Mutations on an edge are applied together, and only the final value must have at most one selection per group, so switching selections takes two mutations on the same edge in either order: assign `NULL` to `cardToken` and assign `walletId`. Replacing the whole Struct also works.
 
-Assigning a second alternative while another is still set, whether from a literal, task output, or `ExternalEvent`, fails the `NodeRun` with `VAR_SUB_ERROR`, like other failed variable mutations. All mutations on that edge roll back, preserving the previous value. Alternatives are not cleared automatically.
+If an edge leaves a second alternative set, whether from a literal, task output, or `ExternalEvent`, the `NodeRun` fails with `VAR_SUB_ERROR`, like other failed variable mutations. All mutations on that edge roll back, preserving the previous value. Alternatives are not cleared automatically.
+
+A Struct builder that sets more than one alternative in the same group is rejected when the `WfSpec` is registered, since it can never produce a valid value.
+
+Saving `UserTaskRun` progress may omit fields, but rejects output that sets more than one alternative in a group, just as completing the `UserTaskRun` does.
 
 ### Protobuf Changes
 
@@ -247,7 +251,7 @@ Our feature selects a named field, like protobuf's `oneof`. JSON Schema's `oneOf
 |------|-------------|---------------------|------------------|
 | Single `oneof` option | Allowed. | Allowed; the schema array must be nonempty. | Allowed. |
 | No selection | Allowed. Requiring a selection is outside this MVP. | Requires a branch that matches the unselected state; exactly one branch must still match. | Allowed; requiring a selection needs additional validation. |
-| Multiple selections | Rejected when the second alternative is assigned, preserving the previous value on failed updates. | Rejected if multiple branches match. Multiple populated fields alone do not necessarily cause multiple matches. | Setting another alternative clears the previous one; binary parsing keeps the last alternative encountered. |
+| Multiple selections | Rejected when an edge's mutations leave more than one alternative set, preserving the previous value. | Rejected if multiple branches match. Multiple populated fields alone do not necessarily cause multiple matches. | Setting another alternative clears the previous one; binary parsing keeps the last alternative encountered. |
 | Alternative types | Any supported Struct field type. Arrays and maps already use `Array` / `Map` messages; no extra user-defined wrapper is needed. | Any valid schema. | No direct `repeated` or `map` members; collections must be wrapped in a message. |
 | Where oneofs can be defined | On a group of fields in any Struct, including a named StructDef. Helper types are flattened into their parent. | On the entire document or within a nested schema. | Inside any message, including a top-level message; ordinary fields can coexist with the oneof. |
 | Field paths | Unchanged; alternatives stay at the Struct's top level. | Unchanged; `oneOf` constrains existing properties. | Unchanged; oneof members are ordinary fields on the wire. |
@@ -260,9 +264,13 @@ JSON Schema can express this constraint with [`dependentSchemas`](https://json-s
 - **Existing StructDefs:** Fields with `oneof_group` omitted behave as today. Servers and clients using oneofs need updated support. Older servers ignore `oneof_group` and treat alternatives as required fields without defaults, so values with unselected alternatives fail validation rather than being silently accepted.
 - **Schema updates:** We will keep the existing compatibility types. Under `FULLY_COMPATIBLE_SCHEMA_UPDATES`:
   - Adding a new group, or adding a new field to an existing group, is compatible, since alternatives are never required.
-  - Moving one existing optional field into a group is compatible on the wire, since no stored value can have more than one alternative set. It still changes behavior when the field had a default: alternatives cannot have defaults, so the field loses it. The server materializes defaults when values are written, so stored values keep the old default and count as having that alternative selected, while new values leave it unset.
-  - Moving more than one existing field into a group, moving a required field into a group, removing a field from a group, or changing an alternative's type is incompatible and requires a new StructDef name. The server cannot verify that stored values set at most one of several existing fields.
-- **Future evolution:** Moving several existing fields into one group under the same StructDef name will be addressed in a separate proposal, including any data checks or new compatibility modes.
+  - Moving any existing field into a group, removing a field from a group, moving an alternative to another group, removing an alternative, or changing an alternative's type is incompatible and requires a new StructDef name. Older versions of a StructDef may still be pinned by `WfSpec`s and fill in defaults for fields they consider missing, so a value that selected a new alternative could gain a second selection when it passes through an older version.
+
+  These rules also apply to Structs embedded in fields, arrays, and maps, including optional and nullable containers.
+
+  Under `NO_SCHEMA_UPDATES`, any added, changed, or removed field is incompatible, including alternatives.
+- **Values validated against older versions:** Validation against a pinned StructDef version ignores fields that version doesn't define. If a newer version adds `bankAccountId` to the `method` group, a `WfRun` pinned to the older version can receive `bankAccountId` from a newer client and later set `cardToken`, storing a value that the newer version rejects. Consumers using the newer version reject it on ingress, and Java task workers reject it when deserializing. Migrating such a `WfRun` to a WfSpec that uses the newer version does not yet re-validate carried-over variables, so the conflict surfaces at the next mutation of that variable; re-validating during migration is tracked separately.
+- **Future evolution:** Moving existing fields into a group under the same StructDef name will be addressed in a separate proposal, including any data checks or new compatibility modes.
 - **Switching SDK APIs:** Moving between declaration styles preserves values and paths when the generated schemas and field names are identical.
 
 ## Alternatives
@@ -271,7 +279,7 @@ JSON Schema can express this constraint with [`dependentSchemas`](https://json-s
 |-------------|----------|
 | Support only one of the two SDK APIs. | Reduces SDK work, but forces either string groups or extra types onto users whose models fit the other approach better. |
 | Put a list of alternative field names in one annotation above `Payment`. | Defines the rule once, but renaming a field also requires editing its name in the annotation. |
-| Nest each choice under its own Struct marked as a oneof. | A choice becomes a single value that can be passed, null-checked, or replaced in one assignment, and a helper type can appear more than once per Struct. However, paths change from `cardToken` to `method.cardToken`, moving existing fields into a oneof is incompatible, and SDKs must nest and expand field groups. |
+| Nest each choice under its own Struct marked as a oneof. | A choice becomes a single value that can be passed, null-checked, or replaced in one assignment, and a helper type can appear more than once per Struct. However, paths change from `cardToken` to `method.cardToken`, so a future migration could never move existing fields into a oneof in place, and SDKs must nest and expand field groups. |
 | Clear the previous alternative automatically when another is assigned, like protobuf. | Switching selections takes one mutation, but a mistaken assignment silently discards data. |
 | Store groups as a list of field names on `InlineStructDef`. | Keeps group configuration in one place, but renaming or removing a field can leave a dangling reference that the server must reject. |
 | Make `Payment.method` hold a `CardPayment` or `BankPayment` object through a sealed interface or native union. | The language restricts the value to one alternative, but the SDK needs subtype mapping and users need a separate class for each alternative. |
