@@ -366,6 +366,67 @@ public class StructBackedUserTaskTest {
                 .start();
     }
 
+    @Test
+    void shouldRejectProgressWithMultipleOneofSelections() {
+        String suffix = UUID.randomUUID().toString();
+        StructFieldDef alternative = StructFieldDef.newBuilder()
+                .setFieldType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.STR))
+                .setOneofGroup("method")
+                .build();
+        StructDef structDef = client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName("payment-form-" + suffix)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields("card", alternative)
+                        .putFields("bank", alternative))
+                .build());
+        String userTaskDefName = "payment-user-task-" + suffix;
+        client.putUserTaskDef(PutUserTaskDefRequest.newBuilder()
+                .setName(userTaskDefName)
+                .setResultStructDefId(structDef.getId())
+                .build());
+        StructField selected = StructField.newBuilder()
+                .setValue(VariableValue.newBuilder().setStr("x"))
+                .build();
+
+        workflowVerifier
+                .prepareRun(workflow(userTaskDefName))
+                .waitForStatus(RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRunId runId = getUserTaskRunId(wfRun.getId());
+                    SaveUserTaskRunProgressRequest.Builder progress = SaveUserTaskRunProgressRequest.newBuilder()
+                            .setUserTaskRunId(runId)
+                            .setUserId("obiwan");
+                    InlineStruct.Builder card = InlineStruct.newBuilder().putFields("card", selected);
+                    assertThatThrownBy(() -> client.saveUserTaskRunProgress(progress.clone()
+                                    .setOutput(VariableValue.newBuilder()
+                                            .setStruct(Struct.newBuilder()
+                                                    .setStructDefId(structDef.getId())
+                                                    .setStruct(card.clone().putFields("bank", selected))))
+                                    .build()))
+                            .isInstanceOfSatisfying(StatusRuntimeException.class, exception -> assertThat(
+                                            exception.getStatus().getCode())
+                                    .isEqualTo(io.grpc.Status.Code.INVALID_ARGUMENT))
+                            .hasMessageContaining("multiple selections");
+                    client.saveUserTaskRunProgress(progress.clone()
+                            .setOutput(VariableValue.newBuilder()
+                                    .setStruct(Struct.newBuilder()
+                                            .setStructDefId(structDef.getId())
+                                            .setStruct(card)))
+                            .build());
+                    assertThat(client.getUserTaskRun(runId)
+                                    .getOutput()
+                                    .getStruct()
+                                    .getStruct()
+                                    .getFieldsMap())
+                            .containsOnlyKeys("card");
+                    client.cancelUserTaskRun(io.littlehorse.sdk.common.proto.CancelUserTaskRunRequest.newBuilder()
+                            .setUserTaskRunId(runId)
+                            .build());
+                })
+                .waitForStatus(ERROR)
+                .start();
+    }
+
     private StructBackedTask registerStructBackedTask() {
         String suffix = UUID.randomUUID().toString();
         StructDef structDef = client.putStructDef(PutStructDefRequest.newBuilder()

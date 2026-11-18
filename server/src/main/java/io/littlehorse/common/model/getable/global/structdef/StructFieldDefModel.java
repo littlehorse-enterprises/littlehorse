@@ -22,7 +22,11 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
 
     private VariableValueModel defaultValue;
 
+    @Getter
     private boolean isNullable;
+
+    @Getter
+    private String oneofGroup;
 
     @Getter
     private String description;
@@ -41,6 +45,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
             out.setDescription(description);
         }
 
+        if (oneofGroup != null) out.setOneofGroup(oneofGroup);
         return out;
     }
 
@@ -49,6 +54,7 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
         StructFieldDef proto = (StructFieldDef) p;
         fieldType = TypeDefinitionModel.fromProto(proto.getFieldType(), context);
         isNullable = proto.getIsNullable();
+        oneofGroup = proto.hasOneofGroup() ? proto.getOneofGroup() : null;
 
         if (proto.hasDefaultValue()) {
             defaultValue = VariableValueModel.fromProto(proto.getDefaultValue(), context);
@@ -92,10 +98,20 @@ public class StructFieldDefModel extends LHSerializable<StructFieldDef> {
     }
 
     public boolean isRequired() {
-        return !hasDefaultValue();
+        return oneofGroup == null && !hasDefaultValue();
     }
 
     public void validate(ReadOnlyMetadataManager metadataManager) throws StructDefValidationException {
+        if (oneofGroup != null) {
+            try {
+                InlineStructDefModel.validateStructDefFieldName(oneofGroup);
+            } catch (InvalidStructDefFieldNameException e) {
+                throw new StructDefValidationException(e, "Invalid oneof group: " + e.getMessage());
+            }
+            if (isNullable || defaultValue != null) {
+                throw new StructDefValidationException("Oneof alternatives cannot be nullable or have defaults");
+            }
+        }
         VariableType forbiddenType = fieldType.findForbiddenJsonPrimitiveForStructDef();
         if (forbiddenType != null) {
             throw new StructDefValidationException(String.format(

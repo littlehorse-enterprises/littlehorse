@@ -3,8 +3,10 @@ package io.littlehorse.common.model.getable.global.wfspec.variable;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.validation.InvalidExpressionException;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
@@ -116,6 +118,13 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
                     "Missing required field(s) for " + typeDescription + ": " + String.join(", ", missingRequired));
         }
 
+        try {
+            InlineStructDefModel.validateOneofSelections(
+                    fieldDefs, builder.getFields().keySet());
+        } catch (StructValidationException exn) {
+            throw new InvalidExpressionException(typeDescription + ": " + exn.getMessage());
+        }
+
         for (Map.Entry<String, InlineStructFieldValueModel> entry :
                 builder.getFields().entrySet()) {
             String fieldName = entry.getKey();
@@ -162,7 +171,7 @@ public class StructBuilderModel extends LHSerializable<StructBuilder> {
         pinInlineStructVersions(value, structDef.getStructDef().getFields(), manager);
     }
 
-    private static Map<String, StructFieldDefModel> getFieldDefinitions(
+    static Map<String, StructFieldDefModel> getFieldDefinitions(
             TypeDefinitionModel typeDefinition, ReadOnlyMetadataManager manager) throws InvalidExpressionException {
         if (typeDefinition.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF) {
             return typeDefinition.getInlineStructDef().getFields();

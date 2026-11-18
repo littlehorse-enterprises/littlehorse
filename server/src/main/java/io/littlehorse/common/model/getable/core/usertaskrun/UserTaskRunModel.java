@@ -27,6 +27,7 @@ import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructValidationException;
@@ -427,6 +428,11 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             Map<String, StructFieldModel> partialResults, StructDefIdModel outputSchemaId) {
         StructDefModel structDef = executionContext.metadataManager().get(outputSchemaId);
         Map<String, StructFieldDefModel> fieldDefs = structDef.getStructDef().getFields();
+        try {
+            InlineStructDefModel.validateOneofSelections(fieldDefs, partialResults.keySet());
+        } catch (StructValidationException exn) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, exn.getMessage());
+        }
 
         for (Map.Entry<String, StructFieldModel> result : partialResults.entrySet()) {
             StructFieldDefModel fieldDef = fieldDefs.get(result.getKey());
