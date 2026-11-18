@@ -19,7 +19,6 @@ import io.littlehorse.common.model.getable.global.wfspec.node.SubNode;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UTActionTriggerModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
-import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadVarDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskDefIdModel;
 import io.littlehorse.sdk.common.proto.UTActionTrigger;
@@ -215,18 +214,10 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
         }
     }
 
-    // Masked fields inside a resolved Struct stay masked, so only masked variables and masked results are rejected.
     private boolean exposesMaskedValue(VariableAssignmentModel assignment) throws InvalidNodeException {
         ThreadSpecModel threadSpec = node.getThreadSpec();
-        for (String varName : assignment.getRequiredWfRunVarNames()) {
-            ThreadVarDefModel varDef = threadSpec.getVarDef(varName);
-            if (varDef != null && varDef.getVarDef().getTypeDef().isMasked()) return true;
-        }
         try {
-            return assignment
-                    .resolveType(metadataManager, threadSpec.getWfSpec(), threadSpec.getName())
-                    .map(TypeDefinitionModel::isMasked)
-                    .orElse(false);
+            return assignment.readsMaskedValue(metadataManager, threadSpec.getWfSpec(), threadSpec.getName());
         } catch (InvalidExpressionException exn) {
             throw new InvalidNodeException("Invalid placeholder assignment: " + exn.getMessage(), node);
         }

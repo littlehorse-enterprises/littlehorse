@@ -143,6 +143,32 @@ public class FormDefTest {
     }
 
     @Test
+    void shouldRejectFormattedMaskedStructFieldInPlaceholder() {
+        String profileName = "profile-" + UUID.randomUUID();
+        client.putStructDef(PutStructDefRequest.newBuilder()
+                .setName(profileName)
+                .setStructDef(InlineStructDef.newBuilder()
+                        .putFields(
+                                "secret",
+                                StructFieldDef.newBuilder()
+                                        .setFieldType(TypeDefinition.newBuilder()
+                                                .setPrimitiveType(VariableType.STR)
+                                                .setMasked(true))
+                                        .build()))
+                .build());
+        String taskName = putFormTask(placeholder("greeting"));
+        Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
+            WfRunVariable profile = thread.declareStruct("profile", profileName, 0);
+            thread.assignUserTask(taskName, "obiwan", null)
+                    .withPlaceholder("greeting", thread.format("Hello {0}", profile.get("secret")));
+        });
+
+        assertThatThrownBy(() -> client.putWfSpec(workflow.compileWorkflow()))
+                .isInstanceOf(StatusRuntimeException.class)
+                .hasMessageContaining("Placeholder greeting exposes a masked value");
+    }
+
+    @Test
     void shouldRejectWfSpecWithMissingPlaceholder() {
         String userTaskDefName = putFormTask(placeholder("greeting"));
         Workflow workflow = Workflow.newWorkflow(
