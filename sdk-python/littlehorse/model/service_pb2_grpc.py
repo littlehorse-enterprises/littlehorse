@@ -478,11 +478,6 @@ class LittleHorseStub(object):
                 request_serializer=service__pb2.DeleteStructDefRequest.SerializeToString,
                 response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
                 _registered_method=True)
-        self.DeleteFormDef = channel.unary_unary(
-                '/littlehorse.LittleHorse/DeleteFormDef',
-                request_serializer=service__pb2.DeleteFormDefRequest.SerializeToString,
-                response_deserializer=google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-                _registered_method=True)
         self.DeleteWfSpec = channel.unary_unary(
                 '/littlehorse.LittleHorse/DeleteWfSpec',
                 request_serializer=service__pb2.DeleteWfSpecRequest.SerializeToString,
@@ -1300,13 +1295,6 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteFormDef(self, request, context):
-        """Deletes an exact FormDef version.
-        """
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def DeleteWfSpec(self, request, context):
         """Deletes a WfSpec.
         """
@@ -1941,11 +1929,6 @@ def add_LittleHorseServicer_to_server(servicer, server):
             'DeleteStructDef': grpc.unary_unary_rpc_method_handler(
                     servicer.DeleteStructDef,
                     request_deserializer=service__pb2.DeleteStructDefRequest.FromString,
-                    response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
-            ),
-            'DeleteFormDef': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteFormDef,
-                    request_deserializer=service__pb2.DeleteFormDefRequest.FromString,
                     response_serializer=google_dot_protobuf_dot_empty__pb2.Empty.SerializeToString,
             ),
             'DeleteWfSpec': grpc.unary_unary_rpc_method_handler(
@@ -4388,33 +4371,6 @@ class LittleHorse(object):
             target,
             '/littlehorse.LittleHorse/DeleteStructDef',
             service__pb2.DeleteStructDefRequest.SerializeToString,
-            google_dot_protobuf_dot_empty__pb2.Empty.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-    @staticmethod
-    def DeleteFormDef(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/littlehorse.LittleHorse/DeleteFormDef',
-            service__pb2.DeleteFormDefRequest.SerializeToString,
             google_dot_protobuf_dot_empty__pb2.Empty.FromString,
             options,
             channel_credentials,

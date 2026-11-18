@@ -77,7 +77,6 @@ private static final long serialVersionUID = 0L;
     DELETE_BULK_JOB(23),
     PUT_WORKFLOW_MIGRATION_PLAN(24),
     PUT_FORM_DEF(25),
-    DELETE_FORM_DEF(26),
     METADATACOMMAND_NOT_SET(0);
     private final int value;
     private MetadataCommandCase(int value) {
@@ -117,7 +116,6 @@ private static final long serialVersionUID = 0L;
         case 23: return DELETE_BULK_JOB;
         case 24: return PUT_WORKFLOW_MIGRATION_PLAN;
         case 25: return PUT_FORM_DEF;
-        case 26: return DELETE_FORM_DEF;
         case 0: return METADATACOMMAND_NOT_SET;
         default: return null;
       }
@@ -900,37 +898,6 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.PutFormDefRequest.getDefaultInstance();
   }
 
-  public static final int DELETE_FORM_DEF_FIELD_NUMBER = 26;
-  /**
-   * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-   * @return Whether the deleteFormDef field is set.
-   */
-  @java.lang.Override
-  public boolean hasDeleteFormDef() {
-    return metadataCommandCase_ == 26;
-  }
-  /**
-   * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-   * @return The deleteFormDef.
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteFormDefRequest getDeleteFormDef() {
-    if (metadataCommandCase_ == 26) {
-       return (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-  }
-  /**
-   * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-   */
-  @java.lang.Override
-  public io.littlehorse.sdk.common.proto.DeleteFormDefRequestOrBuilder getDeleteFormDefOrBuilder() {
-    if (metadataCommandCase_ == 26) {
-       return (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_;
-    }
-    return io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-  }
-
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -1016,9 +983,6 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataCommandCase_ == 25) {
       output.writeMessage(25, (io.littlehorse.sdk.common.proto.PutFormDefRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 26) {
-      output.writeMessage(26, (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -1123,10 +1087,6 @@ private static final long serialVersionUID = 0L;
     if (metadataCommandCase_ == 25) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(25, (io.littlehorse.sdk.common.proto.PutFormDefRequest) metadataCommand_);
-    }
-    if (metadataCommandCase_ == 26) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(26, (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -1243,10 +1203,6 @@ private static final long serialVersionUID = 0L;
         if (!getPutFormDef()
             .equals(other.getPutFormDef())) return false;
         break;
-      case 26:
-        if (!getDeleteFormDef()
-            .equals(other.getDeleteFormDef())) return false;
-        break;
       case 0:
       default:
     }
@@ -1357,10 +1313,6 @@ private static final long serialVersionUID = 0L;
       case 25:
         hash = (37 * hash) + PUT_FORM_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getPutFormDef().hashCode();
-        break;
-      case 26:
-        hash = (37 * hash) + DELETE_FORM_DEF_FIELD_NUMBER;
-        hash = (53 * hash) + getDeleteFormDef().hashCode();
         break;
       case 0:
       default:
@@ -1578,9 +1530,6 @@ private static final long serialVersionUID = 0L;
       if (putFormDefBuilder_ != null) {
         putFormDefBuilder_.clear();
       }
-      if (deleteFormDefBuilder_ != null) {
-        deleteFormDefBuilder_.clear();
-      }
       metadataCommandCase_ = 0;
       metadataCommand_ = null;
       return this;
@@ -1722,10 +1671,6 @@ private static final long serialVersionUID = 0L;
           putFormDefBuilder_ != null) {
         result.metadataCommand_ = putFormDefBuilder_.build();
       }
-      if (metadataCommandCase_ == 26 &&
-          deleteFormDefBuilder_ != null) {
-        result.metadataCommand_ = deleteFormDefBuilder_.build();
-      }
     }
 
     @java.lang.Override
@@ -1835,10 +1780,6 @@ private static final long serialVersionUID = 0L;
         }
         case PUT_FORM_DEF: {
           mergePutFormDef(other.getPutFormDef());
-          break;
-        }
-        case DELETE_FORM_DEF: {
-          mergeDeleteFormDef(other.getDeleteFormDef());
           break;
         }
         case METADATACOMMAND_NOT_SET: {
@@ -2037,13 +1978,6 @@ private static final long serialVersionUID = 0L;
               metadataCommandCase_ = 25;
               break;
             } // case 202
-            case 210: {
-              input.readMessage(
-                  internalGetDeleteFormDefFieldBuilder().getBuilder(),
-                  extensionRegistry);
-              metadataCommandCase_ = 26;
-              break;
-            } // case 210
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -5434,148 +5368,6 @@ private static final long serialVersionUID = 0L;
       metadataCommandCase_ = 25;
       onChanged();
       return putFormDefBuilder_;
-    }
-
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.DeleteFormDefRequest, io.littlehorse.sdk.common.proto.DeleteFormDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteFormDefRequestOrBuilder> deleteFormDefBuilder_;
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     * @return Whether the deleteFormDef field is set.
-     */
-    @java.lang.Override
-    public boolean hasDeleteFormDef() {
-      return metadataCommandCase_ == 26;
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     * @return The deleteFormDef.
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteFormDefRequest getDeleteFormDef() {
-      if (deleteFormDefBuilder_ == null) {
-        if (metadataCommandCase_ == 26) {
-          return (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-      } else {
-        if (metadataCommandCase_ == 26) {
-          return deleteFormDefBuilder_.getMessage();
-        }
-        return io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    public Builder setDeleteFormDef(io.littlehorse.sdk.common.proto.DeleteFormDefRequest value) {
-      if (deleteFormDefBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        metadataCommand_ = value;
-        onChanged();
-      } else {
-        deleteFormDefBuilder_.setMessage(value);
-      }
-      metadataCommandCase_ = 26;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    public Builder setDeleteFormDef(
-        io.littlehorse.sdk.common.proto.DeleteFormDefRequest.Builder builderForValue) {
-      if (deleteFormDefBuilder_ == null) {
-        metadataCommand_ = builderForValue.build();
-        onChanged();
-      } else {
-        deleteFormDefBuilder_.setMessage(builderForValue.build());
-      }
-      metadataCommandCase_ = 26;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    public Builder mergeDeleteFormDef(io.littlehorse.sdk.common.proto.DeleteFormDefRequest value) {
-      if (deleteFormDefBuilder_ == null) {
-        if (metadataCommandCase_ == 26 &&
-            metadataCommand_ != io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance()) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteFormDefRequest.newBuilder((io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_)
-              .mergeFrom(value).buildPartial();
-        } else {
-          metadataCommand_ = value;
-        }
-        onChanged();
-      } else {
-        if (metadataCommandCase_ == 26) {
-          deleteFormDefBuilder_.mergeFrom(value);
-        } else {
-          deleteFormDefBuilder_.setMessage(value);
-        }
-      }
-      metadataCommandCase_ = 26;
-      return this;
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    public Builder clearDeleteFormDef() {
-      if (deleteFormDefBuilder_ == null) {
-        if (metadataCommandCase_ == 26) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-          onChanged();
-        }
-      } else {
-        if (metadataCommandCase_ == 26) {
-          metadataCommandCase_ = 0;
-          metadataCommand_ = null;
-        }
-        deleteFormDefBuilder_.clear();
-      }
-      return this;
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    public io.littlehorse.sdk.common.proto.DeleteFormDefRequest.Builder getDeleteFormDefBuilder() {
-      return internalGetDeleteFormDefFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    @java.lang.Override
-    public io.littlehorse.sdk.common.proto.DeleteFormDefRequestOrBuilder getDeleteFormDefOrBuilder() {
-      if ((metadataCommandCase_ == 26) && (deleteFormDefBuilder_ != null)) {
-        return deleteFormDefBuilder_.getMessageOrBuilder();
-      } else {
-        if (metadataCommandCase_ == 26) {
-          return (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_;
-        }
-        return io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-      }
-    }
-    /**
-     * <code>.littlehorse.DeleteFormDefRequest delete_form_def = 26;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilder<
-        io.littlehorse.sdk.common.proto.DeleteFormDefRequest, io.littlehorse.sdk.common.proto.DeleteFormDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteFormDefRequestOrBuilder> 
-        internalGetDeleteFormDefFieldBuilder() {
-      if (deleteFormDefBuilder_ == null) {
-        if (!(metadataCommandCase_ == 26)) {
-          metadataCommand_ = io.littlehorse.sdk.common.proto.DeleteFormDefRequest.getDefaultInstance();
-        }
-        deleteFormDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-            io.littlehorse.sdk.common.proto.DeleteFormDefRequest, io.littlehorse.sdk.common.proto.DeleteFormDefRequest.Builder, io.littlehorse.sdk.common.proto.DeleteFormDefRequestOrBuilder>(
-                (io.littlehorse.sdk.common.proto.DeleteFormDefRequest) metadataCommand_,
-                getParentForChildren(),
-                isClean());
-        metadataCommand_ = null;
-      }
-      metadataCommandCase_ = 26;
-      onChanged();
-      return deleteFormDefBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataCommand)

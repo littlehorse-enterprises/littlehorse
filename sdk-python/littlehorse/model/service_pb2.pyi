@@ -239,12 +239,6 @@ class GetFormDefRequest(_message.Message):
     version: int
     def __init__(self, name: _Optional[str] = ..., version: _Optional[int] = ...) -> None: ...
 
-class DeleteFormDefRequest(_message.Message):
-    __slots__ = ("id",)
-    ID_FIELD_NUMBER: _ClassVar[int]
-    id: _object_id_pb2.FormDefId
-    def __init__(self, id: _Optional[_Union[_object_id_pb2.FormDefId, _Mapping]] = ...) -> None: ...
-
 class DeleteUserTaskDefRequest(_message.Message):
     __slots__ = ("id",)
     ID_FIELD_NUMBER: _ClassVar[int]

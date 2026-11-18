@@ -72,6 +72,7 @@ import { NodeRun } from "./node_run";
 import { QuotaId } from "./object_id";
 import { PrincipalId } from "./object_id";
 import { TenantId } from "./object_id";
+import { FormDefId } from "./object_id";
 import { VariableId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { UserTaskRunStatus } from "./user_tasks";
@@ -88,7 +89,6 @@ import { InlineWfSpec } from "./wf_run";
 import { WorkflowEventDefId } from "./object_id";
 import { WfSpecId } from "./object_id";
 import { UserTaskDefId } from "./object_id";
-import { FormDefId } from "./object_id";
 import { FormMetadataValue } from "./form_def";
 import { FormFieldDef } from "./form_def";
 import { TaskDefId } from "./object_id";
@@ -586,19 +586,6 @@ export interface GetFormDefRequest {
      * @generated from protobuf field: optional int32 version = 2
      */
     version?: number;
-}
-/**
- * Deletes an exact FormDef version.
- *
- * @generated from protobuf message littlehorse.DeleteFormDefRequest
- */
-export interface DeleteFormDefRequest {
-    /**
-     * The ID of the FormDef to delete.
-     *
-     * @generated from protobuf field: littlehorse.FormDefId id = 1
-     */
-    id?: FormDefId;
 }
 /**
  * Deletes a UserTaskDef.
@@ -4470,52 +4457,6 @@ class GetFormDefRequest$Type extends MessageType<GetFormDefRequest> {
  * @generated MessageType for protobuf message littlehorse.GetFormDefRequest
  */
 export const GetFormDefRequest = new GetFormDefRequest$Type();
-// @generated message type with reflection information, may provide speed optimized methods
-class DeleteFormDefRequest$Type extends MessageType<DeleteFormDefRequest> {
-    constructor() {
-        super("littlehorse.DeleteFormDefRequest", [
-            { no: 1, name: "id", kind: "message", T: () => FormDefId }
-        ]);
-    }
-    create(value?: PartialMessage<DeleteFormDefRequest>): DeleteFormDefRequest {
-        const message = globalThis.Object.create((this.messagePrototype!));
-        if (value !== undefined)
-            reflectionMergePartial<DeleteFormDefRequest>(this, message, value);
-        return message;
-    }
-    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: DeleteFormDefRequest): DeleteFormDefRequest {
-        let message = target ?? this.create(), end = reader.pos + length;
-        while (reader.pos < end) {
-            let [fieldNo, wireType] = reader.tag();
-            switch (fieldNo) {
-                case /* littlehorse.FormDefId id */ 1:
-                    message.id = FormDefId.internalBinaryRead(reader, reader.uint32(), options, message.id);
-                    break;
-                default:
-                    let u = options.readUnknownField;
-                    if (u === "throw")
-                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
-                    let d = reader.skip(wireType);
-                    if (u !== false)
-                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
-            }
-        }
-        return message;
-    }
-    internalBinaryWrite(message: DeleteFormDefRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
-        /* littlehorse.FormDefId id = 1; */
-        if (message.id)
-            FormDefId.internalBinaryWrite(message.id, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
-        let u = options.writeUnknownFields;
-        if (u !== false)
-            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
-        return writer;
-    }
-}
-/**
- * @generated MessageType for protobuf message littlehorse.DeleteFormDefRequest
- */
-export const DeleteFormDefRequest = new DeleteFormDefRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class DeleteUserTaskDefRequest$Type extends MessageType<DeleteUserTaskDefRequest> {
     constructor() {
@@ -10538,7 +10479,6 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "DeleteWfRun", options: {}, I: DeleteWfRunRequest, O: Empty },
     { name: "DeleteTaskDef", options: {}, I: DeleteTaskDefRequest, O: Empty },
     { name: "DeleteStructDef", options: {}, I: DeleteStructDefRequest, O: Empty },
-    { name: "DeleteFormDef", options: {}, I: DeleteFormDefRequest, O: Empty },
     { name: "DeleteWfSpec", options: {}, I: DeleteWfSpecRequest, O: Empty },
     { name: "DeleteUserTaskDef", options: {}, I: DeleteUserTaskDefRequest, O: Empty },
     { name: "DeleteExternalEventDef", options: {}, I: DeleteExternalEventDefRequest, O: Empty },

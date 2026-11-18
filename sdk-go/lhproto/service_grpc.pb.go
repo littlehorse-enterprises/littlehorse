@@ -105,7 +105,6 @@ const (
 	LittleHorse_DeleteWfRun_FullMethodName                 = "/littlehorse.LittleHorse/DeleteWfRun"
 	LittleHorse_DeleteTaskDef_FullMethodName               = "/littlehorse.LittleHorse/DeleteTaskDef"
 	LittleHorse_DeleteStructDef_FullMethodName             = "/littlehorse.LittleHorse/DeleteStructDef"
-	LittleHorse_DeleteFormDef_FullMethodName               = "/littlehorse.LittleHorse/DeleteFormDef"
 	LittleHorse_DeleteWfSpec_FullMethodName                = "/littlehorse.LittleHorse/DeleteWfSpec"
 	LittleHorse_DeleteUserTaskDef_FullMethodName           = "/littlehorse.LittleHorse/DeleteUserTaskDef"
 	LittleHorse_DeleteExternalEventDef_FullMethodName      = "/littlehorse.LittleHorse/DeleteExternalEventDef"
@@ -382,8 +381,6 @@ type LittleHorseClient interface {
 	DeleteTaskDef(ctx context.Context, in *DeleteTaskDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(ctx context.Context, in *DeleteStructDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Deletes an exact FormDef version.
-	DeleteFormDef(ctx context.Context, in *DeleteFormDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Deletes a UserTaskDef.
@@ -1244,15 +1241,6 @@ func (c *littleHorseClient) DeleteStructDef(ctx context.Context, in *DeleteStruc
 	return out, nil
 }
 
-func (c *littleHorseClient) DeleteFormDef(ctx context.Context, in *DeleteFormDefRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, LittleHorse_DeleteFormDef_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *littleHorseClient) DeleteWfSpec(ctx context.Context, in *DeleteWfSpecRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, LittleHorse_DeleteWfSpec_FullMethodName, in, out, opts...)
@@ -1759,8 +1747,6 @@ type LittleHorseServer interface {
 	DeleteTaskDef(context.Context, *DeleteTaskDefRequest) (*emptypb.Empty, error)
 	// EXPERIMENTAL: Deletes a StructDef.
 	DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error)
-	// Deletes an exact FormDef version.
-	DeleteFormDef(context.Context, *DeleteFormDefRequest) (*emptypb.Empty, error)
 	// Deletes a WfSpec.
 	DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error)
 	// Deletes a UserTaskDef.
@@ -2085,9 +2071,6 @@ func (UnimplementedLittleHorseServer) DeleteTaskDef(context.Context, *DeleteTask
 }
 func (UnimplementedLittleHorseServer) DeleteStructDef(context.Context, *DeleteStructDefRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStructDef not implemented")
-}
-func (UnimplementedLittleHorseServer) DeleteFormDef(context.Context, *DeleteFormDefRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteFormDef not implemented")
 }
 func (UnimplementedLittleHorseServer) DeleteWfSpec(context.Context, *DeleteWfSpecRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteWfSpec not implemented")
@@ -3727,24 +3710,6 @@ func _LittleHorse_DeleteStructDef_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LittleHorse_DeleteFormDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteFormDefRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LittleHorseServer).DeleteFormDef(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LittleHorse_DeleteFormDef_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LittleHorseServer).DeleteFormDef(ctx, req.(*DeleteFormDefRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _LittleHorse_DeleteWfSpec_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteWfSpecRequest)
 	if err := dec(in); err != nil {
@@ -4609,10 +4574,6 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteStructDef",
 			Handler:    _LittleHorse_DeleteStructDef_Handler,
-		},
-		{
-			MethodName: "DeleteFormDef",
-			Handler:    _LittleHorse_DeleteFormDef_Handler,
 		},
 		{
 			MethodName: "DeleteWfSpec",
