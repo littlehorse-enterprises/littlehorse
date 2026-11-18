@@ -189,6 +189,8 @@ public class LHServerConfig extends ConfigBase {
     public static final String X_MAX_BULK_JOB_COMMANDS_PER_TICK = "LHS_X_MAX_BULK_JOB_COMMANDS_PER_TICK";
     // Enable timer streams processing
     public static final String X_ENABLE_TIMER_STREAMS_KEY = "LHS_X_ENABLE_TIMER_STREAMS";
+    // Enable transactional state stores to preserve committed state during recovery.
+    public static final String X_ENABLE_TRANSACTIONAL_STATESTORES_KEY = "LHS_X_ENABLE_TRANSACTIONAL_STATESTORES";
     // How long (in ms) to retain metric before deleting them
     public static final String X_METRIC_RETENTION_MS_KEY = "LHS_X_METRIC_RETENTION_MS";
 
@@ -1110,6 +1112,7 @@ public class LHServerConfig extends ConfigBase {
 
         applyKafkaConfigOverrides(result, CORE_KAFKA_STREAMS_OVERRIDE_PREFIX);
         result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
+        configureStateStores(result);
         return result;
     }
 
@@ -1146,7 +1149,16 @@ public class LHServerConfig extends ConfigBase {
         // Future work might allow this to be a separate config from the linger ms used for the GRPC server.
         props.put(StreamsConfig.producerPrefix("linger.ms"), getOrSetDefault(LINGER_MS_KEY, "0"));
 
+        configureStateStores(props);
         return props;
+    }
+
+    private void configureStateStores(Properties streamsConfig) {
+        streamsConfig.put(
+                StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG,
+                Boolean.parseBoolean(getOrSetDefault(X_ENABLE_TRANSACTIONAL_STATESTORES_KEY, "true")));
+        // Ensures Read Your Own Writes consistency
+        streamsConfig.put(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_UNCOMMITTED");
     }
 
     private Properties getBaseStreamsConfig() {
