@@ -30,6 +30,7 @@ lhctl/lhctl
 **/out/
 
 # Others
+.worktrees/
 local-dev/certs/
 build/
 .config

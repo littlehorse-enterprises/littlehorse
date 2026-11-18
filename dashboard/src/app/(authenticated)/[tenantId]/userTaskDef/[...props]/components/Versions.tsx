@@ -19,7 +19,7 @@ export const Versions: FC<{ id?: UserTaskDefId }> = ({ id }) => {
 
   return (
     <VersionSelector
-      path={routes.wfSpec.base(props![0] as string)}
+      path={routes.userTaskDef.base(props![0] as string)}
       currentVersion={`${version}`}
       versions={versions}
       loadVersions={loadVersions}

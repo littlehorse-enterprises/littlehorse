@@ -1,6 +1,7 @@
 package io.littlehorse.server;
 
 import io.grpc.Context;
+import io.grpc.Status;
 import io.littlehorse.common.LHServerConfig;
 import io.littlehorse.common.model.getable.core.events.WorkflowEventModel;
 import io.littlehorse.common.model.getable.core.taskworkergroup.HostModel;
@@ -32,6 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -142,7 +144,24 @@ public class LHServer {
                 coreStoreProvider,
                 metadataCache,
                 List.of(
-                        new MetricCollectingServerInterceptor(healthService.getMeterRegistry()),
+                        new MetricCollectingServerInterceptor(
+                                healthService.getMeterRegistry(),
+                                counter -> counter,
+                                timer -> timer.serviceLevelObjectives(
+                                        Duration.ofMillis(5),
+                                        Duration.ofMillis(10),
+                                        Duration.ofMillis(25),
+                                        Duration.ofMillis(50),
+                                        Duration.ofMillis(100),
+                                        Duration.ofMillis(250),
+                                        Duration.ofMillis(500),
+                                        Duration.ofSeconds(1),
+                                        Duration.ofSeconds(2),
+                                        Duration.ofSeconds(5),
+                                        Duration.ofSeconds(10),
+                                        Duration.ofSeconds(30),
+                                        Duration.ofSeconds(60)),
+                                Status.Code.OK),
                         new RequestAuthorizer(contextKey, metadataCache, coreStoreProvider, config),
                         listenerConfig.getRequestAuthenticator(),
                         requestBlocker),
