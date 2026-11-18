@@ -1,0 +1,14 @@
+[package]
+name = "littlehorse-rust-quickstart"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+publish = false
+
+[dependencies]
+littlehorse = { path = "../../../sdk-rust" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal"] }
+
+[dev-dependencies]
+tonic = "0.14"
+uuid = { version = "1", features = ["v4"] }

@@ -40,6 +40,7 @@ All of the examples are configured to use the `~/.config/littlehorse.config` fil
 - [`go/`](./go/README.md): Go SDK examples, generally split into worker/deploy steps.
 - [`dotnet/`](./dotnet/README.md): .NET SDK examples, runnable with `dotnet run`.
 - [`js/`](./js/README.md): JavaScript/TypeScript SDK worker examples.
+- [`rust/quickstart/`](./rust/quickstart/README.md): Rust SDK KYC workflow and task workers.
 - [`docker-compose/`](./docker-compose/README.md): Docker Compose sandbox environments.
 
 ## Common Workflow
