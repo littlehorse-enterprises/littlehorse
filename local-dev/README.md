@@ -67,7 +67,7 @@ This repository requires the following system dependencies:
     - This needs to be put somewhere in your `PATH`.
 - `pre-commit` (this is a dev dependency)
 - `python` and [poetry](https://python-poetry.org/).
-    - [sdk-python](sdk-python): >= 3.9
+    - [sdk-python](sdk-python): >= 3.11, < 3.16
 - `nvm` and Node 24 LTS (run `nvm install && nvm use` from the repository root).
 
 ### Setup Pre-commit
