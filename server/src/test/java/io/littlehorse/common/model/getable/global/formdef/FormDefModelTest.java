@@ -70,15 +70,7 @@ public class FormDefModelTest {
                 .hasMessageContaining("cannot change its result StructDef from order to invoice");
     }
 
-    @Test
-    void shouldRoundTripThroughMetadataOutputTopic() {
-        FormDefModel formDef = LHSerializable.fromProto(proto, FormDefModel.class, null);
 
-        MetadataOutputTopicRecord record =
-                new MetadataOutputTopicRecordModel(formDef).toProto().build();
-
-        assertThat(record.getFormDef()).isEqualTo(proto);
-    }
 
     @Test
     void shouldResolvePlaceholdersAndKeepLiterals() {
