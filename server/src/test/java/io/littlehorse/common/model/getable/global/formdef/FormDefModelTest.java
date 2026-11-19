@@ -57,13 +57,15 @@ public class FormDefModelTest {
         var schema = proto.getResultStructDefId().toBuilder().setVersion(2);
         var request = PutFormDefRequest.newBuilder().setName("review");
 
-        var updated = PutFormDefRequestModel.fromProto(request.setResultStructDefId(schema).build(), null)
+        var updated = PutFormDefRequestModel.fromProto(
+                        request.setResultStructDefId(schema).build(), null)
                 .process(context);
         assertThat(updated.getId().getVersion()).isEqualTo(3);
         assertThat(updated.getResultStructDefId()).isEqualTo(schema.build());
 
         var unrelated = request.setResultStructDefId(schema.setName("invoice")).build();
-        assertThatThrownBy(() -> PutFormDefRequestModel.fromProto(unrelated, null).process(context))
+        assertThatThrownBy(
+                        () -> PutFormDefRequestModel.fromProto(unrelated, null).process(context))
                 .isInstanceOf(LHApiException.class)
                 .hasMessageContaining("cannot change its result StructDef from order to invoice");
     }

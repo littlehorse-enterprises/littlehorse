@@ -46,7 +46,7 @@ public class FormDefTest {
     private WorkflowVerifier workflowVerifier;
 
     @Test
-        void shouldVersionGetAndSearchFormDefs() {
+    void shouldVersionGetAndSearchFormDefs() {
         StructDef structDef = putStructDef();
         String name = "form-" + UUID.randomUUID();
         PutFormDefRequest request = formDefRequest(name, structDef, literal("Approve?"));
@@ -75,7 +75,6 @@ public class FormDefTest {
                                 SearchFormDefRequest.newBuilder().setName(name).build())
                         .getResultsList())
                 .containsExactly(original.getId(), updated.getId());
-
     }
 
     @Test
@@ -110,7 +109,7 @@ public class FormDefTest {
     }
 
     @Test
-        void shouldRejectChangingResultStructDefNameAcrossFormVersions() {
+    void shouldRejectChangingResultStructDefNameAcrossFormVersions() {
         String name = "form-" + UUID.randomUUID();
         StructDef originalSchema = putStructDef();
         StructDef unrelatedSchema = putStructDef();
@@ -119,7 +118,8 @@ public class FormDefTest {
         assertThatThrownBy(() -> client.putFormDef(formDefRequest(name, unrelatedSchema, literal("Approve?"))))
                 .isInstanceOf(StatusRuntimeException.class)
                 .hasMessageContaining("cannot change its result StructDef");
-        assertThat(client.getFormDef(GetFormDefRequest.newBuilder().setName(name).build()))
+        assertThat(client.getFormDef(
+                        GetFormDefRequest.newBuilder().setName(name).build()))
                 .isEqualTo(original);
     }
 
@@ -190,31 +190,31 @@ public class FormDefTest {
     }
 
     @Test
-        void shouldDeleteWfRunAfterFormPlaceholderEvaluationFails() {
-                String taskName = putFormTask(placeholder("greeting"));
-                Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
-                        WfRunVariable customer = thread.declareStr("customer");
-                        thread.assignUserTask(taskName, "obiwan", null)
-                                        .withPlaceholder("greeting", thread.format("{0,number}", customer));
-                });
-                var id = workflowVerifier
-                                .prepareRun(workflow, Arg.of("customer", "Jake"))
-                                .waitForStatus(ERROR)
-                                .thenVerifyNodeRun(0, 1, node -> {
-                                        assertThat(node.getFailures(0).getMessage()).contains("Failed evaluating placeholder greeting");
-                                        assertThat(node.getUserTask().hasUserTaskRunId()).isFalse();
-                                })
-                                .start();
+    void shouldDeleteWfRunAfterFormPlaceholderEvaluationFails() {
+        String taskName = putFormTask(placeholder("greeting"));
+        Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
+            WfRunVariable customer = thread.declareStr("customer");
+            thread.assignUserTask(taskName, "obiwan", null)
+                    .withPlaceholder("greeting", thread.format("{0,number}", customer));
+        });
+        var id = workflowVerifier
+                .prepareRun(workflow, Arg.of("customer", "Jake"))
+                .waitForStatus(ERROR)
+                .thenVerifyNodeRun(0, 1, node -> {
+                    assertThat(node.getFailures(0).getMessage()).contains("Failed evaluating placeholder greeting");
+                    assertThat(node.getUserTask().hasUserTaskRunId()).isFalse();
+                })
+                .start();
 
-                client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
-                assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
-                            client.getWfRun(id);
-                            return null;
-                        }))
-                        .isTrue();
-        }
+        client.deleteWfRun(DeleteWfRunRequest.newBuilder().setId(id).build());
+        assertThat(LHTestExceptionUtil.throwsNotFound(() -> {
+                    client.getWfRun(id);
+                    return null;
+                }))
+                .isTrue();
+    }
 
-        @Test
+    @Test
     void shouldResolveFormOnUserTaskRun() {
         String userTaskDefName = putFormTask(placeholder("greeting"));
         Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
@@ -242,12 +242,12 @@ public class FormDefTest {
                 .start();
     }
 
-        @LHTaskMethod("form-display-name")
-        public String displayName(String customer) {
-                return customer;
-        }
+    @LHTaskMethod("form-display-name")
+    public String displayName(String customer) {
+        return customer;
+    }
 
-        private String putFormTask(FormMetadataValue label) {
+    private String putFormTask(FormMetadataValue label) {
         StructDef structDef = putStructDef();
         FormDef formDef = client.putFormDef(formDefRequest("form-" + UUID.randomUUID(), structDef, label));
         String userTaskDefName = "form-task-" + UUID.randomUUID();

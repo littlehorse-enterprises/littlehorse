@@ -898,7 +898,7 @@ export class WorkflowThread {
   // -------------------------------------------------------------- user tasks
 
   assignUserTask(userTaskDefName: string, options?: AssignUserTaskOptions): UserTaskOutput
-  assignUserTask(userTaskDefName: string, userId: LHValuLHValuee | null, userGroup: LHValue | null): UserTaskOutput
+  assignUserTask(userTaskDefName: string, userId: LHValue | null, userGroup: LHValue | null): UserTaskOutput
   assignUserTask(
     userTaskDefName: string,
     userIdOrOptions?: AssignUserTaskOptions | LHValue | null,
