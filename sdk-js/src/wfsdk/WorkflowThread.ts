@@ -898,7 +898,7 @@ export class WorkflowThread {
   // -------------------------------------------------------------- user tasks
 
   assignUserTask(userTaskDefName: string, options?: AssignUserTaskOptions): UserTaskOutput
-  assignUserTask(userTaskDefName: string, userId: LHValue | null, userGroup: LHValue | null): UserTaskOutput
+  assignUserTask(userTaskDefName: string, userId: LHValuLHValuee | null, userGroup: LHValue | null): UserTaskOutput
   assignUserTask(
     userTaskDefName: string,
     userIdOrOptions?: AssignUserTaskOptions | LHValue | null,
@@ -938,6 +938,10 @@ export class WorkflowThread {
     if (options?.onCancellationException !== undefined)
       output.withOnCancellationException(options.onCancellationException)
     return output
+  }
+
+  setUserTaskPlaceholder(userTask: UserTaskOutput, name: string, value: LHValue): void {
+    this.getUserTaskNodeOrThrow(userTask.nodeName).placeholders[name] = toVariableAssignment(value)
   }
 
   setUserTaskNotes(userTask: UserTaskOutput, notes: LHValue): void {

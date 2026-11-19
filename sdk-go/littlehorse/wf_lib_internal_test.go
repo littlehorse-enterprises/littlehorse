@@ -133,6 +133,20 @@ func TestUserTaskAssignToUserByVar(t *testing.T) {
 	assert.Equal(t, "user", utNode.UserId.GetVariableName())
 }
 
+func TestUserTaskWithPlaceholder(t *testing.T) {
+	wf := littlehorse.NewWorkflow(func(thread *littlehorse.WorkflowThread) {
+		thread.AssignUserTask("sample-user-task", nil, "group").
+			WithPlaceholder("label", "old").WithPlaceholder("visible", true).WithPlaceholder("label", "new")
+	}, "my-workflow")
+	spec, err := wf.Compile()
+	if err != nil {
+		t.Fatal(err)
+	}
+	node := spec.ThreadSpecs[spec.EntrypointThreadName].Nodes["1-sample-user-task-USER_TASK"].GetUserTask()
+	assert.Equal(t, "new", node.Placeholders["label"].GetLiteralValue().GetStr())
+	assert.True(t, node.Placeholders["visible"].GetLiteralValue().GetBool())
+}
+
 func TestUserTaskWithNotes(t *testing.T) {
 	wf := littlehorse.NewWorkflow(func(t *littlehorse.WorkflowThread) {
 		t.AssignUserTask("sample-user-task", nil, "group").WithNotes("sample notes")

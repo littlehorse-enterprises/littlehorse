@@ -3745,6 +3745,22 @@ class TestUserTasks(unittest.TestCase):
         ut_node = node.user_task
         self.assertEqual(ut_node.notes, to_variable_assignment("hi there"))
 
+    def test_form_placeholders(self):
+        def wf_func(thread: WorkflowThread) -> None:
+            task = thread.assign_user_task("my-user-task", user_id="alice")
+            task.with_placeholder("label", "old").with_placeholder("visible", True)
+            task.with_notes("draft").with_on_cancellation_exception("cancel")
+            task.with_notes("notes")
+            task.with_placeholder("label", "new")
+
+        wf = Workflow("my-wf", wf_func).compile()
+        node = wf.thread_specs[wf.entrypoint_thread_name].nodes["1-my-user-task-USER_TASK"].user_task
+        self.assertEqual(node.placeholders["label"], to_variable_assignment("new"))
+        self.assertEqual(node.placeholders["visible"], to_variable_assignment(True))
+        self.assertEqual(node.user_id, to_variable_assignment("alice"))
+        self.assertEqual(node.notes, to_variable_assignment("notes"))
+        self.assertEqual(node.on_cancellation_exception_name, to_variable_assignment("cancel"))
+
     def test_on_cancellation_exception_name(self):
         def wf_func(thread: WorkflowThread) -> None:
             thread.assign_user_task(

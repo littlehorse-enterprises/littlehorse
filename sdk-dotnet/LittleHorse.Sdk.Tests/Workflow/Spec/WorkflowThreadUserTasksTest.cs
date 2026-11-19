@@ -22,6 +22,24 @@ public class WorkflowThreadUserTasksTest
     }
     
     [Fact]
+    public void WithPlaceholder_ShouldCompileNamedAssignments()
+    {
+        var parent = new Sdk.Workflow.Spec.Workflow("form", _action);
+        var thread = new WorkflowThread(parent, wf =>
+        {
+            var label = wf.DeclareStr("label");
+            wf.AssignUserTask("request", "alice", null)
+                .WithPlaceholder("title", "old")
+                .WithPlaceholder("visible", true)
+                .WithPlaceholder("title", label);
+        }).Compile();
+
+        var placeholders = thread.Nodes.Values.Single(node => node.UserTask != null).UserTask.Placeholders;
+        Assert.Equal("label", placeholders["title"].VariableName);
+        Assert.True(placeholders["visible"].LiteralValue.Bool);
+    }
+
+    [Fact]
     public void StructBackedOutput_ShouldCompileWholeStructAndFieldReferences()
     {
         var parent = new Sdk.Workflow.Spec.Workflow("struct-user-task", _action);
