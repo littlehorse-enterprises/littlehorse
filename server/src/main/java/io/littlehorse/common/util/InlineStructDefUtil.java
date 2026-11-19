@@ -2,6 +2,7 @@ package io.littlehorse.common.util;
 
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefCompatibilityType;
 import java.util.ArrayList;
@@ -105,6 +106,9 @@ public class InlineStructDefUtil {
                 oldStructDef.getFields().entrySet();
         Set<Entry<String, StructFieldDefModel>> changedFields = new HashSet<>(newFields);
         changedFields.removeAll(oldFields);
+        oldFields.stream()
+                .filter(entry -> !newStructDef.getFields().containsKey(entry.getKey()))
+                .forEach(changedFields::add);
 
         return changedFields.stream().map(Entry::getKey).collect(Collectors.toSet());
     }
@@ -132,8 +136,63 @@ public class InlineStructDefUtil {
         Set<String> incompatibleFields = new HashSet<>();
         incompatibleFields.addAll(getChangedFields(newRequiredFields, oldRequiredFields));
         incompatibleFields.addAll(getNewFieldsWithoutDefault(newRequiredFields, oldRequiredFields));
-
+        addOneofBreakingChanges(newStructDef, oldStructDef, "", incompatibleFields);
         return incompatibleFields;
+    }
+
+    // Recurses into embedded schemas because oneof guarantees apply at every Struct level.
+    private static void addOneofBreakingChanges(
+            InlineStructDefModel newStructDef, InlineStructDefModel oldStructDef, String prefix, Set<String> out) {
+        Map<String, StructFieldDefModel> newFields = newStructDef.getFields();
+        for (var entry : oldStructDef.getFields().entrySet()) {
+            String path = prefix + entry.getKey();
+            StructFieldDefModel oldField = entry.getValue();
+            StructFieldDefModel newField = newFields.get(entry.getKey());
+            boolean wasAlternative = oldField.getOneofGroup() != null;
+            boolean isAlternative = newField != null && newField.getOneofGroup() != null;
+            // Old versions fill in defaults, so existing fields can't safely join a group.
+            if ((wasAlternative || isAlternative)
+                    && (newField == null
+                            || !Objects.equals(oldField.getOneofGroup(), newField.getOneofGroup())
+                            || !oldField.getFieldType().equals(newField.getFieldType()))) {
+                out.add(path);
+            }
+            if (newField != null) {
+                addEmbeddedOneofBreakingChanges(newField.getFieldType(), oldField.getFieldType(), path, out);
+            }
+        }
+    }
+
+    private static void addEmbeddedOneofBreakingChanges(
+            TypeDefinitionModel newType, TypeDefinitionModel oldType, String path, Set<String> out) {
+        if (newType == null || oldType == null || newType.getDefinedTypeCase() != oldType.getDefinedTypeCase()) {
+            return;
+        }
+        switch (newType.getDefinedTypeCase()) {
+            case INLINE_STRUCT_DEF:
+                addOneofBreakingChanges(newType.getInlineStructDef(), oldType.getInlineStructDef(), path + ".", out);
+                break;
+            case INLINE_ARRAY_DEF:
+                addEmbeddedOneofBreakingChanges(
+                        newType.getInlineArrayDef().getArrayType(),
+                        oldType.getInlineArrayDef().getArrayType(),
+                        path + "[]",
+                        out);
+                break;
+            case INLINE_MAP_DEF:
+                addEmbeddedOneofBreakingChanges(
+                        newType.getInlineMapDef().getKeyType(),
+                        oldType.getInlineMapDef().getKeyType(),
+                        path + "{key}",
+                        out);
+                addEmbeddedOneofBreakingChanges(
+                        newType.getInlineMapDef().getValueType(),
+                        oldType.getInlineMapDef().getValueType(),
+                        path + "{}",
+                        out);
+                break;
+            default:
+        }
     }
 
     private static List<String> getChangedFields(
