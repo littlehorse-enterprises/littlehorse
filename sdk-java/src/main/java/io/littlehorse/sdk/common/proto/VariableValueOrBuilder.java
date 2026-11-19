@@ -310,5 +310,32 @@ public interface VariableValueOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.MapOrBuilder getMapOrBuilder();
 
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   * @return Whether the enum field is set.
+   */
+  boolean hasEnum();
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   * @return The enum.
+   */
+  io.littlehorse.sdk.common.proto.Enum getEnum();
+  /**
+   * <pre>
+   * An Enum object.
+   * </pre>
+   *
+   * <code>.littlehorse.Enum enum = 14;</code>
+   */
+  io.littlehorse.sdk.common.proto.EnumOrBuilder getEnumOrBuilder();
+
   io.littlehorse.sdk.common.proto.VariableValue.ValueCase getValueCase();
 }

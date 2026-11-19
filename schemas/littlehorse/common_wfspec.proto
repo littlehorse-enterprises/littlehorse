@@ -45,6 +45,12 @@ message VariableAssignment {
     VariableAssignment operand = 1;
   }
 
+  // An EnumName allows you to get the name of an Enum member as a STR.
+  message EnumName {
+    // A VariableAssignment which must resolve to an Enum.
+    VariableAssignment operand = 1;
+  }
+
   // An Expression allows you to combine multiple values into one.
   message Expression {
     // The left-hand-side of the expression.
@@ -97,6 +103,8 @@ message VariableAssignment {
     SizeOf size_of = 10;
     // Builds a native Map using data available in the ThreadRun.
     MapBuilder map_builder = 11;
+    // Assign the name of an Enum member.
+    EnumName enum_name = 12;
   }
 
   // If specified, the resolved value will be cast to this type before being used.

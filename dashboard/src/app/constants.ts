@@ -17,6 +17,7 @@ export const VARIABLE_TYPES = {
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
   map: 'Map',
+  enum: 'Enum',
 } as const
 
 export const SEARCH_ENTITIES = [
