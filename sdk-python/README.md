@@ -6,7 +6,7 @@ For examples go to the [examples](./examples/) folder.
 
 ## Dependencies
 
-- Install python.
+- Install Python 3.11–3.15.
 - Install [pipx](https://github.com/pypa/pipx): `brew install pipx`
 - Install [poetry](https://python-poetry.org/): `pipx install poetry`
 - Install [poetry shell plugin](https://github.com/python-poetry/poetry-plugin-shell): `poetry self add poetry-plugin-shell`
@@ -45,7 +45,7 @@ poetry run mypy .
 Set python version:
 
 ```
-poetry env use python3.9
+poetry env use python3.11
 ```
 
 ## Worker shutdown on Windows
