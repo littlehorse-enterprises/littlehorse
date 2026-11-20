@@ -8,6 +8,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class LHInlineStructDefType extends LHClassType {
@@ -40,13 +41,34 @@ public final class LHInlineStructDefType extends LHClassType {
                         .toList();
                 return structProperties;
             }
-            structProperties = List.of(Introspector.getBeanInfo(clazz).getPropertyDescriptors()).stream()
-                    .filter(property -> !"class".equals(property.getName()))
-                    .map(property -> new LHStructProperty(property, this))
-                    .filter(property -> !property.isIgnored())
-                    .collect(Collectors.toUnmodifiableList());
+            structProperties = getBeanProperties();
         }
         return structProperties;
+    }
+
+    public List<LHStructProperty> getRecordReadProperties(Set<String> wireFields) throws IntrospectionException {
+        List<LHStructProperty> components = getStructProperties();
+        if (components.stream().allMatch(property -> wireFields.contains(property.getFieldName()))) {
+            return components;
+        }
+        if (components.stream().anyMatch(property -> property.isOneofHelper() || property.getOneofGroup() != null)) {
+            return components;
+        }
+
+        // Earlier SDKs wrote inline records using JavaBean getters. Only use that mapping
+        // when the payload has exactly the fields the old writer would have emitted.
+        List<LHStructProperty> legacy = getBeanProperties();
+        Set<String> legacyNames =
+                legacy.stream().map(LHStructProperty::getFieldName).collect(Collectors.toSet());
+        return legacyNames.equals(wireFields) ? legacy : components;
+    }
+
+    private List<LHStructProperty> getBeanProperties() throws IntrospectionException {
+        return List.of(Introspector.getBeanInfo(clazz).getPropertyDescriptors()).stream()
+                .filter(property -> !"class".equals(property.getName()))
+                .map(property -> new LHStructProperty(property, this))
+                .filter(property -> !property.isIgnored())
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private InlineStructDef buildInlineStructDef() {

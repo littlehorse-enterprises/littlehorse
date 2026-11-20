@@ -710,7 +710,9 @@ public class LHLibUtil {
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
                 ? ((LHStructDefType) lhClassType).getStructProperties()
-                : ((LHInlineStructDefType) lhClassType).getStructProperties();
+                : ((LHInlineStructDefType) lhClassType)
+                        .getRecordReadProperties(
+                                struct.getStruct().getFieldsMap().keySet());
         Map<String, LHStructProperty> byPropertyName = new HashMap<>();
 
         for (LHStructProperty property : structProperties) {
