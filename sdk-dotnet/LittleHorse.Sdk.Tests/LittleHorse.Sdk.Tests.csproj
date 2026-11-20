@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../LittleHorse.Sdk/LittleHorse.Sdk.csproj" Condition="'$(SdkPackageVersion)' == ''" />
-    <PackageReference Include="LittleHorse.Sdk" Version="$(SdkPackageVersion)" Condition="'$(SdkPackageVersion)' != ''" />
+    <PackageReference Include="LittleHorse.Sdk" Version="[$(SdkPackageVersion)]" Condition="'$(SdkPackageVersion)' != ''" />
   </ItemGroup>
 
   <ItemGroup>
