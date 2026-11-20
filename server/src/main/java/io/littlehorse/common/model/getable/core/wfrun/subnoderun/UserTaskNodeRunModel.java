@@ -3,6 +3,7 @@ package io.littlehorse.common.model.getable.core.wfrun.subnoderun;
 import com.google.protobuf.Message;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
+import io.littlehorse.common.exceptions.LHVarSubError;
 import io.littlehorse.common.exceptions.validation.TypeValidationException;
 import io.littlehorse.common.model.getable.CoreObjectId;
 import io.littlehorse.common.model.getable.core.noderun.NodeFailureException;
@@ -12,11 +13,15 @@ import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTa
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
+import io.littlehorse.common.model.getable.global.formdef.FormModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.UserTaskNodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
+import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssignmentModel;
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
@@ -148,11 +153,34 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             }
             out.setResultStructDefId(latest.getObjectId());
         }
+        if (utd.getFormDef() != null) {
+            out.setForm(resolveForm(utd.getFormDef(), utn));
+        }
         // Now we create a new UserTaskRun.
 
         userTaskRunId = out.getObjectId();
         out.onArrival(time);
         processorContext.getableManager().put(out);
+    }
+
+    private FormModel resolveForm(FormDefReferenceModel ref, UserTaskNodeModel utn) throws NodeFailureException {
+        FormDefModel formDef = processorContext.service().getFormDef(ref);
+        if (formDef == null) {
+            throw new NodeFailureException(
+                    new FailureModel("Appears that FormDef was deleted!", LHConstants.TASK_ERROR));
+        }
+        Map<String, VariableValueModel> values = new HashMap<>();
+        for (Map.Entry<String, VariableAssignmentModel> entry :
+                utn.getPlaceholders().entrySet()) {
+            try {
+                values.put(entry.getKey(), getNodeRun().getThreadRun().assignVariable(entry.getValue()));
+            } catch (LHVarSubError exn) {
+                throw new NodeFailureException(new FailureModel(
+                        "Failed evaluating placeholder %s: %s".formatted(entry.getKey(), exn.getMessage()),
+                        LHConstants.VAR_SUB_ERROR));
+            }
+        }
+        return formDef.resolve(values);
     }
 
     @Override
@@ -164,6 +192,8 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
 
     @Override
     public List<? extends CoreObjectId<?, ?, ?>> getCreatedSubGetableIds(CoreProcessorContext context) {
+        if (userTaskRunId == null) return List.of();
+
         List<CoreObjectId<?, ?, ?>> out = new ArrayList<>();
         out.add(userTaskRunId);
 

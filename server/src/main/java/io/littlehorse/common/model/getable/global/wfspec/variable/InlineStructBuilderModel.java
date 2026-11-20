@@ -12,9 +12,11 @@ import io.littlehorse.sdk.common.proto.InlineStructFieldValue.StructValueCase;
 import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -55,6 +57,18 @@ public class InlineStructBuilderModel extends LHSerializable<InlineStructBuilder
                 out.addAll(field.getSimpleValue().getRequiredWfRunVarNames());
             } else if (field.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
                 out.addAll(field.getSubStructure().getRequiredWfRunVarNames());
+            }
+        }
+        return out;
+    }
+
+    public List<VariableAssignmentModel> getSimpleValues() {
+        List<VariableAssignmentModel> out = new ArrayList<>();
+        for (InlineStructFieldValueModel field : fields.values()) {
+            if (field.getStructValueCase() == StructValueCase.SIMPLE_VALUE) {
+                out.add(field.getSimpleValue());
+            } else if (field.getStructValueCase() == StructValueCase.SUB_STRUCTURE) {
+                out.addAll(field.getSubStructure().getSimpleValues());
             }
         }
         return out;

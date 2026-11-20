@@ -43,4 +43,14 @@ public interface UserTaskOutput extends NodeOutput {
      * @return this node output
      */
     UserTaskOutput withOnCancellationException(WfRunVariable exceptionName);
+
+    /**
+     * Supplies a value for a placeholder referenced by the UserTaskDef's FormDef. The value is
+     * evaluated when the UserTaskRun is created.
+     *
+     * @param name the placeholder name
+     * @param value a literal, WfRunVariable, LHFormatString, or other assignable value
+     * @return this node output
+     */
+    UserTaskOutput withPlaceholder(String name, Object value);
 }

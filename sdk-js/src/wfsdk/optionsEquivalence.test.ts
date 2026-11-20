@@ -134,6 +134,26 @@ describe('options objects compile identically to fluent chains', () => {
     expect(options.compileWorkflow()).toEqual(fluent.compileWorkflow())
   })
 
+  it('compiles named user task placeholders', () => {
+    const spec = Workflow.newWorkflow('wf', thread => {
+      const label = thread.declareStr('label')
+      thread
+        .assignUserTask('approve', 'alice', null)
+        .withPlaceholder('title', 'old')
+        .withPlaceholder('visible', true)
+        .withPlaceholder('title', label)
+    }).compileWorkflow()
+    const node = spec.threadSpecs[spec.entrypointThreadName].nodes['1-approve-USER_TASK']
+    expect(node.node).toMatchObject({
+      userTask: {
+        placeholders: {
+          title: { source: { variableName: 'label' } },
+          visible: { source: { literalValue: { value: { bool: true } } } },
+        },
+      },
+    })
+  })
+
   it('assignUserTask options', () => {
     const fluent = Workflow.newWorkflow('wf', thread => {
       const group = thread.declareStr('group')

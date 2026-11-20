@@ -190,4 +190,31 @@ public interface UserTaskDefOrBuilder extends
    * <code>.littlehorse.StructDefId result_struct_def_id = 6;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder();
+
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   * @return Whether the formDef field is set.
+   */
+  boolean hasFormDef();
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   * @return The formDef.
+   */
+  io.littlehorse.sdk.common.proto.FormDefReference getFormDef();
+  /**
+   * <pre>
+   * Optional `FormDef` with UI metadata for collecting the result.
+   * </pre>
+   *
+   * <code>optional .littlehorse.FormDefReference form_def = 7;</code>
+   */
+  io.littlehorse.sdk.common.proto.FormDefReferenceOrBuilder getFormDefOrBuilder();
 }

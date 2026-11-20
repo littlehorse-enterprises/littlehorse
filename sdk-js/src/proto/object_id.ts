@@ -85,6 +85,25 @@ export interface StructDefId {
     version: number;
 }
 /**
+ * Unique identifier for a `FormDef`.
+ *
+ * @generated from protobuf message littlehorse.FormDefId
+ */
+export interface FormDefId {
+    /**
+     * The name of the `FormDef`.
+     *
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * The version of the `FormDef`.
+     *
+     * @generated from protobuf field: int32 version = 2
+     */
+    version: number;
+}
+/**
  * ID for ExternalEventDef
  *
  * @generated from protobuf message littlehorse.ExternalEventDefId
@@ -717,6 +736,61 @@ class StructDefId$Type extends MessageType<StructDefId> {
  * @generated MessageType for protobuf message littlehorse.StructDefId
  */
 export const StructDefId = new StructDefId$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class FormDefId$Type extends MessageType<FormDefId> {
+    constructor() {
+        super("littlehorse.FormDefId", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "version", kind: "scalar", T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<FormDefId>): FormDefId {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        message.version = 0;
+        if (value !== undefined)
+            reflectionMergePartial<FormDefId>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: FormDefId): FormDefId {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* int32 version */ 2:
+                    message.version = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: FormDefId, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* int32 version = 2; */
+        if (message.version !== 0)
+            writer.tag(2, WireType.Varint).int32(message.version);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.FormDefId
+ */
+export const FormDefId = new FormDefId$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class ExternalEventDefId$Type extends MessageType<ExternalEventDefId> {
     constructor() {

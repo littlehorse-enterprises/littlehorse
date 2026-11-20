@@ -10,6 +10,7 @@ import "wf_spec.proto";
 import "wf_run.proto";
 import "variable.proto";
 import "struct_def.proto";
+import "form_def.proto";
 import "external_event.proto";
 
 option go_package = ".;lhproto";
@@ -72,5 +73,8 @@ message MetadataOutputTopicRecord {
 
         // A StructDef update
         StructDef struct_def = 6;
+
+        // A FormDef update
+        FormDef form_def = 7;
     }
 }

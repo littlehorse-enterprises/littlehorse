@@ -27,6 +27,7 @@ import io.littlehorse.common.model.getable.core.variable.StructFieldModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
+import io.littlehorse.common.model.getable.global.formdef.FormModel;
 import io.littlehorse.common.model.getable.global.structdef.InlineStructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
@@ -92,6 +93,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
     private Date scheduledTime;
     private NodeRunIdModel nodeRunId;
     private int epoch;
+    private FormModel form;
 
     // Below are non-proto fields
     private UserTaskNodeModel userTaskNode;
@@ -149,6 +151,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             out.putResults(result.getKey(), result.getValue().toProto().build());
         }
         if (output != null) out.setOutput(output.toProto());
+        if (form != null) out.setForm(form.toProto());
         out.setEpoch(this.epoch);
 
         return out;
@@ -183,6 +186,7 @@ public class UserTaskRunModel extends CoreGetable<UserTaskRun> implements CoreOu
             results.put(result.getKey(), VariableValueModel.fromProto(result.getValue(), context));
         }
         if (p.hasOutput()) output = VariableValueModel.fromProto(p.getOutput(), context);
+        if (p.hasForm()) form = LHSerializable.fromProto(p.getForm(), FormModel.class, context);
 
         lastEventForComment = new HashMap<>();
         commentIdCounter = 0;

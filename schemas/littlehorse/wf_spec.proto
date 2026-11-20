@@ -500,6 +500,9 @@ message UserTaskNode {
   // not set, then the cancellation or timeout of a User Task Run throws an ERROR
   // rather than an EXCEPTION.
   optional VariableAssignment on_cancellation_exception_name = 7;
+
+  // Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+  map<string, VariableAssignment> placeholders = 8;
 }
 
 // This is a boolean expression used to evaluate whether an Edge is valid.

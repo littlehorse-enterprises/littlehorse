@@ -6,6 +6,7 @@ import warnings
 import littlehorse.model.acls_pb2 as acls__pb2
 import littlehorse.model.bulk_job_pb2 as bulk__job__pb2
 import littlehorse.model.external_event_pb2 as external__event__pb2
+import littlehorse.model.form_def_pb2 as form__def__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 import littlehorse.model.metrics_pb2 as metrics__pb2
 import littlehorse.model.node_run_pb2 as node__run__pb2
@@ -116,6 +117,16 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/ValidateStructDefEvolution',
                 request_serializer=service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
                 response_deserializer=service__pb2.ValidateStructDefEvolutionResponse.FromString,
+                _registered_method=True)
+        self.PutFormDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/PutFormDef',
+                request_serializer=service__pb2.PutFormDefRequest.SerializeToString,
+                response_deserializer=form__def__pb2.FormDef.FromString,
+                _registered_method=True)
+        self.GetFormDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/GetFormDef',
+                request_serializer=service__pb2.GetFormDefRequest.SerializeToString,
+                response_deserializer=form__def__pb2.FormDef.FromString,
                 _registered_method=True)
         self.PutUserTaskDef = channel.unary_unary(
                 '/littlehorse.LittleHorse/PutUserTaskDef',
@@ -401,6 +412,11 @@ class LittleHorseStub(object):
                 '/littlehorse.LittleHorse/SearchStructDef',
                 request_serializer=service__pb2.SearchStructDefRequest.SerializeToString,
                 response_deserializer=service__pb2.StructDefIdList.FromString,
+                _registered_method=True)
+        self.SearchFormDef = channel.unary_unary(
+                '/littlehorse.LittleHorse/SearchFormDef',
+                request_serializer=service__pb2.SearchFormDefRequest.SerializeToString,
+                response_deserializer=service__pb2.FormDefIdList.FromString,
                 _registered_method=True)
         self.GetInactiveThreadRun = channel.unary_unary(
                 '/littlehorse.LittleHorse/GetInactiveThreadRun',
@@ -711,6 +727,21 @@ class LittleHorseServicer(object):
 
     def ValidateStructDefEvolution(self, request, context):
         """EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PutFormDef(self, request, context):
+        """Creates a FormDef. Identical content returns the latest existing version;
+        changed content creates a new version.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetFormDef(self, request, context):
+        """Gets a FormDef.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1150,6 +1181,13 @@ class LittleHorseServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SearchFormDef(self, request, context):
+        """Search for FormDef's
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetInactiveThreadRun(self, request, context):
         """Get an InactiveThreadRun
         """
@@ -1533,6 +1571,16 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     request_deserializer=service__pb2.ValidateStructDefEvolutionRequest.FromString,
                     response_serializer=service__pb2.ValidateStructDefEvolutionResponse.SerializeToString,
             ),
+            'PutFormDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutFormDef,
+                    request_deserializer=service__pb2.PutFormDefRequest.FromString,
+                    response_serializer=form__def__pb2.FormDef.SerializeToString,
+            ),
+            'GetFormDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetFormDef,
+                    request_deserializer=service__pb2.GetFormDefRequest.FromString,
+                    response_serializer=form__def__pb2.FormDef.SerializeToString,
+            ),
             'PutUserTaskDef': grpc.unary_unary_rpc_method_handler(
                     servicer.PutUserTaskDef,
                     request_deserializer=service__pb2.PutUserTaskDefRequest.FromString,
@@ -1817,6 +1865,11 @@ def add_LittleHorseServicer_to_server(servicer, server):
                     servicer.SearchStructDef,
                     request_deserializer=service__pb2.SearchStructDefRequest.FromString,
                     response_serializer=service__pb2.StructDefIdList.SerializeToString,
+            ),
+            'SearchFormDef': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchFormDef,
+                    request_deserializer=service__pb2.SearchFormDefRequest.FromString,
+                    response_serializer=service__pb2.FormDefIdList.SerializeToString,
             ),
             'GetInactiveThreadRun': grpc.unary_unary_rpc_method_handler(
                     servicer.GetInactiveThreadRun,
@@ -2375,6 +2428,60 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/ValidateStructDefEvolution',
             service__pb2.ValidateStructDefEvolutionRequest.SerializeToString,
             service__pb2.ValidateStructDefEvolutionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PutFormDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/PutFormDef',
+            service__pb2.PutFormDefRequest.SerializeToString,
+            form__def__pb2.FormDef.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetFormDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/GetFormDef',
+            service__pb2.GetFormDefRequest.SerializeToString,
+            form__def__pb2.FormDef.FromString,
             options,
             channel_credentials,
             insecure,
@@ -3914,6 +4021,33 @@ class LittleHorse(object):
             '/littlehorse.LittleHorse/SearchStructDef',
             service__pb2.SearchStructDefRequest.SerializeToString,
             service__pb2.StructDefIdList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SearchFormDef(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/littlehorse.LittleHorse/SearchFormDef',
+            service__pb2.SearchFormDefRequest.SerializeToString,
+            service__pb2.FormDefIdList.FromString,
             options,
             channel_credentials,
             insecure,

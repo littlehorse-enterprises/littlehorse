@@ -44,6 +44,18 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_UserTaskNode_descriptor;
   }
 
+  @SuppressWarnings({"rawtypes"})
+  @java.lang.Override
+  protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+      int number) {
+    switch (number) {
+      case 8:
+        return internalGetPlaceholders();
+      default:
+        throw new RuntimeException(
+            "Invalid map field number: " + number);
+    }
+  }
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internalGetFieldAccessorTable() {
@@ -360,6 +372,101 @@ private static final long serialVersionUID = 0L;
     return onCancellationExceptionName_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : onCancellationExceptionName_;
   }
 
+  public static final int PLACEHOLDERS_FIELD_NUMBER = 8;
+  private static final class PlaceholdersDefaultEntryHolder {
+    static final com.google.protobuf.MapEntry<
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> defaultEntry =
+            com.google.protobuf.MapEntry
+            .<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>newDefaultInstance(
+                io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_UserTaskNode_PlaceholdersEntry_descriptor, 
+                com.google.protobuf.WireFormat.FieldType.STRING,
+                "",
+                com.google.protobuf.WireFormat.FieldType.MESSAGE,
+                io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance());
+  }
+  @SuppressWarnings("serial")
+  private com.google.protobuf.MapField<
+      java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> placeholders_;
+  private com.google.protobuf.MapField<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+  internalGetPlaceholders() {
+    if (placeholders_ == null) {
+      return com.google.protobuf.MapField.emptyMapField(
+          PlaceholdersDefaultEntryHolder.defaultEntry);
+    }
+    return placeholders_;
+  }
+  public int getPlaceholdersCount() {
+    return internalGetPlaceholders().getMap().size();
+  }
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  @java.lang.Override
+  public boolean containsPlaceholders(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    return internalGetPlaceholders().getMap().containsKey(key);
+  }
+  /**
+   * Use {@link #getPlaceholdersMap()} instead.
+   */
+  @java.lang.Override
+  @java.lang.Deprecated
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getPlaceholders() {
+    return getPlaceholdersMap();
+  }
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  @java.lang.Override
+  public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getPlaceholdersMap() {
+    return internalGetPlaceholders().getMap();
+  }
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  @java.lang.Override
+  public /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> map =
+        internalGetPlaceholders().getMap();
+    return map.containsKey(key) ? map.get(key) : defaultValue;
+  }
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrThrow(
+      java.lang.String key) {
+    if (key == null) { throw new NullPointerException("map key"); }
+    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> map =
+        internalGetPlaceholders().getMap();
+    if (!map.containsKey(key)) {
+      throw new java.lang.IllegalArgumentException();
+    }
+    return map.get(key);
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -395,6 +502,12 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000010) != 0)) {
       output.writeMessage(7, getOnCancellationExceptionName());
     }
+    com.google.protobuf.GeneratedMessage
+      .serializeStringMapTo(
+        output,
+        internalGetPlaceholders(),
+        PlaceholdersDefaultEntryHolder.defaultEntry,
+        8);
     getUnknownFields().writeTo(output);
   }
 
@@ -430,6 +543,16 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000010) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(7, getOnCancellationExceptionName());
+    }
+    for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> entry
+         : internalGetPlaceholders().getMap().entrySet()) {
+      com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+      placeholders__ = PlaceholdersDefaultEntryHolder.defaultEntry.newBuilderForType()
+          .setKey(entry.getKey())
+          .setValue(entry.getValue())
+          .build();
+      size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(8, placeholders__);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -475,6 +598,8 @@ private static final long serialVersionUID = 0L;
       if (!getOnCancellationExceptionName()
           .equals(other.getOnCancellationExceptionName())) return false;
     }
+    if (!internalGetPlaceholders().equals(
+        other.internalGetPlaceholders())) return false;
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -511,6 +636,10 @@ private static final long serialVersionUID = 0L;
     if (hasOnCancellationExceptionName()) {
       hash = (37 * hash) + ON_CANCELLATION_EXCEPTION_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getOnCancellationExceptionName().hashCode();
+    }
+    if (!internalGetPlaceholders().getMap().isEmpty()) {
+      hash = (37 * hash) + PLACEHOLDERS_FIELD_NUMBER;
+      hash = (53 * hash) + internalGetPlaceholders().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -628,6 +757,28 @@ private static final long serialVersionUID = 0L;
       return io.littlehorse.sdk.common.proto.WfSpecOuterClass.internal_static_littlehorse_UserTaskNode_descriptor;
     }
 
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 8:
+          return internalGetPlaceholders();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @SuppressWarnings({"rawtypes"})
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 8:
+          return internalGetMutablePlaceholders();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
@@ -689,6 +840,7 @@ private static final long serialVersionUID = 0L;
         onCancellationExceptionNameBuilder_.dispose();
         onCancellationExceptionNameBuilder_ = null;
       }
+      internalGetMutablePlaceholders().clear();
       return this;
     }
 
@@ -767,6 +919,9 @@ private static final long serialVersionUID = 0L;
             : onCancellationExceptionNameBuilder_.build();
         to_bitField0_ |= 0x00000010;
       }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.placeholders_ = internalGetPlaceholders().build(PlaceholdersDefaultEntryHolder.defaultEntry);
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -828,6 +983,9 @@ private static final long serialVersionUID = 0L;
       if (other.hasOnCancellationExceptionName()) {
         mergeOnCancellationExceptionName(other.getOnCancellationExceptionName());
       }
+      internalGetMutablePlaceholders().mergeFrom(
+          other.internalGetPlaceholders());
+      bitField0_ |= 0x00000080;
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
@@ -905,6 +1063,15 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000040;
               break;
             } // case 58
+            case 66: {
+              com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+              placeholders__ = input.readMessage(
+                  PlaceholdersDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+              internalGetMutablePlaceholders().ensureBuilderMap().put(
+                  placeholders__.getKey(), placeholders__.getValue());
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 66
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -2070,6 +2237,193 @@ private static final long serialVersionUID = 0L;
         onCancellationExceptionName_ = null;
       }
       return onCancellationExceptionNameBuilder_;
+    }
+
+    private static final class PlaceholdersConverter implements com.google.protobuf.MapFieldBuilder.Converter<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment> {
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment build(io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder val) {
+        if (val instanceof io.littlehorse.sdk.common.proto.VariableAssignment) { return (io.littlehorse.sdk.common.proto.VariableAssignment) val; }
+        return ((io.littlehorse.sdk.common.proto.VariableAssignment.Builder) val).build();
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.MapEntry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> defaultEntry() {
+        return PlaceholdersDefaultEntryHolder.defaultEntry;
+      }
+    };
+    private static final PlaceholdersConverter placeholdersConverter = new PlaceholdersConverter();
+
+    private com.google.protobuf.MapFieldBuilder<
+        java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder> placeholders_;
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder>
+        internalGetPlaceholders() {
+      if (placeholders_ == null) {
+        return new com.google.protobuf.MapFieldBuilder<>(placeholdersConverter);
+      }
+      return placeholders_;
+    }
+    private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder, io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder>
+        internalGetMutablePlaceholders() {
+      if (placeholders_ == null) {
+        placeholders_ = new com.google.protobuf.MapFieldBuilder<>(placeholdersConverter);
+      }
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return placeholders_;
+    }
+    public int getPlaceholdersCount() {
+      return internalGetPlaceholders().ensureBuilderMap().size();
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    @java.lang.Override
+    public boolean containsPlaceholders(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetPlaceholders().ensureBuilderMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getPlaceholdersMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getPlaceholders() {
+      return getPlaceholdersMap();
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> getPlaceholdersMap() {
+      return internalGetPlaceholders().getImmutableMap();
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrDefault(
+        java.lang.String key,
+        /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> map = internalGetMutablePlaceholders().ensureBuilderMap();
+      return map.containsKey(key) ? placeholdersConverter.build(map.get(key)) : defaultValue;
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> map = internalGetMutablePlaceholders().ensureBuilderMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return placeholdersConverter.build(map.get(key));
+    }
+    public Builder clearPlaceholders() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      internalGetMutablePlaceholders().clear();
+      return this;
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    public Builder removePlaceholders(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      internalGetMutablePlaceholders().ensureBuilderMap()
+          .remove(key);
+      return this;
+    }
+    /**
+     * Use alternate mutation accessors instead.
+     */
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+        getMutablePlaceholders() {
+      bitField0_ |= 0x00000080;
+      return internalGetMutablePlaceholders().ensureMessageMap();
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    public Builder putPlaceholders(
+        java.lang.String key,
+        io.littlehorse.sdk.common.proto.VariableAssignment value) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      if (value == null) { throw new NullPointerException("map value"); }
+      internalGetMutablePlaceholders().ensureBuilderMap()
+          .put(key, value);
+      bitField0_ |= 0x00000080;
+      return this;
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    public Builder putAllPlaceholders(
+        java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> values) {
+      for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment> e : values.entrySet()) {
+        if (e.getKey() == null || e.getValue() == null) {
+          throw new NullPointerException();
+        }
+      }
+      internalGetMutablePlaceholders().ensureBuilderMap()
+          .putAll(values);
+      bitField0_ |= 0x00000080;
+      return this;
+    }
+    /**
+     * <pre>
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     * </pre>
+     *
+     * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.Builder putPlaceholdersBuilderIfAbsent(
+        java.lang.String key) {
+      java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> builderMap = internalGetMutablePlaceholders().ensureBuilderMap();
+      io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder entry = builderMap.get(key);
+      if (entry == null) {
+        entry = io.littlehorse.sdk.common.proto.VariableAssignment.newBuilder();
+        builderMap.put(key, entry);
+      }
+      if (entry instanceof io.littlehorse.sdk.common.proto.VariableAssignment) {
+        entry = ((io.littlehorse.sdk.common.proto.VariableAssignment) entry).toBuilder();
+        builderMap.put(key, entry);
+      }
+      return (io.littlehorse.sdk.common.proto.VariableAssignment.Builder) entry;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskNode)

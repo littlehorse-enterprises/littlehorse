@@ -59,6 +59,7 @@ private static final long serialVersionUID = 0L;
     WORKFLOW_EVENT_DEF(4),
     USER_TASK_DEF(5),
     STRUCT_DEF(6),
+    FORM_DEF(7),
     METADATARECORD_NOT_SET(0);
     private final int value;
     private MetadataRecordCase(int value) {
@@ -82,6 +83,7 @@ private static final long serialVersionUID = 0L;
         case 4: return WORKFLOW_EVENT_DEF;
         case 5: return USER_TASK_DEF;
         case 6: return STRUCT_DEF;
+        case 7: return FORM_DEF;
         case 0: return METADATARECORD_NOT_SET;
         default: return null;
       }
@@ -355,6 +357,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.StructDef.getDefaultInstance();
   }
 
+  public static final int FORM_DEF_FIELD_NUMBER = 7;
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   * @return Whether the formDef field is set.
+   */
+  @java.lang.Override
+  public boolean hasFormDef() {
+    return metadataRecordCase_ == 7;
+  }
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   * @return The formDef.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FormDef getFormDef() {
+    if (metadataRecordCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_;
+    }
+    return io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * A FormDef update
+   * </pre>
+   *
+   * <code>.littlehorse.FormDef form_def = 7;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FormDefOrBuilder getFormDefOrBuilder() {
+    if (metadataRecordCase_ == 7) {
+       return (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_;
+    }
+    return io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -386,6 +431,9 @@ private static final long serialVersionUID = 0L;
     }
     if (metadataRecordCase_ == 6) {
       output.writeMessage(6, (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_);
+    }
+    if (metadataRecordCase_ == 7) {
+      output.writeMessage(7, (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_);
     }
     getUnknownFields().writeTo(output);
   }
@@ -419,6 +467,10 @@ private static final long serialVersionUID = 0L;
     if (metadataRecordCase_ == 6) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(6, (io.littlehorse.sdk.common.proto.StructDef) metadataRecord_);
+    }
+    if (metadataRecordCase_ == 7) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(7, (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -461,6 +513,10 @@ private static final long serialVersionUID = 0L;
         if (!getStructDef()
             .equals(other.getStructDef())) return false;
         break;
+      case 7:
+        if (!getFormDef()
+            .equals(other.getFormDef())) return false;
+        break;
       case 0:
       default:
     }
@@ -499,6 +555,10 @@ private static final long serialVersionUID = 0L;
       case 6:
         hash = (37 * hash) + STRUCT_DEF_FIELD_NUMBER;
         hash = (53 * hash) + getStructDef().hashCode();
+        break;
+      case 7:
+        hash = (37 * hash) + FORM_DEF_FIELD_NUMBER;
+        hash = (53 * hash) + getFormDef().hashCode();
         break;
       case 0:
       default:
@@ -656,6 +716,9 @@ private static final long serialVersionUID = 0L;
       if (structDefBuilder_ != null) {
         structDefBuilder_.clear();
       }
+      if (formDefBuilder_ != null) {
+        formDefBuilder_.clear();
+      }
       metadataRecordCase_ = 0;
       metadataRecord_ = null;
       return this;
@@ -721,6 +784,10 @@ private static final long serialVersionUID = 0L;
           structDefBuilder_ != null) {
         result.metadataRecord_ = structDefBuilder_.build();
       }
+      if (metadataRecordCase_ == 7 &&
+          formDefBuilder_ != null) {
+        result.metadataRecord_ = formDefBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -758,6 +825,10 @@ private static final long serialVersionUID = 0L;
         }
         case STRUCT_DEF: {
           mergeStructDef(other.getStructDef());
+          break;
+        }
+        case FORM_DEF: {
+          mergeFormDef(other.getFormDef());
           break;
         }
         case METADATARECORD_NOT_SET: {
@@ -832,6 +903,13 @@ private static final long serialVersionUID = 0L;
               metadataRecordCase_ = 6;
               break;
             } // case 50
+            case 58: {
+              input.readMessage(
+                  internalGetFormDefFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              metadataRecordCase_ = 7;
+              break;
+            } // case 58
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1930,6 +2008,184 @@ private static final long serialVersionUID = 0L;
       metadataRecordCase_ = 6;
       onChanged();
       return structDefBuilder_;
+    }
+
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.FormDef, io.littlehorse.sdk.common.proto.FormDef.Builder, io.littlehorse.sdk.common.proto.FormDefOrBuilder> formDefBuilder_;
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     * @return Whether the formDef field is set.
+     */
+    @java.lang.Override
+    public boolean hasFormDef() {
+      return metadataRecordCase_ == 7;
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     * @return The formDef.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.FormDef getFormDef() {
+      if (formDefBuilder_ == null) {
+        if (metadataRecordCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_;
+        }
+        return io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+      } else {
+        if (metadataRecordCase_ == 7) {
+          return formDefBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    public Builder setFormDef(io.littlehorse.sdk.common.proto.FormDef value) {
+      if (formDefBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        metadataRecord_ = value;
+        onChanged();
+      } else {
+        formDefBuilder_.setMessage(value);
+      }
+      metadataRecordCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    public Builder setFormDef(
+        io.littlehorse.sdk.common.proto.FormDef.Builder builderForValue) {
+      if (formDefBuilder_ == null) {
+        metadataRecord_ = builderForValue.build();
+        onChanged();
+      } else {
+        formDefBuilder_.setMessage(builderForValue.build());
+      }
+      metadataRecordCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    public Builder mergeFormDef(io.littlehorse.sdk.common.proto.FormDef value) {
+      if (formDefBuilder_ == null) {
+        if (metadataRecordCase_ == 7 &&
+            metadataRecord_ != io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance()) {
+          metadataRecord_ = io.littlehorse.sdk.common.proto.FormDef.newBuilder((io.littlehorse.sdk.common.proto.FormDef) metadataRecord_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          metadataRecord_ = value;
+        }
+        onChanged();
+      } else {
+        if (metadataRecordCase_ == 7) {
+          formDefBuilder_.mergeFrom(value);
+        } else {
+          formDefBuilder_.setMessage(value);
+        }
+      }
+      metadataRecordCase_ = 7;
+      return this;
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    public Builder clearFormDef() {
+      if (formDefBuilder_ == null) {
+        if (metadataRecordCase_ == 7) {
+          metadataRecordCase_ = 0;
+          metadataRecord_ = null;
+          onChanged();
+        }
+      } else {
+        if (metadataRecordCase_ == 7) {
+          metadataRecordCase_ = 0;
+          metadataRecord_ = null;
+        }
+        formDefBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FormDef.Builder getFormDefBuilder() {
+      return internalGetFormDefFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.FormDefOrBuilder getFormDefOrBuilder() {
+      if ((metadataRecordCase_ == 7) && (formDefBuilder_ != null)) {
+        return formDefBuilder_.getMessageOrBuilder();
+      } else {
+        if (metadataRecordCase_ == 7) {
+          return (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_;
+        }
+        return io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * A FormDef update
+     * </pre>
+     *
+     * <code>.littlehorse.FormDef form_def = 7;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.FormDef, io.littlehorse.sdk.common.proto.FormDef.Builder, io.littlehorse.sdk.common.proto.FormDefOrBuilder> 
+        internalGetFormDefFieldBuilder() {
+      if (formDefBuilder_ == null) {
+        if (!(metadataRecordCase_ == 7)) {
+          metadataRecord_ = io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance();
+        }
+        formDefBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.FormDef, io.littlehorse.sdk.common.proto.FormDef.Builder, io.littlehorse.sdk.common.proto.FormDefOrBuilder>(
+                (io.littlehorse.sdk.common.proto.FormDef) metadataRecord_,
+                getParentForChildren(),
+                isClean());
+        metadataRecord_ = null;
+      }
+      metadataRecordCase_ = 7;
+      onChanged();
+      return formDefBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.MetadataOutputTopicRecord)

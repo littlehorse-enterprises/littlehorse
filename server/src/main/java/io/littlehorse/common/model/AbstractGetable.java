@@ -24,6 +24,7 @@ import io.littlehorse.common.model.getable.global.bulkjob.ActiveBulkJobModel;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
 import io.littlehorse.common.model.getable.global.migrations.WorkflowMigrationPlanModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
@@ -35,6 +36,7 @@ import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.CorrelatedEventIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventIdModel;
+import io.littlehorse.common.model.getable.objectId.FormDefIdModel;
 import io.littlehorse.common.model.getable.objectId.InactiveThreadRunIdModel;
 import io.littlehorse.common.model.getable.objectId.InlineWfSpecIdModel;
 import io.littlehorse.common.model.getable.objectId.MetricWindowIdModel;
@@ -99,6 +101,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
             return GetableClassEnum.VARIABLE;
         } else if (cls.equals(StructDefModel.class)) {
             return GetableClassEnum.STRUCT_DEF;
+        } else if (cls.equals(FormDefModel.class)) {
+            return GetableClassEnum.FORM_DEF;
         } else if (cls.equals(ExternalEventDefModel.class)) {
             return GetableClassEnum.EXTERNAL_EVENT_DEF;
         } else if (cls.equals(ExternalEventModel.class)) {
@@ -162,6 +166,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return VariableModel.class;
             case STRUCT_DEF:
                 return StructDefModel.class;
+            case FORM_DEF:
+                return FormDefModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefModel.class;
             case EXTERNAL_EVENT:
@@ -226,6 +232,8 @@ public abstract class AbstractGetable<T extends Message> extends LHSerializable<
                 return VariableIdModel.class;
             case STRUCT_DEF:
                 return StructDefIdModel.class;
+            case FORM_DEF:
+                return FormDefIdModel.class;
             case EXTERNAL_EVENT_DEF:
                 return ExternalEventDefIdModel.class;
             case EXTERNAL_EVENT:

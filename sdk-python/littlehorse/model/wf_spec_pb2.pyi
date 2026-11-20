@@ -315,7 +315,14 @@ class ThrowEventNode(_message.Message):
     def __init__(self, event_def_id: _Optional[_Union[_object_id_pb2.WorkflowEventDefId, _Mapping]] = ..., content: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
 
 class UserTaskNode(_message.Message):
-    __slots__ = ("user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes", "on_cancellation_exception_name")
+    __slots__ = ("user_task_def_name", "user_group", "user_id", "actions", "user_task_def_version", "notes", "on_cancellation_exception_name", "placeholders")
+    class PlaceholdersEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: _common_wfspec_pb2.VariableAssignment
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
     USER_TASK_DEF_NAME_FIELD_NUMBER: _ClassVar[int]
     USER_GROUP_FIELD_NUMBER: _ClassVar[int]
     USER_ID_FIELD_NUMBER: _ClassVar[int]
@@ -323,6 +330,7 @@ class UserTaskNode(_message.Message):
     USER_TASK_DEF_VERSION_FIELD_NUMBER: _ClassVar[int]
     NOTES_FIELD_NUMBER: _ClassVar[int]
     ON_CANCELLATION_EXCEPTION_NAME_FIELD_NUMBER: _ClassVar[int]
+    PLACEHOLDERS_FIELD_NUMBER: _ClassVar[int]
     user_task_def_name: str
     user_group: _common_wfspec_pb2.VariableAssignment
     user_id: _common_wfspec_pb2.VariableAssignment
@@ -330,7 +338,8 @@ class UserTaskNode(_message.Message):
     user_task_def_version: int
     notes: _common_wfspec_pb2.VariableAssignment
     on_cancellation_exception_name: _common_wfspec_pb2.VariableAssignment
-    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., on_cancellation_exception_name: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ...) -> None: ...
+    placeholders: _containers.MessageMap[str, _common_wfspec_pb2.VariableAssignment]
+    def __init__(self, user_task_def_name: _Optional[str] = ..., user_group: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., user_id: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., actions: _Optional[_Iterable[_Union[_common_wfspec_pb2.UTActionTrigger, _Mapping]]] = ..., user_task_def_version: _Optional[int] = ..., notes: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., on_cancellation_exception_name: _Optional[_Union[_common_wfspec_pb2.VariableAssignment, _Mapping]] = ..., placeholders: _Optional[_Mapping[str, _common_wfspec_pb2.VariableAssignment]] = ...) -> None: ...
 
 class LegacyEdgeCondition(_message.Message):
     __slots__ = ("comparator", "left", "right")

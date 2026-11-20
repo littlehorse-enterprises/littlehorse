@@ -16,6 +16,15 @@ public class UserTaskOutput : NodeOutput
     {
     }
 
+    /// <summary>
+    /// Binds a value to a named form placeholder on this user task.
+    /// </summary>
+    public UserTaskOutput WithPlaceholder(string name, object value)
+    {
+        Parent.FindNode(NodeName).UserTask.Placeholders[name] = Parent.AssignVariableHelper(value);
+        return this;
+    }
+
     private void AddNotes(object notes) 
     {
         VariableAssignment notesParsed = Parent.AssignVariableHelper(notes);

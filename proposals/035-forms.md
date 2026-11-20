@@ -195,11 +195,6 @@ message SearchFormDefRequest {
   }
 }
 
-message DeleteFormDefRequest {
-  // Exact version; other versions are unaffected.
-  FormDefId id = 1;
-}
-
 message FormDefIdList {
   repeated FormDefId results = 1;
   optional bytes bookmark = 2;
@@ -208,8 +203,9 @@ message FormDefIdList {
 rpc PutFormDef(PutFormDefRequest) returns (FormDef) {}
 rpc GetFormDef(GetFormDefRequest) returns (FormDef) {}
 rpc SearchFormDef(SearchFormDefRequest) returns (FormDefIdList) {}
-rpc DeleteFormDef(DeleteFormDefRequest) returns (google.protobuf.Empty) {}
 ```
+
+The API does not support deleting FormDef versions.
 
 ## Compatibility
 

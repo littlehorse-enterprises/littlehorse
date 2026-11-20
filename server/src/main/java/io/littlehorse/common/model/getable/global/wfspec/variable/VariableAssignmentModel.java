@@ -16,14 +16,17 @@ import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
+import io.littlehorse.sdk.common.proto.LHPath.Selector;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.Data;
@@ -380,6 +383,67 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
 
         return Optional.ofNullable(typeDef);
+    }
+
+    public boolean readsMaskedValue(ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
+            throws InvalidExpressionException {
+        List<VariableAssignmentModel> children = new ArrayList<>();
+        switch (rhsSourceType) {
+            case FORMAT_STRING:
+                children.add(formatString.getFormat());
+                children.addAll(formatString.getArgs());
+                break;
+            case EXPRESSION:
+                children.add(expression.getLhs());
+                children.add(expression.getRhs());
+                break;
+            case SIZE_OF:
+                children.add(sizeOf.getOperand());
+                break;
+            case STRUCT_BUILDER:
+                children.addAll(structBuilder.getValue().getSimpleValues());
+                break;
+            case MAP_BUILDER:
+                for (MapBuilderModel.MapBuilderEntryModel entry : mapBuilder.getEntries()) {
+                    children.add(entry.getKey());
+                    children.add(entry.getValue());
+                }
+                break;
+            default:
+        }
+        if (lhPath != null) children.addAll(lhPath.getDynamicAssignments());
+
+        for (VariableAssignmentModel child : children) {
+            if (child.readsMaskedValue(manager, wfSpec, threadSpecName)) return true;
+        }
+
+        Optional<TypeDefinitionModel> type = sourceWithoutPath().getSourceType(manager, wfSpec, threadSpecName);
+        if (type.isEmpty()) return false;
+        if (type.get().isMasked()) return true;
+        if (lhPath == null) return false;
+
+        for (Selector selector : lhPath.getPath()) {
+            type = type.get().getNestedType(new LHPathModel(List.of(selector)), manager);
+            if (type.isEmpty()) return false;
+            if (type.get().isMasked()) return true;
+        }
+        return false;
+    }
+
+    private VariableAssignmentModel sourceWithoutPath() {
+        if (lhPath == null && jsonPath == null) return this;
+        VariableAssignmentModel source = new VariableAssignmentModel();
+        source.pathCase = PathCase.PATH_NOT_SET;
+        source.rhsSourceType = rhsSourceType;
+        source.variableName = variableName;
+        source.rhsLiteralValue = rhsLiteralValue;
+        source.formatString = formatString;
+        source.nodeOutputReference = nodeOutputReference;
+        source.expression = expression;
+        source.structBuilder = structBuilder;
+        source.sizeOf = sizeOf;
+        source.mapBuilder = mapBuilder;
+        return source;
     }
 
     public boolean canBeType(VariableType type, ThreadSpecModel tspec) {
