@@ -26,6 +26,15 @@ class LHStructOneOfTest {
     @LHStructDef("payment")
     public record Helper(String orderId, Method method) {}
 
+    @LHStructOneOf
+    public enum PaymentMethod {
+        CARD,
+        BANK
+    }
+
+    @LHStructDef("purchase")
+    public record Purchase(String id, PaymentMethod method) {}
+
     @LHStructDef("collision")
     public record Collision(String card, Method method) {}
 
@@ -239,6 +248,24 @@ class LHStructOneOfTest {
                 LHLibUtil.varValToObj(LHLibUtil.objToVarVal(pojoHelper, registry), AdaptedPojoHelper.class, registry);
         assertThat(restoredPojoHelper.getKey().getId()).isNull();
         assertThat(restoredPojoHelper.getKey().getText()).isEqualTo("text");
+    }
+
+    @Test
+    void rejectsEnumHelperDuringSchemaGeneration() {
+        assertThatThrownBy(() -> new LHStructDefType(Purchase.class).toPutStructDefRequest())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Purchase.method")
+                .hasMessageContaining("PaymentMethod")
+                .hasMessageContaining("enum");
+    }
+
+    @Test
+    void rejectsEnumHelperDuringDirectSerialization() {
+        assertThatThrownBy(() -> LHLibUtil.objToVarVal(new Purchase("123", PaymentMethod.CARD)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Purchase.method")
+                .hasMessageContaining("PaymentMethod")
+                .hasMessageContaining("enum");
     }
 
     @Test

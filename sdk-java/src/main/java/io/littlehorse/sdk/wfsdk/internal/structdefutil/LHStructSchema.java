@@ -56,13 +56,19 @@ public final class LHStructSchema {
         for (LHStructProperty property : properties) {
             property.getOneofGroup(); // Validate declarations even on helper properties.
             if (property.isOneofHelper()) {
+                Class<?> helperType = property.getPropertyTypeClass();
+                if (helperType.isEnum()) {
+                    throw new IllegalArgumentException(String.format(
+                            "Cannot flatten %s.%s: %s is an enum. A @LHStructOneOf helper must be a record or"
+                                    + " JavaBean with a property for each alternative.",
+                            type.getName(), property.getPropertyName(), helperType.getName()));
+                }
                 validateGroupName(property.getFieldName());
                 if (property.isNullable())
                     throw new IllegalArgumentException("Oneof helper " + property + " cannot be nullable");
                 if (property.getDefaultValue(registry).isPresent()) {
                     throw new IllegalArgumentException("Oneof helper " + property + " cannot have a default");
                 }
-                Class<?> helperType = property.getPropertyTypeClass();
                 if (registry.getForClass(helperType).isPresent()) {
                     throw new IllegalArgumentException(String.format(
                             "Property '%s' on %s uses %s, which is a @LHStructOneOf helper but also has a registered"
