@@ -46,6 +46,7 @@ include(
         'spawn-thread-foreach',
         'struct-builder',
         'struct-def',
+        'struct-oneof',
         'timestamp',
         'type-adapter',
         'user-tasks',
