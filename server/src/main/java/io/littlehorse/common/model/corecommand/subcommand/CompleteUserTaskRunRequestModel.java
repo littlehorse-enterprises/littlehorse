@@ -27,6 +27,7 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
     private UserTaskRunIdModel userTaskRunId;
     private String userId;
     private Map<String, VariableValueModel> results = new HashMap<>();
+    private VariableValueModel output;
     private Date time;
 
     public Class<CompleteUserTaskRunRequest> getProtoBaseClass() {
@@ -40,6 +41,9 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
         for (Map.Entry<String, VariableValueModel> entry : results.entrySet()) {
             out.putResults(entry.getKey(), entry.getValue().toProto().build());
         }
+        if (output != null) {
+            out.setOutput(output.toProto());
+        }
         return out;
     }
 
@@ -51,6 +55,9 @@ public class CompleteUserTaskRunRequestModel extends CoreSubCommand<CompleteUser
 
         for (Map.Entry<String, VariableValue> entry : p.getResultsMap().entrySet()) {
             results.put(entry.getKey(), VariableValueModel.fromProto(entry.getValue(), context));
+        }
+        if (p.hasOutput()) {
+            output = VariableValueModel.fromProto(p.getOutput(), context);
         }
     }
 

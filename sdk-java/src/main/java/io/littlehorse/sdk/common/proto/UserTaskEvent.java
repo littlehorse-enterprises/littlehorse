@@ -1230,20 +1230,20 @@ private static final long serialVersionUID = 0L;
 
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
-    int getResultsCount();
+    @java.lang.Deprecated int getResultsCount();
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
-    boolean containsResults(
+    @java.lang.Deprecated boolean containsResults(
         java.lang.String key);
     /**
      * Use {@link #getResultsMap()} instead.
@@ -1253,34 +1253,61 @@ private static final long serialVersionUID = 0L;
     getResults();
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
-    java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
+    @java.lang.Deprecated java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue>
     getResultsMap();
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
-    /* nullable */
+    @java.lang.Deprecated /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
         java.lang.String key,
         /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue defaultValue);
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
-    io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+    @java.lang.Deprecated io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
         java.lang.String key);
+
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     * @return Whether the output field is set.
+     */
+    boolean hasOutput();
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     * @return The output.
+     */
+    io.littlehorse.sdk.common.proto.VariableValue getOutput();
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder();
   }
   /**
    * <pre>
@@ -1336,6 +1363,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
               io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved.class, io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved.Builder.class);
     }
 
+    private int bitField0_;
     public static final int USER_ID_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object userId_ = "";
@@ -1406,18 +1434,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
       }
       return results_;
     }
-    public int getResultsCount() {
+    @java.lang.Deprecated public int getResultsCount() {
       return internalGetResults().getMap().size();
     }
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
     @java.lang.Override
-    public boolean containsResults(
+    @java.lang.Deprecated public boolean containsResults(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       return internalGetResults().getMap().containsKey(key);
@@ -1432,24 +1460,24 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
     }
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
     @java.lang.Override
-    public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
+    @java.lang.Deprecated public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
       return internalGetResults().getMap();
     }
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
     @java.lang.Override
-    public /* nullable */
+    @java.lang.Deprecated public /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
         java.lang.String key,
         /* nullable */
@@ -1461,13 +1489,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     /**
      * <pre>
-     * The results that were saved.
+     * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
      * </pre>
      *
-     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+     * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
      */
     @java.lang.Override
-    public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+    @java.lang.Deprecated public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
         java.lang.String key) {
       if (key == null) { throw new NullPointerException("map key"); }
       java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> map =
@@ -1476,6 +1504,44 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         throw new java.lang.IllegalArgumentException();
       }
       return map.get(key);
+    }
+
+    public static final int OUTPUT_FIELD_NUMBER = 3;
+    private io.littlehorse.sdk.common.proto.VariableValue output_;
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     * @return Whether the output field is set.
+     */
+    @java.lang.Override
+    public boolean hasOutput() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     * @return The output.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+      return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+    }
+    /**
+     * <pre>
+     * The saved Struct output, preserving field metadata such as masking.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableValue output = 3;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+      return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1501,6 +1567,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           internalGetResults(),
           ResultsDefaultEntryHolder.defaultEntry,
           2);
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(3, getOutput());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1523,6 +1592,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         size += com.google.protobuf.CodedOutputStream
             .computeMessageSize(2, results__);
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getOutput());
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -1542,6 +1615,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           .equals(other.getUserId())) return false;
       if (!internalGetResults().equals(
           other.internalGetResults())) return false;
+      if (hasOutput() != other.hasOutput()) return false;
+      if (hasOutput()) {
+        if (!getOutput()
+            .equals(other.getOutput())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1558,6 +1636,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (!internalGetResults().getMap().isEmpty()) {
         hash = (37 * hash) + RESULTS_FIELD_NUMBER;
         hash = (53 * hash) + internalGetResults().hashCode();
+      }
+      if (hasOutput()) {
+        hash = (37 * hash) + OUTPUT_FIELD_NUMBER;
+        hash = (53 * hash) + getOutput().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -1704,13 +1786,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
       // Construct using io.littlehorse.sdk.common.proto.UserTaskEvent.UTESaved.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetOutputFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -1718,6 +1806,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         bitField0_ = 0;
         userId_ = "";
         internalGetMutableResults().clear();
+        output_ = null;
+        if (outputBuilder_ != null) {
+          outputBuilder_.dispose();
+          outputBuilder_ = null;
+        }
         return this;
       }
 
@@ -1757,6 +1850,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.results_ = internalGetResults().build(ResultsDefaultEntryHolder.defaultEntry);
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.output_ = outputBuilder_ == null
+              ? output_
+              : outputBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -1779,6 +1880,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         internalGetMutableResults().mergeFrom(
             other.internalGetResults());
         bitField0_ |= 0x00000002;
+        if (other.hasOutput()) {
+          mergeOutput(other.getOutput());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -1819,6 +1923,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 26: {
+                input.readMessage(
+                    internalGetOutputFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1944,14 +2055,14 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
 
       private com.google.protobuf.MapFieldBuilder<
           java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder> results_;
-      private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
+      @java.lang.Deprecated private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
           internalGetResults() {
         if (results_ == null) {
           return new com.google.protobuf.MapFieldBuilder<>(resultsConverter);
         }
         return results_;
       }
-      private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
+      @java.lang.Deprecated private com.google.protobuf.MapFieldBuilder<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder, io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder>
           internalGetMutableResults() {
         if (results_ == null) {
           results_ = new com.google.protobuf.MapFieldBuilder<>(resultsConverter);
@@ -1960,18 +2071,18 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         onChanged();
         return results_;
       }
-      public int getResultsCount() {
+      @java.lang.Deprecated public int getResultsCount() {
         return internalGetResults().ensureBuilderMap().size();
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
       @java.lang.Override
-      public boolean containsResults(
+      @java.lang.Deprecated public boolean containsResults(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         return internalGetResults().ensureBuilderMap().containsKey(key);
@@ -1986,24 +2097,24 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
       @java.lang.Override
-      public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
+      @java.lang.Deprecated public java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> getResultsMap() {
         return internalGetResults().getImmutableMap();
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
       @java.lang.Override
-      public /* nullable */
+      @java.lang.Deprecated public /* nullable */
 io.littlehorse.sdk.common.proto.VariableValue getResultsOrDefault(
           java.lang.String key,
           /* nullable */
@@ -2014,13 +2125,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
       @java.lang.Override
-      public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
+      @java.lang.Deprecated public io.littlehorse.sdk.common.proto.VariableValue getResultsOrThrow(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> map = internalGetMutableResults().ensureBuilderMap();
@@ -2029,19 +2140,19 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         }
         return resultsConverter.build(map.get(key));
       }
-      public Builder clearResults() {
+      @java.lang.Deprecated public Builder clearResults() {
         bitField0_ = (bitField0_ & ~0x00000002);
         internalGetMutableResults().clear();
         return this;
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
-      public Builder removeResults(
+      @java.lang.Deprecated public Builder removeResults(
           java.lang.String key) {
         if (key == null) { throw new NullPointerException("map key"); }
         internalGetMutableResults().ensureBuilderMap()
@@ -2059,12 +2170,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
-      public Builder putResults(
+      @java.lang.Deprecated public Builder putResults(
           java.lang.String key,
           io.littlehorse.sdk.common.proto.VariableValue value) {
         if (key == null) { throw new NullPointerException("map key"); }
@@ -2076,12 +2187,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
-      public Builder putAllResults(
+      @java.lang.Deprecated public Builder putAllResults(
           java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> values) {
         for (java.util.Map.Entry<java.lang.String, io.littlehorse.sdk.common.proto.VariableValue> e : values.entrySet()) {
           if (e.getKey() == null || e.getValue() == null) {
@@ -2095,12 +2206,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       /**
        * <pre>
-       * The results that were saved.
+       * Deprecated: populated for legacy field-backed UserTaskRuns. Use output for Struct-backed runs.
        * </pre>
        *
-       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2;</code>
+       * <code>map&lt;string, .littlehorse.VariableValue&gt; results = 2 [deprecated = true];</code>
        */
-      public io.littlehorse.sdk.common.proto.VariableValue.Builder putResultsBuilderIfAbsent(
+      @java.lang.Deprecated public io.littlehorse.sdk.common.proto.VariableValue.Builder putResultsBuilderIfAbsent(
           java.lang.String key) {
         java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> builderMap = internalGetMutableResults().ensureBuilderMap();
         io.littlehorse.sdk.common.proto.VariableValueOrBuilder entry = builderMap.get(key);
@@ -2113,6 +2224,163 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
           builderMap.put(key, entry);
         }
         return (io.littlehorse.sdk.common.proto.VariableValue.Builder) entry;
+      }
+
+      private io.littlehorse.sdk.common.proto.VariableValue output_;
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> outputBuilder_;
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       * @return Whether the output field is set.
+       */
+      public boolean hasOutput() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       * @return The output.
+       */
+      public io.littlehorse.sdk.common.proto.VariableValue getOutput() {
+        if (outputBuilder_ == null) {
+          return output_ == null ? io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+        } else {
+          return outputBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public Builder setOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+        if (outputBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          output_ = value;
+        } else {
+          outputBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public Builder setOutput(
+          io.littlehorse.sdk.common.proto.VariableValue.Builder builderForValue) {
+        if (outputBuilder_ == null) {
+          output_ = builderForValue.build();
+        } else {
+          outputBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public Builder mergeOutput(io.littlehorse.sdk.common.proto.VariableValue value) {
+        if (outputBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            output_ != null &&
+            output_ != io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance()) {
+            getOutputBuilder().mergeFrom(value);
+          } else {
+            output_ = value;
+          }
+        } else {
+          outputBuilder_.mergeFrom(value);
+        }
+        if (output_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public Builder clearOutput() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        output_ = null;
+        if (outputBuilder_ != null) {
+          outputBuilder_.dispose();
+          outputBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableValue.Builder getOutputBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return internalGetOutputFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableValueOrBuilder getOutputOrBuilder() {
+        if (outputBuilder_ != null) {
+          return outputBuilder_.getMessageOrBuilder();
+        } else {
+          return output_ == null ?
+              io.littlehorse.sdk.common.proto.VariableValue.getDefaultInstance() : output_;
+        }
+      }
+      /**
+       * <pre>
+       * The saved Struct output, preserving field metadata such as masking.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableValue output = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder> 
+          internalGetOutputFieldBuilder() {
+        if (outputBuilder_ == null) {
+          outputBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.VariableValue, io.littlehorse.sdk.common.proto.VariableValue.Builder, io.littlehorse.sdk.common.proto.VariableValueOrBuilder>(
+                  getOutput(),
+                  getParentForChildren(),
+                  isClean());
+          output_ = null;
+        }
+        return outputBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskEvent.UTESaved)

@@ -43,6 +43,7 @@ const (
 
 	OAUTH_CALLBACK_PORT_KEY        = "LHC_OAUTH_CALLBACK_PORT"
 	OAUTH_CREDENTIALS_LOCATION_KEY = "LHC_OAUTH_CREDENTIALS_LOCATION"
+	OAUTH_CA_CERT_KEY              = "LHC_OAUTH_CA_CERT"
 
 	GRPC_KEEPALIVE_TIME_KEY           = "LHC_GRPC_KEEPALIVE_TIME_MS"
 	GRPC_KEEPALIVE_TIMEOUT_KEY        = "LHC_GRPC_KEEPALIVE_TIMEOUT_MS"
@@ -174,6 +175,7 @@ func NewConfigFromEnv() *LHConfig {
 			TokenEndpointUrl:    getEnvOrDefault(OAUTH_ACCESS_TOKEN_URL, ""),
 			CallbackPort:        int32FromEnv(OAUTH_CALLBACK_PORT_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
 			CredentialsLocation: getEnvOrDefault(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
+			CaCert:              os.Getenv(OAUTH_CA_CERT_KEY),
 		},
 	}
 }
@@ -213,6 +215,7 @@ func NewConfigFromProps(filePath string) (*LHConfig, error) {
 			TokenEndpointUrl:    p.GetString(OAUTH_ACCESS_TOKEN_URL, ""),
 			CallbackPort:        int32FromProp(p, OAUTH_CALLBACK_PORT_KEY, DEFAULT_OAUTH_CALLBACK_PORT),
 			CredentialsLocation: p.GetString(OAUTH_CREDENTIALS_LOCATION_KEY, homeDir("/.config/littlehorse.credentials")),
+			CaCert:              p.GetString(OAUTH_CA_CERT_KEY, ""),
 		},
 	}, nil
 }

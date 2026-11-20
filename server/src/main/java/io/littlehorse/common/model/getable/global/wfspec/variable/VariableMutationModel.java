@@ -9,11 +9,13 @@ import io.littlehorse.common.exceptions.validation.InvalidMutationException;
 import io.littlehorse.common.model.getable.core.variable.VariableModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
+import io.littlehorse.common.model.getable.global.structdef.StructFieldDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.TypeDefinitionModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.NodeModel;
 import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath;
+import io.littlehorse.sdk.common.proto.TypeDefinition.DefinedTypeCase;
 import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutation.RhsValueCase;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
@@ -21,6 +23,7 @@ import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.server.streams.storeinternals.ReadOnlyMetadataManager;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -190,7 +193,10 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
                 TypeDefinitionModel typeToCoerceTo = declaredPathType.orElse(lhsAtPath.getTypeDefinition());
                 VariableValueModel thingToPut = lhsAtPath.operate(operation, rhsVal, typeToCoerceTo);
 
-                currentLhs.updateViaLhPath(lhsLhPath, resolvedSelectors, thingToPut);
+                boolean unsetAlternative = thingToPut.isNull()
+                        && isOneofAlternative(
+                                lhsRealType, thread.getExecutionContext().metadataManager());
+                currentLhs.updateViaLhPath(lhsLhPath, resolvedSelectors, thingToPut, unsetAlternative);
                 txnCache.put(lhsName, currentLhs);
             } else {
                 TypeDefinitionModel typeToCoerceTo = lhsRealType;
@@ -202,6 +208,23 @@ public class VariableMutationModel extends LHSerializable<VariableMutation> {
             log.trace(exn.getMessage(), exn);
             throw new LHVarSubError(exn, "Caught unexpected error when mutating variables: " + exn.getMessage());
         }
+    }
+
+    private boolean isOneofAlternative(TypeDefinitionModel rootType, ReadOnlyMetadataManager manager)
+            throws InvalidExpressionException {
+        List<LHPath.Selector> path = lhsLhPath.getPath();
+        LHPath.Selector last = path.get(path.size() - 1);
+        if (last.getSelectorTypeCase() != LHPath.Selector.SelectorTypeCase.KEY) return false;
+        Optional<TypeDefinitionModel> parentType =
+                rootType.getNestedType(new LHPathModel(path.subList(0, path.size() - 1)), manager);
+        if (parentType.isEmpty()
+                || (parentType.get().getDefinedTypeCase() != DefinedTypeCase.STRUCT_DEF_ID
+                        && parentType.get().getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF)) {
+            return false;
+        }
+        StructFieldDefModel field = StructBuilderModel.getFieldDefinitions(parentType.get(), manager)
+                .get(last.getKey());
+        return field != null && field.getOneofGroup() != null;
     }
 
     public Set<String> getRequiredVariableNames() {

@@ -92,17 +92,24 @@ describe('UserTaskRunNode', () => {
         wfRunId: undefined,
       },
       epoch: 42,
-      results: {
-        requestedItem: {
-          value: {
-            oneofKind: 'str',
-            str: 'testing',
-          },
-        },
-        justification: {
-          value: {
-            oneofKind: 'str',
-            str: 'as',
+      results: {},
+      output: {
+        value: {
+          oneofKind: 'struct',
+          struct: {
+            structDefId: { name: 'item-request-form', version: 0 },
+            struct: {
+              fields: {
+                requestedItem: {
+                  value: { value: { oneofKind: 'str', str: 'testing' } },
+                  masked: false,
+                },
+                justification: {
+                  value: { value: { oneofKind: 'str', str: 'as' } },
+                  masked: false,
+                },
+              },
+            },
           },
         },
       },
@@ -136,6 +143,9 @@ describe('UserTaskRunNode', () => {
 
     render(<UserTaskNodeRun node={node} />)
 
+    // userTaskGuid repeats across WfRuns, so the cache key must include the WfRun.
+    expect(mockUseSWR).toHaveBeenCalledWith(['userTaskRun', 'tenant-1', 'wf-2', 'guid-2'], expect.any(Function))
+
     expect(screen.getByTestId('nodevar-user_task_def_id:')).toHaveTextContent('user_task_def_id: def-name')
     expect(screen.getByTestId('nodevar-user_group:')).toHaveTextContent('user_group: group-1')
     expect(screen.getByTestId('nodevar-user_id:')).toHaveTextContent('user_id: user-1')
@@ -148,7 +158,12 @@ describe('UserTaskRunNode', () => {
     expect(screen.getByTestId('nodevar-epoch:')).toHaveTextContent('epoch: 42')
 
     // Results and Events mocks
-    expect(screen.getByTestId('results-mock')).toHaveTextContent('Results:')
+    expect(screen.getByTestId('results-mock')).toHaveTextContent(
+      `Results: ${JSON.stringify([
+        ['requestedItem', { value: { oneofKind: 'str', str: 'testing' } }],
+        ['justification', { value: { oneofKind: 'str', str: 'as' } }],
+      ])}`
+    )
     expect(screen.getByText('EventsMock')).toBeInTheDocument()
   })
 })

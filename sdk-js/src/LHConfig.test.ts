@@ -249,4 +249,15 @@ describe('LHConfig OAuth validation', () => {
     expect(config.isOauth()).toBe(false)
     expect(config.getOauthProvider()).toBeUndefined()
   })
+
+  it('fails to build the OAuth provider with an invalid LHC_OAUTH_CA_CERT', () => {
+    ;(readFileSync as jest.Mock).mockReturnValue('not a certificate')
+    process.env.LHC_OAUTH_CLIENT_ID = 'id'
+    process.env.LHC_OAUTH_CLIENT_SECRET = 'secret'
+    process.env.LHC_OAUTH_ACCESS_TOKEN_URL = 'https://idp/token'
+    process.env.LHC_OAUTH_CA_CERT = '/path/to/oauth-ca.crt'
+    const config = LHConfig.from({})
+    expect(() => config.getOauthProvider()).toThrow(/Invalid OAuth CA certificate/)
+    expect(readFileSync).toHaveBeenCalledWith('/path/to/oauth-ca.crt', 'utf8')
+  })
 })
