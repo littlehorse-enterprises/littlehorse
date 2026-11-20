@@ -34,15 +34,22 @@ lhctl
 
 ## Updating tenants
 
-`lhctl put tenant <id> --name <name>` without an output flag keeps the tenant's
-current output configuration (or creates the tenant with output disabled). Without
-`--name` or an output flag, output is disabled, matching the `PutTenant` API.
+Every `lhctl put tenant` replaces the tenant's name and output settings. Retype
+all settings you want to keep: omitting `--name` clears the name, and omitting
+both output flags disables output. Each invocation displays the submitted settings
+and requires `y` or `yes` confirmation before sending the request. Empty input,
+a declined confirmation, or unreadable input aborts without writing.
 
 ```bash
-lhctl put tenant acme --name "Acme Production"   # rename, keeping output settings
-lhctl put tenant acme --name ""                  # clear the name
-lhctl put tenant acme --all-entity-events        # or --no-entity-events / --disable-output-topic
+lhctl put tenant acme --name "Acme Production" --all-entity-events
+lhctl put tenant acme --name "Acme Production" --no-entity-events
+lhctl put tenant acme --name "Acme Production" # disables output
+lhctl put tenant acme                        # clears name and disables output
 ```
+
+The CLI does not fetch or merge existing settings. Confirmation is not a lock:
+a concurrent update can still be overwritten by this request. The server API and
+protobuf definitions are unchanged.
 
 ## Writing `lhctl` commands
 
