@@ -32,25 +32,6 @@ Verify the installation:
 lhctl
 ```
 
-## Updating tenants
-
-Every `lhctl put tenant` replaces the tenant's name and output settings. Retype
-all settings you want to keep: omitting `--name` clears the name, and omitting
-both output flags disables output. Each invocation displays the submitted settings
-and requires `y` or `yes` confirmation before sending the request. Empty input,
-a declined confirmation, or unreadable input aborts without writing.
-
-```bash
-lhctl put tenant acme --name "Acme Production" --all-entity-events
-lhctl put tenant acme --name "Acme Production" --no-entity-events
-lhctl put tenant acme --name "Acme Production" # disables output
-lhctl put tenant acme                        # clears name and disables output
-```
-
-The CLI does not fetch or merge existing settings. Confirmation is not a lock:
-a concurrent update can still be overwritten by this request. The server API and
-protobuf definitions are unchanged.
-
 ## Writing `lhctl` commands
 
 To ensure consistency across our CLI commands, we adhere to the following standards, inspired by [Docopt](http://docopt.org) and the [Cobra User Guide](https://github.com/spf13/cobra/blob/main/site/content/user_guide.md). 
