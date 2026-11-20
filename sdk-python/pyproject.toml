@@ -11,12 +11,13 @@ readme = "README.md"
 license = { text = "Apache 2.0" }
 keywords = ["littlehorse"]
 classifiers = [
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13"
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15"
 ]
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.11,<3.16"
 dependencies = [
     "protobuf>=6.33.5,<8",
     "grpcio>=1.75.1,<2",
