@@ -49,6 +49,9 @@ public final class LHStructSchema {
                     throw new IllegalArgumentException(
                             "Oneof helper requires a public no-arg constructor: " + type.getName(), e);
                 }
+                for (LHStructProperty property : properties) {
+                    property.validateOneofHelperAccessors();
+                }
             }
         }
         InlineStructDef.Builder result = InlineStructDef.newBuilder();

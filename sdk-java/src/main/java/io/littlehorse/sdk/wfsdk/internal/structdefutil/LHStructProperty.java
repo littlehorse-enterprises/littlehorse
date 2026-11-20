@@ -433,6 +433,14 @@ public class LHStructProperty {
         return lhStructField.description();
     }
 
+    void validateOneofHelperAccessors() {
+        if (!hasReadMethod() || !hasWriteMethod()) {
+            throw new IllegalArgumentException(String.format(
+                    "Oneof helper property %s.%s requires a public %s",
+                    parentStructDef.getClassType().getName(), propertyName, hasReadMethod() ? "setter" : "getter"));
+        }
+    }
+
     private boolean hasReadMethod() {
         return getReadMethod() != null;
     }

@@ -250,6 +250,40 @@ class LHStructOneOfTest {
         assertThat(restoredPojoHelper.getKey().getText()).isEqualTo("text");
     }
 
+    @LHStructOneOf
+    public static class GetterOnly {
+        public String getEmail() {
+            return null;
+        }
+    }
+
+    @LHStructOneOf
+    public static class SetterOnly {
+        public void setEmail(String email) {}
+    }
+
+    @LHStructDef("getter-only-contact")
+    public record GetterOnlyContact(GetterOnly contact) {}
+
+    @LHStructDef("setter-only-contact")
+    public record SetterOnlyContact(SetterOnly contact) {}
+
+    @Test
+    void rejectsPojoHelperWithoutSetterDuringSchemaGeneration() {
+        assertThatThrownBy(() -> new LHStructDefType(GetterOnlyContact.class).toPutStructDefRequest())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("GetterOnly.email")
+                .hasMessageContaining("public setter");
+    }
+
+    @Test
+    void rejectsPojoHelperWithoutGetterDuringSchemaGeneration() {
+        assertThatThrownBy(() -> new LHStructDefType(SetterOnlyContact.class).toPutStructDefRequest())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("SetterOnly.email")
+                .hasMessageContaining("public getter");
+    }
+
     @Test
     void rejectsEnumHelperDuringSchemaGeneration() {
         assertThatThrownBy(() -> new LHStructDefType(Purchase.class).toPutStructDefRequest())
