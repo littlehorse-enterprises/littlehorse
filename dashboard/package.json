@@ -44,6 +44,7 @@
     "date-fns": "^4.1.0",
     "elkjs": "^0.11.0",
     "littlehorse-client": "link:../sdk-js",
+    "lossless-json": "^4.3.3",
     "lucide-react": "^0.519.0",
     "next": "^16.4.1",
     "next-auth": "^4.24.15",
