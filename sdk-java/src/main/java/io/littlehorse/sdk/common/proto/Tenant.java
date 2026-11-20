@@ -34,6 +34,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private Tenant() {
+    name_ = "";
   }
 
   public static final com.google.protobuf.Descriptors.Descriptor
@@ -167,6 +168,65 @@ private static final long serialVersionUID = 0L;
     return outputTopicConfig_ == null ? io.littlehorse.sdk.common.proto.OutputTopicConfig.getDefaultInstance() : outputTopicConfig_;
   }
 
+  public static final int NAME_FIELD_NUMBER = 4;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object name_ = "";
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return Whether the name field is set.
+   */
+  @java.lang.Override
+  public boolean hasName() {
+    return ((bitField0_ & 0x00000008) != 0);
+  }
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return The name.
+   */
+  @java.lang.Override
+  public java.lang.String getName() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      name_ = s;
+      return s;
+    }
+  }
+  /**
+   * <pre>
+   * A mutable, human-readable name.
+   * </pre>
+   *
+   * <code>optional string name = 4;</code>
+   * @return The bytes for name.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getNameBytes() {
+    java.lang.Object ref = name_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      name_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -190,6 +250,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       output.writeMessage(3, getOutputTopicConfig());
     }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      com.google.protobuf.GeneratedMessage.writeString(output, 4, name_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -210,6 +273,9 @@ private static final long serialVersionUID = 0L;
     if (((bitField0_ & 0x00000004) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getOutputTopicConfig());
+    }
+    if (((bitField0_ & 0x00000008) != 0)) {
+      size += com.google.protobuf.GeneratedMessage.computeStringSize(4, name_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -241,6 +307,11 @@ private static final long serialVersionUID = 0L;
       if (!getOutputTopicConfig()
           .equals(other.getOutputTopicConfig())) return false;
     }
+    if (hasName() != other.hasName()) return false;
+    if (hasName()) {
+      if (!getName()
+          .equals(other.getName())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -263,6 +334,10 @@ private static final long serialVersionUID = 0L;
     if (hasOutputTopicConfig()) {
       hash = (37 * hash) + OUTPUT_TOPIC_CONFIG_FIELD_NUMBER;
       hash = (53 * hash) + getOutputTopicConfig().hashCode();
+    }
+    if (hasName()) {
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -424,6 +499,7 @@ private static final long serialVersionUID = 0L;
         outputTopicConfigBuilder_.dispose();
         outputTopicConfigBuilder_ = null;
       }
+      name_ = "";
       return this;
     }
 
@@ -476,6 +552,10 @@ private static final long serialVersionUID = 0L;
             : outputTopicConfigBuilder_.build();
         to_bitField0_ |= 0x00000004;
       }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.name_ = name_;
+        to_bitField0_ |= 0x00000008;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -499,6 +579,11 @@ private static final long serialVersionUID = 0L;
       }
       if (other.hasOutputTopicConfig()) {
         mergeOutputTopicConfig(other.getOutputTopicConfig());
+      }
+      if (other.hasName()) {
+        name_ = other.name_;
+        bitField0_ |= 0x00000008;
+        onChanged();
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -547,6 +632,11 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000004;
               break;
             } // case 26
+            case 34: {
+              name_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 34
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -1042,6 +1132,109 @@ private static final long serialVersionUID = 0L;
         outputTopicConfig_ = null;
       }
       return outputTopicConfigBuilder_;
+    }
+
+    private java.lang.Object name_ = "";
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @return Whether the name field is set.
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @return The name.
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        name_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @return The bytes for name.
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @param value The name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setName(
+        java.lang.String value) {
+      if (value == null) { throw new NullPointerException(); }
+      name_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearName() {
+      name_ = getDefaultInstance().getName();
+      bitField0_ = (bitField0_ & ~0x00000008);
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * A mutable, human-readable name.
+     * </pre>
+     *
+     * <code>optional string name = 4;</code>
+     * @param value The bytes for name to set.
+     * @return This builder for chaining.
+     */
+    public Builder setNameBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
+      name_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.Tenant)
