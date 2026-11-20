@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import net.datafaker.Faker;
+import org.apache.kafka.streams.StreamsConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,85 @@ public class LHServerConfigTest {
     private static final String LHS_ADVERTISED_LISTENERS = "LHS_ADVERTISED_LISTENERS";
 
     Faker faker = new Faker();
+
+    @Nested
+    class GetStreamsConfig {
+
+        @Test
+        void configuresStateStoresOnlyForCoreByDefault() {
+            LHServerConfig config = new LHServerConfig(new Properties());
+
+            assertThat(config.getCoreStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, true)
+                    .containsEntry(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_UNCOMMITTED");
+            assertThat(config.getTimerStreamsConfig())
+                    .doesNotContainKeys(
+                            StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG,
+                            StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG);
+        }
+
+        @Test
+        void allowsDisablingTransactionalStateStoresThroughKafkaOverrides() {
+            Properties properties = new Properties();
+            properties.setProperty(
+                    LHServerConfig.KAFKA_CLIENT_OVERRIDE_PREFIX + "ENABLE_TRANSACTIONAL_STATESTORES", "false");
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.getCoreStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, "false")
+                    .containsEntry(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_UNCOMMITTED");
+            assertThat(config.getTimerStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, "false")
+                    .doesNotContainKey(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG);
+        }
+
+        @Test
+        void coreStateStoreOverridesDoNotAffectTimerTopology() {
+            Properties properties = new Properties();
+            properties.setProperty(
+                    LHServerConfig.CORE_KAFKA_STREAMS_OVERRIDE_PREFIX + "ENABLE_TRANSACTIONAL_STATESTORES", "false");
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.getCoreStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, "false");
+            assertThat(config.getTimerStreamsConfig())
+                    .doesNotContainKeys(
+                            StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG,
+                            StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG);
+        }
+
+        @Test
+        void coreKafkaOverridesTakePrecedenceForTransactionalStateStores() {
+            Properties properties = new Properties();
+            properties.setProperty(
+                    LHServerConfig.KAFKA_CLIENT_OVERRIDE_PREFIX + "ENABLE_TRANSACTIONAL_STATESTORES", "false");
+            properties.setProperty(
+                    LHServerConfig.CORE_KAFKA_STREAMS_OVERRIDE_PREFIX + "ENABLE_TRANSACTIONAL_STATESTORES", "true");
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.getCoreStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, "true");
+            assertThat(config.getTimerStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, "false");
+        }
+
+        @Test
+        void preservesReadUncommittedIsolationForCoreAfterKafkaOverrides() {
+            Properties properties = new Properties();
+            for (String prefix : List.of(
+                    LHServerConfig.KAFKA_CLIENT_OVERRIDE_PREFIX, LHServerConfig.CORE_KAFKA_STREAMS_OVERRIDE_PREFIX)) {
+                properties.setProperty(prefix + "DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL", "READ_COMMITTED");
+            }
+            LHServerConfig config = new LHServerConfig(properties);
+
+            assertThat(config.getCoreStreamsConfig())
+                    .containsEntry(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, true)
+                    .containsEntry(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_UNCOMMITTED");
+            assertThat(config.getTimerStreamsConfig())
+                    .containsEntry(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_COMMITTED")
+                    .doesNotContainKey(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG);
+        }
+    }
 
     @Nested
     class GetListeners {
