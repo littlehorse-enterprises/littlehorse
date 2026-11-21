@@ -32,6 +32,10 @@ export type ExceptionHandlerData = {
   catchLabel: string
   rethrows: boolean
   size?: { w: number; h: number }
+  /** The header's width; the laid-out box is never narrower. */
+  minWidth?: number
+  /** A collapsed chip's fixed footprint. */
+  footprint?: { w: number; h: number }
   run?: HandlerRun
   fade?: boolean
 }
@@ -71,52 +75,91 @@ const isFailingExit = (spec: ThreadSpec, nodeId: string) => {
 // Guards against a handler whose own nodes are handled by itself.
 const MAX_HANDLER_DEPTH = 4
 
+/** What the diagram currently shows of each handler group. */
+export type HandlerView = {
+  /** Groups left out entirely (with everything nested in them). Defaults to drawing every group. */
+  isVisible?: (groupId: string) => boolean
+  /** Collapsed groups draw as a compact chip on the throwing node's exception edge. */
+  isCollapsed?: (groupId: string) => boolean
+  /** The handler ThreadRun that ran for a group, when looking at a WfRun. */
+  runOf?: (groupId: string) => HandlerRun | undefined
+}
+
+/** The top-level node whose handlers a group belongs to (nested groups belong to the same node). */
+export const rootSourceNodeId = (groupId: string): string | undefined =>
+  /^handler:(.+):\d+$/.exec(groupId.split('/')[0])?.[1]
+
 /**
  * Inlines every node-level failure handler of `threadName` next to the node
- * that can throw: the handler ThreadSpec becomes a group of nodes, an
- * exception edge leaves the throwing node from below, and resume edges run
- * from the handler's last nodes back to wherever the throwing node would
- * have gone next. Nodes inside a handler can have handlers of their own,
- * which nest as groups inside that handler's group.
+ * that can throw, BPMN-style: the handler ThreadSpec becomes a box holding
+ * its own entry, nodes and exits; an exception edge leaves the throwing node
+ * from below into the handler's entry, and resume edges run from the
+ * handler's normal exits back to wherever the throwing node would have gone
+ * next. A failing exit (rethrow) has no resume edge. Nodes inside a handler
+ * can have handlers of their own, which nest as boxes inside that handler's
+ * box. A collapsed handler is a single chip instead of a box.
  */
 export const extractExceptionHandlers = (
   spec: WorkflowDefinition,
-  threadName: string
+  threadName: string,
+  view: HandlerView = {}
 ): { nodes: Node[]; edges: Edge<DiagramEdgeData>[] } => {
   const nodes: Node[] = []
   const edges: Edge<DiagramEdgeData>[] = []
+  const { isVisible = () => true, isCollapsed = () => false, runOf = () => undefined } = view
 
   /**
-   * `idOf` maps a node of `threadSpec` to its diagram id; `targetsOf` maps it
-   * to the diagram nodes the flow reaches there (a hidden handler exit
-   * stands for wherever that handler resumes).
+   * `idOf` maps a node of `threadSpec` to its diagram id.
    */
-  const inline = (
-    threadSpec: ThreadSpec,
-    idOf: (id: string) => string,
-    targetsOf: (id: string) => string[],
-    parentGroupId?: string,
-    depth = 0
-  ) => {
+  const inline = (threadSpec: ThreadSpec, idOf: (id: string) => string, parentGroupId?: string, depth = 0) => {
     if (depth >= MAX_HANDLER_DEPTH) return
     for (const [sourceNodeId, sourceNode] of Object.entries(threadSpec.nodes)) {
       sourceNode.failureHandlers.forEach((handler, index) => {
         const handlerSpec = spec.threadSpecs[handler.handlerSpecName]
         if (!handlerSpec) return
-        getCycleNodes(handlerSpec)
         const groupId = `${parentGroupId ? `${parentGroupId}/` : ''}handler:${sourceNodeId}:${index}`
+        if (!isVisible(groupId)) return
+        getCycleNodes(handlerSpec)
         const childId = (id: string) => `${groupId}/${id}`
 
         const entrypointId = Object.keys(handlerSpec.nodes).find(
           id => handlerSpec.nodes[id].node.oneofKind === 'entrypoint'
         )
+        if (!entrypointId) return
         const isExit = (id: string) => handlerSpec.nodes[id]?.node.oneofKind === 'exit'
         const resumingExits = Object.keys(handlerSpec.nodes).filter(id => isExit(id) && !isFailingExit(handlerSpec, id))
-        const resumeTargets = [...new Set(sourceNode.outgoingEdges.flatMap(next => targetsOf(next.sinkNodeName)))]
-        const childTargets = (id: string) =>
-          resumingExits.includes(id) ? resumeTargets : isExit(id) ? [] : [childId(id)]
-        const children = extractNodes(handlerSpec).filter(child => child.id !== entrypointId && !isExit(child.id))
-        if (children.length === 0) return
+        const resumeTargets = sourceNode.outgoingEdges.map(next => idOf(next.sinkNodeName))
+        const collapsed = isCollapsed(groupId)
+
+        const data: ExceptionHandlerData = {
+          groupId,
+          parentGroupId,
+          sourceNodeId,
+          handlerIndex: index,
+          failureHandlers: sourceNode.failureHandlers,
+          handlerSpecName: handler.handlerSpecName,
+          catchLabel: catchLabel(handler),
+          rethrows: resumingExits.length === 0,
+          run: runOf(groupId),
+        }
+
+        if (collapsed) {
+          nodes.push({
+            id: groupId,
+            type: 'exceptionHandlerChip',
+            position: { x: 0, y: 0 },
+            selectable: false,
+            focusable: false,
+            data: { ...data, footprint: chipFootprint(data) },
+          })
+          edges.push(
+            flowEdge(`${groupId}/throw`, idOf(sourceNodeId), groupId, 'source-failure', EXCEPTION_COLOR, {
+              isExceptionEdge: true,
+              handlerGroupId: groupId,
+            })
+          )
+          return
+        }
 
         nodes.push({
           id: groupId,
@@ -125,19 +168,10 @@ export const extractExceptionHandlers = (
           selectable: false,
           focusable: false,
           zIndex: 0,
-          data: {
-            groupId,
-            parentGroupId,
-            sourceNodeId,
-            handlerIndex: index,
-            failureHandlers: sourceNode.failureHandlers,
-            handlerSpecName: handler.handlerSpecName,
-            catchLabel: catchLabel(handler),
-            rethrows: resumingExits.length === 0,
-          } satisfies ExceptionHandlerData,
+          data: { ...data, minWidth: handlerHeaderWidth(data) },
         })
 
-        for (const child of children) {
+        for (const child of extractNodes(handlerSpec)) {
           nodes.push({
             ...child,
             id: childId(child.id),
@@ -145,38 +179,21 @@ export const extractExceptionHandlers = (
           })
         }
 
-        // Exits stay hidden: whatever led to a normal exit resumes the parent.
-        const lastNodes = new Set<string>()
         for (const edge of extractEdges(handlerSpec)) {
-          if (edge.source === entrypointId) continue
-          if (resumingExits.includes(edge.target)) lastNodes.add(edge.source)
-          if (isExit(edge.target)) continue
           edges.push({ ...edge, id: childId(edge.id), source: childId(edge.source), target: childId(edge.target) })
         }
 
-        const firstNodes = entrypointId ? handlerSpec.nodes[entrypointId].outgoingEdges.map(e => e.sinkNodeName) : []
-        firstNodes
-          .filter(target => !isExit(target))
-          .forEach((target, i) =>
-            edges.push(
-              flowEdge(
-                `${groupId}/throw-${i}`,
-                idOf(sourceNodeId),
-                childId(target),
-                'source-failure',
-                EXCEPTION_COLOR,
-                {
-                  isExceptionEdge: true,
-                  handlerGroupId: groupId,
-                }
-              )
-            )
-          )
+        edges.push(
+          flowEdge(`${groupId}/throw`, idOf(sourceNodeId), childId(entrypointId), 'source-failure', EXCEPTION_COLOR, {
+            isExceptionEdge: true,
+            handlerGroupId: groupId,
+          })
+        )
 
-        lastNodes.forEach(lastId =>
+        resumingExits.forEach(exitId =>
           resumeTargets.forEach(target =>
             edges.push(
-              flowEdge(`${groupId}/resume-${lastId}-${target}`, childId(lastId), target, 'source-0', undefined, {
+              flowEdge(`${groupId}/resume-${exitId}-${target}`, childId(exitId), target, 'source-0', undefined, {
                 isResumeEdge: true,
                 handlerGroupId: groupId,
               })
@@ -184,19 +201,64 @@ export const extractExceptionHandlers = (
           )
         )
 
-        inline(handlerSpec, childId, childTargets, groupId, depth + 1)
+        inline(handlerSpec, childId, groupId, depth + 1)
       })
     }
   }
 
   const threadSpec = spec.threadSpecs[threadName]
-  if (threadSpec)
-    inline(
-      threadSpec,
-      id => id,
-      id => [id]
-    )
+  if (threadSpec) inline(threadSpec, id => id)
   return { nodes, edges }
+}
+
+/** Every handler group of a thread, expanded, whether or not it is drawn. */
+export const listHandlerGroups = (spec: WorkflowDefinition, threadName: string): ExceptionHandlerData[] =>
+  extractExceptionHandlers(spec, threadName)
+    .nodes.filter(node => node.type === 'exceptionHandler')
+    .map(node => node.data as ExceptionHandlerData)
+
+export const RUN_STATE: Partial<Record<LHStatus, { text: string; className: string }>> = {
+  [LHStatus.COMPLETED]: { text: 'handled', className: 'bg-emerald-100 text-emerald-800' },
+  [LHStatus.RUNNING]: { text: 'handling', className: 'bg-blue-100 text-blue-800' },
+  [LHStatus.ERROR]: { text: 'handler failed', className: 'bg-red-100 text-red-800' },
+  [LHStatus.EXCEPTION]: { text: 'rethrown', className: 'bg-red-100 text-red-800' },
+  [LHStatus.HALTED]: { text: 'halted', className: 'bg-gray-100 text-gray-800' },
+}
+
+/** The badge a handler shows next to its name, if any. */
+export const handlerBadge = (data: Pick<ExceptionHandlerData, 'run' | 'rethrows'>) =>
+  data.run
+    ? RUN_STATE[data.run.status]
+    : data.rethrows
+      ? { text: 'rethrows', className: 'bg-red-100 text-red-800' }
+      : undefined
+
+// Footprints are estimated from text length like nodeDimensions does,
+// erring wide: 9px text runs about 5.4px a character (6px in mono), 8px
+// uppercase badges about 5.6px.
+const monoWidth = (text: string) => Math.ceil(text.length * 6) + 8
+const textWidth = (text: string) => Math.ceil(text.length * 5.4)
+const badgeWidth = (text?: string) => (text ? Math.ceil(text.length * 5.6) + 8 : 0)
+
+/**
+ * The narrowest a handler box can be without clipping its header
+ * (toggle, icon, "On", the failure, the handler name and its badge).
+ */
+export const handlerHeaderWidth = (data: ExceptionHandlerData): number => {
+  const label = data.run ? data.run.failureName : data.catchLabel
+  const gaps = 4 * 6
+  // Past this the name truncates (its full text is the tooltip) instead of stretching the box.
+  const name = Math.min(textWidth(data.handlerSpecName), 240)
+  return 16 + 12 + 10 + 14 + monoWidth(label) + name + badgeWidth(handlerBadge(data)?.text) + gaps
+}
+
+export const CHIP_HEIGHT = 22
+
+/** A collapsed handler: icon, the failure, its badge and the expand toggle. */
+export const chipFootprint = (data: ExceptionHandlerData): { w: number; h: number } => {
+  const label = data.run ? data.run.failureName : data.catchLabel
+  const badge = badgeWidth(handlerBadge(data)?.text)
+  return { w: 12 + 10 + monoWidth(label) + (badge ? badge + 4 : 0) + 12 + 3 * 4, h: CHIP_HEIGHT }
 }
 
 const flowEdge = (

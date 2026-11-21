@@ -32,12 +32,21 @@ export const ELK_LAYOUT_OPTIONS = {
 
 const portId = (node: string, handle: string) => `${node}/${handle}`
 
-/** The handler group a node is drawn inside (groups can nest). */
+/**
+ * The handler group a node is drawn inside (groups can nest). A handler's
+ * own box, or its collapsed chip, sits in the group of the node that throws.
+ */
 const groupOf = (node?: Node): string | undefined =>
-  node?.type === 'exceptionHandler' ? node.data?.parentGroupId : node?.data?.groupId
+  node?.type === 'exceptionHandler' || node?.type === 'exceptionHandlerChip'
+    ? node.data?.parentGroupId
+    : node?.data?.groupId
 
 /** Inlined handler nodes carry their ThreadSpec id; footprints come from it. */
 export const specNodeId = (node: Node): string => node.data?.specNodeId ?? node.id
+
+/** The box ELK reserves for a node; collapsed handler chips carry their own. */
+export const footprintOf = (node: Node): { w: number; h: number } =>
+  node.data?.footprint ?? nodeDimensions(node.type, specNodeId(node))
 
 const HANDLER_GROUP_OPTIONS = {
   'elk.padding': '[top=34,left=24,bottom=34,right=24]',
@@ -66,14 +75,21 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
 
   const elkNode = (node: Node): ElkNode => {
     if (node.type === 'exceptionHandler') {
+      const minWidth = node.data?.minWidth
       return {
         id: node.id,
-        layoutOptions: HANDLER_GROUP_OPTIONS,
+        layoutOptions: minWidth
+          ? {
+              ...HANDLER_GROUP_OPTIONS,
+              'elk.nodeSize.constraints': 'MINIMUM_SIZE',
+              'elk.nodeSize.minimum': `(${minWidth}, 0)`,
+            }
+          : HANDLER_GROUP_OPTIONS,
         children: nodes.filter(child => groupOf(child) === node.id).map(elkNode),
         edges: edges.filter(edge => containerOf(edge) === node.id).map(elkEdge),
       }
     }
-    const { w, h } = nodeDimensions(node.type, specNodeId(node))
+    const { w, h } = footprintOf(node)
     const extraSouth = ['source-loop', 'source-failure'].filter(handle =>
       edges.some(edge => edge.source === node.id && edge.sourceHandle === handle)
     )

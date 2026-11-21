@@ -3,7 +3,7 @@ import { ComponentType } from 'react'
 import { NodeProps as NodeFlow } from 'reactflow'
 import { Cycle } from './Cycle'
 import { Entrypoint } from './Entrypoint'
-import { ExceptionHandler } from './ExceptionHandler'
+import { ExceptionHandler, ExceptionHandlerChip } from './ExceptionHandler'
 import { Exit } from './Exit'
 import { ExternalEvent } from './ExternalEvent/ExternalEvent'
 import { NodeType } from './extractNodes'
@@ -20,7 +20,7 @@ import { WaitForCondition } from './WaitForCondition'
 import { WaitForThreads } from './WaitForThreads'
 import { withLoopHandle } from './LoopHandle'
 
-const nodeTypes: Record<NodeType | 'cycle' | 'exceptionHandler', ComponentType<any>> = {
+const nodeTypes: Record<NodeType | 'cycle' | 'exceptionHandler' | 'exceptionHandlerChip', ComponentType<any>> = {
   entrypoint: Entrypoint,
   exit: Exit,
   externalEvent: ExternalEvent,
@@ -37,6 +37,7 @@ const nodeTypes: Record<NodeType | 'cycle' | 'exceptionHandler', ComponentType<a
   waitForThreads: WaitForThreads,
   cycle: Cycle,
   exceptionHandler: ExceptionHandler,
+  exceptionHandlerChip: ExceptionHandlerChip,
 }
 
 type NodeRunCase<C extends Exclude<NodeRun['nodeType']['oneofKind'], undefined>> = Omit<NodeRun, 'nodeType'> & {
@@ -50,6 +51,6 @@ export type NodeProps<
 export default Object.fromEntries(
   Object.entries(nodeTypes).map(([type, component]) => [
     type,
-    type === 'nop' || type === 'exceptionHandler' ? component : withLoopHandle(component),
+    type === 'nop' || type.startsWith('exceptionHandler') ? component : withLoopHandle(component),
   ])
 )

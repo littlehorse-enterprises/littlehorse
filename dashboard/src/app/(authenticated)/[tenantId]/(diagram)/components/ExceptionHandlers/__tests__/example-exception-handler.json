@@ -1,0 +1,103 @@
+{
+  "entrypointThreadName": "entrypoint",
+  "threadSpecs": {
+    "entrypoint": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-fail-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "entrypoint": {}
+        },
+        "1-fail-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-my-task-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [
+            {
+              "handlerSpecName": "exn-handler-1-fail-TASK-FAILURE_TYPE_ERROR",
+              "anyFailureOfType": "FAILURE_TYPE_ERROR"
+            }
+          ],
+          "task": {
+            "taskDefId": {
+              "name": "fail"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-my-task-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "3-exit-EXIT",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "my-task"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "3-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {}
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    },
+    "exn-handler-1-fail-TASK-FAILURE_TYPE_ERROR": {
+      "nodes": {
+        "0-entrypoint-ENTRYPOINT": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "1-my-task-TASK",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "entrypoint": {}
+        },
+        "1-my-task-TASK": {
+          "outgoingEdges": [
+            {
+              "sinkNodeName": "2-exit-EXIT",
+              "variableMutations": []
+            }
+          ],
+          "failureHandlers": [],
+          "task": {
+            "taskDefId": {
+              "name": "my-task"
+            },
+            "timeoutSeconds": 60,
+            "retries": 0,
+            "variables": []
+          }
+        },
+        "2-exit-EXIT": {
+          "outgoingEdges": [],
+          "failureHandlers": [],
+          "exit": {}
+        }
+      },
+      "variableDefs": [],
+      "interruptDefs": []
+    }
+  }
+}
