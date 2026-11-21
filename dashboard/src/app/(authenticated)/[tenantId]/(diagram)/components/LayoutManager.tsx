@@ -1,8 +1,7 @@
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
-import { nodeDimensions } from './nodeDimensions'
-import { layoutDiagram, specNodeId } from './graphLayout'
+import { footprintOf, layoutDiagram } from './graphLayout'
 
 export { ELK_LAYOUT_OPTIONS } from './graphLayout'
 
@@ -26,6 +25,12 @@ type LayoutManagerProps = {
    * not re-layout or touch the user's viewport.
    */
   layoutKey: string
+  /**
+   * The spec/run/thread being shown. A new layout of the same graph (an
+   * exception handler shown, hidden, collapsed or expanded) fits the view to
+   * the new shape instead of restoring the saved viewport.
+   */
+  graphKey?: string
   viewportKey: string
   setNodes: (nodes: Node[] | ((nodes: Node[]) => Node[])) => void
   /**
@@ -43,6 +48,7 @@ type LayoutManagerProps = {
 export const LayoutManager: FC<LayoutManagerProps> = ({
   getNodeRuns,
   layoutKey,
+  graphKey,
   viewportKey,
   setNodes,
   setEdges,
@@ -53,6 +59,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
   const { fitView, setViewport } = useReactFlow()
   const currentLayoutKey = useRef(layoutKey)
   currentLayoutKey.current = layoutKey
+  const laidOutGraphKey = useRef<string | undefined>(undefined)
 
   useOnViewportChange({
     onChange: useCallback(
@@ -79,12 +86,18 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
               isLaidOut: true,
             }
           }
-          const nodeRunsList = getNodeRuns(node)
-          const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
-          const { w, h } = nodeDimensions(node.type, specNodeId(node))
+          const { w, h } = footprintOf(node)
+          // A collapsed handler chip has no NodeRuns of its own; Diagram sets its run state.
+          const runData =
+            node.type === 'exceptionHandlerChip'
+              ? {}
+              : (() => {
+                  const nodeRunsList = getNodeRuns(node)
+                  return { fade: nodeRunsList !== undefined && nodeRunsList.length === 0, nodeRunsList }
+                })()
           return {
             ...node,
-            data: { ...node.data, fade, nodeRunsList },
+            data: { ...node.data, ...runData },
             position: {
               // Center the real glyph in its reserved footprint so fixed-side
               // ports and rendered handles share the same orthogonal lane.
@@ -102,8 +115,14 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
           }))
         )
         onLayoutComplete?.(laidOutNodes)
+        const reshaped = graphKey !== undefined && laidOutGraphKey.current === graphKey
+        laidOutGraphKey.current = graphKey
         setTimeout(() => {
           if (currentLayoutKey.current !== key) return
+          if (reshaped) {
+            fitView({ duration: 400 })
+            return
+          }
           const saved = sessionStorage.getItem(viewportKey)
           if (saved) {
             try {
@@ -119,7 +138,7 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
         console.error('ELK layout error:', error)
       }
     },
-    [fitView, setViewport, viewportKey, getNodeRuns, setNodes, setEdges, onLayoutComplete]
+    [fitView, setViewport, viewportKey, graphKey, getNodeRuns, setNodes, setEdges, onLayoutComplete]
   )
 
   const laidOutKey = useRef<string | null>(null)

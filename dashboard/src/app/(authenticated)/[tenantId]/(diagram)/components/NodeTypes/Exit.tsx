@@ -9,7 +9,7 @@ import { Fade } from './Fade'
 import { greenNodeTheme, redNodeTheme } from './nodeThemes'
 import { SelectedNode } from './SelectedNode'
 
-const ExitNode: FC<NodeProps<'exit', ExitNodeProto>> = ({ id, data, selected }) => {
+const ExitNode: FC<NodeProps<'exit', ExitNodeProto & { groupId?: string }>> = ({ id, data, selected }) => {
   const { fade } = data
   const failureDef = data.result?.oneofKind === 'failureDef' ? data.result.failureDef : undefined
   const theme = failureDef ? redNodeTheme : greenNodeTheme
@@ -28,6 +28,10 @@ const ExitNode: FC<NodeProps<'exit', ExitNodeProto>> = ({ id, data, selected }) 
             )}
           >
             <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />
+            {/* A handler's normal exit resumes the thread that threw. */}
+            {data.groupId && !failureDef && (
+              <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
+            )}
           </div>
         </DiagramNodeShell>
       </Fade>
