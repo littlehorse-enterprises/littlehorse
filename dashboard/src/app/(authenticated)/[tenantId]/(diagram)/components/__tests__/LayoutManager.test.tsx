@@ -4,7 +4,11 @@ import { layoutDiagram } from '../graphLayout'
 import { LayoutManager } from '../LayoutManager'
 
 jest.mock('reactflow', () => ({ useStore: jest.fn(), useReactFlow: jest.fn(), useOnViewportChange: jest.fn() }))
-jest.mock('../graphLayout', () => ({ layoutDiagram: jest.fn(), footprintOf: () => ({ w: 32, h: 32 }) }))
+jest.mock('../graphLayout', () => ({
+  layoutDiagram: jest.fn(),
+  footprintOf: () => ({ w: 32, h: 32 }),
+  handlerFrames: () => new Map(),
+}))
 
 const node = (layoutKey: string): Node => ({
   id: 'shared-node-name',

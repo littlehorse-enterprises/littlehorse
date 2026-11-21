@@ -32,8 +32,8 @@ export type ExceptionHandlerData = {
   catchLabel: string
   rethrows: boolean
   size?: { w: number; h: number }
-  /** The header's width; the laid-out box is never narrower. */
-  minWidth?: number
+  /** Width of the label row drawn just above the box; the layout reserves room for it. */
+  labelWidth?: number
   /** A collapsed chip's fixed footprint. */
   footprint?: { w: number; h: number }
   run?: HandlerRun
@@ -168,7 +168,7 @@ export const extractExceptionHandlers = (
           selectable: false,
           focusable: false,
           zIndex: 0,
-          data: { ...data, minWidth: handlerHeaderWidth(data) },
+          data: { ...data, labelWidth: handlerLabelWidth(data) },
         })
 
         for (const child of extractNodes(handlerSpec)) {
@@ -234,22 +234,29 @@ export const handlerBadge = (data: Pick<ExceptionHandlerData, 'run' | 'rethrows'
       : undefined
 
 // Footprints are estimated from text length like nodeDimensions does,
-// erring wide: 9px text runs about 5.4px a character (6px in mono), 8px
+// erring wide: 9px mono text runs about 6px a character, 8px
 // uppercase badges about 5.6px.
 const monoWidth = (text: string) => Math.ceil(text.length * 6) + 8
-const textWidth = (text: string) => Math.ceil(text.length * 5.4)
 const badgeWidth = (text?: string) => (text ? Math.ceil(text.length * 5.6) + 8 : 0)
 
+/** Space between a handler box's border and the nodes inside it. */
+export const HANDLER_PADDING = 24
+/** Height of the label row above a handler box, including its gap to the border. */
+export const HANDLER_LABEL_BAND = 20
+/** The ENTRY / TASK / EXIT caption every node draws just above itself. */
+export const NODE_CAPTION_HEIGHT = 14
+const LABEL_GAP = 12
+
 /**
- * The narrowest a handler box can be without clipping its header
- * (toggle, icon, "On", the failure, the handler name and its badge).
+ * Width of the row above an expanded handler box: the "On <failure>" label
+ * (toggle, icon, "On", the failure) at the left and the status badge at the
+ * right. It never sizes the box; the layout only keeps the row clear.
  */
-export const handlerHeaderWidth = (data: ExceptionHandlerData): number => {
+export const handlerLabelWidth = (data: ExceptionHandlerData): number => {
   const label = data.run ? data.run.failureName : data.catchLabel
-  const gaps = 4 * 6
-  // Past this the name truncates (its full text is the tooltip) instead of stretching the box.
-  const name = Math.min(textWidth(data.handlerSpecName), 240)
-  return 16 + 12 + 10 + 14 + monoWidth(label) + name + badgeWidth(handlerBadge(data)?.text) + gaps
+  const onLabel = 12 + 10 + 14 + monoWidth(label) + 3 * 4
+  const badge = badgeWidth(handlerBadge(data)?.text)
+  return onLabel + (badge ? LABEL_GAP + badge : 0)
 }
 
 export const CHIP_HEIGHT = 22

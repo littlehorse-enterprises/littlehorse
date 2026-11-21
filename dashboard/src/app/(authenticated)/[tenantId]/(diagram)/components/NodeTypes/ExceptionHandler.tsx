@@ -5,7 +5,12 @@ import { FC, memo } from 'react'
 import { Handle, NodeProps, Position } from 'reactflow'
 import { useDiagram } from '../../hooks/useDiagram'
 import { useReplaceQueryValue } from '../../hooks/useReplaceQueryValue'
-import { CHIP_HEIGHT, handlerBadge, type ExceptionHandlerData } from '../ExceptionHandlers/exceptionHandlers'
+import {
+  CHIP_HEIGHT,
+  HANDLER_LABEL_BAND,
+  handlerBadge,
+  type ExceptionHandlerData,
+} from '../ExceptionHandlers/exceptionHandlers'
 
 const useOpenHandlerThread = ({ run, handlerSpecName }: ExceptionHandlerData) => {
   const { setThread } = useDiagram()
@@ -32,7 +37,12 @@ const Badge: FC<{ data: ExceptionHandlerData }> = ({ data }) => {
   )
 }
 
-/** An expanded handler: a dashed box around the handler's own entry, nodes and exits. */
+/**
+ * An expanded handler: a dashed box sized to the handler's own entry, nodes
+ * and exits. Its "On <failure>" label sits just above the top-left corner and
+ * its status badge just above the top-right one, in a row the layout keeps
+ * clear (HANDLER_LABEL_BAND); neither one sizes the box.
+ */
 const ExceptionHandlerNode: FC<NodeProps<ExceptionHandlerData>> = ({ data }) => {
   const { toggleHandler } = useDiagram()
   const openThread = useOpenHandlerThread(data)
@@ -41,35 +51,40 @@ const ExceptionHandlerNode: FC<NodeProps<ExceptionHandlerData>> = ({ data }) => 
   return (
     <div
       className={cn(
-        'rounded-lg border border-dashed border-rose-400 bg-rose-50/70',
+        'relative rounded-lg border border-dashed border-rose-400 bg-rose-50/70',
         fade ? 'opacity-40' : 'opacity-100'
       )}
       style={{ width: size?.w ?? 1, height: size?.h ?? 1 }}
     >
       {size && (
-        <div className="flex w-full min-w-0 items-center gap-1 px-2 pt-1.5">
-          <button
-            type="button"
-            onClick={() => toggleHandler?.(groupId)}
-            title="Collapse handler"
-            aria-label={`Collapse the ${handlerSpecName} handler`}
-            className="pointer-events-auto -ml-0.5 shrink-0 rounded text-rose-600 hover:bg-rose-100"
-          >
-            <ChevronDownIcon className="h-3 w-3" strokeWidth={2.5} />
-          </button>
-          <TriangleAlertIcon className="h-2.5 w-2.5 shrink-0 stroke-rose-600" strokeWidth={2} />
-          <span className="shrink-0 text-[9px] font-semibold uppercase tracking-wider text-rose-700/75">On</span>
-          <span className="shrink-0 rounded bg-rose-100 px-1 font-mono text-[9px] text-rose-800">
-            {run ? run.failureName : catchLabel}
-          </span>
-          <button
-            type="button"
-            onClick={openThread}
-            title={`Open the ${handlerSpecName} thread`}
-            className="pointer-events-auto min-w-0 truncate text-left text-[9px] font-medium text-slate-600 underline-offset-2 hover:underline"
-          >
-            {handlerSpecName}
-          </button>
+        <div
+          className="absolute bottom-full left-0 flex min-w-full items-end justify-between gap-3 whitespace-nowrap pb-1"
+          style={{ height: HANDLER_LABEL_BAND }}
+        >
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => toggleHandler?.(groupId)}
+              title="Collapse handler"
+              aria-label={`Collapse the ${handlerSpecName} handler`}
+              className="pointer-events-auto -ml-0.5 shrink-0 rounded text-rose-600 hover:bg-rose-100"
+            >
+              <ChevronDownIcon className="h-3 w-3" strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={openThread}
+              title={`Open the ${handlerSpecName} thread`}
+              aria-label={`Open the ${handlerSpecName} thread`}
+              className="pointer-events-auto flex items-center gap-1 rounded hover:bg-rose-100/60"
+            >
+              <TriangleAlertIcon className="h-2.5 w-2.5 shrink-0 stroke-rose-600" strokeWidth={2} />
+              <span className="text-[9px] font-semibold uppercase tracking-wider text-rose-700/75">On</span>
+              <span className="rounded bg-rose-100 px-1 font-mono text-[9px] text-rose-800">
+                {run ? run.failureName : catchLabel}
+              </span>
+            </button>
+          </div>
           <Badge data={data} />
         </div>
       )}

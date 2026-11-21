@@ -4,6 +4,7 @@ import { conditionLabelParts, edgeLabelSize } from './EdgeTypes/edgeLabel'
 import { type DiagramEdgeData } from './EdgeTypes/extractEdges'
 import { planRoutes } from './EdgeTypes/elkRoute'
 import { nodeDimensions } from './nodeDimensions'
+import { HANDLER_LABEL_BAND, HANDLER_PADDING, NODE_CAPTION_HEIGHT } from './ExceptionHandlers/exceptionHandlers'
 
 const elk = new ELK()
 
@@ -48,8 +49,12 @@ export const specNodeId = (node: Node): string => node.data?.specNodeId ?? node.
 export const footprintOf = (node: Node): { w: number; h: number } =>
   node.data?.footprint ?? nodeDimensions(node.type, specNodeId(node))
 
+// A handler group is laid out as its box plus the label row above it: the
+// extra top padding is that row, so nothing else is placed or routed there.
+// Content stays top-left, so the box and its labels share the left edge.
 const HANDLER_GROUP_OPTIONS = {
-  'elk.padding': '[top=34,left=24,bottom=34,right=24]',
+  'elk.padding': `[top=${HANDLER_LABEL_BAND + NODE_CAPTION_HEIGHT + HANDLER_PADDING},left=${HANDLER_PADDING},bottom=${HANDLER_PADDING},right=${HANDLER_PADDING}]`,
+  'elk.contentAlignment': 'V_TOP H_LEFT',
 }
 
 // Handler groups are compound nodes: edges cross into and out of them, and
@@ -75,14 +80,15 @@ export const buildElkGraph = (nodes: Node[], edges: Edge<DiagramEdgeData>[]): El
 
   const elkNode = (node: Node): ElkNode => {
     if (node.type === 'exceptionHandler') {
-      const minWidth = node.data?.minWidth
+      // A label row wider than the nodes below it still gets its room.
+      const labelWidth = node.data?.labelWidth
       return {
         id: node.id,
-        layoutOptions: minWidth
+        layoutOptions: labelWidth
           ? {
               ...HANDLER_GROUP_OPTIONS,
               'elk.nodeSize.constraints': 'MINIMUM_SIZE',
-              'elk.nodeSize.minimum': `(${minWidth}, 0)`,
+              'elk.nodeSize.minimum': `(${labelWidth}, 0)`,
             }
           : HANDLER_GROUP_OPTIONS,
         children: nodes.filter(child => groupOf(child) === node.id).map(elkNode),
@@ -160,5 +166,56 @@ export const layoutDiagram = async (nodes: Node[], edges: Edge<DiagramEdgeData>[
     return { id: edge.id, points }
   })
   const boxes = new Map(flatten(graph).map(node => [node.id, node]))
-  return { graph, boxes, routes: planRoutes(edges, routes) }
+  return { graph, boxes, frames: handlerFrames(nodes, boxes), routes: planRoutes(edges, routes) }
+}
+
+export type Rect = { x: number; y: number; w: number; h: number }
+
+/**
+ * The drawn box of each expanded handler: what its own nodes actually draw
+ * (nested handler boxes with their labels included) plus padding, and room
+ * for the captions above the nodes. Nodes draw centered in their layout
+ * footprint and some draw smaller than it (a task is ~31px tall in a 50px
+ * footprint), so `measured` gives the rendered sizes when they're known; the
+ * footprints stand in otherwise. The ELK group around the box is taller and
+ * may be wider, to keep the label row above the box clear.
+ */
+export const handlerFrames = (
+  nodes: Node[],
+  boxes: Map<string, ElkNode>,
+  measured: (node: Node) => { w: number; h: number } | undefined = () => undefined
+): Map<string, Rect> => {
+  const frames = new Map<string, Rect>()
+  const depth = (node: Node) => node.id.split('/').length
+  // Innermost first: a nested box is part of what its parent box holds.
+  const groups = nodes.filter(node => node.type === 'exceptionHandler').sort((a, b) => depth(b) - depth(a))
+
+  const drawn = (node: Node): Rect | undefined => {
+    if (node.type === 'exceptionHandler') {
+      const frame = frames.get(node.id)
+      const labels = Math.max(frame?.w ?? 0, node.data?.labelWidth ?? 0)
+      return frame && { x: frame.x, y: frame.y - HANDLER_LABEL_BAND, w: labels, h: frame.h + HANDLER_LABEL_BAND }
+    }
+    const box = boxes.get(node.id)
+    if (!box) return undefined
+    const footprint = { w: box.width ?? 0, h: box.height ?? 0 }
+    const size = measured(node) ?? footprint
+    return {
+      x: (box.x ?? 0) + (footprint.w - size.w) / 2,
+      y: (box.y ?? 0) + (footprint.h - size.h) / 2,
+      w: size.w,
+      h: size.h,
+    }
+  }
+
+  for (const group of groups) {
+    const inside = nodes.filter(node => groupOf(node) === group.id).flatMap(node => drawn(node) ?? [])
+    if (inside.length === 0) continue
+    const left = Math.min(...inside.map(r => r.x)) - HANDLER_PADDING
+    const top = Math.min(...inside.map(r => r.y)) - HANDLER_PADDING - NODE_CAPTION_HEIGHT
+    const right = Math.max(...inside.map(r => r.x + r.w)) + HANDLER_PADDING
+    const bottom = Math.max(...inside.map(r => r.y + r.h)) + HANDLER_PADDING
+    frames.set(group.id, { x: left, y: top, w: right - left, h: bottom - top })
+  }
+  return frames
 }
