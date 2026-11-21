@@ -1,7 +1,7 @@
 import { NodeRun } from 'littlehorse-client/proto'
 import { FC, useCallback, useEffect, useRef } from 'react'
 import { Edge, Node, useOnViewportChange, useReactFlow, useStore, type Viewport } from 'reactflow'
-import { footprintOf, layoutDiagram } from './graphLayout'
+import { footprintOf, handlerFrames, layoutDiagram } from './graphLayout'
 
 export { ELK_LAYOUT_OPTIONS } from './graphLayout'
 
@@ -74,15 +74,25 @@ export const LayoutManager: FC<LayoutManagerProps> = ({
     async (nodes: Node[], edges: Edge[], key: string) => {
       try {
         const { boxes, routes } = await layoutDiagram(nodes, edges)
+        const frames = handlerFrames(nodes, boxes, node =>
+          node.width && node.height ? { w: node.width, h: node.height } : undefined
+        )
         if (currentLayoutKey.current !== key) return
 
         const laidOutNodes = nodes.map(node => {
           const elkNode = boxes.get(node.id)
           if (node.type === 'exceptionHandler') {
+            // The box hugs its nodes; its labels hang above it in room the layout reserved.
+            const frame = frames.get(node.id) ?? {
+              x: elkNode?.x ?? 0,
+              y: elkNode?.y ?? 0,
+              w: elkNode?.width ?? 0,
+              h: elkNode?.height ?? 0,
+            }
             return {
               ...node,
-              data: { ...node.data, size: { w: elkNode?.width ?? 0, h: elkNode?.height ?? 0 } },
-              position: { x: elkNode?.x ?? 0, y: elkNode?.y ?? 0 },
+              data: { ...node.data, size: { w: frame.w, h: frame.h } },
+              position: { x: frame.x, y: frame.y },
               isLaidOut: true,
             }
           }
