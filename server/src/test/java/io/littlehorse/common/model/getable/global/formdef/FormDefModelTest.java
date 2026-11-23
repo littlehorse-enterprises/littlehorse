@@ -15,13 +15,11 @@ import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.metadatacommand.subcommand.PutFormDefRequestModel;
-import io.littlehorse.common.model.outputtopic.MetadataOutputTopicRecordModel;
 import io.littlehorse.sdk.common.proto.FormDef;
 import io.littlehorse.sdk.common.proto.FormDefId;
 import io.littlehorse.sdk.common.proto.FormFieldDef;
 import io.littlehorse.sdk.common.proto.FormMetadataValue;
 import io.littlehorse.sdk.common.proto.LHPath;
-import io.littlehorse.sdk.common.proto.MetadataOutputTopicRecord;
 import io.littlehorse.sdk.common.proto.PutFormDefRequest;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.VariableValue;
@@ -69,8 +67,6 @@ public class FormDefModelTest {
                 .isInstanceOf(LHApiException.class)
                 .hasMessageContaining("cannot change its result StructDef from order to invoice");
     }
-
-
 
     @Test
     void shouldResolvePlaceholdersAndKeepLiterals() {
