@@ -35,6 +35,8 @@
               "literalValue": {
                 "str": "cancelled"
               }
+            },
+            "placeholders": {
             }
           }
         },

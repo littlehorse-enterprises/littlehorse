@@ -940,6 +940,18 @@
       ]
     },
     {
+      "id": "user-task-placeholder",
+      "title": "user task placeholder",
+      "level": "required",
+      "covers": [
+        "UserTaskOutput#withPlaceholder"
+      ],
+      "variants": [
+        "base",
+        "feature"
+      ]
+    },
+    {
       "id": "var-as-inherited",
       "title": "var as inherited",
       "level": "required",

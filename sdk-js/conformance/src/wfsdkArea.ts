@@ -635,6 +635,10 @@ const PAIRS: Record<string, PairBody> = {
     const ut = wf.assignUserTask('approve-request', 'alice', 'approvers')
     if (f) ut.withOnCancellationException('cancelled')
   },
+  'user-task-placeholder': f => wf => {
+    const ut = wf.assignUserTask('approve-request', 'alice', 'approvers')
+    if (f) ut.withPlaceholder('title', 'Expense approval')
+  },
   'release-to-group-on-deadline': f => wf => {
     const ut = wf.assignUserTask('approve-request', 'alice', 'approvers')
     if (f) wf.releaseToGroupOnDeadline(ut, 300)
