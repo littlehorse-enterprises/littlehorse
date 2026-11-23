@@ -70,6 +70,14 @@ export interface TypeDefinition {
          */
         inlineMapDef: InlineMapDef;
     } | {
+        oneofKind: "inlineEnumDef";
+        /**
+         * An inline Enum definition.
+         *
+         * @generated from protobuf field: littlehorse.InlineEnumDef inline_enum_def = 9
+         */
+        inlineEnumDef: InlineEnumDef;
+    } | {
         oneofKind: undefined;
     };
     /**
@@ -166,6 +174,36 @@ export interface StructFieldDef {
      * @generated from protobuf field: optional string oneof_group = 5
      */
     oneofGroup?: string;
+}
+/**
+ * Inline schema definition for a native LittleHorse Enum.
+ *
+ * @generated from protobuf message littlehorse.InlineEnumDef
+ */
+export interface InlineEnumDef {
+    /**
+     * @generated from protobuf field: repeated littlehorse.EnumMemberDef members = 1
+     */
+    members: EnumMemberDef[];
+}
+/**
+ * The definition of a member in an InlineEnumDef.
+ *
+ * @generated from protobuf message littlehorse.EnumMemberDef
+ */
+export interface EnumMemberDef {
+    /**
+     * The name of the enum member. Must be unique within the InlineEnumDef.
+     *
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * The integer value of the enum member. Must be unique within the InlineEnumDef.
+     *
+     * @generated from protobuf field: optional int32 backing_value = 2
+     */
+    backingValue?: number;
 }
 /**
  * VariableValue is a structure containing a value in LittleHorse. It can be
@@ -279,8 +317,29 @@ export interface VariableValue {
          */
         map: Map;
     } | {
+        oneofKind: "enum";
+        /**
+         * An Enum object.
+         *
+         * @generated from protobuf field: littlehorse.Enum enum = 14
+         */
+        enum: Enum;
+    } | {
         oneofKind: undefined;
     };
+}
+/**
+ * An enum is a single value from an InlineEnumDef.
+ *
+ * @generated from protobuf message littlehorse.Enum
+ */
+export interface Enum {
+    /**
+     * The name of the enum member. Must be unique within the InlineEnumDef.
+     *
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
 }
 /**
  * A Map is a strongly-typed mapping from key values to value values.
@@ -491,6 +550,7 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
             { no: 6, name: "inline_array_def", kind: "message", oneof: "definedType", T: () => InlineArrayDef },
             { no: 7, name: "inline_struct_def", kind: "message", oneof: "definedType", T: () => InlineStructDef },
             { no: 8, name: "inline_map_def", kind: "message", oneof: "definedType", T: () => InlineMapDef },
+            { no: 9, name: "inline_enum_def", kind: "message", oneof: "definedType", T: () => InlineEnumDef },
             { no: 4, name: "masked", kind: "scalar", T: 8 /*ScalarType.BOOL*/ }
         ]);
     }
@@ -537,6 +597,12 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
                         inlineMapDef: InlineMapDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineMapDef)
                     };
                     break;
+                case /* littlehorse.InlineEnumDef inline_enum_def */ 9:
+                    message.definedType = {
+                        oneofKind: "inlineEnumDef",
+                        inlineEnumDef: InlineEnumDef.internalBinaryRead(reader, reader.uint32(), options, (message.definedType as any).inlineEnumDef)
+                    };
+                    break;
                 case /* bool masked */ 4:
                     message.masked = reader.bool();
                     break;
@@ -570,6 +636,9 @@ class TypeDefinition$Type extends MessageType<TypeDefinition> {
         /* littlehorse.InlineMapDef inline_map_def = 8; */
         if (message.definedType.oneofKind === "inlineMapDef")
             InlineMapDef.internalBinaryWrite(message.definedType.inlineMapDef, writer.tag(8, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.InlineEnumDef inline_enum_def = 9; */
+        if (message.definedType.oneofKind === "inlineEnumDef")
+            InlineEnumDef.internalBinaryWrite(message.definedType.inlineEnumDef, writer.tag(9, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -822,6 +891,107 @@ class StructFieldDef$Type extends MessageType<StructFieldDef> {
  */
 export const StructFieldDef = new StructFieldDef$Type();
 // @generated message type with reflection information, may provide speed optimized methods
+class InlineEnumDef$Type extends MessageType<InlineEnumDef> {
+    constructor() {
+        super("littlehorse.InlineEnumDef", [
+            { no: 1, name: "members", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => EnumMemberDef }
+        ]);
+    }
+    create(value?: PartialMessage<InlineEnumDef>): InlineEnumDef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.members = [];
+        if (value !== undefined)
+            reflectionMergePartial<InlineEnumDef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: InlineEnumDef): InlineEnumDef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated littlehorse.EnumMemberDef members */ 1:
+                    message.members.push(EnumMemberDef.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: InlineEnumDef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated littlehorse.EnumMemberDef members = 1; */
+        for (let i = 0; i < message.members.length; i++)
+            EnumMemberDef.internalBinaryWrite(message.members[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.InlineEnumDef
+ */
+export const InlineEnumDef = new InlineEnumDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class EnumMemberDef$Type extends MessageType<EnumMemberDef> {
+    constructor() {
+        super("littlehorse.EnumMemberDef", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "backing_value", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<EnumMemberDef>): EnumMemberDef {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        if (value !== undefined)
+            reflectionMergePartial<EnumMemberDef>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: EnumMemberDef): EnumMemberDef {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* optional int32 backing_value */ 2:
+                    message.backingValue = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: EnumMemberDef, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* optional int32 backing_value = 2; */
+        if (message.backingValue !== undefined)
+            writer.tag(2, WireType.Varint).int32(message.backingValue);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.EnumMemberDef
+ */
+export const EnumMemberDef = new EnumMemberDef$Type();
+// @generated message type with reflection information, may provide speed optimized methods
 class VariableValue$Type extends MessageType<VariableValue> {
     constructor() {
         super("littlehorse.VariableValue", [
@@ -836,7 +1006,8 @@ class VariableValue$Type extends MessageType<VariableValue> {
             { no: 10, name: "utc_timestamp", kind: "message", oneof: "value", T: () => Timestamp },
             { no: 11, name: "struct", kind: "message", oneof: "value", T: () => Struct },
             { no: 12, name: "array", kind: "message", oneof: "value", T: () => Array$ },
-            { no: 13, name: "map", kind: "message", oneof: "value", T: () => Map }
+            { no: 13, name: "map", kind: "message", oneof: "value", T: () => Map },
+            { no: 14, name: "enum", kind: "message", oneof: "value", T: () => Enum }
         ]);
     }
     create(value?: PartialMessage<VariableValue>): VariableValue {
@@ -923,6 +1094,12 @@ class VariableValue$Type extends MessageType<VariableValue> {
                         map: Map.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).map)
                     };
                     break;
+                case /* littlehorse.Enum enum */ 14:
+                    message.value = {
+                        oneofKind: "enum",
+                        enum: Enum.internalBinaryRead(reader, reader.uint32(), options, (message.value as any).enum)
+                    };
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -971,6 +1148,9 @@ class VariableValue$Type extends MessageType<VariableValue> {
         /* littlehorse.Map map = 13; */
         if (message.value.oneofKind === "map")
             Map.internalBinaryWrite(message.value.map, writer.tag(13, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.Enum enum = 14; */
+        if (message.value.oneofKind === "enum")
+            Enum.internalBinaryWrite(message.value.enum, writer.tag(14, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -981,6 +1161,53 @@ class VariableValue$Type extends MessageType<VariableValue> {
  * @generated MessageType for protobuf message littlehorse.VariableValue
  */
 export const VariableValue = new VariableValue$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class Enum$Type extends MessageType<Enum> {
+    constructor() {
+        super("littlehorse.Enum", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<Enum>): Enum {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        if (value !== undefined)
+            reflectionMergePartial<Enum>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: Enum): Enum {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: Enum, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.Enum
+ */
+export const Enum = new Enum$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class Map$Type extends MessageType<Map> {
     constructor() {

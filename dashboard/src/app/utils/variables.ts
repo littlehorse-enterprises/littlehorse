@@ -84,6 +84,7 @@ export const VARIABLE_CASE_LABELS: Record<VariableValueCase, string> = {
   utcTimestamp: 'UTC Timestamp',
   array: 'Array',
   map: 'Map',
+  enum: 'Enum',
 }
 
 export const isStructFieldRequired = (fieldDef: StructFieldDef): boolean =>

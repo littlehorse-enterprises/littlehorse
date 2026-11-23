@@ -148,6 +148,33 @@ public interface TypeDefinitionOrBuilder extends
 
   /**
    * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   * @return Whether the inlineEnumDef field is set.
+   */
+  boolean hasInlineEnumDef();
+  /**
+   * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   * @return The inlineEnumDef.
+   */
+  io.littlehorse.sdk.common.proto.InlineEnumDef getInlineEnumDef();
+  /**
+   * <pre>
+   * An inline Enum definition.
+   * </pre>
+   *
+   * <code>.littlehorse.InlineEnumDef inline_enum_def = 9;</code>
+   */
+  io.littlehorse.sdk.common.proto.InlineEnumDefOrBuilder getInlineEnumDefOrBuilder();
+
+  /**
+   * <pre>
    * Set to true if values of this type contain sensitive information and must be masked.
    * </pre>
    *

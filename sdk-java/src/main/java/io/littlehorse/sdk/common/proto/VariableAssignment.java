@@ -2395,6 +2395,644 @@ private static final long serialVersionUID = 0L;
 
   }
 
+  public interface EnumNameOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.EnumName)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return Whether the operand field is set.
+     */
+    boolean hasOperand();
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return The operand.
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignment getOperand();
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     */
+    io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder();
+  }
+  /**
+   * <pre>
+   * An EnumName allows you to get the name of an Enum member as a STR.
+   * </pre>
+   *
+   * Protobuf type {@code littlehorse.VariableAssignment.EnumName}
+   */
+  public static final class EnumName extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:littlehorse.VariableAssignment.EnumName)
+      EnumNameOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 32,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        EnumName.class.getName());
+    }
+    // Use EnumName.newBuilder() to construct.
+    private EnumName(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private EnumName() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_EnumName_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_EnumName_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.class, io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int OPERAND_FIELD_NUMBER = 1;
+    private io.littlehorse.sdk.common.proto.VariableAssignment operand_;
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return Whether the operand field is set.
+     */
+    @java.lang.Override
+    public boolean hasOperand() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     * @return The operand.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment getOperand() {
+      return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+    }
+    /**
+     * <pre>
+     * A VariableAssignment which must resolve to an Enum.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment operand = 1;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder() {
+      return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getOperand());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getOperand());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof io.littlehorse.sdk.common.proto.VariableAssignment.EnumName)) {
+        return super.equals(obj);
+      }
+      io.littlehorse.sdk.common.proto.VariableAssignment.EnumName other = (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) obj;
+
+      if (hasOperand() != other.hasOperand()) return false;
+      if (hasOperand()) {
+        if (!getOperand()
+            .equals(other.getOperand())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasOperand()) {
+        hash = (37 * hash) + OPERAND_FIELD_NUMBER;
+        hash = (53 * hash) + getOperand().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(io.littlehorse.sdk.common.proto.VariableAssignment.EnumName prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * An EnumName allows you to get the name of an Enum member as a STR.
+     * </pre>
+     *
+     * Protobuf type {@code littlehorse.VariableAssignment.EnumName}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:littlehorse.VariableAssignment.EnumName)
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_EnumName_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_EnumName_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.class, io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder.class);
+      }
+
+      // Construct using io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetOperandFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        operand_ = null;
+        if (operandBuilder_ != null) {
+          operandBuilder_.dispose();
+          operandBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return io.littlehorse.sdk.common.proto.CommonWfspec.internal_static_littlehorse_VariableAssignment_EnumName_descriptor;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getDefaultInstanceForType() {
+        return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName build() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumName result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName buildPartial() {
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumName result = new io.littlehorse.sdk.common.proto.VariableAssignment.EnumName(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment.EnumName result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.operand_ = operandBuilder_ == null
+              ? operand_
+              : operandBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) {
+          return mergeFrom((io.littlehorse.sdk.common.proto.VariableAssignment.EnumName)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(io.littlehorse.sdk.common.proto.VariableAssignment.EnumName other) {
+        if (other == io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance()) return this;
+        if (other.hasOperand()) {
+          mergeOperand(other.getOperand());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetOperandFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private io.littlehorse.sdk.common.proto.VariableAssignment operand_;
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> operandBuilder_;
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       * @return Whether the operand field is set.
+       */
+      public boolean hasOperand() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       * @return The operand.
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment getOperand() {
+        if (operandBuilder_ == null) {
+          return operand_ == null ? io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+        } else {
+          return operandBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder setOperand(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (operandBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          operand_ = value;
+        } else {
+          operandBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder setOperand(
+          io.littlehorse.sdk.common.proto.VariableAssignment.Builder builderForValue) {
+        if (operandBuilder_ == null) {
+          operand_ = builderForValue.build();
+        } else {
+          operandBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder mergeOperand(io.littlehorse.sdk.common.proto.VariableAssignment value) {
+        if (operandBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            operand_ != null &&
+            operand_ != io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance()) {
+            getOperandBuilder().mergeFrom(value);
+          } else {
+            operand_ = value;
+          }
+        } else {
+          operandBuilder_.mergeFrom(value);
+        }
+        if (operand_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public Builder clearOperand() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        operand_ = null;
+        if (operandBuilder_ != null) {
+          operandBuilder_.dispose();
+          operandBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignment.Builder getOperandBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetOperandFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      public io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOperandOrBuilder() {
+        if (operandBuilder_ != null) {
+          return operandBuilder_.getMessageOrBuilder();
+        } else {
+          return operand_ == null ?
+              io.littlehorse.sdk.common.proto.VariableAssignment.getDefaultInstance() : operand_;
+        }
+      }
+      /**
+       * <pre>
+       * A VariableAssignment which must resolve to an Enum.
+       * </pre>
+       *
+       * <code>.littlehorse.VariableAssignment operand = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder> 
+          internalGetOperandFieldBuilder() {
+        if (operandBuilder_ == null) {
+          operandBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              io.littlehorse.sdk.common.proto.VariableAssignment, io.littlehorse.sdk.common.proto.VariableAssignment.Builder, io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder>(
+                  getOperand(),
+                  getParentForChildren(),
+                  isClean());
+          operand_ = null;
+        }
+        return operandBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:littlehorse.VariableAssignment.EnumName)
+    }
+
+    // @@protoc_insertion_point(class_scope:littlehorse.VariableAssignment.EnumName)
+    private static final io.littlehorse.sdk.common.proto.VariableAssignment.EnumName DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new io.littlehorse.sdk.common.proto.VariableAssignment.EnumName();
+    }
+
+    public static io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<EnumName>
+        PARSER = new com.google.protobuf.AbstractParser<EnumName>() {
+      @java.lang.Override
+      public EnumName parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<EnumName> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<EnumName> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface ExpressionOrBuilder extends
       // @@protoc_insertion_point(interface_extends:littlehorse.VariableAssignment.Expression)
       com.google.protobuf.MessageOrBuilder {
@@ -3711,6 +4349,7 @@ private static final long serialVersionUID = 0L;
     STRUCT_BUILDER(9),
     SIZE_OF(10),
     MAP_BUILDER(11),
+    ENUM_NAME(12),
     SOURCE_NOT_SET(0);
     private final int value;
     private SourceCase(int value) {
@@ -3736,6 +4375,7 @@ private static final long serialVersionUID = 0L;
         case 9: return STRUCT_BUILDER;
         case 10: return SIZE_OF;
         case 11: return MAP_BUILDER;
+        case 12: return ENUM_NAME;
         case 0: return SOURCE_NOT_SET;
         default: return null;
       }
@@ -4232,6 +4872,49 @@ private static final long serialVersionUID = 0L;
     return io.littlehorse.sdk.common.proto.MapBuilder.getDefaultInstance();
   }
 
+  public static final int ENUM_NAME_FIELD_NUMBER = 12;
+  /**
+   * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   * @return Whether the enumName field is set.
+   */
+  @java.lang.Override
+  public boolean hasEnumName() {
+    return sourceCase_ == 12;
+  }
+  /**
+   * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   * @return The enumName.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getEnumName() {
+    if (sourceCase_ == 12) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+  }
+  /**
+   * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder getEnumNameOrBuilder() {
+    if (sourceCase_ == 12) {
+       return (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_;
+    }
+    return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+  }
+
   public static final int TARGET_TYPE_FIELD_NUMBER = 7;
   private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
   /**
@@ -4326,6 +5009,9 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 11) {
       output.writeMessage(11, (io.littlehorse.sdk.common.proto.MapBuilder) source_);
     }
+    if (sourceCase_ == 12) {
+      output.writeMessage(12, (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_);
+    }
     getUnknownFields().writeTo(output);
   }
 
@@ -4376,6 +5062,10 @@ private static final long serialVersionUID = 0L;
     if (sourceCase_ == 11) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(11, (io.littlehorse.sdk.common.proto.MapBuilder) source_);
+    }
+    if (sourceCase_ == 12) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(12, (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_);
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -4444,6 +5134,10 @@ private static final long serialVersionUID = 0L;
         if (!getMapBuilder()
             .equals(other.getMapBuilder())) return false;
         break;
+      case 12:
+        if (!getEnumName()
+            .equals(other.getEnumName())) return false;
+        break;
       case 0:
       default:
     }
@@ -4506,6 +5200,10 @@ private static final long serialVersionUID = 0L;
       case 11:
         hash = (37 * hash) + MAP_BUILDER_FIELD_NUMBER;
         hash = (53 * hash) + getMapBuilder().hashCode();
+        break;
+      case 12:
+        hash = (37 * hash) + ENUM_NAME_FIELD_NUMBER;
+        hash = (53 * hash) + getEnumName().hashCode();
         break;
       case 0:
       default:
@@ -4681,6 +5379,9 @@ private static final long serialVersionUID = 0L;
       if (mapBuilderBuilder_ != null) {
         mapBuilderBuilder_.clear();
       }
+      if (enumNameBuilder_ != null) {
+        enumNameBuilder_.clear();
+      }
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -4725,7 +5426,7 @@ private static final long serialVersionUID = 0L;
     private void buildPartial0(io.littlehorse.sdk.common.proto.VariableAssignment result) {
       int from_bitField0_ = bitField0_;
       int to_bitField0_ = 0;
-      if (((from_bitField0_ & 0x00000400) != 0)) {
+      if (((from_bitField0_ & 0x00000800) != 0)) {
         result.targetType_ = targetTypeBuilder_ == null
             ? targetType_
             : targetTypeBuilder_.build();
@@ -4770,6 +5471,10 @@ private static final long serialVersionUID = 0L;
       if (sourceCase_ == 11 &&
           mapBuilderBuilder_ != null) {
         result.source_ = mapBuilderBuilder_.build();
+      }
+      if (sourceCase_ == 12 &&
+          enumNameBuilder_ != null) {
+        result.source_ = enumNameBuilder_.build();
       }
     }
 
@@ -4836,6 +5541,10 @@ private static final long serialVersionUID = 0L;
         }
         case MAP_BUILDER: {
           mergeMapBuilder(other.getMapBuilder());
+          break;
+        }
+        case ENUM_NAME: {
+          mergeEnumName(other.getEnumName());
           break;
         }
         case SOURCE_NOT_SET: {
@@ -4912,7 +5621,7 @@ private static final long serialVersionUID = 0L;
               input.readMessage(
                   internalGetTargetTypeFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000400;
+              bitField0_ |= 0x00000800;
               break;
             } // case 58
             case 66: {
@@ -4943,6 +5652,13 @@ private static final long serialVersionUID = 0L;
               sourceCase_ = 11;
               break;
             } // case 90
+            case 98: {
+              input.readMessage(
+                  internalGetEnumNameFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              sourceCase_ = 12;
+              break;
+            } // case 98
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -6672,6 +7388,184 @@ private static final long serialVersionUID = 0L;
       return mapBuilderBuilder_;
     }
 
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumName, io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder> enumNameBuilder_;
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     * @return Whether the enumName field is set.
+     */
+    @java.lang.Override
+    public boolean hasEnumName() {
+      return sourceCase_ == 12;
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     * @return The enumName.
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getEnumName() {
+      if (enumNameBuilder_ == null) {
+        if (sourceCase_ == 12) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+      } else {
+        if (sourceCase_ == 12) {
+          return enumNameBuilder_.getMessage();
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    public Builder setEnumName(io.littlehorse.sdk.common.proto.VariableAssignment.EnumName value) {
+      if (enumNameBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        source_ = value;
+        onChanged();
+      } else {
+        enumNameBuilder_.setMessage(value);
+      }
+      sourceCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    public Builder setEnumName(
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder builderForValue) {
+      if (enumNameBuilder_ == null) {
+        source_ = builderForValue.build();
+        onChanged();
+      } else {
+        enumNameBuilder_.setMessage(builderForValue.build());
+      }
+      sourceCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    public Builder mergeEnumName(io.littlehorse.sdk.common.proto.VariableAssignment.EnumName value) {
+      if (enumNameBuilder_ == null) {
+        if (sourceCase_ == 12 &&
+            source_ != io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance()) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.newBuilder((io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_)
+              .mergeFrom(value).buildPartial();
+        } else {
+          source_ = value;
+        }
+        onChanged();
+      } else {
+        if (sourceCase_ == 12) {
+          enumNameBuilder_.mergeFrom(value);
+        } else {
+          enumNameBuilder_.setMessage(value);
+        }
+      }
+      sourceCase_ = 12;
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    public Builder clearEnumName() {
+      if (enumNameBuilder_ == null) {
+        if (sourceCase_ == 12) {
+          sourceCase_ = 0;
+          source_ = null;
+          onChanged();
+        }
+      } else {
+        if (sourceCase_ == 12) {
+          sourceCase_ = 0;
+          source_ = null;
+        }
+        enumNameBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    public io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder getEnumNameBuilder() {
+      return internalGetEnumNameFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    @java.lang.Override
+    public io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder getEnumNameOrBuilder() {
+      if ((sourceCase_ == 12) && (enumNameBuilder_ != null)) {
+        return enumNameBuilder_.getMessageOrBuilder();
+      } else {
+        if (sourceCase_ == 12) {
+          return (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_;
+        }
+        return io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+      }
+    }
+    /**
+     * <pre>
+     * Assign the name of an Enum member.
+     * </pre>
+     *
+     * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.VariableAssignment.EnumName, io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder> 
+        internalGetEnumNameFieldBuilder() {
+      if (enumNameBuilder_ == null) {
+        if (!(sourceCase_ == 12)) {
+          source_ = io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.getDefaultInstance();
+        }
+        enumNameBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.VariableAssignment.EnumName, io.littlehorse.sdk.common.proto.VariableAssignment.EnumName.Builder, io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder>(
+                (io.littlehorse.sdk.common.proto.VariableAssignment.EnumName) source_,
+                getParentForChildren(),
+                isClean());
+        source_ = null;
+      }
+      sourceCase_ = 12;
+      onChanged();
+      return enumNameBuilder_;
+    }
+
     private io.littlehorse.sdk.common.proto.TypeDefinition targetType_;
     private com.google.protobuf.SingleFieldBuilder<
         io.littlehorse.sdk.common.proto.TypeDefinition, io.littlehorse.sdk.common.proto.TypeDefinition.Builder, io.littlehorse.sdk.common.proto.TypeDefinitionOrBuilder> targetTypeBuilder_;
@@ -6687,7 +7581,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the targetType field is set.
      */
     public boolean hasTargetType() {
-      return ((bitField0_ & 0x00000400) != 0);
+      return ((bitField0_ & 0x00000800) != 0);
     }
     /**
      * <pre>
@@ -6726,7 +7620,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
@@ -6747,7 +7641,7 @@ private static final long serialVersionUID = 0L;
       } else {
         targetTypeBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return this;
     }
@@ -6763,7 +7657,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeTargetType(io.littlehorse.sdk.common.proto.TypeDefinition value) {
       if (targetTypeBuilder_ == null) {
-        if (((bitField0_ & 0x00000400) != 0) &&
+        if (((bitField0_ & 0x00000800) != 0) &&
           targetType_ != null &&
           targetType_ != io.littlehorse.sdk.common.proto.TypeDefinition.getDefaultInstance()) {
           getTargetTypeBuilder().mergeFrom(value);
@@ -6774,7 +7668,7 @@ private static final long serialVersionUID = 0L;
         targetTypeBuilder_.mergeFrom(value);
       }
       if (targetType_ != null) {
-        bitField0_ |= 0x00000400;
+        bitField0_ |= 0x00000800;
         onChanged();
       }
       return this;
@@ -6790,7 +7684,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public Builder clearTargetType() {
-      bitField0_ = (bitField0_ & ~0x00000400);
+      bitField0_ = (bitField0_ & ~0x00000800);
       targetType_ = null;
       if (targetTypeBuilder_ != null) {
         targetTypeBuilder_.dispose();
@@ -6810,7 +7704,7 @@ private static final long serialVersionUID = 0L;
      * <code>optional .littlehorse.TypeDefinition target_type = 7;</code>
      */
     public io.littlehorse.sdk.common.proto.TypeDefinition.Builder getTargetTypeBuilder() {
-      bitField0_ |= 0x00000400;
+      bitField0_ |= 0x00000800;
       onChanged();
       return internalGetTargetTypeFieldBuilder().getBuilder();
     }

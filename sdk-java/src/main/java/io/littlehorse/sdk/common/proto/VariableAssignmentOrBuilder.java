@@ -295,6 +295,33 @@ public interface VariableAssignmentOrBuilder extends
 
   /**
    * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   * @return Whether the enumName field is set.
+   */
+  boolean hasEnumName();
+  /**
+   * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   * @return The enumName.
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.EnumName getEnumName();
+  /**
+   * <pre>
+   * Assign the name of an Enum member.
+   * </pre>
+   *
+   * <code>.littlehorse.VariableAssignment.EnumName enum_name = 12;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment.EnumNameOrBuilder getEnumNameOrBuilder();
+
+  /**
+   * <pre>
    * If specified, the resolved value will be cast to this type before being used.
    * This allows explicit type conversions anywhere VariableAssignment is used.
    * The cast operation is non-mutating: original values remain unchanged.

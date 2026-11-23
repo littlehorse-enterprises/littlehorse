@@ -1417,6 +1417,7 @@ public class VariableValueModel extends LHSerializable<VariableValue> {
             case STRUCT:
             case ARRAY:
             case MAP:
+            case ENUM:
             case VALUE_NOT_SET:
                 valuePair = null;
         }
