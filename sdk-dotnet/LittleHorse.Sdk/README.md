@@ -20,11 +20,9 @@ All code in this directory is licensed under the [GNU Affero General Public Lice
 
 ### Dependencies
 
-- Install [.NET Core 6/7/8](https://dotnet.microsoft.com/en-us/download)
+LittleHorse 1.4.0 requires applications to target .NET 10 or later. The package ships one `net10.0` assembly and supports .NET 10 and 11. If your application targets .NET 6–9, retarget it before upgrading.
 
-```
-brew install dotnet
-```
+Install the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) to build the library and run the examples. To run the full test suite, also install the [.NET 11 SDK](https://dotnet.microsoft.com/download/dotnet/11.0).
 
 - Plugins for [VS Code](https://code.visualstudio.com/): [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 

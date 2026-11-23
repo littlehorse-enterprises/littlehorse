@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../LittleHorse.Sdk/LittleHorse.Sdk.csproj" />
+    <ProjectReference Include="../LittleHorse.Sdk/LittleHorse.Sdk.csproj" Condition="'$(SdkPackageVersion)' == ''" />
+    <PackageReference Include="LittleHorse.Sdk" Version="[$(SdkPackageVersion)]" Condition="'$(SdkPackageVersion)' != ''" />
   </ItemGroup>
 
   <ItemGroup>

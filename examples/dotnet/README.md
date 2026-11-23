@@ -6,7 +6,7 @@
 
 - Running LittleHorse server (see [`../README.md`](../README.md)).
 - `lhctl` installed and configured.
-- .NET SDK installed.
+- .NET 10 SDK installed. All examples target `net10.0`.
 
 Verify server connectivity:
 

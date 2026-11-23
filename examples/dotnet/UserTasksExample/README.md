@@ -13,7 +13,7 @@ or denial email. Emails are printed by the worker; nothing is actually sent.
 ## Start the example
 
 Start a local server using the [local development instructions](../../../local-dev/README.md).
-You also need the .NET 6 SDK. From the repository root:
+You also need the .NET 10 SDK. From the repository root:
 
 ```bash
 go -C lhctl install .
