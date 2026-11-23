@@ -949,6 +949,9 @@ public class LHServerConfig extends ConfigBase {
 
         applyKafkaConfigOverrides(result, CORE_KAFKA_STREAMS_OVERRIDE_PREFIX);
         result.put(StreamsConfig.consumerPrefix(ConsumerConfig.MAX_POLL_RECORDS_CONFIG), "100");
+        result.putIfAbsent(StreamsConfig.TRANSACTIONAL_STATE_STORES_CONFIG, true);
+        // Ensures Read Your Own Writes consistency
+        result.put(StreamsConfig.DEFAULT_INTERACTIVE_QUERY_ISOLATION_LEVEL_CONFIG, "READ_UNCOMMITTED");
         return result;
     }
 
