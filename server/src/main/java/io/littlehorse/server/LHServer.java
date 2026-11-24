@@ -42,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KafkaStreams.CloseOptions;
 import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.errors.ProcessorStateException;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.processor.TaskId;
 import org.apache.logging.log4j.LogManager;
@@ -197,9 +198,17 @@ public class LHServer {
 
     public void start() throws IOException {
         healthService.start();
-        coreStreams.start();
-        if (timerStreams != null) {
-            timerStreams.start();
+        try {
+            coreStreams.start();
+            if (timerStreams != null) {
+                timerStreams.start();
+            }
+        } catch (ProcessorStateException exception) {
+            log.error(
+                    "Failed to start LittleHorse: the persisted state in {} may be incompatible with this LittleHorse version.",
+                    config.getStateDirectory(),
+                    exception);
+            throw exception;
         }
         internalComms.start();
         for (LHServerListener listener : listeners) {
