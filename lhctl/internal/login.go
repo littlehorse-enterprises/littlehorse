@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -161,14 +160,7 @@ func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConf
 			Fatal("nonce did not match")
 		}
 
-		data, err := json.MarshalIndent(oauth2Token, "", "    ")
-		if err != nil {
-			Fatal(err.Error())
-		}
-
-		err = os.WriteFile(lhConfig.OauthConfig.CredentialsLocation, data, 0644)
-
-		if err != nil {
+		if err := littlehorse.SaveToken(lhConfig.OauthConfig.CredentialsLocation, oauth2Token); err != nil {
 			Fatal(err.Error())
 		}
 

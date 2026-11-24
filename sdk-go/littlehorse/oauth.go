@@ -9,7 +9,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
+	"path/filepath"
+	"sync"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
@@ -101,45 +102,113 @@ type FileTokenSource struct {
 	CredentialsLocation string
 	OauthConfig         oauth2.Config
 	httpClient          *http.Client
+	cache               *tokenCache
+}
+
+// tokenCache is shared by the copies of a FileTokenSource, so the file is read only when it changes.
+type tokenCache struct {
+	mu    sync.Mutex
+	token *oauth2.Token
+	file  os.FileInfo
 }
 
 // GetRequestMetadata gets the request metadata as a map from a TokenSource.
 func (fileTokenSource FileTokenSource) GetRequestMetadata(ctx context.Context, uri ...string) (map[string]string, error) {
-	byteValue, err := os.ReadFile(fileTokenSource.CredentialsLocation)
-	if err != nil {
-		log.Fatal("OAuth2 is enabled but it was not possible to load the credentials: ", err, ". Run 'lhctl login'.")
-	}
-
-	token := &oauth2.Token{}
-	err = json.Unmarshal(byteValue, &token)
+	token, err := fileTokenSource.token(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	if token.Expiry.Before(time.Now()) {
-		if fileTokenSource.httpClient != nil {
-			ctx = oidc.ClientContext(ctx, fileTokenSource.httpClient)
-		}
-		token, err = fileTokenSource.OauthConfig.TokenSource(ctx, token).Token()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		data, err := json.MarshalIndent(token, "", "    ")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		err = os.WriteFile(fileTokenSource.CredentialsLocation, data, 0644)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
 	return map[string]string{
 		"authorization": token.Type() + " " + token.AccessToken,
 	}, nil
+}
+
+func (fileTokenSource FileTokenSource) token(ctx context.Context) (*oauth2.Token, error) {
+	cache := fileTokenSource.cache
+	if cache == nil {
+		cache = &tokenCache{}
+	}
+	cache.mu.Lock()
+	defer cache.mu.Unlock()
+
+	path := fileTokenSource.CredentialsLocation
+	file, err := os.Stat(path)
+	if err != nil {
+		return nil, fmt.Errorf("OAuth2 is enabled but it was not possible to load the credentials: %w. Run 'lhctl login'", err)
+	}
+	// Another process, such as 'lhctl login' in another terminal, replaced the file.
+	if cache.token == nil || !os.SameFile(cache.file, file) || !cache.file.ModTime().Equal(file.ModTime()) {
+		if cache.token, err = readToken(path, file); err != nil {
+			return nil, err
+		}
+		cache.file = file
+	}
+
+	if !cache.token.Valid() {
+		if fileTokenSource.httpClient != nil {
+			ctx = oidc.ClientContext(ctx, fileTokenSource.httpClient)
+		}
+		token, err := fileTokenSource.OauthConfig.TokenSource(ctx, cache.token).Token()
+		if err != nil {
+			return nil, err
+		}
+		if err := SaveToken(path, token); err != nil {
+			return nil, err
+		}
+		if cache.file, err = os.Stat(path); err != nil {
+			return nil, err
+		}
+		cache.token = token
+	}
+	return cache.token, nil
+}
+
+func readToken(path string, file os.FileInfo) (*oauth2.Token, error) {
+	// Files written by older versions are readable by other users.
+	if file.Mode().Perm()&0o077 != 0 {
+		os.Chmod(path, 0o600)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	token := &oauth2.Token{}
+	if err := json.Unmarshal(data, token); err != nil {
+		return nil, fmt.Errorf("invalid credentials in %s: %w", path, err)
+	}
+	return token, nil
+}
+
+// SaveToken writes the token to path, readable only by the current user. It replaces the
+// file in one step, so a reader never sees a partly written file.
+func SaveToken(path string, token *oauth2.Token) error {
+	data, err := json.MarshalIndent(token, "", "    ")
+	if err != nil {
+		return err
+	}
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return err
+	}
+	// CreateTemp creates the file with mode 0600.
+	tmp, err := os.CreateTemp(dir, "."+filepath.Base(path)+"-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp.Name())
+
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Sync(); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmp.Name(), path)
 }
 
 // RequireTransportSecurity indicates whether the credentials requires transport security.
@@ -174,7 +243,12 @@ func (oauthConfig *OauthConfig) GetTokenSource() credentials.PerRPCCredentials {
 			Endpoint: provider.Endpoint(),
 			Scopes:   []string{oidc.ScopeOpenID},
 		}
-		return FileTokenSource{CredentialsLocation: oauthConfig.CredentialsLocation, OauthConfig: oauth2Config, httpClient: client}
+		return FileTokenSource{
+			CredentialsLocation: oauthConfig.CredentialsLocation,
+			OauthConfig:         oauth2Config,
+			httpClient:          client,
+			cache:               &tokenCache{},
+		}
 	default:
 		config := &clientcredentials.Config{
 			ClientID:     oauthConfig.ClientId,
