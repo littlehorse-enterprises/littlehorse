@@ -3,21 +3,26 @@ package internal
 import (
 	"context"
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"net/url"
 	"os"
+	"sync/atomic"
 	"time"
-
-	"github.com/littlehorse-enterprises/littlehorse/sdk-go/littlehorse"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/browser"
 	"github.com/spf13/cobra"
 	"golang.org/x/oauth2"
 )
+
+const loginTimeout = time.Minute
 
 var loginCmd = &cobra.Command{
 	Use:   "login",
@@ -61,31 +66,56 @@ func run(cmd *cobra.Command, args []string) {
 		Scopes:      []string{oidc.ScopeOpenID},
 	}
 
-	mux := http.NewServeMux()
-	localServer := &http.Server{
-		Addr:    fmt.Sprintf(":%d", lhConfig.OauthConfig.CallbackPort),
-		Handler: mux,
+	session, err := newLoginSession(oauthProvider, oauth2Config, lhConfig.OauthConfig.CredentialsLocation)
+	if err != nil {
+		Fatal(err)
 	}
 
-	verifier := oauth2.GenerateVerifier()
-	mux.HandleFunc("/", handleHomeRequest(oauth2Config, verifier))
-	mux.HandleFunc("/callback", handleCallbackRequest(ctx, localServer, &lhConfig, oauthProvider, oauth2Config, verifier))
+	listener, err := listenLoopback(lhConfig.OauthConfig.CallbackPort)
+	if err != nil {
+		Fatal(err)
+	}
+	localServer := &http.Server{
+		Handler:           newLoginMux(ctx, session),
+		ReadHeaderTimeout: 10 * time.Second,
+	}
+	serveErr := make(chan error, 1)
+	go func() { serveErr <- localServer.Serve(listener) }()
 
-	time.AfterFunc(time.Minute, func() {
-		Fatal("Timeout")
-	})
+	loginURL := fmt.Sprintf("http://127.0.0.1:%d/", lhConfig.OauthConfig.CallbackPort)
+	fmt.Printf("Listening on %s\n", loginURL)
+	if err := browser.OpenURL(loginURL); err != nil {
+		fmt.Printf("Open %s in your browser to log in\n", loginURL)
+	}
 
-	time.AfterFunc(time.Second, func() {
-		browser.OpenURL(fmt.Sprintf("http://127.0.0.1:%d/", lhConfig.OauthConfig.CallbackPort))
-	})
+	select {
+	case err = <-session.result:
+	case err = <-serveErr:
+	case <-time.After(loginTimeout):
+		err = errors.New("timed out waiting for the login to finish")
+	}
 
-	fmt.Printf("Listening on http://127.0.0.1:%d/\n", lhConfig.OauthConfig.CallbackPort)
+	// Lets the callback finish sending its page before the process exits.
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	localServer.Shutdown(shutdownCtx)
 
-	err = localServer.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
+	if err != nil {
 		Fatal(err)
 	}
 	fmt.Println("Login Successful!")
+}
+
+// listenLoopback listens only on 127.0.0.1, the host in the redirect URI.
+func listenLoopback(port int32) (net.Listener, error) {
+	return net.Listen("tcp", fmt.Sprintf("127.0.0.1:%d", port))
+}
+
+func newLoginMux(ctx context.Context, session *loginSession) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /{$}", session.handleHome)
+	mux.HandleFunc("GET /callback", session.handleCallback(ctx))
+	return mux
 }
 
 func randString(nByte int) (string, error) {
@@ -96,83 +126,122 @@ func randString(nByte int) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b), nil
 }
 
-func setCallbackCookie(w http.ResponseWriter, r *http.Request, name, value string) {
-	c := &http.Cookie{
-		Name:     name,
-		Value:    value,
-		MaxAge:   int(time.Hour.Seconds()),
-		Secure:   r.TLS != nil,
-		HttpOnly: true,
-	}
-	http.SetCookie(w, c)
+// loginSession holds the values of one login. They stay in this process, so no
+// other site or local service can read or set them.
+type loginSession struct {
+	provider            *oidc.Provider
+	issuer              string
+	config              oauth2.Config
+	credentialsLocation string
+	state               string
+	nonce               string
+	verifier            string
+	claimed             atomic.Bool
+	result              chan error
 }
 
-func handleHomeRequest(oauth2Config oauth2.Config, verifier string) func(http.ResponseWriter, *http.Request) {
+func newLoginSession(provider *oidc.Provider, config oauth2.Config, credentialsLocation string) (*loginSession, error) {
+	var discovery struct {
+		Issuer string `json:"issuer"`
+	}
+	if err := provider.Claims(&discovery); err != nil {
+		return nil, err
+	}
+	state, err := randString(16)
+	if err != nil {
+		return nil, err
+	}
+	nonce, err := randString(16)
+	if err != nil {
+		return nil, err
+	}
+	return &loginSession{
+		provider:            provider,
+		issuer:              discovery.Issuer,
+		config:              config,
+		credentialsLocation: credentialsLocation,
+		state:               state,
+		nonce:               nonce,
+		verifier:            oauth2.GenerateVerifier(),
+		result:              make(chan error, 1),
+	}, nil
+}
+
+func (s *loginSession) handleHome(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, s.config.AuthCodeURL(s.state, oidc.Nonce(s.nonce), oauth2.S256ChallengeOption(s.verifier)), http.StatusFound)
+}
+
+// handleCallback answers requests that don't belong to this login with an error
+// and keeps waiting. The first callback with the right state ends the login.
+func (s *loginSession) handleCallback(ctx context.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		state, err := randString(16)
-		if err != nil {
-			http.Error(w, "Internal error", http.StatusInternalServerError)
+		query := r.URL.Query()
+		if subtle.ConstantTimeCompare([]byte(query.Get("state")), []byte(s.state)) != 1 {
+			http.Error(w, "Invalid login state", http.StatusBadRequest)
 			return
 		}
-		nonce, err := randString(16)
-		if err != nil {
-			http.Error(w, "Internal error", http.StatusInternalServerError)
+		if !s.claimed.CompareAndSwap(false, true) {
+			http.Error(w, "This login has already finished", http.StatusConflict)
 			return
 		}
-		setCallbackCookie(w, r, "state", state)
-		setCallbackCookie(w, r, "nonce", nonce)
-		http.Redirect(w, r, oauth2Config.AuthCodeURL(state, oidc.Nonce(nonce), oauth2.S256ChallengeOption(verifier)), http.StatusFound)
+
+		err := s.completeLogin(ctx, query)
+		if err != nil {
+			http.Error(w, "Login failed. Check the terminal for details.", http.StatusBadRequest)
+		} else {
+			w.Write(loginSuccessPage)
+		}
+		s.result <- err
 	}
 }
 
-func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConfig *littlehorse.LHConfig, oauthProvider *oidc.Provider, oauth2Config oauth2.Config, verifier string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		state, err := r.Cookie("state")
-		if err != nil {
-			Fatal("State not found")
+func (s *loginSession) completeLogin(ctx context.Context, query url.Values) error {
+	// RFC 9207: the issuer in the response must be the one this login started with.
+	if iss := query.Get("iss"); iss != "" && iss != s.issuer {
+		return fmt.Errorf("login response came from issuer %q, expected %q", iss, s.issuer)
+	}
+	if loginError := query.Get("error"); loginError != "" {
+		if description := query.Get("error_description"); description != "" {
+			return fmt.Errorf("login failed: %s: %s", loginError, description)
 		}
-		if r.URL.Query().Get("state") != state.Value {
-			Fatal("State did not match")
-		}
+		return fmt.Errorf("login failed: %s", loginError)
+	}
+	code := query.Get("code")
+	if code == "" {
+		return errors.New("login response has no authorization code")
+	}
 
-		oauth2Token, err := oauth2Config.Exchange(ctx, r.URL.Query().Get("code"), oauth2.VerifierOption(verifier))
-		if err != nil {
-			Fatal("Failed to exchange token: " + err.Error())
-		}
-		rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-		if !ok {
-			Fatal("No id_token field in oauth2 token.")
-		}
+	oauth2Token, err := s.config.Exchange(ctx, code, oauth2.VerifierOption(s.verifier))
+	if err != nil {
+		return fmt.Errorf("failed to exchange token: %w", err)
+	}
+	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
+	if !ok {
+		return errors.New("no id_token field in oauth2 token")
+	}
 
-		oidcConfig := &oidc.Config{
-			ClientID: oauth2Config.ClientID,
+	idToken, err := s.provider.Verifier(&oidc.Config{ClientID: s.config.ClientID}).Verify(ctx, rawIDToken)
+	if err != nil {
+		return fmt.Errorf("failed to verify ID token: %w", err)
+	}
+	if subtle.ConstantTimeCompare([]byte(idToken.Nonce), []byte(s.nonce)) != 1 {
+		return errors.New("nonce did not match")
+	}
+	// go-oidc fails when at_hash is missing, and providers may omit it.
+	if idToken.AccessTokenHash != "" {
+		if err := idToken.VerifyAccessToken(oauth2Token.AccessToken); err != nil {
+			return fmt.Errorf("access token does not match the ID token: %w", err)
 		}
-		idTokenVerifier := oauthProvider.Verifier(oidcConfig)
-		idToken, err := idTokenVerifier.Verify(ctx, rawIDToken)
-		if err != nil {
-			Fatal("Failed to verify ID Token: " + err.Error())
-		}
+	}
 
-		nonce, err := r.Cookie("nonce")
-		if err != nil {
-			Fatal("nonce not found")
-		}
-		if idToken.Nonce != nonce.Value {
-			Fatal("nonce did not match")
-		}
+	data, err := json.MarshalIndent(oauth2Token, "", "    ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.credentialsLocation, data, 0644)
+}
 
-		data, err := json.MarshalIndent(oauth2Token, "", "    ")
-		if err != nil {
-			Fatal(err.Error())
-		}
-
-		err = os.WriteFile(lhConfig.OauthConfig.CredentialsLocation, data, 0644)
-
-		if err != nil {
-			Fatal(err.Error())
-		}
-
-		javascript := []byte(`
+var loginSuccessPage = []byte(`
 		<!DOCTYPE html>
 		<html>
 			<head>
@@ -198,13 +267,6 @@ func handleCallbackRequest(ctx context.Context, localServer *http.Server, lhConf
 			</body>
 		</html>
 		`)
-		w.Write(javascript)
-
-		time.AfterFunc(time.Second, func() {
-			localServer.Close()
-		})
-	}
-}
 
 func Fatal(v ...any) {
 	fmt.Fprint(os.Stderr, "Fatal: ")
