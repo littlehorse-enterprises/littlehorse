@@ -117,6 +117,7 @@ message MetadataCommand {
         BulkJobShardReport bulk_job_shard_report = 22;
         DeleteBulkJobRequest delete_bulk_job = 23;
         PutWorkflowMigrationPlanRequest put_workflow_migration_plan = 24;
+        PutFormDefRequest put_form_def = 25;
     }
 }
 

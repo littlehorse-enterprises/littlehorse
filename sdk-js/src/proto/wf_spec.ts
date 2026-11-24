@@ -924,6 +924,14 @@ export interface UserTaskNode {
      * @generated from protobuf field: optional littlehorse.VariableAssignment on_cancellation_exception_name = 7
      */
     onCancellationExceptionName?: VariableAssignment;
+    /**
+     * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+     *
+     * @generated from protobuf field: map<string, littlehorse.VariableAssignment> placeholders = 8
+     */
+    placeholders: {
+        [key: string]: VariableAssignment;
+    };
 }
 /**
  * This is a boolean expression used to evaluate whether an Edge is valid.
@@ -2829,13 +2837,15 @@ class UserTaskNode$Type extends MessageType<UserTaskNode> {
             { no: 4, name: "actions", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => UTActionTrigger },
             { no: 5, name: "user_task_def_version", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
             { no: 6, name: "notes", kind: "message", T: () => VariableAssignment },
-            { no: 7, name: "on_cancellation_exception_name", kind: "message", T: () => VariableAssignment }
+            { no: 7, name: "on_cancellation_exception_name", kind: "message", T: () => VariableAssignment },
+            { no: 8, name: "placeholders", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => VariableAssignment } }
         ]);
     }
     create(value?: PartialMessage<UserTaskNode>): UserTaskNode {
         const message = globalThis.Object.create((this.messagePrototype!));
         message.userTaskDefName = "";
         message.actions = [];
+        message.placeholders = {};
         if (value !== undefined)
             reflectionMergePartial<UserTaskNode>(this, message, value);
         return message;
@@ -2866,6 +2876,9 @@ class UserTaskNode$Type extends MessageType<UserTaskNode> {
                 case /* optional littlehorse.VariableAssignment on_cancellation_exception_name */ 7:
                     message.onCancellationExceptionName = VariableAssignment.internalBinaryRead(reader, reader.uint32(), options, message.onCancellationExceptionName);
                     break;
+                case /* map<string, littlehorse.VariableAssignment> placeholders */ 8:
+                    this.binaryReadMap8(message.placeholders, reader, options);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -2876,6 +2889,22 @@ class UserTaskNode$Type extends MessageType<UserTaskNode> {
             }
         }
         return message;
+    }
+    private binaryReadMap8(map: UserTaskNode["placeholders"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof UserTaskNode["placeholders"] | undefined, val: UserTaskNode["placeholders"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = VariableAssignment.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.UserTaskNode.placeholders");
+            }
+        }
+        map[key ?? ""] = val ?? VariableAssignment.create();
     }
     internalBinaryWrite(message: UserTaskNode, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
         /* string user_task_def_name = 1; */
@@ -2899,6 +2928,13 @@ class UserTaskNode$Type extends MessageType<UserTaskNode> {
         /* optional littlehorse.VariableAssignment on_cancellation_exception_name = 7; */
         if (message.onCancellationExceptionName)
             VariableAssignment.internalBinaryWrite(message.onCancellationExceptionName, writer.tag(7, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.VariableAssignment> placeholders = 8; */
+        for (let k of globalThis.Object.keys(message.placeholders)) {
+            writer.tag(8, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            VariableAssignment.internalBinaryWrite(message.placeholders[k], writer, options);
+            writer.join().join();
+        }
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

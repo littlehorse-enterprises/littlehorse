@@ -220,4 +220,58 @@ public interface UserTaskNodeOrBuilder extends
    * <code>optional .littlehorse.VariableAssignment on_cancellation_exception_name = 7;</code>
    */
   io.littlehorse.sdk.common.proto.VariableAssignmentOrBuilder getOnCancellationExceptionNameOrBuilder();
+
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  int getPlaceholdersCount();
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  boolean containsPlaceholders(
+      java.lang.String key);
+  /**
+   * Use {@link #getPlaceholdersMap()} instead.
+   */
+  @java.lang.Deprecated
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+  getPlaceholders();
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  java.util.Map<java.lang.String, io.littlehorse.sdk.common.proto.VariableAssignment>
+  getPlaceholdersMap();
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrDefault(
+      java.lang.String key,
+      /* nullable */
+io.littlehorse.sdk.common.proto.VariableAssignment defaultValue);
+  /**
+   * <pre>
+   * Values for the placeholders referenced by the UserTaskDef's `FormDef`.
+   * </pre>
+   *
+   * <code>map&lt;string, .littlehorse.VariableAssignment&gt; placeholders = 8;</code>
+   */
+  io.littlehorse.sdk.common.proto.VariableAssignment getPlaceholdersOrThrow(
+      java.lang.String key);
 }

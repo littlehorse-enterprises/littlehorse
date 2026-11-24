@@ -369,5 +369,20 @@ public interface MetadataCommandOrBuilder extends
    */
   io.littlehorse.sdk.common.proto.PutWorkflowMigrationPlanRequestOrBuilder getPutWorkflowMigrationPlanOrBuilder();
 
+  /**
+   * <code>.littlehorse.PutFormDefRequest put_form_def = 25;</code>
+   * @return Whether the putFormDef field is set.
+   */
+  boolean hasPutFormDef();
+  /**
+   * <code>.littlehorse.PutFormDefRequest put_form_def = 25;</code>
+   * @return The putFormDef.
+   */
+  io.littlehorse.sdk.common.proto.PutFormDefRequest getPutFormDef();
+  /**
+   * <code>.littlehorse.PutFormDefRequest put_form_def = 25;</code>
+   */
+  io.littlehorse.sdk.common.proto.PutFormDefRequestOrBuilder getPutFormDefOrBuilder();
+
   io.littlehorse.common.proto.MetadataCommand.MetadataCommandCase getMetadataCommandCase();
 }

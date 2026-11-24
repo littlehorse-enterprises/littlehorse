@@ -731,6 +731,44 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     return resultStructDefId_ == null ? io.littlehorse.sdk.common.proto.StructDefId.getDefaultInstance() : resultStructDefId_;
   }
 
+  public static final int FORM_FIELD_NUMBER = 15;
+  private io.littlehorse.sdk.common.proto.Form form_;
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   * @return Whether the form field is set.
+   */
+  @java.lang.Override
+  public boolean hasForm() {
+    return ((bitField0_ & 0x00000200) != 0);
+  }
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   * @return The form.
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.Form getForm() {
+    return form_ == null ? io.littlehorse.sdk.common.proto.Form.getDefaultInstance() : form_;
+  }
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   */
+  @java.lang.Override
+  public io.littlehorse.sdk.common.proto.FormOrBuilder getFormOrBuilder() {
+    return form_ == null ? io.littlehorse.sdk.common.proto.Form.getDefaultInstance() : form_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -786,6 +824,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     }
     if (((bitField0_ & 0x00000100) != 0)) {
       output.writeMessage(14, getResultStructDefId());
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      output.writeMessage(15, getForm());
     }
     getUnknownFields().writeTo(output);
   }
@@ -850,6 +891,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (((bitField0_ & 0x00000100) != 0)) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(14, getResultStructDefId());
+    }
+    if (((bitField0_ & 0x00000200) != 0)) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(15, getForm());
     }
     size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
@@ -918,6 +963,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (!getResultStructDefId()
           .equals(other.getResultStructDefId())) return false;
     }
+    if (hasForm() != other.hasForm()) return false;
+    if (hasForm()) {
+      if (!getForm()
+          .equals(other.getForm())) return false;
+    }
     if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
@@ -976,6 +1026,10 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
     if (hasResultStructDefId()) {
       hash = (37 * hash) + RESULT_STRUCT_DEF_ID_FIELD_NUMBER;
       hash = (53 * hash) + getResultStructDefId().hashCode();
+    }
+    if (hasForm()) {
+      hash = (37 * hash) + FORM_FIELD_NUMBER;
+      hash = (53 * hash) + getForm().hashCode();
     }
     hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
@@ -1141,6 +1195,7 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         internalGetNodeRunIdFieldBuilder();
         internalGetOutputFieldBuilder();
         internalGetResultStructDefIdFieldBuilder();
+        internalGetFormFieldBuilder();
       }
     }
     @java.lang.Override
@@ -1189,6 +1244,11 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       if (resultStructDefIdBuilder_ != null) {
         resultStructDefIdBuilder_.dispose();
         resultStructDefIdBuilder_ = null;
+      }
+      form_ = null;
+      if (formBuilder_ != null) {
+        formBuilder_.dispose();
+        formBuilder_ = null;
       }
       return this;
     }
@@ -1294,6 +1354,12 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
             : resultStructDefIdBuilder_.build();
         to_bitField0_ |= 0x00000100;
       }
+      if (((from_bitField0_ & 0x00002000) != 0)) {
+        result.form_ = formBuilder_ == null
+            ? form_
+            : formBuilder_.build();
+        to_bitField0_ |= 0x00000200;
+      }
       result.bitField0_ |= to_bitField0_;
     }
 
@@ -1376,6 +1442,9 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
       }
       if (other.hasResultStructDefId()) {
         mergeResultStructDefId(other.getResultStructDefId());
+      }
+      if (other.hasForm()) {
+        mergeForm(other.getForm());
       }
       this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
@@ -1492,6 +1561,13 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
               bitField0_ |= 0x00001000;
               break;
             } // case 114
+            case 122: {
+              input.readMessage(
+                  internalGetFormFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00002000;
+              break;
+            } // case 122
             default: {
               if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                 done = true; // was an endgroup tag
@@ -3509,6 +3585,163 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue) {
         resultStructDefId_ = null;
       }
       return resultStructDefIdBuilder_;
+    }
+
+    private io.littlehorse.sdk.common.proto.Form form_;
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Form, io.littlehorse.sdk.common.proto.Form.Builder, io.littlehorse.sdk.common.proto.FormOrBuilder> formBuilder_;
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     * @return Whether the form field is set.
+     */
+    public boolean hasForm() {
+      return ((bitField0_ & 0x00002000) != 0);
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     * @return The form.
+     */
+    public io.littlehorse.sdk.common.proto.Form getForm() {
+      if (formBuilder_ == null) {
+        return form_ == null ? io.littlehorse.sdk.common.proto.Form.getDefaultInstance() : form_;
+      } else {
+        return formBuilder_.getMessage();
+      }
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public Builder setForm(io.littlehorse.sdk.common.proto.Form value) {
+      if (formBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        form_ = value;
+      } else {
+        formBuilder_.setMessage(value);
+      }
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public Builder setForm(
+        io.littlehorse.sdk.common.proto.Form.Builder builderForValue) {
+      if (formBuilder_ == null) {
+        form_ = builderForValue.build();
+      } else {
+        formBuilder_.setMessage(builderForValue.build());
+      }
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public Builder mergeForm(io.littlehorse.sdk.common.proto.Form value) {
+      if (formBuilder_ == null) {
+        if (((bitField0_ & 0x00002000) != 0) &&
+          form_ != null &&
+          form_ != io.littlehorse.sdk.common.proto.Form.getDefaultInstance()) {
+          getFormBuilder().mergeFrom(value);
+        } else {
+          form_ = value;
+        }
+      } else {
+        formBuilder_.mergeFrom(value);
+      }
+      if (form_ != null) {
+        bitField0_ |= 0x00002000;
+        onChanged();
+      }
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public Builder clearForm() {
+      bitField0_ = (bitField0_ & ~0x00002000);
+      form_ = null;
+      if (formBuilder_ != null) {
+        formBuilder_.dispose();
+        formBuilder_ = null;
+      }
+      onChanged();
+      return this;
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public io.littlehorse.sdk.common.proto.Form.Builder getFormBuilder() {
+      bitField0_ |= 0x00002000;
+      onChanged();
+      return internalGetFormFieldBuilder().getBuilder();
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    public io.littlehorse.sdk.common.proto.FormOrBuilder getFormOrBuilder() {
+      if (formBuilder_ != null) {
+        return formBuilder_.getMessageOrBuilder();
+      } else {
+        return form_ == null ?
+            io.littlehorse.sdk.common.proto.Form.getDefaultInstance() : form_;
+      }
+    }
+    /**
+     * <pre>
+     * The resolved form, if the UserTaskDef references a `FormDef`.
+     * </pre>
+     *
+     * <code>.littlehorse.Form form = 15;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilder<
+        io.littlehorse.sdk.common.proto.Form, io.littlehorse.sdk.common.proto.Form.Builder, io.littlehorse.sdk.common.proto.FormOrBuilder> 
+        internalGetFormFieldBuilder() {
+      if (formBuilder_ == null) {
+        formBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+            io.littlehorse.sdk.common.proto.Form, io.littlehorse.sdk.common.proto.Form.Builder, io.littlehorse.sdk.common.proto.FormOrBuilder>(
+                getForm(),
+                getParentForChildren(),
+                isClean());
+        form_ = null;
+      }
+      return formBuilder_;
     }
 
     // @@protoc_insertion_point(builder_scope:littlehorse.UserTaskRun)

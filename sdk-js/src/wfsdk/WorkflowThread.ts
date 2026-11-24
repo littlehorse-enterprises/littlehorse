@@ -940,6 +940,10 @@ export class WorkflowThread {
     return output
   }
 
+  setUserTaskPlaceholder(userTask: UserTaskOutput, name: string, value: LHValue): void {
+    this.getUserTaskNodeOrThrow(userTask.nodeName).placeholders[name] = toVariableAssignment(value)
+  }
+
   setUserTaskNotes(userTask: UserTaskOutput, notes: LHValue): void {
     this.getUserTaskNodeOrThrow(userTask.nodeName).notes = toVariableAssignment(notes)
   }

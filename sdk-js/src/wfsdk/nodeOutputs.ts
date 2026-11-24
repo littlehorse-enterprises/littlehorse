@@ -56,6 +56,11 @@ export class TaskNodeOutput extends NodeOutput {
 }
 
 export class UserTaskOutput extends NodeOutput {
+  withPlaceholder(name: string, value: unknown): UserTaskOutput {
+    this.parent.setUserTaskPlaceholder(this, name, value)
+    return this
+  }
+
   withNotes(notes: unknown): UserTaskOutput {
     this.parent.setUserTaskNotes(this, notes)
     return this

@@ -449,4 +449,31 @@ io.littlehorse.sdk.common.proto.VariableValue defaultValue);
    * <code>.littlehorse.StructDefId result_struct_def_id = 14;</code>
    */
   io.littlehorse.sdk.common.proto.StructDefIdOrBuilder getResultStructDefIdOrBuilder();
+
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   * @return Whether the form field is set.
+   */
+  boolean hasForm();
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   * @return The form.
+   */
+  io.littlehorse.sdk.common.proto.Form getForm();
+  /**
+   * <pre>
+   * The resolved form, if the UserTaskDef references a `FormDef`.
+   * </pre>
+   *
+   * <code>.littlehorse.Form form = 15;</code>
+   */
+  io.littlehorse.sdk.common.proto.FormOrBuilder getFormOrBuilder();
 }

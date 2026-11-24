@@ -33,6 +33,8 @@ const (
 	LittleHorse_PutStructDef_FullMethodName                = "/littlehorse.LittleHorse/PutStructDef"
 	LittleHorse_GetStructDef_FullMethodName                = "/littlehorse.LittleHorse/GetStructDef"
 	LittleHorse_ValidateStructDefEvolution_FullMethodName  = "/littlehorse.LittleHorse/ValidateStructDefEvolution"
+	LittleHorse_PutFormDef_FullMethodName                  = "/littlehorse.LittleHorse/PutFormDef"
+	LittleHorse_GetFormDef_FullMethodName                  = "/littlehorse.LittleHorse/GetFormDef"
 	LittleHorse_PutUserTaskDef_FullMethodName              = "/littlehorse.LittleHorse/PutUserTaskDef"
 	LittleHorse_GetUserTaskDef_FullMethodName              = "/littlehorse.LittleHorse/GetUserTaskDef"
 	LittleHorse_GetLatestUserTaskDef_FullMethodName        = "/littlehorse.LittleHorse/GetLatestUserTaskDef"
@@ -90,6 +92,7 @@ const (
 	LittleHorse_SearchPrincipal_FullMethodName             = "/littlehorse.LittleHorse/SearchPrincipal"
 	LittleHorse_SearchQuota_FullMethodName                 = "/littlehorse.LittleHorse/SearchQuota"
 	LittleHorse_SearchStructDef_FullMethodName             = "/littlehorse.LittleHorse/SearchStructDef"
+	LittleHorse_SearchFormDef_FullMethodName               = "/littlehorse.LittleHorse/SearchFormDef"
 	LittleHorse_GetInactiveThreadRun_FullMethodName        = "/littlehorse.LittleHorse/GetInactiveThreadRun"
 	LittleHorse_RegisterTaskWorker_FullMethodName          = "/littlehorse.LittleHorse/RegisterTaskWorker"
 	LittleHorse_PollTask_FullMethodName                    = "/littlehorse.LittleHorse/PollTask"
@@ -175,6 +178,11 @@ type LittleHorseClient interface {
 	GetStructDef(ctx context.Context, in *StructDefId, opts ...grpc.CallOption) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error)
+	// Creates a FormDef. Identical content returns the latest existing version;
+	// changed content creates a new version.
+	PutFormDef(ctx context.Context, in *PutFormDefRequest, opts ...grpc.CallOption) (*FormDef, error)
+	// Gets a FormDef.
+	GetFormDef(ctx context.Context, in *GetFormDefRequest, opts ...grpc.CallOption) (*FormDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(ctx context.Context, in *PutUserTaskDefRequest, opts ...grpc.CallOption) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -324,6 +332,8 @@ type LittleHorseClient interface {
 	SearchQuota(ctx context.Context, in *SearchQuotaRequest, opts ...grpc.CallOption) (*QuotaIdList, error)
 	// Search for StructDef's
 	SearchStructDef(ctx context.Context, in *SearchStructDefRequest, opts ...grpc.CallOption) (*StructDefIdList, error)
+	// Search for FormDef's
+	SearchFormDef(ctx context.Context, in *SearchFormDefRequest, opts ...grpc.CallOption) (*FormDefIdList, error)
 	// Get an InactiveThreadRun
 	GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
@@ -555,6 +565,24 @@ func (c *littleHorseClient) GetStructDef(ctx context.Context, in *StructDefId, o
 func (c *littleHorseClient) ValidateStructDefEvolution(ctx context.Context, in *ValidateStructDefEvolutionRequest, opts ...grpc.CallOption) (*ValidateStructDefEvolutionResponse, error) {
 	out := new(ValidateStructDefEvolutionResponse)
 	err := c.cc.Invoke(ctx, LittleHorse_ValidateStructDefEvolution_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) PutFormDef(ctx context.Context, in *PutFormDefRequest, opts ...grpc.CallOption) (*FormDef, error) {
+	out := new(FormDef)
+	err := c.cc.Invoke(ctx, LittleHorse_PutFormDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *littleHorseClient) GetFormDef(ctx context.Context, in *GetFormDefRequest, opts ...grpc.CallOption) (*FormDef, error) {
+	out := new(FormDef)
+	err := c.cc.Invoke(ctx, LittleHorse_GetFormDef_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1074,6 +1102,15 @@ func (c *littleHorseClient) SearchStructDef(ctx context.Context, in *SearchStruc
 	return out, nil
 }
 
+func (c *littleHorseClient) SearchFormDef(ctx context.Context, in *SearchFormDefRequest, opts ...grpc.CallOption) (*FormDefIdList, error) {
+	out := new(FormDefIdList)
+	err := c.cc.Invoke(ctx, LittleHorse_SearchFormDef_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *littleHorseClient) GetInactiveThreadRun(ctx context.Context, in *InactiveThreadRunId, opts ...grpc.CallOption) (*InactiveThreadRun, error) {
 	out := new(InactiveThreadRun)
 	err := c.cc.Invoke(ctx, LittleHorse_GetInactiveThreadRun_FullMethodName, in, out, opts...)
@@ -1507,6 +1544,11 @@ type LittleHorseServer interface {
 	GetStructDef(context.Context, *StructDefId) (*StructDef, error)
 	// EXPERIMENTAL: Validate evolution of an existing `StructDef` into a new `StructDef`
 	ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error)
+	// Creates a FormDef. Identical content returns the latest existing version;
+	// changed content creates a new version.
+	PutFormDef(context.Context, *PutFormDefRequest) (*FormDef, error)
+	// Gets a FormDef.
+	GetFormDef(context.Context, *GetFormDefRequest) (*FormDef, error)
 	// Creates a UserTaskDef.
 	PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error)
 	// Gets a specific UserTaskDef.
@@ -1656,6 +1698,8 @@ type LittleHorseServer interface {
 	SearchQuota(context.Context, *SearchQuotaRequest) (*QuotaIdList, error)
 	// Search for StructDef's
 	SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error)
+	// Search for FormDef's
+	SearchFormDef(context.Context, *SearchFormDefRequest) (*FormDefIdList, error)
 	// Get an InactiveThreadRun
 	GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error)
 	// Used by the Task Worker to:
@@ -1811,6 +1855,12 @@ func (UnimplementedLittleHorseServer) GetStructDef(context.Context, *StructDefId
 }
 func (UnimplementedLittleHorseServer) ValidateStructDefEvolution(context.Context, *ValidateStructDefEvolutionRequest) (*ValidateStructDefEvolutionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidateStructDefEvolution not implemented")
+}
+func (UnimplementedLittleHorseServer) PutFormDef(context.Context, *PutFormDefRequest) (*FormDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutFormDef not implemented")
+}
+func (UnimplementedLittleHorseServer) GetFormDef(context.Context, *GetFormDefRequest) (*FormDef, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFormDef not implemented")
 }
 func (UnimplementedLittleHorseServer) PutUserTaskDef(context.Context, *PutUserTaskDefRequest) (*UserTaskDef, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PutUserTaskDef not implemented")
@@ -1982,6 +2032,9 @@ func (UnimplementedLittleHorseServer) SearchQuota(context.Context, *SearchQuotaR
 }
 func (UnimplementedLittleHorseServer) SearchStructDef(context.Context, *SearchStructDefRequest) (*StructDefIdList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchStructDef not implemented")
+}
+func (UnimplementedLittleHorseServer) SearchFormDef(context.Context, *SearchFormDefRequest) (*FormDefIdList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFormDef not implemented")
 }
 func (UnimplementedLittleHorseServer) GetInactiveThreadRun(context.Context, *InactiveThreadRunId) (*InactiveThreadRun, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInactiveThreadRun not implemented")
@@ -2349,6 +2402,42 @@ func _LittleHorse_ValidateStructDefEvolution_Handler(srv interface{}, ctx contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(LittleHorseServer).ValidateStructDefEvolution(ctx, req.(*ValidateStructDefEvolutionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_PutFormDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutFormDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).PutFormDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_PutFormDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).PutFormDef(ctx, req.(*PutFormDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LittleHorse_GetFormDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFormDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).GetFormDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_GetFormDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).GetFormDef(ctx, req.(*GetFormDefRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3379,6 +3468,24 @@ func _LittleHorse_SearchStructDef_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LittleHorse_SearchFormDef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchFormDefRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LittleHorseServer).SearchFormDef(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LittleHorse_SearchFormDef_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LittleHorseServer).SearchFormDef(ctx, req.(*SearchFormDefRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LittleHorse_GetInactiveThreadRun_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InactiveThreadRunId)
 	if err := dec(in); err != nil {
@@ -4185,6 +4292,14 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LittleHorse_ValidateStructDefEvolution_Handler,
 		},
 		{
+			MethodName: "PutFormDef",
+			Handler:    _LittleHorse_PutFormDef_Handler,
+		},
+		{
+			MethodName: "GetFormDef",
+			Handler:    _LittleHorse_GetFormDef_Handler,
+		},
+		{
 			MethodName: "PutUserTaskDef",
 			Handler:    _LittleHorse_PutUserTaskDef_Handler,
 		},
@@ -4411,6 +4526,10 @@ var LittleHorse_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SearchStructDef",
 			Handler:    _LittleHorse_SearchStructDef_Handler,
+		},
+		{
+			MethodName: "SearchFormDef",
+			Handler:    _LittleHorse_SearchFormDef_Handler,
 		},
 		{
 			MethodName: "GetInactiveThreadRun",

@@ -49,7 +49,9 @@
                 }
               },
               "hook": "ON_TASK_ASSIGNED"
-            }]
+            }],
+            "placeholders": {
+            }
           }
         },
         "2-exit-EXIT": {

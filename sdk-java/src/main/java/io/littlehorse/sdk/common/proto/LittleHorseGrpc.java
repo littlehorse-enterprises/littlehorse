@@ -415,6 +415,68 @@ public final class LittleHorseGrpc {
     return getValidateStructDefEvolutionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDef> getPutFormDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "PutFormDef",
+      requestType = io.littlehorse.sdk.common.proto.PutFormDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.FormDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDef> getPutFormDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutFormDefRequest, io.littlehorse.sdk.common.proto.FormDef> getPutFormDefMethod;
+    if ((getPutFormDefMethod = LittleHorseGrpc.getPutFormDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getPutFormDefMethod = LittleHorseGrpc.getPutFormDefMethod) == null) {
+          LittleHorseGrpc.getPutFormDefMethod = getPutFormDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.PutFormDefRequest, io.littlehorse.sdk.common.proto.FormDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "PutFormDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.PutFormDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("PutFormDef"))
+              .build();
+        }
+      }
+    }
+    return getPutFormDefMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDef> getGetFormDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetFormDef",
+      requestType = io.littlehorse.sdk.common.proto.GetFormDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.FormDef.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDef> getGetFormDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.GetFormDefRequest, io.littlehorse.sdk.common.proto.FormDef> getGetFormDefMethod;
+    if ((getGetFormDefMethod = LittleHorseGrpc.getGetFormDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getGetFormDefMethod = LittleHorseGrpc.getGetFormDefMethod) == null) {
+          LittleHorseGrpc.getGetFormDefMethod = getGetFormDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.GetFormDefRequest, io.littlehorse.sdk.common.proto.FormDef>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetFormDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.GetFormDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.FormDef.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("GetFormDef"))
+              .build();
+        }
+      }
+    }
+    return getGetFormDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.PutUserTaskDefRequest,
       io.littlehorse.sdk.common.proto.UserTaskDef> getPutUserTaskDefMethod;
 
@@ -2182,6 +2244,37 @@ public final class LittleHorseGrpc {
     return getSearchStructDefMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDefIdList> getSearchFormDefMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SearchFormDef",
+      requestType = io.littlehorse.sdk.common.proto.SearchFormDefRequest.class,
+      responseType = io.littlehorse.sdk.common.proto.FormDefIdList.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchFormDefRequest,
+      io.littlehorse.sdk.common.proto.FormDefIdList> getSearchFormDefMethod() {
+    io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.SearchFormDefRequest, io.littlehorse.sdk.common.proto.FormDefIdList> getSearchFormDefMethod;
+    if ((getSearchFormDefMethod = LittleHorseGrpc.getSearchFormDefMethod) == null) {
+      synchronized (LittleHorseGrpc.class) {
+        if ((getSearchFormDefMethod = LittleHorseGrpc.getSearchFormDefMethod) == null) {
+          LittleHorseGrpc.getSearchFormDefMethod = getSearchFormDefMethod =
+              io.grpc.MethodDescriptor.<io.littlehorse.sdk.common.proto.SearchFormDefRequest, io.littlehorse.sdk.common.proto.FormDefIdList>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SearchFormDef"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.SearchFormDefRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  io.littlehorse.sdk.common.proto.FormDefIdList.getDefaultInstance()))
+              .setSchemaDescriptor(new LittleHorseMethodDescriptorSupplier("SearchFormDef"))
+              .build();
+        }
+      }
+    }
+    return getSearchFormDefMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<io.littlehorse.sdk.common.proto.InactiveThreadRunId,
       io.littlehorse.sdk.common.proto.InactiveThreadRun> getGetInactiveThreadRunMethod;
 
@@ -3657,6 +3750,27 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a FormDef. Identical content returns the latest existing version;
+     * changed content creates a new version.
+     * </pre>
+     */
+    default void putFormDef(io.littlehorse.sdk.common.proto.PutFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getPutFormDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a FormDef.
+     * </pre>
+     */
+    default void getFormDef(io.littlehorse.sdk.common.proto.GetFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getGetFormDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -4254,6 +4368,16 @@ public final class LittleHorseGrpc {
     default void searchStructDef(io.littlehorse.sdk.common.proto.SearchStructDefRequest request,
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList> responseObserver) {
       io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchStructDefMethod(), responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Search for FormDef's
+     * </pre>
+     */
+    default void searchFormDef(io.littlehorse.sdk.common.proto.SearchFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDefIdList> responseObserver) {
+      io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall(getSearchFormDefMethod(), responseObserver);
     }
 
     /**
@@ -4869,6 +4993,29 @@ public final class LittleHorseGrpc {
         io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse> responseObserver) {
       io.grpc.stub.ClientCalls.asyncUnaryCall(
           getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Creates a FormDef. Identical content returns the latest existing version;
+     * changed content creates a new version.
+     * </pre>
+     */
+    public void putFormDef(io.littlehorse.sdk.common.proto.PutFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getPutFormDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
+     * Gets a FormDef.
+     * </pre>
+     */
+    public void getFormDef(io.littlehorse.sdk.common.proto.GetFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getGetFormDefMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -5531,6 +5678,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for FormDef's
+     * </pre>
+     */
+    public void searchFormDef(io.littlehorse.sdk.common.proto.SearchFormDefRequest request,
+        io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDefIdList> responseObserver) {
+      io.grpc.stub.ClientCalls.asyncUnaryCall(
+          getChannel().newCall(getSearchFormDefMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     * <pre>
      * Get an InactiveThreadRun
      * </pre>
      */
@@ -6163,6 +6321,27 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Creates a FormDef. Identical content returns the latest existing version;
+     * changed content creates a new version.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDef putFormDef(io.littlehorse.sdk.common.proto.PutFormDefRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getPutFormDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a FormDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDef getFormDef(io.littlehorse.sdk.common.proto.GetFormDefRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getGetFormDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Creates a UserTaskDef.
      * </pre>
      */
@@ -6764,6 +6943,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for FormDef's
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDefIdList searchFormDef(io.littlehorse.sdk.common.proto.SearchFormDefRequest request) throws io.grpc.StatusException {
+      return io.grpc.stub.ClientCalls.blockingV2UnaryCall(
+          getChannel(), getSearchFormDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Get an InactiveThreadRun
      * </pre>
      */
@@ -7353,6 +7542,27 @@ public final class LittleHorseGrpc {
     public io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse validateStructDefEvolution(io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
       return io.grpc.stub.ClientCalls.blockingUnaryCall(
           getChannel(), getValidateStructDefEvolutionMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a FormDef. Identical content returns the latest existing version;
+     * changed content creates a new version.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDef putFormDef(io.littlehorse.sdk.common.proto.PutFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getPutFormDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a FormDef.
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDef getFormDef(io.littlehorse.sdk.common.proto.GetFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getGetFormDefMethod(), getCallOptions(), request);
     }
 
     /**
@@ -7958,6 +8168,16 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for FormDef's
+     * </pre>
+     */
+    public io.littlehorse.sdk.common.proto.FormDefIdList searchFormDef(io.littlehorse.sdk.common.proto.SearchFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.blockingUnaryCall(
+          getChannel(), getSearchFormDefMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
      * Get an InactiveThreadRun
      * </pre>
      */
@@ -8547,6 +8767,29 @@ public final class LittleHorseGrpc {
         io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest request) {
       return io.grpc.stub.ClientCalls.futureUnaryCall(
           getChannel().newCall(getValidateStructDefEvolutionMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Creates a FormDef. Identical content returns the latest existing version;
+     * changed content creates a new version.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.FormDef> putFormDef(
+        io.littlehorse.sdk.common.proto.PutFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getPutFormDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
+     * Gets a FormDef.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.FormDef> getFormDef(
+        io.littlehorse.sdk.common.proto.GetFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getGetFormDefMethod(), getCallOptions()), request);
     }
 
     /**
@@ -9209,6 +9452,17 @@ public final class LittleHorseGrpc {
 
     /**
      * <pre>
+     * Search for FormDef's
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<io.littlehorse.sdk.common.proto.FormDefIdList> searchFormDef(
+        io.littlehorse.sdk.common.proto.SearchFormDefRequest request) {
+      return io.grpc.stub.ClientCalls.futureUnaryCall(
+          getChannel().newCall(getSearchFormDefMethod(), getCallOptions()), request);
+    }
+
+    /**
+     * <pre>
      * Get an InactiveThreadRun
      * </pre>
      */
@@ -9685,104 +9939,107 @@ public final class LittleHorseGrpc {
   private static final int METHODID_PUT_STRUCT_DEF = 10;
   private static final int METHODID_GET_STRUCT_DEF = 11;
   private static final int METHODID_VALIDATE_STRUCT_DEF_EVOLUTION = 12;
-  private static final int METHODID_PUT_USER_TASK_DEF = 13;
-  private static final int METHODID_GET_USER_TASK_DEF = 14;
-  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 15;
-  private static final int METHODID_RUN_WF = 16;
-  private static final int METHODID_RUN_INLINE_WF = 17;
-  private static final int METHODID_GET_INLINE_WF_SPEC = 18;
-  private static final int METHODID_SCHEDULE_WF = 19;
-  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 20;
-  private static final int METHODID_GET_SCHEDULED_WF_RUN = 21;
-  private static final int METHODID_GET_WF_RUN = 22;
-  private static final int METHODID_GET_USER_TASK_RUN = 23;
-  private static final int METHODID_ASSIGN_USER_TASK_RUN = 24;
-  private static final int METHODID_COMPLETE_USER_TASK_RUN = 25;
-  private static final int METHODID_CANCEL_USER_TASK_RUN = 26;
-  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 27;
-  private static final int METHODID_LIST_USER_TASK_RUNS = 28;
-  private static final int METHODID_PUT_USER_TASK_RUN_COMMENT = 29;
-  private static final int METHODID_EDIT_USER_TASK_RUN_COMMENT = 30;
-  private static final int METHODID_DELETE_USER_TASK_RUN_COMMENT = 31;
-  private static final int METHODID_GET_NODE_RUN = 32;
-  private static final int METHODID_LIST_NODE_RUNS = 33;
-  private static final int METHODID_GET_TASK_RUN = 34;
-  private static final int METHODID_LIST_TASK_RUNS = 35;
-  private static final int METHODID_GET_VARIABLE = 36;
-  private static final int METHODID_PUT_VARIABLE = 37;
-  private static final int METHODID_LIST_VARIABLES = 38;
-  private static final int METHODID_PUT_EXTERNAL_EVENT = 39;
-  private static final int METHODID_PUT_CORRELATED_EVENT = 40;
-  private static final int METHODID_GET_EXTERNAL_EVENT = 41;
-  private static final int METHODID_GET_CORRELATED_EVENT = 42;
-  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 43;
-  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 44;
-  private static final int METHODID_GET_WORKFLOW_EVENT = 45;
-  private static final int METHODID_LIST_EXTERNAL_EVENTS = 46;
-  private static final int METHODID_LIST_WORKFLOW_EVENTS = 47;
-  private static final int METHODID_SEARCH_WF_RUN = 48;
-  private static final int METHODID_PUT_WORKFLOW_MIGRATION_PLAN = 49;
-  private static final int METHODID_GET_WORKFLOW_MIGRATION_PLAN = 50;
-  private static final int METHODID_DELETE_WORKFLOW_MIGRATION_PLAN = 51;
-  private static final int METHODID_APPLY_WORKFLOW_MIGRATION_PLAN = 52;
-  private static final int METHODID_SEARCH_WORKFLOW_MIGRATION_PLAN = 53;
-  private static final int METHODID_SEARCH_CORRELATED_EVENT = 54;
-  private static final int METHODID_SEARCH_NODE_RUN = 55;
-  private static final int METHODID_SEARCH_TASK_RUN = 56;
-  private static final int METHODID_SEARCH_USER_TASK_RUN = 57;
-  private static final int METHODID_SEARCH_VARIABLE = 58;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 59;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 60;
-  private static final int METHODID_SEARCH_TASK_DEF = 61;
-  private static final int METHODID_SEARCH_USER_TASK_DEF = 62;
-  private static final int METHODID_SEARCH_WF_SPEC = 63;
-  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 64;
-  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 65;
-  private static final int METHODID_SEARCH_TENANT = 66;
-  private static final int METHODID_SEARCH_PRINCIPAL = 67;
-  private static final int METHODID_SEARCH_QUOTA = 68;
-  private static final int METHODID_SEARCH_STRUCT_DEF = 69;
-  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 70;
-  private static final int METHODID_REGISTER_TASK_WORKER = 71;
-  private static final int METHODID_REPORT_TASK = 72;
-  private static final int METHODID_PUT_CHECKPOINT = 73;
-  private static final int METHODID_GET_CHECKPOINT = 74;
-  private static final int METHODID_STOP_WF_RUN = 75;
-  private static final int METHODID_RESUME_WF_RUN = 76;
-  private static final int METHODID_RESCUE_THREAD_RUN = 77;
-  private static final int METHODID_DELETE_WF_RUN = 78;
-  private static final int METHODID_DELETE_TASK_DEF = 79;
-  private static final int METHODID_DELETE_STRUCT_DEF = 80;
-  private static final int METHODID_DELETE_WF_SPEC = 81;
-  private static final int METHODID_DELETE_USER_TASK_DEF = 82;
-  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 83;
-  private static final int METHODID_DELETE_CORRELATED_EVENT = 84;
-  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 85;
-  private static final int METHODID_DELETE_PRINCIPAL = 86;
-  private static final int METHODID_DELETE_QUOTA = 87;
-  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 88;
-  private static final int METHODID_CREATE_BULK_JOB = 89;
-  private static final int METHODID_GET_BULK_JOB = 90;
-  private static final int METHODID_SEARCH_BULK_JOB = 91;
-  private static final int METHODID_DELETE_BULK_JOB = 92;
-  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 93;
-  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 94;
-  private static final int METHODID_LIST_TASK_METRICS = 95;
-  private static final int METHODID_LIST_QUOTA_USAGE_METRICS = 96;
-  private static final int METHODID_LIST_WF_METRICS = 97;
-  private static final int METHODID_GET_METRIC_WINDOW = 98;
-  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 99;
-  private static final int METHODID_PUT_TENANT = 100;
-  private static final int METHODID_GET_TENANT = 101;
-  private static final int METHODID_PUT_QUOTA = 102;
-  private static final int METHODID_GET_QUOTA = 103;
-  private static final int METHODID_PUT_PRINCIPAL = 104;
-  private static final int METHODID_GET_PRINCIPAL = 105;
-  private static final int METHODID_WHOAMI = 106;
-  private static final int METHODID_GET_SERVER_VERSION = 107;
-  private static final int METHODID_COUNT_NODE_RUN = 108;
-  private static final int METHODID_COUNT_TASK_RUN = 109;
-  private static final int METHODID_POLL_TASK = 110;
+  private static final int METHODID_PUT_FORM_DEF = 13;
+  private static final int METHODID_GET_FORM_DEF = 14;
+  private static final int METHODID_PUT_USER_TASK_DEF = 15;
+  private static final int METHODID_GET_USER_TASK_DEF = 16;
+  private static final int METHODID_GET_LATEST_USER_TASK_DEF = 17;
+  private static final int METHODID_RUN_WF = 18;
+  private static final int METHODID_RUN_INLINE_WF = 19;
+  private static final int METHODID_GET_INLINE_WF_SPEC = 20;
+  private static final int METHODID_SCHEDULE_WF = 21;
+  private static final int METHODID_SEARCH_SCHEDULED_WF_RUN = 22;
+  private static final int METHODID_GET_SCHEDULED_WF_RUN = 23;
+  private static final int METHODID_GET_WF_RUN = 24;
+  private static final int METHODID_GET_USER_TASK_RUN = 25;
+  private static final int METHODID_ASSIGN_USER_TASK_RUN = 26;
+  private static final int METHODID_COMPLETE_USER_TASK_RUN = 27;
+  private static final int METHODID_CANCEL_USER_TASK_RUN = 28;
+  private static final int METHODID_SAVE_USER_TASK_RUN_PROGRESS = 29;
+  private static final int METHODID_LIST_USER_TASK_RUNS = 30;
+  private static final int METHODID_PUT_USER_TASK_RUN_COMMENT = 31;
+  private static final int METHODID_EDIT_USER_TASK_RUN_COMMENT = 32;
+  private static final int METHODID_DELETE_USER_TASK_RUN_COMMENT = 33;
+  private static final int METHODID_GET_NODE_RUN = 34;
+  private static final int METHODID_LIST_NODE_RUNS = 35;
+  private static final int METHODID_GET_TASK_RUN = 36;
+  private static final int METHODID_LIST_TASK_RUNS = 37;
+  private static final int METHODID_GET_VARIABLE = 38;
+  private static final int METHODID_PUT_VARIABLE = 39;
+  private static final int METHODID_LIST_VARIABLES = 40;
+  private static final int METHODID_PUT_EXTERNAL_EVENT = 41;
+  private static final int METHODID_PUT_CORRELATED_EVENT = 42;
+  private static final int METHODID_GET_EXTERNAL_EVENT = 43;
+  private static final int METHODID_GET_CORRELATED_EVENT = 44;
+  private static final int METHODID_AWAIT_WORKFLOW_EVENT = 45;
+  private static final int METHODID_GET_WORKFLOW_EVENT_DEF = 46;
+  private static final int METHODID_GET_WORKFLOW_EVENT = 47;
+  private static final int METHODID_LIST_EXTERNAL_EVENTS = 48;
+  private static final int METHODID_LIST_WORKFLOW_EVENTS = 49;
+  private static final int METHODID_SEARCH_WF_RUN = 50;
+  private static final int METHODID_PUT_WORKFLOW_MIGRATION_PLAN = 51;
+  private static final int METHODID_GET_WORKFLOW_MIGRATION_PLAN = 52;
+  private static final int METHODID_DELETE_WORKFLOW_MIGRATION_PLAN = 53;
+  private static final int METHODID_APPLY_WORKFLOW_MIGRATION_PLAN = 54;
+  private static final int METHODID_SEARCH_WORKFLOW_MIGRATION_PLAN = 55;
+  private static final int METHODID_SEARCH_CORRELATED_EVENT = 56;
+  private static final int METHODID_SEARCH_NODE_RUN = 57;
+  private static final int METHODID_SEARCH_TASK_RUN = 58;
+  private static final int METHODID_SEARCH_USER_TASK_RUN = 59;
+  private static final int METHODID_SEARCH_VARIABLE = 60;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT = 61;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT = 62;
+  private static final int METHODID_SEARCH_TASK_DEF = 63;
+  private static final int METHODID_SEARCH_USER_TASK_DEF = 64;
+  private static final int METHODID_SEARCH_WF_SPEC = 65;
+  private static final int METHODID_SEARCH_EXTERNAL_EVENT_DEF = 66;
+  private static final int METHODID_SEARCH_WORKFLOW_EVENT_DEF = 67;
+  private static final int METHODID_SEARCH_TENANT = 68;
+  private static final int METHODID_SEARCH_PRINCIPAL = 69;
+  private static final int METHODID_SEARCH_QUOTA = 70;
+  private static final int METHODID_SEARCH_STRUCT_DEF = 71;
+  private static final int METHODID_SEARCH_FORM_DEF = 72;
+  private static final int METHODID_GET_INACTIVE_THREAD_RUN = 73;
+  private static final int METHODID_REGISTER_TASK_WORKER = 74;
+  private static final int METHODID_REPORT_TASK = 75;
+  private static final int METHODID_PUT_CHECKPOINT = 76;
+  private static final int METHODID_GET_CHECKPOINT = 77;
+  private static final int METHODID_STOP_WF_RUN = 78;
+  private static final int METHODID_RESUME_WF_RUN = 79;
+  private static final int METHODID_RESCUE_THREAD_RUN = 80;
+  private static final int METHODID_DELETE_WF_RUN = 81;
+  private static final int METHODID_DELETE_TASK_DEF = 82;
+  private static final int METHODID_DELETE_STRUCT_DEF = 83;
+  private static final int METHODID_DELETE_WF_SPEC = 84;
+  private static final int METHODID_DELETE_USER_TASK_DEF = 85;
+  private static final int METHODID_DELETE_EXTERNAL_EVENT_DEF = 86;
+  private static final int METHODID_DELETE_CORRELATED_EVENT = 87;
+  private static final int METHODID_DELETE_WORKFLOW_EVENT_DEF = 88;
+  private static final int METHODID_DELETE_PRINCIPAL = 89;
+  private static final int METHODID_DELETE_QUOTA = 90;
+  private static final int METHODID_DELETE_SCHEDULED_WF_RUN = 91;
+  private static final int METHODID_CREATE_BULK_JOB = 92;
+  private static final int METHODID_GET_BULK_JOB = 93;
+  private static final int METHODID_SEARCH_BULK_JOB = 94;
+  private static final int METHODID_DELETE_BULK_JOB = 95;
+  private static final int METHODID_GET_TASK_DEF_METRICS_WINDOW = 96;
+  private static final int METHODID_GET_WF_SPEC_METRICS_WINDOW = 97;
+  private static final int METHODID_LIST_TASK_METRICS = 98;
+  private static final int METHODID_LIST_QUOTA_USAGE_METRICS = 99;
+  private static final int METHODID_LIST_WF_METRICS = 100;
+  private static final int METHODID_GET_METRIC_WINDOW = 101;
+  private static final int METHODID_SEARCH_WF_METRIC_WINDOW = 102;
+  private static final int METHODID_PUT_TENANT = 103;
+  private static final int METHODID_GET_TENANT = 104;
+  private static final int METHODID_PUT_QUOTA = 105;
+  private static final int METHODID_GET_QUOTA = 106;
+  private static final int METHODID_PUT_PRINCIPAL = 107;
+  private static final int METHODID_GET_PRINCIPAL = 108;
+  private static final int METHODID_WHOAMI = 109;
+  private static final int METHODID_GET_SERVER_VERSION = 110;
+  private static final int METHODID_COUNT_NODE_RUN = 111;
+  private static final int METHODID_COUNT_TASK_RUN = 112;
+  private static final int METHODID_POLL_TASK = 113;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -9852,6 +10109,14 @@ public final class LittleHorseGrpc {
         case METHODID_VALIDATE_STRUCT_DEF_EVOLUTION:
           serviceImpl.validateStructDefEvolution((io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>) responseObserver);
+          break;
+        case METHODID_PUT_FORM_DEF:
+          serviceImpl.putFormDef((io.littlehorse.sdk.common.proto.PutFormDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef>) responseObserver);
+          break;
+        case METHODID_GET_FORM_DEF:
+          serviceImpl.getFormDef((io.littlehorse.sdk.common.proto.GetFormDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDef>) responseObserver);
           break;
         case METHODID_PUT_USER_TASK_DEF:
           serviceImpl.putUserTaskDef((io.littlehorse.sdk.common.proto.PutUserTaskDefRequest) request,
@@ -10080,6 +10345,10 @@ public final class LittleHorseGrpc {
         case METHODID_SEARCH_STRUCT_DEF:
           serviceImpl.searchStructDef((io.littlehorse.sdk.common.proto.SearchStructDefRequest) request,
               (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.StructDefIdList>) responseObserver);
+          break;
+        case METHODID_SEARCH_FORM_DEF:
+          serviceImpl.searchFormDef((io.littlehorse.sdk.common.proto.SearchFormDefRequest) request,
+              (io.grpc.stub.StreamObserver<io.littlehorse.sdk.common.proto.FormDefIdList>) responseObserver);
           break;
         case METHODID_GET_INACTIVE_THREAD_RUN:
           serviceImpl.getInactiveThreadRun((io.littlehorse.sdk.common.proto.InactiveThreadRunId) request,
@@ -10353,6 +10622,20 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionRequest,
               io.littlehorse.sdk.common.proto.ValidateStructDefEvolutionResponse>(
                 service, METHODID_VALIDATE_STRUCT_DEF_EVOLUTION)))
+        .addMethod(
+          getPutFormDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.PutFormDefRequest,
+              io.littlehorse.sdk.common.proto.FormDef>(
+                service, METHODID_PUT_FORM_DEF)))
+        .addMethod(
+          getGetFormDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.GetFormDefRequest,
+              io.littlehorse.sdk.common.proto.FormDef>(
+                service, METHODID_GET_FORM_DEF)))
         .addMethod(
           getPutUserTaskDefMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
@@ -10753,6 +11036,13 @@ public final class LittleHorseGrpc {
               io.littlehorse.sdk.common.proto.StructDefIdList>(
                 service, METHODID_SEARCH_STRUCT_DEF)))
         .addMethod(
+          getSearchFormDefMethod(),
+          io.grpc.stub.ServerCalls.asyncUnaryCall(
+            new MethodHandlers<
+              io.littlehorse.sdk.common.proto.SearchFormDefRequest,
+              io.littlehorse.sdk.common.proto.FormDefIdList>(
+                service, METHODID_SEARCH_FORM_DEF)))
+        .addMethod(
           getGetInactiveThreadRunMethod(),
           io.grpc.stub.ServerCalls.asyncUnaryCall(
             new MethodHandlers<
@@ -11100,6 +11390,8 @@ public final class LittleHorseGrpc {
               .addMethod(getPutStructDefMethod())
               .addMethod(getGetStructDefMethod())
               .addMethod(getValidateStructDefEvolutionMethod())
+              .addMethod(getPutFormDefMethod())
+              .addMethod(getGetFormDefMethod())
               .addMethod(getPutUserTaskDefMethod())
               .addMethod(getGetUserTaskDefMethod())
               .addMethod(getGetLatestUserTaskDefMethod())
@@ -11157,6 +11449,7 @@ public final class LittleHorseGrpc {
               .addMethod(getSearchPrincipalMethod())
               .addMethod(getSearchQuotaMethod())
               .addMethod(getSearchStructDefMethod())
+              .addMethod(getSearchFormDefMethod())
               .addMethod(getGetInactiveThreadRunMethod())
               .addMethod(getRegisterTaskWorkerMethod())
               .addMethod(getPollTaskMethod())

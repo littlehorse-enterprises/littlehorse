@@ -39,6 +39,7 @@ import { AssignUserTaskRunRequest } from "./user_tasks";
 import { ScheduledWfRun } from "./scheduled_wf_run";
 import { WfRun } from "./wf_run";
 import { UserTaskDef } from "./user_tasks";
+import { FormDef } from "./form_def";
 import { StructDef } from "./struct_def";
 import { WfSpec } from "./wf_spec";
 import { WorkflowEventDef } from "./workflow_event";
@@ -71,6 +72,7 @@ import { NodeRun } from "./node_run";
 import { QuotaId } from "./object_id";
 import { PrincipalId } from "./object_id";
 import { TenantId } from "./object_id";
+import { FormDefId } from "./object_id";
 import { VariableId } from "./object_id";
 import { UserTaskRunId } from "./object_id";
 import { UserTaskRunStatus } from "./user_tasks";
@@ -87,6 +89,8 @@ import { InlineWfSpec } from "./wf_run";
 import { WorkflowEventDefId } from "./object_id";
 import { WfSpecId } from "./object_id";
 import { UserTaskDefId } from "./object_id";
+import { FormMetadataValue } from "./form_def";
+import { FormFieldDef } from "./form_def";
 import { TaskDefId } from "./object_id";
 import { CorrelatedEventId } from "./object_id";
 import { ScheduledWfRunId } from "./object_id";
@@ -96,6 +100,7 @@ import { ExternalEventDefId } from "./object_id";
 import { WfRunId } from "./object_id";
 import { CorrelatedEventConfig } from "./external_event";
 import { ExternalEventRetentionPolicy } from "./external_event";
+import { FormDefReference } from "./form_def";
 import { UserTaskField } from "./user_tasks";
 import { StructDefId } from "./object_id";
 import { InlineStructDef } from "./type_definition";
@@ -329,6 +334,12 @@ export interface PutUserTaskDefRequest {
      * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 4
      */
     resultStructDefId?: StructDefId;
+    /**
+     * Optional FormDef with UI metadata for collecting the result.
+     *
+     * @generated from protobuf field: optional littlehorse.FormDefReference form_def = 5
+     */
+    formDef?: FormDefReference;
 }
 /**
  * Field to create an ExternalEventDef.
@@ -523,6 +534,58 @@ export interface DeleteStructDefRequest {
      * @generated from protobuf field: littlehorse.StructDefId id = 1
      */
     id?: StructDefId;
+}
+/**
+ * Creates a new FormDef.
+ *
+ * @generated from protobuf message littlehorse.PutFormDefRequest
+ */
+export interface PutFormDefRequest {
+    /**
+     * The name of the FormDef.
+     *
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * The StructDef whose fields the FormDef describes.
+     *
+     * @generated from protobuf field: littlehorse.StructDefId result_struct_def_id = 2
+     */
+    resultStructDefId?: StructDefId;
+    /**
+     * UI metadata for individual fields.
+     *
+     * @generated from protobuf field: repeated littlehorse.FormFieldDef fields = 3
+     */
+    fields: FormFieldDef[];
+    /**
+     * Client-defined settings for the whole form.
+     *
+     * @generated from protobuf field: map<string, littlehorse.FormMetadataValue> metadata = 4
+     */
+    metadata: {
+        [key: string]: FormMetadataValue;
+    };
+}
+/**
+ * Gets a FormDef.
+ *
+ * @generated from protobuf message littlehorse.GetFormDefRequest
+ */
+export interface GetFormDefRequest {
+    /**
+     * The name of the FormDef.
+     *
+     * @generated from protobuf field: string name = 1
+     */
+    name: string;
+    /**
+     * The exact version. If omitted, returns the latest version.
+     *
+     * @generated from protobuf field: optional int32 version = 2
+     */
+    version?: number;
 }
 /**
  * Deletes a UserTaskDef.
@@ -1416,6 +1479,69 @@ export interface StructDefIdList {
      * The bookmark can be used for cursor-based pagination. If it is null, the server
      * has returned all results. If it is set, you can pass it into your next request
      * to resume searching where your previous request left off.
+     *
+     * @generated from protobuf field: optional bytes bookmark = 2
+     */
+    bookmark?: Uint8Array;
+}
+/**
+ * Search for FormDef's.
+ *
+ * @generated from protobuf message littlehorse.SearchFormDefRequest
+ */
+export interface SearchFormDefRequest {
+    /**
+     * Bookmark for cursor-based pagination; pass if applicable.
+     *
+     * @generated from protobuf field: optional bytes bookmark = 1
+     */
+    bookmark?: Uint8Array;
+    /**
+     * Maximum results to return in one request.
+     *
+     * @generated from protobuf field: optional int32 limit = 2
+     */
+    limit?: number;
+    /**
+     * Optionally specify filters. If no filters are specified, all FormDef's are
+     * returned.
+     *
+     * @generated from protobuf oneof: form_def_criteria
+     */
+    formDefCriteria: {
+        oneofKind: "prefix";
+        /**
+         * Return all FormDef's with a specific prefix.
+         *
+         * @generated from protobuf field: string prefix = 3
+         */
+        prefix: string;
+    } | {
+        oneofKind: "name";
+        /**
+         * Return all FormDef's with a specific name.
+         *
+         * @generated from protobuf field: string name = 4
+         */
+        name: string;
+    } | {
+        oneofKind: undefined;
+    };
+}
+/**
+ * List of FormDef Id's.
+ *
+ * @generated from protobuf message littlehorse.FormDefIdList
+ */
+export interface FormDefIdList {
+    /**
+     * The result object Id's
+     *
+     * @generated from protobuf field: repeated littlehorse.FormDefId results = 1
+     */
+    results: FormDefId[];
+    /**
+     * Bookmark for the next page; unset if all results were returned.
      *
      * @generated from protobuf field: optional bytes bookmark = 2
      */
@@ -3632,7 +3758,8 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
             { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
             { no: 2, name: "fields", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => UserTaskField },
             { no: 3, name: "description", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ },
-            { no: 4, name: "result_struct_def_id", kind: "message", T: () => StructDefId }
+            { no: 4, name: "result_struct_def_id", kind: "message", T: () => StructDefId },
+            { no: 5, name: "form_def", kind: "message", T: () => FormDefReference }
         ]);
     }
     create(value?: PartialMessage<PutUserTaskDefRequest>): PutUserTaskDefRequest {
@@ -3660,6 +3787,9 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
                 case /* littlehorse.StructDefId result_struct_def_id */ 4:
                     message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
                     break;
+                case /* optional littlehorse.FormDefReference form_def */ 5:
+                    message.formDef = FormDefReference.internalBinaryRead(reader, reader.uint32(), options, message.formDef);
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -3684,6 +3814,9 @@ class PutUserTaskDefRequest$Type extends MessageType<PutUserTaskDefRequest> {
         /* littlehorse.StructDefId result_struct_def_id = 4; */
         if (message.resultStructDefId)
             StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(4, WireType.LengthDelimited).fork(), options).join();
+        /* optional littlehorse.FormDefReference form_def = 5; */
+        if (message.formDef)
+            FormDefReference.internalBinaryWrite(message.formDef, writer.tag(5, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -4180,6 +4313,150 @@ class DeleteStructDefRequest$Type extends MessageType<DeleteStructDefRequest> {
  * @generated MessageType for protobuf message littlehorse.DeleteStructDefRequest
  */
 export const DeleteStructDefRequest = new DeleteStructDefRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class PutFormDefRequest$Type extends MessageType<PutFormDefRequest> {
+    constructor() {
+        super("littlehorse.PutFormDefRequest", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "result_struct_def_id", kind: "message", T: () => StructDefId },
+            { no: 3, name: "fields", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => FormFieldDef },
+            { no: 4, name: "metadata", kind: "map", K: 9 /*ScalarType.STRING*/, V: { kind: "message", T: () => FormMetadataValue } }
+        ]);
+    }
+    create(value?: PartialMessage<PutFormDefRequest>): PutFormDefRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        message.fields = [];
+        message.metadata = {};
+        if (value !== undefined)
+            reflectionMergePartial<PutFormDefRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: PutFormDefRequest): PutFormDefRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* littlehorse.StructDefId result_struct_def_id */ 2:
+                    message.resultStructDefId = StructDefId.internalBinaryRead(reader, reader.uint32(), options, message.resultStructDefId);
+                    break;
+                case /* repeated littlehorse.FormFieldDef fields */ 3:
+                    message.fields.push(FormFieldDef.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* map<string, littlehorse.FormMetadataValue> metadata */ 4:
+                    this.binaryReadMap4(message.metadata, reader, options);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    private binaryReadMap4(map: PutFormDefRequest["metadata"], reader: IBinaryReader, options: BinaryReadOptions): void {
+        let len = reader.uint32(), end = reader.pos + len, key: keyof PutFormDefRequest["metadata"] | undefined, val: PutFormDefRequest["metadata"][any] | undefined;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case 1:
+                    key = reader.string();
+                    break;
+                case 2:
+                    val = FormMetadataValue.internalBinaryRead(reader, reader.uint32(), options);
+                    break;
+                default: throw new globalThis.Error("unknown map entry field for littlehorse.PutFormDefRequest.metadata");
+            }
+        }
+        map[key ?? ""] = val ?? FormMetadataValue.create();
+    }
+    internalBinaryWrite(message: PutFormDefRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* littlehorse.StructDefId result_struct_def_id = 2; */
+        if (message.resultStructDefId)
+            StructDefId.internalBinaryWrite(message.resultStructDefId, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* repeated littlehorse.FormFieldDef fields = 3; */
+        for (let i = 0; i < message.fields.length; i++)
+            FormFieldDef.internalBinaryWrite(message.fields[i], writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* map<string, littlehorse.FormMetadataValue> metadata = 4; */
+        for (let k of globalThis.Object.keys(message.metadata)) {
+            writer.tag(4, WireType.LengthDelimited).fork().tag(1, WireType.LengthDelimited).string(k);
+            writer.tag(2, WireType.LengthDelimited).fork();
+            FormMetadataValue.internalBinaryWrite(message.metadata[k], writer, options);
+            writer.join().join();
+        }
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.PutFormDefRequest
+ */
+export const PutFormDefRequest = new PutFormDefRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class GetFormDefRequest$Type extends MessageType<GetFormDefRequest> {
+    constructor() {
+        super("littlehorse.GetFormDefRequest", [
+            { no: 1, name: "name", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
+            { no: 2, name: "version", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ }
+        ]);
+    }
+    create(value?: PartialMessage<GetFormDefRequest>): GetFormDefRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.name = "";
+        if (value !== undefined)
+            reflectionMergePartial<GetFormDefRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: GetFormDefRequest): GetFormDefRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* string name */ 1:
+                    message.name = reader.string();
+                    break;
+                case /* optional int32 version */ 2:
+                    message.version = reader.int32();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: GetFormDefRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* string name = 1; */
+        if (message.name !== "")
+            writer.tag(1, WireType.LengthDelimited).string(message.name);
+        /* optional int32 version = 2; */
+        if (message.version !== undefined)
+            writer.tag(2, WireType.Varint).int32(message.version);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.GetFormDefRequest
+ */
+export const GetFormDefRequest = new GetFormDefRequest$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class DeleteUserTaskDefRequest$Type extends MessageType<DeleteUserTaskDefRequest> {
     constructor() {
@@ -6188,6 +6465,134 @@ class StructDefIdList$Type extends MessageType<StructDefIdList> {
  * @generated MessageType for protobuf message littlehorse.StructDefIdList
  */
 export const StructDefIdList = new StructDefIdList$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class SearchFormDefRequest$Type extends MessageType<SearchFormDefRequest> {
+    constructor() {
+        super("littlehorse.SearchFormDefRequest", [
+            { no: 1, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ },
+            { no: 2, name: "limit", kind: "scalar", opt: true, T: 5 /*ScalarType.INT32*/ },
+            { no: 3, name: "prefix", kind: "scalar", oneof: "formDefCriteria", T: 9 /*ScalarType.STRING*/ },
+            { no: 4, name: "name", kind: "scalar", oneof: "formDefCriteria", T: 9 /*ScalarType.STRING*/ }
+        ]);
+    }
+    create(value?: PartialMessage<SearchFormDefRequest>): SearchFormDefRequest {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.formDefCriteria = { oneofKind: undefined };
+        if (value !== undefined)
+            reflectionMergePartial<SearchFormDefRequest>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: SearchFormDefRequest): SearchFormDefRequest {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* optional bytes bookmark */ 1:
+                    message.bookmark = reader.bytes();
+                    break;
+                case /* optional int32 limit */ 2:
+                    message.limit = reader.int32();
+                    break;
+                case /* string prefix */ 3:
+                    message.formDefCriteria = {
+                        oneofKind: "prefix",
+                        prefix: reader.string()
+                    };
+                    break;
+                case /* string name */ 4:
+                    message.formDefCriteria = {
+                        oneofKind: "name",
+                        name: reader.string()
+                    };
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: SearchFormDefRequest, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* optional bytes bookmark = 1; */
+        if (message.bookmark !== undefined)
+            writer.tag(1, WireType.LengthDelimited).bytes(message.bookmark);
+        /* optional int32 limit = 2; */
+        if (message.limit !== undefined)
+            writer.tag(2, WireType.Varint).int32(message.limit);
+        /* string prefix = 3; */
+        if (message.formDefCriteria.oneofKind === "prefix")
+            writer.tag(3, WireType.LengthDelimited).string(message.formDefCriteria.prefix);
+        /* string name = 4; */
+        if (message.formDefCriteria.oneofKind === "name")
+            writer.tag(4, WireType.LengthDelimited).string(message.formDefCriteria.name);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.SearchFormDefRequest
+ */
+export const SearchFormDefRequest = new SearchFormDefRequest$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class FormDefIdList$Type extends MessageType<FormDefIdList> {
+    constructor() {
+        super("littlehorse.FormDefIdList", [
+            { no: 1, name: "results", kind: "message", repeat: 2 /*RepeatType.UNPACKED*/, T: () => FormDefId },
+            { no: 2, name: "bookmark", kind: "scalar", opt: true, T: 12 /*ScalarType.BYTES*/ }
+        ]);
+    }
+    create(value?: PartialMessage<FormDefIdList>): FormDefIdList {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        message.results = [];
+        if (value !== undefined)
+            reflectionMergePartial<FormDefIdList>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: FormDefIdList): FormDefIdList {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* repeated littlehorse.FormDefId results */ 1:
+                    message.results.push(FormDefId.internalBinaryRead(reader, reader.uint32(), options));
+                    break;
+                case /* optional bytes bookmark */ 2:
+                    message.bookmark = reader.bytes();
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: FormDefIdList, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* repeated littlehorse.FormDefId results = 1; */
+        for (let i = 0; i < message.results.length; i++)
+            FormDefId.internalBinaryWrite(message.results[i], writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        /* optional bytes bookmark = 2; */
+        if (message.bookmark !== undefined)
+            writer.tag(2, WireType.LengthDelimited).bytes(message.bookmark);
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.FormDefIdList
+ */
+export const FormDefIdList = new FormDefIdList$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class UserTaskDefIdList$Type extends MessageType<UserTaskDefIdList> {
     constructor() {
@@ -10002,6 +10407,8 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "PutStructDef", options: {}, I: PutStructDefRequest, O: StructDef },
     { name: "GetStructDef", options: {}, I: StructDefId, O: StructDef },
     { name: "ValidateStructDefEvolution", options: {}, I: ValidateStructDefEvolutionRequest, O: ValidateStructDefEvolutionResponse },
+    { name: "PutFormDef", options: {}, I: PutFormDefRequest, O: FormDef },
+    { name: "GetFormDef", options: {}, I: GetFormDefRequest, O: FormDef },
     { name: "PutUserTaskDef", options: {}, I: PutUserTaskDefRequest, O: UserTaskDef },
     { name: "GetUserTaskDef", options: {}, I: UserTaskDefId, O: UserTaskDef },
     { name: "GetLatestUserTaskDef", options: {}, I: GetLatestUserTaskDefRequest, O: UserTaskDef },
@@ -10059,6 +10466,7 @@ export const LittleHorse = new ServiceType("littlehorse.LittleHorse", [
     { name: "SearchPrincipal", options: {}, I: SearchPrincipalRequest, O: PrincipalIdList },
     { name: "SearchQuota", options: {}, I: SearchQuotaRequest, O: QuotaIdList },
     { name: "SearchStructDef", options: {}, I: SearchStructDefRequest, O: StructDefIdList },
+    { name: "SearchFormDef", options: {}, I: SearchFormDefRequest, O: FormDefIdList },
     { name: "GetInactiveThreadRun", options: {}, I: InactiveThreadRunId, O: InactiveThreadRun },
     { name: "RegisterTaskWorker", options: {}, I: RegisterTaskWorkerRequest, O: RegisterTaskWorkerResponse },
     { name: "PollTask", serverStreaming: true, clientStreaming: true, options: {}, I: PollTaskRequest, O: PollTaskResponse },

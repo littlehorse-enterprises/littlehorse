@@ -47,6 +47,7 @@
     "ThrowEventNodeOutput#registeredAs",
     "UserTaskOutput#withNotes",
     "UserTaskOutput#withOnCancellationException",
+    "UserTaskOutput#withPlaceholder",
     "WaitForThreadsNodeOutput#handleAnyFailureOnChild",
     "WaitForThreadsNodeOutput#handleErrorOnChild",
     "WaitForThreadsNodeOutput#handleExceptionOnChild",

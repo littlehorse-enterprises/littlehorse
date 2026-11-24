@@ -4,6 +4,7 @@ package littlehorse;
 
 import "google/protobuf/timestamp.proto";
 import "common_enums.proto";
+import "form_def.proto";
 import "object_id.proto";
 import "type_definition.proto";
 
@@ -37,6 +38,9 @@ message UserTaskDef {
   // The exact StructDef that defines the result of a UserTaskRun.
   // Unset for legacy UserTaskDefs that use fields.
   StructDefId result_struct_def_id = 6;
+
+  // Optional `FormDef` with UI metadata for collecting the result.
+  optional FormDefReference form_def = 7;
 }
 
 // A UserTaskField is a specific field of data to be entered into a UserTaskRun.
@@ -134,6 +138,9 @@ message UserTaskRun {
   // Used by clients to render fields and by the server to validate submissions.
   // Unset for legacy field-backed runs and runs without a result schema.
   StructDefId result_struct_def_id = 14;
+
+  // The resolved form, if the UserTaskDef references a `FormDef`.
+  Form form = 15;
 }
 
 // Re-Assigns a UserTaskRun to a specific userId or userGroup.

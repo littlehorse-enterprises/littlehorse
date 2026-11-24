@@ -688,6 +688,10 @@ public final class WfsdkArea {
             UserTaskOutput ut = wf.assignUserTask("approve-request", "alice", "approvers");
             if (f) ut.withOnCancellationException("cancelled");
         });
+        pair("user-task-placeholder", f -> wf -> {
+            UserTaskOutput ut = wf.assignUserTask("approve-request", "alice", "approvers");
+            if (f) ut.withPlaceholder("title", "Expense approval");
+        });
         pair("release-to-group-on-deadline", f -> wf -> {
             UserTaskOutput ut = wf.assignUserTask("approve-request", "alice", "approvers");
             if (f) wf.releaseToGroupOnDeadline(ut, 300);

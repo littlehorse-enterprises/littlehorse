@@ -954,6 +954,20 @@ func (t *WorkflowThread) HandleAnyFailure(
 	t.handleAnyFailure(&nodeOutput, handler)
 }
 
+func (u *UserTaskNodeOutput) WithPlaceholder(name string, value interface{}) *UserTaskNodeOutput {
+	assignment, err := u.thread.assignVariable(value)
+	if err != nil {
+		u.thread.throwError(err)
+		return u
+	}
+	node := u.node.GetUserTask()
+	if node.Placeholders == nil {
+		node.Placeholders = make(map[string]*lhproto.VariableAssignment)
+	}
+	node.Placeholders[name] = assignment
+	return u
+}
+
 func (u *UserTaskNodeOutput) WithNotes(notes interface{}) *UserTaskNodeOutput {
 	userTaskNode := u.node.GetUserTask()
 	notesVar, err := u.thread.assignVariable(notes)

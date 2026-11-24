@@ -6,11 +6,14 @@ import io.littlehorse.common.exceptions.LHApiException;
 import io.littlehorse.common.model.getable.global.acl.PrincipalModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.objectId.ExternalEventDefIdModel;
+import io.littlehorse.common.model.getable.objectId.FormDefIdModel;
 import io.littlehorse.common.model.getable.objectId.PrincipalIdModel;
 import io.littlehorse.common.model.getable.objectId.StructDefIdModel;
 import io.littlehorse.common.model.getable.objectId.TaskDefIdModel;
@@ -100,6 +103,17 @@ public class WfService {
 
     public StructDefModel getStructDef(StructDefIdModel id) {
         return getStructDef(id.getName(), id.getVersion());
+    }
+
+    public FormDefModel getFormDef(String name, Integer version) {
+        if (version != null) {
+            return metadataManager.get(new FormDefIdModel(name, version));
+        }
+        return metadataManager.getLastFromPrefix(FormDefIdModel.getPrefix(name), FormDefModel.class);
+    }
+
+    public FormDefModel getFormDef(FormDefReferenceModel ref) {
+        return getFormDef(ref.getName(), ref.getVersion());
     }
 
     public TaskDefModel getTaskDef(String name) {

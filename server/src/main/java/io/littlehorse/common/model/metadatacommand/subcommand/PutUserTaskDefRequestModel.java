@@ -5,6 +5,8 @@ import io.grpc.Status;
 import io.littlehorse.common.LHConstants;
 import io.littlehorse.common.LHSerializable;
 import io.littlehorse.common.exceptions.LHApiException;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.node.subnode.usertasks.UserTaskFieldModel;
@@ -29,6 +31,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
     public String description;
     public List<UserTaskFieldModel> fields;
     private StructDefIdModel resultStructDefId;
+    private FormDefReferenceModel formDef;
 
     public PutUserTaskDefRequestModel() {
         fields = new ArrayList<>();
@@ -46,6 +49,7 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         if (resultStructDefId != null) {
             out.setResultStructDefId(resultStructDefId.toProto());
         }
+        if (formDef != null) out.setFormDef(formDef.toProto());
         for (UserTaskFieldModel f : fields) {
             out.addFields(f.toProto());
         }
@@ -59,6 +63,9 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         if (p.hasDescription()) description = p.getDescription();
         if (p.hasResultStructDefId()) {
             resultStructDefId = StructDefIdModel.fromProto(p.getResultStructDefId(), context);
+        }
+        if (p.hasFormDef()) {
+            formDef = LHSerializable.fromProto(p.getFormDef(), FormDefReferenceModel.class, context);
         }
         for (UserTaskField utfpb : p.getFieldsList()) {
             fields.add(LHSerializable.fromProto(utfpb, UserTaskFieldModel.class, context));
@@ -84,12 +91,14 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
             throw new LHApiException(
                     Status.INVALID_ARGUMENT, "StructDef %s does not exist".formatted(resultStructDefId));
         }
+        if (formDef != null) validateFormDef(context);
 
         UserTaskDefModel spec = new UserTaskDefModel();
         spec.name = name;
         spec.description = description;
         spec.fields = fields;
         spec.setResultStructDefId(resultStructDefId);
+        spec.setFormDef(formDef);
         spec.createdAt = new Date();
 
         UserTaskDefModel oldVersion =
@@ -105,6 +114,26 @@ public class PutUserTaskDefRequestModel extends MetadataSubCommand<PutUserTaskDe
         metadataManager.put(spec);
 
         return spec.toProto().build();
+    }
+
+    private void validateFormDef(MetadataProcessorContext context) {
+        if (resultStructDefId == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "A FormDef requires result_struct_def_id");
+        }
+        FormDefModel resolved = context.service().getFormDef(formDef);
+        if (resolved == null) {
+            throw new LHApiException(Status.INVALID_ARGUMENT, "FormDef %s does not exist".formatted(formDef.getName()));
+        }
+        // Versions may differ: the UserTaskDef sets a minimum StructDef version, the FormDef an exact one.
+        if (!resolved.getResultStructDefId().getName().equals(resultStructDefId.getName())) {
+            throw new LHApiException(
+                    Status.INVALID_ARGUMENT,
+                    "FormDef %s describes StructDef %s, not %s"
+                            .formatted(
+                                    formDef.getName(),
+                                    resolved.getResultStructDefId().getName(),
+                                    resultStructDefId.getName()));
+        }
     }
 
     public String getPartitionKey() {

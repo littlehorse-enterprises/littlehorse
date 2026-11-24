@@ -30,7 +30,9 @@
                 "str": "alice"
               }
             },
-            "actions": []
+            "actions": [],
+            "placeholders": {
+            }
           }
         },
         "2-exit-EXIT": {

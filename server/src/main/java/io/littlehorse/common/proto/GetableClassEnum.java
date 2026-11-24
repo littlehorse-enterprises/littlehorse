@@ -123,6 +123,10 @@ public enum GetableClassEnum
    * <code>INLINE_WF_SPEC = 27;</code>
    */
   INLINE_WF_SPEC(27),
+  /**
+   * <code>FORM_DEF = 28;</code>
+   */
+  FORM_DEF(28),
   UNRECOGNIZED(-1),
   ;
 
@@ -247,6 +251,10 @@ public enum GetableClassEnum
    * <code>INLINE_WF_SPEC = 27;</code>
    */
   public static final int INLINE_WF_SPEC_VALUE = 27;
+  /**
+   * <code>FORM_DEF = 28;</code>
+   */
+  public static final int FORM_DEF_VALUE = 28;
 
 
   public final int getNumber() {
@@ -301,6 +309,7 @@ public enum GetableClassEnum
       case 25: return ACTIVE_BULK_JOB;
       case 26: return WORKFLOW_MIGRATION_PLAN;
       case 27: return INLINE_WF_SPEC;
+      case 28: return FORM_DEF;
       default: return null;
     }
   }

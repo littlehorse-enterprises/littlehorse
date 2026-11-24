@@ -48,7 +48,9 @@
                 }
               },
               "hook": "ON_ARRIVAL"
-            }]
+            }],
+            "placeholders": {
+            }
           }
         },
         "2-exit-EXIT": {

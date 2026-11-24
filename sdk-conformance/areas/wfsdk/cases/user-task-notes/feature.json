@@ -35,6 +35,8 @@
               "literalValue": {
                 "str": "Please review"
               }
+            },
+            "placeholders": {
             }
           }
         },

@@ -1311,56 +1311,31 @@ class UserTaskOutput(NodeOutput):
         self._notes = notes
         self._on_cancellation_exception_name = on_cancellation_exception_name
 
+    def _user_task_node(self) -> UserTaskNode:
+        node = self._thread._last_node()
+        if node.name != self._node_name or not isinstance(node.sub_node, UserTaskNode):
+            raise ValueError("tried to mutate stale UserTaskOutput!")
+        return node.sub_node
+
+    def with_placeholder(self, name: str, value: Any) -> "UserTaskOutput":
+        """Set a named form placeholder."""
+        node = self._user_task_node()
+        assignment = to_variable_assignment(value)
+        node.placeholders[name].CopyFrom(assignment)
+        return self
+
     def with_notes(
         self, notes: Union[str, WfRunVariable, LHFormatString]
     ) -> "UserTaskOutput":
-        node = self._thread._last_node()
-        if node.name != self._node_name:
-            raise ValueError("tried to mutate stale UserTaskOutput!")
-
-        ug = to_variable_assignment(self._user_group) if self._user_group else None
-        ui = to_variable_assignment(self._user_id) if self._user_id else None
-        if self._on_cancellation_exception_name:
-            exception_name = to_variable_assignment(
-                self._on_cancellation_exception_name
-            )
-        else:
-            exception_name = None
-
-        ut_node = UserTaskNode(
-            user_task_def_name=self._user_task_def_name,
-            user_group=ug,
-            user_id=ui,
-            notes=to_variable_assignment(notes),
-            on_cancellation_exception_name=exception_name,
-        )
-        self._notes = notes
-
-        node.sub_node = ut_node
+        self._user_task_node().notes.CopyFrom(to_variable_assignment(notes))
         return self
 
     def with_on_cancellation_exception(
         self, exception_name: Union[str, WfRunVariable]
     ) -> "UserTaskOutput":
-        node = self._thread._last_node()
-        if node.name != self._node_name:
-            raise ValueError("tried to mutate stale UserTaskOutput!")
-
-        ug = to_variable_assignment(self._user_group) if self._user_group else None
-        ui = to_variable_assignment(self._user_id) if self._user_id else None
-        if self._notes:
-            notes = to_variable_assignment(self._notes)
-        else:
-            notes = None
-        ut_node = UserTaskNode(
-            user_task_def_name=self._user_task_def_name,
-            user_group=ug,
-            user_id=ui,
-            notes=notes,
-            on_cancellation_exception_name=to_variable_assignment(exception_name),
+        self._user_task_node().on_cancellation_exception_name.CopyFrom(
+            to_variable_assignment(exception_name)
         )
-
-        node.sub_node = ut_node
         return self
 
 

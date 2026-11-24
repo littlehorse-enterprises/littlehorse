@@ -1,8 +1,8 @@
 {
   "sdk": "js",
-  "corpusRevision": "410fc56c0",
+  "corpusRevision": "9d08c2909",
   "summary": {
-    "PASS": 147,
+    "PASS": 148,
     "FAIL": 0,
     "SKIP": 0,
     "MISSING": 0
@@ -625,6 +625,14 @@
       }
     },
     "user-task-on-cancellation-exception": {
+      "area": "wfsdk",
+      "outcome": "PASS",
+      "units": {
+        "base": "PASS",
+        "feature": "PASS"
+      }
+    },
+    "user-task-placeholder": {
       "area": "wfsdk",
       "outcome": "PASS",
       "units": {

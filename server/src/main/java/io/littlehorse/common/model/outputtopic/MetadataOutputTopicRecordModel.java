@@ -6,6 +6,7 @@ import io.littlehorse.common.model.MetadataGetable;
 import io.littlehorse.common.model.getable.global.bulkjob.BulkJobModel;
 import io.littlehorse.common.model.getable.global.events.WorkflowEventDefModel;
 import io.littlehorse.common.model.getable.global.externaleventdef.ExternalEventDefModel;
+import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
 import io.littlehorse.common.model.getable.global.structdef.StructDefModel;
 import io.littlehorse.common.model.getable.global.taskdef.TaskDefModel;
 import io.littlehorse.common.model.getable.global.wfspec.WfSpecModel;
@@ -25,6 +26,7 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
     private WorkflowEventDefModel workflowEventDef;
     private UserTaskDefModel userTaskDef;
     private StructDefModel structDef;
+    private FormDefModel formDef;
 
     public MetadataOutputTopicRecordModel() {}
 
@@ -60,6 +62,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
             case STRUCT_DEF:
                 result.setStructDef(structDef.toProto());
                 break;
+            case FORM_DEF:
+                result.setFormDef(formDef.toProto());
+                break;
             case METADATARECORD_NOT_SET:
         }
 
@@ -91,6 +96,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
             case STRUCT_DEF:
                 this.structDef = LHSerializable.fromProto(p.getStructDef(), StructDefModel.class, ignored);
                 break;
+            case FORM_DEF:
+                this.formDef = LHSerializable.fromProto(p.getFormDef(), FormDefModel.class, ignored);
+                break;
             case METADATARECORD_NOT_SET:
         }
     }
@@ -109,6 +117,8 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
                 return workflowEventDef;
             case STRUCT_DEF:
                 return structDef;
+            case FORM_DEF:
+                return formDef;
             case METADATARECORD_NOT_SET:
         }
         return null;
@@ -133,6 +143,9 @@ public class MetadataOutputTopicRecordModel extends LHSerializable<MetadataOutpu
         } else if (StructDefModel.class.isAssignableFrom(thing.getClass())) {
             recordCase = MetadataRecordCase.STRUCT_DEF;
             this.structDef = (StructDefModel) thing;
+        } else if (FormDefModel.class.isAssignableFrom(thing.getClass())) {
+            recordCase = MetadataRecordCase.FORM_DEF;
+            this.formDef = (FormDefModel) thing;
         } else if (BulkJobModel.class.isAssignableFrom(thing.getClass())) {
             recordCase = MetadataRecordCase.METADATARECORD_NOT_SET;
         } else {

@@ -62,4 +62,13 @@ class UserTaskOutputImpl extends NodeOutputImpl implements UserTaskOutput {
         addOnCancellationException(exceptionName);
         return this;
     }
+
+    @Override
+    public UserTaskOutput withPlaceholder(String name, Object value) {
+        VariableAssignment assn = parent.assignVariable(value);
+        Node.Builder node = parent.getSpec().getNodesOrThrow(nodeName).toBuilder();
+        node.getUserTaskBuilder().putPlaceholders(name, assn);
+        parent.getSpec().putNodes(nodeName, node.build());
+        return this;
+    }
 }

@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package littlehorse;
+
+import "google/protobuf/timestamp.proto";
+import "common_wfspec.proto";
+import "object_id.proto";
+import "type_definition.proto";
+
+option go_package = ".;lhproto";
+option java_multiple_files = true;
+option java_package = "io.littlehorse.sdk.common.proto";
+option csharp_namespace = "LittleHorse.Sdk.Common.Proto";
+
+// A `FormDef` is a versioned metadata object that holds client-defined UI metadata
+// for the result `StructDef` of a `UserTaskDef`. The server stores metadata keys and
+// values without interpreting them.
+message FormDef {
+  // The id of the `FormDef`, including its version.
+  FormDefId id = 1;
+
+  // The `StructDef` whose fields this `FormDef` describes.
+  StructDefId result_struct_def_id = 2;
+
+  // UI metadata for individual fields of the result `StructDef`.
+  repeated FormFieldDef fields = 3;
+
+  // When the `FormDef` was created.
+  google.protobuf.Timestamp created_at = 4;
+
+  // Client-defined settings for the whole form, such as pages or layout.
+  map<string, FormMetadataValue> metadata = 5;
+}
+
+// UI metadata for one field of the result `StructDef`.
+message FormFieldDef {
+  // Root-relative path to the field within the result `Struct`. Only key selectors
+  // are allowed.
+  LHPath field_path = 1;
+
+  // Client-defined settings such as labels, widgets, and pages.
+  map<string, FormMetadataValue> metadata = 2;
+}
+
+// A metadata value in a `FormDef`: either a literal or a placeholder supplied by the
+// `UserTaskNode` that creates the `UserTaskRun`.
+message FormMetadataValue {
+  oneof value {
+    // A static value.
+    VariableValue literal = 1;
+
+    // Name of a placeholder supplied by the `UserTaskNode`.
+    string placeholder = 2;
+  }
+}
+
+// A reference from a `UserTaskDef` to a `FormDef`.
+message FormDefReference {
+  // The name of the `FormDef`.
+  string name = 1;
+
+  // If set, pins this version. If omitted, each `UserTaskRun` uses the latest version
+  // when it is created.
+  optional int32 version = 2;
+}
+
+// The resolved form of a `UserTaskRun`. Placeholders are replaced by their values.
+message Form {
+  // The exact `FormDef` version used.
+  FormDefId form_def_id = 1;
+
+  // Resolved metadata for individual fields.
+  repeated FormField fields = 2;
+
+  // Resolved form-level metadata.
+  map<string, VariableValue> metadata = 3;
+}
+
+// Resolved UI metadata for one field of a `UserTaskRun`.
+message FormField {
+  // Root-relative path to the field within the result `Struct`.
+  LHPath field_path = 1;
+
+  // Resolved metadata values.
+  map<string, VariableValue> metadata = 2;
+}
