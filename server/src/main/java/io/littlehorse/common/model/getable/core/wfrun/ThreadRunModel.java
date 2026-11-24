@@ -503,10 +503,7 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         }
 
         getCurrentNodeRun().maybeHalt(processorContext);
-        boolean halted = maybeFinishHaltingProcess();
-        if (number == 0 && halted && !reason.isTransitioningHaltState()) {
-            wfRun.transitionTo(LHStatus.HALTED);
-        }
+        maybeFinishHaltingProcess();
     }
 
     public void setStatus(LHStatus status) {
@@ -556,6 +553,13 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (isTerminated()) return false;
 
         if (status == LHStatus.HALTED) {
+            // A manual stop can finish in a later command, after the current node drains.
+            // Interrupts and failure handlers can halt the entrypoint while the workflow is active.
+            if (number == 0
+                    && wfRun.getStatus() == LHStatus.RUNNING
+                    && haltReasons.stream().anyMatch(reason -> reason.type == ReasonCase.MANUAL_HALT)) {
+                wfRun.transitionTo(LHStatus.HALTED);
+            }
             return maybeUnHaltIfAllHaltReasonsResolved();
         }
 
@@ -711,7 +715,9 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
             }
-            if (wfSpecId != null) {
+            if (number == 0 && status == LHStatus.RUNNING && wfRun.getStatus() == LHStatus.HALTED) {
+                wfRun.transitionTo(LHStatus.RUNNING);
+            } else if (wfSpecId != null) {
                 processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
             }
             return true;
