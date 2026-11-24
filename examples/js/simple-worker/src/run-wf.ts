@@ -9,7 +9,7 @@ import { VariableValue } from 'littlehorse-client/proto'
  */
 async function main() {
   const config = LHConfig.from({})
-  const client = config.getClient()
+  const client = await config.getAuthenticatedClient()
 
   const name = process.argv[2] ?? 'World'
 

@@ -11,7 +11,6 @@ import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 function calculateNextNotification(): number {
   console.log('Executing calculate-next-notification')
@@ -97,6 +96,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const workers = [
     createTaskWorker(calculateNextNotification, 'calculate-next-notification', config, {
       inputVars: {},
