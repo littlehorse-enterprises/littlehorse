@@ -127,6 +127,14 @@ export interface VariableAssignment {
          */
         mapBuilder: MapBuilder;
     } | {
+        oneofKind: "enumName";
+        /**
+         * Assign the name of an Enum member.
+         *
+         * @generated from protobuf field: littlehorse.VariableAssignment.EnumName enum_name = 12
+         */
+        enumName: VariableAssignment_EnumName;
+    } | {
         oneofKind: undefined;
     };
     /**
@@ -183,6 +191,19 @@ export interface VariableAssignment_NodeOutputReference {
 export interface VariableAssignment_SizeOf {
     /**
      * The value whose size should be resolved.
+     *
+     * @generated from protobuf field: littlehorse.VariableAssignment operand = 1
+     */
+    operand?: VariableAssignment;
+}
+/**
+ * An EnumName allows you to get the name of an Enum member as a STR.
+ *
+ * @generated from protobuf message littlehorse.VariableAssignment.EnumName
+ */
+export interface VariableAssignment_EnumName {
+    /**
+     * A VariableAssignment which must resolve to an Enum.
      *
      * @generated from protobuf field: littlehorse.VariableAssignment operand = 1
      */
@@ -868,6 +889,7 @@ class VariableAssignment$Type extends MessageType<VariableAssignment> {
             { no: 9, name: "struct_builder", kind: "message", oneof: "source", T: () => StructBuilder },
             { no: 10, name: "size_of", kind: "message", oneof: "source", T: () => VariableAssignment_SizeOf },
             { no: 11, name: "map_builder", kind: "message", oneof: "source", T: () => MapBuilder },
+            { no: 12, name: "enum_name", kind: "message", oneof: "source", T: () => VariableAssignment_EnumName },
             { no: 7, name: "target_type", kind: "message", T: () => TypeDefinition }
         ]);
     }
@@ -944,6 +966,12 @@ class VariableAssignment$Type extends MessageType<VariableAssignment> {
                         mapBuilder: MapBuilder.internalBinaryRead(reader, reader.uint32(), options, (message.source as any).mapBuilder)
                     };
                     break;
+                case /* littlehorse.VariableAssignment.EnumName enum_name */ 12:
+                    message.source = {
+                        oneofKind: "enumName",
+                        enumName: VariableAssignment_EnumName.internalBinaryRead(reader, reader.uint32(), options, (message.source as any).enumName)
+                    };
+                    break;
                 case /* optional littlehorse.TypeDefinition target_type */ 7:
                     message.targetType = TypeDefinition.internalBinaryRead(reader, reader.uint32(), options, message.targetType);
                     break;
@@ -992,6 +1020,9 @@ class VariableAssignment$Type extends MessageType<VariableAssignment> {
         /* littlehorse.MapBuilder map_builder = 11; */
         if (message.source.oneofKind === "mapBuilder")
             MapBuilder.internalBinaryWrite(message.source.mapBuilder, writer.tag(11, WireType.LengthDelimited).fork(), options).join();
+        /* littlehorse.VariableAssignment.EnumName enum_name = 12; */
+        if (message.source.oneofKind === "enumName")
+            VariableAssignment_EnumName.internalBinaryWrite(message.source.enumName, writer.tag(12, WireType.LengthDelimited).fork(), options).join();
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -1149,6 +1180,52 @@ class VariableAssignment_SizeOf$Type extends MessageType<VariableAssignment_Size
  * @generated MessageType for protobuf message littlehorse.VariableAssignment.SizeOf
  */
 export const VariableAssignment_SizeOf = new VariableAssignment_SizeOf$Type();
+// @generated message type with reflection information, may provide speed optimized methods
+class VariableAssignment_EnumName$Type extends MessageType<VariableAssignment_EnumName> {
+    constructor() {
+        super("littlehorse.VariableAssignment.EnumName", [
+            { no: 1, name: "operand", kind: "message", T: () => VariableAssignment }
+        ]);
+    }
+    create(value?: PartialMessage<VariableAssignment_EnumName>): VariableAssignment_EnumName {
+        const message = globalThis.Object.create((this.messagePrototype!));
+        if (value !== undefined)
+            reflectionMergePartial<VariableAssignment_EnumName>(this, message, value);
+        return message;
+    }
+    internalBinaryRead(reader: IBinaryReader, length: number, options: BinaryReadOptions, target?: VariableAssignment_EnumName): VariableAssignment_EnumName {
+        let message = target ?? this.create(), end = reader.pos + length;
+        while (reader.pos < end) {
+            let [fieldNo, wireType] = reader.tag();
+            switch (fieldNo) {
+                case /* littlehorse.VariableAssignment operand */ 1:
+                    message.operand = VariableAssignment.internalBinaryRead(reader, reader.uint32(), options, message.operand);
+                    break;
+                default:
+                    let u = options.readUnknownField;
+                    if (u === "throw")
+                        throw new globalThis.Error(`Unknown field ${fieldNo} (wire type ${wireType}) for ${this.typeName}`);
+                    let d = reader.skip(wireType);
+                    if (u !== false)
+                        (u === true ? UnknownFieldHandler.onRead : u)(this.typeName, message, fieldNo, wireType, d);
+            }
+        }
+        return message;
+    }
+    internalBinaryWrite(message: VariableAssignment_EnumName, writer: IBinaryWriter, options: BinaryWriteOptions): IBinaryWriter {
+        /* littlehorse.VariableAssignment operand = 1; */
+        if (message.operand)
+            VariableAssignment.internalBinaryWrite(message.operand, writer.tag(1, WireType.LengthDelimited).fork(), options).join();
+        let u = options.writeUnknownFields;
+        if (u !== false)
+            (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
+        return writer;
+    }
+}
+/**
+ * @generated MessageType for protobuf message littlehorse.VariableAssignment.EnumName
+ */
+export const VariableAssignment_EnumName = new VariableAssignment_EnumName$Type();
 // @generated message type with reflection information, may provide speed optimized methods
 class VariableAssignment_Expression$Type extends MessageType<VariableAssignment_Expression> {
     constructor() {

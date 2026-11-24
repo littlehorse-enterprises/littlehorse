@@ -326,14 +326,33 @@ jobs:
   tests-sdk-dotnet:
     if: ${{ !contains(github.event.head_commit.message, '[skip test]') }}
     runs-on: ubuntu-24.04
+    env:
+      PACKAGE_VERSION: 1.4.0-ci.${{ github.run_id }}.${{ github.run_attempt }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup Dotnet
+      - name: Install release SDK
+        id: dotnet10
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: "6"
-      - name: Build Project
-        run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
-      - name: Test Dotnet
-        run: dotnet test sdk-dotnet/LittleHorse.Sdk.Tests
+          dotnet-version: "10.0.x"
+      - name: Pack the SDK
+        run: |
+          dotnet new globaljson --sdk-version "${{ steps.dotnet10.outputs.dotnet-version }}"
+          dotnet pack sdk-dotnet/LittleHorse.Sdk -c Release -p:PackageVersion="$PACKAGE_VERSION" -o "$RUNNER_TEMP/packages"
+      - name: Build examples on .NET 10
+        run: |
+          for project in examples/dotnet/*/*.csproj; do
+            dotnet build "$project" -c Release
+          done
+      - name: Install test SDK
+        id: dotnet11
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "11.0.x"
+      - name: Test the release package on .NET 10 and 11
+        run: |
+          dotnet new globaljson --force --sdk-version "${{ steps.dotnet11.outputs.dotnet-version }}"
+          dotnet test sdk-dotnet/LittleHorse.Sdk.Tests -c Release \
+            -p:SdkPackageVersion="$PACKAGE_VERSION" \
+            -p:RestoreAdditionalProjectSources="$RUNNER_TEMP/packages"

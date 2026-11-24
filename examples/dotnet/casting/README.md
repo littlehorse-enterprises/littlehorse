@@ -26,7 +26,7 @@ Some conversions require explicit calls such as `CastTo(...)`:
 
 ## Prerequisites
 
-- .NET SDK 8.0
+- .NET 10 SDK
 - The `LittleHorse.Sdk` project available at `sdk-dotnet/LittleHorse.Sdk`
 - LittleHorse server running and TaskDefs registered by workers before registering the workflow spec
 

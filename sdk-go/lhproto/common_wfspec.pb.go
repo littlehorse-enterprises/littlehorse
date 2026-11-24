@@ -195,6 +195,7 @@ type VariableAssignment struct {
 	//	*VariableAssignment_StructBuilder
 	//	*VariableAssignment_SizeOf_
 	//	*VariableAssignment_MapBuilder
+	//	*VariableAssignment_EnumName_
 	Source isVariableAssignment_Source `protobuf_oneof:"source"`
 	// If specified, the resolved value will be cast to this type before being used.
 	// This allows explicit type conversions anywhere VariableAssignment is used.
@@ -319,6 +320,13 @@ func (x *VariableAssignment) GetMapBuilder() *MapBuilder {
 	return nil
 }
 
+func (x *VariableAssignment) GetEnumName() *VariableAssignment_EnumName {
+	if x, ok := x.GetSource().(*VariableAssignment_EnumName_); ok {
+		return x.EnumName
+	}
+	return nil
+}
+
 func (x *VariableAssignment) GetTargetType() *TypeDefinition {
 	if x != nil {
 		return x.TargetType
@@ -391,6 +399,11 @@ type VariableAssignment_MapBuilder struct {
 	MapBuilder *MapBuilder `protobuf:"bytes,11,opt,name=map_builder,json=mapBuilder,proto3,oneof"`
 }
 
+type VariableAssignment_EnumName_ struct {
+	// Assign the name of an Enum member.
+	EnumName *VariableAssignment_EnumName `protobuf:"bytes,12,opt,name=enum_name,json=enumName,proto3,oneof"`
+}
+
 func (*VariableAssignment_VariableName) isVariableAssignment_Source() {}
 
 func (*VariableAssignment_LiteralValue) isVariableAssignment_Source() {}
@@ -406,6 +419,8 @@ func (*VariableAssignment_StructBuilder) isVariableAssignment_Source() {}
 func (*VariableAssignment_SizeOf_) isVariableAssignment_Source() {}
 
 func (*VariableAssignment_MapBuilder) isVariableAssignment_Source() {}
+
+func (*VariableAssignment_EnumName_) isVariableAssignment_Source() {}
 
 // Builds a Struct using data available in the context of this ThreadRun.
 type StructBuilder struct {
@@ -1453,6 +1468,55 @@ func (x *VariableAssignment_SizeOf) GetOperand() *VariableAssignment {
 	return nil
 }
 
+// An EnumName allows you to get the name of an Enum member as a STR.
+type VariableAssignment_EnumName struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// A VariableAssignment which must resolve to an Enum.
+	Operand *VariableAssignment `protobuf:"bytes,1,opt,name=operand,proto3" json:"operand,omitempty"`
+}
+
+func (x *VariableAssignment_EnumName) Reset() {
+	*x = VariableAssignment_EnumName{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_common_wfspec_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *VariableAssignment_EnumName) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VariableAssignment_EnumName) ProtoMessage() {}
+
+func (x *VariableAssignment_EnumName) ProtoReflect() protoreflect.Message {
+	mi := &file_common_wfspec_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VariableAssignment_EnumName.ProtoReflect.Descriptor instead.
+func (*VariableAssignment_EnumName) Descriptor() ([]byte, []int) {
+	return file_common_wfspec_proto_rawDescGZIP(), []int{0, 3}
+}
+
+func (x *VariableAssignment_EnumName) GetOperand() *VariableAssignment {
+	if x != nil {
+		return x.Operand
+	}
+	return nil
+}
+
 // An Expression allows you to combine multiple values into one.
 type VariableAssignment_Expression struct {
 	state         protoimpl.MessageState
@@ -1481,7 +1545,7 @@ type VariableAssignment_Expression struct {
 func (x *VariableAssignment_Expression) Reset() {
 	*x = VariableAssignment_Expression{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[14]
+		mi := &file_common_wfspec_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1494,7 +1558,7 @@ func (x *VariableAssignment_Expression) String() string {
 func (*VariableAssignment_Expression) ProtoMessage() {}
 
 func (x *VariableAssignment_Expression) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[14]
+	mi := &file_common_wfspec_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1507,7 +1571,7 @@ func (x *VariableAssignment_Expression) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VariableAssignment_Expression.ProtoReflect.Descriptor instead.
 func (*VariableAssignment_Expression) Descriptor() ([]byte, []int) {
-	return file_common_wfspec_proto_rawDescGZIP(), []int{0, 3}
+	return file_common_wfspec_proto_rawDescGZIP(), []int{0, 4}
 }
 
 func (x *VariableAssignment_Expression) GetLhs() *VariableAssignment {
@@ -1576,7 +1640,7 @@ type MapBuilder_Entry struct {
 func (x *MapBuilder_Entry) Reset() {
 	*x = MapBuilder_Entry{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[16]
+		mi := &file_common_wfspec_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1589,7 +1653,7 @@ func (x *MapBuilder_Entry) String() string {
 func (*MapBuilder_Entry) ProtoMessage() {}
 
 func (x *MapBuilder_Entry) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[16]
+	mi := &file_common_wfspec_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1637,7 +1701,7 @@ type VariableMutation_NodeOutputSource struct {
 func (x *VariableMutation_NodeOutputSource) Reset() {
 	*x = VariableMutation_NodeOutputSource{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[17]
+		mi := &file_common_wfspec_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1650,7 +1714,7 @@ func (x *VariableMutation_NodeOutputSource) String() string {
 func (*VariableMutation_NodeOutputSource) ProtoMessage() {}
 
 func (x *VariableMutation_NodeOutputSource) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[17]
+	mi := &file_common_wfspec_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1717,7 +1781,7 @@ type UTActionTrigger_UTACancel struct {
 func (x *UTActionTrigger_UTACancel) Reset() {
 	*x = UTActionTrigger_UTACancel{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[18]
+		mi := &file_common_wfspec_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1730,7 +1794,7 @@ func (x *UTActionTrigger_UTACancel) String() string {
 func (*UTActionTrigger_UTACancel) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTACancel) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[18]
+	mi := &file_common_wfspec_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1761,7 +1825,7 @@ type UTActionTrigger_UTATask struct {
 func (x *UTActionTrigger_UTATask) Reset() {
 	*x = UTActionTrigger_UTATask{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[19]
+		mi := &file_common_wfspec_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1774,7 +1838,7 @@ func (x *UTActionTrigger_UTATask) String() string {
 func (*UTActionTrigger_UTATask) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTATask) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[19]
+	mi := &file_common_wfspec_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1821,7 +1885,7 @@ type UTActionTrigger_UTAReassign struct {
 func (x *UTActionTrigger_UTAReassign) Reset() {
 	*x = UTActionTrigger_UTAReassign{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[20]
+		mi := &file_common_wfspec_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1834,7 +1898,7 @@ func (x *UTActionTrigger_UTAReassign) String() string {
 func (*UTActionTrigger_UTAReassign) ProtoMessage() {}
 
 func (x *UTActionTrigger_UTAReassign) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[20]
+	mi := &file_common_wfspec_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1880,7 +1944,7 @@ type LHPath_Selector struct {
 func (x *LHPath_Selector) Reset() {
 	*x = LHPath_Selector{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_common_wfspec_proto_msgTypes[21]
+		mi := &file_common_wfspec_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1893,7 +1957,7 @@ func (x *LHPath_Selector) String() string {
 func (*LHPath_Selector) ProtoMessage() {}
 
 func (x *LHPath_Selector) ProtoReflect() protoreflect.Message {
-	mi := &file_common_wfspec_proto_msgTypes[21]
+	mi := &file_common_wfspec_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1970,8 +2034,8 @@ var file_common_wfspec_proto_rawDesc = []byte{
 	0x73, 0x65, 0x1a, 0x12, 0x63, 0x6f, 0x6d, 0x6d, 0x6f, 0x6e, 0x5f, 0x65, 0x6e, 0x75, 0x6d, 0x73,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0f, 0x6f, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x5f, 0x69,
 	0x64, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x15, 0x74, 0x79, 0x70, 0x65, 0x5f, 0x64, 0x65,
-	0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xef,
-	0x09, 0x0a, 0x12, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67,
+	0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xff,
+	0x0a, 0x0a, 0x12, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67,
 	0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x1d, 0x0a, 0x09, 0x6a, 0x73, 0x6f, 0x6e, 0x5f, 0x70, 0x61,
 	0x74, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x48, 0x00, 0x52, 0x08, 0x6a, 0x73, 0x6f, 0x6e,
 	0x50, 0x61, 0x74, 0x68, 0x12, 0x2e, 0x0a, 0x07, 0x6c, 0x68, 0x5f, 0x70, 0x61, 0x74, 0x68, 0x18,
@@ -2011,23 +2075,32 @@ var file_common_wfspec_proto_rawDesc = []byte{
 	0x66, 0x12, 0x3a, 0x0a, 0x0b, 0x6d, 0x61, 0x70, 0x5f, 0x62, 0x75, 0x69, 0x6c, 0x64, 0x65, 0x72,
 	0x18, 0x0b, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
 	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x4d, 0x61, 0x70, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x65, 0x72, 0x48,
-	0x01, 0x52, 0x0a, 0x6d, 0x61, 0x70, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x65, 0x72, 0x12, 0x41, 0x0a,
-	0x0b, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x07, 0x20, 0x01,
-	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65,
-	0x2e, 0x54, 0x79, 0x70, 0x65, 0x44, 0x65, 0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48,
-	0x02, 0x52, 0x0a, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74, 0x54, 0x79, 0x70, 0x65, 0x88, 0x01, 0x01,
-	0x1a, 0x7c, 0x0a, 0x0c, 0x46, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67,
-	0x12, 0x37, 0x0a, 0x06, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x01, 0x52, 0x0a, 0x6d, 0x61, 0x70, 0x42, 0x75, 0x69, 0x6c, 0x64, 0x65, 0x72, 0x12, 0x47, 0x0a,
+	0x09, 0x65, 0x6e, 0x75, 0x6d, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x0c, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x28, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56,
+	0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e,
+	0x74, 0x2e, 0x45, 0x6e, 0x75, 0x6d, 0x4e, 0x61, 0x6d, 0x65, 0x48, 0x01, 0x52, 0x08, 0x65, 0x6e,
+	0x75, 0x6d, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x41, 0x0a, 0x0b, 0x74, 0x61, 0x72, 0x67, 0x65, 0x74,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x6c, 0x69,
+	0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x54, 0x79, 0x70, 0x65, 0x44, 0x65,
+	0x66, 0x69, 0x6e, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x48, 0x02, 0x52, 0x0a, 0x74, 0x61, 0x72, 0x67,
+	0x65, 0x74, 0x54, 0x79, 0x70, 0x65, 0x88, 0x01, 0x01, 0x1a, 0x7c, 0x0a, 0x0c, 0x46, 0x6f, 0x72,
+	0x6d, 0x61, 0x74, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x12, 0x37, 0x0a, 0x06, 0x66, 0x6f, 0x72,
+	0x6d, 0x61, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74,
+	0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65,
+	0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x06, 0x66, 0x6f, 0x72, 0x6d,
+	0x61, 0x74, 0x12, 0x33, 0x0a, 0x04, 0x61, 0x72, 0x67, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56,
 	0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e,
-	0x74, 0x52, 0x06, 0x66, 0x6f, 0x72, 0x6d, 0x61, 0x74, 0x12, 0x33, 0x0a, 0x04, 0x61, 0x72, 0x67,
-	0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65,
-	0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73,
-	0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x1a, 0x32,
-	0x0a, 0x13, 0x4e, 0x6f, 0x64, 0x65, 0x4f, 0x75, 0x74, 0x70, 0x75, 0x74, 0x52, 0x65, 0x66, 0x65,
-	0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6e, 0x6f, 0x64, 0x65, 0x4e, 0x61,
-	0x6d, 0x65, 0x1a, 0x43, 0x0a, 0x06, 0x53, 0x69, 0x7a, 0x65, 0x4f, 0x66, 0x12, 0x39, 0x0a, 0x07,
+	0x74, 0x52, 0x04, 0x61, 0x72, 0x67, 0x73, 0x1a, 0x32, 0x0a, 0x13, 0x4e, 0x6f, 0x64, 0x65, 0x4f,
+	0x75, 0x74, 0x70, 0x75, 0x74, 0x52, 0x65, 0x66, 0x65, 0x72, 0x65, 0x6e, 0x63, 0x65, 0x12, 0x1b,
+	0x0a, 0x09, 0x6e, 0x6f, 0x64, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x6e, 0x6f, 0x64, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x1a, 0x43, 0x0a, 0x06, 0x53,
+	0x69, 0x7a, 0x65, 0x4f, 0x66, 0x12, 0x39, 0x0a, 0x07, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x6e, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68,
+	0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69, 0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73,
+	0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x07, 0x6f, 0x70, 0x65, 0x72, 0x61, 0x6e, 0x64,
+	0x1a, 0x45, 0x0a, 0x08, 0x45, 0x6e, 0x75, 0x6d, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x39, 0x0a, 0x07,
 	0x6f, 0x70, 0x65, 0x72, 0x61, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e,
 	0x6c, 0x69, 0x74, 0x74, 0x6c, 0x65, 0x68, 0x6f, 0x72, 0x73, 0x65, 0x2e, 0x56, 0x61, 0x72, 0x69,
 	0x61, 0x62, 0x6c, 0x65, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x07,
@@ -2278,7 +2351,7 @@ func file_common_wfspec_proto_rawDescGZIP() []byte {
 }
 
 var file_common_wfspec_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_common_wfspec_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_common_wfspec_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
 var file_common_wfspec_proto_goTypes = []interface{}{
 	(VariableMutationType)(0),                      // 0: littlehorse.VariableMutationType
 	(UTActionTrigger_UTHook)(0),                    // 1: littlehorse.UTActionTrigger.UTHook
@@ -2296,78 +2369,81 @@ var file_common_wfspec_proto_goTypes = []interface{}{
 	(*VariableAssignment_FormatString)(nil),        // 13: littlehorse.VariableAssignment.FormatString
 	(*VariableAssignment_NodeOutputReference)(nil), // 14: littlehorse.VariableAssignment.NodeOutputReference
 	(*VariableAssignment_SizeOf)(nil),              // 15: littlehorse.VariableAssignment.SizeOf
-	(*VariableAssignment_Expression)(nil),          // 16: littlehorse.VariableAssignment.Expression
-	nil,                                            // 17: littlehorse.InlineStructBuilder.FieldsEntry
-	(*MapBuilder_Entry)(nil),                       // 18: littlehorse.MapBuilder.Entry
-	(*VariableMutation_NodeOutputSource)(nil),      // 19: littlehorse.VariableMutation.NodeOutputSource
-	(*UTActionTrigger_UTACancel)(nil),              // 20: littlehorse.UTActionTrigger.UTACancel
-	(*UTActionTrigger_UTATask)(nil),                // 21: littlehorse.UTActionTrigger.UTATask
-	(*UTActionTrigger_UTAReassign)(nil),            // 22: littlehorse.UTActionTrigger.UTAReassign
-	(*LHPath_Selector)(nil),                        // 23: littlehorse.LHPath.Selector
-	(*VariableValue)(nil),                          // 24: littlehorse.VariableValue
-	(*TypeDefinition)(nil),                         // 25: littlehorse.TypeDefinition
-	(*StructDefId)(nil),                            // 26: littlehorse.StructDefId
-	(*InlineMapDef)(nil),                           // 27: littlehorse.InlineMapDef
-	(VariableType)(0),                              // 28: littlehorse.VariableType
-	(*TaskDefId)(nil),                              // 29: littlehorse.TaskDefId
-	(Comparator)(0),                                // 30: littlehorse.Comparator
+	(*VariableAssignment_EnumName)(nil),            // 16: littlehorse.VariableAssignment.EnumName
+	(*VariableAssignment_Expression)(nil),          // 17: littlehorse.VariableAssignment.Expression
+	nil,                                            // 18: littlehorse.InlineStructBuilder.FieldsEntry
+	(*MapBuilder_Entry)(nil),                       // 19: littlehorse.MapBuilder.Entry
+	(*VariableMutation_NodeOutputSource)(nil),      // 20: littlehorse.VariableMutation.NodeOutputSource
+	(*UTActionTrigger_UTACancel)(nil),              // 21: littlehorse.UTActionTrigger.UTACancel
+	(*UTActionTrigger_UTATask)(nil),                // 22: littlehorse.UTActionTrigger.UTATask
+	(*UTActionTrigger_UTAReassign)(nil),            // 23: littlehorse.UTActionTrigger.UTAReassign
+	(*LHPath_Selector)(nil),                        // 24: littlehorse.LHPath.Selector
+	(*VariableValue)(nil),                          // 25: littlehorse.VariableValue
+	(*TypeDefinition)(nil),                         // 26: littlehorse.TypeDefinition
+	(*StructDefId)(nil),                            // 27: littlehorse.StructDefId
+	(*InlineMapDef)(nil),                           // 28: littlehorse.InlineMapDef
+	(VariableType)(0),                              // 29: littlehorse.VariableType
+	(*TaskDefId)(nil),                              // 30: littlehorse.TaskDefId
+	(Comparator)(0),                                // 31: littlehorse.Comparator
 }
 var file_common_wfspec_proto_depIdxs = []int32{
 	12, // 0: littlehorse.VariableAssignment.lh_path:type_name -> littlehorse.LHPath
-	24, // 1: littlehorse.VariableAssignment.literal_value:type_name -> littlehorse.VariableValue
+	25, // 1: littlehorse.VariableAssignment.literal_value:type_name -> littlehorse.VariableValue
 	13, // 2: littlehorse.VariableAssignment.format_string:type_name -> littlehorse.VariableAssignment.FormatString
 	14, // 3: littlehorse.VariableAssignment.node_output:type_name -> littlehorse.VariableAssignment.NodeOutputReference
-	16, // 4: littlehorse.VariableAssignment.expression:type_name -> littlehorse.VariableAssignment.Expression
+	17, // 4: littlehorse.VariableAssignment.expression:type_name -> littlehorse.VariableAssignment.Expression
 	3,  // 5: littlehorse.VariableAssignment.struct_builder:type_name -> littlehorse.StructBuilder
 	15, // 6: littlehorse.VariableAssignment.size_of:type_name -> littlehorse.VariableAssignment.SizeOf
 	6,  // 7: littlehorse.VariableAssignment.map_builder:type_name -> littlehorse.MapBuilder
-	25, // 8: littlehorse.VariableAssignment.target_type:type_name -> littlehorse.TypeDefinition
-	26, // 9: littlehorse.StructBuilder.struct_def_id:type_name -> littlehorse.StructDefId
-	4,  // 10: littlehorse.StructBuilder.value:type_name -> littlehorse.InlineStructBuilder
-	17, // 11: littlehorse.InlineStructBuilder.fields:type_name -> littlehorse.InlineStructBuilder.FieldsEntry
-	2,  // 12: littlehorse.InlineStructFieldValue.simple_value:type_name -> littlehorse.VariableAssignment
-	4,  // 13: littlehorse.InlineStructFieldValue.sub_structure:type_name -> littlehorse.InlineStructBuilder
-	18, // 14: littlehorse.MapBuilder.entries:type_name -> littlehorse.MapBuilder.Entry
-	27, // 15: littlehorse.MapBuilder.map_type:type_name -> littlehorse.InlineMapDef
-	12, // 16: littlehorse.VariableMutation.lhs_lh_path:type_name -> littlehorse.LHPath
-	0,  // 17: littlehorse.VariableMutation.operation:type_name -> littlehorse.VariableMutationType
-	2,  // 18: littlehorse.VariableMutation.rhs_assignment:type_name -> littlehorse.VariableAssignment
-	24, // 19: littlehorse.VariableMutation.literal_value:type_name -> littlehorse.VariableValue
-	19, // 20: littlehorse.VariableMutation.node_output:type_name -> littlehorse.VariableMutation.NodeOutputSource
-	28, // 21: littlehorse.VariableDef.type:type_name -> littlehorse.VariableType
-	24, // 22: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
-	25, // 23: littlehorse.VariableDef.type_def:type_name -> littlehorse.TypeDefinition
-	21, // 24: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
-	20, // 25: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
-	22, // 26: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
-	2,  // 27: littlehorse.UTActionTrigger.delay_seconds:type_name -> littlehorse.VariableAssignment
-	1,  // 28: littlehorse.UTActionTrigger.hook:type_name -> littlehorse.UTActionTrigger.UTHook
-	29, // 29: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
-	2,  // 30: littlehorse.TaskNode.dynamic_task:type_name -> littlehorse.VariableAssignment
-	10, // 31: littlehorse.TaskNode.exponential_backoff:type_name -> littlehorse.ExponentialBackoffRetryPolicy
-	2,  // 32: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
-	23, // 33: littlehorse.LHPath.path:type_name -> littlehorse.LHPath.Selector
-	2,  // 34: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
-	2,  // 35: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
-	2,  // 36: littlehorse.VariableAssignment.SizeOf.operand:type_name -> littlehorse.VariableAssignment
-	2,  // 37: littlehorse.VariableAssignment.Expression.lhs:type_name -> littlehorse.VariableAssignment
-	0,  // 38: littlehorse.VariableAssignment.Expression.mutation_type:type_name -> littlehorse.VariableMutationType
-	30, // 39: littlehorse.VariableAssignment.Expression.comparator:type_name -> littlehorse.Comparator
-	2,  // 40: littlehorse.VariableAssignment.Expression.rhs:type_name -> littlehorse.VariableAssignment
-	5,  // 41: littlehorse.InlineStructBuilder.FieldsEntry.value:type_name -> littlehorse.InlineStructFieldValue
-	2,  // 42: littlehorse.MapBuilder.Entry.key:type_name -> littlehorse.VariableAssignment
-	2,  // 43: littlehorse.MapBuilder.Entry.value:type_name -> littlehorse.VariableAssignment
-	12, // 44: littlehorse.VariableMutation.NodeOutputSource.lh_path:type_name -> littlehorse.LHPath
-	11, // 45: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
-	7,  // 46: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
-	2,  // 47: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
-	2,  // 48: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
-	2,  // 49: littlehorse.LHPath.Selector.dynamic:type_name -> littlehorse.VariableAssignment
-	50, // [50:50] is the sub-list for method output_type
-	50, // [50:50] is the sub-list for method input_type
-	50, // [50:50] is the sub-list for extension type_name
-	50, // [50:50] is the sub-list for extension extendee
-	0,  // [0:50] is the sub-list for field type_name
+	16, // 8: littlehorse.VariableAssignment.enum_name:type_name -> littlehorse.VariableAssignment.EnumName
+	26, // 9: littlehorse.VariableAssignment.target_type:type_name -> littlehorse.TypeDefinition
+	27, // 10: littlehorse.StructBuilder.struct_def_id:type_name -> littlehorse.StructDefId
+	4,  // 11: littlehorse.StructBuilder.value:type_name -> littlehorse.InlineStructBuilder
+	18, // 12: littlehorse.InlineStructBuilder.fields:type_name -> littlehorse.InlineStructBuilder.FieldsEntry
+	2,  // 13: littlehorse.InlineStructFieldValue.simple_value:type_name -> littlehorse.VariableAssignment
+	4,  // 14: littlehorse.InlineStructFieldValue.sub_structure:type_name -> littlehorse.InlineStructBuilder
+	19, // 15: littlehorse.MapBuilder.entries:type_name -> littlehorse.MapBuilder.Entry
+	28, // 16: littlehorse.MapBuilder.map_type:type_name -> littlehorse.InlineMapDef
+	12, // 17: littlehorse.VariableMutation.lhs_lh_path:type_name -> littlehorse.LHPath
+	0,  // 18: littlehorse.VariableMutation.operation:type_name -> littlehorse.VariableMutationType
+	2,  // 19: littlehorse.VariableMutation.rhs_assignment:type_name -> littlehorse.VariableAssignment
+	25, // 20: littlehorse.VariableMutation.literal_value:type_name -> littlehorse.VariableValue
+	20, // 21: littlehorse.VariableMutation.node_output:type_name -> littlehorse.VariableMutation.NodeOutputSource
+	29, // 22: littlehorse.VariableDef.type:type_name -> littlehorse.VariableType
+	25, // 23: littlehorse.VariableDef.default_value:type_name -> littlehorse.VariableValue
+	26, // 24: littlehorse.VariableDef.type_def:type_name -> littlehorse.TypeDefinition
+	22, // 25: littlehorse.UTActionTrigger.task:type_name -> littlehorse.UTActionTrigger.UTATask
+	21, // 26: littlehorse.UTActionTrigger.cancel:type_name -> littlehorse.UTActionTrigger.UTACancel
+	23, // 27: littlehorse.UTActionTrigger.reassign:type_name -> littlehorse.UTActionTrigger.UTAReassign
+	2,  // 28: littlehorse.UTActionTrigger.delay_seconds:type_name -> littlehorse.VariableAssignment
+	1,  // 29: littlehorse.UTActionTrigger.hook:type_name -> littlehorse.UTActionTrigger.UTHook
+	30, // 30: littlehorse.TaskNode.task_def_id:type_name -> littlehorse.TaskDefId
+	2,  // 31: littlehorse.TaskNode.dynamic_task:type_name -> littlehorse.VariableAssignment
+	10, // 32: littlehorse.TaskNode.exponential_backoff:type_name -> littlehorse.ExponentialBackoffRetryPolicy
+	2,  // 33: littlehorse.TaskNode.variables:type_name -> littlehorse.VariableAssignment
+	24, // 34: littlehorse.LHPath.path:type_name -> littlehorse.LHPath.Selector
+	2,  // 35: littlehorse.VariableAssignment.FormatString.format:type_name -> littlehorse.VariableAssignment
+	2,  // 36: littlehorse.VariableAssignment.FormatString.args:type_name -> littlehorse.VariableAssignment
+	2,  // 37: littlehorse.VariableAssignment.SizeOf.operand:type_name -> littlehorse.VariableAssignment
+	2,  // 38: littlehorse.VariableAssignment.EnumName.operand:type_name -> littlehorse.VariableAssignment
+	2,  // 39: littlehorse.VariableAssignment.Expression.lhs:type_name -> littlehorse.VariableAssignment
+	0,  // 40: littlehorse.VariableAssignment.Expression.mutation_type:type_name -> littlehorse.VariableMutationType
+	31, // 41: littlehorse.VariableAssignment.Expression.comparator:type_name -> littlehorse.Comparator
+	2,  // 42: littlehorse.VariableAssignment.Expression.rhs:type_name -> littlehorse.VariableAssignment
+	5,  // 43: littlehorse.InlineStructBuilder.FieldsEntry.value:type_name -> littlehorse.InlineStructFieldValue
+	2,  // 44: littlehorse.MapBuilder.Entry.key:type_name -> littlehorse.VariableAssignment
+	2,  // 45: littlehorse.MapBuilder.Entry.value:type_name -> littlehorse.VariableAssignment
+	12, // 46: littlehorse.VariableMutation.NodeOutputSource.lh_path:type_name -> littlehorse.LHPath
+	11, // 47: littlehorse.UTActionTrigger.UTATask.task:type_name -> littlehorse.TaskNode
+	7,  // 48: littlehorse.UTActionTrigger.UTATask.mutations:type_name -> littlehorse.VariableMutation
+	2,  // 49: littlehorse.UTActionTrigger.UTAReassign.user_id:type_name -> littlehorse.VariableAssignment
+	2,  // 50: littlehorse.UTActionTrigger.UTAReassign.user_group:type_name -> littlehorse.VariableAssignment
+	2,  // 51: littlehorse.LHPath.Selector.dynamic:type_name -> littlehorse.VariableAssignment
+	52, // [52:52] is the sub-list for method output_type
+	52, // [52:52] is the sub-list for method input_type
+	52, // [52:52] is the sub-list for extension type_name
+	52, // [52:52] is the sub-list for extension extendee
+	0,  // [0:52] is the sub-list for field type_name
 }
 
 func init() { file_common_wfspec_proto_init() }
@@ -2548,6 +2624,18 @@ func file_common_wfspec_proto_init() {
 			}
 		}
 		file_common_wfspec_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*VariableAssignment_EnumName); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_common_wfspec_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*VariableAssignment_Expression); i {
 			case 0:
 				return &v.state
@@ -2559,7 +2647,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MapBuilder_Entry); i {
 			case 0:
 				return &v.state
@@ -2571,7 +2659,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*VariableMutation_NodeOutputSource); i {
 			case 0:
 				return &v.state
@@ -2583,7 +2671,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UTActionTrigger_UTACancel); i {
 			case 0:
 				return &v.state
@@ -2595,7 +2683,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UTActionTrigger_UTATask); i {
 			case 0:
 				return &v.state
@@ -2607,7 +2695,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UTActionTrigger_UTAReassign); i {
 			case 0:
 				return &v.state
@@ -2619,7 +2707,7 @@ func file_common_wfspec_proto_init() {
 				return nil
 			}
 		}
-		file_common_wfspec_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+		file_common_wfspec_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*LHPath_Selector); i {
 			case 0:
 				return &v.state
@@ -2643,6 +2731,7 @@ func file_common_wfspec_proto_init() {
 		(*VariableAssignment_StructBuilder)(nil),
 		(*VariableAssignment_SizeOf_)(nil),
 		(*VariableAssignment_MapBuilder)(nil),
+		(*VariableAssignment_EnumName_)(nil),
 	}
 	file_common_wfspec_proto_msgTypes[3].OneofWrappers = []interface{}{
 		(*InlineStructFieldValue_SimpleValue)(nil),
@@ -2664,16 +2753,16 @@ func file_common_wfspec_proto_init() {
 		(*TaskNode_TaskDefId)(nil),
 		(*TaskNode_DynamicTask)(nil),
 	}
-	file_common_wfspec_proto_msgTypes[14].OneofWrappers = []interface{}{
+	file_common_wfspec_proto_msgTypes[15].OneofWrappers = []interface{}{
 		(*VariableAssignment_Expression_MutationType)(nil),
 		(*VariableAssignment_Expression_Comparator)(nil),
 	}
-	file_common_wfspec_proto_msgTypes[17].OneofWrappers = []interface{}{
+	file_common_wfspec_proto_msgTypes[18].OneofWrappers = []interface{}{
 		(*VariableMutation_NodeOutputSource_Jsonpath)(nil),
 		(*VariableMutation_NodeOutputSource_LhPath)(nil),
 	}
-	file_common_wfspec_proto_msgTypes[20].OneofWrappers = []interface{}{}
-	file_common_wfspec_proto_msgTypes[21].OneofWrappers = []interface{}{
+	file_common_wfspec_proto_msgTypes[21].OneofWrappers = []interface{}{}
+	file_common_wfspec_proto_msgTypes[22].OneofWrappers = []interface{}{
 		(*LHPath_Selector_Key)(nil),
 		(*LHPath_Selector_Index)(nil),
 		(*LHPath_Selector_Dynamic)(nil),
@@ -2684,7 +2773,7 @@ func file_common_wfspec_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_common_wfspec_proto_rawDesc,
 			NumEnums:      2,
-			NumMessages:   22,
+			NumMessages:   23,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
