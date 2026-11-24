@@ -131,6 +131,7 @@ func randString(nByte int) (string, error) {
 type loginSession struct {
 	provider            *oidc.Provider
 	issuer              string
+	issRequired         bool
 	config              oauth2.Config
 	credentialsLocation string
 	state               string
@@ -142,7 +143,8 @@ type loginSession struct {
 
 func newLoginSession(provider *oidc.Provider, config oauth2.Config, credentialsLocation string) (*loginSession, error) {
 	var discovery struct {
-		Issuer string `json:"issuer"`
+		Issuer      string `json:"issuer"`
+		IssRequired bool   `json:"authorization_response_iss_parameter_supported"`
 	}
 	if err := provider.Claims(&discovery); err != nil {
 		return nil, err
@@ -158,6 +160,7 @@ func newLoginSession(provider *oidc.Provider, config oauth2.Config, credentialsL
 	return &loginSession{
 		provider:            provider,
 		issuer:              discovery.Issuer,
+		issRequired:         discovery.IssRequired,
 		config:              config,
 		credentialsLocation: credentialsLocation,
 		state:               state,
@@ -196,8 +199,13 @@ func (s *loginSession) handleCallback(ctx context.Context) http.HandlerFunc {
 }
 
 func (s *loginSession) completeLogin(ctx context.Context, query url.Values) error {
-	// RFC 9207: the issuer in the response must be the one this login started with.
-	if iss := query.Get("iss"); iss != "" && iss != s.issuer {
+	// RFC 9207: the response must come from this login's issuer, and must name it
+	// if the provider's discovery says it always does.
+	iss := query.Get("iss")
+	if iss == "" && s.issRequired {
+		return errors.New("login response has no iss parameter, but the provider always sends it")
+	}
+	if iss != "" && iss != s.issuer {
 		return fmt.Errorf("login response came from issuer %q, expected %q", iss, s.issuer)
 	}
 	if loginError := query.Get("error"); loginError != "" {

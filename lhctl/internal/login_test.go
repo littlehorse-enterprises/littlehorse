@@ -25,12 +25,13 @@ import (
 // fakeProvider is an OIDC provider whose token endpoint only issues tokens for a
 // code_verifier that matches the code_challenge of the authorization request.
 type fakeProvider struct {
-	server    *httptest.Server
-	key       *rsa.PrivateKey
-	challenge string
-	nonce     string
-	atHash    string
-	verifiers []string
+	server       *httptest.Server
+	key          *rsa.PrivateKey
+	challenge    string
+	nonce        string
+	atHash       string
+	issSupported bool
+	verifiers    []string
 }
 
 func newFakeProvider(t *testing.T) *fakeProvider {
@@ -48,6 +49,7 @@ func newFakeProvider(t *testing.T) *fakeProvider {
 			"token_endpoint":                        p.server.URL + "/token",
 			"jwks_uri":                              p.server.URL + "/jwks",
 			"id_token_signing_alg_values_supported": []string{"RS256"},
+			"authorization_response_iss_parameter_supported": p.issSupported,
 		})
 	})
 	mux.HandleFunc("/jwks", func(w http.ResponseWriter, r *http.Request) {
@@ -109,8 +111,11 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 	json.NewEncoder(w).Encode(body)
 }
 
-func newTestSession(t *testing.T) (*loginSession, *fakeProvider, context.Context) {
+func newTestSession(t *testing.T, setup ...func(*fakeProvider)) (*loginSession, *fakeProvider, context.Context) {
 	idp := newFakeProvider(t)
+	for _, f := range setup {
+		f(idp)
+	}
 	ctx := context.Background()
 	provider, err := oidc.NewProvider(ctx, idp.server.URL)
 	if err != nil {
@@ -288,6 +293,43 @@ func TestCallbackFailures(t *testing.T) {
 			}
 			if _, statErr := os.Stat(session.credentialsLocation); !errors.Is(statErr, os.ErrNotExist) {
 				t.Errorf("credentials were written after a failed login")
+			}
+		})
+	}
+}
+
+func TestCallbackIssuerParameter(t *testing.T) {
+	supported := func(idp *fakeProvider) { idp.issSupported = true }
+	tests := []struct {
+		name    string
+		setup   []func(*fakeProvider)
+		sendIss bool
+		want    string
+	}{
+		{name: "provider sends iss", setup: []func(*fakeProvider){supported}, sendIss: true},
+		{name: "provider sends iss but it is missing", setup: []func(*fakeProvider){supported}, want: "no iss parameter"},
+		{name: "provider doesn't send iss"},
+		{name: "provider doesn't send iss but it is present", sendIss: true},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			session, _, ctx := newTestSession(t, test.setup...)
+			params := url.Values{"code": {"test-code"}}
+			if test.sendIss {
+				params.Set("iss", session.issuer)
+			}
+
+			serve(ctx, session, http.MethodGet, callbackURL(session, params))
+
+			err, done := loginResult(session)
+			if !done {
+				t.Fatal("login is still waiting")
+			}
+			if test.want == "" && err != nil {
+				t.Errorf("login failed: %v", err)
+			}
+			if test.want != "" && (err == nil || !strings.Contains(err.Error(), test.want)) {
+				t.Errorf("login result = %v, want an error containing %q", err, test.want)
 			}
 		})
 	}
