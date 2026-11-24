@@ -252,6 +252,19 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         return getNodeRun(currentNodePosition);
     }
 
+    // The failure that ended this ThreadRun, following any FailureHandler that itself failed.
+    public FailureModel getTerminalFailure() {
+        FailureModel failure = getCurrentNodeRun().getLatestFailure().get();
+        if (failure.getFailureHandlerThreadRunId() == null || failure.isProperlyHandled()) {
+            return failure;
+        }
+        ThreadRunModel handler = wfRun.getThreadRun(failure.getFailureHandlerThreadRunId());
+        if (handler == null || (handler.getStatus() != LHStatus.ERROR && handler.getStatus() != LHStatus.EXCEPTION)) {
+            return failure;
+        }
+        return handler.getTerminalFailure();
+    }
+
     /**
      * Starts the ThreadRun and advances it past the entrypoint node. Note that it is
      * the responsibility of the caller to validate start variables before calling this
