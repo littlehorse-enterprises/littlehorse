@@ -17,6 +17,7 @@ import io.littlehorse.common.model.getable.global.wfspec.thread.ThreadSpecModel;
 import io.littlehorse.common.model.getable.global.wfspec.variable.expression.ExpressionModel;
 import io.littlehorse.common.util.TypeCastingUtils;
 import io.littlehorse.sdk.common.proto.LHPath.Selector;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment;
 import io.littlehorse.sdk.common.proto.VariableAssignment.PathCase;
 import io.littlehorse.sdk.common.proto.VariableAssignment.SourceCase;
@@ -198,7 +199,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
             out.addAll(structBuilder.getRequiredNodeNames());
         }
         if (rhsSourceType == SourceCase.SIZE_OF) {
-            out.addAll(sizeOf.getOperand().getRequiredWfRunVarNames());
+            out.addAll(sizeOf.getOperand().getRequiredNodeNames());
         }
         if (rhsSourceType == SourceCase.MAP_BUILDER) {
             out.addAll(mapBuilder.getRequiredNodeNames());
@@ -387,6 +388,44 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
 
     public boolean readsMaskedValue(ReadOnlyMetadataManager manager, WfSpecModel wfSpec, String threadSpecName)
             throws InvalidExpressionException {
+        for (VariableAssignmentModel child : getChildAssignments()) {
+            if (child.readsMaskedValue(manager, wfSpec, threadSpecName)) return true;
+        }
+
+        Optional<TypeDefinitionModel> type = sourceWithoutPath().getSourceType(manager, wfSpec, threadSpecName);
+        if (type.isEmpty()) return false;
+        if (type.get().isMasked()) return true;
+        if (lhPath == null) return false;
+
+        for (Selector selector : lhPath.getPath()) {
+            type = type.get().getNestedType(new LHPathModel(List.of(selector)), manager);
+            if (type.isEmpty()) return false;
+            if (type.get().isMasked()) return true;
+        }
+        return false;
+    }
+
+    public void validateFormPlaceholderPaths(WfSpecModel wfSpec, String threadSpecName)
+            throws InvalidExpressionException {
+        if (rhsSourceType == SourceCase.NODE_OUTPUT && (lhPath != null || jsonPath != null)) {
+            NodeModel sourceNode = wfSpec.fetchThreadSpec(threadSpecName).getNode(nodeOutputReference.getNodeName());
+            if (sourceNode == null) {
+                throw new InvalidExpressionException(
+                        "Node " + nodeOutputReference.getNodeName() + " not present in threadspec " + threadSpecName);
+            }
+            if (sourceNode.getTaskNode() != null
+                    && sourceNode.getTaskNode().getTaskToExecuteType() == TaskToExecuteCase.DYNAMIC_TASK) {
+                throw new InvalidExpressionException(
+                        "Form placeholders cannot access fields or paths on dynamic task output "
+                                + nodeOutputReference.getNodeName() + "; pass the whole output instead");
+            }
+        }
+        for (VariableAssignmentModel child : getChildAssignments()) {
+            child.validateFormPlaceholderPaths(wfSpec, threadSpecName);
+        }
+    }
+
+    private List<VariableAssignmentModel> getChildAssignments() {
         List<VariableAssignmentModel> children = new ArrayList<>();
         switch (rhsSourceType) {
             case FORMAT_STRING:
@@ -413,21 +452,7 @@ public class VariableAssignmentModel extends LHSerializable<VariableAssignment> 
         }
         if (lhPath != null) children.addAll(lhPath.getDynamicAssignments());
 
-        for (VariableAssignmentModel child : children) {
-            if (child.readsMaskedValue(manager, wfSpec, threadSpecName)) return true;
-        }
-
-        Optional<TypeDefinitionModel> type = sourceWithoutPath().getSourceType(manager, wfSpec, threadSpecName);
-        if (type.isEmpty()) return false;
-        if (type.get().isMasked()) return true;
-        if (lhPath == null) return false;
-
-        for (Selector selector : lhPath.getPath()) {
-            type = type.get().getNestedType(new LHPathModel(List.of(selector)), manager);
-            if (type.isEmpty()) return false;
-            if (type.get().isMasked()) return true;
-        }
-        return false;
+        return children;
     }
 
     private VariableAssignmentModel sourceWithoutPath() {

@@ -241,6 +241,11 @@ version, or the current latest if unpinned. Registration is rejected if:
 
 - The FormDef references a placeholder the node does not supply.
 - The node supplies a placeholder the FormDef does not reference.
+- A placeholder accesses a field or path on a dynamic task's output, directly or
+  inside another assignment such as a formatted string. Dynamic task output
+  types are unknown at registration. Whole-output references remain allowed;
+  if the executed task's output is masked, the entire placeholder value is
+  replaced with `*****` at runtime.
 
 For an unpinned FormDef, a later version may reference placeholders the node does
 not supply. See [Creating a UserTaskRun](#creating-a-usertaskrun).

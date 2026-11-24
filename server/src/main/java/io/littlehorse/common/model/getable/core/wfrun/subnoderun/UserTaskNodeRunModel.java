@@ -12,6 +12,7 @@ import io.littlehorse.common.model.getable.core.usertaskrun.UserTaskRunModel;
 import io.littlehorse.common.model.getable.core.usertaskrun.usertaskevent.UserTaskEventModel;
 import io.littlehorse.common.model.getable.core.variable.VariableValueModel;
 import io.littlehorse.common.model.getable.core.wfrun.SubNodeRun;
+import io.littlehorse.common.model.getable.core.wfrun.ThreadRunModel;
 import io.littlehorse.common.model.getable.core.wfrun.failure.FailureModel;
 import io.littlehorse.common.model.getable.global.formdef.FormDefModel;
 import io.littlehorse.common.model.getable.global.formdef.FormDefReferenceModel;
@@ -25,6 +26,7 @@ import io.littlehorse.common.model.getable.global.wfspec.variable.VariableAssign
 import io.littlehorse.common.model.getable.objectId.CheckpointIdModel;
 import io.littlehorse.common.model.getable.objectId.UserTaskRunIdModel;
 import io.littlehorse.sdk.common.LHLibUtil;
+import io.littlehorse.sdk.common.proto.TaskNode.TaskToExecuteCase;
 import io.littlehorse.sdk.common.proto.UserTaskNodeRun;
 import io.littlehorse.sdk.common.proto.UserTaskRunStatus;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
@@ -173,7 +175,12 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
         for (Map.Entry<String, VariableAssignmentModel> entry :
                 utn.getPlaceholders().entrySet()) {
             try {
-                values.put(entry.getKey(), getNodeRun().getThreadRun().assignVariable(entry.getValue()));
+                ThreadRunModel thread = getNodeRun().getThreadRun();
+                VariableAssignmentModel assignment = entry.getValue();
+                VariableValueModel value = usesMaskedDynamicTaskOutput(assignment, thread)
+                        ? new VariableValueModel(LHConstants.STRING_MASK)
+                        : thread.assignVariable(assignment);
+                values.put(entry.getKey(), value);
             } catch (LHVarSubError exn) {
                 throw new NodeFailureException(new FailureModel(
                         "Failed evaluating placeholder %s: %s".formatted(entry.getKey(), exn.getMessage()),
@@ -181,6 +188,26 @@ public class UserTaskNodeRunModel extends SubNodeRun<UserTaskNodeRun> {
             }
         }
         return formDef.resolve(values);
+    }
+
+    private boolean usesMaskedDynamicTaskOutput(VariableAssignmentModel assignment, ThreadRunModel thread)
+            throws LHVarSubError {
+        for (String nodeName : assignment.getRequiredNodeNames()) {
+            NodeModel sourceNode = thread.getThreadSpec().getNode(nodeName);
+            if (sourceNode.getTaskNode() == null
+                    || sourceNode.getTaskNode().getTaskToExecuteType() != TaskToExecuteCase.DYNAMIC_TASK) {
+                continue;
+            }
+            TaskRunModel taskRun = processorContext
+                    .getableManager()
+                    .get(thread.getMostRecentNodeRun(nodeName).getTaskRun().getTaskRunId());
+            if (taskRun == null) {
+                throw new LHVarSubError(null, "TaskRun for node " + nodeName + " not found");
+            }
+            // Mask the entire placeholder, including formats and expressions, without changing operand types.
+            if (taskRun.getLatestAttempt().isMaskedValue()) return true;
+        }
+        return false;
     }
 
     @Override

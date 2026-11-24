@@ -146,21 +146,11 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     @Override
     public void validate(ExecutionContext ctx) throws InvalidNodeException {
-        UserTaskDefModel utd;
-        if (userTaskDefVersion == null) {
-            utd = metadataManager.getLastFromPrefix(
-                    UserTaskDefIdModel.getPrefix(userTaskDefName), UserTaskDefModel.class);
-        } else {
-            utd = metadataManager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
-        }
-
+        UserTaskDefModel utd = resolveUserTaskDef(metadataManager);
         if (utd == null) {
             throw new InvalidNodeException(
                     "Specified UserTaskDef " + userTaskDefName + "/" + userTaskDefVersion + " not found", node);
         }
-
-        // Now pin the version
-        userTaskDefVersion = utd.version;
 
         if (userId == null && userGroup == null) {
             throw new InvalidNodeException("Must specify userGroup or userId", node);
@@ -217,6 +207,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
     private boolean exposesMaskedValue(VariableAssignmentModel assignment) throws InvalidNodeException {
         ThreadSpecModel threadSpec = node.getThreadSpec();
         try {
+            assignment.validateFormPlaceholderPaths(threadSpec.getWfSpec(), threadSpec.getName());
             return assignment.readsMaskedValue(metadataManager, threadSpec.getWfSpec(), threadSpec.getName());
         } catch (InvalidExpressionException exn) {
             throw new InvalidNodeException("Invalid placeholder assignment: " + exn.getMessage(), node);
@@ -263,7 +254,7 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
 
     @Override
     public Optional<ReturnTypeModel> getOutputType(ReadOnlyMetadataManager manager) {
-        UserTaskDefModel userTaskDef = manager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        UserTaskDefModel userTaskDef = resolveUserTaskDef(manager);
         if (userTaskDef == null) {
             return Optional.empty();
         }
@@ -274,5 +265,15 @@ public class UserTaskNodeModel extends SubNode<UserTaskNode> {
             return Optional.of(new ReturnTypeModel(VariableType.JSON_OBJ));
         }
         return Optional.of(new ReturnTypeModel());
+    }
+
+    private UserTaskDefModel resolveUserTaskDef(ReadOnlyMetadataManager manager) {
+        UserTaskDefModel userTaskDef = userTaskDefVersion == null
+                ? manager.getLastFromPrefix(UserTaskDefIdModel.getPrefix(userTaskDefName), UserTaskDefModel.class)
+                : manager.get(new UserTaskDefIdModel(userTaskDefName, userTaskDefVersion));
+        if (userTaskDef != null) {
+            userTaskDefVersion = userTaskDef.version;
+        }
+        return userTaskDef;
     }
 }

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.grpc.StatusRuntimeException;
+import io.littlehorse.common.LHConstants;
 import io.littlehorse.sdk.common.proto.DeleteWfRunRequest;
 import io.littlehorse.sdk.common.proto.FormDef;
 import io.littlehorse.sdk.common.proto.FormDefReference;
@@ -31,6 +32,7 @@ import io.littlehorse.sdk.common.util.Arg;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
+import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.WorkflowVerifier;
 import io.littlehorse.test.exception.LHTestExceptionUtil;
@@ -190,6 +192,33 @@ public class FormDefTest {
     }
 
     @Test
+    void shouldRegisterFormPlaceholderReferencingUnversionedUserTaskOutput() {
+        String requestTaskName = putFormTask(literal("Submit request"));
+        String approvalTaskName = putFormTask(placeholder("greeting"));
+        Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
+            var request = thread.assignUserTask(requestTaskName, "obiwan", null);
+            thread.assignUserTask(approvalTaskName, "reviewer", null)
+                    .withPlaceholder("greeting", request.get("approved"));
+        });
+
+        var compiled = workflow.compileWorkflow();
+        assertThat(compiled.getThreadSpecsOrThrow("entrypoint").getNodesMap().values())
+                .filteredOn(node -> node.hasUserTask())
+                .hasSize(2)
+                .allSatisfy(node ->
+                        assertThat(node.getUserTask().hasUserTaskDefVersion()).isFalse());
+
+        var registered = client.putWfSpec(compiled);
+        assertThat(registered.getThreadSpecsOrThrow("entrypoint").getNodesMap().values())
+                .filteredOn(node -> node.hasUserTask())
+                .hasSize(2)
+                .allSatisfy(node -> {
+                    assertThat(node.getUserTask().hasUserTaskDefVersion()).isTrue();
+                    assertThat(node.getUserTask().getUserTaskDefVersion()).isZero();
+                });
+    }
+
+    @Test
     void shouldDeleteWfRunAfterFormPlaceholderEvaluationFails() {
         String taskName = putFormTask(placeholder("greeting"));
         Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
@@ -244,6 +273,39 @@ public class FormDefTest {
 
     @LHTaskMethod("form-display-name")
     public String displayName(String customer) {
+        return customer;
+    }
+
+    @Test
+    void shouldMaskDynamicTaskOutputInFormPlaceholder() {
+        String taskName = putFormTask(placeholder("greeting"));
+        Workflow workflow = Workflow.newWorkflow("form-wf-" + UUID.randomUUID(), thread -> {
+            WfRunVariable selectedTask = thread.declareStr("selected-task");
+            var output = thread.execute(selectedTask, "obiwan");
+            thread.assignUserTask(taskName, "reviewer", null).withPlaceholder("greeting", output);
+        });
+
+        workflowVerifier
+                .prepareRun(workflow, Arg.of("selected-task", "form-masked-display-name"))
+                .waitForNodeRunStatus(0, 2, RUNNING)
+                .thenVerifyWfRun(wfRun -> {
+                    UserTaskRun run = client.getUserTaskRun(client.listUserTaskRuns(ListUserTaskRunRequest.newBuilder()
+                                    .setWfRunId(wfRun.getId())
+                                    .build())
+                            .getResults(0)
+                            .getId());
+                    assertThat(run.getForm()
+                                    .getFields(0)
+                                    .getMetadataOrThrow("label")
+                                    .getStr())
+                            .isEqualTo(LHConstants.STRING_MASK);
+                })
+                .start();
+    }
+
+    @LHTaskMethod("form-masked-display-name")
+    @LHType(masked = true)
+    public String maskedDisplayName(String customer) {
         return customer;
     }
 
