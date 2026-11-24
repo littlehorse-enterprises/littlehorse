@@ -2,11 +2,11 @@ import { LHStatus, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
 const UUID_FORMAT = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -18,8 +18,9 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const run = await client.runWf({ wfSpecName: 'example-type-adapter', variables: {} })
-  const finished = await waitForRun(run.id!)
+  const finished = await waitForRun(client, run.id!)
 
   // The Java README's verification: get-uuid stored a UUID-like string value.
   const uuidVar = await client.getVariable({ wfRunId: run.id, threadRunNumber: 0, name: 'uuid' })

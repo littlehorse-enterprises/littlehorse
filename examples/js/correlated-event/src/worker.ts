@@ -3,12 +3,12 @@ import { VariableType } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 const WF_NAME = 'correlated-events'
 const EVENT_NAME = 'document-signed'
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   await client.putExternalEventDef({
     name: EVENT_NAME,
     contentType: {

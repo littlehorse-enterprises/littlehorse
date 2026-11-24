@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 function childCompleted(): string {
   console.log('One of the child threads has completed!')
@@ -15,6 +14,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const completed = createTaskWorker(childCompleted, 'child-completed', config, {
     inputVars: {},
     outputSchema: z.string(),

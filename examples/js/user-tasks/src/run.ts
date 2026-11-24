@@ -2,9 +2,9 @@ import { LHStatus, UserTaskRunId, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -19,7 +19,7 @@ async function waitForRun(id: WfRunId) {
 // previous run of this example too. Match on our own wfRunId rather than
 // taking results[0]; completing someone else's task would leave this run
 // parked on its UserTask node forever.
-async function findUserTaskRun(userTaskDefName: string, wfRunId: string): Promise<UserTaskRunId> {
+async function findUserTaskRun(client: Client, userTaskDefName: string, wfRunId: string): Promise<UserTaskRunId> {
   for (let i = 0; i < 50; i++) {
     const found = await client.searchUserTaskRun({ userTaskDefName })
     const userTaskId = found.results.find(id => id.wfRunId?.id === wfRunId)
@@ -30,13 +30,14 @@ async function findUserTaskRun(userTaskDefName: string, wfRunId: string): Promis
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const run = await client.runWf({
     wfSpecName: 'it-request',
     variables: { 'user-id': { value: { oneofKind: 'str', str: 'anakin' } } },
   })
 
   // Fill in the IT request form as anakin, the way a UI would.
-  const requestFormId = await findUserTaskRun('it-request', run.id!.id)
+  const requestFormId = await findUserTaskRun(client, 'it-request', run.id!.id)
   await client.completeUserTaskRun({
     userTaskRunId: requestFormId,
     userId: 'anakin',
@@ -50,7 +51,7 @@ async function main() {
 
   // The approval form arrives unassigned to the finance group; claim it as
   // mace and answer it (if you know Star Wars, you know the correct answer).
-  const approvalFormId = await findUserTaskRun('approve-it-request', run.id!.id)
+  const approvalFormId = await findUserTaskRun(client, 'approve-it-request', run.id!.id)
   await client.assignUserTaskRun({ userTaskRunId: approvalFormId, userId: 'mace', overrideClaim: false })
   await client.completeUserTaskRun({
     userTaskRunId: approvalFormId,
@@ -58,7 +59,7 @@ async function main() {
     results: { isApproved: { value: { oneofKind: 'bool', bool: false } } },
   })
 
-  const finished = await waitForRun(run.id!)
+  const finished = await waitForRun(client, run.id!)
   console.log(`it-request -> ${LHStatus[finished.status]} (${run.id!.id})`)
   config.close()
   if (finished.status !== LHStatus.COMPLETED) process.exit(1)

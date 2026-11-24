@@ -2,9 +2,9 @@ import { LHStatus, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -21,6 +21,7 @@ function isAlreadyExists(err: unknown): boolean {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const correlationKey = process.argv[2] ?? 'some-document'
 
   const run = await client.runWf({
@@ -44,7 +45,7 @@ async function main() {
     console.log('CorrelatedEvent already exists for this key; the run correlates against it anyway')
   }
 
-  const finished = await waitForRun(run.id!)
+  const finished = await waitForRun(client, run.id!)
   console.log(`correlated-events -> ${LHStatus[finished.status]} (${run.id!.id})`)
   config.close()
   if (finished.status !== LHStatus.COMPLETED) process.exit(1)

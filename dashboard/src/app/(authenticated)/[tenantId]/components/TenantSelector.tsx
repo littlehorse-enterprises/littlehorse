@@ -11,7 +11,7 @@ import { FC, useMemo, useState } from 'react'
 const SEARCH_THRESHOLD = 8
 
 export const TenantSelector: FC = () => {
-  const { tenants } = useWhoAmI()
+  const { tenants, tenantNames } = useWhoAmI()
   const tenantId = useParams().tenantId as string
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -20,8 +20,10 @@ export const TenantSelector: FC = () => {
   const filteredTenants = useMemo(() => {
     const normalized = query.trim().toLowerCase()
     if (!normalized) return tenants
-    return tenants.filter(tenant => tenant.toLowerCase().includes(normalized))
-  }, [tenants, query])
+    return tenants.filter(tenant =>
+      [tenant, tenantNames[tenant]].some(value => value?.toLowerCase().includes(normalized))
+    )
+  }, [tenants, tenantNames, query])
 
   const selectTenant = (tenant: string) => {
     setOpen(false)
@@ -53,7 +55,7 @@ export const TenantSelector: FC = () => {
             d="M6 6.878V6a2.25 2.25 0 0 1 2.25-2.25h7.5A2.25 2.25 0 0 1 18 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 0 0 4.5 9v.878m13.5-3A2.25 2.25 0 0 1 19.5 9v.878m0 0a2.246 2.246 0 0 0-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0 1 21 12v6a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18v-6c0-.98.626-1.813 1.5-2.122"
           />
         </svg>
-        <p className="break-keep">{tenantId}</p>
+        <p className="break-keep">{tenantNames[tenantId] || tenantId}</p>
       </PopoverTrigger>
       <PopoverContent align="end" className="flex max-h-[--radix-popover-content-available-height] w-72 flex-col p-0">
         <div className="px-3 py-2 text-sm font-bold uppercase">Tenants</div>
@@ -84,7 +86,10 @@ export const TenantSelector: FC = () => {
                   tenant === tenantId && 'font-semibold text-blue-600'
                 )}
               >
-                {tenant}
+                {tenantNames[tenant] || tenant}
+                {tenantNames[tenant] && tenantNames[tenant] !== tenant && (
+                  <span className="block text-xs text-muted-foreground">{tenant}</span>
+                )}
               </button>
             ))
           )}

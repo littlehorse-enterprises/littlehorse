@@ -2,9 +2,9 @@ import { Workflow } from 'littlehorse-client'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   await client.putWorkflowEventDef({ name: 'sleep-done' })
 
   const wf = Workflow.newWorkflow('await-wf-event', thread => {
