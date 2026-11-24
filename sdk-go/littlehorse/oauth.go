@@ -164,7 +164,7 @@ func (fileTokenSource FileTokenSource) token(ctx context.Context) (*oauth2.Token
 }
 
 func readToken(path string, file os.FileInfo) (*oauth2.Token, error) {
-	// Files written by older versions are readable by other users.
+	// The file holds a refresh token, so it must stay readable only by the current user.
 	if file.Mode().Perm()&0o077 != 0 {
 		os.Chmod(path, 0o600)
 	}
