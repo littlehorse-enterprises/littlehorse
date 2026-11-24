@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
 const STR = toTypeDefinition(VariableType.STR)
 const TIMESTAMP = toTypeDefinition(VariableType.TIMESTAMP)
@@ -47,11 +47,12 @@ function printBookDetails(publishedBook: Book, instant: Date): string {
 // createTaskWorker's zod mapping has no TIMESTAMP type, so the TaskDefs are
 // registered through the client with the same signatures Java derives from
 // the worker methods.
-async function ensureTaskDef(worker: LHTaskWorker, request: Parameters<typeof client.putTaskDef>[0]) {
+async function ensureTaskDef(client: Client, worker: LHTaskWorker, request: Parameters<typeof client.putTaskDef>[0]) {
   if (!(await worker.doesTaskDefExist())) await client.putTaskDef(request)
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const currentDate = createTaskWorker(getDate, 'get-current-date', config, { inputVars: {} })
   const publish = createTaskWorker(publishBook, 'publish-book', config, {
     inputVars: { name: z.string(), instant: z.date() },
@@ -60,12 +61,12 @@ async function main() {
     inputVars: { publishedBook: z.object({}), instant: z.date() },
   })
 
-  await ensureTaskDef(currentDate, {
+  await ensureTaskDef(client, currentDate, {
     name: 'get-current-date',
     inputVars: [],
     returnType: { returnType: TIMESTAMP },
   })
-  await ensureTaskDef(publish, {
+  await ensureTaskDef(client, publish, {
     name: 'publish-book',
     inputVars: [
       { name: 'name', typeDef: STR },
@@ -73,7 +74,7 @@ async function main() {
     ],
     returnType: { returnType: JSON_OBJ },
   })
-  await ensureTaskDef(printDetails, {
+  await ensureTaskDef(client, printDetails, {
     name: 'print-book-details',
     inputVars: [
       { name: 'publishedBook', typeDef: JSON_OBJ },

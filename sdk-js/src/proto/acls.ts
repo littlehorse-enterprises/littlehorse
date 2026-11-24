@@ -84,6 +84,12 @@ export interface Tenant {
      * @generated from protobuf field: optional littlehorse.OutputTopicConfig output_topic_config = 3
      */
     outputTopicConfig?: OutputTopicConfig;
+    /**
+     * A mutable, human-readable name.
+     *
+     * @generated from protobuf field: optional string name = 4
+     */
+    name?: string;
 }
 /**
  * A Quota defines limits for requests made within a certain `Tenant`, optionally
@@ -280,6 +286,12 @@ export interface PutTenantRequest {
      * @generated from protobuf field: optional littlehorse.OutputTopicConfig output_topic_config = 2
      */
     outputTopicConfig?: OutputTopicConfig;
+    /**
+     * If omitted, preserves the existing name. An empty string clears the name.
+     *
+     * @generated from protobuf field: optional string name = 3
+     */
+    name?: string;
 }
 /**
  * Creates or updates a `Quota`.
@@ -530,7 +542,8 @@ class Tenant$Type extends MessageType<Tenant> {
         super("littlehorse.Tenant", [
             { no: 1, name: "id", kind: "message", T: () => TenantId },
             { no: 2, name: "created_at", kind: "message", T: () => Timestamp },
-            { no: 3, name: "output_topic_config", kind: "message", T: () => OutputTopicConfig }
+            { no: 3, name: "output_topic_config", kind: "message", T: () => OutputTopicConfig },
+            { no: 4, name: "name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<Tenant>): Tenant {
@@ -553,6 +566,9 @@ class Tenant$Type extends MessageType<Tenant> {
                 case /* optional littlehorse.OutputTopicConfig output_topic_config */ 3:
                     message.outputTopicConfig = OutputTopicConfig.internalBinaryRead(reader, reader.uint32(), options, message.outputTopicConfig);
                     break;
+                case /* optional string name */ 4:
+                    message.name = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -574,6 +590,9 @@ class Tenant$Type extends MessageType<Tenant> {
         /* optional littlehorse.OutputTopicConfig output_topic_config = 3; */
         if (message.outputTopicConfig)
             OutputTopicConfig.internalBinaryWrite(message.outputTopicConfig, writer.tag(3, WireType.LengthDelimited).fork(), options).join();
+        /* optional string name = 4; */
+        if (message.name !== undefined)
+            writer.tag(4, WireType.LengthDelimited).string(message.name);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);
@@ -972,7 +991,8 @@ class PutTenantRequest$Type extends MessageType<PutTenantRequest> {
     constructor() {
         super("littlehorse.PutTenantRequest", [
             { no: 1, name: "id", kind: "scalar", T: 9 /*ScalarType.STRING*/ },
-            { no: 2, name: "output_topic_config", kind: "message", T: () => OutputTopicConfig }
+            { no: 2, name: "output_topic_config", kind: "message", T: () => OutputTopicConfig },
+            { no: 3, name: "name", kind: "scalar", opt: true, T: 9 /*ScalarType.STRING*/ }
         ]);
     }
     create(value?: PartialMessage<PutTenantRequest>): PutTenantRequest {
@@ -993,6 +1013,9 @@ class PutTenantRequest$Type extends MessageType<PutTenantRequest> {
                 case /* optional littlehorse.OutputTopicConfig output_topic_config */ 2:
                     message.outputTopicConfig = OutputTopicConfig.internalBinaryRead(reader, reader.uint32(), options, message.outputTopicConfig);
                     break;
+                case /* optional string name */ 3:
+                    message.name = reader.string();
+                    break;
                 default:
                     let u = options.readUnknownField;
                     if (u === "throw")
@@ -1011,6 +1034,9 @@ class PutTenantRequest$Type extends MessageType<PutTenantRequest> {
         /* optional littlehorse.OutputTopicConfig output_topic_config = 2; */
         if (message.outputTopicConfig)
             OutputTopicConfig.internalBinaryWrite(message.outputTopicConfig, writer.tag(2, WireType.LengthDelimited).fork(), options).join();
+        /* optional string name = 3; */
+        if (message.name !== undefined)
+            writer.tag(3, WireType.LengthDelimited).string(message.name);
         let u = options.writeUnknownFields;
         if (u !== false)
             (u == true ? UnknownFieldHandler.onWrite : u)(this.typeName, message, writer);

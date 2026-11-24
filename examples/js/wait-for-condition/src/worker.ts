@@ -2,11 +2,11 @@ import { Workflow } from 'littlehorse-client'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 const INTERRUPT_NAME = 'subtract'
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   await client.putExternalEventDef({ name: INTERRUPT_NAME })
 
   const wf = Workflow.newWorkflow('example-wait-for-condition', thread => {
