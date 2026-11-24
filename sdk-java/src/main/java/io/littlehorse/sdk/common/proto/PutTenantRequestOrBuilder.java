@@ -59,4 +59,33 @@ public interface PutTenantRequestOrBuilder extends
    * <code>optional .littlehorse.OutputTopicConfig output_topic_config = 2;</code>
    */
   io.littlehorse.sdk.common.proto.OutputTopicConfigOrBuilder getOutputTopicConfigOrBuilder();
+
+  /**
+   * <pre>
+   * If omitted, preserves the existing name. An empty string clears the name.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return Whether the name field is set.
+   */
+  boolean hasName();
+  /**
+   * <pre>
+   * If omitted, preserves the existing name. An empty string clears the name.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <pre>
+   * If omitted, preserves the existing name. An empty string clears the name.
+   * </pre>
+   *
+   * <code>optional string name = 3;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

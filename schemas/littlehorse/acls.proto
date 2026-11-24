@@ -47,6 +47,9 @@ message Tenant {
     // Configuration for the output topic associated with this Tenant. If not set,
     // then the output topic is not enabled.
     optional OutputTopicConfig output_topic_config = 3;
+
+    // A mutable, human-readable name.
+    optional string name = 4;
 }
 
 // A Quota defines limits for requests made within a certain `Tenant`, optionally
@@ -211,6 +214,9 @@ message PutTenantRequest {
     // Configures the behavior of the Output Topic for this Tenant. If not set,
     // then the OutputTopic is not considered to be enabled.
     optional OutputTopicConfig output_topic_config = 2;
+
+    // If omitted, preserves the existing name. An empty string clears the name.
+    optional string name = 3;
 }
 
 // Creates or updates a `Quota`.
