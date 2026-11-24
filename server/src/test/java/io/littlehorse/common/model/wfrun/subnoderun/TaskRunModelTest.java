@@ -31,10 +31,12 @@ import io.littlehorse.server.streams.stores.PartitionMetricsMemoryStore;
 import io.littlehorse.server.streams.topology.core.CoreProcessorContext;
 import io.littlehorse.server.streams.topology.core.ExecutionContext;
 import io.littlehorse.server.streams.topology.core.GetableUpdates;
+import io.littlehorse.server.streams.topology.core.LHTaskManager;
 import java.util.ArrayList;
 import java.util.Date;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Answers;
 
@@ -42,7 +44,19 @@ public class TaskRunModelTest {
 
     private final String tenantId = "myTenantId";
     private final ExecutionContext executionContext = mock();
-    private final CoreProcessorContext processorContext = mock(Answers.RETURNS_DEEP_STUBS);
+    private final CoreProcessorContext processorContext = mock();
+    private final KeyValueStore<String, Bytes> mockStore = mock();
+    private final LHTaskManager taskManager = mock();
+
+    @BeforeEach
+    public void setup() {
+        when(processorContext.authorization()).thenReturn(mock(AuthorizationContext.class));
+        when(processorContext.authorization().tenantId()).thenReturn(new TenantIdModel(tenantId));
+        when(processorContext.getPartitionMetricsMemoryStore()).thenReturn(new PartitionMetricsMemoryStore());
+        when(processorContext.nativeCoreStore()).thenReturn(mockStore);
+        when(processorContext.getTaskManager()).thenReturn(taskManager);
+        when(processorContext.getableUpdates()).thenReturn(mock(GetableUpdates.class));
+    }
 
     @Test
     void setTaskWorkerVersionAndIdToTaskRun() {
