@@ -2,9 +2,9 @@ import { LHStatus, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -16,6 +16,7 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const approvalChain = {
     description: 'demo for approvals',
     approvals: [{ user: 'yoda' }, { user: 'chewbacca' }, { user: 'anakin' }],
@@ -28,7 +29,7 @@ async function main() {
       },
     },
   })
-  const finished = await waitForRun(run.id!)
+  const finished = await waitForRun(client, run.id!)
   console.log(
     `spawn-parallel-threads-from-json-arr-variable -> ${LHStatus[finished.status]}, ${finished.threadRuns.length} threadRuns`
   )

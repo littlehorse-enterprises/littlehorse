@@ -2,9 +2,9 @@ import { LHStatus, Variable, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -21,11 +21,12 @@ function strValue(variable: Variable): string | undefined {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const parentRun = await client.runWf({
     wfSpecName: 'parent',
     variables: { name: { value: { oneofKind: 'str', str: 'obi-wan' } } },
   })
-  const parentFinished = await waitForRun(parentRun.id!)
+  const parentFinished = await waitForRun(client, parentRun.id!)
   const nameBefore = strValue(
     await client.getVariable({
       wfRunId: parentRun.id,
@@ -40,7 +41,7 @@ async function main() {
     variables: {},
     parentWfRunId: parentRun.id,
   })
-  const childFinished = await waitForRun(childRun.id!)
+  const childFinished = await waitForRun(client, childRun.id!)
   const nameAfter = strValue(
     await client.getVariable({
       wfRunId: parentRun.id,
@@ -66,7 +67,7 @@ async function main() {
       },
     },
   })
-  const grandChildFinished = await waitForRun(grandChildRun.id!)
+  const grandChildFinished = await waitForRun(client, grandChildRun.id!)
 
   console.log(`grand-child -> ${LHStatus[grandChildFinished.status]} (${grandChildRun.id!.id})`)
   config.close()

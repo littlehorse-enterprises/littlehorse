@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 function askForName(): string {
   console.log('Executing ask-for-name')
@@ -20,6 +19,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const asker = createTaskWorker(askForName, 'ask-for-name', config, {
     inputVars: {},
     outputSchema: z.string(),

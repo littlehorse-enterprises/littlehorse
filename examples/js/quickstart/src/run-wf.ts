@@ -14,7 +14,7 @@ import { VariableValue } from 'littlehorse-client/proto'
  */
 async function main() {
   const config = LHConfig.from({})
-  const client = config.getClient()
+  const client = await config.getAuthenticatedClient()
 
   const fullName = process.argv[2] ?? 'Obi-Wan Kenobi'
   const email = process.argv[3] ?? 'obiwan@jedi.temple'

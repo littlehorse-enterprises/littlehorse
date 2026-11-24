@@ -2,9 +2,9 @@ import { LHStatus, ThreadType, WfRunId } from 'littlehorse-client/proto'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
+type Client = Awaited<ReturnType<typeof config.getAuthenticatedClient>>
 
-async function waitForRun(id: WfRunId) {
+async function waitForRun(client: Client, id: WfRunId) {
   for (let i = 0; i < 150; i++) {
     const run = await client.getWfRun(id)
     if (run.status === LHStatus.COMPLETED || run.status === LHStatus.ERROR || run.status === LHStatus.EXCEPTION) {
@@ -16,6 +16,7 @@ async function waitForRun(id: WfRunId) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const run = await client.runWf({ wfSpecName: 'example-interrupt-handler', variables: {} })
   await new Promise(r => setTimeout(r, 500))
   console.log('interrupting the run...')
@@ -27,7 +28,7 @@ async function main() {
 
   // The interrupt handler's some-task fails, so threadRun 1 ends up ERROR with
   // type INTERRUPT and the whole workflow fails.
-  const finished = await waitForRun(run.id!)
+  const finished = await waitForRun(client, run.id!)
   const interrupt = finished.threadRuns[1]
   console.log(
     `example-interrupt-handler -> ${LHStatus[finished.status]}, ` +

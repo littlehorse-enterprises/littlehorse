@@ -3,7 +3,6 @@ import { z } from 'zod'
 import { loadConfig } from './config'
 
 const config = loadConfig()
-const client = config.getClient()
 
 function sendEmail(address: string, content: string, ctx: WorkerContext): void {
   if (ctx.getUserId() !== undefined) {
@@ -21,6 +20,7 @@ async function ensureTaskDef(worker: LHTaskWorker) {
 }
 
 async function main() {
+  const client = await config.getAuthenticatedClient()
   const emailSender = createTaskWorker(sendEmail, 'send-email', config, {
     inputVars: { address: z.string(), content: z.string() },
   })
