@@ -79,8 +79,8 @@ const MAX_HANDLER_DEPTH = 4
 export type HandlerView = {
   /** Groups left out entirely (with everything nested in them). Defaults to drawing every group. */
   isVisible?: (groupId: string) => boolean
-  /** Collapsed groups draw as a compact chip on the throwing node's exception edge. */
-  isCollapsed?: (groupId: string) => boolean
+  /** Visible groups start as chips until expanded. */
+  isExpanded?: (groupId: string) => boolean
   /** The handler ThreadRun that ran for a group, when looking at a WfRun. */
   runOf?: (groupId: string) => HandlerRun | undefined
 }
@@ -106,7 +106,7 @@ export const extractExceptionHandlers = (
 ): { nodes: Node[]; edges: Edge<DiagramEdgeData>[] } => {
   const nodes: Node[] = []
   const edges: Edge<DiagramEdgeData>[] = []
-  const { isVisible = () => true, isCollapsed = () => false, runOf = () => undefined } = view
+  const { isVisible = () => true, isExpanded = () => false, runOf = () => undefined } = view
 
   /**
    * `idOf` maps a node of `threadSpec` to its diagram id.
@@ -129,7 +129,6 @@ export const extractExceptionHandlers = (
         const isExit = (id: string) => handlerSpec.nodes[id]?.node.oneofKind === 'exit'
         const resumingExits = Object.keys(handlerSpec.nodes).filter(id => isExit(id) && !isFailingExit(handlerSpec, id))
         const resumeTargets = sourceNode.outgoingEdges.map(next => idOf(next.sinkNodeName))
-        const collapsed = isCollapsed(groupId)
 
         const data: ExceptionHandlerData = {
           groupId,
@@ -143,7 +142,7 @@ export const extractExceptionHandlers = (
           run: runOf(groupId),
         }
 
-        if (collapsed) {
+        if (!isExpanded(groupId)) {
           nodes.push({
             id: groupId,
             type: 'exceptionHandlerChip',
@@ -213,7 +212,7 @@ export const extractExceptionHandlers = (
 
 /** Every handler group of a thread, expanded, whether or not it is drawn. */
 export const listHandlerGroups = (spec: WorkflowDefinition, threadName: string): ExceptionHandlerData[] =>
-  extractExceptionHandlers(spec, threadName)
+  extractExceptionHandlers(spec, threadName, { isExpanded: () => true })
     .nodes.filter(node => node.type === 'exceptionHandler')
     .map(node => node.data as ExceptionHandlerData)
 

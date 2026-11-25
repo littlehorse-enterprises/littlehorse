@@ -42,7 +42,7 @@ const withRethrowingHandler = (spec: WorkflowDefinition): WorkflowDefinition => 
 
 describe('extractExceptionHandlers', () => {
   test('an expanded handler holds its own entry, nodes and exit', () => {
-    const { nodes, edges } = extractExceptionHandlers(loadSpec(), 'entrypoint')
+    const { nodes, edges } = extractExceptionHandlers(loadSpec(), 'entrypoint', { isExpanded: () => true })
 
     expect(nodes.map(node => [node.id, node.type])).toEqual([
       [GROUP, 'exceptionHandler'],
@@ -70,19 +70,20 @@ describe('extractExceptionHandlers', () => {
   })
 
   test('a rethrowing handler shows its failing exit and never resumes', () => {
-    const { nodes, edges } = extractExceptionHandlers(withRethrowingHandler(loadSpec()), 'entrypoint')
+    const { nodes, edges } = extractExceptionHandlers(withRethrowingHandler(loadSpec()), 'entrypoint', {
+      isExpanded: () => true,
+    })
     expect(nodes.map(node => node.id)).toContain(`${GROUP}/2-exit-EXIT`)
     expect(edges.some(edge => edge.data?.isResumeEdge)).toBe(false)
     expect((nodes[0].data as ExceptionHandlerData).rethrows).toBe(true)
   })
 
-  test('a collapsed handler is one chip on the exception edge', () => {
+  test.each([undefined, handled])('a visible handler starts as a chip (run: %j)', run => {
     const { nodes, edges } = extractExceptionHandlers(loadSpec(), 'entrypoint', {
-      isCollapsed: id => id === GROUP,
-      runOf: () => handled,
+      runOf: () => run,
     })
     expect(nodes.map(node => [node.id, node.type])).toEqual([[GROUP, 'exceptionHandlerChip']])
-    expect(nodes[0].data.run).toEqual(handled)
+    expect(nodes[0].data.run).toEqual(run)
     expect(nodes[0].data.footprint).toEqual(chipFootprint(nodes[0].data))
     expect(edges.map(edge => [edge.source, edge.sourceHandle, edge.target])).toEqual([
       ['1-fail-TASK', 'source-failure', GROUP],
@@ -137,7 +138,7 @@ const withLongHandlerName = (spec: WorkflowDefinition): WorkflowDefinition => {
 describe('handler layout', () => {
   const layout = async (spec: WorkflowDefinition, view?: HandlerView) => {
     const thread = spec.threadSpecs.entrypoint
-    const handlers = extractExceptionHandlers(spec, 'entrypoint', view)
+    const handlers = extractExceptionHandlers(spec, 'entrypoint', { isExpanded: () => true, ...view })
     const nodes = [...extractNodes(thread), ...handlers.nodes]
     const edges = [...extractEdges(thread), ...handlers.edges]
     return { nodes, ...(await layoutDiagram(nodes, edges)) }
@@ -240,7 +241,7 @@ describe('handler layout', () => {
 test('a collapsed handler lays out', async () => {
   const spec = loadSpec()
   const thread = spec.threadSpecs.entrypoint
-  const handlers = extractExceptionHandlers(spec, 'entrypoint', { isCollapsed: () => true, runOf: () => handled })
+  const handlers = extractExceptionHandlers(spec, 'entrypoint', { runOf: () => handled })
   const nodes = [...extractNodes(thread), ...handlers.nodes]
   const edges = [...extractEdges(thread), ...handlers.edges]
   const { boxes, routes } = await layoutDiagram(nodes, edges)

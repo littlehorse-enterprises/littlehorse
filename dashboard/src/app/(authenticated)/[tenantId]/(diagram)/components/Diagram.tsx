@@ -95,8 +95,8 @@ const extractDiagram = (spec: WorkflowDefinition, threadName: string, threadSpec
  */
 type HandlerState = {
   key: string
-  /** Handlers the user collapsed to a chip; everything shown starts expanded. */
-  collapsed: string[]
+  /** Handler groups the user has opened on this graph. */
+  expanded: string[]
   /** WfSpec page: the top-level node whose handlers are shown because the user selected it. */
   inspected?: string
 }
@@ -148,15 +148,15 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
   // WfSpec page: handlers stay hidden until the user asks for all of them or
   // selects a node that has some. WfRun page: only handlers that actually ran.
   const [showAllHandlers, setShowAllHandlers] = useState(false)
-  const [handlerState, setHandlerState] = useState<HandlerState>({ key: resetKey, collapsed: [] })
-  const { collapsed, inspected } =
-    handlerState.key === resetKey ? handlerState : { collapsed: [] as string[], inspected: undefined }
+  const [handlerState, setHandlerState] = useState<HandlerState>({ key: resetKey, expanded: [] })
+  const { expanded, inspected } =
+    handlerState.key === resetKey ? handlerState : { expanded: [] as string[], inspected: undefined }
 
   const updateHandlerState = useCallback(
     (update: (current: Omit<HandlerState, 'key'>) => Omit<HandlerState, 'key'>) =>
       setHandlerState(current => ({
         key: resetKey,
-        ...update(current.key === resetKey ? current : { collapsed: [], inspected: undefined }),
+        ...update(current.key === resetKey ? current : { expanded: [], inspected: undefined }),
       })),
     [resetKey]
   )
@@ -165,9 +165,9 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     (groupId: string) =>
       updateHandlerState(current => ({
         ...current,
-        collapsed: current.collapsed.includes(groupId)
-          ? current.collapsed.filter(id => id !== groupId)
-          : [...current.collapsed, groupId],
+        expanded: current.expanded.includes(groupId)
+          ? current.expanded.filter(id => id !== groupId)
+          : [...current.expanded, groupId],
       })),
     [updateHandlerState]
   )
@@ -185,15 +185,15 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
   const handlerView = useMemo<HandlerView>(
     () => ({
       isVisible: groupId => visibleGroups.includes(groupId),
-      isCollapsed: groupId => collapsed.includes(groupId),
+      isExpanded: groupId => expanded.includes(groupId),
       runOf: groupId => handlerRuns.get(groupId)?.run,
     }),
-    [visibleGroups, collapsed, handlerRuns]
+    [visibleGroups, expanded, handlerRuns]
   )
 
   // Showing, hiding, collapsing or expanding a handler changes the graph, so
   // it gets a layout of its own.
-  const layoutKey = `${resetKey}|${visibleGroups.join(',')}|${collapsed.filter(id => visibleGroups.includes(id)).join(',')}`
+  const layoutKey = `${resetKey}|${visibleGroups.join(',')}|${expanded.filter(id => visibleGroups.includes(id)).join(',')}`
 
   // Nodes whose handlers are hidden on the WfSpec page get a marker inviting a closer look.
   const hiddenHandlerSources = useMemo(
