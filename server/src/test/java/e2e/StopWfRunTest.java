@@ -16,10 +16,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
-@LHTest(externalEventNames = StopWfRunTest.EVENT_NAME)
+@LHTest(externalEventNames = {StopWfRunTest.EVENT_NAME, StopWfRunTest.INTERRUPT})
 public class StopWfRunTest {
 
     static final String EVENT_NAME = "stop-wf-run-continue";
+    static final String INTERRUPT = "stop-wf-run-interrupt";
     private static final String TASK_NAME = "stop-wf-run-task";
     private final TaskWorker taskWorker = new TaskWorker();
 
@@ -35,6 +36,41 @@ public class StopWfRunTest {
                     thread.waitForEvent(EVENT_NAME);
                 },
                 new LHConfig());
+    }
+
+    @LHWorkflow("stop-interrupt-handler")
+    public Workflow interruptWorkflow() {
+        return Workflow.newWorkflow(
+                "stop-interrupt-handler",
+                thread -> {
+                    thread.registerInterruptHandler(
+                            INTERRUPT, handler -> handler.execute(TASK_NAME).timeout(60));
+                    thread.waitForEvent(EVENT_NAME);
+                },
+                new LHConfig());
+    }
+
+    @Test
+    @WithWorkers("worker")
+    void shouldWaitForInFlightInterruptTaskBeforeHalting() {
+        try {
+            verifier.prepareRun(interruptWorkflow())
+                    .thenSendExternalEventWithContent(INTERRUPT, null)
+                    .waitForTaskStatus(1, 1, TaskStatus.TASK_RUNNING)
+                    .waitForThreadRunStatus(0, LHStatus.HALTED)
+                    .thenVerifyWfRun(run -> client.stopWfRun(StopWfRunRequest.newBuilder()
+                            .setWfRunId(run.getId())
+                            .build()))
+                    .waitForThreadRunStatus(1, LHStatus.HALTING)
+                    .waitForStatus(LHStatus.RUNNING)
+                    .thenVerifyWfRun(run -> taskWorker.finish.countDown())
+                    .waitForTaskStatus(1, 1, TaskStatus.TASK_SUCCESS)
+                    .waitForThreadRunStatus(1, LHStatus.HALTED)
+                    .waitForStatus(LHStatus.HALTED)
+                    .start();
+        } finally {
+            taskWorker.finish.countDown();
+        }
     }
 
     public TaskWorker worker() {

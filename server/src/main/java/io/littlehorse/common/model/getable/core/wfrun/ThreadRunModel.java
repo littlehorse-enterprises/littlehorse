@@ -464,6 +464,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void halt(ThreadHaltReasonModel reason) {
+        halt(reason, reason.type == ReasonCase.MANUAL_HALT);
+    }
+
+    private void halt(ThreadHaltReasonModel reason, boolean manualStop) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
 
@@ -477,7 +481,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // halt reason.
         haltReasons.add(reason);
 
-        if (status != LHStatus.HALTED) setStatus(LHStatus.HALTING);
+        // An internally halted thread may still have a running interrupt handler.
+        // A manual stop and its propagation to children must wait for those handlers too.
+        if (status != LHStatus.HALTED || manualStop) {
+            setStatus(LHStatus.HALTING);
+        }
 
         // Now need to halt all the children.
         ThreadHaltReasonModel childHaltReason = new ThreadHaltReasonModel();
@@ -493,12 +501,12 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // interrupted again, we let the two interrupts continue side-by-side.
             if (child.interruptTriggerId != null) {
                 if (reason.type != ReasonCase.PENDING_INTERRUPT && reason.type != ReasonCase.INTERRUPTED) {
-                    child.halt(childHaltReason);
+                    child.halt(childHaltReason, manualStop);
                 } else {
                     log.trace("Not halting sibling interrupt thread! This will change, in future release.");
                 }
             } else {
-                child.halt(childHaltReason);
+                child.halt(childHaltReason, manualStop);
             }
         }
 
