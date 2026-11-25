@@ -1,3 +1,4 @@
+import { getVariableValue } from '@/app/utils'
 import { FC } from 'react'
 import { useDiagram } from '../../../hooks/useDiagram'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
@@ -38,7 +39,7 @@ export const Failures: FC<{ nodeRunIndex: number }> = ({ nodeRunIndex }) => {
                   <div className="mb-2 border-b-2 pb-2">Message</div>
                   <div>{`${failure.message}`}</div>
                 </div>
-                {failure.content && <LabelContent label="content" content={`${failure.content}`}></LabelContent>}
+                {failure.content && <LabelContent label="content" content={getVariableValue(failure.content)} />}
                 {failure.failureHandlerThreadrunId && (
                   <LabelContent
                     label="Thread ID to Handle the Failure"
