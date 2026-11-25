@@ -1,5 +1,5 @@
 import { WorkflowDefinition } from '@/types'
-import { LHStatus, WfSpec } from 'littlehorse-client/proto'
+import { LHStatus, NodeRun, ThreadRun, WfSpec } from 'littlehorse-client/proto'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { extractEdges } from '../../EdgeTypes/extractEdges'
@@ -8,6 +8,7 @@ import { extractNodes } from '../../NodeTypes/extractNodes'
 import {
   chipFootprint,
   extractExceptionHandlers,
+  findHandlerRuns,
   HANDLER_LABEL_BAND,
   HANDLER_PADDING,
   NODE_CAPTION_HEIGHT,
@@ -101,6 +102,25 @@ describe('extractExceptionHandlers', () => {
     expect(rootSourceNodeId(GROUP)).toBe('1-fail-TASK')
     expect(rootSourceNodeId(`${GROUP}/handler:1-my-task-TASK:0`)).toBe('1-fail-TASK')
   })
+})
+
+test('a repeated throwing node shows its latest handler run, even when node runs arrive out of order', () => {
+  const groups = listHandlerGroups(loadSpec(), 'entrypoint')
+  const sourceRun = (position: number, handlerNumber: number) =>
+    NodeRun.create({
+      id: { position },
+      nodeName: '1-fail-TASK',
+      failures: [{ failureName: 'TASK_FAILURE', failureHandlerThreadrunId: handlerNumber }],
+    })
+  const child = NodeRun.create({ nodeName: '1-my-task-TASK' })
+  const threads = [1, 2].map(number => ({
+    ...ThreadRun.create({ number, threadSpecName: HANDLER, status: LHStatus.COMPLETED }),
+    nodeRuns: number === 2 ? [child] : [],
+  }))
+
+  const runs = findHandlerRuns(groups, [sourceRun(8, 2), sourceRun(3, 1)], threads)
+
+  expect(runs.get(GROUP)).toMatchObject({ run: { number: 2, failureName: 'TASK_FAILURE' }, nodeRuns: [child] })
 })
 
 type Box = { x: number; y: number; w: number; h: number }
