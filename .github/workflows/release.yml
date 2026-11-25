@@ -10,7 +10,7 @@ permissions:
   contents: write
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       tag: ${{ steps.set_tag.outputs.tag }}
       prerelease: ${{ steps.is_prerelease.outputs.prerelease }}
@@ -50,7 +50,7 @@ jobs:
       tag: ${{ needs.prepare.outputs.tag }}
 
   publish-java-libraries:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -101,7 +101,7 @@ jobs:
           closeSonatypeStagingRepository
 
   publish-java-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -150,7 +150,7 @@ jobs:
           closeSonatypeStagingRepository
 
   publish-sdk-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -166,7 +166,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.9"
+          python-version: "3.13"
 
       - name: Install Dependencies
         run: |
@@ -189,7 +189,7 @@ jobs:
 
   publish-sdk-js:
     if: ${{ needs.prepare.outputs.publish_js == 'true' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -237,7 +237,7 @@ jobs:
           fi
 
   publish-sdk-dotnet:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - publish-docker
       - prepare
@@ -262,7 +262,7 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
 
   build-lhctl:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -292,7 +292,7 @@ jobs:
       - publish-sdk-python
       - publish-sdk-js
       - publish-sdk-dotnet
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
