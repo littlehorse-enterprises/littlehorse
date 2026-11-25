@@ -7,13 +7,16 @@ import io.littlehorse.sdk.common.adapter.LHJsonObjAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineEnumDef;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ReturnType;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.testutils.TestReflection;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
@@ -126,6 +129,23 @@ public class LHTaskReturnTypeTest {
         @LHType(isLHMap = true)
         public String nonMapLhMapInvalidTask() {
             return "hello world";
+        }
+
+        @LHTaskMethod("test-native-enum")
+        @LHType(masked = true, isInlineEnum = true)
+        public Direction nativeEnumReturnType() {
+            return Direction.NORTH;
+        }
+
+        @LHTaskMethod("test-json-enum")
+        public Direction jsonEnumReturnType() {
+            return Direction.NORTH;
+        }
+
+        @LHTaskMethod("conflicting-inline-enum-task")
+        @LHType(isInlineStruct = true)
+        public Direction conflictingInlineEnumReturnType() {
+            return Direction.NORTH;
         }
     }
 
@@ -387,5 +407,54 @@ public class LHTaskReturnTypeTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map return types");
+    }
+
+    @Test
+    public void shouldHandleNativeEnumTaskReturnType() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-native-enum");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder()
+                        .setMasked(true)
+                        .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("NORTH")
+                                        .setBackingValue(0))
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("EAST")
+                                        .setBackingValue(10))
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("SOUTH")
+                                        .setBackingValue(11))))
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    public void shouldKeepUnannotatedEnumReturnTypeAsJsonObject() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "test-json-enum");
+        LHTaskReturnType taskReturnType = new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+
+        ReturnType actualReturnType = taskReturnType.getReturnType();
+        ReturnType expectedReturnType = ReturnType.newBuilder()
+                .setReturnType(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ))
+                .build();
+
+        assertThat(actualReturnType).isEqualTo(expectedReturnType);
+    }
+
+    @Test
+    void shouldFailWhenEnumReturnTypeAlsoOptsIntoInlineStruct() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ReturnTypeTestTasks.class, "conflicting-inline-enum-task");
+
+        assertThatThrownBy(() -> {
+                    new LHTaskReturnType(taskMethod, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isInlineStruct = true) requires an unannotated POJO");
     }
 }

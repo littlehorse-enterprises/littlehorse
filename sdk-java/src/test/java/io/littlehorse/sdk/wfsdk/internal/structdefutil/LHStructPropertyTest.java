@@ -10,6 +10,7 @@ import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -43,6 +44,22 @@ public class LHStructPropertyTest {
 
     @LHStructDef("${company}-record-property")
     public record PlaceholderRecordProperty(PlaceholderPropertyAddress address) {}
+
+    @LHStructDef("enum-record")
+    public record EnumRecord(Direction direction) {}
+
+    @LHStructDef("enum-pojo")
+    public static class EnumPojo {
+        private Direction direction;
+
+        public Direction getDirection() {
+            return direction;
+        }
+
+        public void setDirection(Direction direction) {
+            this.direction = direction;
+        }
+    }
 
     @Test
     public void testGetFieldName() throws IntrospectionException {
@@ -239,5 +256,67 @@ public class LHStructPropertyTest {
         Object deserialized = property.deserializeValue(serialized, LHTypeAdapterRegistry.empty(), placeholders);
 
         assertThat(deserialized).isEqualTo(new PlaceholderPropertyAddress("Main St"));
+    }
+
+    @Test
+    void getValueFrom_serializesNativeEnumProperty() throws Exception {
+        LHStructDefType parent = new LHStructDefType(EnumPojo.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("direction", EnumPojo.class);
+        LHStructProperty property = new LHStructProperty(pd, parent);
+        EnumPojo source = new EnumPojo();
+        source.setDirection(Direction.SOUTH);
+
+        VariableValue val = property.getValueFrom(source, LHTypeAdapterRegistry.empty());
+
+        assertThat(val.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(val.getEnum().getName()).isEqualTo("SOUTH");
+    }
+
+    @Test
+    void getValueFrom_returnsNullForUnsetEnumProperty() throws Exception {
+        LHStructDefType parent = new LHStructDefType(EnumPojo.class, LHTypeAdapterRegistry.empty());
+        PropertyDescriptor pd = new PropertyDescriptor("direction", EnumPojo.class);
+        LHStructProperty property = new LHStructProperty(pd, parent);
+
+        VariableValue val = property.getValueFrom(new EnumPojo(), LHTypeAdapterRegistry.empty());
+
+        assertThat(val).isNull();
+    }
+
+    @Test
+    void setValueTo_deserializesNativeEnumProperty() throws Exception {
+        LHStructDefType parent = new LHStructDefType(EnumPojo.class, LHTypeAdapterRegistry.empty());
+        LHStructProperty property = parent.getStructProperties().get(0);
+        EnumPojo source = new EnumPojo();
+        source.setDirection(Direction.SOUTH);
+        VariableValue serialized = property.getValueFrom(source, LHTypeAdapterRegistry.empty());
+        EnumPojo target = new EnumPojo();
+
+        property.setValueTo(target, serialized, LHTypeAdapterRegistry.empty());
+
+        assertThat(target.getDirection()).isEqualTo(Direction.SOUTH);
+    }
+
+    @Test
+    void deserializeValue_returnsEnumForRecordComponent() throws Exception {
+        LHStructDefType parent = new LHStructDefType(EnumRecord.class, LHTypeAdapterRegistry.empty());
+        LHStructProperty property = parent.getStructProperties().get(0);
+        EnumRecord original = new EnumRecord(Direction.EAST);
+
+        VariableValue serialized = property.getValueFrom(original, LHTypeAdapterRegistry.empty());
+        Object deserialized = property.deserializeValue(serialized, LHTypeAdapterRegistry.empty());
+
+        assertThat(deserialized).isEqualTo(Direction.EAST);
+    }
+
+    @Test
+    void deserializeValue_returnsNullForUnsetEnumValue() throws Exception {
+        LHStructDefType parent = new LHStructDefType(EnumRecord.class, LHTypeAdapterRegistry.empty());
+        LHStructProperty property = parent.getStructProperties().get(0);
+
+        Object deserialized =
+                property.deserializeValue(VariableValue.getDefaultInstance(), LHTypeAdapterRegistry.empty());
+
+        assertThat(deserialized).isNull();
     }
 }

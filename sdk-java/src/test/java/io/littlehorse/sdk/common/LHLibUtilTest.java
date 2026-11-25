@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
@@ -1045,5 +1046,69 @@ public class LHLibUtilTest {
         PersonReorderedUx deserialized = (PersonReorderedUx) LHLibUtil.varValToObj(serialized, PersonReorderedUx.class);
 
         assertThat(deserialized).isEqualTo(new PersonReorderedUx(30, "Alice"));
+    }
+
+    @LHStructDef("enum-record")
+    public record EnumRecord(Direction direction) {}
+
+    @Test
+    void shouldRoundTripEnumInsideRecordStruct() {
+        EnumRecord original = new EnumRecord(Direction.SOUTH);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        EnumRecord deserialized = (EnumRecord) LHLibUtil.varValToObj(serialized, EnumRecord.class);
+
+        VariableValue enumField =
+                serialized.getStruct().getStruct().getFieldsOrThrow("direction").getValue();
+        assertThat(enumField.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(enumField.getEnum().getName()).isEqualTo("SOUTH");
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @Test
+    void shouldRoundTripNullEnumInsideRecordStruct() {
+        EnumRecord original = new EnumRecord(null);
+
+        VariableValue serialized = LHLibUtil.objToVarVal(original);
+        EnumRecord deserialized = (EnumRecord) LHLibUtil.varValToObj(serialized, EnumRecord.class);
+
+        VariableValue enumField =
+                serialized.getStruct().getStruct().getFieldsOrThrow("direction").getValue();
+        assertThat(enumField.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+        assertThat(deserialized).isEqualTo(original);
+    }
+
+    @Test
+    void shouldDeserializeNativeEnumValue() {
+        VariableValue value = VariableValue.newBuilder()
+                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder().setName("SOUTH"))
+                .build();
+
+        assertThat(LHLibUtil.varValToObj(value, Direction.class)).isEqualTo(Direction.SOUTH);
+    }
+
+    @Test
+    void shouldFailDeserializingNativeEnumValueIntoNonEnumClass() {
+        VariableValue value = VariableValue.newBuilder()
+                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder().setName("SOUTH"))
+                .build();
+
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(value, String.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("An ENUM value requires a Java enum target");
+    }
+
+    @Test
+    void shouldCompareEnumValuesByName() {
+        VariableValue south = VariableValue.newBuilder()
+                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder().setName("SOUTH"))
+                .build();
+        VariableValue east = VariableValue.newBuilder()
+                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder().setName("EAST"))
+                .build();
+
+        assertThat(LHLibUtil.areVariableValuesEqual(south, south.toBuilder().build()))
+                .isTrue();
+        assertThat(LHLibUtil.areVariableValuesEqual(south, east)).isFalse();
     }
 }

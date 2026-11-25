@@ -4,13 +4,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineEnumDef;
 import io.littlehorse.sdk.common.proto.InlineStructDef;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.StructFieldDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.WfRunId;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
@@ -556,5 +559,53 @@ public class LHStructDefTypeTest {
                 .containsExactlyElementsOf(classStructDef.getDependencyClasses().stream()
                         .map(LHStructDefType::getStructDefId)
                         .toList());
+    }
+
+    @LHStructDef("enum-record")
+    public record EnumRecord(Direction direction) {}
+
+    @LHStructDef("enum-with-default")
+    public record EnumWithDefault(Direction direction) {
+        public EnumWithDefault() {
+            this(Direction.NORTH);
+        }
+    }
+
+    @Test
+    void shouldBuildInlineEnumFieldSchema() {
+        InlineStructDef actualDefinition =
+                new LHStructDefType(EnumRecord.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+        InlineStructDef expectedDefinition = InlineStructDef.newBuilder()
+                .putFields(
+                        "direction",
+                        StructFieldDef.newBuilder()
+                                .setFieldType(TypeDefinition.newBuilder()
+                                        .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                                .addMembers(EnumMemberDef.newBuilder()
+                                                        .setName("NORTH")
+                                                        .setBackingValue(0))
+                                                .addMembers(EnumMemberDef.newBuilder()
+                                                        .setName("EAST")
+                                                        .setBackingValue(10))
+                                                .addMembers(EnumMemberDef.newBuilder()
+                                                        .setName("SOUTH")
+                                                        .setBackingValue(11))))
+                                .build())
+                .build();
+
+        assertThat(actualDefinition).isEqualTo(expectedDefinition);
+    }
+
+    @Test
+    void shouldSerializeEnumFieldDefaultAsNativeEnum() {
+        InlineStructDef definition =
+                new LHStructDefType(EnumWithDefault.class, LHTypeAdapterRegistry.empty()).getInlineStructDef();
+
+        assertThat(definition
+                        .getFieldsOrThrow("direction")
+                        .getDefaultValue()
+                        .getEnum()
+                        .getName())
+                .isEqualTo("NORTH");
     }
 }
