@@ -26,6 +26,7 @@ include(
         'conditionals-while',
         'conditionals',
         'correlated-event',
+        'enums',
         'exception-handler',
         'expressions',
         'external-event',
