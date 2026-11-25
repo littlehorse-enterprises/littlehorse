@@ -307,11 +307,15 @@ jobs:
       - name: Generate a changelog
         uses: orhun/git-cliff-action@v4
         id: git-cliff
+        continue-on-error: true
         with:
           config: cliff.toml
           args: --verbose --current
         env:
           OUTPUT: CHANGELOG.md
+
+      - name: Ensure release notes file exists
+        run: touch CHANGELOG.md
 
       - name: Download Artifacts
         uses: actions/download-artifact@v8
