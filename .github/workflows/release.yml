@@ -8,6 +8,7 @@ on:
 permissions:
   packages: write
   contents: write
+  id-token: write
 jobs:
   prepare:
     runs-on: ubuntu-24.04
@@ -204,8 +205,7 @@ jobs:
         with:
           node-version: 24
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-          cache-dependency-path: ${{env.working-directory}}
+          package-manager-cache: false
 
       - name: Install dependencies
         working-directory: ${{env.working-directory}}
@@ -227,8 +227,6 @@ jobs:
 
       - name: Publish
         working-directory: ${{env.working-directory}}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: |
           if [[ "${{ needs.prepare.outputs.prerelease }}" == "true" ]]; then
             npm publish --access public --tag next
@@ -256,10 +254,17 @@ jobs:
         run: dotnet build sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
       - name: Create Package
         run: dotnet pack --configuration Release sdk-dotnet/LittleHorse.Sdk/LittleHorse.Sdk.csproj
+
+      - name: NuGet login
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
       - name: Publish Package to nuget.org
-        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push --skip-duplicate sdk-dotnet/LittleHorse.Sdk/bin/Release/*.nupkg --api-key "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
         env:
-          NUGET_AUTH_TOKEN: ${{ secrets.NUGET_TOKEN }}
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
 
   build-lhctl:
     runs-on: ubuntu-24.04
