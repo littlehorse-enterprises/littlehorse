@@ -561,12 +561,14 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (isTerminated()) return false;
 
         if (status == LHStatus.HALTED) {
-            // A manual stop can finish in a later command, after the current node drains.
-            // Interrupts and failure handlers can halt the entrypoint while the workflow is active.
-            if (number == 0
-                    && wfRun.getStatus() == LHStatus.RUNNING
-                    && haltReasons.stream().anyMatch(reason -> reason.type == ReasonCase.MANUAL_HALT)) {
-                wfRun.transitionTo(LHStatus.HALTED);
+            // The entrypoint can remain halted for an interrupt after its manual stop is lifted.
+            if (number == 0) {
+                LHStatus workflowStatus = haltReasons.stream().anyMatch(reason -> reason.type == ReasonCase.MANUAL_HALT)
+                        ? LHStatus.HALTED
+                        : LHStatus.RUNNING;
+                if (wfRun.getStatus() != workflowStatus) {
+                    wfRun.transitionTo(workflowStatus);
+                }
             }
             return maybeUnHaltIfAllHaltReasonsResolved();
         }
@@ -714,7 +716,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
-            var previousStatus = status;
             if (getCurrentNodeRun().getLatestFailure().isEmpty()) {
                 setStatus(LHStatus.RUNNING);
                 getCurrentNodeRun().unHalt();
@@ -722,11 +723,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 setStatus(LHStatus.RUNNING);
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
-            }
-            if (number == 0 && status == LHStatus.RUNNING && wfRun.getStatus() == LHStatus.HALTED) {
-                wfRun.transitionTo(LHStatus.RUNNING);
-            } else if (wfSpecId != null) {
-                processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
             }
             return true;
         }
