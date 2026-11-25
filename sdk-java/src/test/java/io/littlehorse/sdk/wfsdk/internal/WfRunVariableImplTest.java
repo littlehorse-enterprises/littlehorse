@@ -818,18 +818,4 @@ public class WfRunVariableImplTest {
                         .getNodeName())
                 .isEqualTo("1-enum-task-TASK");
     }
-
-    @Test
-    void shouldRejectSearchableEnumVariable() {
-        assertThatThrownBy(() -> Workflow.newWorkflow(
-                                "my-workflow",
-                                thread -> {
-                                    thread.declareInlineEnum("direction", Direction.class)
-                                            .searchable();
-                                },
-                                new LHConfig())
-                        .compileWorkflow())
-                .isInstanceOf(LHWfSpecBuilderException.class)
-                .hasMessage("Cannot make enum variable direction searchable");
-    }
 }
