@@ -5,16 +5,20 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.LHSerdeException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
+import io.littlehorse.sdk.common.proto.InlineEnumDef;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineEnumType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class VariableMapping {
 
@@ -23,6 +27,7 @@ public class VariableMapping {
     private final Class<?> parameterJavaType;
     private final boolean expectsNativeLHArray;
     private final boolean expectsNativeLHMap;
+    private final LHInlineEnumType inlineEnumType;
     private final Class<?> nativeMapKeyJavaType;
     private final Class<?> nativeMapValueJavaType;
     private final Map<String, String> placeholderValues;
@@ -45,6 +50,9 @@ public class VariableMapping {
         this.placeholderValues = placeholderValues == null ? Map.of() : Map.copyOf(placeholderValues);
         this.variableName = variableDef.getName();
         this.parameterJavaType = lhTaskParameter.getParameterType();
+        this.inlineEnumType = lhTaskParameter.getVariableClassType() instanceof LHInlineEnumType
+                ? (LHInlineEnumType) lhTaskParameter.getVariableClassType()
+                : null;
         this.expectsNativeLHArray =
                 lhTaskParameter.getVariableDef().getTypeDef().getDefinedTypeCase()
                         == TypeDefinition.DefinedTypeCase.INLINE_ARRAY_DEF;
@@ -93,6 +101,11 @@ public class VariableMapping {
         }
     }
 
+    private static Map<String, Integer> enumMembers(InlineEnumDef enumDef) {
+        return enumDef.getMembersList().stream()
+                .collect(Collectors.toMap(EnumMemberDef::getName, EnumMemberDef::getBackingValue, (a, b) -> a));
+    }
+
     private static boolean areTypesCompatible(TypeDefinition providedType, TypeDefinition expectedType) {
         if (providedType.getDefinedTypeCase() != expectedType.getDefinedTypeCase()) {
             return false;
@@ -108,6 +121,10 @@ public class VariableMapping {
                         .equals(expectedType.getStructDefId().getName());
             case INLINE_STRUCT_DEF:
                 return providedType.getInlineStructDef().equals(expectedType.getInlineStructDef());
+            case INLINE_ENUM_DEF:
+                // The server ignores member order, so compare the name-to-value maps.
+                return enumMembers(providedType.getInlineEnumDef())
+                        .equals(enumMembers(expectedType.getInlineEnumDef()));
             case INLINE_ARRAY_DEF:
                 return areTypesCompatible(
                         providedType.getInlineArrayDef().getArrayType(),
@@ -164,6 +181,12 @@ public class VariableMapping {
             case INLINE_STRUCT_DEF:
                 return "InlineStruct<"
                         + typeDefinition.getInlineStructDef().getFieldsMap().keySet() + ">";
+            case INLINE_ENUM_DEF:
+                return "InlineEnum<"
+                        + typeDefinition.getInlineEnumDef().getMembersList().stream()
+                                .map(member -> member.getName() + "=" + member.getBackingValue())
+                                .collect(Collectors.joining(", "))
+                        + ">";
             default:
                 return "UNSPECIFIED";
         }
@@ -189,6 +212,9 @@ public class VariableMapping {
         VariableValue val = assignment.getValue();
 
         try {
+            if (inlineEnumType != null) {
+                return inlineEnumType.fromVariableValue(val);
+            }
             if (expectsNativeLHArray && val.getValueCase() == VariableValue.ValueCase.ARRAY) {
                 return assignNativeArray(val);
             }

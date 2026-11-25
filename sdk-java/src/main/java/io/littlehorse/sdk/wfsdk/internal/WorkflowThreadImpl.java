@@ -59,6 +59,7 @@ import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHArrayType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineEnumType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefId;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
@@ -625,6 +626,15 @@ final class WorkflowThreadImpl implements WorkflowThread {
                     "Inline Struct variables require an unannotated POJO class: " + clazz.getName());
         }
         checkIfIsActive();
+        WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, classType, this);
+        wfRunVariables.add(wfRunVariable);
+        return wfRunVariable;
+    }
+
+    @Override
+    public WfRunVariable declareInlineEnum(String name, Class<? extends Enum<?>> clazz) {
+        checkIfIsActive();
+        LHInlineEnumType classType = new LHInlineEnumType(clazz, parent.getTypeAdapterRegistry());
         WfRunVariableImpl wfRunVariable = WfRunVariableImpl.createVarFromLHClassType(name, classType, this);
         wfRunVariables.add(wfRunVariable);
         return wfRunVariable;

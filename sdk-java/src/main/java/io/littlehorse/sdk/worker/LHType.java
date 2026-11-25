@@ -59,4 +59,11 @@ public @interface LHType {
      * @return whether the annotated POJO should use an inline Struct schema
      */
     boolean isInlineStruct() default false;
+
+    /**
+     * Indicates whether a Java enum should be represented as an inline Enum.
+     *
+     * @return whether the annotated Java enum should use an inline Enum schema
+     */
+    boolean isInlineEnum() default false;
 }

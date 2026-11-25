@@ -117,6 +117,9 @@ public class LHStructProperty {
                 return LHLibUtil.objToVarValAsStruct(
                         val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
             }
+            if (propertyType instanceof LHInlineEnumType enumType) {
+                return enumType.toVariableValue(val);
+            }
             return LHLibUtil.objToVarVal(val, getPropertyTypeClass(), typeAdapterRegistry, placeholderValues);
         } catch (LHSerdeException | IllegalAccessException | InvocationTargetException e) {
             throw new LHSerdeException(

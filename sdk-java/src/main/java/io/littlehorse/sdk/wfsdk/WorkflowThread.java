@@ -237,6 +237,15 @@ public interface WorkflowThread {
     WfRunVariable declareInlineStruct(String name, Class<?> clazz);
 
     /**
+     * Creates an inline Enum variable from a Java enum class.
+     *
+     * @param name is the name of the variable.
+     * @param clazz is the Java enum class that defines the valid Enum members.
+     * @return a WfRunVariable.
+     */
+    WfRunVariable declareInlineEnum(String name, Class<? extends Enum<?>> clazz);
+
+    /**
      * Creates a Struct variable based on your StructDef name. Uses latest version of the StructDef.
      *
      * To supply a specific StructDef version number, use {@link WorkflowThread#declareStruct(String, String, int)} and provide the version number as the third parameter.
