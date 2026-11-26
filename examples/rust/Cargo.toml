@@ -6,6 +6,7 @@ members = [
     "correlated-event", "error-handling", "event-registration", "external-event",
     "hierarchical-workflow", "interrupt-handler", "json", "mutation", "parallel-approval",
     "retries", "run-child-workflow", "struct-def", "user-tasks", "wait-for-condition",
+    "email-processing",
 ]
 
 [workspace.dependencies]

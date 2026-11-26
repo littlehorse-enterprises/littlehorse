@@ -722,6 +722,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "littlehorse-rust-email-processing"
+version = "0.1.0"
+dependencies = [
+ "littlehorse",
+ "tokio",
+ "tonic",
+]
+
+[[package]]
 name = "littlehorse-rust-error-handling"
 version = "0.1.0"
 dependencies = [

@@ -1,6 +1,7 @@
 # LittleHorse Rust examples
 
-These **21 runnable examples** cover the same topics as the Python examples,
+These **22 examples** cover the same topics as the Python examples, plus a
+scheduled email-processing template,
 using Rust's workflow DSL, typed workers, and derive macros. Each example links
 to its Go or Python reference. The advanced SDK-local manual graph demo is
 additional and is not included in that count.
@@ -48,6 +49,7 @@ which deliberately shares the cross-language quickstart names.
 | [struct-def](struct-def/README.md) | Derive nested native StructDefs, look up a vehicle owner, and pass the typed result to a second worker. |
 | [user-tasks](user-tasks/README.md) | Assign a human approval to alice and return the submitted boolean. |
 | [wait-for-condition](wait-for-condition/README.md) | Wait for a shared counter to reach zero; interrupt events decrement it. |
+| [email-processing](email-processing/README.md) | Template for a scheduled pipeline: one run per email, with AI analysis, upload, and per-step retries. Integrations are `todo!()` stubs. |
 
 [manual-graph](../../sdk-rust/examples/manual-graph.rs) is an advanced alternative:
 `cargo run --manifest-path sdk-rust/Cargo.toml --example manual-graph`.
@@ -56,7 +58,7 @@ starts one greeting run automatically, and polls a single endpoint.
 
 ## Build
 
-All 21 examples belong to one Cargo workspace with one lockfile. Like the other
+All 22 examples belong to one Cargo workspace with one lockfile. Like the other
 SDKs' examples, they are compiled and linted in CI but not run; SDK behavior is
 covered by the tests in [sdk-rust](../../sdk-rust/README.md#tests).
 

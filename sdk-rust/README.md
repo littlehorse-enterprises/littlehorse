@@ -42,7 +42,7 @@ run `cargo run --manifest-path examples/rust/quickstart/Cargo.toml`, then use
 For advanced, explicit node-and-edge construction, run
 `cargo run --manifest-path sdk-rust/Cargo.toml --example manual-graph` from the
 repository root. This greeting demo was previously named `quickstart`.
-See the [Rust example index](../examples/rust/README.md) for 21 runnable examples,
+See the [Rust example index](../examples/rust/README.md) for 22 examples,
 including control flow, events, child workflows, human tasks, retries, checkpoints,
 and native structs.
 
