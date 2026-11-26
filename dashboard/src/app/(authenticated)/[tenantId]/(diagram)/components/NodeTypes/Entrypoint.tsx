@@ -8,7 +8,11 @@ import { DiagramNodeShell } from './DiagramNodeChrome'
 import { greenNodeTheme } from './nodeThemes'
 import { SelectedNode } from './SelectedNode'
 
-const EntrypointNode: FC<NodeProps<'entrypoint', EntrypointNodeProto>> = ({ id, selected }) => {
+const EntrypointNode: FC<NodeProps<'entrypoint', EntrypointNodeProto & { groupId?: string }>> = ({
+  id,
+  data,
+  selected,
+}) => {
   return (
     <>
       <SelectedNode />
@@ -21,6 +25,8 @@ const EntrypointNode: FC<NodeProps<'entrypoint', EntrypointNodeProto>> = ({ id, 
             selected && greenNodeTheme.selectedBgClass
           )}
         >
+          {/* A handler's entry is where the exception edge comes in. */}
+          {data.groupId && <Handle type="target" id="target-0" position={Position.Left} className="bg-transparent" />}
           <Handle type="source" id="source-0" position={Position.Right} className="bg-transparent" />
         </div>
       </DiagramNodeShell>

@@ -17,12 +17,14 @@ import {
 import { Button } from '@/components/ui/button'
 import { useWhoAmI } from '@/contexts/WhoAmIContext'
 import { WorkflowDefinition } from '@/types'
-import { LHStatus, WfRun } from 'littlehorse-client/proto'
-import { PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
+import { LHStatus, ThreadSpec, WfRun } from 'littlehorse-client/proto'
+import { EyeIcon, EyeOffIcon, PlayCircleIcon, RotateCcwIcon, StopCircleIcon } from 'lucide-react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { FC, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import ReactFlow, {
   Controls,
+  Edge as RFEdge,
+  Panel,
   Node as RFNode,
   useEdgesState,
   useNodesState,
@@ -34,7 +36,14 @@ import { DiagramProvider, NodeInContext, ThreadType } from '../context'
 import edgeTypes from './EdgeTypes'
 import { isBranchEdgeReached } from './EdgeTypes/edgeConditionDisplay'
 import { extractEdges } from './EdgeTypes/extractEdges'
-import { getNodeRunsList, LayoutManager } from './LayoutManager'
+import {
+  extractExceptionHandlers,
+  findHandlerRuns,
+  listHandlerGroups,
+  rootSourceNodeId,
+  type HandlerView,
+} from './ExceptionHandlers/exceptionHandlers'
+import { getNodeRunsList, LayoutManager, NodeRunsResolver } from './LayoutManager'
 import nodeTypes from './NodeTypes'
 import { extractNodes, getCycleNodes, getNodeAfterEntrypoint } from './NodeTypes/extractNodes'
 import { Sidebar } from './Sidebar'
@@ -68,6 +77,30 @@ const threadFromUrl = (
   }
 }
 
+const extractDiagram = (spec: WorkflowDefinition, threadName: string, threadSpec: ThreadSpec, view?: HandlerView) => {
+  const handlers = extractExceptionHandlers(spec, threadName, view)
+  if (handlers.nodes.length === 0) return { nodes: extractNodes(threadSpec), edges: extractEdges(threadSpec) }
+  // Handler groups paint at z 0, beneath the edges and nodes they contain.
+  return {
+    nodes: [...extractNodes(threadSpec), ...handlers.nodes].map(n =>
+      n.type === 'exceptionHandler' ? n : { ...n, zIndex: 1 }
+    ),
+    edges: [...extractEdges(threadSpec), ...handlers.edges].map(e => ({ ...e, zIndex: 1 })),
+  }
+}
+
+/**
+ * Per-graph handler state. `key` is the graph it belongs to, so switching
+ * spec/run/thread starts from the defaults without an extra render.
+ */
+type HandlerState = {
+  key: string
+  /** Handler groups the user has opened on this graph. */
+  expanded: string[]
+  /** WfSpec page: the top-level node whose handlers are shown because the user selected it. */
+  inspected?: string
+}
+
 export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, headerActions }) => {
   const { tenantId } = useWhoAmI()
   const pathname = usePathname()
@@ -96,18 +129,101 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     return threadSpec
   }, [spec, thread.name])
 
-  const [edges, setEdges, onEdgesChange] = useEdgesState(extractEdges(threadSpec))
-  const [nodes, setNodes, onNodesChange] = useNodesState(extractNodes(threadSpec))
+  const [edges, setEdges, onEdgesChange] = useEdgesState<RFEdge['data']>([])
+  const [nodes, setNodes, onNodesChange] = useNodesState([])
 
   const threadRun = useMemo(() => wfRun?.threadRuns.find(tr => tr.number === thread.number), [thread.number, wfRun])
   const threadNodeRuns = threadRun?.nodeRuns
   const nodeOutputValues = threadRun?.nodeOutputValues
+
+  const handlerGroups = useMemo(() => listHandlerGroups(spec, thread.name), [spec, thread.name])
+
+  const handlerRuns = useMemo(() => {
+    if (!wfRun) return new Map<string, never>()
+    return findHandlerRuns(handlerGroups, threadNodeRuns, wfRun.threadRuns)
+  }, [handlerGroups, threadNodeRuns, wfRun])
+
+  const resetKey = `${definitionId}|${wfRun?.id ? JSON.stringify(wfRun.id) : ''}|${thread.name}`
+
+  // WfSpec page: handlers stay hidden until the user asks for all of them or
+  // selects a node that has some. WfRun page: only handlers that actually ran.
+  const [showAllHandlers, setShowAllHandlers] = useState(false)
+  const [handlerState, setHandlerState] = useState<HandlerState>({ key: resetKey, expanded: [] })
+  const { expanded, inspected } =
+    handlerState.key === resetKey ? handlerState : { expanded: [] as string[], inspected: undefined }
+
+  const updateHandlerState = useCallback(
+    (update: (current: Omit<HandlerState, 'key'>) => Omit<HandlerState, 'key'>) =>
+      setHandlerState(current => ({
+        key: resetKey,
+        ...update(current.key === resetKey ? current : { expanded: [], inspected: undefined }),
+      })),
+    [resetKey]
+  )
+
+  const toggleHandler = useCallback(
+    (groupId: string) =>
+      updateHandlerState(current => ({
+        ...current,
+        expanded: current.expanded.includes(groupId)
+          ? current.expanded.filter(id => id !== groupId)
+          : [...current.expanded, groupId],
+      })),
+    [updateHandlerState]
+  )
+
+  const visibleGroups = useMemo(
+    () =>
+      handlerGroups
+        .map(group => group.groupId)
+        .filter(groupId =>
+          wfRun ? handlerRuns.has(groupId) : showAllHandlers || rootSourceNodeId(groupId) === inspected
+        ),
+    [handlerGroups, handlerRuns, wfRun, showAllHandlers, inspected]
+  )
+
+  const handlerView = useMemo<HandlerView>(
+    () => ({
+      isVisible: groupId => visibleGroups.includes(groupId),
+      isExpanded: groupId => expanded.includes(groupId),
+      runOf: groupId => handlerRuns.get(groupId)?.run,
+    }),
+    [visibleGroups, expanded, handlerRuns]
+  )
+
+  // Showing, hiding, collapsing or expanding a handler changes the graph, so
+  // it gets a layout of its own.
+  const layoutKey = `${resetKey}|${visibleGroups.join(',')}|${expanded.filter(id => visibleGroups.includes(id)).join(',')}`
+
+  // Nodes whose handlers are hidden on the WfSpec page get a marker inviting a closer look.
+  const hiddenHandlerSources = useMemo(
+    () =>
+      new Set(
+        wfRun
+          ? []
+          : handlerGroups
+              .filter(group => !group.parentGroupId && !visibleGroups.includes(group.groupId))
+              .map(group => group.sourceNodeId)
+      ),
+    [wfRun, handlerGroups, visibleGroups]
+  )
+
+  const getNodeRuns = useCallback<NodeRunsResolver>(
+    n => {
+      const groupId = n.data?.groupId
+      if (!wfRun || !groupId) return getNodeRunsList(n.id, threadNodeRuns)
+      return getNodeRunsList(n.data.specNodeId, handlerRuns.get(groupId)?.nodeRuns ?? [])
+    },
+    [wfRun, threadNodeRuns, handlerRuns]
+  )
 
   const lastAppliedThread = useRef<string | null>(null)
 
   const applyDefaultSelection = useCallback(
     (laidOutNodes: RFNode[]) => {
       if (wfRun) return
+      // A re-layout for handlers keeps whatever the user has selected.
+      if (lastAppliedThread.current === thread.name) return
 
       const defaultNodeId = getNodeAfterEntrypoint(threadSpec)
       if (!defaultNodeId) {
@@ -125,18 +241,64 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     [wfRun, threadSpec, thread.name, setNodes]
   )
 
-  const resetKey = `${definitionId}|${wfRun?.id ? JSON.stringify(wfRun.id) : ''}|${thread.name}`
   const appliedResetKey = useRef<string | null>(null)
+  const appliedLayoutKey = useRef<string | null>(null)
+
+  const decorateNode = useCallback(
+    <T extends RFNode>(n: T): T => {
+      const handlersHidden = hiddenHandlerSources.has(n.id) || undefined
+      if (!wfRun) return n.data?.handlersHidden === handlersHidden ? n : { ...n, data: { ...n.data, handlersHidden } }
+      if (n.type === 'exceptionHandler' || n.type === 'exceptionHandlerChip') {
+        const run = handlerRuns.get(n.id)?.run
+        return { ...n, data: { ...n.data, run, fade: !run } }
+      }
+      const nodeRunsList = getNodeRuns(n)
+      const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
+      return { ...n, data: { ...n.data, fade, nodeRunsList } }
+    },
+    [hiddenHandlerSources, wfRun, handlerRuns, getNodeRuns]
+  )
+
+  const decorateEdge = useCallback(
+    (edge: RFEdge): RFEdge => {
+      if (!wfRun || !edge.data) return edge
+      return {
+        ...edge,
+        data: {
+          ...edge.data,
+          nodeOutputValues,
+          fade: edge.data.isConditionalBranchEdge
+            ? !isBranchEdgeReached(edge.target, threadNodeRuns)
+            : edge.data.isExceptionEdge
+              ? !handlerRuns.has(edge.data.handlerGroupId!)
+              : edge.data.isResumeEdge
+                ? handlerRuns.get(edge.data.handlerGroupId!)?.run.status !== LHStatus.COMPLETED
+                : undefined,
+        },
+      }
+    },
+    [wfRun, nodeOutputValues, threadNodeRuns, handlerRuns]
+  )
 
   useLayoutEffect(() => {
-    if (appliedResetKey.current === resetKey) return
+    if (appliedLayoutKey.current === layoutKey) return
+    appliedLayoutKey.current = layoutKey
+    const extracted = extractDiagram(spec, thread.name, threadSpec, handlerView)
+    const extractedNodes = extracted.nodes.map(node => decorateNode({ ...node, data: { ...node.data, layoutKey } }))
+    const extractedEdges = extracted.edges.map(decorateEdge)
+
+    // Same graph, handlers shown/hidden/toggled: keep the selection and let
+    // LayoutManager re-lay it out in place.
+    if (appliedResetKey.current === resetKey) {
+      setNodes(current => {
+        const selected = new Set(current.filter(n => n.selected).map(n => n.id))
+        return extractedNodes.map(n => (selected.has(n.id) ? { ...n, selected: true } : n))
+      })
+      setEdges(extractedEdges)
+      return
+    }
     appliedResetKey.current = resetKey
     lastAppliedThread.current = null
-    const extractedNodes = extractNodes(threadSpec).map(node => ({
-      ...node,
-      data: { ...node.data, layoutKey: resetKey },
-    }))
-    const extractedEdges = extractEdges(threadSpec)
 
     if (!wfRun) {
       const defaultNodeId = getNodeAfterEntrypoint(threadSpec)
@@ -155,36 +317,29 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
     setNode(undefined)
     setNodes(extractedNodes)
     setEdges(extractedEdges)
-  }, [resetKey, thread.name, threadSpec, setNodes, setEdges, wfRun])
+  }, [
+    layoutKey,
+    resetKey,
+    spec,
+    thread.name,
+    threadSpec,
+    handlerView,
+    decorateNode,
+    decorateEdge,
+    setNodes,
+    setEdges,
+    wfRun,
+  ])
+
+  useEffect(() => {
+    setNodes(current => current.map(decorateNode))
+    if (wfRun) setNode(current => (current ? decorateNode(current) : current))
+  }, [decorateNode, wfRun, setNodes])
 
   useEffect(() => {
     if (!wfRun) return
-    const withNodeRuns = <T extends RFNode>(n: T): T => {
-      const nodeRunsList = getNodeRunsList(n.id, threadNodeRuns)
-      const fade = nodeRunsList !== undefined && nodeRunsList.length === 0
-      return { ...n, data: { ...n.data, fade, nodeRunsList } }
-    }
-    setNodes(current => current.map(withNodeRuns))
-    setNode(current => (current ? withNodeRuns(current) : current))
-  }, [threadNodeRuns, wfRun, setNodes])
-
-  useEffect(() => {
-    if (!wfRun) return
-    setEdges(current =>
-      current.map(edge =>
-        edge.data
-          ? {
-              ...edge,
-              data: {
-                ...edge.data,
-                nodeOutputValues,
-                fade: edge.data.isConditionalBranchEdge ? !isBranchEdgeReached(edge.target, threadNodeRuns) : undefined,
-              },
-            }
-          : edge
-      )
-    )
-  }, [threadNodeRuns, nodeOutputValues, wfRun, setEdges])
+    setEdges(current => current.map(decorateEdge))
+  }, [decorateEdge, wfRun, setEdges])
 
   useEffect(() => {
     onThreadChange?.(thread)
@@ -202,6 +357,18 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
   const onSelectionChange = useCallback(({ nodes: selectedNodes }: OnSelectionChangeParams) => {
     if (selectedNodes.length === 0) setNode(undefined)
   }, [])
+
+  // WfSpec page: selecting a node shows its handlers (and hides the last
+  // node's). Clicks inside a handler box keep it open.
+  const onNodeClick = useCallback(
+    (_event: unknown, clicked: RFNode) => {
+      if (wfRun || clicked.data?.groupId || clicked.type?.startsWith('exceptionHandler')) return
+      const hasHandlers = handlerGroups.some(group => !group.parentGroupId && group.sourceNodeId === clicked.id)
+      const next = hasHandlers ? clicked.id : undefined
+      if (next !== inspected) updateHandlerState(current => ({ ...current, inspected: next }))
+    },
+    [wfRun, handlerGroups, inspected, updateHandlerState]
+  )
 
   const verb =
     wfRun?.status === LHStatus.RUNNING
@@ -224,7 +391,7 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
   }, [tenantId, wfRun])
 
   return (
-    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, wfRun }}>
+    <DiagramProvider value={{ thread, setThread, selectedNode: node, setSelectedNode: setNode, wfRun, toggleHandler }}>
       <div className="mb-2 flex items-center justify-between gap-3">
         <div className="min-w-0 flex-1">
           <ThreadPanel spec={spec} wfRun={wfRun} />
@@ -289,12 +456,28 @@ export const Diagram: FC<Props> = ({ spec, definitionId, wfRun, onThreadChange, 
             snapToGrid={true}
             onMoveEnd={onMoveEnd}
             onSelectionChange={onSelectionChange}
+            onNodeClick={onNodeClick}
           >
             <Controls />
+            {!wfRun && handlerGroups.length > 0 && (
+              <Panel position="top-right">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 gap-1.5 bg-white px-2 text-xs text-slate-700 shadow-sm"
+                  onClick={() => setShowAllHandlers(show => !show)}
+                  aria-pressed={showAllHandlers}
+                >
+                  {showAllHandlers ? <EyeOffIcon /> : <EyeIcon />}
+                  {showAllHandlers ? 'Hide exception handlers' : 'Show exception handlers'}
+                </Button>
+              </Panel>
+            )}
           </ReactFlow>
           <LayoutManager
-            layoutKey={resetKey}
-            nodeRuns={threadNodeRuns}
+            layoutKey={layoutKey}
+            graphKey={resetKey}
+            getNodeRuns={getNodeRuns}
             viewportKey={viewportKey}
             setNodes={setNodes}
             setEdges={setEdges}

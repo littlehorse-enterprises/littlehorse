@@ -20,6 +20,8 @@ type DiagramContextType = {
   selectedNode: NodeInContext
   setSelectedNode: Dispatch<SetStateAction<NodeInContext>>
   wfRun?: Omit<WfRun, 'threadRuns'> & { threadRuns: ThreadRunWithNodeRuns[] }
+  /** Collapses an expanded exception handler to a chip, or expands a chip. */
+  toggleHandler?: (groupId: string) => void
 }
 export const DiagramContext = createContext<DiagramContextType>({
   thread: { name: '', number: 0 },
