@@ -1,7 +1,8 @@
+import { parse, stringify } from 'lossless-json'
+
 export function tryFormatAsJson(text: string): string {
   try {
-    const parsed = JSON.parse(text)
-    return JSON.stringify(parsed, null, 4)
+    return stringify(parse(text), null, 4) ?? text
   } catch {
     return text
   }
