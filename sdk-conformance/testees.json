@@ -7,5 +7,9 @@
   "js": {
     "command": ["node", "sdk-js/conformance/build/testee.js"],
     "build": "npm --prefix sdk-js run build && npm --prefix sdk-js run build:conformance"
+  },
+  "rust": {
+    "command": ["sdk-rust/target/debug/lh-conformance"],
+    "build": "cargo build --manifest-path sdk-rust/Cargo.toml --features conformance --bin lh-conformance --locked"
   }
 }

@@ -1,0 +1,54 @@
+[package]
+name = "littlehorse"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.89"
+license = "Apache-2.0"
+description = "Rust SDK for the LittleHorse workflow engine"
+repository = "https://github.com/littlehorse-enterprises/littlehorse"
+documentation = "https://docs.rs/littlehorse"
+
+[workspace]
+members = ["derive"]
+
+[[bin]]
+name = "lh-conformance"
+path = "conformance/main.rs"
+required-features = ["conformance"]
+
+[features]
+conformance = ["dep:base64"]
+
+[dependencies]
+base64 = { version = "0.22", optional = true }
+littlehorse-derive = { path = "derive", version = "0.1.0" }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+tower = "0.5"
+http = "1"
+prost = "0.14"
+prost-types = "0.14"
+prost-reflect = { version = "0.16", features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time", "signal"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+tonic = { version = "0.14", features = ["tls-ring", "tls-native-roots"] }
+tonic-prost = "0.14"
+uuid = { version = "1", features = ["v4"] }
+
+[build-dependencies]
+protoc-bin-vendored = "3"
+tonic-prost-build = "0.14"
+
+[dev-dependencies]
+axum = "0.8"
+rcgen = "0.13"
+
+[profile.dev]
+debug = 0
+incremental = false
+
+[profile.test]
+debug = 0
+incremental = false
