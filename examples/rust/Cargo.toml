@@ -1,0 +1,18 @@
+[workspace]
+resolver = "3"
+members = [
+    "basic", "quickstart",
+    "casting", "checkpoint-tasks", "child-thread", "conditionals", "conditionals-while",
+    "correlated-event", "error-handling", "event-registration", "external-event",
+    "hierarchical-workflow", "interrupt-handler", "json", "mutation", "parallel-approval",
+    "retries", "run-child-workflow", "struct-def", "user-tasks", "wait-for-condition",
+]
+
+[workspace.dependencies]
+littlehorse = { path = "../../sdk-rust" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "time"] }
+serde_json = "1"
+
+[profile.dev]
+debug = 0
+incremental = false

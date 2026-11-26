@@ -71,6 +71,8 @@ public void quickstartWf(WorkflowThread wf) {
 
 As you can see, the code above closely mirrors our example KYC business process. LittleHorse handles retries, timeouts, and orchestration across services for you, allowing your `WfSpec` to focus just on what matters to the business. Task workers handle integrations with external systems and databases.
 
+The [Rust SDK](sdk-rust/README.md) provides an async client, workflow DSL, and task workers.
+
 ## Getting Started
 
 In this section, we'll run the "Know-your-Customer" quickstart shown above in a language of your choice. You should be able to run your first `WfRun` in minutes!
@@ -151,6 +153,15 @@ cd examples/js/quickstart
 npm install && npm start
 ```
 
+#### Rust
+
+Requires Rust 1.89 or later. The [Rust quickstart](./examples/rust/quickstart/README.md)
+registers the same KYC workflow and starts its three task workers:
+
+```sh
+cargo run --manifest-path examples/rust/quickstart/Cargo.toml
+```
+
 ### Run a `WfRun` (Workflow Run)
 
 In another terminal, run the quickstart workflow:
@@ -174,6 +185,7 @@ See the per-language quickstarts for the full walkthrough:
 - [Python quickstart](./examples/python/quickstart/README.md)
 - [C# quickstart](./examples/dotnet/QuickstartExample/README.md)
 - [JavaScript quickstart](./examples/js/quickstart/README.md)
+- [Rust quickstart](./examples/rust/quickstart/README.md)
 
 You can also use `lhctl` to investigate! For starters:
 
@@ -200,7 +212,7 @@ To run a workflow with LittleHorse, you need to:
 <img src="./img/architecture.png" width="75%">
 </p>
 
-To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), [C#](./examples/dotnet/QuickstartExample/README.md), and [JavaScript](./examples/js/quickstart/README.md). For more detailed examples, you can check out:
+To get started quickly with a basic workflow, try our quickstarts in [Java](./examples/java/quickstart/README.md), [Go](./examples/go/quickstart/README.md), [Python](./examples/python/quickstart/README.md), [C#](./examples/dotnet/QuickstartExample/README.md), [JavaScript](./examples/js/quickstart/README.md), and [Rust](./examples/rust/quickstart/README.md). For more detailed examples, you can check out:
 - The [examples directory](./examples) in this repo
 - The [lh-examples repository](https://github.com/littlehorse-enterprises/lh-examples), which contains more complex applications.
 
