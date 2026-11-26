@@ -2,6 +2,9 @@ package e2e;
 
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.proto.LHStatus;
+import io.littlehorse.sdk.common.proto.LittleHorseGrpc.LittleHorseBlockingStub;
+import io.littlehorse.sdk.common.proto.ResumeWfRunRequest;
+import io.littlehorse.sdk.common.proto.StopWfRunRequest;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.test.LHTest;
 import io.littlehorse.test.LHWorkflow;
@@ -25,6 +28,7 @@ public class InterruptOnExternalEventTest {
     public static final String CHILD_EVENT = "iaeet-child";
 
     private WorkflowVerifier verifier;
+    private LittleHorseBlockingStub client;
 
     @LHWorkflow("interrupt-on-external-event")
     private Workflow interruptOnExternalEvent;
@@ -64,6 +68,26 @@ public class InterruptOnExternalEventTest {
                 .thenVerifyWfRun(wfRun -> {
                     Assertions.assertThat(wfRun.getStatus()).isEqualTo(LHStatus.COMPLETED);
                 })
+                .start();
+    }
+
+    @Test
+    void shouldResumeWorkflowWhileInterruptHandlerIsWaiting() {
+        verifier.prepareRun(interruptOnExternalEvent)
+                .thenSendExternalEventWithContent(INTERRUPT_TRIGGER, null)
+                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING)
+                .thenVerifyWfRun(run -> client.stopWfRun(
+                        StopWfRunRequest.newBuilder().setWfRunId(run.getId()).build()))
+                .waitForStatus(LHStatus.HALTED)
+                .waitForThreadRunStatus(1, LHStatus.HALTED)
+                .thenVerifyWfRun(run -> client.resumeWfRun(
+                        ResumeWfRunRequest.newBuilder().setWfRunId(run.getId()).build()))
+                .waitForNodeRunStatus(1, 1, LHStatus.RUNNING)
+                .waitForThreadRunStatus(0, LHStatus.HALTED)
+                .waitForStatus(LHStatus.RUNNING)
+                .thenSendExternalEventWithContent(CHILD_EVENT, null)
+                .thenSendExternalEventWithContent(PARENT_EVENT, null)
+                .waitForStatus(LHStatus.COMPLETED)
                 .start();
     }
 

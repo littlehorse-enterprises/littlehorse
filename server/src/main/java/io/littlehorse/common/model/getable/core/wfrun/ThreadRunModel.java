@@ -464,6 +464,10 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
     }
 
     public void halt(ThreadHaltReasonModel reason) {
+        halt(reason, reason.type == ReasonCase.MANUAL_HALT);
+    }
+
+    private void halt(ThreadHaltReasonModel reason, boolean manualStop) {
         reason.setThreadRun(this);
         if (isTerminated()) return;
 
@@ -477,7 +481,11 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         // halt reason.
         haltReasons.add(reason);
 
-        if (status != LHStatus.HALTED) setStatus(LHStatus.HALTING);
+        // An internally halted thread may still have a running interrupt handler.
+        // A manual stop and its propagation to children must wait for those handlers too.
+        if (status != LHStatus.HALTED || manualStop) {
+            setStatus(LHStatus.HALTING);
+        }
 
         // Now need to halt all the children.
         ThreadHaltReasonModel childHaltReason = new ThreadHaltReasonModel();
@@ -493,20 +501,17 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
             // interrupted again, we let the two interrupts continue side-by-side.
             if (child.interruptTriggerId != null) {
                 if (reason.type != ReasonCase.PENDING_INTERRUPT && reason.type != ReasonCase.INTERRUPTED) {
-                    child.halt(childHaltReason);
+                    child.halt(childHaltReason, manualStop);
                 } else {
                     log.trace("Not halting sibling interrupt thread! This will change, in future release.");
                 }
             } else {
-                child.halt(childHaltReason);
+                child.halt(childHaltReason, manualStop);
             }
         }
 
         getCurrentNodeRun().maybeHalt(processorContext);
-        boolean halted = maybeFinishHaltingProcess();
-        if (number == 0 && halted && !reason.isTransitioningHaltState()) {
-            wfRun.transitionTo(LHStatus.HALTED);
-        }
+        maybeFinishHaltingProcess();
     }
 
     public void setStatus(LHStatus status) {
@@ -556,6 +561,15 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
         if (isTerminated()) return false;
 
         if (status == LHStatus.HALTED) {
+            // The entrypoint can remain halted for an interrupt after its manual stop is lifted.
+            if (number == 0) {
+                LHStatus workflowStatus = haltReasons.stream().anyMatch(reason -> reason.type == ReasonCase.MANUAL_HALT)
+                        ? LHStatus.HALTED
+                        : LHStatus.RUNNING;
+                if (wfRun.getStatus() != workflowStatus) {
+                    wfRun.transitionTo(workflowStatus);
+                }
+            }
             return maybeUnHaltIfAllHaltReasonsResolved();
         }
 
@@ -702,7 +716,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
 
         if (haltReasons.isEmpty()) {
             log.debug("Thread {} is alive again!", number);
-            var previousStatus = status;
             if (getCurrentNodeRun().getLatestFailure().isEmpty()) {
                 setStatus(LHStatus.RUNNING);
                 getCurrentNodeRun().unHalt();
@@ -710,9 +723,6 @@ public class ThreadRunModel extends LHSerializable<ThreadRun> {
                 setStatus(LHStatus.RUNNING);
             } else {
                 setStatus(getCurrentNodeRun().getLatestFailure().get().getStatus());
-            }
-            if (wfSpecId != null) {
-                processorContext.metricsCollector().trackWorkflow(wfSpecId, previousStatus, status, startTime, endTime);
             }
             return true;
         }
