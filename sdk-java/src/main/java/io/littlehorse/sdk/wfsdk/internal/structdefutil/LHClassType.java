@@ -87,11 +87,11 @@ public abstract class LHClassType {
         } else if (classType.isAnnotationPresent(LHStructDef.class)) {
             return new LHStructDefType(classType, typeAdapterRegistry, placeholderValues);
         }
-        if (context == ResolutionContext.VALUE
-                || classType == Object.class
-                || classType.isInterface()
-                || classType.isEnum()) {
+        if (context == ResolutionContext.VALUE || classType == Object.class || classType.isInterface()) {
             return new LHPrimitiveType(classType, typeAdapterRegistry);
+        }
+        if (classType.isEnum()) {
+            return new LHInlineEnumType(classType, typeAdapterRegistry);
         }
 
         HashSet<Class<?>> buildPath = inlineStructBuildPath.get();

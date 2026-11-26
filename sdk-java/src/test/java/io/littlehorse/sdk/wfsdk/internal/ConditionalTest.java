@@ -18,6 +18,7 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowIfStatement;
@@ -495,6 +496,253 @@ public class ConditionalTest {
                     .isEqualTo(Node.newBuilder()
                             .setExit(ExitNode.getDefaultInstance())
                             .build());
+        }
+    }
+
+    @Nested
+    class EnumComparisons {
+
+        @Test
+        public void shouldSendEnumMemberAsStrLiteralInComparison() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        thread.doIf(direction.isEqualTo(Direction.EAST), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getLiteralValue()
+                                    .getStr())
+                    .containsExactly("direction", Comparator.EQUALS, "EAST");
+        }
+
+        @Test
+        public void shouldSendEnumMemberAsStrLiteralInOrderingComparison() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        thread.doIf(direction.isLessThan(Direction.SOUTH), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getLiteralValue()
+                                    .getStr())
+                    .containsExactly("direction", Comparator.LESS_THAN, "SOUTH");
+        }
+
+        @Test
+        public void shouldSendEnumMemberOnLeftHandSideOfConditionAsStrLiteral() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        thread.doIf(
+                                thread.condition(Direction.NORTH, Comparator.EQUALS, direction),
+                                branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getLhs()
+                                    .getLiteralValue()
+                                    .getStr(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) ->
+                                    edge.getCondition().getExpression().getRhs().getVariableName())
+                    .containsExactly("NORTH", Comparator.EQUALS, "direction");
+        }
+
+        @Test
+        public void shouldCompareNativeEnumWithMemberNameLiteral() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        thread.doIf(direction.isEqualTo("NORTH"), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getLiteralValue()
+                                    .getStr())
+                    .containsExactly("direction", Comparator.EQUALS, "NORTH");
+        }
+
+        @Test
+        public void shouldKeepLegacyLiteralWhenComparingNonEnumVariableWithEnumMember() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareJsonObj("direction");
+                        thread.doIf(direction.isEqualTo(Direction.NORTH), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getLiteralValue()
+                                    .getStr())
+                    .containsExactly("direction", Comparator.EQUALS, "NORTH");
+        }
+
+        @Test
+        public void shouldCompareNativeEnumWithAnotherEnumVariable() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        WfRunVariable other = thread.declareInlineEnum("other", Direction.class);
+                        thread.doIf(direction.isEqualTo(other), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) ->
+                                    edge.getCondition().getExpression().getRhs().getVariableName())
+                    .containsExactly("direction", Comparator.EQUALS, "other");
+        }
+
+        @Test
+        public void shouldCompareNativeEnumWithTaskOutput() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        var output = thread.execute("enum-task");
+                        thread.doIf(direction.isEqualTo(output), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("2-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) ->
+                                    edge.getCondition().getExpression().getLhs().getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getNodeOutput()
+                                    .getNodeName())
+                    .containsExactly("direction", Comparator.EQUALS, "1-enum-task-TASK");
+        }
+
+        @Test
+        public void shouldCompareEnumNameWithStringVariable() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        WfRunVariable name = thread.declareStr("name");
+                        thread.doIf(direction.name().isEqualTo(name), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getLhs()
+                                    .getEnumName()
+                                    .getOperand()
+                                    .getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) ->
+                                    edge.getCondition().getExpression().getRhs().getVariableName())
+                    .containsExactly("direction", Comparator.EQUALS, "name");
+        }
+
+        @Test
+        public void shouldCompareEnumNamesOnBothSides() {
+            Workflow wf = Workflow.newWorkflow(
+                    "my-workflow",
+                    thread -> {
+                        WfRunVariable direction = thread.declareInlineEnum("direction", Direction.class);
+                        WfRunVariable other = thread.declareInlineEnum("other", Direction.class);
+                        thread.doIf(direction.name().isEqualTo(other.name()), branch -> branch.execute("matched"));
+                    },
+                    new LHConfig());
+
+            ThreadSpec thread = wf.compileWorkflow().getThreadSpecsOrThrow("entrypoint");
+            Node nopNode = thread.getNodesOrThrow("1-nop-NOP");
+
+            assertThat(nopNode.getOutgoingEdges(0))
+                    .extracting(
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getLhs()
+                                    .getEnumName()
+                                    .getOperand()
+                                    .getVariableName(),
+                            (edge) -> edge.getCondition().getExpression().getComparator(),
+                            (edge) -> edge.getCondition()
+                                    .getExpression()
+                                    .getRhs()
+                                    .getEnumName()
+                                    .getOperand()
+                                    .getVariableName())
+                    .containsExactly("direction", Comparator.EQUALS, "other");
         }
     }
 }

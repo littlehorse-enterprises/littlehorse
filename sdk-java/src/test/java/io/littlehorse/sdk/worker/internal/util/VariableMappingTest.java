@@ -7,7 +7,9 @@ import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.InputVarSubstitutionException;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
 import io.littlehorse.sdk.common.proto.Array;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineEnumDef;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.ScheduledTask;
@@ -20,6 +22,7 @@ import io.littlehorse.sdk.common.proto.VarNameAndVal;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.testutils.TestReflection;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTaskParameter;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -75,6 +78,9 @@ public class VariableMappingTest {
 
         @LHTaskMethod("boxed-int-param")
         public void boxedIntParam(@LHType(name = "count") Long count) {}
+
+        @LHTaskMethod("native-enum-param")
+        public void enumParam(@LHType(name = "direction", isInlineEnum = true) Direction direction) {}
     }
 
     @Test
@@ -357,5 +363,205 @@ public class VariableMappingTest {
                 .build();
 
         assertThat(mapping.assign(scheduledTask)).isNull();
+    }
+
+    @Test
+    void shouldAssignNativeEnumInput() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(10))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("SOUTH")
+                                                .setBackingValue(11)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder()
+                        .setVarName("direction")
+                        .setValue(VariableValue.newBuilder()
+                                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder()
+                                        .setName("SOUTH"))))
+                .build();
+
+        Object assigned = mapping.assign(scheduledTask);
+        assertThat(assigned).isEqualTo(Direction.SOUTH);
+    }
+
+    @Test
+    void shouldAllowNullForNativeEnumParameter() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(10))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("SOUTH")
+                                                .setBackingValue(11)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder().setVarName("direction").setValue(VariableValue.newBuilder()))
+                .build();
+
+        assertThat(mapping.assign(scheduledTask)).isNull();
+    }
+
+    @Test
+    void shouldFailWhenNativeEnumParameterReceivesString() {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(10))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("SOUTH")
+                                                .setBackingValue(11)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder()
+                        .setVarName("direction")
+                        .setValue(VariableValue.newBuilder().setStr("SOUTH")))
+                .build();
+
+        assertThatThrownBy(() -> mapping.assign(scheduledTask))
+                .isInstanceOf(InputVarSubstitutionException.class)
+                .hasMessageContaining("Expected an ENUM");
+    }
+
+    @Test
+    void shouldFailWhenNativeEnumMemberNameHasIncorrectCase() {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(10))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("SOUTH")
+                                                .setBackingValue(11)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder()
+                        .setVarName("direction")
+                        .setValue(VariableValue.newBuilder()
+                                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder()
+                                        .setName("south"))))
+                .build();
+
+        assertThatThrownBy(() -> mapping.assign(scheduledTask))
+                .isInstanceOf(InputVarSubstitutionException.class)
+                .hasMessageContaining("Unknown enum member south");
+    }
+
+    @Test
+    void shouldFailInlineEnumWhenMembersMismatch() {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(1)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+
+        assertThatThrownBy(() -> new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty()))
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining(
+                        "TaskDef provides type <InlineEnum<NORTH=0, EAST=1>>, func expects <InlineEnum<NORTH=0, EAST=10, SOUTH=11>>");
+    }
+
+    @Test
+    void shouldAcceptInlineEnumWithMembersInDifferentOrder() throws Exception {
+        TaskDef taskDef = TaskDef.newBuilder()
+                .addInputVars(VariableDef.newBuilder()
+                        .setName("direction")
+                        .setTypeDef(TypeDefinition.newBuilder()
+                                .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("SOUTH")
+                                                .setBackingValue(11))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("NORTH")
+                                                .setBackingValue(0))
+                                        .addMembers(EnumMemberDef.newBuilder()
+                                                .setName("EAST")
+                                                .setBackingValue(10)))))
+                .build();
+
+        Method method = TestReflection.getTaskMethodByName(Dummy.class, "native-enum-param");
+        Parameter param = TestReflection.getParameter(method, 0);
+
+        LHTaskParameter lhParam = new LHTaskParameter(param, LHTypeAdapterRegistry.empty(), Map.of());
+        VariableMapping mapping = new VariableMapping(taskDef.getInputVars(0), lhParam, LHTypeAdapterRegistry.empty());
+
+        ScheduledTask scheduledTask = ScheduledTask.newBuilder()
+                .addVariables(VarNameAndVal.newBuilder()
+                        .setVarName("direction")
+                        .setValue(VariableValue.newBuilder()
+                                .setEnum(io.littlehorse.sdk.common.proto.Enum.newBuilder()
+                                        .setName("EAST"))))
+                .build();
+
+        assertThat(mapping.assign(scheduledTask)).isEqualTo(Direction.EAST);
     }
 }

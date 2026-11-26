@@ -17,6 +17,7 @@ import io.littlehorse.sdk.common.proto.WfRunVariableAccessLevel;
 import io.littlehorse.sdk.wfsdk.LHExpression;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineEnumType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -125,6 +126,15 @@ class WfRunVariableImpl implements WfRunVariable {
     }
 
     @Override
+    public LHExpression name() {
+        boolean isWholeVariable = jsonPath == null && lhPath.isEmpty();
+        if (isWholeVariable && typeDef.getDefinedTypeCase() != DefinedTypeCase.INLINE_ENUM_DEF) {
+            throw new LHWfSpecBuilderException("Can only use name() on Enum variables");
+        }
+        return new EnumNameExpressionImpl(this);
+    }
+
+    @Override
     public WfRunVariableImpl get(String key) {
         if (jsonPath != null) {
             throw new LHWfSpecBuilderException("Cannot use jsonPath() and get() on same var!");
@@ -144,6 +154,7 @@ class WfRunVariableImpl implements WfRunVariable {
                 }
                 break;
             case INLINE_ARRAY_DEF:
+            case INLINE_ENUM_DEF:
                 throw new LHWfSpecBuilderException(
                         "Can only use get(String key) on JSON_OBJ, JSON_ARR, Map, or Struct variables");
             case DEFINEDTYPE_NOT_SET:
@@ -165,12 +176,13 @@ class WfRunVariableImpl implements WfRunVariable {
             case INLINE_STRUCT_DEF:
                 break;
             case PRIMITIVE_TYPE:
-                if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
-                        && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
-                    throw new LHWfSpecBuilderException(
-                            "Can only use get() on JSON_OBJ, JSON_ARR, Map, or Struct variables");
-                }
-                break;
+                if (typeDef.getPrimitiveType() == VariableType.JSON_ARR
+                        || typeDef.getPrimitiveType() == VariableType.JSON_OBJ) {
+                    break;
+                } // Falls through.
+            case INLINE_ENUM_DEF:
+                throw new LHWfSpecBuilderException(
+                        "Can only use get() on JSON_OBJ, JSON_ARR, Map, or Struct variables");
             case INLINE_ARRAY_DEF:
                 // Typed inline arrays (e.g. declareArray("x", Long.class)) are allowed to be
                 // indexed with get(int).
@@ -197,12 +209,13 @@ class WfRunVariableImpl implements WfRunVariable {
             case INLINE_MAP_DEF:
                 break;
             case PRIMITIVE_TYPE:
-                if (typeDef.getPrimitiveType() != VariableType.JSON_ARR
-                        && typeDef.getPrimitiveType() != VariableType.JSON_OBJ) {
-                    throw new LHWfSpecBuilderException(
-                            "get() calls with dynamic inputs are supported on variables typed as JSON primitives, Arrays, or Maps");
-                }
-                break;
+                if (typeDef.getPrimitiveType() == VariableType.JSON_ARR
+                        || typeDef.getPrimitiveType() == VariableType.JSON_OBJ) {
+                    break;
+                } // Falls through.
+            case INLINE_ENUM_DEF:
+                throw new LHWfSpecBuilderException(
+                        "get() calls with dynamic inputs are supported on variables typed as JSON primitives, Arrays, or Maps");
             case STRUCT_DEF_ID:
             case INLINE_STRUCT_DEF:
                 throw new LHWfSpecBuilderException(
@@ -243,6 +256,9 @@ class WfRunVariableImpl implements WfRunVariable {
         setDefaultValue(defaultVal);
 
         switch (typeDef.getDefinedTypeCase()) {
+            case INLINE_ENUM_DEF:
+                validateDefaultValueCase(VariableValue.ValueCase.ENUM);
+                break;
             case INLINE_ARRAY_DEF:
                 validateDefaultValueCase(VariableValue.ValueCase.ARRAY);
                 break;
@@ -301,6 +317,14 @@ class WfRunVariableImpl implements WfRunVariable {
                             || typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_STRUCT_DEF)
                     && defaultVal != null) {
                 setStructDefaultValue(defaultVal);
+            } else if (typeDef != null
+                    && typeDef.getDefinedTypeCase() == DefinedTypeCase.INLINE_ENUM_DEF
+                    && defaultVal != null
+                    && declaredClassType instanceof LHInlineEnumType) {
+                LHInlineEnumType enumType = (LHInlineEnumType) declaredClassType;
+                this.defaultValue = defaultVal instanceof String
+                        ? enumType.memberNameToVariableValue((String) defaultVal)
+                        : enumType.toVariableValue(defaultVal);
             } else {
                 this.defaultValue =
                         LHLibUtil.objToVarVal(defaultVal, parent.getParent().getTypeAdapterRegistry());

@@ -4,6 +4,7 @@ import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.wfsdk.internal.CastExpressionImpl;
+import io.littlehorse.sdk.wfsdk.internal.EnumNameExpressionImpl;
 import io.littlehorse.sdk.wfsdk.internal.LHExpressionImpl;
 import io.littlehorse.sdk.wfsdk.internal.SizeOfExpressionImpl;
 import java.io.Serializable;
@@ -121,6 +122,17 @@ public interface LHExpression extends Serializable {
      */
     default LHExpression size() {
         return new SizeOfExpressionImpl(this);
+    }
+
+    /**
+     * Gives an expression that contains the name of this Enum member.
+     *
+     * Valid for ENUM expressions.
+     *
+     * @return an expression that resolves to a STR at workflow runtime.
+     */
+    default LHExpression name() {
+        return new EnumNameExpressionImpl(this);
     }
 
     /**

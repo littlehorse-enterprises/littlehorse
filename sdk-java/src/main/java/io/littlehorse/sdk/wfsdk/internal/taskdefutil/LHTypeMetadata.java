@@ -29,6 +29,9 @@ public final class LHTypeMetadata {
     @Getter
     private final boolean isInlineStruct;
 
+    @Getter
+    private final boolean isInlineEnum;
+
     private final String name;
     private final String structDefName;
 
@@ -37,18 +40,20 @@ public final class LHTypeMetadata {
             boolean isLHArray,
             boolean isLHMap,
             boolean isInlineStruct,
+            boolean isInlineEnum,
             String name,
             String structDefName) {
         this.masked = masked;
         this.isLHArray = isLHArray;
         this.isLHMap = isLHMap;
         this.isInlineStruct = isInlineStruct;
+        this.isInlineEnum = isInlineEnum;
         this.name = name;
         this.structDefName = structDefName;
     }
 
     private LHTypeMetadata() {
-        this(false, false, false, false, null, null);
+        this(false, false, false, false, false, null, null);
     }
 
     public static LHTypeMetadata from(AnnotatedElement element, Map<String, String> placeholderValues) {
@@ -71,6 +76,7 @@ public final class LHTypeMetadata {
                 typeAnnotation.isLHArray(),
                 typeAnnotation.isLHMap(),
                 typeAnnotation.isInlineStruct(),
+                typeAnnotation.isInlineEnum(),
                 parsedName,
                 parsedStructDefName);
     }
@@ -137,6 +143,13 @@ public final class LHTypeMetadata {
 
         if (classType == null || classType.getDefinedTypeCase() != DefinedTypeCase.INLINE_STRUCT_DEF) {
             throw new TaskSchemaMismatchError("@LHType(isInlineStruct = true) requires an unannotated POJO "
+                    + buildContextDescription(context, contextName));
+        }
+    }
+
+    void validateInlineEnumUsage(Class<?> javaType, ValidationContext context, String contextName) {
+        if (isInlineEnum && !javaType.isEnum()) {
+            throw new TaskSchemaMismatchError("@LHType(isInlineEnum = true) requires a Java enum "
                     + buildContextDescription(context, contextName));
         }
     }

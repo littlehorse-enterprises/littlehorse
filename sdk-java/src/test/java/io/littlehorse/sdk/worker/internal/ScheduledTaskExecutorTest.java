@@ -16,6 +16,7 @@ import io.littlehorse.sdk.common.proto.StructField;
 import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.worker.LHStructDef;
 import io.littlehorse.sdk.worker.LHType;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -87,6 +88,20 @@ public class ScheduledTaskExecutorTest {
 
         public String primitiveInput(long value) {
             return "value:" + value;
+        }
+
+        @LHType(isInlineEnum = true)
+        public Direction enumReturn() {
+            return Direction.SOUTH;
+        }
+
+        public Direction legacyEnumReturn() {
+            return Direction.SOUTH;
+        }
+
+        @LHType(isLHArray = true)
+        public Direction[] enumArrayReturn() {
+            return new Direction[] {Direction.SOUTH, Direction.NORTH};
         }
     }
 
@@ -269,6 +284,50 @@ public class ScheduledTaskExecutorTest {
                 .cause()
                 .isInstanceOf(InputVarSubstitutionException.class)
                 .hasMessageContaining("Primitive parameters cannot accept null");
+    }
+
+    @Test
+    void shouldSerializeAnnotatedEnumReturnAsNativeEnum() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("enumReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().enumReturn(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(out.getEnum().getName()).isEqualTo("SOUTH");
+    }
+
+    @Test
+    void shouldSerializeNullAnnotatedEnumReturnAsUnsetValue() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("enumReturn");
+
+        VariableValue out = executor.serializeResult(null, method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.VALUE_NOT_SET);
+    }
+
+    @Test
+    void shouldKeepLegacySerializationForUnannotatedEnumReturn() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("legacyEnumReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().legacyEnumReturn(), method);
+
+        assertThat(out.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
+        assertThat(out.getStr()).isEqualTo("SOUTH");
+    }
+
+    @Test
+    void shouldSerializeLHEnumArrayItemsAsEnum() throws Exception {
+        ScheduledTaskExecutor executor = new ScheduledTaskExecutor(null, null, LHTypeAdapterRegistry.empty(), null);
+        Method method = ReturnTasks.class.getMethod("enumArrayReturn");
+
+        VariableValue out = executor.serializeResult(new ReturnTasks().enumArrayReturn(), method);
+
+        assertThat(out.getArray().getItemsList())
+                .extracting(item -> item.getEnum().getName())
+                .containsExactly("SOUTH", "NORTH");
     }
 
     private static TaskDef taskDefWithStructReturn(String structDefName) {

@@ -1,6 +1,8 @@
 package io.littlehorse.sdk.wfsdk.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.littlehorse.sdk.common.config.LHConfig;
 import io.littlehorse.sdk.common.exception.LHWfSpecBuilderException;
 import io.littlehorse.sdk.common.proto.Edge;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.Node;
@@ -19,10 +22,13 @@ import io.littlehorse.sdk.common.proto.VariableMutation;
 import io.littlehorse.sdk.common.proto.VariableMutationType;
 import io.littlehorse.sdk.common.proto.VariableType;
 import io.littlehorse.sdk.common.proto.VariableValue;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.wfsdk.WorkflowThread;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.Library;
+import io.littlehorse.sdk.worker.LHEnumValueDef;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -38,6 +44,13 @@ public class WfRunVariableImplTest {
         public void setStreet(String street) {
             this.street = street;
         }
+    }
+
+    enum BadDirection {
+        @LHEnumValueDef(1)
+        NORTH,
+        @LHEnumValueDef(1)
+        EAST
     }
 
     ThreadFunc threadFunction = new ThreadFunc() {
@@ -415,5 +428,394 @@ public class WfRunVariableImplTest {
         assertThat(mapDef.getKeyType().getPrimitiveType()).isEqualTo(VariableType.STR);
         assertThat(mapDef.getValueType().getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.STRUCT_DEF_ID);
         assertThat(mapDef.getValueType().getStructDefId().getName()).isEqualTo("library");
+    }
+
+    @Test
+    void shouldDeclareInlineEnumWithEmbeddedSchema() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class);
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        ThreadVarDef varDef =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefs(0);
+        TypeDefinition typeDef = varDef.getVarDef().getTypeDef();
+
+        assertThat(typeDef.getDefinedTypeCase()).isEqualTo(TypeDefinition.DefinedTypeCase.INLINE_ENUM_DEF);
+        assertThat(typeDef.getInlineEnumDef().getMembersList())
+                .extracting(EnumMemberDef::getName)
+                .containsExactly("NORTH", "EAST", "SOUTH");
+        assertThat(typeDef.getInlineEnumDef().getMembersList())
+                .extracting(EnumMemberDef::getBackingValue)
+                .containsExactly(0, 10, 11);
+    }
+
+    @Test
+    void shouldRejectInvalidInlineEnumSchema() {
+        assertThatThrownBy(() -> Workflow.newWorkflow(
+                                "my-workflow",
+                                thread -> {
+                                    thread.declareInlineEnum("bad-direction", BadDirection.class);
+                                },
+                                new LHConfig())
+                        .compileWorkflow())
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Duplicate enum backing value: 1");
+    }
+
+    @Test
+    void shouldSendStructBuilderEnumFieldAsStrLiteral() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareStruct("route", "route")
+                            .assign(thread.buildStruct("route").put("direction", Direction.EAST));
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("route"))
+                        .findFirst()
+                        .orElseThrow();
+
+        VariableValue field = mutation.getRhsAssignment()
+                .getStructBuilder()
+                .getValue()
+                .getFieldsOrThrow("direction")
+                .getSimpleValue()
+                .getLiteralValue();
+        assertThat(field.getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
+        assertThat(field.getStr()).isEqualTo("EAST");
+    }
+
+    @Test
+    void shouldDeclareArrayOfInlineEnum() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow", thread -> thread.declareArray("directions", Direction.class), new LHConfig());
+
+        TypeDefinition typeDef = wf.compileWorkflow()
+                .getThreadSpecsOrThrow("entrypoint")
+                .getVariableDefs(0)
+                .getVarDef()
+                .getTypeDef();
+
+        assertThat(typeDef.getInlineArrayDef().getArrayType().getInlineEnumDef().getMembersList())
+                .extracting(EnumMemberDef::getName, EnumMemberDef::getBackingValue)
+                .containsExactly(tuple("NORTH", 0), tuple("EAST", 10), tuple("SOUTH", 11));
+    }
+
+    @Test
+    void shouldRejectGetByFieldOnInlineEnum() {
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .get("field");
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectGetByIndexOnInlineEnum() {
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .get(0);
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectGetByVariableOnInlineEnum() {
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            WfRunVariable key = thread.declareStr("key");
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .get(key);
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldSerializeNativeEnumDefault() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class).withDefault(Direction.EAST);
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        ThreadVarDef varDef =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefs(0);
+        VariableValue def = varDef.getVarDef().getDefaultValue();
+
+        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(def.getEnum().getName()).isEqualTo("EAST");
+    }
+
+    @Test
+    void shouldSerializeEnumMemberNameDefault() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class).withDefault("SOUTH");
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        ThreadVarDef varDef =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefs(0);
+        VariableValue def = varDef.getVarDef().getDefaultValue();
+
+        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(def.getEnum().getName()).isEqualTo("SOUTH");
+    }
+
+    @Test
+    void shouldRejectEnumDefaultWithIncorrectCase() {
+        assertThrows(IllegalArgumentException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .withDefault("north");
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectEnumDefaultWithUnknownMemberName() {
+        assertThrows(IllegalArgumentException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .withDefault("UNKNOWN");
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectNonEnumDefaultOnInlineEnum() {
+        assertThrows(IllegalArgumentException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .withDefault(1L);
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectNullDefaultOnInlineEnum() {
+        assertThrows(IllegalArgumentException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .withDefault(null);
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldAcceptEnumDefaultFromDifferentEnumClassByName() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class).withDefault(BadDirection.EAST);
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        ThreadVarDef varDef =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getVariableDefs(0);
+        VariableValue def = varDef.getVarDef().getDefaultValue();
+
+        assertThat(def.getValueCase()).isEqualTo(VariableValue.ValueCase.ENUM);
+        assertThat(def.getEnum().getName()).isEqualTo("EAST");
+    }
+
+    @Test
+    void shouldAssignEnumMemberAsStrLiteral() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class).assign(Direction.EAST);
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getOperation()).isEqualTo(VariableMutationType.ASSIGN);
+        assertThat(mutation.getRhsAssignment().getLiteralValue().getStr()).isEqualTo("EAST");
+    }
+
+    @Test
+    void shouldAssignEnumMemberNameAsStringLiteral() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareInlineEnum("direction", Direction.class).assign("NORTH");
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getOperation()).isEqualTo(VariableMutationType.ASSIGN);
+        assertThat(mutation.getRhsAssignment().getLiteralValue().getStr()).isEqualTo("NORTH");
+    }
+
+    @Test
+    void shouldKeepLegacyLiteralWhenAssigningEnumMemberToNonEnumVariable() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    thread.declareStr("direction-name").assign(Direction.EAST);
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction-name"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getRhsAssignment().getLiteralValue().getValueCase()).isEqualTo(VariableValue.ValueCase.STR);
+        assertThat(mutation.getRhsAssignment().getLiteralValue().getStr()).isEqualTo("EAST");
+    }
+
+    @Test
+    void shouldSerializeEnumNameAsUnaryVariableAssignmentSource() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    var direction = thread.declareInlineEnum("direction", Direction.class);
+                    var directionName = thread.declareStr("direction-name");
+                    directionName.assign(direction.name());
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction-name"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getRhsAssignment().hasEnumName()).isTrue();
+        assertThat(mutation.getRhsAssignment().getEnumName().getOperand().getVariableName())
+                .isEqualTo("direction");
+    }
+
+    @Test
+    void shouldRejectNameOnNonEnumVariable() {
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareStr("direction-name").name();
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldRejectNameOfEnumName() {
+        assertThrows(LHWfSpecBuilderException.class, () -> Workflow.newWorkflow(
+                        "my-workflow",
+                        thread -> {
+                            thread.declareInlineEnum("direction", Direction.class)
+                                    .name()
+                                    .name();
+                        },
+                        new LHConfig())
+                .compileWorkflow());
+    }
+
+    @Test
+    void shouldSerializeEnumNameOfJsonPath() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    var json = thread.declareJsonObj("json");
+                    var directionName = thread.declareStr("direction-name");
+                    directionName.assign(json.jsonPath("$.direction").name());
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction-name"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getRhsAssignment().getEnumName().getOperand().getVariableName())
+                .isEqualTo("json");
+        assertThat(mutation.getRhsAssignment().getEnumName().getOperand().getJsonPath())
+                .isEqualTo("$.direction");
+    }
+
+    @Test
+    void shouldSerializeEnumNameOfTaskOutput() {
+        Workflow wf = Workflow.newWorkflow(
+                "my-workflow",
+                thread -> {
+                    var directionName = thread.declareStr("direction-name");
+                    directionName.assign(thread.execute("enum-task").name());
+                },
+                new LHConfig());
+
+        PutWfSpecRequest pwf = wf.compileWorkflow();
+        VariableMutation mutation =
+                pwf.getThreadSpecsOrThrow(pwf.getEntrypointThreadName()).getNodesMap().values().stream()
+                        .flatMap(node -> node.getOutgoingEdgesList().stream())
+                        .flatMap(edge -> edge.getVariableMutationsList().stream())
+                        .filter(candidate -> candidate.getLhsName().equals("direction-name"))
+                        .findFirst()
+                        .orElseThrow();
+
+        assertThat(mutation.getRhsAssignment().hasEnumName()).isTrue();
+        assertThat(mutation.getRhsAssignment()
+                        .getEnumName()
+                        .getOperand()
+                        .getNodeOutput()
+                        .getNodeName())
+                .isEqualTo("1-enum-task-TASK");
     }
 }

@@ -31,6 +31,7 @@ public class LHTaskReturnType {
         metadata.validateLHArrayUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
         metadata.validateLHMapUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
         metadata.validateInlineStructUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
+        metadata.validateInlineEnumUsage(javaType, LHTypeMetadata.ValidationContext.RETURN_TYPE, method.getName());
 
         LHClassType returnClassType = null;
 
@@ -46,7 +47,7 @@ public class LHTaskReturnType {
             returnClassType = resolveMapReturnType(method, typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (InlineStruct.class.isAssignableFrom(javaType)) {
             returnClassType = new LHStructDefId(metadata.getStructDefName().get());
-        } else if (metadata.isInlineStruct()) {
+        } else if (metadata.isInlineStruct() || metadata.isInlineEnum()) {
             returnClassType = LHClassType.resolve(
                     javaType,
                     typeAdapterRegistry,

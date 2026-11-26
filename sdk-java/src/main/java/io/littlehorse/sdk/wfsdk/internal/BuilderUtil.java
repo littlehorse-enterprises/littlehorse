@@ -50,6 +50,9 @@ class BuilderUtil {
         if (variable instanceof SizeOfExpressionImpl) {
             return buildFromSizeOfExpression((SizeOfExpressionImpl) variable, typeAdapterRegistry);
         }
+        if (variable instanceof EnumNameExpressionImpl) {
+            return buildFromEnumNameExpression((EnumNameExpressionImpl) variable, typeAdapterRegistry);
+        }
         if (variable instanceof LHExpressionImpl) {
             return buildFromLHExpression((LHExpressionImpl) variable, typeAdapterRegistry);
         }
@@ -113,6 +116,14 @@ class BuilderUtil {
             SizeOfExpressionImpl expression, LHTypeAdapterRegistry typeAdapterRegistry) {
         return VariableAssignment.newBuilder()
                 .setSizeOf(VariableAssignment.SizeOf.newBuilder()
+                        .setOperand(assignVariable(expression.getOperand(), typeAdapterRegistry)))
+                .build();
+    }
+
+    private static VariableAssignment buildFromEnumNameExpression(
+            EnumNameExpressionImpl expression, LHTypeAdapterRegistry typeAdapterRegistry) {
+        return VariableAssignment.newBuilder()
+                .setEnumName(VariableAssignment.EnumName.newBuilder()
                         .setOperand(assignVariable(expression.getOperand(), typeAdapterRegistry)))
                 .build();
     }

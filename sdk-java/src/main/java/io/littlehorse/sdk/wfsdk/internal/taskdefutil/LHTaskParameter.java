@@ -48,6 +48,8 @@ public class LHTaskParameter {
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
         metadata.validateInlineStructUsage(
                 parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
+        metadata.validateInlineEnumUsage(
+                parameter.getType(), LHTypeMetadata.ValidationContext.PARAMETER, parameter.getName());
 
         if (metadata.isLHArray()) {
             this.variableClassType = new LHArrayType(
@@ -59,7 +61,7 @@ public class LHTaskParameter {
             this.variableClassType = resolveMapType(parameter, typeAdapterRegistry, resolvedPlaceholderValues);
         } else if (InlineStruct.class.isAssignableFrom(parameter.getType())) {
             this.variableClassType = new LHStructDefId(structDefName.get());
-        } else if (metadata.isInlineStruct()) {
+        } else if (metadata.isInlineStruct() || metadata.isInlineEnum()) {
             this.variableClassType = LHClassType.resolve(
                     parameter.getType(),
                     typeAdapterRegistry,

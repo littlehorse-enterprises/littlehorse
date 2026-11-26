@@ -7,13 +7,16 @@ import io.littlehorse.sdk.common.adapter.LHJsonArrAdapter;
 import io.littlehorse.sdk.common.adapter.LHStringAdapter;
 import io.littlehorse.sdk.common.adapter.LHTypeAdapterRegistry;
 import io.littlehorse.sdk.common.exception.TaskSchemaMismatchError;
+import io.littlehorse.sdk.common.proto.EnumMemberDef;
 import io.littlehorse.sdk.common.proto.InlineArrayDef;
+import io.littlehorse.sdk.common.proto.InlineEnumDef;
 import io.littlehorse.sdk.common.proto.InlineMapDef;
 import io.littlehorse.sdk.common.proto.InlineStruct;
 import io.littlehorse.sdk.common.proto.StructDefId;
 import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableDef;
 import io.littlehorse.sdk.common.proto.VariableType;
+import io.littlehorse.sdk.testutils.Direction;
 import io.littlehorse.sdk.testutils.TestReflection;
 import io.littlehorse.sdk.worker.LHTaskMethod;
 import io.littlehorse.sdk.worker.LHType;
@@ -87,6 +90,19 @@ public class LHTaskParameterTest {
 
         @LHTaskMethod("non-map-lh-map-invalid-task")
         public void nonMapLhMapInvalidTask(@LHType(isLHMap = true) String customer) {}
+
+        @LHTaskMethod("test-native-enum")
+        public void nativeEnumParamTask(
+                @LHType(name = "param1", masked = true, isInlineEnum = true) Direction param1) {}
+
+        @LHTaskMethod("test-json-enum")
+        public void jsonEnumParamTask(@LHType(name = "param1") Direction param1) {}
+
+        @LHTaskMethod("conflicting-inline-enum-task")
+        public void conflictingInlineEnumParamTask(@LHType(isInlineStruct = true) Direction param1) {}
+
+        @LHTaskMethod("non-enum-inline-enum-task")
+        public void nonEnumInlineEnumParamTask(@LHType(isInlineEnum = true) String param1) {}
     }
 
     @Test
@@ -355,5 +371,69 @@ public class LHTaskParameterTest {
                 })
                 .isInstanceOf(TaskSchemaMismatchError.class)
                 .hasMessageContaining("@LHType(isLHMap = true) can only be used on Map parameters");
+    }
+
+    @Test
+    public void shouldHandleNativeEnumTaskParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "test-native-enum");
+        Parameter parameter = taskMethod.getParameters()[0];
+        LHTaskParameter taskParameter = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+
+        VariableDef actualVariableDef = taskParameter.getVariableDef();
+        VariableDef expectedVariableDef = VariableDef.newBuilder()
+                .setName("param1")
+                .setTypeDef(TypeDefinition.newBuilder()
+                        .setMasked(true)
+                        .setInlineEnumDef(InlineEnumDef.newBuilder()
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("NORTH")
+                                        .setBackingValue(0))
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("EAST")
+                                        .setBackingValue(10))
+                                .addMembers(EnumMemberDef.newBuilder()
+                                        .setName("SOUTH")
+                                        .setBackingValue(11))))
+                .build();
+
+        assertThat(actualVariableDef).isEqualTo(expectedVariableDef);
+    }
+
+    @Test
+    public void shouldKeepUnannotatedEnumParameterAsJsonObject() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "test-json-enum");
+        Parameter parameter = taskMethod.getParameters()[0];
+        LHTaskParameter taskParameter = new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+
+        VariableDef actualVariableDef = taskParameter.getVariableDef();
+        VariableDef expectedVariableDef = VariableDef.newBuilder()
+                .setName("param1")
+                .setTypeDef(TypeDefinition.newBuilder().setPrimitiveType(VariableType.JSON_OBJ))
+                .build();
+
+        assertThat(actualVariableDef).isEqualTo(expectedVariableDef);
+    }
+
+    @Test
+    void shouldFailWhenEnumParameterAlsoOptsIntoInlineStruct() {
+        Method taskMethod =
+                TestReflection.getTaskMethodByName(ParameterTestTasks.class, "conflicting-inline-enum-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> {
+                    new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of());
+                })
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isInlineStruct = true) requires an unannotated POJO");
+    }
+
+    @Test
+    public void shouldRejectInlineEnumOnNonEnumParameter() {
+        Method taskMethod = TestReflection.getTaskMethodByName(ParameterTestTasks.class, "non-enum-inline-enum-task");
+        Parameter parameter = taskMethod.getParameters()[0];
+
+        assertThatThrownBy(() -> new LHTaskParameter(parameter, LHTypeAdapterRegistry.empty(), Map.of()))
+                .isInstanceOf(TaskSchemaMismatchError.class)
+                .hasMessageContaining("@LHType(isInlineEnum = true) requires a Java enum");
     }
 }

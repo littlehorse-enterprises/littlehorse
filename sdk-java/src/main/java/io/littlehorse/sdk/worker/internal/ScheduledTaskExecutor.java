@@ -21,6 +21,7 @@ import io.littlehorse.sdk.common.proto.TaskDef;
 import io.littlehorse.sdk.common.proto.TaskStatus;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineEnumType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHMapType;
 import io.littlehorse.sdk.wfsdk.internal.taskdefutil.LHTypeMetadata;
 import io.littlehorse.sdk.worker.WorkerContext;
@@ -227,6 +228,14 @@ public class ScheduledTaskExecutor {
 
         if (metadata.isInlineStruct()) {
             return LHLibUtil.objToVarValAsStruct(result, returnType, typeAdapterRegistry, placeholderValues);
+        }
+
+        if (metadata.isInlineEnum()) {
+            LHClassType enumType = LHClassType.resolve(
+                    returnType, typeAdapterRegistry, placeholderValues, LHClassType.ResolutionContext.STRUCT_MEMBER);
+            if (enumType instanceof LHInlineEnumType inlineEnumType) {
+                return inlineEnumType.toVariableValue(result);
+            }
         }
 
         return LHLibUtil.objToVarVal(result, returnType, typeAdapterRegistry, placeholderValues);

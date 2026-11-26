@@ -49,6 +49,7 @@ import io.littlehorse.sdk.common.proto.VariableValue.ValueCase;
 import io.littlehorse.sdk.common.proto.WfRunId;
 import io.littlehorse.sdk.common.util.JsonResult;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineEnumType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
@@ -385,6 +386,13 @@ public class LHLibUtil {
             LHTypeAdapterRegistry typeAdapterRegistry,
             Map<String, String> placeholderValues)
             throws LHSerdeException {
+        if (val.getValueCase() == ValueCase.ENUM) {
+            if (!targetClazz.isEnum()) {
+                throw new LHSerdeException("An ENUM value requires a Java enum target, got " + targetClazz.getName());
+            }
+            return new LHInlineEnumType(targetClazz, typeAdapterRegistry).fromVariableValue(val);
+        }
+
         Optional<LHTypeAdapter<?>> maybeAdapter = getTypeAdapterForClass(targetClazz, typeAdapterRegistry);
 
         if (maybeAdapter.isPresent()) {
@@ -958,6 +966,9 @@ public class LHLibUtil {
                     .setStruct(serializeToStruct(value, declaredType, typeAdapterRegistry, placeholderValues))
                     .build();
         }
+        if (declaredType instanceof LHInlineEnumType enumType) {
+            return enumType.toVariableValue(value);
+        }
         return objToVarVal(value, declaredClass, typeAdapterRegistry, placeholderValues);
     }
 
@@ -1338,6 +1349,8 @@ public class LHLibUtil {
                 return a.getWfRunId().equals(b.getWfRunId());
             case UTC_TIMESTAMP:
                 return a.getUtcTimestamp().equals(b.getUtcTimestamp());
+            case ENUM:
+                return a.getEnum().getName().equals(b.getEnum().getName());
             case ARRAY:
                 if (a.getArray().getItemsCount() != b.getArray().getItemsCount()) {
                     return false;
