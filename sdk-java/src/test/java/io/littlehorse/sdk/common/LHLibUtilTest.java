@@ -574,6 +574,60 @@ public class LHLibUtilTest {
         assertThat(deserialized).isEqualTo(original);
     }
 
+    public record AddressRecord(String city, int zip) {}
+
+    public record AddressWithGetter(String city, int zip) {
+        @LHStructField(name = "town")
+        public String getCity() {
+            return city;
+        }
+    }
+
+    @LHStructDef("customer")
+    public record CustomerRecord(AddressRecord address) {}
+
+    @Test
+    void readsLegacyEmptyInlineRecord() throws Exception {
+        // Customer(Address("Miami")) serialized by the pre-record-component writer at f24b9a4d5.
+        byte[] legacy = java.util.HexFormat.of()
+                .parseHex(
+                        "5a2c0a150a08637573746f6d657210ffffffffffffffffff0112130a110a076164647265737312060a045a021200");
+        assertThat(LHLibUtil.varValToObj(VariableValue.parseFrom(legacy), CustomerRecord.class))
+                .isEqualTo(new CustomerRecord(new AddressRecord(null, 0)));
+    }
+
+    @Test
+    void writesAndReadsAllNewInlineRecordComponents() {
+        CustomerRecord customer = new CustomerRecord(new AddressRecord("Miami", 33101));
+        VariableValue wire = LHLibUtil.objToVarVal(customer);
+        var address = wire.getStruct().getStruct().getFieldsOrThrow("address").getValue();
+        assertThat(address.getStruct().getStruct().getFieldsMap()).containsOnlyKeys("city", "zip");
+        assertThat(LHLibUtil.varValToObj(wire, CustomerRecord.class)).isEqualTo(customer);
+    }
+
+    @Test
+    void readsLegacyInlineRecordWithRenamedBeanGetter() {
+        assertThat(LHLibUtil.varValToObj(inlineRecordWithString("town", "Miami"), AddressWithGetter.class))
+                .isEqualTo(new AddressWithGetter("Miami", 0));
+    }
+
+    @Test
+    void rejectsPartialInlineRecordThatMatchesNeitherFormat() {
+        assertThatThrownBy(() -> LHLibUtil.varValToObj(inlineRecordWithString("city", "Miami"), AddressRecord.class))
+                .isInstanceOf(LHSerdeException.class)
+                .hasMessageContaining("expected field [zip]");
+    }
+
+    private static VariableValue inlineRecordWithString(String name, String value) {
+        StructField field = StructField.newBuilder()
+                .setValue(VariableValue.newBuilder().setStr(value))
+                .build();
+        return VariableValue.newBuilder()
+                .setStruct(
+                        Struct.newBuilder().setStruct(InlineStruct.newBuilder().putFields(name, field)))
+                .build();
+    }
+
     @LHStructDef("person-record-struct")
     public record PersonRecordStruct(String name, String address) {}
 

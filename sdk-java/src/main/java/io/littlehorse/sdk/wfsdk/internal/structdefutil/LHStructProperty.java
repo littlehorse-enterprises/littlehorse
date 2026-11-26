@@ -8,6 +8,7 @@ import io.littlehorse.sdk.common.proto.TypeDefinition;
 import io.littlehorse.sdk.common.proto.VariableValue;
 import io.littlehorse.sdk.worker.LHStructField;
 import io.littlehorse.sdk.worker.LHStructIgnore;
+import io.littlehorse.sdk.worker.LHStructOneOf;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -62,7 +63,7 @@ public class LHStructProperty {
         this.description = findDescription();
     }
 
-    public LHStructProperty(RecordComponent recordComponent, LHStructDefType parentStructDef) {
+    public LHStructProperty(RecordComponent recordComponent, LHClassType parentStructDef) {
         this.pd = null;
         this.recordComponent = Objects.requireNonNull(recordComponent);
         this.parentStructDef = parentStructDef;
@@ -185,12 +186,21 @@ public class LHStructProperty {
     }
 
     public StructFieldDef toStructFieldDef(LHTypeAdapterRegistry typeAdapterRegistry) {
+        String group = getOneofGroup();
+        if (group != null && (getPropertyTypeClass().isPrimitive() || isNullable)) {
+            throw new IllegalArgumentException("Oneof alternative " + this + " must be a non-nullable reference type");
+        }
         TypeDefinition typeDef = resolveValidatedFieldType(typeAdapterRegistry);
 
         StructFieldDef.Builder fieldDef =
                 StructFieldDef.newBuilder().setFieldType(typeDef).setIsNullable(isNullable);
 
-        Optional<VariableValue> defaultValue = this.getDefaultValue();
+        Optional<VariableValue> defaultValue = this.getDefaultValue(typeAdapterRegistry);
+        if (group != null) {
+            if (defaultValue.isPresent())
+                throw new IllegalArgumentException("Oneof alternative " + this + " cannot have a default");
+            fieldDef.setOneofGroup(group);
+        }
         if (defaultValue.isPresent()) {
             fieldDef.setDefaultValue(defaultValue.get());
         }
@@ -269,6 +279,35 @@ public class LHStructProperty {
                 typeAdapterRegistry,
                 placeholderValues,
                 LHClassType.ResolutionContext.STRUCT_MEMBER);
+    }
+
+    public boolean isOneofHelper() {
+        return getPropertyTypeClass().isAnnotationPresent(LHStructOneOf.class);
+    }
+
+    public String getOneofGroup() {
+        LHStructOneOf annotation = getAnnotation(LHStructOneOf.class);
+        java.util.Set<String> groups = new java.util.HashSet<>();
+        if (recordComponent != null && recordComponent.isAnnotationPresent(LHStructOneOf.class))
+            groups.add(recordComponent.getAnnotation(LHStructOneOf.class).group());
+        for (Method method : new Method[] {getReadMethod(), getWriteMethod()}) {
+            if (method != null && method.isAnnotationPresent(LHStructOneOf.class))
+                groups.add(method.getAnnotation(LHStructOneOf.class).group());
+        }
+        LHStructOneOf fieldAnnotation = getAnnotationFromField(LHStructOneOf.class);
+        if (fieldAnnotation != null) groups.add(fieldAnnotation.group());
+        if (groups.size() > 1) throw new IllegalArgumentException("Conflicting oneof groups for " + this);
+        boolean helperMember = parentStructDef.getClassType().isAnnotationPresent(LHStructOneOf.class);
+        if (helperMember && (annotation != null || isOneofHelper())) {
+            throw new IllegalArgumentException(
+                    "Oneof helper " + parentStructDef + " cannot also declare field groups or helper properties");
+        }
+        if (helperMember) return "choice"; // Replaced by the containing property's serialized name.
+        if (annotation == null) return null;
+        if (isOneofHelper())
+            throw new IllegalArgumentException("Oneof helper property " + this + " cannot also declare a field group");
+        LHStructSchema.validateGroupName(annotation.group());
+        return annotation.group();
     }
 
     private boolean isNativeArray() {
@@ -394,6 +433,14 @@ public class LHStructProperty {
         return lhStructField.description();
     }
 
+    void validateOneofHelperAccessors() {
+        if (!hasReadMethod() || !hasWriteMethod()) {
+            throw new IllegalArgumentException(String.format(
+                    "Oneof helper property %s.%s requires a public %s",
+                    parentStructDef.getClassType().getName(), propertyName, hasReadMethod() ? "setter" : "getter"));
+        }
+    }
+
     private boolean hasReadMethod() {
         return getReadMethod() != null;
     }
@@ -418,7 +465,7 @@ public class LHStructProperty {
         return this.pd.getWriteMethod();
     }
 
-    private Class<?> getPropertyTypeClass() {
+    Class<?> getPropertyTypeClass() {
         if (this.recordComponent != null) {
             return this.recordComponent.getType();
         }

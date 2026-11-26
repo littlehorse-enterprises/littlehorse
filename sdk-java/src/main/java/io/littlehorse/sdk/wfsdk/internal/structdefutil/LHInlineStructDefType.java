@@ -8,6 +8,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class LHInlineStructDefType extends LHClassType {
@@ -33,24 +34,48 @@ public final class LHInlineStructDefType extends LHClassType {
 
     public List<LHStructProperty> getStructProperties() throws IntrospectionException {
         if (structProperties == null) {
-            structProperties = List.of(Introspector.getBeanInfo(clazz).getPropertyDescriptors()).stream()
-                    .filter(property -> !"class".equals(property.getName()))
-                    .map(property -> new LHStructProperty(property, this))
-                    .filter(property -> !property.isIgnored())
-                    .collect(Collectors.toUnmodifiableList());
+            if (clazz.isRecord()) {
+                structProperties = java.util.Arrays.stream(clazz.getRecordComponents())
+                        .map(component -> new LHStructProperty(component, this))
+                        .filter(property -> !property.isIgnored())
+                        .toList();
+                return structProperties;
+            }
+            structProperties = getBeanProperties();
         }
         return structProperties;
     }
 
+    public List<LHStructProperty> getRecordReadProperties(Set<String> wireFields) throws IntrospectionException {
+        List<LHStructProperty> components = getStructProperties();
+        if (components.stream().allMatch(property -> wireFields.contains(property.getFieldName()))) {
+            return components;
+        }
+        if (components.stream().anyMatch(property -> property.isOneofHelper() || property.getOneofGroup() != null)) {
+            return components;
+        }
+
+        // Earlier SDKs wrote inline records using JavaBean getters. Only use that mapping
+        // when the payload has exactly the fields the old writer would have emitted.
+        List<LHStructProperty> legacy = getBeanProperties();
+        Set<String> legacyNames =
+                legacy.stream().map(LHStructProperty::getFieldName).collect(Collectors.toSet());
+        return legacyNames.equals(wireFields) ? legacy : components;
+    }
+
+    private List<LHStructProperty> getBeanProperties() throws IntrospectionException {
+        return List.of(Introspector.getBeanInfo(clazz).getPropertyDescriptors()).stream()
+                .filter(property -> !"class".equals(property.getName()))
+                .map(property -> new LHStructProperty(property, this))
+                .filter(property -> !property.isIgnored())
+                .collect(Collectors.toUnmodifiableList());
+    }
+
     private InlineStructDef buildInlineStructDef() {
-        InlineStructDef.Builder definition = InlineStructDef.newBuilder();
         try {
-            for (LHStructProperty property : getStructProperties()) {
-                definition.putFields(property.getFieldName(), property.toStructFieldDef(typeAdapterRegistry));
-            }
+            return LHStructSchema.build(clazz, getStructProperties(), typeAdapterRegistry);
         } catch (IntrospectionException e) {
             throw new IllegalStateException("Cannot build InlineStructDef for type: " + clazz.getName(), e);
         }
-        return definition.build();
     }
 }

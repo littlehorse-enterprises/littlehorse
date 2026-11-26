@@ -52,6 +52,7 @@ import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHClassType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHInlineStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructDefType;
 import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructProperty;
+import io.littlehorse.sdk.wfsdk.internal.structdefutil.LHStructSchema;
 import io.littlehorse.sdk.worker.LHStructDef;
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
@@ -654,6 +655,7 @@ public class LHLibUtil {
             throw new LHSerdeException("Failed deserializing Struct into class of type: " + lhClassType);
         }
 
+        LHStructSchema.validateSelections(struct.getStruct(), LHStructSchema.definition(lhClassType));
         try {
             if (clazz.isRecord()) {
                 return deserializeStructToRecord(struct, clazz, lhClassType, typeAdapterRegistry, placeholderValues);
@@ -666,6 +668,12 @@ public class LHLibUtil {
 
             for (LHStructProperty property : structProperties) {
                 String fieldName = property.getFieldName();
+                if (property.isOneofHelper() || property.getOneofGroup() != null) {
+                    VariableValue value = oneofPropertyValue(struct, property, typeAdapterRegistry);
+                    // Omitted alternatives stay null; oneof alternatives cannot have defaults.
+                    if (value != null) property.setValueTo(structObject, value, typeAdapterRegistry, placeholderValues);
+                    continue;
+                }
                 if (!struct.getStruct().containsFields(fieldName)) {
                     throw new LHSerdeException(
                             null,
@@ -702,7 +710,9 @@ public class LHLibUtil {
                     InstantiationException, IllegalAccessException {
         List<LHStructProperty> structProperties = lhClassType instanceof LHStructDefType
                 ? ((LHStructDefType) lhClassType).getStructProperties()
-                : ((LHInlineStructDefType) lhClassType).getStructProperties();
+                : ((LHInlineStructDefType) lhClassType)
+                        .getRecordReadProperties(
+                                struct.getStruct().getFieldsMap().keySet());
         Map<String, LHStructProperty> byPropertyName = new HashMap<>();
 
         for (LHStructProperty property : structProperties) {
@@ -724,6 +734,12 @@ public class LHLibUtil {
             }
 
             String fieldName = property.getFieldName();
+            if (property.isOneofHelper() || property.getOneofGroup() != null) {
+                VariableValue value = oneofPropertyValue(struct, property, typeAdapterRegistry);
+                canonicalArgValues[i] =
+                        value == null ? null : property.deserializeValue(value, typeAdapterRegistry, placeholderValues);
+                continue;
+            }
             if (!struct.getStruct().containsFields(fieldName)) {
                 Set<String> availableFields = struct.getStruct().getFieldsMap().keySet();
                 throw new LHSerdeException(
@@ -741,6 +757,28 @@ public class LHLibUtil {
 
         java.lang.reflect.Constructor<?> cons = clazz.getDeclaredConstructor(canonicalArgTypes);
         return cons.newInstance(canonicalArgValues);
+    }
+
+    private static VariableValue oneofPropertyValue(
+            Struct struct, LHStructProperty property, LHTypeAdapterRegistry registry) {
+        if (!property.isOneofHelper()) {
+            return struct.getStruct().containsFields(property.getFieldName())
+                    ? struct.getStruct()
+                            .getFieldsOrThrow(property.getFieldName())
+                            .getValue()
+                    : null;
+        }
+        InlineStruct.Builder helper = InlineStruct.newBuilder();
+        LHStructSchema.definition(property.getPropertyType(registry))
+                .getFieldsMap()
+                .keySet()
+                .forEach(name -> {
+                    if (struct.getStruct().containsFields(name))
+                        helper.putFields(name, struct.getStruct().getFieldsOrThrow(name));
+                });
+        return VariableValue.newBuilder()
+                .setStruct(Struct.newBuilder().setStruct(helper))
+                .build();
     }
 
     // Ignored record components still need an argument for the canonical constructor.
@@ -1176,6 +1214,13 @@ public class LHLibUtil {
             for (LHStructProperty property : lhStructProperties) {
                 VariableValue fieldValue = property.getValueFrom(o, typeAdapterRegistry, placeholderValues);
 
+                if (property.isOneofHelper()) {
+                    if (fieldValue != null)
+                        inlineStruct.putAllFields(
+                                fieldValue.getStruct().getStruct().getFieldsMap());
+                    continue;
+                }
+                if (fieldValue == null && property.getOneofGroup() != null) continue;
                 if (fieldValue == null) {
                     fieldValue = VariableValue.newBuilder().build();
                 }
@@ -1190,6 +1235,7 @@ public class LHLibUtil {
                     e, "Failed serializing object to Struct: " + o.getClass().getName());
         }
 
+        LHStructSchema.validateSelections(inlineStruct.build(), LHStructSchema.definition(lhClassType));
         outputStruct.setStruct(inlineStruct);
 
         return outputStruct.build();

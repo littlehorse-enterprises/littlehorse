@@ -60,6 +60,7 @@ Most Java examples start a long-lived worker process. Keep that command running 
 - [`saga/`](./saga/README.md): Saga/compensation pattern.
 - [`spawn-thread-foreach/`](./spawn-thread-foreach/README.md): Child-thread foreach fanout.
 - [`struct-def/`](./struct-def/README.md): Struct definition and usage.
+- [`struct-oneof/`](./struct-oneof/README.md): Mutually exclusive Struct fields.
 - [`timestamp/`](./timestamp/README.md): Timestamp handling.
 - [`user-tasks/`](./user-tasks/README.md): Human `UserTask` flows.
 - [`variables/`](./variables/README.md): Variable declaration and assignment.
