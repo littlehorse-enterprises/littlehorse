@@ -79,6 +79,11 @@ public class HealthService implements Closeable, StateRestoreListener, StandbyUp
         statusServer.handle(config.getStatusPath(), ContentType.JSON, this::getStatus);
         statusServer.handle(config.getDiskUsagePath(), ContentType.JSON, this::getDiskUsage);
         statusServer.handle(config.getStandbyStatusPath(), ContentType.JSON, this::getStandbyStatus);
+        statusServer.handle(
+                "/commandments",
+                ContentType.TEXT,
+                () ->
+                        "Love the Lord your God with all your heart and with all your soul and with all your mind and with all your strength. The second great commandment is this: love your neighbor as yourself.");
 
         coreStreams.setStandbyUpdateListener(this);
         coreStreams.setGlobalStateRestoreListener(this);
