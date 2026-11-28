@@ -4,6 +4,7 @@ import static io.littlehorse.sdk.common.proto.LHStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
 import io.littlehorse.sdk.common.config.LHConfig;
+import io.littlehorse.sdk.common.exception.LHTaskException;
 import io.littlehorse.sdk.common.proto.Comparator;
 import io.littlehorse.sdk.common.proto.LHStatus;
 import io.littlehorse.sdk.common.proto.NodeRun;
@@ -14,7 +15,9 @@ import io.littlehorse.sdk.common.proto.WaitForThreadsRun;
 import io.littlehorse.sdk.wfsdk.NodeOutput;
 import io.littlehorse.sdk.wfsdk.SpawnedThread;
 import io.littlehorse.sdk.wfsdk.SpawnedThreads;
+import io.littlehorse.sdk.wfsdk.TaskNodeOutput;
 import io.littlehorse.sdk.wfsdk.ThreadFunc;
+import io.littlehorse.sdk.wfsdk.WaitForThreadsNodeOutput;
 import io.littlehorse.sdk.wfsdk.WfRunVariable;
 import io.littlehorse.sdk.wfsdk.Workflow;
 import io.littlehorse.sdk.worker.LHTaskMethod;
@@ -47,6 +50,17 @@ public class WaitForThreadsTest {
 
     @LHWorkflow("wait-for-threads-without-exception-handler")
     private Workflow waitForThreadsWithoutExceptionHandlerWorkflow;
+
+    @LHWorkflow("wait-for-threads-child-handler-fails")
+    private Workflow childHandlerFailsWorkflow;
+
+    @LHWorkflow("wait-for-threads-per-child-handler-fails")
+    private Workflow perChildHandlerFailsWorkflow;
+
+    private static final ThreadFunc CHILD_WITH_FAILING_HANDLER = childThread -> {
+        TaskNodeOutput work = childThread.execute("throw-original-exception");
+        childThread.handleException(work, "original-exception", handler -> handler.fail("handler-exception", ""));
+    };
 
     @Test
     void shouldExecuteSimpleWorkflowSuccessfully() {
@@ -157,6 +171,51 @@ public class WaitForThreadsTest {
                 .thenSendExternalEventWithContent("person-1-approves", person1DenyEvent)
                 .waitForStatus(EXCEPTION)
                 .start();
+    }
+
+    @Test
+    void shouldThrowFailureOfChildsFailedExceptionHandler() {
+        workflowVerifier
+                .prepareRun(childHandlerFailsWorkflow)
+                .waitForStatus(COMPLETED)
+                .start();
+    }
+
+    @Test
+    void shouldThrowFailureOfFailedPerChildHandler() {
+        workflowVerifier
+                .prepareRun(perChildHandlerFailsWorkflow)
+                .waitForStatus(COMPLETED)
+                .start();
+    }
+
+    @LHWorkflow("wait-for-threads-child-handler-fails")
+    public Workflow buildChildHandlerFailsWorkflow() {
+        return Workflow.newWorkflow(
+                "wait-for-threads-child-handler-fails",
+                thread -> {
+                    SpawnedThread child = thread.spawnThread(CHILD_WITH_FAILING_HANDLER, "child", null);
+
+                    NodeOutput wait = thread.waitForThreads(SpawnedThreads.of(child));
+                    thread.handleException(wait, "handler-exception", handler -> handler.execute("exc-handler"));
+                },
+                new LHConfig());
+    }
+
+    @LHWorkflow("wait-for-threads-per-child-handler-fails")
+    public Workflow buildPerChildHandlerFailsWorkflow() {
+        return Workflow.newWorkflow(
+                "wait-for-threads-per-child-handler-fails",
+                thread -> {
+                    SpawnedThread child = thread.spawnThread(CHILD_WITH_FAILING_HANDLER, "child", null);
+
+                    // Only runs if matched against the child's handler failure, not its original one.
+                    WaitForThreadsNodeOutput wait = thread.waitForThreads(SpawnedThreads.of(child))
+                            .handleExceptionOnChild(
+                                    "handler-exception", handler -> handler.fail("per-child-exception", ""));
+                    thread.handleException(wait, "per-child-exception", handler -> handler.execute("exc-handler"));
+                },
+                new LHConfig());
     }
 
     @LHWorkflow("wait-for-threads-with-exception-handler")
@@ -305,6 +364,11 @@ public class WaitForThreadsTest {
     @LHTaskMethod("add-1")
     public int addOne(int input) {
         return input + 1;
+    }
+
+    @LHTaskMethod("throw-original-exception")
+    public void throwOriginalException() {
+        throw new LHTaskException("original-exception", "the original failure");
     }
 }
 

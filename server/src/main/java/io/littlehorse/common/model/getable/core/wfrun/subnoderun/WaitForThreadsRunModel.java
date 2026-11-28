@@ -200,8 +200,7 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
 
             } else if (childThreadRun.getStatus() == LHStatus.EXCEPTION
                     || childThreadRun.getStatus() == LHStatus.ERROR) {
-                FailureModel latestFailure =
-                        childThreadRun.getCurrentNodeRun().getLatestFailure().get();
+                FailureModel latestFailure = childThreadRun.getTerminalFailure();
 
                 FailureHandlerDefModel handler = getHandlerFor(latestFailure);
                 if (handler != null) {
@@ -244,18 +243,14 @@ public class WaitForThreadsRunModel extends SubNodeRun<WaitForThreadsRun> {
      * Utility to extract the propagatable failure from a child failure.
      */
     private FailureModel getLastFailureFrom(WaitForThreadModel failedChild, WfRunModel wfRun) {
-        FailureModel lastFailure = null;
-        if (failedChild.getFailureHandlerThreadRunId() == null) {
-            lastFailure = wfRun.getThreadRun(failedChild.getThreadRunNumber())
-                    .getCurrentNodeRun()
-                    .getLatestFailure()
-                    .get();
-        } else {
-            ThreadRunModel failureHandler = wfRun.getThreadRun(failedChild.getFailureHandlerThreadRunId());
-            lastFailure = failureHandler.getCurrentNodeRun().getLatestFailure().get();
-        }
+        int failedThreadNumber = failedChild.getThreadRunNumber();
 
-        return lastFailure;
+        // This gets
+        if (failedChild.getFailureHandlerThreadRunId() != null) {
+            // The per-child failure handler also failed, so its failure is the one to throw.
+            failedThreadNumber = failedChild.getFailureHandlerThreadRunId();
+        }
+        return wfRun.getThreadRun(failedThreadNumber).getTerminalFailure();
     }
 
     private void haltAllOtherThreads() {
